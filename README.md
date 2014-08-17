@@ -1,5 +1,7 @@
 # The Comprehensive Kerbal Archive Network (CKAN)
 
+**This document is a draft and may change. Contributions welcome.**
+
 This is a Request For Comments on the Comprehensive Kerbal Archive
 Network (CKAN). Please open discussions in the issues list, and
 send pull requests to patch this document and associated files.
