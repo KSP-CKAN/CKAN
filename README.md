@@ -79,8 +79,16 @@ The CKAN metadata spec is based upon the
 - Install instructions in meta-data
 - Recommends example
 - Overrides example (eg: RSS overrides TAC-LS)
+- Includes example (for things including MM, Firespitter, etc)
 
 ### Metadata description
 
 The metadata file provides machine-readable information about a
 distribution.
+
+### TODOs
+
+- Automatic generation from github webhooks on release (may require
+  a special "from file" version option).
+- Tools to create initial META.json.
+
