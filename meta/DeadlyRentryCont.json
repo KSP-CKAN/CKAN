@@ -1,0 +1,33 @@
+{
+    "name"     : "Deadly Reentry Continued",
+    "abstract" : "Makes re-entry much more dangerous",
+    "download" : "https://github.com/NathanKell/DeadlyReentry/releases/download/v5.2/DeadlyReentryCont_v5.2.zip",
+    "license"  : "CC-BY-SA",
+    "version"  : "v5.2",
+    "release_status" : "stable",
+    "min_ksp" : "0.24.2",
+    "max_ksp" : "0.24.2",
+    "resources" : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/54954",
+        "github"   : {
+            "url"      : "https://github.com/NathanKell/DeadlyReentry",
+            "releases" : true
+        }
+    },
+    "install" : [
+        {
+            "file"       : "DeadlyReentry",
+            "install_to" : "GameData"
+        }
+    ],
+    "bundles" : [
+        {
+            "file"       : "ModuleManager.2.2.0.dll",
+            "name"       : "ModuleManager",
+            "version"    : "v2.2.0",
+            "install_to" : "GameData",
+            "license"    : "CC-BY-SA",
+            "required"   : true
+        }
+    ]
+}
