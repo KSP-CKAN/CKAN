@@ -52,6 +52,12 @@ foreach my $filename (@files) {
 
         my $filename = $opts{f};
 
+        # We need our tmpfile defined in this outer scope so
+        # it doesn't try to prematurely clean away the tmpfile
+        # when it goes out of scope in the inner scope.
+
+        my $tmpfile = File::Temp->new();
+
         if (not $filename) {
             my $download = $meta->{download};
 
@@ -63,8 +69,7 @@ foreach my $filename (@files) {
             # as right now there's a potential race condition if another
             # process (re)moves $zipfile before mech opens it.
 
-            my $zipfile = File::Temp->new();
-            $filename   = $zipfile->filename;
+            $filename   = $tmpfile->filename;
             $mech->save_content( $filename );
         }
 
