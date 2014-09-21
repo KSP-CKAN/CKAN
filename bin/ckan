@@ -30,10 +30,11 @@ my $mech = WWW::Mechanize->new;
 my %opts = (
     i => 0,     # Install
     v => 0,     # Verbose
+    f => '',    # File (if available locally)
     g => "$ENV{HOME}/Steam/SteamApps/common/Kerbal Space Program", # Game
 );
 
-getopts('vig:', \%opts);
+getopts('vig:f:', \%opts);
 
 my $GAME     = $opts{g};
 my $GAMEDATA = File::Spec->catdir( $GAME, 'GameData' );
@@ -49,23 +50,28 @@ foreach my $filename (@files) {
 
     if ($opts{i}) {
 
-        my $download = $meta->{download};
+        my $filename = $opts{f};
 
-        say "Fetching $download...";
+        if (not $filename) {
+            my $download = $meta->{download};
 
-        $mech->get( $download );
+            say "Fetching $download...";
 
-        # It would be lovely if we could pass mech a filehandle here,
-        # as right now there's a potential race condition if another
-        # process (re)moves $zipfile before mech opens it.
+            $mech->get( $download );
 
-        my $zipfile = File::Temp->new();
-        $mech->save_content( $zipfile->filename );
+            # It would be lovely if we could pass mech a filehandle here,
+            # as right now there's a potential race condition if another
+            # process (re)moves $zipfile before mech opens it.
+
+            my $zipfile = File::Temp->new();
+            $filename   = $zipfile->filename;
+            $mech->save_content( $filename );
+        }
 
         say "Inspecting contents...";
 
         my $zip = Archive::Zip->new;
-        $zip->read( $zipfile->filename );
+        $zip->read( $filename );
 
         if ($opts{v}) {
             foreach my $file ($zip->memberNames) {
