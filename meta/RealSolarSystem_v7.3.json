@@ -7,6 +7,12 @@
     "release_status" : "stable",
     "min_ksp" : "0.24.2",
     "max_ksp" : "0.24.2",
+    "requires" : [
+        { name : "Real Solar System Textures" }
+    ]
+    "recommends" : [
+        { name : "Realism Overhaul" },
+    ]
     "resources" : {
         "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",
         "github"   : {

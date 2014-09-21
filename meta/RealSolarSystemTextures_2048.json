@@ -1,0 +1,19 @@
+{
+    "name"     : "Real Solar System Textures - 2048 x 1024",
+    "provides" : [ "Real Solar System Textures" ],
+    "abstract" : "Textures for Real Solar Systems",
+    "download" : "https://nabaal.net/files/ksp/nathankell/RealSolarSystem/Textures/2048.zip",
+    "license"  : "CC-BY-NC-SA",
+    "version"  : "v1.0",
+    "release_status" : "stable",
+    "requires" : [
+        { name : "Real Solar System" }
+    ]
+    "install" : [
+        {
+            "file"       : "RealSolarSystem",
+            "install_to" : "GameData",
+            "overwrite"  : true
+        }
+    ]
+}
