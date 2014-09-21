@@ -7,8 +7,8 @@
     "version"  : "v1.0",
     "release_status" : "stable",
     "requires" : [
-        { name : "Real Solar System" }
-    ]
+        { "name" : "Real Solar System" }
+    ],
     "install" : [
         {
             "file"       : "RealSolarSystem",
