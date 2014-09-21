@@ -30,9 +30,13 @@ my $mech = WWW::Mechanize->new;
 my %opts = (
     i => 0,     # Install
     v => 0,     # Verbose
+    g => "$ENV{HOME}/Steam/SteamApps/common/Kerbal Space Program", # Game
 );
 
-getopts('vi', \%opts);
+getopts('vig:', \%opts);
+
+my $GAME     = $opts{g};
+my $GAMEDATA = File::Spec->catdir( $GAME, 'GameData' );
 
 # Our most basic operation is to read files from the commandline and install
 # their contents.
@@ -72,13 +76,17 @@ foreach my $filename (@files) {
         say "Installing...";
 
         foreach my $install ( @{ $meta->{install} }, @{ $meta->{bundles} } ) {
-            my $file    = $install->{file};
+            my $file       = $install->{file};
+            my $install_to = $install->{install_to};
 
             say "$file...";
 
-            # TODO: Process where we'll extract these to
-            $zip->extractTree( $file, $file );
+            if ($install_to eq 'GameData') {
+                $zip->extractTree( $file, File::Spec->catdir($GAMEDATA, $file) );
+            }
+            else {
+                die "Don't know how to install to $install_to";
+            }
         }
-
     }
 }
