@@ -1,0 +1,84 @@
+#!/usr/bin/perl
+use 5.010;
+use strict;
+use warnings;
+use autodie;
+
+use JSON::Any;
+use File::Slurp;
+use Data::Dumper;
+use Archive::Zip;
+use Getopt::Std;
+use WWW::Mechanize;
+use File::Temp;
+
+# Reference implementation of the Comprehensive Kerbal Archive Network (CKAN)
+# installer.
+#
+# Paul '@pjf' Fenwick, September 2014
+#
+# This code may be used under the following licenses:
+#   - MIT
+#   - CC-BY
+#   - Same as Perl 5 itself
+
+my $j    = JSON::Any->new;
+my $mech = WWW::Mechanize->new;
+
+# Option handling...
+
+my %opts = (
+    i => 0,     # Install
+    v => 0,     # Verbose
+);
+
+getopts('vi', \%opts);
+
+# Our most basic operation is to read files from the commandline and install
+# their contents.
+
+my (@files) = @ARGV;
+
+foreach my $filename (@files) {
+    my $contents = read_file( $filename );
+    my $meta = $j->decode($contents);
+
+    if ($opts{i}) {
+
+        my $download = $meta->{download};
+
+        say "Fetching $download...";
+
+        $mech->get( $download );
+
+        # It would be lovely if we could pass mech a filehandle here,
+        # as right now there's a potential race condition if another
+        # process (re)moves $zipfile before mech opens it.
+
+        my $zipfile = File::Temp->new();
+        $mech->save_content( $zipfile->filename );
+
+        say "Inspecting contents...";
+
+        my $zip = Archive::Zip->new;
+        $zip->read( $zipfile->filename );
+
+        if ($opts{v}) {
+            foreach my $file ($zip->memberNames) {
+                say $file;
+            }
+        }
+
+        say "Installing...";
+
+        foreach my $install ( @{ $meta->{install} }, @{ $meta->{bundles} } ) {
+            my $file    = $install->{file};
+
+            say "$file...";
+
+            # TODO: Process where we'll extract these to
+            $zip->extractTree( $file, $file );
+        }
+
+    }
+}
