@@ -80,6 +80,8 @@ The CKAN metadata spec is based upon the
 - Recommends example
 - Overrides example (eg: RSS overrides TAC-LS)
 - Includes example (for things including MM, Firespitter, etc)
+- Config example (config files should be preseved across versions?)
+- Should we auto-detect releases when we have github info?
 
 ### Metadata description
 
@@ -97,7 +99,27 @@ distribution.
 - - Filename (awful, because filenames can change, but could allow
     for GitHub releases to work.)
 
+#### Optional fields
 
+##### resources
+
+    "resources" : {
+        "homepage" : "http://examele.com/jebinator",
+        "github"   : {
+            "url"      : "http://github.com/example/jebinator",
+            "releases" : "true"
+        }
+    }
+
+The `resources` field describes additional information that a user or
+program may wish to know about the mod. Presently the following fields
+are described
+
+- `homepage` is a URL that goes to the preferred landing page for the mod.
+- `github` is a hash which *must* contain a `url` pointing to the
+  github page for the project. It *may* include a `releases` key
+  with a boolean value (which defaults to false) indicating if github releases
+  should be used when searching for updates.
 
 ### TODOs
 
