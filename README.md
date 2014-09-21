@@ -86,6 +86,19 @@ The CKAN metadata spec is based upon the
 The metadata file provides machine-readable information about a
 distribution.
 
+#### Mandatory fields
+
+##### version
+
+- TODO: Support version_from
+- - file (eg: existing KSP versioning mod)
+- - config (this might even make sense so modules can be effectively
+    sniffed by game elements)
+- - Filename (awful, because filenames can change, but could allow
+    for GitHub releases to work.)
+
+
+
 ### TODOs
 
 - Automatic generation from github webhooks on release (may require
