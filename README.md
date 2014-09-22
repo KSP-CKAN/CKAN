@@ -107,6 +107,10 @@ signs. Eg: "FAR" or "RealSolarSystem". This is the identifier that
 will be used whenever the mod is referenced (by `depends`, `conflicts`,
 or elsewhere).
 
+If the mod contains a shared library (dll) that would generate a `FOR` pass
+in ModuleManager, then the shortname *should* match the name that
+ModuleManager would generate for the mod.
+
 ##### version
 
 - TODO: Support version_from
