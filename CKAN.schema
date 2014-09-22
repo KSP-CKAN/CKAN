@@ -23,11 +23,7 @@
         },
         "license" : {
             "description" : "Machine readable license string",
-            "enum" : [ "CC-BY",    "CC-BY-SA",    "CC-BY-ND",
-                        "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
-                        "GPLv1", "GPLv2", "GPLv3", "BSD", "MIT",
-                        "LGPLv2.1", "LGPLv3"
-            ]
+            "$ref"        : "#/definitions/license"
         },
         "version" : {
             "description" : "Version of the mod. Drop the leading v",
@@ -92,7 +88,7 @@
                     },
                     "install_to" : {
                         "description" : "Where file should be installed to",
-                        "enum" : [ "GameData" ]
+                        "$ref" : "#/definitions/install_to"
                     },
                     "requires" : {
                         "description" : "A required mod for this install part",
@@ -180,6 +176,18 @@
                 },
                 "required" : [ "name" ]
             }
+        },
+        "install_to" : {
+            "description" : "Where file should be installed to",
+            "enum" : [ "GameData" ]
+        },
+        "license" : {
+            "description" : "A license",
+            "enum" : [ "CC-BY",    "CC-BY-SA",    "CC-BY-ND",
+                        "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
+                        "GPLv1", "GPLv2", "GPLv3", "BSD", "MIT",
+                        "LGPLv2.1", "LGPLv3"
+            ]
         }
     }
 }
