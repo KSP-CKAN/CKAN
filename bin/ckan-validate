@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use 5.010;
+use strict;
+use warnings;
+use FindBin qw($Bin);
+
+# This uses the JSON Schema Validator from
+# https://github.com/fge/json-schema-validator
+#
+# (LGPLv3 and ASL 2.0)
+
+my (@files) = @ARGV;
+
+@files or die "Usage: $0 filenames\n";
+
+my $SCHEMA        = "$Bin/../CKAN.schema";
+my $VALIDATOR_JAR = "$Bin/json-schema-validator-2.2.5-lib.jar";
+
+system('java', '-jar', $VALIDATOR_JAR, $SCHEMA, @files);
