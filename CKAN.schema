@@ -1,0 +1,185 @@
+{
+    "$schema" : "http://json-schema.org/draft-04/schema#",
+    "title" : "CKAN JSON Schema",
+    "description" : "Schema for validating CKAN meta files",
+    "type" : "object",
+    "properties": {
+        "name" : {
+            "description" : "Human readable name of the mod",
+            "type"        : "string"
+        },
+        "shortname" : {
+            "description" : "Machine friendly name of the mod",
+            "$ref"        : "#/definitions/shortname"
+        },
+        "abstract" : {
+            "description" : "Longer description of the mod",
+            "type"        : "string"
+        },
+        "download" : {
+            "description" : "URL where mod can be downloaded by tools",
+            "type"        : "string",
+            "format"      : "uri"
+        },
+        "license" : {
+            "description" : "Machine readable license string",
+            "enum" : [ "CC-BY",    "CC-BY-SA",    "CC-BY-ND",
+                        "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
+                        "GPLv1", "GPLv2", "GPLv3", "BSD", "MIT",
+                        "LGPLv2.1", "LGPLv3"
+            ]
+        },
+        "version" : {
+            "description" : "Version of the mod. Drop the leading v",
+            "$ref"        : "#/definitions/version"
+        },
+        "release_status" : {
+            "description" : "Optional release status",
+            "enum" : [ "alpha", "beta", "stable" ]
+        },
+        "min_ksp" : {
+            "description" : "Optional minimum KSP version",
+            "$ref"        : "#/definitions/ksp_version"
+        },
+        "max_ksp" : {
+            "description" : "Optional maximum KSP version",
+            "$ref"        : "#/definitions/ksp_version"
+        },
+        "requires" : {
+            "description" : "Optional list of dependencies",
+            "$ref"        : "#/definitions/modlist"
+        },
+        "recommends" : {
+            "description" : "Optional list of recommended mods",
+            "$ref"        : "#/definitions/modlist"
+        },
+        "resources" : {
+            "description" : "Additional resources",
+            "type" : "object",
+            "properties" : {
+                "homepage" : {
+                    "description" : "Mod homepage",
+                    "type" : "string",
+                    "format" : "uri"
+                },
+                "github" : {
+                    "description" : "Project on github",
+                    "type" : "object",
+                    "properties" : {
+                        "url" : {
+                            "description" : "Github URL",
+                            "type" : "string",
+                            "format" : "uri"
+                        },
+                        "releases" : {
+                            "description" : "Does this mod do Github releases?",
+                            "type" : "boolean"
+                        }
+                    },
+                    "required" : [ "url" ]
+                }
+            }
+        },
+        "install" : {
+            "description" : "List of install directives",
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "file" : {
+                        "description" : "Path to file to install",
+                        "type" : "string"
+                    },
+                    "install_to" : {
+                        "description" : "Where file should be installed to",
+                        "enum" : [ "GameData" ]
+                    },
+                    "requires" : {
+                        "description" : "A required mod for this install part",
+                        "$ref" : "#/definitions/shortname"
+                    },
+                    "overwrite" : {
+                        "description" : "Allow overwriting of existing files?",
+                        "type" : "boolean"
+                    }
+                },
+                "required" : [ "file", "install_to" ]
+            }
+        },
+        "bundles" : {
+            "description" : "Modules bundled with this mod",
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "file" : {
+                        "description" : "Path to the bundled module",
+                        "type" : "string"
+                    },
+                    "name" : {
+                        "description" : "Shortname of the bundled module",
+                        "$ref" : "#/definitions/shortname"
+                    },
+                    "version" : {
+                        "description" : "Version of bundled module",
+                        "$ref" : "#/definitions/version"
+                    },
+                    "install_to" : {
+                        "description" : "Where bundle should be installed to",
+                        "$ref" : "#/definitions/install_to"
+                    },
+                    "license" : {
+                        "description" : "The licensed the bundled mod is used under",
+                        "$ref" : "#/definitions/license"
+                    },
+                    "required" : {
+                        "description" : "Is this module required for installation?",
+                        "type" : "boolean"
+                    }
+                },
+                "required" : [ "file", "name", "version", "install_to", "required", "license" ]
+            }
+        }
+    },
+    "required" : [
+        "name",
+        "abstract",
+        "shortname",
+        "download",
+        "license",
+        "version"
+    ],
+    "definitions" : {
+        "shortname" : {
+            "description" : "Machine friendly name of the mod",
+            "type"        : "string"
+        },
+        "version" : {
+            "description" : "A verison string",
+            "type"        : "string"
+        },
+        "ksp_version" : {
+            "description" : "A version of KSP",
+            "type"        : "string",
+            "pattern"     : "^(any|[0-9]+\\.[0-9]+\\.[0-9]+)$"
+        },
+        "modlist" : {
+            "description" : "A list of mods",
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "name" : {
+                        "description" : "Shortname of the mod",
+                        "type"        : "string"
+                    },
+                    "version" : {
+                        "description" : "EXPERIMENTAL - Optional version",
+                        "$ref"        : "#/definitions/version"
+                    }
+                },
+                "required" : [ "name" ]
+            }
+        }
+    }
+}
