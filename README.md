@@ -41,8 +41,10 @@ The fundamental design of the CKAN is as follows:
 
 When included in a distribution, the metadata *must* be included
 in a file called `META.json`. When extracted from a distribution,
-it *must* be given an identical name as the file it came from, but
-with the `.zip` or other extension replaced with `.json`.
+it *should* be given an identical name as the file it came from, but
+with the `.zip` or other extension replaced with `.json`. An extracted
+meta file *may* be given the same name as the internal shortname
+included in the document.
 
 The CKAN metadata spec is based upon the
 [CPAN metadata spec](https://metacpan.org/pod/CPAN::Meta::Spec).
@@ -51,6 +53,7 @@ The CKAN metadata spec is based upon the
 
     {
         "name"     : "Example Mod",
+        "shortname": "example",
         "abstract" : "A neat mod for KSP."
         "author"   : [ "Jeb Kerbin <jeb@example.com>" ],
         "license"  : [ "mit" ],
@@ -90,6 +93,20 @@ distribution.
 
 #### Mandatory fields
 
+##### name
+
+This is the human readable name of the mod, and may contain any
+printable characters. Eg: "Ferram Aërospace Research (FAR)",
+"Real Solar System".
+
+##### shortname
+
+This is intended as a machine-friendly, short name for the mod.
+It may only consist of letters, numbers, underscores, and minus
+signs. Eg: "FAR" or "RealSolarSystem". This is the identifier that
+will be used whenever the mod is referenced (by `depends`, `conflicts`,
+or elsewhere).
+
 ##### version
 
 - TODO: Support version_from
@@ -98,6 +115,8 @@ distribution.
     sniffed by game elements)
 - - Filename (awful, because filenames can change, but could allow
     for GitHub releases to work.)
+- Do we allow leading v's? Github tags have them, but they make everything
+  else harder.
 
 #### Optional fields
 
