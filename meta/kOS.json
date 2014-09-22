@@ -1,5 +1,6 @@
 {
     "name"     : "kOS - Kerbal OS",
+    "shortname" : "kOS",
     "abstract" : "A programming and automation environment for KSP craft.",
     "download" : "https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip",
     "license"  : "GPLv3",

@@ -1,5 +1,6 @@
 {
     "name"     : "Realism Overhaul",
+    "shortname": "RealismOverhaul",
     "abstract" : "Overhaul KSP to use realistic fuels, engines, masses, and more",
     "download" : "https://github.com/NathanKell/RealismOverhaul/releases/download/v6.0a12/RealismOverhaulv6a12.zip",
     "license"  : "CC-BY-SA",
@@ -64,7 +65,7 @@
             "name"       : "ModuleRCSFX",
             "version"    : "3.0",
             "install_to" : "GameData",
-            "license"    : "CC-BY-SA 3.0",
+            "license"    : "CC-BY-SA",
             "required"   : true
         }
     ]
