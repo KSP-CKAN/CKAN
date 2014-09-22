@@ -93,7 +93,11 @@ foreach my $filename (@files) {
             say "$file...";
 
             if ($install_to eq 'GameData') {
-                $zip->extractTree( $file, File::Spec->catdir($GAMEDATA, $file) );
+                # Our destination is the final part of the file path.
+                # This lets us strip off 'GameData' and other sections.
+                my $dest = (File::Spec->splitdir($file))[-1];
+
+                $zip->extractTree( $file, File::Spec->catdir($GAMEDATA, $dest) );
             }
             else {
                 die "Don't know how to install to $install_to";
