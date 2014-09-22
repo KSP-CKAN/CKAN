@@ -35,7 +35,7 @@
         },
         "release_status" : {
             "description" : "Optional release status",
-            "enum" : [ "alpha", "beta", "stable" ]
+            "enum" : [ "alpha", "beta", "stable", "development" ]
         },
         "min_ksp" : {
             "description" : "Optional minimum KSP version",
