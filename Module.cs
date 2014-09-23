@@ -22,12 +22,12 @@ using System.Text.RegularExpressions;
 /// </summary>
 ///
 
-// TODO: It would be *awesome* if the schema could generate this for us.
-// TODO: Code style: Should we have Module.meta.attribute paths, so we can
-//       get exactly what we found from the JSON?
+// TODO: It would be *awesome* if the schema could generate all the JsonProperty
+//       things for us.
 
 // TODO: Currently we have all attributes from JSON starting with an underscore,
-//       that's super-ugly. What's the preferred C# way of doing this?
+//       that's kinda ugly. What's the preferred C# way of doing this? Do we
+//       just want Module.meta.whatever ?
 
 namespace CKAN {		
 
@@ -189,13 +189,14 @@ namespace CKAN {
 		}
 
 		// TODO: Have this *actually* find our GameData directory!
-		string gameData() {
+		public static string gameData() {
 			return Path.Combine(
 				Environment.GetFolderPath(Environment.SpecialFolder.Personal),
 				".steam", "steam", "SteamApps", "common", "Kerbal Space Program", "GameData"
 			);
 		}
 
+		// TODO: Test that this actually throws exceptions if it can't do its job.
 		void copyZipEntry(ZipFile zipfile, 	ZipEntry entry, string fullPath) {
 			
 			if (entry.IsDirectory) {
