@@ -73,12 +73,13 @@ and the
 ### Example CKAN file
 
     {
-        "name"       : "Real Solar System",
-        "identifier" : "RealSolarSystem",
-        "abstract"   : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
-        "download"   : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
-        "license"    : "CC-BY-NC-SA",
-        "version"    : "7.3",
+        "spec_version": 1,
+        "name"        : "Real Solar System",
+        "identifier"  : "RealSolarSystem",
+        "abstract"    : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
+        "download"    : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
+        "license"     : "CC-BY-NC-SA",
+        "version"     : "7.3",
         "release_status" : "stable",
         "min_ksp" : "0.24.2",
         "max_ksp" : "0.24.2",
@@ -127,6 +128,12 @@ The metadata file provides machine-readable information about a
 distribution.
 
 #### Mandatory fields
+
+##### spec_version
+
+The version number of the CKAN specification used to create this .ckan file. The
+value of this field is an unsigned integer. The currently latest version of the
+spec is `1`.
 
 ##### name
 

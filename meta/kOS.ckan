@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"     : "kOS - Kerbal OS",
     "identifier" : "kOS",
     "abstract" : "A programming and automation environment for KSP craft.",

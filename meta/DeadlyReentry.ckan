@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"     : "Deadly Reentry Continued",
     "abstract" : "Makes re-entry much more dangerous",
     "identifier": "DeadlyReentry",

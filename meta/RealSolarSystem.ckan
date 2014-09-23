@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"     : "Real Solar System",
     "identifier" : "RealSolarSystem",
     "abstract" : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",

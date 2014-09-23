@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"     : "Real Solar System Textures - 2048 x 1024",
     "provides" : [ "Real Solar System Textures" ],
     "abstract" : "Textures for Real Solar Systems",

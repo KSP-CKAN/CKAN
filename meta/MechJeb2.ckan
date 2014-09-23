@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"      : "MechJeb",
     "identifier" : "MechJeb2",
     "abstract" : "MechJeb autopilot and helper",
