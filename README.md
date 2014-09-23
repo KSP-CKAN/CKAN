@@ -183,11 +183,62 @@ the second under the user's choice of BSD or MIT licenses.
 
 ##### version
 
-The version of the mod. Do *not* include the leading `v`. Due to
-the great variety of versioning strings out there, no restrictions
-are placed on this field, but it is *strongly* encouraged mods
-use versions that *only* consist of digits and periods (1.23,
-1.3.5, etc) to allow for machine-sortable version numbers.
+The version of the mod. Versions have the format `[epoch]:mod_version`.
+
+###### epoch
+
+`epoch` is a single (generally small) unsigned integer. It may be omitted, in
+which case zero is assumed.
+
+It is provided to allow mistakes in the version numbers of older versions of a
+package, and also a package's previous version numbering schemes, to be left
+behind.
+
+###### mod_version
+
+`mod_version` is the main part of the version number. It is usually the version
+number of the original mod from which the CKAN file is created. Usually this
+will be in the same format as that specified by the mod author(s); however, it
+may need to be reformatted to fit into the package management system's format
+and comparison scheme.
+
+The comparison behavior of the package management system with respect to the
+`mod_version` is described below. The `mod_version` portion of the version
+number is mandatory.
+
+The `mod_version` may contain only alphanumerics and the characters `.` `+`
+(full stop, plus) and should start with a digit.
+
+###### version ordering
+
+When comparing two version numbers, first the `epoch` of each are compared, then
+the `mod_version` if `epoch` is equal. `epoch` is compared numerically. The
+`mod_version` part is compared by the package management system using the
+following algorithm:
+
+The strings are compared from left to right.
+
+First the initial part of each string consisting entirely of non-digit
+characters is determined. These two parts (one of which may be empty) are
+compared lexically. If a difference is found it is returned. The lexical
+comparison is a comparison of ASCII values modified so that all the letters sort
+earlier than all the non-letters.
+
+Then the initial part of the remainder of each string which consists entirely of
+digit characters is determined. The numerical values of these two parts are
+compared, and any difference found is returned as the result of the
+comparison. For these purposes an empty string (which can only occur at the end
+of one or both version strings being compared) counts as zero.
+
+These two steps (comparing and removing initial non-digit strings and initial
+digit strings) are repeated until a difference is found or both strings are
+exhausted.
+
+Note that the purpose of epochs is to allow us to leave behind mistakes in
+version numbering, and to cope with situations where the version numbering
+scheme changes. It is not intended to cope with version numbers containing
+strings of letters which the package management system cannot interpret (such as
+ALPHA or pre-), or with silly orderings.
 
 ##### install
 
