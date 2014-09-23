@@ -1,6 +1,6 @@
 {
     "name"      : "MechJeb",
-    "shortname" : "MechJeb2",
+    "identifier" : "MechJeb2",
     "abstract" : "MechJeb autopilot and helper",
     "download" : "http://jenkins.mumech.com/job/MechJeb2/lastSuccessfulBuild/artifact/jenkins-MechJeb2-319/MechJeb2-2.3.1.0-319.zip",
     "license"  : "GPLv3",

@@ -1,6 +1,6 @@
 {
     "name"     : "Real Solar System",
-    "shortname" : "RealSolarSystem",
+    "identifier" : "RealSolarSystem",
     "abstract" : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
     "download" : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
     "license"  : "CC-BY-NC-SA",
