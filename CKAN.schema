@@ -16,6 +16,10 @@
             "description" : "Longer description of the mod",
             "type"        : "string"
         },
+        "comment" : {
+            "description" : "Free-form comment. Not displayed to users.",
+            "type"        : "string"
+        },
         "download" : {
             "description" : "URL where mod can be downloaded by tools",
             "type"        : "string",
