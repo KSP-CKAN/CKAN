@@ -20,14 +20,25 @@
             "description" : "Free-form comment. Not displayed to users.",
             "type"        : "string"
         },
+        "author" : {
+            "description" : "Author, or list of authors.",
+            "oneOf"       : [
+                { "type" : "string" },
+                {
+                    "type"        : "array",
+                    "items"       : { "type" : "string" },
+                    "uniqueItems" : true
+                }
+            ]
+        },
         "download" : {
             "description" : "URL where mod can be downloaded by tools",
             "type"        : "string",
             "format"      : "uri"
         },
         "license" : {
-            "description" : "Machine readable license string",
-            "$ref"        : "#/definitions/license"
+            "description" : "Machine readable license, or array of licenses",
+            "$ref"      : "#/definitions/licenses"
         },
         "version" : {
             "description" : "Version of the mod. Drop the leading v",
@@ -116,8 +127,8 @@
                         "description" : "Path to the bundled module",
                         "type" : "string"
                     },
-                    "name" : {
-                        "description" : "Unique name of the bundled mod",
+                    "identifier" : {
+                        "description" : "Identifier of the bundled mod",
                         "$ref" : "#/definitions/identifier"
                     },
                     "version" : {
@@ -129,15 +140,15 @@
                         "$ref" : "#/definitions/install_to"
                     },
                     "license" : {
-                        "description" : "The licensed the bundled mod is used under",
-                        "$ref" : "#/definitions/license"
+                        "description" : "The license(s) the bundled mod is used under",
+                        "$ref" : "#/definitions/licenses"
                     },
                     "required" : {
                         "description" : "Is this module required for installation?",
                         "type" : "boolean"
                     }
                 },
-                "required" : [ "file", "name", "version", "install_to", "required", "license" ]
+                "required" : [ "file", "identifier", "version", "install_to", "required", "license" ]
             }
         }
     },
@@ -170,11 +181,19 @@
                 "type" : "object",
                 "properties" : {
                     "name" : {
-                        "description" : "Shortname of the mod",
+                        "description" : "Identifier of the mod",
                         "type"        : "string"
                     },
                     "version" : {
-                        "description" : "EXPERIMENTAL - Optional version",
+                        "description" : "Optional version",
+                        "$ref"        : "#/definitions/version"
+                    },
+                    "min_version" : {
+                        "description" : "Optional minimum version",
+                        "$ref"        : "#/definitions/version"
+                    },
+                    "max_version" : {
+                        "description" : "Optional maximum version",
                         "$ref"        : "#/definitions/version"
                     }
                 },
@@ -191,6 +210,17 @@
                         "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
                         "GPLv1", "GPLv2", "GPLv3", "BSD", "MIT",
                         "LGPLv2.1", "LGPLv3"
+            ]
+        },
+        "licenses" : {
+            "description" : "A license, or array of licenses",
+            "anyOf" : [
+                { "$ref" : "#/definitions/license" },
+                {
+                    "type"  : "array",
+                    "items" : { "$ref" : "#/definitions/license" },
+                    "uniqueItems" : true
+                }
             ]
         }
     }

@@ -79,6 +79,7 @@ and the
         "author"   : "Jeb Kerbin <jeb@example.com>",
         "license"  : "MIT",
         "version"  : "1.25",
+        "download" : "http://example.com/ExampleMod.zip",
         "prereqs"  : {
             "runtime" : {
                 "requires" : {
@@ -98,15 +99,6 @@ and the
         }
     }
 
-*TODO*
-
-- Install instructions in meta-data
-- Recommends example
-- Overrides example (eg: RSS overrides TAC-LS)
-- Includes example (for things including MM, Firespitter, etc)
-- Config example (config files should be preseved across versions?)
-- Should we auto-detect releases when we have github info?
-
 ### Metadata description
 
 The metadata file provides machine-readable information about a
@@ -120,6 +112,10 @@ This is the human readable name of the mod, and may contain any
 printable characters. Eg: "Ferram Aërospace Research (FAR)",
 "Real Solar System".
 
+##### abstract
+
+A human readable description of the mod and what it does.
+
 ##### identifer
 
 This is the gloablly unique identifier for the mod, and is how the mod
@@ -131,20 +127,155 @@ the mod is referenced (by `depends`, `conflicts`, or elsewhere).
 If the mod would generate a `FOR` pass in ModuleManager, then the
 identifier *must* be same as the ModuleManager name.
 
+##### download
+
+A fully formed URL, indicating where a machine may download the
+described version of the mod.
+
+##### license
+
+The license, or list of licenses, under which the mod is released.
+The following are valid license strings:
+
+- CC-BY
+- CC-BY-SA
+- CC-BY-ND
+- CC-BY-NC
+- CC-BY-NC-SA
+- CC-BY-NC-ND
+- GPLv1
+- GPLv2
+- GPLv3
+- BSD
+- MIT
+- LGPLv2.1
+- LGPLv3
+
+A single license, or list of licenses may be provided. The following
+are both valid, the first describing a mod released under the BSD license,
+the second under the user's choice of BSD or MIT licenses.
+
+    "license" : "BSD"
+
+    "license" : [ "BSD", "MIT" ]
+
 ##### version
 
-- TODO: Support version_from
-- - file (eg: existing KSP versioning mod)
-- - config (this might even make sense so modules can be effectively
-    sniffed by game elements)
-- - Filename (awful, because filenames can change, but could allow
-    for GitHub releases to work.)
-- Do we allow leading v's? Github tags have them, but they make everything
-  else harder.
+The version of the mod. Do *not* include the leading `v`. Due to
+the great variety of versioning strings out there, no restrictions
+are placed on this field, but it is *strongly* encouraged mods
+use versions that *only* consist of digits and periods (1.23,
+1.3.5, etc) to allow for machine-sortable version numbers.
+
+##### install
+
+A list of install directives for this mod, each must contain the two
+mandatory directives: 
+
+- `file`: The file or directory root that this directive pertains to.
+  All leading directories are stripped from the start of the filename
+  during install. (Eg: `MyMods/KSP/Foo` will be installed into
+  `GameData/Foo`.)
+- `install_to`: The location where this section should be installed.
+  Presently the only valid value for this entry is `GameData`. Paths
+  will be preserved, 
+
+An install directive may also include the following optional fields:
+
+- `requires`: Indicates this install directive should only be triggered
+  if the required mod has already been installed.
+- `overwrite`: A boolean value, if set to true, then this allows files
+  to be overwritten during install, even if those files are from another
+  mod.
+
+An example set of install directives, including one that overwrites
+parts of `OtherMod` (if installed) is shown below:
+
+    "install" : [
+        {
+            "file"       : "GameData/ExampleMod",
+            "install_to" : "GameData"
+        },
+        {
+            "file"       : "GameData/OtherMod",
+            "install_to" : "GameData",
+            "requires"   : "OtherMod",
+            "overwrite"  : true
+        }
+    ]
 
 #### Optional fields
 
+##### comment
+
+A comment field, if included, is ignored. It is not displayed to users,
+nor used by programs. It's primary use is to convey information to humans
+examining the CKAN file manually
+
+##### author
+
+The author, or list of authors, for this mod. No restrictions are
+placed upon this field.
+
+##### release_status
+
+The release status of the mod, one of `alpha`, `beta`, `stable`,
+or `development`. If not specified, a value of `stable` is assumed.
+
+##### min_ksp
+
+The minimum version of KSP the mod requires to operate correctly.
+Eg `0.23.5`. If not specified, a default value of `any` is assumed.
+
+##### max_ksp
+
+The maximum version of KSP the mod requires to operate correctly.
+Eg `0.24.2`. If not specified, a default value of `any` is assumed.
+
+##### requires
+
+A list of mods which are *required* for the current mod to operate.
+At its most basic, this is an array of objects, each being a name
+and identifier:
+
+    "requires" : [
+        { "name" : "ModuleManager" },
+        { "name" : "RealFuels" },
+        { "name" : "RealSolarSystem" }
+    ]
+
+Each object may also contain the optional fields `min_version`, `max_version`,
+and `version`, to more precisely describe which vesions are needed:
+
+    "requires" : [
+        { "name" : "ModuleManager",   "min_version" : "2.1.5" },
+        { "name" : "RealSolarSystem", "min_version" : "7.3"   },
+        { "name" : "RealFuels" }
+    ]
+
+It is an error to mix `version` (which specifies an exact vesion) with
+either `min_version` or `max_version` in the same object.
+
+##### recommends
+
+A list of mods which are *recommended* by this mod for an optimal
+playing experience. This uses the same format as the `requires` field
+above.
+
 ##### resources
+
+The `resources` field describes additional information that a user or
+program may wish to know about the mod, but which are not required
+for its installation or indexing. Presently the following fields
+are described:
+
+- `homepage` is a URL that goes to the preferred landing page for the mod.
+- `github` is an object which *must* contain a `url` pointing to the
+  github page for the project. It *may* include a `releases` key
+  with a boolean value (which defaults to false) indicating if github releases
+  should be used when searching for updates.
+
+Example resources:
 
     "resources" : {
         "homepage" : "http://examele.com/jebinator",
@@ -154,19 +285,59 @@ identifier *must* be same as the ModuleManager name.
         }
     }
 
-The `resources` field describes additional information that a user or
-program may wish to know about the mod. Presently the following fields
-are described
+##### bundles
 
-- `homepage` is a URL that goes to the preferred landing page for the mod.
-- `github` is a hash which *must* contain a `url` pointing to the
-  github page for the project. It *may* include a `releases` key
-  with a boolean value (which defaults to false) indicating if github releases
-  should be used when searching for updates.
+A list of mods which are *included* with this mod distribution, each
+of which is an object with the following mandatory fields:
 
-### TODOs
+- `file`: A path to the bundled mod.
+- `identifier`: The identifier of the bundled mod.
+- `version`: The version of the bundled mod.
+- `install_to` Where the bundled mod should be installed to.
+  (Currently `GameData` is the only valid value.)
+- `license`: The license or list of licenses which allowed this mod to be
+  bundled.
+- `required`: Whether this mod is required for operation.
 
-- Automatic generation from github webhooks on release (may require
-  a special "from file" version option).
-- Tools to create initial META.json.
+Bundled mods should *not* be installed if a later version of the same
+mod is already installed.
 
+As an example, here is a `bundles` section which includes both
+ModuleManager and CustomBiomes
+
+    "bundles" : [
+        {
+            "file"       : "ModuleManager.2.3.3.dll",
+            "identifier" : "ModuleManager",
+            "version"    : "2.3.3",
+            "install_to" : "GameData",
+            "license"    : "CC-BY-SA",
+            "required"   : true
+        },
+        {
+            "file"       : "CustomBiomes",
+            "identifier" : "CustomBiomes",
+            "version"    : "1.6.6",
+            "install_to" : "GameData",
+            "license"    : "CC-BY-NC-SA",
+            "required"   : false
+        }
+    ]
+
+##### provides
+
+An identifier, or list of identifiers, that this module *provides*. This field
+is intended for use in modules which require one of a selection of texture
+downloads, or one of a selection of mods which provide equivalent
+functionality.  For example:
+
+    "provides"  : "RealSolarSystemTextures"
+
+It is recommended that this field be used *sparingly*, as all mods with
+the same `provides` string are essentially declaring they can be used
+interchangably.
+
+It *is* considered acceptable to use this field if a mod is renamed,
+and the old name of the mod is listed in the `provides` field. This
+allows for mods to be renamed without updating all other mods which
+depend upon it.

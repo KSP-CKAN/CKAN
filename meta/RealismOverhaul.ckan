@@ -54,7 +54,7 @@
     "bundles" : [
         {
             "file"       : "ModuleManager.2.3.4.dll",
-            "name"       : "ModuleManager",
+            "identifier" : "ModuleManager",
             "version"    : "2.3.4",
             "install_to" : "GameData",
             "license"    : "CC-BY-SA",
@@ -62,7 +62,7 @@
         },
         {
             "file"       : "ModuleRCSFX",
-            "name"       : "ModuleRCSFX",
+            "identifier" : "ModuleRCSFX",
             "version"    : "3.0",
             "install_to" : "GameData",
             "license"    : "CC-BY-SA",

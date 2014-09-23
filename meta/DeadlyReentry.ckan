@@ -1,6 +1,7 @@
 {
     "name"     : "Deadly Reentry Continued",
     "abstract" : "Makes re-entry much more dangerous",
+    "identifier": "DeadlyReentry",
     "download" : "https://github.com/NathanKell/DeadlyReentry/releases/download/v5.2/DeadlyReentryCont_v5.2.zip",
     "license"  : "CC-BY-SA",
     "version"  : "v5.2",
@@ -23,7 +24,7 @@
     "bundles" : [
         {
             "file"       : "ModuleManager.2.2.0.dll",
-            "name"       : "ModuleManager",
+            "identifier" : "ModuleManager",
             "version"    : "v2.2.0",
             "install_to" : "GameData",
             "license"    : "CC-BY-SA",
