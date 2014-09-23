@@ -1,0 +1,24 @@
+{
+    "name"     : "Mission Controller 2",
+    "identifier" : "MissionControllerEC",
+    "abstract" : "Better missions for Kerbal Space Program",
+    "download" : "https://kerbalstuff.com/mod/93/Mission%20Controller%202/download/Version_1.01_Available",
+    "license"  : "GPLv3",
+    "version"  : "1.01",
+    "release_status" : "stable",
+    "min_ksp" : "0.24.2",
+    "max_ksp" : "0.24.2",
+    "resources" : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/43645",
+        "github"   : {
+            "url"      : "https://github.com/malkuth1974/MissionController2",
+            "releases" : false
+        }
+    },
+    "install" : [
+        {
+            "file"       : "MissionControllerEC",
+            "install_to" : "GameData"
+        }
+    ]
+}

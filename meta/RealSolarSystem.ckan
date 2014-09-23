@@ -9,10 +9,10 @@
     "min_ksp" : "0.24.2",
     "max_ksp" : "0.24.2",
     "requires" : [
-        { "name" : "Real Solar System Textures" }
+        { "name" : "RealSolarSystemTextures" }
     ],
     "recommends" : [
-        { "name" : "Realism Overhaul" }
+        { "name" : "RealismOverhaul" }
     ],
     "resources" : {
         "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",

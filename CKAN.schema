@@ -167,7 +167,8 @@
     "definitions" : {
         "identifier" : {
             "description" : "Unique identifier for this mod.",
-            "type"        : "string"
+            "type"        : "string",
+            "pattern"     : "^[A-Za-z][A-Za-z0-9-]*$"
         },
         "version" : {
             "description" : "A verison string",
@@ -186,7 +187,7 @@
                 "properties" : {
                     "name" : {
                         "description" : "Identifier of the mod",
-                        "type"        : "string"
+                        "$ref"        : "#/definitions/identifier"
                     },
                     "version" : {
                         "description" : "Optional version",

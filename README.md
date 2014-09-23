@@ -73,20 +73,20 @@ and the
 ### Example CKAN file
 
     {
-        "name"     : "Real Solar System",
+        "name"       : "Real Solar System",
         "identifier" : "RealSolarSystem",
-        "abstract" : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
-        "download" : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
-        "license"  : "CC-BY-NC-SA",
-        "version"  : "7.3",
+        "abstract"   : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
+        "download"   : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
+        "license"    : "CC-BY-NC-SA",
+        "version"    : "7.3",
         "release_status" : "stable",
         "min_ksp" : "0.24.2",
         "max_ksp" : "0.24.2",
         "requires" : [
-            { "name" : "Real Solar System Textures" }
+            { "name" : "RealSolarSystemTextures" }
         ],
         "recommends" : [
-            { "name" : "Realism Overhaul" }
+            { "name" : "RealismOverhaul" }
         ],
         "resources" : {
             "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",
