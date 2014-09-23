@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO.Compression; // For ZipArchive
+
 
 // Reference CKAN client
 // Paul '@pjf' Fenwick
@@ -24,10 +24,11 @@ namespace CKAN {
 			// Walk through all our files. :)
 			foreach (string filename in filenames) {
 				Module module = Module.from_file (filename);
-				Console.WriteLine (module.identifier);
+				Console.WriteLine (module._identifier);
 
-				string file = module.fetch ();
-				Console.WriteLine ("Saved to " + file);
+				module.install ();
+				// string file = module.fetch ();
+				// Console.WriteLine ("Saved to " + file);
 			}
 		}
 	}

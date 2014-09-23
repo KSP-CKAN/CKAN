@@ -37,6 +37,7 @@
       <HintPath>..\..\..\..\..\..\..\..\..\usr\lib\cli\Newtonsoft.Json-5.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="ICSharpCode.SharpZipLib" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
