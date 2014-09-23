@@ -24,7 +24,8 @@ namespace CKAN {
 			// Walk through all our files. :)
 			foreach (string filename in filenames) {
 				Module module = Module.from_file (filename);
-				Console.WriteLine (module._identifier);
+
+				Console.WriteLine ("Processing " + 	module._identifier);
 
 				module.install ();
 				// string file = module.fetch ();

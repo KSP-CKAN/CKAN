@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 // TODO: Currently we have all attributes from JSON starting with an underscore,
 //       that's super-ugly. What's the preferred C# way of doing this?
 
-namespace CKAN {			
+namespace CKAN {		
 
 	[JsonObject(MemberSerialization.OptIn)]
 	public class Module {
@@ -138,93 +138,87 @@ namespace CKAN {
 				filename = download ();
 			}
 
-			// FastZip lets us extract the bits we need.
-			// FastZip zipfile = new FastZip ();
-
-			// TODO: Actually figure out where KSP is installed, rather than
-			// assuming it's here.
-
-			string gameData = Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-				".steam", "steam", "SteamApps", "common", "Kerbal Space Program", "GameData"
-			);
-
-			Console.WriteLine (gameData);
-
+			// Open our file and search it
 			ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
-			// And walk through our install instructions.
-			foreach (dynamic stanza in _install) {
+			// And walk through our install instructions, and bundled code.
+			foreach (dynamic stanza in _install.Concat(_bundles).ToList() ) {
 
 				string fileToInstall = stanza.file;
 
+				Console.WriteLine ("Installing " + fileToInstall);
+
 				string[] path = fileToInstall.Split('/');
 
-				string installDir = gameData;
+				// TODO: This will depend upon the `install_to` in the JSON file
+				string installDir = gameData ();
+
+				// This is what we strip off paths
 				string stripDir   = String.Join("/", path.Take(path.Count() - 1)) + "/";
 
-				Console.WriteLine("InstallDir is "+installDir);
-				Console.WriteLine ("StripDir is " + stripDir);
+				// Console.WriteLine("InstallDir is "+installDir);
+				// Console.WriteLine ("StripDir is " + stripDir);
 				
-				// Ugh. This is awful. There's got to be a better way to extract a tree?
+				// This is awful. There's got to be a better way to extract a tree?
 				string filter = "^" + stanza.file + "(/|$)";
 
-				// Ugh. O(N^2) solution. Surely there's a better way...
+				// O(N^2) solution. Surely there's a better way...
 				foreach (ZipEntry entry in zipfile) {
-					if ( Regex.IsMatch( entry.Name, filter ) ) {
-						// Hooray! A file we want!
 
-						// Get the full name of the file.
-						string outputName = entry.Name;
-
-						// Strip off the prefix (often GameData/)
-						// TODO: The C# equivalent of "\Q stripDir \E" so we can't be caught by metacharacters.
-						outputName = Regex.Replace (outputName, @"^" + stripDir, "");
-
-						// Console.WriteLine(outputName);
-
-						// Aww hell yes, let's write this file out!
-
-						string fullPath = Path.Combine (installDir, outputName);
-						// Console.WriteLine (fullPath);
-
-						if (entry.IsDirectory) {
-							Console.WriteLine ("Making directory " + fullPath);
-							Directory.CreateDirectory (fullPath);
-						}
-						else {
-							Console.WriteLine ("Writing file " + fullPath);
-
-							// It's a file! Prepare the streams
-							Stream zipStream = zipfile.GetInputStream(entry);
-							FileStream output = File.Create (fullPath);
-
-							// Copy
-							zipStream.CopyTo (output);
-
-							// Tidy up.
-							zipStream.Close();
-							output.Close();
-						}
+					// Skip things we don't want.
+					if (! Regex.IsMatch (entry.Name, filter)) {
+						continue;
 					}
+
+					// Get the full name of the file.
+					string outputName = entry.Name;
+
+					// Strip off the prefix (often GameData/)
+					// TODO: The C# equivalent of "\Q stripDir \E" so we can't be caught by metacharacters.
+					outputName = Regex.Replace (outputName, @"^" + stripDir, "");
+
+					// Aww hell yes, let's write this file out!
+
+					string fullPath = Path.Combine (installDir, outputName);
+					// Console.WriteLine (fullPath);
+
+					copyZipEntry (zipfile, entry, fullPath);
+
 				}
+			}
+		}
 
+		// TODO: Have this *actually* find our GameData directory!
+		string gameData() {
+			return Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+				".steam", "steam", "SteamApps", "common", "Kerbal Space Program", "GameData"
+			);
+		}
 
-				// zipfile.NameTransform = new StripLeadingDir (filename);
+		void copyZipEntry(ZipFile zipfile, 	ZipEntry entry, string fullPath) {
+			
+			if (entry.IsDirectory) {
+				// Console.WriteLine ("Making directory " + fullPath);
+				Directory.CreateDirectory (fullPath);
+			}
+			else {
+				// Console.WriteLine ("Writing file " + fullPath);
 
-				// zipfile.ExtractZip (filename, destination, filter);
+				// It's a file! Prepare the streams
+				Stream zipStream = zipfile.GetInputStream(entry);
+				FileStream output = File.Create (fullPath);
+
+				// Copy
+				zipStream.CopyTo (output);
+
+				// Tidy up.
+				zipStream.Close();
+				output.Close();
 			}
 
-
-
-			// And (for now) display the contents!
-			// foreach (ZipEntry entry in zipfile) {
-			//	Console.WriteLine(entry.Name);
-			// }
-
-			// Can we do that twice?
-
 		}
+
 	}
 }
 
