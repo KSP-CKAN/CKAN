@@ -43,7 +43,7 @@ When included in a distribution, the metadata *must* be included
 in a file called `META.json`. When extracted from a distribution,
 it *should* be given an identical name as the file it came from, but
 with the `.zip` or other extension replaced with `.json`. An extracted
-meta file *may* be given the same name as the internal shortname
+meta file *may* be given the same name as the internal identifier
 included in the document.
 
 The CKAN metadata spec is based upon the
@@ -53,7 +53,7 @@ The CKAN metadata spec is based upon the
 
     {
         "name"     : "Example Mod",
-        "shortname": "example",
+        "identifier": "example",
         "abstract" : "A neat mod for KSP."
         "author"   : [ "Jeb Kerbin <jeb@example.com>" ],
         "license"  : [ "mit" ],
@@ -99,17 +99,16 @@ This is the human readable name of the mod, and may contain any
 printable characters. Eg: "Ferram Aërospace Research (FAR)",
 "Real Solar System".
 
-##### shortname
+##### identifer
 
-This is intended as a machine-friendly, short name for the mod.
-It may only consist of letters, numbers, underscores, and minus
-signs. Eg: "FAR" or "RealSolarSystem". This is the identifier that
-will be used whenever the mod is referenced (by `depends`, `conflicts`,
-or elsewhere).
+This is the gloablly unique identifier for the mod, and is how the mod
+will be referred to by other CKAN documents.  It may only consist of
+letters, numbers, underscores, and minus signs. Eg: "FAR" or
+"RealSolarSystem". This is the identifier that will be used whenever
+the mod is referenced (by `depends`, `conflicts`, or elsewhere).
 
-If the mod contains a shared library (dll) that would generate a `FOR` pass
-in ModuleManager, then the shortname *should* match the name that
-ModuleManager would generate for the mod.
+If the mod would generate a `FOR` pass in ModuleManager, then the
+identifier *must* be same as the ModuleManager name.
 
 ##### version
 
