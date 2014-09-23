@@ -8,9 +8,9 @@
             "description" : "Human readable name of the mod",
             "type"        : "string"
         },
-        "shortname" : {
-            "description" : "Machine friendly name of the mod",
-            "$ref"        : "#/definitions/shortname"
+        "identifier" : {
+            "description" : "Unique identifier for this mod.",
+            "$ref"        : "#/definitions/identifier"
         },
         "abstract" : {
             "description" : "Longer description of the mod",
@@ -92,7 +92,7 @@
                     },
                     "requires" : {
                         "description" : "A required mod for this install part",
-                        "$ref" : "#/definitions/shortname"
+                        "$ref" : "#/definitions/identifier"
                     },
                     "overwrite" : {
                         "description" : "Allow overwriting of existing files?",
@@ -113,8 +113,8 @@
                         "type" : "string"
                     },
                     "name" : {
-                        "description" : "Shortname of the bundled module",
-                        "$ref" : "#/definitions/shortname"
+                        "description" : "Unique name of the bundled mod",
+                        "$ref" : "#/definitions/identifier"
                     },
                     "version" : {
                         "description" : "Version of bundled module",
@@ -140,14 +140,14 @@
     "required" : [
         "name",
         "abstract",
-        "shortname",
+        "identifier",
         "download",
         "license",
         "version"
     ],
     "definitions" : {
-        "shortname" : {
-            "description" : "Machine friendly name of the mod",
+        "identifier" : {
+            "description" : "Unique identifier for this mod.",
             "type"        : "string"
         },
         "version" : {
