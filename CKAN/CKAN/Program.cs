@@ -15,6 +15,7 @@ namespace CKAN {
 		public static void Main (string[] args) {
 
 			if (args.Length == 0) {
+
 				Console.WriteLine ("Usage: ckan [filenames]");
 				return;
 			}
@@ -28,8 +29,6 @@ namespace CKAN {
 				Console.WriteLine ("Processing " + 	module._identifier);
 
 				module.install ();
-				// string file = module.fetch ();
-				// Console.WriteLine ("Saved to " + file);
 			}
 		}
 	}
