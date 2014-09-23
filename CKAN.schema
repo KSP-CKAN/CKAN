@@ -4,6 +4,11 @@
     "description" : "Schema for validating CKAN meta files",
     "type" : "object",
     "properties": {
+        "spec_version": {
+            "description" : "Version of the CKAN spec this document uses",
+            "type"        : "integer",
+            "minimum"     : 0
+        },
         "name" : {
             "description" : "Human readable name of the mod",
             "type"        : "string"
@@ -157,6 +162,7 @@
         }
     },
     "required" : [
+        "spec_version",
         "name",
         "abstract",
         "identifier",

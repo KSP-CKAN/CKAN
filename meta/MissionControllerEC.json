@@ -1,4 +1,5 @@
 {
+    "spec_version": 1,
     "name"     : "Mission Controller 2",
     "identifier" : "MissionControllerEC",
     "abstract" : "Better missions for Kerbal Space Program",
