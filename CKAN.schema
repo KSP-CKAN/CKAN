@@ -220,7 +220,8 @@
             "enum" : [ "CC-BY",    "CC-BY-SA",    "CC-BY-ND",
                         "CC-BY-NC", "CC-BY-NC-SA", "CC-BY-NC-ND",
                         "GPLv1", "GPLv2", "GPLv3", "BSD", "MIT",
-                        "LGPLv2.1", "LGPLv3"
+                        "LGPLv2.1", "LGPLv3", "open_source",
+                        "restricted", "unrestricted", "unknown"
             ]
         },
         "licenses" : {

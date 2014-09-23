@@ -180,6 +180,14 @@ The following are valid license strings:
 - LGPLv2.1
 - LGPLv3
 
+The following license strings are also valid and indicate other licensing not
+described above:
+
+- `open_source`: Other Open Source Initiative (OSI) approved license
+- `restricted`: Requires special permission from copyright holder
+- `unrestricted`: Not an OSI approved license, but not restricted
+- `unknown`: License not provided in metadata
+
 A single license, or list of licenses may be provided. The following
 are both valid, the first describing a mod released under the BSD license,
 the second under the user's choice of BSD or MIT licenses.
