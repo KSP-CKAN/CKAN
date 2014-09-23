@@ -70,33 +70,55 @@ The CKAN metadata spec is inspired by the
 and the
 [KSP-RealSolarSystem-Bundler](https://github.com/NathanKell/KSP-RealSolarSystem-Bundler)
 
-### Example Metadata
+### Example CKAN file
 
     {
-        "name"     : "Example Mod",
-        "identifier": "example",
-        "abstract" : "A neat mod for KSP."
-        "author"   : "Jeb Kerbin <jeb@example.com>",
-        "license"  : "MIT",
-        "version"  : "1.25",
-        "download" : "http://example.com/ExampleMod.zip",
-        "prereqs"  : {
-            "runtime" : {
-                "requires" : {
-                    "FooJeb" : "1.23",
-                    "Karbol" : "0",
-                }
+        "name"     : "Real Solar System",
+        "identifier" : "RealSolarSystem",
+        "abstract" : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
+        "download" : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
+        "license"  : "CC-BY-NC-SA",
+        "version"  : "7.3",
+        "release_status" : "stable",
+        "min_ksp" : "0.24.2",
+        "max_ksp" : "0.24.2",
+        "requires" : [
+            { "name" : "Real Solar System Textures" }
+        ],
+        "recommends" : [
+            { "name" : "Realism Overhaul" }
+        ],
+        "resources" : {
+            "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",
+            "github"   : {
+                "url"      : "https://github.com/NathanKell/RealSolarSystem",
+                "releases" : true
             }
         },
-        "release_status" : "stable",
-        "min_ksp" : "0.23.0",
-        "max_ksp" : "0.23.5",
-        "resources" : {
-            "homepage" : "http://forum.example.com/post/release-thread",
-            "download" : {
-                url : "http://gitjeb.example.com/Jeb/ExampleMod/releases"
+        "install" : [
+            {
+                "file"       : "RealSolarSystem",
+                "install_to" : "GameData"
             }
-        }
+        ],
+        "bundles" : [
+            {
+                "file"       : "ModuleManager.2.3.3.dll",
+                "identifier" : "ModuleManager",
+                "version"    : "2.3.3",
+                "install_to" : "GameData",
+                "license"    : "CC-BY-SA",
+                "required"   : true
+            },
+            {
+                "file"       : "CustomBiomes",
+                "identifier" : "CustomBiomes",
+                "version"    : "1.6.6",
+                "install_to" : "GameData",
+                "license"    : "CC-BY-NC-SA",
+                "required"   : false
+            }
+        ]
     }
 
 ### Metadata description
