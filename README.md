@@ -37,17 +37,38 @@ The fundamental design of the CKAN is as follows:
 - The meta-data file *should* be included in the distribution whenever
   possible.
 
-## Meta-data
+## Validation
+
+A [JSON Schema](CKAN.schema) is provided for validation purposes.
+Any CKAN file *must* conform to this schema to be considered valid.
+
+## The CKAN file
+
+A CKAN file is designed to contain all the relevant meta-info
+about a mod, including its name, license, download location,
+dependencies, compatible versions of KSP, and the like. CKAN
+files are simply JSON files.
 
 When included in a distribution, the metadata *must* be included
-in a file called `META.json`. When extracted from a distribution,
-it *should* be given an identical name as the file it came from, but
-with the `.zip` or other extension replaced with `.json`. An extracted
-meta file *may* be given the same name as the internal identifier
-included in the document.
+in a file with a `.ckan` extension, which contains JSON data. The
+guidelines for the file name and location are:
 
-The CKAN metadata spec is based upon the
-[CPAN metadata spec](https://metacpan.org/pod/CPAN::Meta::Spec).
+- The name of the file *should* match the `identifier` field for
+  the mod it describes. (Eg: `RealSolarSystem.ckan`)
+
+- The name of the file *may* be appended with a dash, followed
+  by the version number of the mod it describes
+  (Eg: `RealSolarSystem-7.3.ckan`).
+
+- When bundled with the mod, the CKAN file *should* be placed in the
+  same directory as the main mod itself. (Eg:
+  `RealSolarSystem/RealSolarSystem.ckan` or
+  `GameData/ExampleMod/ExampleMod.ckan`).
+
+The CKAN metadata spec is inspired by the
+[CPAN metadata spec](https://metacpan.org/pod/CPAN::Meta::Spec)
+and the
+[KSP-RealSolarSystem-Bundler](https://github.com/NathanKell/KSP-RealSolarSystem-Bundler)
 
 ### Example Metadata
 
@@ -55,8 +76,8 @@ The CKAN metadata spec is based upon the
         "name"     : "Example Mod",
         "identifier": "example",
         "abstract" : "A neat mod for KSP."
-        "author"   : [ "Jeb Kerbin <jeb@example.com>" ],
-        "license"  : [ "mit" ],
+        "author"   : "Jeb Kerbin <jeb@example.com>",
+        "license"  : "MIT",
         "version"  : "1.25",
         "prereqs"  : {
             "runtime" : {
