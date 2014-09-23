@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO.Compression; // For ZipArchive
 
 // Reference CKAN client
 // Paul '@pjf' Fenwick
@@ -12,17 +13,22 @@ using System.Collections.Generic;
 namespace CKAN {
 	class MainClass {
 		public static void Main (string[] args) {
-			string filename = args [0];
 
-			// We should be able to pass a stream through to our JSON parsers,
-			// but heaven help me if I can find a method that accepts a
-			// StreamReader argument.
+			if (args.Length == 0) {
+				Console.WriteLine ("Usage: ckan [filenames]");
+				return;
+			}
 
-			string json = System.IO.File.ReadAllText (filename);
+			string[] filenames = args;
 
-			dynamic metadata = JsonConvert.DeserializeObject(json);
+			// Walk through all our files. :)
+			foreach (string filename in filenames) {
+				Module module = Module.from_file (filename);
+				Console.WriteLine (module.identifier);
 
-			Console.WriteLine ( metadata.identifier );
+				string file = module.fetch ();
+				Console.WriteLine ("Saved to " + file);
+			}
 		}
 	}
 }
