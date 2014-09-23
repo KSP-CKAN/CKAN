@@ -64,6 +64,10 @@
             "description" : "Optional list of recommended mods",
             "$ref"        : "#/definitions/modlist"
         },
+        "conflicts" : {
+            "description" : "Optional list of conflicting mods",
+            "$ref"        : "#/definitions/modlist"
+        },
         "resources" : {
             "description" : "Additional resources",
             "type" : "object",

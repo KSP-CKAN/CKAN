@@ -284,6 +284,11 @@ A list of mods which are *recommended* by this mod for an optimal
 playing experience. This uses the same format as the `requires` field
 above.
 
+##### conflicts
+
+A list of mods which *conflict* with this mod. This uses the same format
+as the `requires` field above.
+
 ##### resources
 
 The `resources` field describes additional information that a user or
