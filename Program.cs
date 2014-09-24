@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using CommandLine;
 
-
 // Reference CKAN client
 // Paul '@pjf' Fenwick
 //
@@ -13,20 +12,31 @@ using CommandLine;
 
 namespace CKAN {
 	class MainClass {
-		public static void Main (string[] args) {
+
+		const int EXIT_OK     = 0;
+		const int EXIT_ERROR  = 1;
+		const int EXIT_BADOPT = 2;
+
+		public static int Main (string[] args) {
 
 			Options options = new Options ();
 
 			if (! CommandLine.Parser.Default.ParseArgumentsStrict(args, options)) {
 				Console.WriteLine("Usage: ckan [filenames]");
-				return;
+				return EXIT_BADOPT;
 			}
 
-			// TODO: Replace this with Mono.Options or NDesk.Options,
-			// TODO: Less awful magic indexes!
-			// if I can ever figure out how to install them!
+			// If we have a zipfile, use it.
 
 			if (options.ZipFile != null) {
+
+				if (options.Files.Count > 1) {
+					Console.WriteLine ("Only a single CKAN file can be provided when installing from zip");
+					return EXIT_BADOPT;
+				}
+
+				// TODO: Support installing from CKAN file embedded in zip.
+
 				string zipFilename  = options.ZipFile;
 				string ckanFilename = options.Files[0];
 
@@ -34,27 +44,21 @@ namespace CKAN {
 				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
 				Module module = Module.from_file (ckanFilename);
 
-				Console.WriteLine ("Processing " + module._identifier);
-
 				module.install (zipFilename);
-				return;
+				return EXIT_OK;
 			}
 
 			// Regular invocation, walk through all CKAN files on the cmdline
 
-			// TODO: How on earth do we get *all* the filenames using the Cmdline
-			// library? Where's my Getopt::Std?
-
-			// string[] filenames = { options.File };
-
-			// Walk through all our files. :)
 			foreach (string filename in options.Files) {
 				Module module = Module.from_file (filename);
 
-				Console.WriteLine ("Processing " + 	module._identifier);
-
 				module.install ();
 			}
+
+			Console.WriteLine ("\nDone!\n");
+
+			return EXIT_OK;
 		}
 	}
 
@@ -71,6 +75,7 @@ namespace CKAN {
 		[Option('f', "file", HelpText = "Zipfile to process")]
 		public string ZipFile { get; set; }
 
+		// TODO: How do we provide helptext on this?
 		[ValueList(typeof(List<string>))]
 		public List<string> Files { get; set; }
 	}
