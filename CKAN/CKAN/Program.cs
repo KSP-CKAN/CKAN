@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using CommandLine;
 
 
 // Reference CKAN client
@@ -14,11 +15,10 @@ namespace CKAN {
 	class MainClass {
 		public static void Main (string[] args) {
 
-			if (args.Length == 0) {
+			Options options = new Options ();
 
-				new ModuleDict();
-
-				Console.WriteLine ("Usage: ckan [filenames]");
+			if (! CommandLine.Parser.Default.ParseArgumentsStrict(args, options)) {
+				Console.WriteLine("Usage: ckan [filenames]");
 				return;
 			}
 
@@ -26,9 +26,9 @@ namespace CKAN {
 			// TODO: Less awful magic indexes!
 			// if I can ever figure out how to install them!
 
-			if (args [0] == "-f" && args.Length == 3) {
-				string zipFilename  = args [1];
-				string ckanFilename = args [2];
+			if (options.ZipFile != null) {
+				string zipFilename  = options.ZipFile;
+				string ckanFilename = options.File;
 
 				Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
 				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
@@ -40,9 +40,12 @@ namespace CKAN {
 				return;
 			}
 
-			// Regular invocation, walk through all CKAN files on the cmdline.
+			// Regular invocation, walk through all CKAN files on the cmdline
 
-			string[] filenames = args;
+			// TODO: How on earth do we get *all* the filenames using the Cmdline
+			// library? Where's my Getopt::Std?
+
+			string[] filenames = { options.File };
 
 			// Walk through all our files. :)
 			foreach (string filename in filenames) {
@@ -54,4 +57,16 @@ namespace CKAN {
 			}
 		}
 	}
+
+	class Options {
+		[Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
+		public bool Verbose { get; set; }
+
+		[Option('f', "file", HelpText = "Zipfile to process")]
+		public string ZipFile { get; set; }
+
+		[ValueOption(0)]
+		public string File { get; set; }
+	}
+
 }
