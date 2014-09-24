@@ -75,19 +75,17 @@ namespace CKAN
 				File.WriteAllText (KSP.gameData () + module.identifier + ".ckan", module.serialise());
 			}
 
-			// Finish now if we have no bundled mods.
-			if (module.bundles == null) {
-				return;
-			}
+			// Handle bundled mods, if we have them.
+			if (module.bundles != null) {
 
-			// Do the same with our bundled mods.
-			foreach (dynamic stanza in module.bundles) {
+				foreach (dynamic stanza in module.bundles) {
 
-				// TODO: Check versions, so we don't double install.
+					// TODO: Check versions, so we don't double install.
 
-				install_component (stanza, zipfile, module_files);
+					install_component (stanza, zipfile, module_files);
 
-				// TODO: Generate CKAN metadata for the bundled component.
+					// TODO: Generate CKAN metadata for the bundled component.
+				}
 			}
 
 			Registry registry = registry_manager.load_or_create ();
