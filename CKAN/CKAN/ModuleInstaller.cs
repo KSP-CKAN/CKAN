@@ -89,8 +89,8 @@ namespace CKAN
 			}
 
 			Registry registry = registry_manager.load_or_create ();
-			registry_manager.save(
-				registry.append (new InstalledModule (module_files.ToArray(), module, DateTime.Now)));
+			registry.register_module (new InstalledModule (module_files.ToArray (), module, DateTime.Now));
+			registry_manager.save (registry);
 
 			return;
 
