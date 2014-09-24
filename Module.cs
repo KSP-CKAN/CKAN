@@ -161,7 +161,7 @@ namespace CKAN {
 				// We need a way to convert stanzas to install locations.
 				// We really should make Stanza its own class.
 
-				File.Copy (origCkanFile, gameData() + "/" + _identifier + ".ckan", true);
+				File.Copy (origCkanFile, KSP.gameData() + "/" + _identifier + ".ckan", true);
 			}
 
 			// Finish now if we have no bundled mods.
@@ -189,7 +189,7 @@ namespace CKAN {
 			string[] path = fileToInstall.Split('/');
 
 			// TODO: This will depend upon the `install_to` in the JSON file
-			string installDir = gameData ();
+			string installDir = KSP.gameData ();
 
 			// This is what we strip off paths
 			string stripDir   = String.Join("/", path.Take(path.Count() - 1)) + "/";
@@ -224,14 +224,6 @@ namespace CKAN {
 			}
 
 			return;
-		}
-
-		// TODO: Have this *actually* find our GameData directory!
-		public static string gameData() {
-			return Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-				".steam", "steam", "SteamApps", "common", "Kerbal Space Program", "GameData"
-			);
 		}
 
 		// TODO: Test that this actually throws exceptions if it can't do its job.

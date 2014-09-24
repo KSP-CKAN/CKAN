@@ -18,7 +18,7 @@ namespace CKAN {
 
 			// Console.WriteLine ("In ModuleDict");
 
-			string gameData = CKAN.Module.gameData ();
+			string gameData = KSP.gameData ();
 
 			// Find all the DLLs. ModuleManager assumes that if a DLL exists, then a mod
 			// is installed by the same name (after clipping off versions).
