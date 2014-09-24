@@ -48,7 +48,7 @@ namespace CKAN
 
 		public void install (Module module, string filename = null)
 		{
-			List<InstalledModuleFile> module_files = new List<InstalledModuleFile> ();
+			Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
 
 			Console.WriteLine (module.identifier + ":\n");
 
@@ -89,7 +89,7 @@ namespace CKAN
 			}
 
 			Registry registry = registry_manager.load_or_create ();
-			registry.register_module (new InstalledModule (module_files.ToArray (), module, DateTime.Now));
+			registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
 			registry_manager.save (registry);
 
 			return;
@@ -108,7 +108,7 @@ namespace CKAN
 			};
 		}
 
-		void install_component (dynamic stanza, ZipFile zipfile, List<InstalledModuleFile> module_files)
+		void install_component (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files)
 		{
 			string fileToInstall = stanza.file;
 
@@ -150,9 +150,8 @@ namespace CKAN
 
 				copyZipEntry (zipfile, entry, fullPath);
 
-				module_files.Add (new InstalledModuleFile {
+				module_files.Add (outputName, new InstalledModuleFile {
 					sha1_sum = sha1_sum (fullPath),
-					name = outputName,
 				});
 			}
 
