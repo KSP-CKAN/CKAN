@@ -17,9 +17,9 @@ namespace CKAN
 	{
 		const int LATEST_REGISTRY_VERSION = 0;
 		public int registry_version;
-		public InstalledModule[] installed_modules;
+		public Dictionary<string, InstalledModule> installed_modules;
 
-		public Registry (int version, InstalledModule[] mods)
+		public Registry (int version, Dictionary<string, InstalledModule> mods)
 		{
 			/* TODO: support more than just the latest version */
 			if (version != LATEST_REGISTRY_VERSION) {
@@ -31,16 +31,12 @@ namespace CKAN
 
 		public static Registry empty ()
 		{
-			return new Registry (LATEST_REGISTRY_VERSION, new InstalledModule[] {});
+			return new Registry (LATEST_REGISTRY_VERSION, new Dictionary<string, InstalledModule> ());
 		}
 
-		public Registry append (InstalledModule mod)
+		public void register_module (InstalledModule mod)
 		{
-			/* UGH! I wish we could easily use 4.5's immutable collections */
-			InstalledModule[] new_modules = new InstalledModule[installed_modules.Length + 1];
-			installed_modules.CopyTo (new_modules, 0);
-			new_modules.SetValue (mod, installed_modules.Length);
-			return new Registry (registry_version, new_modules);
+			installed_modules.Add (mod.source_module.identifier, mod);
 		}
 	}
 }
