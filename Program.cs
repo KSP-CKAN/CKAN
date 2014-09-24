@@ -13,18 +13,23 @@ using CommandLine;
 namespace CKAN {
 	class MainClass {
 
-		const int EXIT_OK     = 0;
-		const int EXIT_ERROR  = 1;
-		const int EXIT_BADOPT = 2;
+		public const int EXIT_OK     = 0;
+		public const int EXIT_ERROR  = 1;
+		public const int EXIT_BADOPT = 2;
 
 		public static int Main (string[] args) {
 
-			Options options = new Options ();
+			Options cmdline = new Options (args);
 
-			if (! CommandLine.Parser.Default.ParseArgumentsStrict(args, options)) {
-				Console.WriteLine("Usage: ckan [filenames]");
-				return EXIT_BADOPT;
+			if (cmdline.action == "install") {
+				return install ( (InstallOptions) cmdline.options);
 			}
+
+			Console.WriteLine ("Unknown command, try --help");
+			return EXIT_BADOPT;
+		}
+
+		public static int install(InstallOptions options) { 
 
 			// If we have a zipfile, use it.
 
@@ -62,22 +67,62 @@ namespace CKAN {
 		}
 	}
 
-	/// <summary>
-	/// The Options helper class defines what commandline options we can take.
-	/// See https://github.com/gsscoder/commandline/issues/50 for a discussion on how
-	/// these can be set up.
-	/// </summary>
+
+	// Look, parsing options is so easy and beautiful I made
+	// it into a special class for you to admire!
 
 	class Options {
+		public string action  { get; set; }
+		public object options { get; set; }
+
+		public Options( string[] args) {
+			if (! CommandLine.Parser.Default.ParseArgumentsStrict (
+				args, new Actions (), (verb, suboptions) => {
+					action = verb;
+					options = suboptions;
+				}
+			)) {
+				throw(new BadCommandException("Try ckan --help"));
+			}
+
+			// If we're here, success!
+		}
+	}
+
+	// Actions supported by our client go here.
+	// TODO: Figure out how to do per action help screens.
+
+	class Actions {
+
+		[VerbOption("install", HelpText = "Install a KSP mod")]
+		public InstallOptions Install { get; set; }
+	
+	}
+
+	// Options common to all classes.
+
+	abstract class CommonOptions {
+
 		[Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
 		public bool Verbose { get; set; }
+	}
 
+	// Each action defines its own options that it supports.
+	// Don't forget to cast to this type when you're processing them later on.
+
+	class InstallOptions : CommonOptions {
 		[Option('f', "file", HelpText = "Zipfile to process")]
 		public string ZipFile { get; set; }
 
 		// TODO: How do we provide helptext on this?
 		[ValueList(typeof(List<string>))]
 		public List<string> Files { get; set; }
+	}
+
+	// Exception class, so we can signal errors in command options.
+	
+	class BadCommandException : Exception {
+		public BadCommandException(string message) : base(message) {}
 	}
 
 }
