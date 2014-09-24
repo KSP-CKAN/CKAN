@@ -148,8 +148,10 @@ namespace CKAN {
 				// TODO: Copy CKAN file itself or otherwise record state.
 			}
 
-			// Do the same with our bundled mods.
+			// Finish now if we have no bundled mods.
+			if (_bundles == null) { return; }
 
+			// Do the same with our bundled mods.
 			foreach (dynamic stanza in _bundles) {
 
 				// TODO: Check versions, so we don't double install.
