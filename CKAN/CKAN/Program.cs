@@ -28,7 +28,7 @@ namespace CKAN {
 
 			if (options.ZipFile != null) {
 				string zipFilename  = options.ZipFile;
-				string ckanFilename = options.File;
+				string ckanFilename = options.Files[0];
 
 				Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
 				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
@@ -45,10 +45,10 @@ namespace CKAN {
 			// TODO: How on earth do we get *all* the filenames using the Cmdline
 			// library? Where's my Getopt::Std?
 
-			string[] filenames = { options.File };
+			// string[] filenames = { options.File };
 
 			// Walk through all our files. :)
-			foreach (string filename in filenames) {
+			foreach (string filename in options.Files) {
 				Module module = Module.from_file (filename);
 
 				Console.WriteLine ("Processing " + 	module._identifier);
@@ -65,8 +65,8 @@ namespace CKAN {
 		[Option('f', "file", HelpText = "Zipfile to process")]
 		public string ZipFile { get; set; }
 
-		[ValueOption(0)]
-		public string File { get; set; }
+		[ValueList(typeof(List<string>))]
+		public List<string> Files { get; set; }
 	}
 
 }
