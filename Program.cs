@@ -58,6 +58,12 @@ namespace CKAN {
 		}
 	}
 
+	/// <summary>
+	/// The Options helper class defines what commandline options we can take.
+	/// See https://github.com/gsscoder/commandline/issues/50 for a discussion on how
+	/// these can be set up.
+	/// </summary>
+
 	class Options {
 		[Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
 		public bool Verbose { get; set; }
