@@ -19,14 +19,38 @@ namespace CKAN {
 
 		public static int Main (string[] args) {
 
-			Options cmdline = new Options (args);
+			Options cmdline;
 
-			if (cmdline.action == "install") {
-				return install ( (InstallOptions) cmdline.options);
+			// If called with no arguments, the parser throws an exception.
+			// TODO: It would be nice if we just *displayed* the help here,
+			//       rather than asking the user to try --help.
+
+			try {
+				cmdline = new Options (args);
+			}
+			catch (NullReferenceException) {
+				Console.WriteLine ("Try --help");
+				return EXIT_BADOPT;
 			}
 
-			Console.WriteLine ("Unknown command, try --help");
-			return EXIT_BADOPT;
+			switch (cmdline.action) {
+				case "install":
+					return install ((InstallOptions) cmdline.options);
+				
+				case "scan":
+					return scan ();
+				
+				default :
+					Console.WriteLine ("Unknown command, try --help");
+					return EXIT_BADOPT;
+
+			}
+		}
+
+		public static int scan() {
+			new ModuleDict ().showInstalled();
+
+			return EXIT_OK;
 		}
 
 		public static int install(InstallOptions options) { 
@@ -96,6 +120,9 @@ namespace CKAN {
 
 		[VerbOption("install", HelpText = "Install a KSP mod")]
 		public InstallOptions Install { get; set; }
+
+		[VerbOption("scan", HelpText = "Scan for installed KSP mods")]
+		public ScanOptions Scan { get; set; }
 	
 	}
 
@@ -118,6 +145,8 @@ namespace CKAN {
 		[ValueList(typeof(List<string>))]
 		public List<string> Files { get; set; }
 	}
+
+	class ScanOptions : CommonOptions { }
 
 	// Exception class, so we can signal errors in command options.
 	
