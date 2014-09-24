@@ -49,6 +49,10 @@
     <Compile Include="Module.cs" />
     <Compile Include="ModuleDict.cs" />
     <Compile Include="KSP.cs" />
+    <Compile Include="InstalledModule.cs" />
+    <Compile Include="RegistryManager.cs" />
+    <Compile Include="Registry.cs" />
+    <Compile Include="ModuleInstaller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
