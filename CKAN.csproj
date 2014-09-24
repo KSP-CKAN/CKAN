@@ -39,6 +39,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\dlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="CommandLine">
+      <HintPath>..\dlls\CommandLine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

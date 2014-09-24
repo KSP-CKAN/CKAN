@@ -10,33 +10,20 @@ namespace CKAN {
 	public class ModuleDict : Dictionary<String, Module> {
 		public ModuleDict () {
 
-			Console.WriteLine ("In ModuleDict");
-
-			string gameData = CKAN.Module.gameData ();
-
-			// Search all directories, find .ckan files.
-
 			// TODO: It would be great to optimise this to skip .git directories and the like.
 			// Yes, I keep my GameData in git.
 
 			// TODO: Optimisation: Do all the below in a single pass, rather than walking
 			// GameData twice.
 
-			// Find all the CKAN files. Presumably, these are actually representative
-			// of what we have installed.
+			// Console.WriteLine ("In ModuleDict");
 
-			Console.WriteLine ("Finding CKAN files");
-
-			string[] ckanFiles = Directory.GetFiles(gameData, "*.ckan", SearchOption.AllDirectories);
-
-			foreach (string file in ckanFiles) {
-				Console.WriteLine (file);
-			}
+			string gameData = CKAN.Module.gameData ();
 
 			// Find all the DLLs. ModuleManager assumes that if a DLL exists, then a mod
 			// is installed by the same name (after clipping off versions).
 
-			Console.WriteLine ("Finding DLLs");
+			// Console.WriteLine ("Finding DLLs");
 
 			string[] dllFiles = Directory.GetFiles (gameData, "*.dll", SearchOption.AllDirectories);
 
@@ -55,8 +42,37 @@ namespace CKAN {
 				this [module]._version = "0";     // We can say it exists, but have no idea of other info.
 				this [module]._identifier = module;
 
-				Console.WriteLine (this[module]._identifier + " ( " + file + " ) ");
+				// Console.WriteLine (this[module]._identifier + " ( " + file + " ) ");
 			}
+
+			// Search all directories, find .ckan files.
+			// These will *overwrite* the results from above, and that's cool,
+			// CKAN files give us much richer meta-info than dlls.
+
+			// Find all the CKAN files. Presumably, these are actually representative
+			// of what we have installed.
+
+			// Console.WriteLine ("Finding CKAN files");
+
+			string[] ckanFiles = Directory.GetFiles(gameData, "*.ckan", SearchOption.AllDirectories);
+
+			foreach (string file in ckanFiles) {
+				Module module = Module.from_file (file);
+
+				this [module._identifier] = module;
+
+				// Console.WriteLine (module._identifier + " " + module._version + " ( " + file + " ) ");
+
+			}
+
+		}
+
+		public void showInstalled() {
+			foreach(KeyValuePair<string, Module> entry in this) {
+				Console.WriteLine (entry.Value._identifier + " " + entry.Value._version);
+			}
+
+			return;
 		}
 	}
 }
