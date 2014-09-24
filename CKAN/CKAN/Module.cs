@@ -120,6 +120,8 @@ namespace CKAN {
 				filename = standard_name();
 			}
 
+			Console.WriteLine ("    * Downloading " + filename + "...");
+
 			WebClient agent = new WebClient ();
 			agent.DownloadFile (_download, filename);
 
@@ -140,6 +142,8 @@ namespace CKAN {
 		/// </summary>
 
 		public void install(string filename = null) {
+
+			Console.WriteLine (_identifier + ":\n");
 
 			// Fetch our file if we don't already have it.
 			if (filename == null) {
@@ -184,7 +188,7 @@ namespace CKAN {
 		void install_component(dynamic stanza, ZipFile zipfile) {
 			string fileToInstall = stanza.file;
 
-			Console.WriteLine ("Installing " + fileToInstall);
+			Console.WriteLine ("    * Installing " + fileToInstall);
 
 			string[] path = fileToInstall.Split('/');
 
