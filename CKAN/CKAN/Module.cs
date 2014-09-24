@@ -142,7 +142,7 @@ namespace CKAN {
 			ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
 			// Walk through our install instructions.
-			foreach (dynamic stanza in _install.Concat(_bundles).ToList()) {
+			foreach (dynamic stanza in _install) {
 				install_component (stanza, zipfile);
 
 				// TODO: Copy CKAN file itself or otherwise record state.
