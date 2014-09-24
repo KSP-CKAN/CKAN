@@ -157,10 +157,11 @@ namespace CKAN {
 				// copy the original file, because we can't always guarantee
 				// there will be an original file.
 
-				// XXX: This will just throw them in GameData.
+				// TODO: This will just throw them in GameData.
 				// We need a way to convert stanzas to install locations.
 				// We really should make Stanza its own class.
-				File.Copy (origCkanFile, gameData() + "/" + _identifier + ".ckan" );
+
+				File.Copy (origCkanFile, gameData() + "/" + _identifier + ".ckan", true);
 			}
 
 			// Finish now if we have no bundled mods.
