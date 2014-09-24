@@ -138,54 +138,74 @@ namespace CKAN {
 				filename = download ();
 			}
 
-			// Open our file and search it
+			// Open our zip file for processing
 			ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
-			// And walk through our install instructions, and bundled code.
-			foreach (dynamic stanza in _install.Concat(_bundles).ToList() ) {
+			// Walk through our install instructions.
+			foreach (dynamic stanza in _install.Concat(_bundles).ToList()) {
+				install_component (stanza, zipfile);
 
-				string fileToInstall = stanza.file;
-
-				Console.WriteLine ("Installing " + fileToInstall);
-
-				string[] path = fileToInstall.Split('/');
-
-				// TODO: This will depend upon the `install_to` in the JSON file
-				string installDir = gameData ();
-
-				// This is what we strip off paths
-				string stripDir   = String.Join("/", path.Take(path.Count() - 1)) + "/";
-
-				// Console.WriteLine("InstallDir is "+installDir);
-				// Console.WriteLine ("StripDir is " + stripDir);
-				
-				// This is awful. There's got to be a better way to extract a tree?
-				string filter = "^" + stanza.file + "(/|$)";
-
-				// O(N^2) solution. Surely there's a better way...
-				foreach (ZipEntry entry in zipfile) {
-
-					// Skip things we don't want.
-					if (! Regex.IsMatch (entry.Name, filter)) {
-						continue;
-					}
-
-					// Get the full name of the file.
-					string outputName = entry.Name;
-
-					// Strip off the prefix (often GameData/)
-					// TODO: The C# equivalent of "\Q stripDir \E" so we can't be caught by metacharacters.
-					outputName = Regex.Replace (outputName, @"^" + stripDir, "");
-
-					// Aww hell yes, let's write this file out!
-
-					string fullPath = Path.Combine (installDir, outputName);
-					// Console.WriteLine (fullPath);
-
-					copyZipEntry (zipfile, entry, fullPath);
-
-				}
+				// TODO: Copy CKAN file itself or otherwise record state.
 			}
+
+			// Do the same with our bundled mods.
+
+			foreach (dynamic stanza in _bundles) {
+
+				// TODO: Check versions, so we don't double install.
+
+				install_component (stanza, zipfile);
+
+				// TODO: Generate CKAN metadata for the bundled component.
+			}
+
+			return;
+
+		}
+
+		void install_component(dynamic stanza, ZipFile zipfile) {
+			string fileToInstall = stanza.file;
+
+			Console.WriteLine ("Installing " + fileToInstall);
+
+			string[] path = fileToInstall.Split('/');
+
+			// TODO: This will depend upon the `install_to` in the JSON file
+			string installDir = gameData ();
+
+			// This is what we strip off paths
+			string stripDir   = String.Join("/", path.Take(path.Count() - 1)) + "/";
+
+			// Console.WriteLine("InstallDir is "+installDir);
+			// Console.WriteLine ("StripDir is " + stripDir);
+
+			// This is awful. There's got to be a better way to extract a tree?
+			string filter = "^" + stanza.file + "(/|$)";
+
+			// O(N^2) solution. Surely there's a better way...
+			foreach (ZipEntry entry in zipfile) {
+
+				// Skip things we don't want.
+				if (! Regex.IsMatch (entry.Name, filter)) {
+					continue;
+				}
+
+				// Get the full name of the file.
+				string outputName = entry.Name;
+
+				// Strip off the prefix (often GameData/)
+				// TODO: The C# equivalent of "\Q stripDir \E" so we can't be caught by metacharacters.
+				outputName = Regex.Replace (outputName, @"^" + stripDir, "");
+
+				// Aww hell yes, let's write this file out!
+
+				string fullPath = Path.Combine (installDir, outputName);
+				// Console.WriteLine (fullPath);
+
+				copyZipEntry (zipfile, entry, fullPath);
+			}
+
+			return;
 		}
 
 		// TODO: Have this *actually* find our GameData directory!
@@ -218,8 +238,9 @@ namespace CKAN {
 				output.Close();
 			}
 
-		}
+			return;
 
+		}
 	}
 }
 
