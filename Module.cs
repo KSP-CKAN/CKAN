@@ -86,11 +86,19 @@ namespace CKAN {
 		[JsonProperty("bundles")]
 		public dynamic[] _bundles;
 
+		// Private record of which file we came from.
+		string origCkanFile;
+
 		/// <summary> Generates a CKAN.Meta object given a filename</summary>
 		public static Module from_file(string filename) {
 			string json = System.IO.File.ReadAllText (filename);
 
-			return Module.from_string (json);
+			Module built = Module.from_string (json);
+
+			// Attach which file this came from.
+			built.origCkanFile = filename;
+
+			return built;
 		}
 
 		/// <summary> Generates a CKAN.META object from a string </summary>
@@ -145,7 +153,14 @@ namespace CKAN {
 			foreach (dynamic stanza in _install) {
 				install_component (stanza, zipfile);
 
-				// TODO: Copy CKAN file itself or otherwise record state.
+				// TODO: We should just *serialise* our current state, not
+				// copy the original file, because we can't always guarantee
+				// there will be an original file.
+
+				// XXX: This will just throw them in GameData.
+				// We need a way to convert stanzas to install locations.
+				// We really should make Stanza its own class.
+				File.Copy (origCkanFile, gameData() + "/" + _identifier + ".ckan" );
 			}
 
 			// Finish now if we have no bundled mods.
