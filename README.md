@@ -37,6 +37,11 @@ The fundamental design of the CKAN is as follows:
 - The meta-data file *should* be included in the distribution whenever
   possible.
 
+It's intended that all CKAN files will live on their own, independently
+hosted server. This facilitates downloading and mirroring
+of the entire index, and means that CKAN clients can resolve dependencies
+to associated mods.
+
 ## Validation
 
 A [JSON Schema](CKAN.schema) is provided for validation purposes.
