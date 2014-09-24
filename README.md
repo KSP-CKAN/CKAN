@@ -203,7 +203,7 @@ the second under the user's choice of BSD or MIT licenses.
 
 ##### version
 
-The version of the mod. Versions have the format `[epoch]:mod_version`.
+The version of the mod. Versions have the format `[epoch:]mod_version`.
 
 ###### epoch
 
