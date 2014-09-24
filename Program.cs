@@ -16,6 +16,8 @@ namespace CKAN {
 
 			if (args.Length == 0) {
 
+				new ModuleDict();
+
 				Console.WriteLine ("Usage: ckan [filenames]");
 				return;
 			}
