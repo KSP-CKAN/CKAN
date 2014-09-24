@@ -39,8 +39,8 @@ namespace CKAN {
 				string module = Regex.Replace (file, "^.*/([^.]+).*", "$1");
 
 				this [module] = new Module ();
-				this [module]._version = "0";     // We can say it exists, but have no idea of other info.
-				this [module]._identifier = module;
+				this [module].version = "0";     // We can say it exists, but have no idea of other info.
+				this [module].identifier = module;
 
 				// Console.WriteLine (this[module]._identifier + " ( " + file + " ) ");
 			}
@@ -59,7 +59,7 @@ namespace CKAN {
 			foreach (string file in ckanFiles) {
 				Module module = Module.from_file (file);
 
-				this [module._identifier] = module;
+				this [module.identifier] = module;
 
 				// Console.WriteLine (module._identifier + " " + module._version + " ( " + file + " ) ");
 
@@ -69,7 +69,7 @@ namespace CKAN {
 
 		public void showInstalled() {
 			foreach(KeyValuePair<string, Module> entry in this) {
-				Console.WriteLine (entry.Value._identifier + " " + entry.Value._version);
+				Console.WriteLine (entry.Value.identifier + " " + entry.Value.version);
 			}
 
 			return;

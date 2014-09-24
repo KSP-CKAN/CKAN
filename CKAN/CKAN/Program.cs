@@ -72,8 +72,9 @@ namespace CKAN {
 				Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
 				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
 				Module module = Module.from_file (ckanFilename);
+				ModuleInstaller installer = new ModuleInstaller ();
 
-				module.install (zipFilename);
+				installer.install (module, zipFilename);
 				return EXIT_OK;
 			}
 
@@ -81,8 +82,8 @@ namespace CKAN {
 
 			foreach (string filename in options.Files) {
 				Module module = Module.from_file (filename);
-
-				module.install ();
+				ModuleInstaller installer = new ModuleInstaller ();
+				installer.install (module);
 			}
 
 			Console.WriteLine ("\nDone!\n");
