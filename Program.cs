@@ -39,7 +39,10 @@ namespace CKAN {
 				
 				case "scan":
 					return scan ();
-				
+
+				case "list":
+					return list ();
+
 				default :
 					Console.WriteLine ("Unknown command, try --help");
 					return EXIT_BADOPT;
@@ -51,6 +54,27 @@ namespace CKAN {
 			new ModuleDict ().scanGameData();
 
 			return EXIT_OK;
+		}
+
+		public static int list() {
+			// TODO: Get rid of all these magic paths!
+			RegistryManager registry_manager = new RegistryManager("/tmp/ksp_registry");
+			Registry registry = registry_manager.load_or_create ();
+
+			foreach (InstalledModule mod in registry.installed_modules.Values) {
+				Console.WriteLine ("{0} {1}", mod.source_module.identifier, mod.source_module.version);
+			}
+
+			// Walk our dlls, but *don't* show anything we've already displayed as
+			// a module.
+			foreach (string dll in registry.installed_dlls.Keys) {
+				if (! registry.installed_modules.ContainsKey(dll)) {
+					Console.WriteLine ("{0} (detected dll)", dll);
+				}
+			}
+
+			return EXIT_OK;
+
 		}
 
 		public static int install(InstallOptions options) { 
@@ -124,6 +148,9 @@ namespace CKAN {
 
 		[VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
 		public ScanOptions Scan { get; set; }
+
+		[VerbOption("list", HelpText = "List installed modules")]
+		public ListOptions List { get; set; }
 	
 	}
 
@@ -148,6 +175,7 @@ namespace CKAN {
 	}
 
 	class ScanOptions : CommonOptions { }
+	class ListOptions : CommonOptions { }
 
 	// Exception class, so we can signal errors in command options.
 	
