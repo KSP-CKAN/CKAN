@@ -3,10 +3,10 @@
     "name"      : "MechJeb",
     "identifier" : "MechJeb2",
     "abstract" : "MechJeb autopilot and helper",
-    "download" : "http://jenkins.mumech.com/job/MechJeb2%20Release/lastSuccessfulBuild/artifact/jenkins-MechJeb2%20Release-19/MechJeb2-2.3.1.0.zip",
+    "download" : "http://jenkins.mumech.com/job/MechJeb2/lastSuccessfulBuild/artifact/jenkins-MechJeb2-321/MechJeb2-2.3.1.0-321.zip",
     "license"  : "GPLv3",
-    "version"  : "2.3.1.0",
-    "release_status" : "stable",
+    "version"  : "2.3.1.0-321",
+    "release_status" : "development",
     "min_ksp" : "0.24.2",
     "max_ksp" : "0.24.2",
     "resources" : {
