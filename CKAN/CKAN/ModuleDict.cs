@@ -7,9 +7,14 @@ using System.Text.RegularExpressions;
 // This may be from a local cache, or by crawling GameData itself.
 
 namespace CKAN {
-	public class ModuleDict : Dictionary<String, Module> {
-		public ModuleDict () {
 
+	/// <summary>
+	/// Utility class for holding dictionaries of modules.
+	/// </summary>
+
+	public class ModuleDict : Dictionary<String, Module> {
+
+		public void scanGameData() {
 			// TODO: It would be great to optimise this to skip .git directories and the like.
 			// Yes, I keep my GameData in git.
 
@@ -18,6 +23,10 @@ namespace CKAN {
 
 			// Console.WriteLine ("In ModuleDict");
 
+			RegistryManager registry_manager = new RegistryManager("/tmp/ksp_registry");
+
+			Registry registry = registry_manager.load_or_create ();
+
 			string gameData = KSP.gameData ();
 
 			// Find all the DLLs. ModuleManager assumes that if a DLL exists, then a mod
@@ -25,12 +34,17 @@ namespace CKAN {
 
 			// Console.WriteLine ("Finding DLLs");
 
+			// TODO: We should *empty* the dll container first, so if things have been
+			// uninstalled, we no longer have record of them.
+
 			string[] dllFiles = Directory.GetFiles (gameData, "*.dll", SearchOption.AllDirectories);
 
 			// TODO: Check how ModuleManager transforms DLL names into mod names, and make
 			// sure we do things the same way.
 
 			foreach (string file in dllFiles) {
+
+				registry.register_dll (file);
 
 				// We're going to clip at the first period to get the ModuleName.
 				// We'll get some false positives from bundled support libraries, but nobody's
@@ -44,6 +58,8 @@ namespace CKAN {
 
 				// Console.WriteLine (this[module]._identifier + " ( " + file + " ) ");
 			}
+
+			registry_manager.save (registry);
 
 			// Search all directories, find .ckan files.
 			// These will *overwrite* the results from above, and that's cool,

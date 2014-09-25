@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -18,8 +19,9 @@ namespace CKAN
 		const int LATEST_REGISTRY_VERSION = 0;
 		public int registry_version;
 		public Dictionary<string, InstalledModule> installed_modules;
+		public Dictionary<string, string> installed_dlls;
 
-		public Registry (int version, Dictionary<string, InstalledModule> mods)
+		public Registry (int version, Dictionary<string, InstalledModule> mods, Dictionary<string, string> dlls)
 		{
 			/* TODO: support more than just the latest version */
 			if (version != LATEST_REGISTRY_VERSION) {
@@ -27,11 +29,12 @@ namespace CKAN
 			}
 
 			installed_modules = mods;
+			installed_dlls    = dlls;
 		}
 
 		public static Registry empty ()
 		{
-			return new Registry (LATEST_REGISTRY_VERSION, new Dictionary<string, InstalledModule> ());
+			return new Registry (LATEST_REGISTRY_VERSION, new Dictionary<string, InstalledModule> (), new Dictionary<string,string> () );
 		}
 
 		/// <summary>
@@ -42,6 +45,39 @@ namespace CKAN
 		public void register_module (InstalledModule mod)
 		{
 			installed_modules.Add (mod.source_module.identifier, mod);
+		}
+
+		public void register_dll (string path)
+		{
+			// Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
+			Match match = Regex.Match (path, @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)");
+
+			string relPath = match.Groups[1].Value;
+			string modName = match.Groups[2].Value;
+
+			Console.WriteLine ("Registering {0} -> {1}", modName, relPath);
+
+			// We're fine if we overwrite an existing key.
+			installed_dlls[modName] = relPath;
+		}
+
+		/// <summary>
+		/// Returns the installed version of a given mod.
+		/// If the mod was autodetected (but present), a "0" is returned.
+		/// If the mod is not found, a null will be returned.
+		/// </summary>
+		/// <returns>The version.</returns>
+		/// <param name="modName">Mod name.</param>
+
+		public string installedVersion(string modName) {
+			if (installed_modules.ContainsKey(modName)) {
+				return installed_modules [modName].source_module.version;
+			}
+			else if (installed_dlls.ContainsKey(modName)) {
+				return "0";	// We probably want a better way to signal auto-detected modules.
+			}
+
+			return null;
 		}
 	}
 }
