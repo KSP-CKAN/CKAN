@@ -48,7 +48,7 @@ namespace CKAN {
 		}
 
 		public static int scan() {
-			new ModuleDict ().showInstalled();
+			new ModuleDict ().scanGameData();
 
 			return EXIT_OK;
 		}
@@ -122,7 +122,7 @@ namespace CKAN {
 		[VerbOption("install", HelpText = "Install a KSP mod")]
 		public InstallOptions Install { get; set; }
 
-		[VerbOption("scan", HelpText = "Scan for installed KSP mods")]
+		[VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
 		public ScanOptions Scan { get; set; }
 	
 	}
