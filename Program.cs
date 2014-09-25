@@ -51,7 +51,7 @@ namespace CKAN {
 		}
 
 		public static int scan() {
-			new ModuleDict ().scanGameData();
+			KSP.scanGameData();
 
 			return EXIT_OK;
 		}

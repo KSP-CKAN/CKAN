@@ -47,7 +47,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Module.cs" />
-    <Compile Include="ModuleDict.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="InstalledModule.cs" />
     <Compile Include="RegistryManager.cs" />

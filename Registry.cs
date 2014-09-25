@@ -61,6 +61,10 @@ namespace CKAN
 			installed_dlls[modName] = relPath;
 		}
 
+		public void clear_dlls() {
+			installed_dlls = new Dictionary<string,string> ();
+		}
+
 		/// <summary>
 		/// Returns the installed version of a given mod.
 		/// If the mod was autodetected (but present), a "0" is returned.
