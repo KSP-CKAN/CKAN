@@ -34,6 +34,11 @@ namespace CKAN
 			return new Registry (LATEST_REGISTRY_VERSION, new Dictionary<string, InstalledModule> ());
 		}
 
+		/// <summary>
+		/// Register the supplied module as having been installed, thereby keeping
+		/// track of its metadata and files.
+		/// </summary>
+		/// <param name="mod">Mod.</param>
 		public void register_module (InstalledModule mod)
 		{
 			installed_modules.Add (mod.source_module.identifier, mod);
