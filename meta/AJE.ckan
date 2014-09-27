@@ -22,6 +22,13 @@
             "install_to" : "GameData"
         }
     ],
+    "requires" : [
+        { "name" : "FAR" },
+    ],
+    "recommends" : [
+        { "name" : "RealFuels" },
+        { "name" : "HotRockets" }
+    ],
     "bundles" : [
         {
             "file"       : "ModuleManager.2.3.5.dll",
