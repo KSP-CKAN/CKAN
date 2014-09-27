@@ -26,16 +26,26 @@ namespace CKAN {
 			return Path.Combine (gameDir (), "CKAN");
 		}
 
+		public static string downloadCacheDir() {
+			return Path.Combine (ckanDir (), "downloads");
+		}
+
 		/// <summary>
 		/// Create the CKAN directory and any supporting files.
 		/// </summary>
 		public static void init() {
 			if (! Directory.Exists (ckanDir ())) {
 				Console.WriteLine ("Setting up CKAN for the first time...");
+				Console.WriteLine ("Creating {0}", ckanDir ());
 				Directory.CreateDirectory (ckanDir ());
 
 				Console.WriteLine ("Scanning for installed mods...");
 				scanGameData ();
+			}
+
+			if (! Directory.Exists( downloadCacheDir() )) {
+				Console.WriteLine ("Creating {0}", downloadCacheDir ());
+				Directory.CreateDirectory (downloadCacheDir ());
 			}
 		}
 

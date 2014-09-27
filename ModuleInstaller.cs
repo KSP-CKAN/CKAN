@@ -35,10 +35,31 @@ namespace CKAN
 
 			Console.WriteLine ("    * Downloading " + filename + "...");
 
-			WebClient agent = new WebClient ();
-			agent.DownloadFile (module.download, filename);
+			string fullPath = Path.Combine (KSP.downloadCacheDir(), filename);
 
-			return filename;
+			WebClient agent = new WebClient ();
+			agent.DownloadFile (module.download, fullPath);
+
+			return fullPath;
+		}
+
+		public string cachedOrDownload(Module module, string filename = null) {
+			if (filename == null) {
+				filename = module.standard_name ();
+			}
+
+			string fullPath = cachePath (filename);
+
+			if (File.Exists (fullPath)) {
+				Console.WriteLine ("    * Using {0} (cached)", filename);
+				return fullPath;
+			}
+
+			return download (module, filename);
+		}
+
+		public string cachePath(string file) {
+			return Path.Combine (KSP.downloadCacheDir (), file);
 		}
 
 		/// <summary>
@@ -52,6 +73,14 @@ namespace CKAN
 
 			Console.WriteLine (module.identifier + ":\n");
 
+			string version = registry_manager.registry.installedVersion (module.identifier);
+
+			if (version != null) {
+				// TODO: Check if we can upgrade!
+				Console.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+				return;
+			}
+
 			// Check our dependencies.
 
 			// foreach (dynamic depends in module.requires) {
@@ -59,7 +88,7 @@ namespace CKAN
 
 			// Fetch our file if we don't already have it.
 			if (filename == null) {
-				filename = download (module);
+				filename = cachedOrDownload (module);
 			}
 
 			// Open our zip file for processing
