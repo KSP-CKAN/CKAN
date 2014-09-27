@@ -35,7 +35,9 @@ The fundamental design of the CKAN is as follows:
   can be created independently of the distribution itself, easing
   adoption by authors.
 - The meta-data file *should* be included in the distribution whenever
-  possible.
+  possible. CKAN files may be placed anywhere inside a distribution.
+- It is an error for a distribution (zipfile) to contain more than one
+  CKAN file.
 
 It's intended that all CKAN files will live on their own, independently
 hosted server. This facilitates downloading and mirroring
