@@ -31,7 +31,7 @@ contributions, discussions, and especially pull-requests.
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
 which comes with a corresponding [JSON Schema](CKAN.schema). This
 repository includes a JSON schema validator in the
-`[bin](https://github.com/pjf/CKAN/tree/master/bin)` directory.
+[`bin`](https://github.com/pjf/CKAN/tree/master/bin) directory.
 
 ## Using the CKAN as a user
 
