@@ -83,8 +83,18 @@ namespace CKAN
 
 			// Check our dependencies.
 
-			// foreach (dynamic depends in module.requires) {
+			if (module.requires != null) {
+				foreach (dynamic depends in module.requires) {
+					string name = depends.name;
+					string ver = registry_manager.registry.installedVersion (name);
+					// TODO: Compare versions.
 
+					if (ver == null) {
+						Console.WriteLine ("Requirement {0} not found", depends.name);
+						throw new ModuleNotFoundException (name, depends.version);
+					}
+				}
+			}
 
 			// Fetch our file if we don't already have it.
 			if (filename == null) {
@@ -209,7 +219,17 @@ namespace CKAN
 			}
 
 			return;
+		}
+	}
 
+	class ModuleNotFoundException : Exception {
+		public string module;
+		public string version;
+
+		// TODO: Is there a way to set the stringify version of this?
+		public ModuleNotFoundException (string mod, string ver) {
+			module = mod;
+			version = ver;
 		}
 	}
 }
