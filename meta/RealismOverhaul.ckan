@@ -10,8 +10,8 @@
     "min_ksp" : "0.24.2",
     "max_ksp" : "0.24.2",
     "requires" : [
-        { "name" : "AdvancedJetEngine" },
-        { "name" : "DeadlyRentryCont" },
+        { "name" : "AJE" },
+        { "name" : "DeadlyRentry", "min_version" : "5.2" },
         { "name" : "EngineIgnitor" },
         { "name" : "FAR" },
         { "name" : "ModuleManager" },
