@@ -1,42 +1,72 @@
 using System;
+using System.IO;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CKAN
 {
 	public class RegistryManager
 	{
 		string path;
+		public Registry registry; 
+		static Dictionary<string, RegistryManager> singleton = new Dictionary<string, RegistryManager> ();
 
-		public RegistryManager (string path)
+		public static RegistryManager Instance (string path = null) {
+
+			if (path == null) {
+				path = defaultRegistry ();
+			}
+
+			// If we've already got a registry for this, then return it.
+			if (! singleton.ContainsKey (path)) {
+				singleton [path] = new RegistryManager (path);
+			}
+
+			return singleton [path];
+		}
+
+		// We require our constructor to be private so we can
+		// enforce this being an instance.
+		private RegistryManager (string path)
 		{
+
 			this.path = path;
+			this.load_or_create ();
+
+			singleton [path] = this;
 		}
 
-		public Registry load() {
+		// Default registry location
+		private static string defaultRegistry() {
+			return Path.Combine (KSP.ckanDir(), "registry.json");
+		}
+
+		public void load() {
 			string json = System.IO.File.ReadAllText(path);
-			return JsonConvert.DeserializeObject<Registry>(json);
+			registry = JsonConvert.DeserializeObject<Registry>(json);
 		}
 
-		public Registry load_or_create() {
+		public void load_or_create() {
 			try {
-				return load ();
+				load ();
 			}
 			catch (System.IO.FileNotFoundException) {
 				create ();
-				return load ();
+				load ();
 			}
 		}
 
 		void create() {
-			save (Registry.empty ());
+			registry = Registry.empty ();
+			save ();
 		}
 
-		public string serialise (Registry registry) {
+		public string serialise () {
 			return JsonConvert.SerializeObject (registry);
 		}
 
-		public void save (Registry registry) {
-			System.IO.File.WriteAllText(path, serialise (registry));
+		public void save () {
+			System.IO.File.WriteAllText(path, serialise ());
 		}
 	}
 }

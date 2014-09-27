@@ -33,6 +33,9 @@ namespace CKAN {
 				return EXIT_BADOPT;
 			}
 
+			// Make sure we have a functional CKAN set up.
+			KSP.init ();
+
 			switch (cmdline.action) {
 				case "install":
 					return install ((InstallOptions) cmdline.options);
@@ -58,8 +61,8 @@ namespace CKAN {
 
 		public static int list() {
 			// TODO: Get rid of all these magic paths!
-			RegistryManager registry_manager = new RegistryManager("/tmp/ksp_registry");
-			Registry registry = registry_manager.load_or_create ();
+			RegistryManager registry_manager = RegistryManager.Instance();
+			Registry registry = registry_manager.registry;
 
 			foreach (InstalledModule mod in registry.installed_modules.Values) {
 				Console.WriteLine ("{0} {1}", mod.source_module.identifier, mod.source_module.version);
@@ -82,6 +85,7 @@ namespace CKAN {
 			// If we have a zipfile, use it.
 
 			if (options.ZipFile != null) {
+				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
 
 				if (options.Files.Count > 1) {
 					Console.WriteLine ("Only a single CKAN file can be provided when installing from zip");
@@ -94,7 +98,7 @@ namespace CKAN {
 				string ckanFilename = options.Files[0];
 
 				Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
-				// Aha! We've been called as ckan -f somefile.zip somefile.ckan
+
 				Module module = Module.from_file (ckanFilename);
 				ModuleInstaller installer = new ModuleInstaller ();
 

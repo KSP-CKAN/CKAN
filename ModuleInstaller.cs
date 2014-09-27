@@ -12,7 +12,7 @@ namespace CKAN
 {
 	public class ModuleInstaller
 	{
-		RegistryManager registry_manager = new RegistryManager("/tmp/ksp_registry");
+		RegistryManager registry_manager = RegistryManager.Instance();
 
 		public ModuleInstaller ()
 		{
@@ -52,6 +52,11 @@ namespace CKAN
 
 			Console.WriteLine (module.identifier + ":\n");
 
+			// Check our dependencies.
+
+			// foreach (dynamic depends in module.requires) {
+
+
 			// Fetch our file if we don't already have it.
 			if (filename == null) {
 				filename = download (module);
@@ -78,9 +83,9 @@ namespace CKAN
 				}
 			}
 
-			Registry registry = registry_manager.load_or_create ();
+			Registry registry = registry_manager.registry;
 			registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
-			registry_manager.save (registry);
+			registry_manager.save();
 
 			return;
 

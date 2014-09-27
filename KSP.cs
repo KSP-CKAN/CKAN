@@ -7,20 +7,43 @@ using System.IO;
 
 namespace CKAN {
 	public class KSP {
-		// TODO: Have this *actually* find our GameData directory!
-		public static string gameData() {
-			return Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-				".steam", "steam", "SteamApps", "common", "Kerbal Space Program", "GameData"
+
+		public static string gameDir() {
+
+			// TODO: Have this *actually* find our GameData directory!
+
+			return Path.Combine (
+				Environment.GetFolderPath (Environment.SpecialFolder.Personal),
+				".steam", "steam", "SteamApps", "common", "Kerbal Space Program"
 			);
+		}
+	
+		public static string gameData() {
+			return Path.Combine (gameDir (), "GameData");
+		}
+
+		public static string ckanDir() {
+			return Path.Combine (gameDir (), "CKAN");
+		}
+
+		/// <summary>
+		/// Create the CKAN directory and any supporting files.
+		/// </summary>
+		public static void init() {
+			if (! Directory.Exists (ckanDir ())) {
+				Console.WriteLine ("Setting up CKAN for the first time...");
+				Directory.CreateDirectory (ckanDir ());
+
+				Console.WriteLine ("Scanning for installed mods...");
+				scanGameData ();
+			}
 		}
 
 		public static void scanGameData() {
 
 			// TODO: Get rid of magic paths!
-			RegistryManager registry_manager = new RegistryManager("/tmp/ksp_registry");
-
-			Registry registry = registry_manager.load_or_create ();
+			RegistryManager registry_manager = RegistryManager.Instance();
+			Registry registry = registry_manager.registry;
 
 			// Forget that we've seen any DLLs, as we're going to refresh them all.
 			registry.clear_dlls ();
@@ -35,7 +58,7 @@ namespace CKAN {
 				registry.register_dll (file);
 			}
 
-			registry_manager.save (registry);
+			registry_manager.save();
 		}
 	}
 }
