@@ -90,6 +90,13 @@ namespace CKAN
 					// TODO: Compare versions.
 
 					if (ver == null) {
+
+						// Oh, it's not installed! Let's see if we can find it.
+
+						// TODO: A big store of all our known CKAN data, so we can go
+						// find our module.
+
+						// If we can't find it, cry and moan.
 						Console.WriteLine ("Requirement {0} not found", depends.name);
 						throw new ModuleNotFoundException (name, depends.version);
 					}
