@@ -63,16 +63,6 @@ namespace CKAN
 			// Walk through our install instructions.
 			foreach (dynamic stanza in module.install) {
 				install_component (stanza, zipfile, module_files);
-
-				// TODO: We should just *serialise* our current state, not
-				// copy the original file, because we can't always guarantee
-				// there will be an original file.
-
-				// TODO: This will just throw them in GameData.
-				// We need a way to convert stanzas to install locations.
-				// We really should make Stanza its own class.
-
-				File.WriteAllText (KSP.gameData () + module.identifier + ".ckan", module.serialise());
 			}
 
 			// Handle bundled mods, if we have them.
@@ -133,6 +123,11 @@ namespace CKAN
 
 				// Skip things we don't want.
 				if (! Regex.IsMatch (entry.Name, filter)) {
+					continue;
+				}
+
+				// SKIP the file if it's a .CKAN file, these should never be copied to GameData.
+				if (Regex.IsMatch (entry.Name, ".CKAN", RegexOptions.IgnoreCase)) {
 					continue;
 				}
 
