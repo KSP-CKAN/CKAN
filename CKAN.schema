@@ -121,6 +121,14 @@
                     "overwrite" : {
                         "description" : "Allow overwriting of existing files?",
                         "type" : "boolean"
+                    },
+                    "optional" : {
+                        "description" : "Is this component required? Defaults to false",
+                        "type" : "boolean"
+                    },
+                    "description" : {
+                        "description" : "Optional human readable description of this component",
+                        "type" : "string"
                     }
                 },
                 "required" : [ "file", "install_to" ]
@@ -213,7 +221,7 @@
         },
         "install_to" : {
             "description" : "Where file should be installed to",
-            "enum" : [ "GameData" ]
+            "enum" : [ "GameData", "Ships" ]
         },
         "license" : {
             "description" : "A license",

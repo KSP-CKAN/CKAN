@@ -272,8 +272,8 @@ mandatory directives:
   during install. (Eg: `MyMods/KSP/Foo` will be installed into
   `GameData/Foo`.)
 - `install_to`: The location where this section should be installed.
-  Presently the only valid value for this entry is `GameData`. Paths
-  will be preserved, 
+  Presently the only valid values for this entry are `GameData`
+  and `Ships`. Paths will be preserved, 
 
 An install directive may also include the following optional fields:
 
@@ -282,6 +282,10 @@ An install directive may also include the following optional fields:
 - `overwrite`: A boolean value, if set to true, then this allows files
   to be overwritten during install, even if those files are from another
   mod.
+- `optional`: A boolean value. If set to true, this component is considered
+  optional. Defaults to false.
+- `description`: A human readable description of this component.
+  Recommeded for any optional sections.
 
 An example set of install directives, including one that overwrites
 parts of `OtherMod` (if installed) is shown below:
