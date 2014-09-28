@@ -23,7 +23,7 @@
         }
     ],
     "requires" : [
-        { "name" : "FAR" },
+        { "name" : "FerramAerospaceResearch" }
     ],
     "recommends" : [
         { "name" : "RealFuels" },

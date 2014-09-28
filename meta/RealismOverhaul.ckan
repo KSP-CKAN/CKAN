@@ -13,7 +13,7 @@
         { "name" : "AJE" },
         { "name" : "DeadlyRentry", "min_version" : "5.2" },
         { "name" : "EngineIgnitor" },
-        { "name" : "FAR" },
+        { "name" : "FerramAerospaceResearch" },
         { "name" : "ModuleManager" },
         { "name" : "ModuleRCSFX" },
         { "name" : "RealChutes" },
