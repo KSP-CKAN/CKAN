@@ -1,5 +1,7 @@
 # The Comrpehensive Kerbal Archive Network (CKAN)
 
+**The CKAN Spec can be found [here](Spec.md)**.
+
 ## What's the CKAN?
 
 The CKAN is a metadata respository and associated tools to allow
