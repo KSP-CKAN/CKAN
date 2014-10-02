@@ -204,7 +204,7 @@ namespace CKAN
 
 				copyZipEntry (zipfile, entry, fullPath, makeDirs);
 
-				module_files.Add (outputName, new InstalledModuleFile {
+				module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
 					sha1_sum = sha1_sum (fullPath),
 				});
 			}
