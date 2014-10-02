@@ -211,7 +211,7 @@ namespace CKAN
 
 			return;
 		}
-		// TODO: Test that this actually throws exceptions if it can't do its job.
+
 		void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
 		{
 
