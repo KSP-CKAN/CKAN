@@ -30,6 +30,10 @@ namespace CKAN {
 			return Path.Combine (ckanDir (), "downloads");
 		}
 
+		public static string ships() {
+			return Path.Combine (gameDir (), "Ships");
+		}
+
 		/// <summary>
 		/// Create the CKAN directory and any supporting files.
 		/// </summary>

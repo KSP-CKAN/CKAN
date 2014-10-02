@@ -155,21 +155,28 @@ namespace CKAN
 
 			Console.WriteLine ("    * Installing " + fileToInstall);
 
-			string[] path = fileToInstall.Split ('/');
+			string installDir;
+			bool makeDirs;
 
-			// TODO: This will depend upon the `install_to` in the JSON file
-			string installDir = KSP.gameData ();
-
-			// This is what we strip off paths
-			string stripDir = String.Join ("/", path.Take (path.Count () - 1)) + "/";
+			if (stanza.install_to == "GameData") {
+				installDir = KSP.gameData ();
+				makeDirs = true;
+			} else if (stanza.install_to == "Ships") {
+				installDir = KSP.ships ();
+				makeDirs = false; // Don't allow directory creation in ships directory
+			} else {
+				// Is this the best exception to use here??
+				throw new BadCommandException ("Unknown install location: " + stanza.install_to);
+			}
 
 			// Console.WriteLine("InstallDir is "+installDir);
-			// Console.WriteLine ("StripDir is " + stripDir);
 
-			// This is awful. There's got to be a better way to extract a tree?
+			// Is there a better way to extract a tree?
 			string filter = "^" + stanza.file + "(/|$)";
 
-			// O(N^2) solution. Surely there's a better way...
+			// O(N^2) solution, as we're walking the zipfile for each stanza.
+			// Surely there's a better way, although this is fast enough we may not care.
+
 			foreach (ZipEntry entry in zipfile) {
 
 				// Skip things we don't want.
@@ -185,16 +192,17 @@ namespace CKAN
 				// Get the full name of the file.
 				string outputName = entry.Name;
 
-				// Strip off the prefix (often GameData/)
-				// TODO: The C# equivalent of "\Q stripDir \E" so we can't be caught by metacharacters.
-				outputName = Regex.Replace (outputName, @"^" + stripDir, "");
+				// Strip off everything up to GameData/Ships
+				// TODO: There's got to be a nicer way of doing path resolution.
+				outputName = Regex.Replace (outputName, @"^/?(.*(GameData|Ships)/)?", "");
+
 
 				// Aww hell yes, let's write this file out!
 
 				string fullPath = Path.Combine (installDir, outputName);
 				// Console.WriteLine (fullPath);
 
-				copyZipEntry (zipfile, entry, fullPath);
+				copyZipEntry (zipfile, entry, fullPath, makeDirs);
 
 				module_files.Add (outputName, new InstalledModuleFile {
 					sha1_sum = sha1_sum (fullPath),
@@ -204,10 +212,16 @@ namespace CKAN
 			return;
 		}
 		// TODO: Test that this actually throws exceptions if it can't do its job.
-		void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath)
+		void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
 		{
 
 			if (entry.IsDirectory) {
+
+				// Skip if we're not making directories for this install.
+				if (! makeDirs) {
+					return;
+				}
+
 				// Console.WriteLine ("Making directory " + fullPath);
 				Directory.CreateDirectory (fullPath);
 			} else {
