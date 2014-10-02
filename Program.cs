@@ -46,6 +46,9 @@ namespace CKAN {
 				case "list":
 					return list ();
 
+				case "show":
+					return show ((ShowOptions) cmdline.options);
+
 				default :
 					Console.WriteLine ("Unknown command, try --help");
 					return EXIT_BADOPT;
@@ -60,7 +63,7 @@ namespace CKAN {
 		}
 
 		public static int list() {
-			// TODO: Get rid of all these magic paths!
+
 			RegistryManager registry_manager = RegistryManager.Instance();
 			Registry registry = registry_manager.registry;
 
@@ -118,6 +121,26 @@ namespace CKAN {
 
 			return EXIT_OK;
 		}
+
+		static int show(ShowOptions options) {
+			RegistryManager registry_manager = RegistryManager.Instance();
+			InstalledModule module = registry_manager.registry.installed_modules [options.Modname];
+
+			if (module != null) {
+				// TODO: Print *lots* of information out; I should never have to dig through JSON
+
+				Console.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
+
+				Console.WriteLine ("\n== Files ==\n");
+
+				Dictionary<string, InstalledModuleFile> files = module.installed_files;
+
+				foreach (string file in files.Keys) {
+					Console.WriteLine (file);
+				}
+			}
+			return EXIT_OK;
+		}
 	}
 
 
@@ -155,6 +178,9 @@ namespace CKAN {
 
 		[VerbOption("list", HelpText = "List installed modules")]
 		public ListOptions List { get; set; }
+
+		[VerbOption("show", HelpText = "Show information about a mod")]
+		public ShowOptions Show { get; set; }
 	
 	}
 
@@ -180,6 +206,11 @@ namespace CKAN {
 
 	class ScanOptions : CommonOptions { }
 	class ListOptions : CommonOptions { }
+
+	class ShowOptions : CommonOptions {
+		[ValueOption(0)]
+		public string Modname { get; set; } 
+	}
 
 	// Exception class, so we can signal errors in command options.
 	
