@@ -1,0 +1,9 @@
+language: c
+
+install:
+    - sudo aptget install mono-devel mono-gmcs nunit-console
+
+script:
+    - cd CKAN
+    - xbuild CKAN.sln
+    - nunit-console Tests/bin/Debug/Tests.dll

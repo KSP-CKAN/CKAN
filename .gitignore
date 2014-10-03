@@ -1,5 +1,8 @@
 CKAN/CKAN/bin/Debug
+CKAN/CKAN/obj
 CKAN/CKAN.userprefs
 CKAN/test-results
+CKAN/TestResult.xml
 CKAN/Tests/bin
+CKAN/Tests/obj
 CKAN/Tests/test-results
