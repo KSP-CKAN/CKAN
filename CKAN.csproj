@@ -33,14 +33,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\dlls\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\dlls\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="CommandLine">
-      <HintPath>..\dlls\CommandLine.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,4 +54,7 @@
     <Compile Include="ModuleInstaller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
