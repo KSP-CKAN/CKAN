@@ -25,7 +25,7 @@ namespace CKAN
 		///
 		/// </summary>
 		/// <param name="filename">Filename.</param>
-		public string download (Module module, string filename = null)
+		public string download (CkanModule module, string filename = null)
 		{
 
 			// Generate a temporary file if none is provided.
@@ -43,7 +43,7 @@ namespace CKAN
 			return fullPath;
 		}
 
-		public string cachedOrDownload(Module module, string filename = null) {
+		public string cachedOrDownload(CkanModule module, string filename = null) {
 			if (filename == null) {
 				filename = module.standard_name ();
 			}
@@ -67,7 +67,7 @@ namespace CKAN
 		/// If no file is supplied, we will fetch() it first.
 		/// </summary>
 
-		public void install (Module module, string filename = null)
+		public void install (CkanModule module, string filename = null)
 		{
 
 			Console.WriteLine (module.identifier + ":\n");
@@ -128,18 +128,22 @@ namespace CKAN
 			if (module.bundles != null) {
 
 				foreach (dynamic stanza in module.bundles) {
+					BundledModule bundled = new BundledModule (stanza);
 
-					// TODO: Check versions, so we don't double install.
+					string ver = registry_manager.registry.installedVersion (bundled.identifier);
 
+					if (ver != null) {
+						Console.WriteLine (
+							"{0} {1} already installed, skipping bundled version {2}",
+							bundled.identifier, ver, bundled.version
+						);
+						continue;
+					}
+
+					// Not installed, so let's get about installing it!
 					Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
 
 					install_component (stanza, zipfile, installed_files);
-
-					// TODO: Make it possible to build modules from bundled stanzas
-					Module bundled = new Module ();
-					bundled.identifier = stanza.identifier;
-					bundled.version    = stanza.version;
-					bundled.license    = stanza.license;
 
 					registry.register_module (new InstalledModule (installed_files, bundled, DateTime.Now));
 

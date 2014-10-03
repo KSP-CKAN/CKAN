@@ -102,7 +102,7 @@ namespace CKAN {
 
 				Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
 
-				Module module = Module.from_file (ckanFilename);
+				CkanModule module = CkanModule.from_file (ckanFilename);
 				ModuleInstaller installer = new ModuleInstaller ();
 
 				installer.install (module, zipFilename);
@@ -112,7 +112,7 @@ namespace CKAN {
 			// Regular invocation, walk through all CKAN files on the cmdline
 
 			foreach (string filename in options.Files) {
-				Module module = Module.from_file (filename);
+				CkanModule module = CkanModule.from_file (filename);
 				ModuleInstaller installer = new ModuleInstaller ();
 				installer.install (module);
 			}
