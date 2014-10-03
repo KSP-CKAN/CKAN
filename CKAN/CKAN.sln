@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN", "CKAN\CKAN.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{92442BD6-F533-4BB8-8E04-9D93A038035E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|x86.Build.0 = Debug|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|x86.ActiveCfg = Release|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|x86.Build.0 = Release|x86
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.Build.0 = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.ActiveCfg = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = CKAN\CKAN.csproj
