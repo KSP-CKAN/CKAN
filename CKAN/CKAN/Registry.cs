@@ -83,5 +83,16 @@ namespace CKAN
 
 			return null;
 		}
+
+		/// <summary>
+		/// Check if a mod is installed (either via CKAN, or a DLL detected)
+		/// </summary>
+		/// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
+		public bool isInstalled(string modName) {
+			if (installedVersion (modName) == null) {
+				return false;
+			}
+			return true;
+		}
 	}
 }
