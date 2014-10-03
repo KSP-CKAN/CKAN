@@ -47,6 +47,10 @@ namespace CKAN
 			installed_modules.Add (mod.source_module.identifier, mod);
 		}
 
+		public void deregister_module(string module) {
+			installed_modules.Remove (module);
+		}
+
 		public void register_dll (string path)
 		{
 			// Oh my, does .NET support extended regexps (like Perl?), we could use them right now.

@@ -263,13 +263,37 @@ namespace CKAN
 		}
 
 		public void uninstall(string modName) {
+
 			// Walk our registry to find all files for this mod.
 
 			Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
-			// TODO: Finish!
-		}
+			foreach (string file in files.Keys) {
+				string path = Path.Combine (KSP.gameDir (), file);
 
+				FileAttributes attr = File.GetAttributes (path);
+
+				if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+
+					// TODO: Actually prune empty directories
+
+					Console.WriteLine ("Skipping directory {0}", file);
+				}
+				else {
+					Console.WriteLine ("Removing {0}", file);
+					File.Delete (Path.Combine (KSP.gameDir (), file));
+				}
+			}
+
+			// Remove from registry.
+
+			registry_manager.registry.deregister_module (modName);
+			registry_manager.save ();
+
+			// And we're done! :)
+
+			return;
+		}
 	}
 
 

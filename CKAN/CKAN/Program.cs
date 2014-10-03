@@ -49,6 +49,9 @@ namespace CKAN {
 				case "show":
 					return show ((ShowOptions) cmdline.options);
 
+				case "remove":
+					return remove ((RemoveOptions)cmdline.options);
+
 				default :
 					Console.WriteLine ("Unknown command, try --help");
 					return EXIT_BADOPT;
@@ -81,6 +84,15 @@ namespace CKAN {
 
 			return EXIT_OK;
 
+		}
+
+		// Uninstalls a module, if it exists.
+		public static int remove(RemoveOptions options) {
+
+			ModuleInstaller installer = new ModuleInstaller ();
+			installer.uninstall (options.Modname);
+
+			return EXIT_OK;
 		}
 
 		public static int install(InstallOptions options) { 
@@ -173,6 +185,9 @@ namespace CKAN {
 		[VerbOption("install", HelpText = "Install a KSP mod")]
 		public InstallOptions Install { get; set; }
 
+		[VerbOption("remove", HelpText = "Remove an installed mod")]
+		public RemoveOptions Remove { get; set; }
+
 		[VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
 		public ScanOptions Scan { get; set; }
 
@@ -204,8 +219,13 @@ namespace CKAN {
 		public List<string> Files { get; set; }
 	}
 
-	class ScanOptions : CommonOptions { }
-	class ListOptions : CommonOptions { }
+	class ScanOptions   : CommonOptions { }
+	class ListOptions   : CommonOptions { }
+
+	class RemoveOptions : CommonOptions {
+		[ValueOption(0)]
+		public string Modname { get; set; }
+	}
 
 	class ShowOptions : CommonOptions {
 		[ValueOption(0)]
