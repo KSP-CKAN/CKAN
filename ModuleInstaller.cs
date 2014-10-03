@@ -69,7 +69,6 @@ namespace CKAN
 
 		public void install (Module module, string filename = null)
 		{
-			Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
 
 			Console.WriteLine (module.identifier + ":\n");
 
@@ -108,6 +107,12 @@ namespace CKAN
 				filename = cachedOrDownload (module);
 			}
 
+			// We'll need our registry to record which files we've installed.
+			Registry registry = registry_manager.registry;
+
+			// And a list of files to record them to.
+			Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
+
 			// Open our zip file for processing
 			ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
@@ -116,6 +121,9 @@ namespace CKAN
 				install_component (stanza, zipfile, module_files);
 			}
 
+			// Register our files.
+			registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
+
 			// Handle bundled mods, if we have them.
 			if (module.bundles != null) {
 
@@ -123,14 +131,22 @@ namespace CKAN
 
 					// TODO: Check versions, so we don't double install.
 
-					install_component (stanza, zipfile, module_files);
+					Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
 
-					// TODO: Generate CKAN metadata for the bundled component.
+					install_component (stanza, zipfile, installed_files);
+
+					// TODO: Make it possible to build modules from bundled stanzas
+					Module bundled = new Module ();
+					bundled.identifier = stanza.identifier;
+					bundled.version    = stanza.version;
+					bundled.license    = stanza.license;
+
+					registry.register_module (new InstalledModule (installed_files, bundled, DateTime.Now));
+
 				}
 			}
 
-			Registry registry = registry_manager.registry;
-			registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
+			// Done! Save our registry changes!
 			registry_manager.save();
 
 			return;
@@ -241,7 +257,17 @@ namespace CKAN
 
 			return;
 		}
+
+		public void uninstall(string modName) {
+			// Walk our registry to find all files for this mod.
+
+			Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
+
+			// TODO: Finish!
+		}
+
 	}
+
 
 	class ModuleNotFoundException : Exception {
 		public string module;
