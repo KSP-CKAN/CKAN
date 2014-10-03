@@ -10,301 +10,301 @@ using System.Text.RegularExpressions;
 
 namespace CKAN
 {
-	public class ModuleInstaller
-	{
-		RegistryManager registry_manager = RegistryManager.Instance();
+    public class ModuleInstaller
+    {
+        RegistryManager registry_manager = RegistryManager.Instance();
 
-		public ModuleInstaller ()
-		{
-		}
+        public ModuleInstaller ()
+        {
+        }
 
-		/// <summary>
-		/// Download the given mod. Returns the filename it was saved to.
-		///
-		/// If no filename is provided, the standard_name() will be used.
-		///
-		/// </summary>
-		/// <param name="filename">Filename.</param>
-		public string download (CkanModule module, string filename = null)
-		{
+        /// <summary>
+        /// Download the given mod. Returns the filename it was saved to.
+        ///
+        /// If no filename is provided, the standard_name() will be used.
+        ///
+        /// </summary>
+        /// <param name="filename">Filename.</param>
+        public string download (CkanModule module, string filename = null)
+        {
 
-			// Generate a temporary file if none is provided.
-			if (filename == null) {
-				filename = module.standard_name ();
-			}
+            // Generate a temporary file if none is provided.
+            if (filename == null) {
+                filename = module.standard_name ();
+            }
 
-			Console.WriteLine ("    * Downloading " + filename + "...");
+            Console.WriteLine ("    * Downloading " + filename + "...");
 
-			string fullPath = Path.Combine (KSP.downloadCacheDir(), filename);
+            string fullPath = Path.Combine (KSP.downloadCacheDir(), filename);
 
-			WebClient agent = new WebClient ();
-			agent.DownloadFile (module.download, fullPath);
+            WebClient agent = new WebClient ();
+            agent.DownloadFile (module.download, fullPath);
 
-			return fullPath;
-		}
+            return fullPath;
+        }
 
-		public string cachedOrDownload(CkanModule module, string filename = null) {
-			if (filename == null) {
-				filename = module.standard_name ();
-			}
+        public string cachedOrDownload(CkanModule module, string filename = null) {
+            if (filename == null) {
+                filename = module.standard_name ();
+            }
 
-			string fullPath = cachePath (filename);
+            string fullPath = cachePath (filename);
 
-			if (File.Exists (fullPath)) {
-				Console.WriteLine ("    * Using {0} (cached)", filename);
-				return fullPath;
-			}
+            if (File.Exists (fullPath)) {
+                Console.WriteLine ("    * Using {0} (cached)", filename);
+                return fullPath;
+            }
 
-			return download (module, filename);
-		}
+            return download (module, filename);
+        }
 
-		public string cachePath(string file) {
-			return Path.Combine (KSP.downloadCacheDir (), file);
-		}
+        public string cachePath(string file) {
+            return Path.Combine (KSP.downloadCacheDir (), file);
+        }
 
-		/// <summary>
-		/// Install our mod from the filename supplied.
-		/// If no file is supplied, we will fetch() it first.
-		/// </summary>
+        /// <summary>
+        /// Install our mod from the filename supplied.
+        /// If no file is supplied, we will fetch() it first.
+        /// </summary>
 
-		public void install (CkanModule module, string filename = null)
-		{
+        public void install (CkanModule module, string filename = null)
+        {
 
-			Console.WriteLine (module.identifier + ":\n");
+            Console.WriteLine (module.identifier + ":\n");
 
-			string version = registry_manager.registry.installedVersion (module.identifier);
+            string version = registry_manager.registry.installedVersion (module.identifier);
 
-			if (version != null) {
-				// TODO: Check if we can upgrade!
-				Console.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
-				return;
-			}
+            if (version != null) {
+                // TODO: Check if we can upgrade!
+                Console.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+                return;
+            }
 
-			// Check our dependencies.
+            // Check our dependencies.
 
-			if (module.requires != null) {
-				foreach (dynamic depends in module.requires) {
-					string name = depends.name;
-					string ver = registry_manager.registry.installedVersion (name);
-					// TODO: Compare versions.
+            if (module.requires != null) {
+                foreach (dynamic depends in module.requires) {
+                    string name = depends.name;
+                    string ver = registry_manager.registry.installedVersion (name);
+                    // TODO: Compare versions.
 
-					if (ver == null) {
+                    if (ver == null) {
 
-						// Oh, it's not installed! Let's see if we can find it.
+                        // Oh, it's not installed! Let's see if we can find it.
 
-						// TODO: A big store of all our known CKAN data, so we can go
-						// find our module.
+                        // TODO: A big store of all our known CKAN data, so we can go
+                        // find our module.
 
-						// If we can't find it, cry and moan.
-						Console.WriteLine ("Requirement {0} not found", depends.name);
-						throw new ModuleNotFoundException (name, depends.version);
-					}
-				}
-			}
+                        // If we can't find it, cry and moan.
+                        Console.WriteLine ("Requirement {0} not found", depends.name);
+                        throw new ModuleNotFoundException (name, depends.version);
+                    }
+                }
+            }
 
-			// Fetch our file if we don't already have it.
-			if (filename == null) {
-				filename = cachedOrDownload (module);
-			}
+            // Fetch our file if we don't already have it.
+            if (filename == null) {
+                filename = cachedOrDownload (module);
+            }
 
-			// We'll need our registry to record which files we've installed.
-			Registry registry = registry_manager.registry;
+            // We'll need our registry to record which files we've installed.
+            Registry registry = registry_manager.registry;
 
-			// And a list of files to record them to.
-			Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
+            // And a list of files to record them to.
+            Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
 
-			// Open our zip file for processing
-			ZipFile zipfile = new ZipFile (File.OpenRead (filename));
+            // Open our zip file for processing
+            ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
-			// Walk through our install instructions.
-			foreach (dynamic stanza in module.install) {
-				install_component (stanza, zipfile, module_files);
-			}
+            // Walk through our install instructions.
+            foreach (dynamic stanza in module.install) {
+                install_component (stanza, zipfile, module_files);
+            }
 
-			// Register our files.
-			registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
+            // Register our files.
+            registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
 
-			// Handle bundled mods, if we have them.
-			if (module.bundles != null) {
+            // Handle bundled mods, if we have them.
+            if (module.bundles != null) {
 
-				foreach (dynamic stanza in module.bundles) {
-					BundledModule bundled = new BundledModule (stanza);
+                foreach (dynamic stanza in module.bundles) {
+                    BundledModule bundled = new BundledModule (stanza);
 
-					string ver = registry_manager.registry.installedVersion (bundled.identifier);
+                    string ver = registry_manager.registry.installedVersion (bundled.identifier);
 
-					if (ver != null) {
-						Console.WriteLine (
-							"{0} {1} already installed, skipping bundled version {2}",
-							bundled.identifier, ver, bundled.version
-						);
-						continue;
-					}
+                    if (ver != null) {
+                        Console.WriteLine (
+                            "{0} {1} already installed, skipping bundled version {2}",
+                            bundled.identifier, ver, bundled.version
+                        );
+                        continue;
+                    }
 
-					// Not installed, so let's get about installing it!
-					Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
+                    // Not installed, so let's get about installing it!
+                    Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
 
-					install_component (stanza, zipfile, installed_files);
+                    install_component (stanza, zipfile, installed_files);
 
-					registry.register_module (new InstalledModule (installed_files, bundled, DateTime.Now));
+                    registry.register_module (new InstalledModule (installed_files, bundled, DateTime.Now));
 
-				}
-			}
+                }
+            }
 
-			// Done! Save our registry changes!
-			registry_manager.save();
+            // Done! Save our registry changes!
+            registry_manager.save();
 
-			return;
+            return;
 
-		}
+        }
 
-		string sha1_sum (string path)
-		{
-			SHA1 hasher = new SHA1CryptoServiceProvider();
+        string sha1_sum (string path)
+        {
+            SHA1 hasher = new SHA1CryptoServiceProvider();
 
-			try {
-				return BitConverter.ToString(hasher.ComputeHash (File.OpenRead (path)));
-			}
-			catch {
-				return null;
-			};
-		}
+            try {
+                return BitConverter.ToString(hasher.ComputeHash (File.OpenRead (path)));
+            }
+            catch {
+                return null;
+            };
+        }
 
-		void install_component (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files)
-		{
-			string fileToInstall = stanza.file;
+        void install_component (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files)
+        {
+            string fileToInstall = stanza.file;
 
-			Console.WriteLine ("    * Installing " + fileToInstall);
+            Console.WriteLine ("    * Installing " + fileToInstall);
 
-			string installDir;
-			bool makeDirs;
+            string installDir;
+            bool makeDirs;
 
-			if (stanza.install_to == "GameData") {
-				installDir = KSP.gameData ();
-				makeDirs = true;
-			} else if (stanza.install_to == "Ships") {
-				installDir = KSP.ships ();
-				makeDirs = false; // Don't allow directory creation in ships directory
-			} else {
-				// Is this the best exception to use here??
-				throw new BadCommandException ("Unknown install location: " + stanza.install_to);
-			}
+            if (stanza.install_to == "GameData") {
+                installDir = KSP.gameData ();
+                makeDirs = true;
+            } else if (stanza.install_to == "Ships") {
+                installDir = KSP.ships ();
+                makeDirs = false; // Don't allow directory creation in ships directory
+            } else {
+                // Is this the best exception to use here??
+                throw new BadCommandException ("Unknown install location: " + stanza.install_to);
+            }
 
-			// Console.WriteLine("InstallDir is "+installDir);
+            // Console.WriteLine("InstallDir is "+installDir);
 
-			// Is there a better way to extract a tree?
-			string filter = "^" + stanza.file + "(/|$)";
+            // Is there a better way to extract a tree?
+            string filter = "^" + stanza.file + "(/|$)";
 
-			// O(N^2) solution, as we're walking the zipfile for each stanza.
-			// Surely there's a better way, although this is fast enough we may not care.
+            // O(N^2) solution, as we're walking the zipfile for each stanza.
+            // Surely there's a better way, although this is fast enough we may not care.
 
-			foreach (ZipEntry entry in zipfile) {
+            foreach (ZipEntry entry in zipfile) {
 
-				// Skip things we don't want.
-				if (! Regex.IsMatch (entry.Name, filter)) {
-					continue;
-				}
+                // Skip things we don't want.
+                if (! Regex.IsMatch (entry.Name, filter)) {
+                    continue;
+                }
 
-				// SKIP the file if it's a .CKAN file, these should never be copied to GameData.
-				if (Regex.IsMatch (entry.Name, ".CKAN", RegexOptions.IgnoreCase)) {
-					continue;
-				}
+                // SKIP the file if it's a .CKAN file, these should never be copied to GameData.
+                if (Regex.IsMatch (entry.Name, ".CKAN", RegexOptions.IgnoreCase)) {
+                    continue;
+                }
 
-				// Get the full name of the file.
-				string outputName = entry.Name;
+                // Get the full name of the file.
+                string outputName = entry.Name;
 
-				// Strip off everything up to GameData/Ships
-				// TODO: There's got to be a nicer way of doing path resolution.
-				outputName = Regex.Replace (outputName, @"^/?(.*(GameData|Ships)/)?", "");
+                // Strip off everything up to GameData/Ships
+                // TODO: There's got to be a nicer way of doing path resolution.
+                outputName = Regex.Replace (outputName, @"^/?(.*(GameData|Ships)/)?", "");
 
 
-				// Aww hell yes, let's write this file out!
+                // Aww hell yes, let's write this file out!
 
-				string fullPath = Path.Combine (installDir, outputName);
-				// Console.WriteLine (fullPath);
+                string fullPath = Path.Combine (installDir, outputName);
+                // Console.WriteLine (fullPath);
 
-				copyZipEntry (zipfile, entry, fullPath, makeDirs);
+                copyZipEntry (zipfile, entry, fullPath, makeDirs);
 
-				module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
-					sha1_sum = sha1_sum (fullPath),
-				});
-			}
+                module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
+                    sha1_sum = sha1_sum (fullPath),
+                });
+            }
 
-			return;
-		}
+            return;
+        }
 
-		void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
-		{
+        void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        {
 
-			if (entry.IsDirectory) {
+            if (entry.IsDirectory) {
 
-				// Skip if we're not making directories for this install.
-				if (! makeDirs) {
-					return;
-				}
+                // Skip if we're not making directories for this install.
+                if (! makeDirs) {
+                    return;
+                }
 
-				// Console.WriteLine ("Making directory " + fullPath);
-				Directory.CreateDirectory (fullPath);
-			} else {
-				// Console.WriteLine ("Writing file " + fullPath);
+                // Console.WriteLine ("Making directory " + fullPath);
+                Directory.CreateDirectory (fullPath);
+            } else {
+                // Console.WriteLine ("Writing file " + fullPath);
 
-				// It's a file! Prepare the streams
-				Stream zipStream = zipfile.GetInputStream (entry);
-				FileStream output = File.Create (fullPath);
+                // It's a file! Prepare the streams
+                Stream zipStream = zipfile.GetInputStream (entry);
+                FileStream output = File.Create (fullPath);
 
-				// Copy
-				zipStream.CopyTo (output);
+                // Copy
+                zipStream.CopyTo (output);
 
-				// Tidy up.
-				zipStream.Close ();
-				output.Close ();
-			}
+                // Tidy up.
+                zipStream.Close ();
+                output.Close ();
+            }
 
-			return;
-		}
+            return;
+        }
 
-		public void uninstall(string modName) {
+        public void uninstall(string modName) {
 
-			// Walk our registry to find all files for this mod.
+            // Walk our registry to find all files for this mod.
 
-			Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
+            Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
-			foreach (string file in files.Keys) {
-				string path = Path.Combine (KSP.gameDir (), file);
+            foreach (string file in files.Keys) {
+                string path = Path.Combine (KSP.gameDir (), file);
 
-				FileAttributes attr = File.GetAttributes (path);
+                FileAttributes attr = File.GetAttributes (path);
 
-				if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
 
-					// TODO: Actually prune empty directories
+                    // TODO: Actually prune empty directories
 
-					Console.WriteLine ("Skipping directory {0}", file);
-				}
-				else {
-					Console.WriteLine ("Removing {0}", file);
-					File.Delete (Path.Combine (KSP.gameDir (), file));
-				}
-			}
+                    Console.WriteLine ("Skipping directory {0}", file);
+                }
+                else {
+                    Console.WriteLine ("Removing {0}", file);
+                    File.Delete (Path.Combine (KSP.gameDir (), file));
+                }
+            }
 
-			// Remove from registry.
+            // Remove from registry.
 
-			registry_manager.registry.deregister_module (modName);
-			registry_manager.save ();
+            registry_manager.registry.deregister_module (modName);
+            registry_manager.save ();
 
-			// And we're done! :)
+            // And we're done! :)
 
-			return;
-		}
-	}
+            return;
+        }
+    }
 
 
-	class ModuleNotFoundException : Exception {
-		public string module;
-		public string version;
+    class ModuleNotFoundException : Exception {
+        public string module;
+        public string version;
 
-		// TODO: Is there a way to set the stringify version of this?
-		public ModuleNotFoundException (string mod, string ver) {
-			module = mod;
-			version = ver;
-		}
-	}
+        // TODO: Is there a way to set the stringify version of this?
+        public ModuleNotFoundException (string mod, string ver) {
+            module = mod;
+            version = ver;
+        }
+    }
 }

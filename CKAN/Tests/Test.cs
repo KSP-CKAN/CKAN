@@ -5,17 +5,17 @@ using System.Text.RegularExpressions;
 
 namespace Tests
 {
-	[TestFixture()]
-	public class KSP
-	{
-		[Test()]
-		public void TestCase ()
-		{
+    [TestFixture()]
+    public class KSP
+    {
+        [Test()]
+        public void TestCase ()
+        {
 
-			string gameData = CKAN.KSP.gameData ();
+            string gameData = CKAN.KSP.gameData ();
 
-			Assert.IsTrue (Regex.IsMatch (gameData, "GameData/?$", RegexOptions.IgnoreCase));
-		}
-	}
+            Assert.IsTrue (Regex.IsMatch (gameData, "GameData/?$", RegexOptions.IgnoreCase));
+        }
+    }
 }
 
