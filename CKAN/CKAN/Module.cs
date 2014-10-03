@@ -19,7 +19,7 @@ namespace CKAN {
 	// modules (which are more lightweight)
 
 	[JsonObject(MemberSerialization.OptIn)]
-	abstract public class ModuleBase {
+	public class Module {
 
 		// identifier, license, and version are always required, so we know
 		// what we've got.
@@ -77,11 +77,17 @@ namespace CKAN {
 		}
 	}
 	
-	public class BundledModule : ModuleBase {
-		// Bundled modules really just act like their base-class for now.
+	public class BundledModule : Module {
+
+		public BundledModule(dynamic stanza) {
+			// For now, we just copy across the fields from our stanza.
+			version    = stanza.version;
+			identifier = stanza.identifier;
+			license    = stanza.license;
+		}
 	}
 
-	public class Module : ModuleBase {
+	public class CkanModule : Module {
 
 		private static string[] required_fields = {
 			"spec_version",
@@ -105,16 +111,16 @@ namespace CKAN {
 		public string spec_version;
 
 		/// <summary> Generates a CKAN.Meta object given a filename</summary>
-		public static Module from_file(string filename) {
+		public static CkanModule from_file(string filename) {
 			string json = System.IO.File.ReadAllText (filename);
-			return Module.from_string (json);
+			return CkanModule.from_string (json);
 		}
 
 		/// <summary> Generates a CKAN.META object from a string.
 		/// Also validates that all required fields are present.
 		/// </summary>
-		public static Module from_string(string json) {
-			Module newModule = JsonConvert.DeserializeObject<Module> (json);
+		public static CkanModule from_string(string json) {
+			CkanModule newModule = JsonConvert.DeserializeObject<CkanModule> (json);
 
 			// Check everything in the spec if defined.
 			// TODO: It would be great if this could be done with attributes.
