@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+use 5.010;
+use strict;
+use warnings;
+use autodie qw(:all);
+use FindBin qw($Bin);
+
+# Simple script to build and repack
+
+my $REPACK = "CKAN/packages/ILRepack.1.25.0/tools/ILRepack.exe";
+my $TARGET = "Release";     # 'Debug' is okay too.
+my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
+
+# Change to our project directory.
+chdir("$Bin/../CKAN");
+
+system("xbuild", "/property:Configuration=$TARGET", "CKAN.sln");
+
+say "\n\n=== Repacking ===\n\n";
+
+chdir("$Bin/..");
+
+system(
+    $REPACK,
+    "--out:ckan.exe",
+    "--lib:CKAN/CKAN/bin/$TARGET",
+    "CKAN/CKAN/bin/$TARGET/CKAN.exe",
+    glob("CKAN/CKAN/bin/$TARGET/*.dll"),
+);
+
+say "\n\n=== Tidying up===\n\n";
+
+unlink("$OUTNAME.mdb");
+
+say "Done!";
