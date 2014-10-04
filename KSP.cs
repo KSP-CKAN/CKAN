@@ -138,6 +138,26 @@ namespace CKAN {
             }
         }
 
+        public static void CleanCache() {
+
+            log.Debug ("Cleaning cahce directory");
+
+            string[] files = Directory.GetFiles (downloadCacheDir (), "*", SearchOption.AllDirectories);
+
+            foreach (string file in files) {
+
+                if (FileSystem.IsDirectory (file)) {
+                    log.DebugFormat ("Skipping directory: {0}", file);
+                    continue;
+                }
+
+                log.DebugFormat ("Deleting {0}", file);
+                File.Delete (file);
+            }
+
+            return;
+        }
+
         public static void scanGameData() {
 
             // TODO: Get rid of magic paths!

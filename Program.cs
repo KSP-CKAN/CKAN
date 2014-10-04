@@ -76,6 +76,9 @@ namespace CKAN {
                 case "remove":
                     return remove ((RemoveOptions)cmdline.options);
 
+                case "clean":
+                    return clean ();
+
                 default :
                     Console.WriteLine ("Unknown command, try --help");
                     return EXIT_BADOPT;
@@ -142,6 +145,11 @@ namespace CKAN {
             ModuleInstaller installer = new ModuleInstaller ();
             installer.uninstall (options.Modname);
 
+            return EXIT_OK;
+        }
+
+        static int clean() {
+            KSP.CleanCache ();
             return EXIT_OK;
         }
 
@@ -247,6 +255,9 @@ namespace CKAN {
         [VerbOption("show", HelpText = "Show information about a mod")]
         public ShowOptions Show { get; set; }
 
+        [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
+        public CleanOptions Clean { get; set; }
+
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
     
@@ -278,6 +289,7 @@ namespace CKAN {
     class ScanOptions    : CommonOptions { }
     class ListOptions    : CommonOptions { }
     class VersionOptions : CommonOptions { }
+    class CleanOptions   : CommonOptions { }
 
     class RemoveOptions : CommonOptions {
         [ValueOption(0)]
