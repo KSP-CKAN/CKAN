@@ -67,20 +67,31 @@ namespace CKAN {
 
         public static int list() {
 
+            string KspPath = KSP.gameDir ();
+
+            Console.WriteLine ("\nKSP found at {0}\n", KspPath);
+
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
 
+            Console.WriteLine ("Installed Modules:\n");
+
             foreach (InstalledModule mod in registry.installed_modules.Values) {
-                Console.WriteLine ("{0} {1}", mod.source_module.identifier, mod.source_module.version);
+                Console.WriteLine ("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
             }
+
+            Console.WriteLine ("\nDetected DLLs (`ckan scan` to rebuild):\n");
 
             // Walk our dlls, but *don't* show anything we've already displayed as
             // a module.
             foreach (string dll in registry.installed_dlls.Keys) {
                 if (! registry.installed_modules.ContainsKey(dll)) {
-                    Console.WriteLine ("{0} (detected dll)", dll);
+                    Console.WriteLine ("* {0}", dll);
                 }
             }
+
+            // Blank line at the end makes for nicer looking output.
+            Console.WriteLine ("");
 
             return EXIT_OK;
 
