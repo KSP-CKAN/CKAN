@@ -8,7 +8,12 @@ namespace Tests
     [TestFixture()]
     public class KSP
     {
-        [Test()]
+
+
+
+        // Disabled, because Travis machines don't have a KSP intall.
+        // TODO: How do we mark tests as 'TODO' in Nunit? Does it even have that?
+        // [Test()]
         public void TestCase ()
         {
 
