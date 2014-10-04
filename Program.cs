@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Reflection;
 using CommandLine;
 using log4net;
 using log4net.Config;
@@ -56,6 +57,10 @@ namespace CKAN {
             KSP.init ();
 
             switch (cmdline.action) {
+
+                case "version":
+                    return version ();
+
                 case "install":
                     return install ((InstallOptions) cmdline.options);
                 
@@ -76,6 +81,21 @@ namespace CKAN {
                     return EXIT_BADOPT;
 
             }
+        }
+
+        public static int version() {
+
+            // SeriouslyLongestClassNamesEverThanksMicrosoft
+            AssemblyInformationalVersionAttribute[] assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
+
+            if (assemblies.Length == 0 || assemblies[0].InformationalVersion == null) {
+                // Dunno the version. Some dev probably built it. 
+                Console.WriteLine ("development");
+            } else {
+                Console.WriteLine (assemblies[0].InformationalVersion);
+            }
+
+            return EXIT_OK;
         }
 
         public static int scan() {
@@ -226,6 +246,9 @@ namespace CKAN {
 
         [VerbOption("show", HelpText = "Show information about a mod")]
         public ShowOptions Show { get; set; }
+
+        [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
+        public VersionOptions Version { get; set; }
     
     }
 
@@ -252,8 +275,9 @@ namespace CKAN {
         public List<string> Files { get; set; }
     }
 
-    class ScanOptions   : CommonOptions { }
-    class ListOptions   : CommonOptions { }
+    class ScanOptions    : CommonOptions { }
+    class ListOptions    : CommonOptions { }
+    class VersionOptions : CommonOptions { }
 
     class RemoveOptions : CommonOptions {
         [ValueOption(0)]
