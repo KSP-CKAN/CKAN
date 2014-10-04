@@ -24,11 +24,12 @@ namespace CKAN {
         static string SteamPath() {
             // First check the registry.
 
-            string reg_key = @"HKEY_CURRENT_USER\Software\Valve\SteamPath";
+            string reg_key = @"HKEY_CURRENT_USER\Software\Valve\Steam";
+            string reg_value = @"SteamPath";
 
-            log.DebugFormat ("Checking {0} for Steam path", reg_key);
+            log.DebugFormat ("Checking {0}\\{1} for Steam path", reg_key, reg_value);
 
-            string steam = (string) Microsoft.Win32.Registry.GetValue (reg_key, "", null);
+            string steam = (string) Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
 
             // If that directory exists, we've found steam!
             if (steam != null && FileSystem.IsDirectory(steam)) {
