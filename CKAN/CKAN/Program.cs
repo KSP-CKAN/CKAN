@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CommandLine;
 using log4net;
 using log4net.Config;
+using log4net.Core;
 
 // Reference CKAN client
 // Paul '@pjf' Fenwick
@@ -24,6 +25,7 @@ namespace CKAN {
         public static int Main (string[] args) {
 
             BasicConfigurator.Configure ();
+            LogManager.GetRepository ().Threshold = Level.Warn;
             log.Debug ("CKAN started");
 
             Options cmdline;
@@ -40,6 +42,17 @@ namespace CKAN {
                 return EXIT_BADOPT;
             }
 
+            // Process commandline options.
+
+            CommonOptions options = (CommonOptions) cmdline.options;
+
+            if (options.Debug) {
+                LogManager.GetRepository ().Threshold = Level.Debug;
+            } else if (options.Verbose) {
+                LogManager.GetRepository ().Threshold = Level.Info;
+            }
+
+            // Find KSP, create CKAN dir, perform housekeeping.
             KSP.init ();
 
             switch (cmdline.action) {
@@ -218,10 +231,13 @@ namespace CKAN {
 
     // Options common to all classes.
 
-    abstract class CommonOptions {
+    class CommonOptions {
 
         [Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
         public bool Verbose { get; set; }
+
+        [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
+        public bool Debug { get; set; }
     }
 
     // Each action defines its own options that it supports.
