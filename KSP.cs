@@ -62,11 +62,22 @@ namespace CKAN {
                 return cached_gamedir;
             }
 
-            // TODO: Cache the result of this.
-
             // TODO: See if KSP was specified on the command line.
 
-            // TODO: See if KSP is in the same dir as we're installed (GH #23)
+            // See if KSP is in the same dir as we're installed (GH #23)
+
+            // Find the directory our executable is stored in.
+            // In Perl, this is just `use FindBin qw($Bin);` Verbose enough, C#?
+            string exe_dir = System.IO.Path.GetDirectoryName (System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            log.DebugFormat ("Checking if KSP is in my exe dir: {0}", exe_dir);
+
+            // Checking for a GameData directory probably isn't the best way to
+            // detect KSP, but it works. More robust implementations welcome.
+            if (FileSystem.IsDirectory (Path.Combine (exe_dir, "GameData"))) {
+                log.InfoFormat ("KSP found at {0}", exe_dir);
+                return cached_gamedir = exe_dir;
+            }
 
             // TODO: See if we've got it cached in the registry.
 
@@ -78,8 +89,7 @@ namespace CKAN {
 
                 if (FileSystem.IsDirectory(ksp_dir)) {
                     log.InfoFormat ("KSP found at {0}", ksp_dir);
-                    cached_gamedir = ksp_dir;
-                    return cached_gamedir;
+                    return cached_gamedir = ksp_dir;
                 }
 
                 log.DebugFormat("Have Steam, but KSP is not at {0}", ksp_dir);
