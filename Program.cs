@@ -4,6 +4,8 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using CommandLine;
+using log4net;
+using log4net.Config;
 
 // Reference CKAN client
 // Paul '@pjf' Fenwick
@@ -17,7 +19,12 @@ namespace CKAN {
         public const int EXIT_ERROR  = 1;
         public const int EXIT_BADOPT = 2;
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
+
         public static int Main (string[] args) {
+
+            BasicConfigurator.Configure ();
+            log.Debug ("CKAN started");
 
             Options cmdline;
 
@@ -29,11 +36,10 @@ namespace CKAN {
                 cmdline = new Options (args);
             }
             catch (NullReferenceException) {
-                Console.WriteLine ("Try --help");
+                Console.WriteLine ("Try ckan --help");
                 return EXIT_BADOPT;
             }
 
-            // Make sure we have a functional CKAN set up.
             KSP.init ();
 
             switch (cmdline.action) {

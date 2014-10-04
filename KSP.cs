@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Microsoft.Win32;
+using log4net;
 
 /// <summary>
 /// Everything for dealing with KSP itself.
@@ -10,8 +11,11 @@ namespace CKAN {
     public class KSP {
 
         // Where to find KSP relative to Steam's root.
-        // TODO: How do we make this variable immutable?
-        static string steamKSP = Path.Combine( "SteamApps", "common", "Kerbal Space Program" );
+        static readonly string steamKSP = Path.Combine( "SteamApps", "common", "Kerbal Space Program" );
+
+        static readonly ILog log = LogManager.GetLogger (typeof(KSP));
+
+        static string cached_gamedir = null;
 
         /// <summary>
         /// Finds Steam on the current machine.
@@ -20,12 +24,19 @@ namespace CKAN {
         static string SteamPath() {
             // First check the registry.
 
-            string steam = (string) Microsoft.Win32.Registry.GetValue (@"HKEY_CURRENT_USER\Software\Valve\SteamPath", "", null);
+            string reg_key = @"HKEY_CURRENT_USER\Software\Valve\SteamPath";
+
+            log.DebugFormat ("Checking {0} for Steam path", reg_key);
+
+            string steam = (string) Microsoft.Win32.Registry.GetValue (reg_key, "", null);
 
             // If that directory exists, we've found steam!
             if (steam != null && FileSystem.IsDirectory(steam)) {
+                log.InfoFormat ("Found Steam at {0}", steam);
                 return steam;
             }
+
+            log.Debug ("Couldn't find Steam via registry key, trying other locations...");
 
             // Not in the registry, or missing file, but that's cool. This should find it on Linux/OSX
 
@@ -34,15 +45,22 @@ namespace CKAN {
                 ".steam", "steam"
             );
 
+            log.DebugFormat ("Looking for Steam in {0}", steam);
+
             if (FileSystem.IsDirectory (steam)) {
+                log.InfoFormat("Found Steam at {0}", steam);
                 return steam;
             }
 
-            // Nope, can't find steam.
+            log.Info ("Steam not found on this system.");
             return null;
         }
 
         public static string gameDir() {
+
+            if (cached_gamedir != null) {
+                return cached_gamedir;
+            }
 
             // TODO: Cache the result of this.
 
@@ -56,7 +74,16 @@ namespace CKAN {
 
             string steam = SteamPath ();
             if (steam != null) {
-                return Path.Combine (steam, steamKSP);
+                string ksp_dir = Path.Combine (steam, steamKSP);
+
+                if (FileSystem.IsDirectory(ksp_dir)) {
+                    log.InfoFormat ("KSP found at {0}", ksp_dir);
+                    cached_gamedir = ksp_dir;
+                    return cached_gamedir;
+                }
+
+                log.DebugFormat("Have Steam, but KSP is not at {0}", ksp_dir);
+
             }
 
             // Oh noes! We can't find KSP!
