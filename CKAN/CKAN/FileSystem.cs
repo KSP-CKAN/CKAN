@@ -5,9 +5,13 @@ namespace CKAN {
     public class FileSystem {
 
         public static bool IsDirectory(string path) {
-            FileAttributes attr = File.GetAttributes (path);
+            try {
+                FileAttributes attr = File.GetAttributes (path);
 
-            return ((attr & FileAttributes.Directory) == FileAttributes.Directory);
+                return ((attr & FileAttributes.Directory) == FileAttributes.Directory);
+            } catch (System.IO.DirectoryNotFoundException) {
+                return false;
+            }
         }
     }
 }
