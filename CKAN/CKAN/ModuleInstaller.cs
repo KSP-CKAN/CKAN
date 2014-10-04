@@ -7,16 +7,14 @@ using System.Security.Cryptography;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Text.RegularExpressions;
+using log4net;
 
 namespace CKAN
 {
     public class ModuleInstaller
     {
         RegistryManager registry_manager = RegistryManager.Instance();
-
-        public ModuleInstaller ()
-        {
-        }
+        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -37,8 +35,41 @@ namespace CKAN
 
             string fullPath = Path.Combine (KSP.downloadCacheDir(), filename);
 
+            log.DebugFormat ("Downloading {0} to {1}", module.download, fullPath);
+
             WebClient agent = new WebClient ();
-            agent.DownloadFile (module.download, fullPath);
+
+            try {
+                agent.DownloadFile (module.download, fullPath);
+            }
+            catch (Exception ex) {
+
+                // Clean up our file, it's unlikely to be complete.
+                // It's okay if this fails.
+                try {
+                    log.DebugFormat("Removing {0} after web error failure", fullPath);
+                    File.Delete (fullPath);
+                }
+                catch {
+                    // Apparently we need a catch, even if we do nothing.
+                }
+
+                if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed")) {
+
+                    Console.WriteLine ("\nOh no! Our download failed!\n");
+                    Console.WriteLine ("\t{0}\n",ex.Message);
+                    Console.WriteLine ("If you're on Linux, try running:\n");
+                    Console.WriteLine ("\tmozroots --import --ask-remove\n");
+                    Console.WriteLine ("on the command-line to update your certificate store, and try again.\n");
+
+                    // TODO: Throw an exception that signals we need to exit, rather than
+                    // stopping all other code from tidying up. (We do this for now, so
+                    // we don't have ugly stack-traces on things we kinda expect.)
+                    Environment.Exit (MainClass.EXIT_ERROR);
+                }
+
+                throw;
+            }
 
             return fullPath;
         }
