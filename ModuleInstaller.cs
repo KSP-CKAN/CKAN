@@ -1,18 +1,17 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Linq;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using System.Text.RegularExpressions;
-using log4net;
+namespace CKAN {
 
-namespace CKAN
-{
-    public class ModuleInstaller
-    {
+    using System;
+    using System.IO;
+    using System.Net;
+    using System.Linq;
+    using System.Collections.Generic;
+    using System.Security.Cryptography;
+    using ICSharpCode.SharpZipLib.Core;
+    using ICSharpCode.SharpZipLib.Zip;
+    using System.Text.RegularExpressions;
+    using log4net;
+
+    public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
@@ -23,17 +22,17 @@ namespace CKAN
         ///
         /// </summary>
         /// <param name="filename">Filename.</param>
-        public string download (CkanModule module, string filename = null)
+        public string Download (CkanModule module, string filename = null)
         {
 
             // Generate a temporary file if none is provided.
             if (filename == null) {
-                filename = module.standard_name ();
+                filename = module.StandardName ();
             }
 
             Console.WriteLine ("    * Downloading " + filename + "...");
 
-            string fullPath = Path.Combine (KSP.downloadCacheDir(), filename);
+            string fullPath = Path.Combine (KSP.DownloadCacheDir(), filename);
 
             log.DebugFormat ("Downloading {0} to {1}", module.download, fullPath);
 
@@ -74,23 +73,23 @@ namespace CKAN
             return fullPath;
         }
 
-        public string cachedOrDownload(CkanModule module, string filename = null) {
+        public string CachedOrDownload(CkanModule module, string filename = null) {
             if (filename == null) {
-                filename = module.standard_name ();
+                filename = module.StandardName ();
             }
 
-            string fullPath = cachePath (filename);
+            string fullPath = CachePath (filename);
 
             if (File.Exists (fullPath)) {
                 Console.WriteLine ("    * Using {0} (cached)", filename);
                 return fullPath;
             }
 
-            return download (module, filename);
+            return Download (module, filename);
         }
 
-        public string cachePath(string file) {
-            return Path.Combine (KSP.downloadCacheDir (), file);
+        public string CachePath(string file) {
+            return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
         /// <summary>
@@ -98,12 +97,12 @@ namespace CKAN
         /// If no file is supplied, we will fetch() it first.
         /// </summary>
 
-        public void install (CkanModule module, string filename = null)
+        public void Install (CkanModule module, string filename = null)
         {
 
             Console.WriteLine (module.identifier + ":\n");
 
-            string version = registry_manager.registry.installedVersion (module.identifier);
+            string version = registry_manager.registry.InstalledVersion (module.identifier);
 
             if (version != null) {
                 // TODO: Check if we can upgrade!
@@ -116,7 +115,7 @@ namespace CKAN
             if (module.requires != null) {
                 foreach (dynamic depends in module.requires) {
                     string name = depends.name;
-                    string ver = registry_manager.registry.installedVersion (name);
+                    string ver = registry_manager.registry.InstalledVersion (name);
                     // TODO: Compare versions.
 
                     if (ver == null) {
@@ -135,7 +134,7 @@ namespace CKAN
 
             // Fetch our file if we don't already have it.
             if (filename == null) {
-                filename = cachedOrDownload (module);
+                filename = CachedOrDownload (module);
             }
 
             // We'll need our registry to record which files we've installed.
@@ -149,11 +148,11 @@ namespace CKAN
 
             // Walk through our install instructions.
             foreach (dynamic stanza in module.install) {
-                install_component (stanza, zipfile, module_files);
+                InstallComponent (stanza, zipfile, module_files);
             }
 
             // Register our files.
-            registry.register_module (new InstalledModule (module_files, module, DateTime.Now));
+            registry.RegisterModule (new InstalledModule (module_files, module, DateTime.Now));
 
             // Handle bundled mods, if we have them.
             if (module.bundles != null) {
@@ -161,7 +160,7 @@ namespace CKAN
                 foreach (dynamic stanza in module.bundles) {
                     BundledModule bundled = new BundledModule (stanza);
 
-                    string ver = registry_manager.registry.installedVersion (bundled.identifier);
+                    string ver = registry_manager.registry.InstalledVersion (bundled.identifier);
 
                     if (ver != null) {
                         Console.WriteLine (
@@ -174,22 +173,21 @@ namespace CKAN
                     // Not installed, so let's get about installing it!
                     Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
 
-                    install_component (stanza, zipfile, installed_files);
+                    InstallComponent (stanza, zipfile, installed_files);
 
-                    registry.register_module (new InstalledModule (installed_files, bundled, DateTime.Now));
+                    registry.RegisterModule (new InstalledModule (installed_files, bundled, DateTime.Now));
 
                 }
             }
 
             // Done! Save our registry changes!
-            registry_manager.save();
+            registry_manager.Save();
 
             return;
 
         }
 
-        string sha1_sum (string path)
-        {
+        string Sha1Sum (string path) {
             SHA1 hasher = new SHA1CryptoServiceProvider();
 
             try {
@@ -200,8 +198,7 @@ namespace CKAN
             };
         }
 
-        void install_component (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files)
-        {
+        void InstallComponent (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files) {
             string fileToInstall = stanza.file;
 
             Console.WriteLine ("    * Installing " + fileToInstall);
@@ -210,10 +207,10 @@ namespace CKAN
             bool makeDirs;
 
             if (stanza.install_to == "GameData") {
-                installDir = KSP.gameData ();
+                installDir = KSP.GameData ();
                 makeDirs = true;
             } else if (stanza.install_to == "Ships") {
-                installDir = KSP.ships ();
+                installDir = KSP.Ships ();
                 makeDirs = false; // Don't allow directory creation in ships directory
             } else {
                 // Is this the best exception to use here??
@@ -253,18 +250,17 @@ namespace CKAN
                 string fullPath = Path.Combine (installDir, outputName);
                 // Console.WriteLine (fullPath);
 
-                copyZipEntry (zipfile, entry, fullPath, makeDirs);
+                CopyZipEntry (zipfile, entry, fullPath, makeDirs);
 
                 module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
-                    sha1_sum = sha1_sum (fullPath),
+                    sha1_sum = Sha1Sum (fullPath),
                 });
             }
 
             return;
         }
 
-        void copyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
-        {
+        void CopyZipEntry (ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs) {
 
             if (entry.IsDirectory) {
 
@@ -293,14 +289,14 @@ namespace CKAN
             return;
         }
 
-        public void uninstall(string modName) {
+        public void Uninstall(string modName) {
 
             // Walk our registry to find all files for this mod.
 
             Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
             foreach (string file in files.Keys) {
-                string path = Path.Combine (KSP.gameDir (), file);
+                string path = Path.Combine (KSP.GameDir (), file);
 
                 FileAttributes attr = File.GetAttributes (path);
 
@@ -312,14 +308,14 @@ namespace CKAN
                 }
                 else {
                     Console.WriteLine ("Removing {0}", file);
-                    File.Delete (Path.Combine (KSP.gameDir (), file));
+                    File.Delete (Path.Combine (KSP.GameDir (), file));
                 }
             }
 
             // Remove from registry.
 
-            registry_manager.registry.deregister_module (modName);
-            registry_manager.save ();
+            registry_manager.registry.DeregisterModule (modName);
+            registry_manager.Save ();
 
             // And we're done! :)
 

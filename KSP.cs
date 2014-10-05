@@ -1,13 +1,14 @@
-using System;
-using System.IO;
-using Microsoft.Win32;
-using log4net;
-
-/// <summary>
-/// Everything for dealing with KSP itself.
-/// </summary>
-
 namespace CKAN {
+
+    using System;
+    using System.IO;
+    using Microsoft.Win32;
+    using log4net;
+
+    /// <summary>
+    /// Everything for dealing with KSP itself.
+    /// </summary>
+
     public class KSP {
 
         // Where to find KSP relative to Steam's root.
@@ -71,7 +72,7 @@ namespace CKAN {
             return null;
         }
 
-        public static string gameDir() {
+        public static string GameDir() {
 
             if (cached_gamedir != null) {
                 return cached_gamedir;
@@ -117,38 +118,38 @@ namespace CKAN {
 
         }
     
-        public static string gameData() {
-            return Path.Combine (gameDir (), "GameData");
+        public static string GameData() {
+            return Path.Combine (GameDir (), "GameData");
         }
 
-        public static string ckanDir() {
-            return Path.Combine (gameDir (), "CKAN");
+        public static string CkanDir() {
+            return Path.Combine (GameDir (), "CKAN");
         }
 
-        public static string downloadCacheDir() {
-            return Path.Combine (ckanDir (), "downloads");
+        public static string DownloadCacheDir() {
+            return Path.Combine (CkanDir (), "downloads");
         }
 
-        public static string ships() {
-            return Path.Combine (gameDir (), "Ships");
+        public static string Ships() {
+            return Path.Combine (GameDir (), "Ships");
         }
 
         /// <summary>
         /// Create the CKAN directory and any supporting files.
         /// </summary>
-        public static void init() {
-            if (! Directory.Exists (ckanDir ())) {
+        public static void Init() {
+            if (! Directory.Exists (CkanDir ())) {
                 Console.WriteLine ("Setting up CKAN for the first time...");
-                Console.WriteLine ("Creating {0}", ckanDir ());
-                Directory.CreateDirectory (ckanDir ());
+                Console.WriteLine ("Creating {0}", CkanDir ());
+                Directory.CreateDirectory (CkanDir ());
 
                 Console.WriteLine ("Scanning for installed mods...");
-                scanGameData ();
+                ScanGameData ();
             }
 
-            if (! Directory.Exists( downloadCacheDir() )) {
-                Console.WriteLine ("Creating {0}", downloadCacheDir ());
-                Directory.CreateDirectory (downloadCacheDir ());
+            if (! Directory.Exists( DownloadCacheDir() )) {
+                Console.WriteLine ("Creating {0}", DownloadCacheDir ());
+                Directory.CreateDirectory (DownloadCacheDir ());
             }
         }
 
@@ -156,7 +157,7 @@ namespace CKAN {
 
             log.Debug ("Cleaning cahce directory");
 
-            string[] files = Directory.GetFiles (downloadCacheDir (), "*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles (DownloadCacheDir (), "*", SearchOption.AllDirectories);
 
             foreach (string file in files) {
 
@@ -172,26 +173,25 @@ namespace CKAN {
             return;
         }
 
-        public static void scanGameData() {
+        public static void ScanGameData() {
 
-            // TODO: Get rid of magic paths!
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
 
             // Forget that we've seen any DLLs, as we're going to refresh them all.
-            registry.clear_dlls ();
+            registry.ClearDlls ();
 
             // TODO: It would be great to optimise this to skip .git directories and the like.
             // Yes, I keep my GameData in git.
 
-            string[] dllFiles = Directory.GetFiles (gameData(), "*.dll", SearchOption.AllDirectories);
+            string[] dllFiles = Directory.GetFiles (GameData(), "*.dll", SearchOption.AllDirectories);
 
             foreach (string file in dllFiles) {
                 // register_dll does the heavy lifting of turning it into a modname
-                registry.register_dll (file);
+                registry.RegisterDll (file);
             }
 
-            registry_manager.save();
+            registry_manager.Save();
         }
     }
 }
