@@ -1,19 +1,11 @@
-using System;
-using Newtonsoft.Json;
-
-/// <summary>
-/// Describes a CKAN module (ie, what's in the CKAN.schema file).
-/// 
-/// 
-/// A lot of heavy lifting is done here; including fetching and installing.
-///
-/// Using Mono, and getting certificate errors? Populate the certificate store with:
-/// `mozroots --import --ask-remove`
-/// 
-/// </summary>
-///
-
 namespace CKAN {
+
+    using System;
+    using Newtonsoft.Json;
+        
+    /// <summary>
+    /// Describes a CKAN module (ie, what's in the CKAN.schema file).
+    /// </summary>
 
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
@@ -143,7 +135,7 @@ namespace CKAN {
         /// Returns a standardised name for this module, in the form
         /// "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
         /// </summary>
-        public string standard_name ()
+        public string StandardName ()
         {
             return identifier + "-" + version + ".zip";
         }

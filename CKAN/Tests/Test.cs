@@ -42,7 +42,7 @@ namespace Tests
 
             CkanModule module = CkanModule.from_string (ckan_string);
 
-            Assert.AreEqual (module.standard_name (), "kOS-0.14.zip");
+            Assert.AreEqual (module.StandardName (), "kOS-0.14.zip");
         }
     }
 
@@ -57,7 +57,7 @@ namespace Tests
         public void TestCase ()
         {
 
-            string gameData = CKAN.KSP.gameData ();
+            string gameData = CKAN.KSP.GameData ();
 
             Assert.IsTrue (Regex.IsMatch (gameData, "GameData/?$", RegexOptions.IgnoreCase));
         }

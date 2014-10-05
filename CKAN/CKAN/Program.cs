@@ -1,13 +1,3 @@
-using System;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Reflection;
-using CommandLine;
-using log4net;
-using log4net.Config;
-using log4net.Core;
 
 // Reference CKAN client
 // Paul '@pjf' Fenwick
@@ -15,6 +5,18 @@ using log4net.Core;
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
 namespace CKAN {
+
+    using System;
+    using System.IO;
+    using System.Text;
+    using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using CommandLine;
+    using log4net;
+    using log4net.Config;
+    using log4net.Core;
+
     class MainClass {
 
         public const int EXIT_OK     = 0;
@@ -54,30 +56,30 @@ namespace CKAN {
             }
 
             // Find KSP, create CKAN dir, perform housekeeping.
-            KSP.init ();
+            KSP.Init ();
 
             switch (cmdline.action) {
 
                 case "version":
-                    return version ();
+                    return Version ();
 
                 case "install":
-                    return install ((InstallOptions) cmdline.options);
+                    return Install ((InstallOptions) cmdline.options);
                 
                 case "scan":
-                    return scan ();
+                    return Scan ();
 
                 case "list":
-                    return list ();
+                    return List ();
 
                 case "show":
-                    return show ((ShowOptions) cmdline.options);
+                    return Show ((ShowOptions) cmdline.options);
 
                 case "remove":
-                    return remove ((RemoveOptions)cmdline.options);
+                    return Remove ((RemoveOptions)cmdline.options);
 
                 case "clean":
-                    return clean ();
+                    return Clean ();
 
                 default :
                     Console.WriteLine ("Unknown command, try --help");
@@ -86,7 +88,7 @@ namespace CKAN {
             }
         }
 
-        public static int version() {
+        static int Version() {
 
             // SeriouslyLongestClassNamesEverThanksMicrosoft
             AssemblyInformationalVersionAttribute[] assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
@@ -101,15 +103,15 @@ namespace CKAN {
             return EXIT_OK;
         }
 
-        public static int scan() {
-            KSP.scanGameData();
+        static int Scan() {
+            KSP.ScanGameData();
 
             return EXIT_OK;
         }
 
-        public static int list() {
+        static int List() {
 
-            string KspPath = KSP.gameDir ();
+            string KspPath = KSP.GameDir ();
 
             Console.WriteLine ("\nKSP found at {0}\n", KspPath);
 
@@ -140,20 +142,20 @@ namespace CKAN {
         }
 
         // Uninstalls a module, if it exists.
-        public static int remove(RemoveOptions options) {
+        static int Remove(RemoveOptions options) {
 
             ModuleInstaller installer = new ModuleInstaller ();
-            installer.uninstall (options.Modname);
+            installer.Uninstall (options.Modname);
 
             return EXIT_OK;
         }
 
-        static int clean() {
+        static int Clean() {
             KSP.CleanCache ();
             return EXIT_OK;
         }
 
-        public static int install(InstallOptions options) { 
+        static int Install(InstallOptions options) { 
 
             // If we have a zipfile, use it.
 
@@ -175,7 +177,7 @@ namespace CKAN {
                 CkanModule module = CkanModule.from_file (ckanFilename);
                 ModuleInstaller installer = new ModuleInstaller ();
 
-                installer.install (module, zipFilename);
+                installer.Install (module, zipFilename);
                 return EXIT_OK;
             }
 
@@ -184,7 +186,7 @@ namespace CKAN {
             foreach (string filename in options.Files) {
                 CkanModule module = CkanModule.from_file (filename);
                 ModuleInstaller installer = new ModuleInstaller ();
-                installer.install (module);
+                installer.Install (module);
             }
 
             Console.WriteLine ("\nDone!\n");
@@ -192,7 +194,7 @@ namespace CKAN {
             return EXIT_OK;
         }
 
-        static int show(ShowOptions options) {
+        static int Show(ShowOptions options) {
             RegistryManager registry_manager = RegistryManager.Instance();
             InstalledModule module = registry_manager.registry.installed_modules [options.Modname];
 
