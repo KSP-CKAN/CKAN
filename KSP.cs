@@ -39,11 +39,25 @@ namespace CKAN {
 
             log.Debug ("Couldn't find Steam via registry key, trying other locations...");
 
-            // Not in the registry, or missing file, but that's cool. This should find it on Linux/OSX
+            // Not in the registry, or missing file, but that's cool. This should find it on Linux
 
             steam = Path.Combine (
                 Environment.GetFolderPath (Environment.SpecialFolder.Personal),
                 ".steam", "steam"
+            );
+
+            log.DebugFormat ("Looking for Steam in {0}", steam);
+
+            if (Directory.Exists (steam)) {
+                log.InfoFormat("Found Steam at {0}", steam);
+                return steam;
+            }
+
+            // Ok - Perhaps we're running OSX?
+
+            steam = Path.Combine (
+                Environment.GetFolderPath (Environment.SpecialFolder.Personal),
+                Path.Combine("Library", "Application Support", "Steam")
             );
 
             log.DebugFormat ("Looking for Steam in {0}", steam);
