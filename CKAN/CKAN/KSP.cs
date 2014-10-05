@@ -32,7 +32,7 @@ namespace CKAN {
             string steam = (string) Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
 
             // If that directory exists, we've found steam!
-            if (steam != null && FileSystem.IsDirectory(steam)) {
+            if (steam != null && Directory.Exists (steam)) {
                 log.InfoFormat ("Found Steam at {0}", steam);
                 return steam;
             }
@@ -48,7 +48,7 @@ namespace CKAN {
 
             log.DebugFormat ("Looking for Steam in {0}", steam);
 
-            if (FileSystem.IsDirectory (steam)) {
+            if (Directory.Exists (steam)) {
                 log.InfoFormat("Found Steam at {0}", steam);
                 return steam;
             }
@@ -75,7 +75,7 @@ namespace CKAN {
 
             // Checking for a GameData directory probably isn't the best way to
             // detect KSP, but it works. More robust implementations welcome.
-            if (FileSystem.IsDirectory (Path.Combine (exe_dir, "GameData"))) {
+            if (Directory.Exists (Path.Combine (exe_dir, "GameData"))) {
                 log.InfoFormat ("KSP found at {0}", exe_dir);
                 return cached_gamedir = exe_dir;
             }
@@ -88,7 +88,7 @@ namespace CKAN {
             if (steam != null) {
                 string ksp_dir = Path.Combine (steam, steamKSP);
 
-                if (FileSystem.IsDirectory(ksp_dir)) {
+                if (Directory.Exists (ksp_dir)) {
                     log.InfoFormat ("KSP found at {0}", ksp_dir);
                     return cached_gamedir = ksp_dir;
                 }
@@ -146,7 +146,7 @@ namespace CKAN {
 
             foreach (string file in files) {
 
-                if (FileSystem.IsDirectory (file)) {
+                if (Directory.Exists (file)) {
                     log.DebugFormat ("Skipping directory: {0}", file);
                     continue;
                 }
