@@ -63,6 +63,12 @@ namespace CKAN {
                 case "version":
                     return Version ();
 
+                case "update":
+                    return Update ();
+
+                case "available":
+                    return Available ();
+
                 case "install":
                     return Install ((InstallOptions) cmdline.options);
                 
@@ -98,6 +104,27 @@ namespace CKAN {
                 Console.WriteLine ("development");
             } else {
                 Console.WriteLine (assemblies[0].InformationalVersion);
+            }
+
+            return EXIT_OK;
+        }
+
+        static int Update() {
+
+            Console.WriteLine ("Downloading updates...");
+
+            int updated = CKAN.Update();
+
+            Console.WriteLine ("Updated information on {0} available modules", updated);
+
+            return EXIT_OK;
+        }
+
+        static int Available() {
+            string[] available = RegistryManager.Instance().registry.Available();
+
+            foreach (string module in available) {
+                Console.WriteLine("* {0}", module);
             }
 
             return EXIT_OK;
@@ -241,6 +268,11 @@ namespace CKAN {
     // TODO: Figure out how to do per action help screens.
 
     class Actions {
+        [VerbOption("update", HelpText = "Update list of available mods")]
+        public UpdateOptions Update { get; set; }
+
+        [VerbOption("available", HelpText = "List available mods")]
+        public AvailableOptions Available { get; set; }
 
         [VerbOption("install", HelpText = "Install a KSP mod")]
         public InstallOptions Install { get; set; }
@@ -288,10 +320,12 @@ namespace CKAN {
         public List<string> Files { get; set; }
     }
 
-    class ScanOptions    : CommonOptions { }
-    class ListOptions    : CommonOptions { }
-    class VersionOptions : CommonOptions { }
-    class CleanOptions   : CommonOptions { }
+    class ScanOptions      : CommonOptions { }
+    class ListOptions      : CommonOptions { }
+    class VersionOptions   : CommonOptions { }
+    class CleanOptions     : CommonOptions { }
+    class UpdateOptions    : CommonOptions { }
+    class AvailableOptions : CommonOptions { }
 
     class RemoveOptions : CommonOptions {
         [ValueOption(0)]
