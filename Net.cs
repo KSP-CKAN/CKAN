@@ -26,6 +26,10 @@ namespace CKAN {
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
 
+        public static string Download (Uri url, string filename = null) {
+            return Download (url.ToString (), filename);
+        }
+
         public static string Download (string url, string filename = null) {
 
             // Generate a temporary file if none is provided.
