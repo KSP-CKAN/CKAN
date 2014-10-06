@@ -20,15 +20,22 @@ namespace CKAN {
         /// <summary>
         /// Download and update the local CKAN meta-info.
         /// 
+        /// Optionally takes a URL to the zipfile repo to download.
+        /// 
         /// Returns the number of unique modules updated.
         /// </summary>
 
-        static public int Update() {
+        static public int Update(string repo = null) {
             RegistryManager registry_manager = RegistryManager.Instance();
 
-            log.InfoFormat ("Downloading {0}", default_ckan_repo);
+            // Use our default repo, unless we've been told otherwise.
+            if (repo == null) {
+                repo = default_ckan_repo;
+            }
 
-            string repo_file = Net.Download (default_ckan_repo);
+            log.InfoFormat ("Downloading {0}", repo);
+
+            string repo_file = Net.Download (repo);
 
             // Open our zip file for processing
             ZipFile zipfile = new ZipFile (File.OpenRead (repo_file));
