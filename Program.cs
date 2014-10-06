@@ -64,7 +64,7 @@ namespace CKAN {
                     return Version ();
 
                 case "update":
-                    return Update ();
+                    return Update ((UpdateOptions) options);
 
                 case "available":
                     return Available ();
@@ -109,11 +109,11 @@ namespace CKAN {
             return EXIT_OK;
         }
 
-        static int Update() {
+        static int Update(UpdateOptions options) {
 
             Console.WriteLine ("Downloading updates...");
 
-            int updated = CKAN.Update();
+            int updated = CKAN.Update(options.repo);
 
             Console.WriteLine ("Updated information on {0} available modules", updated);
 
@@ -321,8 +321,14 @@ namespace CKAN {
     class ListOptions      : CommonOptions { }
     class VersionOptions   : CommonOptions { }
     class CleanOptions     : CommonOptions { }
-    class UpdateOptions    : CommonOptions { }
     class AvailableOptions : CommonOptions { }
+
+    class UpdateOptions    : CommonOptions {
+
+        // This option is really meant for devs testing their CKAN-meta forks.
+        [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
+        public string repo { get; set; }
+    }
 
     class RemoveOptions : CommonOptions {
         [ValueOption(0)]
