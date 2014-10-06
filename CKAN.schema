@@ -61,17 +61,25 @@
             "description" : "Optional maximum KSP version",
             "$ref"        : "#/definitions/ksp_version"
         },
-        "requires" : {
+        "pre_depends" : {
+            "description" : "Optional list dependencies that must be installed first. Use sparingly.",
+            "$ref"        : "#/definitions/relationship"
+        },
+        "depends" : {
             "description" : "Optional list of dependencies",
-            "$ref"        : "#/definitions/modlist"
+            "$ref"        : "#/definitions/relationship"
         },
         "recommends" : {
             "description" : "Optional list of recommended mods",
-            "$ref"        : "#/definitions/modlist"
+            "$ref"        : "#/definitions/relationship"
+        },
+        "suggests" : {
+            "description" : "Optional list of recommended, but not essential mods",
+            "$ref"        : "#/definitions/relationship"
         },
         "conflicts" : {
             "description" : "Optional list of conflicting mods",
-            "$ref"        : "#/definitions/modlist"
+            "$ref"        : "#/definitions/relationship"
         },
         "resources" : {
             "description" : "Additional resources",
@@ -193,8 +201,8 @@
             "type"        : "string",
             "pattern"     : "^(any|[0-9]+\\.[0-9]+\\.[0-9]+)$"
         },
-        "modlist" : {
-            "description" : "A list of mods",
+        "relationship" : {
+            "description" : "A relationship to a list of mods",
             "type" : "array",
             "items" : {
                 "type" : "object",

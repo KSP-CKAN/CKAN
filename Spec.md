@@ -90,7 +90,7 @@ and the
         "release_status" : "stable",
         "min_ksp" : "0.24.2",
         "max_ksp" : "0.24.2",
-        "requires" : [
+        "depends" : [
             { "name" : "RealSolarSystemTextures" }
         ],
         "recommends" : [
@@ -277,7 +277,7 @@ mandatory directives:
 
 An install directive may also include the following optional fields:
 
-- `requires`: Indicates this install directive should only be triggered
+- `depends`: Indicates this install directive should only be triggered
   if the required mod has already been installed.
 - `overwrite`: A boolean value, if set to true, then this allows files
   to be overwritten during install, even if those files are from another
@@ -298,7 +298,7 @@ parts of `OtherMod` (if installed) is shown below:
         {
             "file"       : "GameData/OtherMod",
             "install_to" : "GameData",
-            "requires"   : "OtherMod",
+            "depends"    : "OtherMod",
             "overwrite"  : true
         }
     ]
@@ -331,22 +331,27 @@ Eg `0.23.5`. If not specified, a default value of `any` is assumed.
 The maximum version of KSP the mod requires to operate correctly.
 Eg `0.24.2`. If not specified, a default value of `any` is assumed.
 
-##### requires
+### Relationships
 
-A list of mods which are *required* for the current mod to operate.
+Relationships are optional fields which describe this mod's relationship
+to other mods. They can be used to ensure that a mod is installed with
+one of its graphics packs, or two mods which conflicting functionality
+are not installed at the same time.
+
 At its most basic, this is an array of objects, each being a name
 and identifier:
 
-    "requires" : [
+    "depends" : [
         { "name" : "ModuleManager" },
         { "name" : "RealFuels" },
         { "name" : "RealSolarSystem" }
     ]
 
-Each object may also contain the optional fields `min_version`, `max_version`,
+Each relationship is an array of entries, each entry *must*
+have a `name`, and the optional fields `min_version`, `max_version`,
 and `version`, to more precisely describe which vesions are needed:
 
-    "requires" : [
+    "depends" : [
         { "name" : "ModuleManager",   "min_version" : "2.1.5" },
         { "name" : "RealSolarSystem", "min_version" : "7.3"   },
         { "name" : "RealFuels" }
@@ -355,16 +360,33 @@ and `version`, to more precisely describe which vesions are needed:
 It is an error to mix `version` (which specifies an exact vesion) with
 either `min_version` or `max_version` in the same object.
 
+##### depends
+
+A list of mods which are *required* for the current mod to operate.
+This mods *must* be installed along with the urrent mod being installed.
+
+##### pre_depends
+
+A list of mods which *must* be installed *before* the current mod is
+installed. This should be very *sparingly*, but is sometimes required
+when one mod overwrites part of another mod.
+
 ##### recommends
 
-A list of mods which are *recommended* by this mod for an optimal
-playing experience. This uses the same format as the `requires` field
-above.
+A list of mods which are *recommended*, but not required, for a typical
+user. This is a strong recommendation, and recommended mods *will* be installed
+unless the user requests otherwise.
+
+##### suggests
+
+A list of mods which are suggested for installation alongside this mod.
+This is a weak recommendation, and by default these mods *will not* be
+installed unless the user requests otherwise.
 
 ##### conflicts
 
-A list of mods which *conflict* with this mod. This uses the same format
-as the `requires` field above.
+A list of mods which *conflict* with this mod. The current mod
+*will not* be installed if any of these mods are already on the system.
 
 ##### resources
 
@@ -391,8 +413,21 @@ Example resources:
 
 ##### bundles
 
-A list of mods which are *included* with this mod distribution, each
-of which is an object with the following mandatory fields:
+Where possible, it is recommended to use relationships (
+eg: *depends*, *recommended*, and *suggests*) rather than bundles. This ensures
+that mods are installed from their authoritative source, and means that
+related mods are installed in a known, reproduceable state. It
+also allows the most recent version of a related mod to be installed,
+which is important in ensuring bugfixes and features can be deployed
+in a timely fashion.
+
+Even if your distribution does bundle an additional mod, it is still
+recommended that you use relationships, rather than require the CKAN
+to install the bundle.
+
+However if required, a list of bundles definitions may be provided,
+which describe mods which are included with this distribution. In
+this case, the following fields are mandatory:
 
 - `file`: A path to the bundled mod.
 - `identifier`: The identifier of the bundled mod.
@@ -403,16 +438,16 @@ of which is an object with the following mandatory fields:
   bundled.
 - `required`: Whether this mod is required for operation.
 
-Bundled mods should *not* be installed if a later version of the same
+Bundled mods *will not* be installed if the same or later version of the
 mod is already installed.
 
 As an example, here is a `bundles` section which includes both
-ModuleManager and CustomBiomes
+ModuleMunger and CustomBiomes
 
     "bundles" : [
         {
-            "file"       : "ModuleManager.2.3.3.dll",
-            "identifier" : "ModuleManager",
+            "file"       : "ModuleMunger.2.3.3.dll",
+            "identifier" : "ModuleMunger",
             "version"    : "2.3.3",
             "install_to" : "GameData",
             "license"    : "CC-BY-SA",
