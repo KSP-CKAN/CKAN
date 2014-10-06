@@ -17,3 +17,6 @@ my $SCHEMA        = "$Bin/../CKAN.schema";
 my $VALIDATOR_JAR = "$Bin/json-schema-validator-2.2.5-lib.jar";
 
 system('java', '-jar', $VALIDATOR_JAR, $SCHEMA, @files);
+
+# Pass through failure status if applicable. This is great for travis.
+$? and die "\nOne or more files failed to validate\n";
