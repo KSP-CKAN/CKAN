@@ -2,7 +2,6 @@ namespace CKAN {
 
     using System;
     using System.IO;
-    using System.Net;
     using System.Linq;
     using System.Collections.Generic;
     using System.Security.Cryptography;
@@ -25,52 +24,16 @@ namespace CKAN {
         public string Download (CkanModule module, string filename = null)
         {
 
-            // Generate a temporary file if none is provided.
+            // Generate a standard filename if none is provided.
             if (filename == null) {
                 filename = module.StandardName ();
             }
 
             Console.WriteLine ("    * Downloading " + filename + "...");
 
-            string fullPath = Path.Combine (KSP.DownloadCacheDir(), filename);
+            string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
-            log.DebugFormat ("Downloading {0} to {1}", module.download, fullPath);
-
-            WebClient agent = new WebClient ();
-
-            try {
-                agent.DownloadFile (module.download, fullPath);
-            }
-            catch (Exception ex) {
-
-                // Clean up our file, it's unlikely to be complete.
-                // It's okay if this fails.
-                try {
-                    log.DebugFormat("Removing {0} after web error failure", fullPath);
-                    File.Delete (fullPath);
-                }
-                catch {
-                    // Apparently we need a catch, even if we do nothing.
-                }
-
-                if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed")) {
-
-                    Console.WriteLine ("\nOh no! Our download failed!\n");
-                    Console.WriteLine ("\t{0}\n",ex.Message);
-                    Console.WriteLine ("If you're on Linux, try running:\n");
-                    Console.WriteLine ("\tmozroots --import --ask-remove\n");
-                    Console.WriteLine ("on the command-line to update your certificate store, and try again.\n");
-
-                    // TODO: Throw an exception that signals we need to exit, rather than
-                    // stopping all other code from tidying up. (We do this for now, so
-                    // we don't have ugly stack-traces on things we kinda expect.)
-                    Environment.Exit (MainClass.EXIT_ERROR);
-                }
-
-                throw;
-            }
-
-            return fullPath;
+            return Net.Download (full_path);
         }
 
         public string CachedOrDownload(CkanModule module, string filename = null) {
