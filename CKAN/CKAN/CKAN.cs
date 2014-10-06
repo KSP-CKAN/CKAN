@@ -76,6 +76,5 @@ namespace CKAN {
             return registry_manager.registry.Available ().Length;
 
         }
-
     }
 }

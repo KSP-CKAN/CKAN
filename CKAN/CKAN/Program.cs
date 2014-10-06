@@ -184,41 +184,35 @@ namespace CKAN {
 
         static int Install(InstallOptions options) { 
 
-            // If we have a zipfile, use it.
+            if (options.zip_file == null && options.ckan_file == null) {
+                // Typical case, install from cached CKAN info.
 
-            if (options.ZipFile != null) {
-                // Aha! We've been called as ckan -f somefile.zip somefile.ckan
-
-                if (options.Files.Count > 1) {
-                    Console.WriteLine ("Only a single CKAN file can be provided when installing from zip");
+                if (options.modules.Count == 0) {
+                    // What? No files specified?
+                    Console.WriteLine ("Usage: ckan install [-z zipfile] [-c ckanfile] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
-                // TODO: Support installing from CKAN file embedded in zip.
+                Registry registry = RegistryManager.Instance ().registry;
 
-                string zipFilename  = options.ZipFile;
-                string ckanFilename = options.Files[0];
+                // Install everything requested. :)
 
-                Console.WriteLine ("Installing " + ckanFilename + " from " + zipFilename);
+                foreach (string module_name in options.modules) {
+                    CkanModule module = registry.LatestAvailable (module_name);
 
-                CkanModule module = CkanModule.from_file (ckanFilename);
-                ModuleInstaller installer = new ModuleInstaller ();
+                    // TODO: Do we *need* a new module installer each iteration?
+                    ModuleInstaller installer = new ModuleInstaller ();
+                    installer.Install (module);
+                }
 
-                installer.Install (module, zipFilename);
+                Console.WriteLine ("\nDone!\n");
+
                 return EXIT_OK;
             }
 
-            // Regular invocation, walk through all CKAN files on the cmdline
+            Console.WriteLine("\nUnsupported option at this time.");
 
-            foreach (string filename in options.Files) {
-                CkanModule module = CkanModule.from_file (filename);
-                ModuleInstaller installer = new ModuleInstaller ();
-                installer.Install (module);
-            }
-
-            Console.WriteLine ("\nDone!\n");
-
-            return EXIT_OK;
+            return EXIT_BADOPT;
         }
 
         static int Show(ShowOptions options) {
@@ -312,12 +306,15 @@ namespace CKAN {
     // Don't forget to cast to this type when you're processing them later on.
 
     class InstallOptions : CommonOptions {
-        [Option('f', "file", HelpText = "Zipfile to process")]
-        public string ZipFile { get; set; }
+        [Option('z', "zipfile", HelpText = "Zipfile to process")]
+        public string zip_file { get; set; }
+
+        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
+        public string ckan_file { get; set; }
 
         // TODO: How do we provide helptext on this?
         [ValueList(typeof(List<string>))]
-        public List<string> Files { get; set; }
+        public List<string> modules { get; set; }
     }
 
     class ScanOptions      : CommonOptions { }

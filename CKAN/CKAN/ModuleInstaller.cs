@@ -12,7 +12,7 @@ namespace CKAN {
 
     public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
-        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
+        // private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -33,7 +33,7 @@ namespace CKAN {
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
-            return Net.Download (full_path);
+            return Net.Download (module.download, full_path);
         }
 
         public string CachedOrDownload(CkanModule module, string filename = null) {
