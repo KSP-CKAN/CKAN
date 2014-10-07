@@ -411,6 +411,11 @@ Example resources:
         }
     }
 
+#### Special use fields
+
+These fields are optional, and should only be used with good reason.
+Typical mods *should not* include these special use fields.
+
 ##### bundles
 
 Where possible, it is recommended to use relationships (
@@ -480,3 +485,17 @@ It *is* considered acceptable to use this field if a mod is renamed,
 and the old name of the mod is listed in the `provides` field. This
 allows for mods to be renamed without updating all other mods which
 depend upon it.
+
+#### Extensions
+
+Any field starting with `x_` (an x, followed by an underscore) is considered
+an *extension field*. The CKAN tool-chain will *ignore* any such fields.
+These fields may be used to include additional machine or human-readable
+data in the files.
+
+For example, one may have an `x_maintained_by` field, to indicate the
+maintainer of a CKAN file, or an `x_generated_by` field to indicate
+it's the result of a custom build process.
+
+Extension fields are unrestricted, and may contain any sort of data,
+including lists and objects.
