@@ -55,6 +55,9 @@
     <Compile Include="RegistryManager.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="ModuleInstaller.cs" />
+    <Compile Include="Net.cs" />
+    <Compile Include="CKAN.cs" />
+    <Compile Include="AvailableModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
