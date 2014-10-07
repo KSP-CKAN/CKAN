@@ -82,6 +82,10 @@ namespace CKAN {
             return available_modules.Keys.ToArray();
         }
 
+        public CkanModule LatestAvailable(string module) {
+            return available_modules[module].Latest();
+        }
+
         /// <summary>
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
