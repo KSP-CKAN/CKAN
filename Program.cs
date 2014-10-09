@@ -154,9 +154,10 @@ namespace CKAN {
 
         static int List() {
 
-            string KspPath = KSP.GameDir ();
+            string ksp_path = KSP.GameDir ();
 
-            Console.WriteLine ("\nKSP found at {0}\n", KspPath);
+            Console.WriteLine ("\nKSP found at {0}\n", ksp_path);
+            Console.WriteLine ("KSP Version: {0}\n", KSP.Version ());
 
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;

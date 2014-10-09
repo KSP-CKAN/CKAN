@@ -3,6 +3,7 @@ namespace CKAN {
     using System;
     using System.IO;
     using Microsoft.Win32;
+    using System.Text.RegularExpressions;
     using log4net;
 
     /// <summary>
@@ -17,6 +18,7 @@ namespace CKAN {
         static readonly ILog log = LogManager.GetLogger (typeof(KSP));
 
         static string cached_gamedir = null;
+        static string cached_version = null;
 
         private const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
         private const string CKAN_GAMEDIR_VALUE = @"GameDir";
@@ -280,5 +282,36 @@ namespace CKAN {
 
             registry_manager.Save();
         }
+
+        public static string Version() {
+
+            if (cached_version != null) {
+                return cached_version;
+            }
+
+            return cached_version = DetectVersion (GameDir ());
+        }
+
+        private static string DetectVersion(string path) {
+
+            // Slurp our README into memory
+            string readme = File.ReadAllText(Path.Combine (path, "readme.txt"));
+
+            // And find the KSP version. Easy! :)
+            Match match = Regex.Match (readme, @"Version\s*(\d+\.\d+\.\d+)", RegexOptions.IgnoreCase);
+
+            if (match.Success) {
+                string version = match.Groups [1].Value;
+                log.DebugFormat ("Found version {0}", version);
+                return version;
+            }
+
+            // Oh noes! We couldn't find the version!
+            // (Suggestions for better exceptions welcome!)
+            log.Error ("Could not find KSP version in readme.txt");
+            throw new BadVersionException ();
+        }
     }
+
+    public class BadVersionException : Exception { }
 }
