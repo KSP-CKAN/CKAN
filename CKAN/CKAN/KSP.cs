@@ -18,6 +18,10 @@ namespace CKAN {
 
         static string cached_gamedir = null;
 
+        private const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
+        private const string CKAN_GAMEDIR_VALUE = @"GameDir";
+
+
         /// <summary>
         /// Finds Steam on the current machine.
         /// </summary>
@@ -74,11 +78,40 @@ namespace CKAN {
 
         public static string GameDir() {
 
+            // Return cached if found.
             if (cached_gamedir != null) {
                 return cached_gamedir;
             }
 
-            // TODO: See if KSP was specified on the command line.
+            // Go find and cache it.
+            return cached_gamedir = FindGameDir ();
+        }
+
+        // This can be called to set our GameDir directly.
+        // It's primary use it cmdline argument switches.
+        public static void SetGameDir(string directory) {
+            if (cached_gamedir != null) {
+                // Changing gamedir may result in inconsistencies,
+                // so we don't allow it.
+
+                log.FatalFormat ("Attempt to change gamedir from {0} to {1}", cached_gamedir, directory);
+                throw new InvalidOperationException ();
+            }
+
+            // Verify that we *actually* have a KSP install
+            // TODO: Have a better test than just GameData presence.
+
+            if (!IsKspDir(directory)) {
+                log.FatalFormat ("Cannot find GameData in {0}", directory);
+                throw new DirectoryNotFoundException ();
+            }
+
+            // All good. Set our gamedir for this session.
+            log.InfoFormat ("Setting KSP dir to {0} by explicit request", directory);
+            cached_gamedir = directory;
+        }
+
+        private static string FindGameDir() {
 
             // See if KSP is in the same dir as we're installed (GH #23)
 
@@ -92,10 +125,15 @@ namespace CKAN {
             // detect KSP, but it works. More robust implementations welcome.
             if (Directory.Exists (Path.Combine (exe_dir, "GameData"))) {
                 log.InfoFormat ("KSP found at {0}", exe_dir);
-                return cached_gamedir = exe_dir;
+                return exe_dir;
             }
 
-            // TODO: See if we've got it cached in the registry.
+            // Check the registry, maybe it's there.
+            string registry_dir = FindGamedirRegistry ();
+
+            if (registry_dir != null) {
+                return registry_dir;
+            }
 
             // See if we can find KSP as part of a Steam install.
 
@@ -105,7 +143,7 @@ namespace CKAN {
 
                 if (Directory.Exists (ksp_dir)) {
                     log.InfoFormat ("KSP found at {0}", ksp_dir);
-                    return cached_gamedir = ksp_dir;
+                    return ksp_dir;
                 }
 
                 log.DebugFormat("Have Steam, but KSP is not at {0}", ksp_dir);
@@ -116,6 +154,47 @@ namespace CKAN {
 
             throw new DirectoryNotFoundException ();
 
+        }
+
+        private static string FindGamedirRegistry() {
+            // Check the Windows/Mono registry (GH #28)
+
+            log.DebugFormat ("Checking {0}\\{1} for KSP path", CKAN_KEY, CKAN_GAMEDIR_VALUE);
+
+            string ksp_dir = (string)Microsoft.Win32.Registry.GetValue (CKAN_KEY, CKAN_GAMEDIR_VALUE, null);
+
+            if (ksp_dir != null) {
+                log.DebugFormat ("Found KSP dir in {0} via registry", ksp_dir);
+                return ksp_dir;
+            }
+
+            return null;
+        }
+
+        public static void PopulateGamedirRegistry(string gamedir = null) {
+
+            if (gamedir == null) {
+                log.Debug ("Registering default gamedir in registry.");
+                gamedir = GameDir ();
+            }
+
+            if (! IsKspDir (gamedir)) {
+                throw new DirectoryNotFoundException ();
+            }
+
+            log.DebugFormat ("Registering KSP {0}\\{1} as {2}", CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
+
+            Microsoft.Win32.Registry.SetValue (CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
+        }
+
+        // Returns true if we have what looks like a KSP dir.
+        private static bool IsKspDir(string directory) {
+            if (!Directory.Exists (Path.Combine (directory, "GameData"))) {
+                log.FatalFormat ("Cannot find GameData in {0}", directory);
+                return false;
+            }
+            log.DebugFormat ("{0} looks like a GameDir", directory);
+            return true;
         }
     
         public static string GameData() {
@@ -151,6 +230,14 @@ namespace CKAN {
                 Console.WriteLine ("Creating {0}", DownloadCacheDir ());
                 Directory.CreateDirectory (DownloadCacheDir ());
             }
+
+            // If we've got no game in the registry, then store this one.
+            // If we *do* have a game there, don't touch it.
+
+            if (FindGamedirRegistry () == null) {
+                PopulateGamedirRegistry ();
+            }
+
         }
 
         public static void CleanCache() {

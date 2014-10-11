@@ -55,6 +55,19 @@ namespace CKAN {
                 LogManager.GetRepository ().Threshold = Level.Info;
             }
 
+            // User provided KSP directory
+            if (options.KSP != null) {
+                try {
+                    log.DebugFormat("Setting KSP directory to {0}", options.KSP);
+                    KSP.SetGameDir (options.KSP);
+                }
+                catch (DirectoryNotFoundException) {
+                    log.FatalFormat ("KSP not found in {0}", options.KSP);
+                    Console.WriteLine ("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                    return EXIT_BADOPT;
+                }
+            }
+
             // Find KSP, create CKAN dir, perform housekeeping.
             KSP.Init ();
 
@@ -86,6 +99,9 @@ namespace CKAN {
 
                 case "clean":
                     return Clean ();
+
+                case "config":
+                    return Config ((ConfigOptions) cmdline.options);
 
                 default :
                     Console.WriteLine ("Unknown command, try --help");
@@ -234,6 +250,24 @@ namespace CKAN {
             }
             return EXIT_OK;
         }
+
+        static int Config(ConfigOptions options) {
+            switch (options.option) {
+                case "gamedir":
+                    try {
+                        KSP.PopulateGamedirRegistry (options.value);
+                        return EXIT_OK;
+                    }
+                    catch (DirectoryNotFoundException) {
+                        Console.WriteLine ("Sorry, {0} doesn't look like a KSP dir", options.value);
+                        return EXIT_BADOPT;
+                    }
+
+                default: 
+                    Console.WriteLine ("Unknown config option {0}", options.option);
+                    return EXIT_BADOPT;
+            }
+        }
     }
 
 
@@ -286,6 +320,9 @@ namespace CKAN {
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
+        [VerbOption("config", HelpText = "Configure CKAN")]
+        public ConfigOptions Config { get; set; }
+
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
     
@@ -300,6 +337,9 @@ namespace CKAN {
 
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
+
+        [Option('k', "ksp", DefaultValue = null, HelpText = "KSP directory to use")]
+        public string KSP { get; set; }
     }
 
     // Each action defines its own options that it supports.
@@ -338,6 +378,14 @@ namespace CKAN {
     class ShowOptions : CommonOptions {
         [ValueOption(0)]
         public string Modname { get; set; } 
+    }
+
+    class ConfigOptions : CommonOptions {
+        [ValueOption(0)]
+        public string option { get; set; }
+
+        [ValueOption(1)]
+        public string value { get; set; }
     }
 
     // Exception class, so we can signal errors in command options.
