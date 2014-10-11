@@ -101,7 +101,7 @@ namespace CKAN {
             // Verify that we *actually* have a KSP install
             // TODO: Have a better test than just GameData presence.
 
-            if (!Directory.Exists (Path.Combine (directory, "GameData"))) {
+            if (!IsKspDir(directory)) {
                 log.FatalFormat ("Cannot find GameData in {0}", directory);
                 throw new DirectoryNotFoundException ();
             }
