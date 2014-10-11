@@ -87,10 +87,31 @@ namespace CKAN {
             return cached_gamedir = FindGameDir ();
         }
 
+        // This can be called to set our GameDir directly.
+        // It's primary use it cmdline argument switches.
+        public static void SetGameDir(string directory) {
+            if (cached_gamedir != null) {
+                // Changing gamedir may result in inconsistencies,
+                // so we don't allow it.
+
+                log.FatalFormat ("Attempt to change gamedir from {0} to {1}", cached_gamedir, directory);
+                throw new InvalidOperationException ();
+            }
+
+            // Verify that we *actually* have a KSP install
+            // TODO: Have a better test than just GameData presence.
+
+            if (!Directory.Exists (Path.Combine (directory, "GameData"))) {
+                log.FatalFormat ("Cannot find GameData in {0}", directory);
+                throw new DirectoryNotFoundException ();
+            }
+
+            // All good. Set our gamedir for this session.
+            log.InfoFormat ("Setting KSP dir to {0} by explicit request", directory);
+            cached_gamedir = directory;
+        }
 
         private static string FindGameDir() {
-
-            // TODO: See if KSP was specified on the command line.
 
             // See if KSP is in the same dir as we're installed (GH #23)
 
