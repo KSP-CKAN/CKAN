@@ -171,12 +171,30 @@ namespace CKAN {
             return null;
         }
 
-        private static void PopulateGamedirRegistry() {
-            string gamedir = GameDir ();
+        public static void PopulateGamedirRegistry(string gamedir = null) {
+
+            if (gamedir == null) {
+                log.Debug ("Registering default gamedir in registry.");
+                gamedir = GameDir ();
+            }
+
+            if (! IsKspDir (gamedir)) {
+                throw new DirectoryNotFoundException ();
+            }
 
             log.DebugFormat ("Registering KSP {0}\\{1} as {2}", CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
 
             Microsoft.Win32.Registry.SetValue (CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
+        }
+
+        // Returns true if we have what looks like a KSP dir.
+        private static bool IsKspDir(string directory) {
+            if (!Directory.Exists (Path.Combine (directory, "GameData"))) {
+                log.FatalFormat ("Cannot find GameData in {0}", directory);
+                return false;
+            }
+            log.DebugFormat ("{0} looks like a GameDir", directory);
+            return true;
         }
     
         public static string GameData() {
