@@ -231,23 +231,33 @@ namespace CKAN {
             return EXIT_BADOPT;
         }
 
+        // TODO: We should have a command (probably this one) that shows
+        // info about uninstalled modules.
         static int Show(ShowOptions options) {
             RegistryManager registry_manager = RegistryManager.Instance();
-            InstalledModule module = registry_manager.registry.installed_modules [options.Modname];
+            InstalledModule module;
 
-            if (module != null) {
-                // TODO: Print *lots* of information out; I should never have to dig through JSON
-
-                Console.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
-
-                Console.WriteLine ("\n== Files ==\n");
-
-                Dictionary<string, InstalledModuleFile> files = module.installed_files;
-
-                foreach (string file in files.Keys) {
-                    Console.WriteLine (file);
-                }
+            try {
+                module = registry_manager.registry.installed_modules [options.Modname];
             }
+            catch (KeyNotFoundException) {
+                Console.WriteLine ("{0} not installed.", options.Modname);
+                Console.WriteLine ("Try `ckan list` to show installed modules");
+                return EXIT_BADOPT;
+            }
+
+            // TODO: Print *lots* of information out; I should never have to dig through JSON
+
+            Console.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
+
+            Console.WriteLine ("\n== Files ==\n");
+
+            Dictionary<string, InstalledModuleFile> files = module.installed_files;
+
+            foreach (string file in files.Keys) {
+                Console.WriteLine (file);
+            }
+
             return EXIT_OK;
         }
 
