@@ -55,6 +55,19 @@ namespace CKAN {
                 LogManager.GetRepository ().Threshold = Level.Info;
             }
 
+            // User provided KSP directory
+            if (options.KSP != null) {
+                try {
+                    log.DebugFormat("Setting KSP directory to {0}", options.KSP);
+                    KSP.SetGameDir (options.KSP);
+                }
+                catch (DirectoryNotFoundException) {
+                    log.FatalFormat ("KSP not found in {0}", options.KSP);
+                    Console.WriteLine ("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                    return EXIT_BADOPT;
+                }
+            }
+
             // Find KSP, create CKAN dir, perform housekeeping.
             KSP.Init ();
 
@@ -300,6 +313,9 @@ namespace CKAN {
 
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
+
+        [Option('k', "ksp", DefaultValue = null, HelpText = "KSP directory to use")]
+        public string KSP { get; set; }
     }
 
     // Each action defines its own options that it supports.
