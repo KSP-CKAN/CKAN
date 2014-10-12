@@ -2,7 +2,8 @@ namespace CKAN {
 
     using System;
     using Newtonsoft.Json;
-        
+    using log4net;
+
     /// <summary>
     /// Describes a CKAN module (ie, what's in the CKAN.schema file).
     /// </summary>
@@ -102,6 +103,8 @@ namespace CKAN {
         [JsonProperty("spec_version")]
         public string spec_version;
 
+        private static readonly ILog log = LogManager.GetLogger (typeof(CkanModule));
+
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
         public static CkanModule from_file(string filename) {
             string json = System.IO.File.ReadAllText (filename);
@@ -121,7 +124,7 @@ namespace CKAN {
                 object value = newModule.GetType ().GetField (field).GetValue (newModule);
 
                 if (value == null) {
-                    Console.WriteLine ("Missing required field: {0}", field);
+                    log.ErrorFormat ("Module {0} missing required field: {1}", newModule.identifier, field);
                     throw new MissingFieldException (); // Is there a better exception choice?
                 }
             }

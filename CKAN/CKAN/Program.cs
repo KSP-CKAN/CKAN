@@ -62,7 +62,7 @@ namespace CKAN {
                 }
                 catch (DirectoryNotFoundException) {
                     log.FatalFormat ("KSP not found in {0}", options.KSP);
-                    Console.WriteLine ("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                    User.WriteLine ("Error: {0} does not appear to be a KSP directory.", options.KSP);
                     return EXIT_BADOPT;
                 }
             }
@@ -103,7 +103,7 @@ namespace CKAN {
                     return Config ((ConfigOptions) cmdline.options);
 
                 default :
-                    Console.WriteLine ("Unknown command, try --help");
+                    User.WriteLine ("Unknown command, try --help");
                     return EXIT_BADOPT;
 
             }
@@ -112,13 +112,13 @@ namespace CKAN {
         static int Version() {
 
             // SeriouslyLongestClassNamesEverThanksMicrosoft
-            AssemblyInformationalVersionAttribute[] assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
+            var assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
 
             if (assemblies.Length == 0 || assemblies[0].InformationalVersion == null) {
                 // Dunno the version. Some dev probably built it. 
-                Console.WriteLine ("development");
+                User.WriteLine ("development");
             } else {
-                Console.WriteLine (assemblies[0].InformationalVersion);
+                User.WriteLine (assemblies[0].InformationalVersion);
             }
 
             return EXIT_OK;
@@ -126,11 +126,11 @@ namespace CKAN {
 
         static int Update(UpdateOptions options) {
 
-            Console.WriteLine ("Downloading updates...");
+            User.WriteLine ("Downloading updates...");
 
             int updated = CKAN.Update(options.repo);
 
-            Console.WriteLine ("Updated information on {0} available modules", updated);
+            User.WriteLine ("Updated information on {0} available modules", updated);
 
             return EXIT_OK;
         }
@@ -139,7 +139,7 @@ namespace CKAN {
             string[] available = RegistryManager.Instance().registry.Available();
 
             foreach (string module in available) {
-                Console.WriteLine("* {0}", module);
+                User.WriteLine("* {0}", module);
             }
 
             return EXIT_OK;
@@ -155,30 +155,30 @@ namespace CKAN {
 
             string ksp_path = KSP.GameDir ();
 
-            Console.WriteLine ("\nKSP found at {0}\n", ksp_path);
-            Console.WriteLine ("KSP Version: {0}\n", KSP.Version ());
+            User.WriteLine ("\nKSP found at {0}\n", ksp_path);
+            User.WriteLine ("KSP Version: {0}\n", KSP.Version ());
 
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
 
-            Console.WriteLine ("Installed Modules:\n");
+            User.WriteLine ("Installed Modules:\n");
 
             foreach (InstalledModule mod in registry.installed_modules.Values) {
-                Console.WriteLine ("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
+                User.WriteLine ("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
             }
 
-            Console.WriteLine ("\nDetected DLLs (`ckan scan` to rebuild):\n");
+            User.WriteLine ("\nDetected DLLs (`ckan scan` to rebuild):\n");
 
             // Walk our dlls, but *don't* show anything we've already displayed as
             // a module.
             foreach (string dll in registry.installed_dlls.Keys) {
                 if (! registry.installed_modules.ContainsKey(dll)) {
-                    Console.WriteLine ("* {0}", dll);
+                    User.WriteLine ("* {0}", dll);
                 }
             }
 
             // Blank line at the end makes for nicer looking output.
-            Console.WriteLine ("");
+            User.WriteLine ("");
 
             return EXIT_OK;
 
@@ -205,7 +205,7 @@ namespace CKAN {
 
                 if (options.modules.Count == 0) {
                     // What? No files specified?
-                    Console.WriteLine ("Usage: ckan install [-z zipfile] [-c ckanfile] Mod [Mod2, ...]");
+                    User.WriteLine ("Usage: ckan install [-z zipfile] [-c ckanfile] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
@@ -221,12 +221,12 @@ namespace CKAN {
                     installer.Install (module);
                 }
 
-                Console.WriteLine ("\nDone!\n");
+                User.WriteLine ("\nDone!\n");
 
                 return EXIT_OK;
             }
 
-            Console.WriteLine("\nUnsupported option at this time.");
+            User.WriteLine("\nUnsupported option at this time.");
 
             return EXIT_BADOPT;
         }
@@ -241,21 +241,21 @@ namespace CKAN {
                 module = registry_manager.registry.installed_modules [options.Modname];
             }
             catch (KeyNotFoundException) {
-                Console.WriteLine ("{0} not installed.", options.Modname);
-                Console.WriteLine ("Try `ckan list` to show installed modules");
+                User.WriteLine ("{0} not installed.", options.Modname);
+                User.WriteLine ("Try `ckan list` to show installed modules");
                 return EXIT_BADOPT;
             }
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            Console.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
 
-            Console.WriteLine ("\n== Files ==\n");
+            User.WriteLine ("\n== Files ==\n");
 
             Dictionary<string, InstalledModuleFile> files = module.installed_files;
 
             foreach (string file in files.Keys) {
-                Console.WriteLine (file);
+                User.WriteLine (file);
             }
 
             return EXIT_OK;
@@ -269,12 +269,12 @@ namespace CKAN {
                         return EXIT_OK;
                     }
                     catch (DirectoryNotFoundException) {
-                        Console.WriteLine ("Sorry, {0} doesn't look like a KSP dir", options.value);
+                        User.WriteLine ("Sorry, {0} doesn't look like a KSP dir", options.value);
                         return EXIT_BADOPT;
                     }
 
                 default: 
-                    Console.WriteLine ("Unknown config option {0}", options.option);
+                    User.WriteLine ("Unknown config option {0}", options.option);
                     return EXIT_BADOPT;
             }
         }

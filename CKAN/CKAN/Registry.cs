@@ -1,4 +1,4 @@
-namespace CKAN {
+ namespace CKAN {
 
     using System;
     using System.Collections.Generic;
@@ -107,7 +107,7 @@ namespace CKAN {
             string relPath = match.Groups[1].Value;
             string modName = match.Groups[2].Value;
 
-            Console.WriteLine ("Registering {0} -> {1}", modName, relPath);
+            User.WriteLine ("Registering {0} -> {1}", modName, relPath);
 
             // We're fine if we overwrite an existing key.
             installed_dlls[modName] = relPath;

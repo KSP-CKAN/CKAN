@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle ("CKAN")]
 [assembly: AssemblyDescription ("The Comprehensive Kerbal Archive Network")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("https://github.com/pjf/CKAN")]
+[assembly: AssemblyCompany ("https://github.com/KSP-CKAN/CKAN")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("CC-BY 4.0, LGPL, or MIT; you choose!")]
+[assembly: AssemblyCopyright ("Copyright CKAN Team, https://github.com/KSP-CKAN/CKAN\nCC-BY 4.0, LGPL, or MIT; you choose!")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
