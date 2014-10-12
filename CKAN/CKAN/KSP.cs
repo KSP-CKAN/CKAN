@@ -220,16 +220,16 @@ namespace CKAN {
         /// </summary>
         public static void Init() {
             if (! Directory.Exists (CkanDir ())) {
-                Console.WriteLine ("Setting up CKAN for the first time...");
-                Console.WriteLine ("Creating {0}", CkanDir ());
+                User.WriteLine ("Setting up CKAN for the first time...");
+                User.WriteLine ("Creating {0}", CkanDir ());
                 Directory.CreateDirectory (CkanDir ());
 
-                Console.WriteLine ("Scanning for installed mods...");
+                User.WriteLine ("Scanning for installed mods...");
                 ScanGameData ();
             }
 
             if (! Directory.Exists( DownloadCacheDir() )) {
-                Console.WriteLine ("Creating {0}", DownloadCacheDir ());
+                User.WriteLine ("Creating {0}", DownloadCacheDir ());
                 Directory.CreateDirectory (DownloadCacheDir ());
             }
 

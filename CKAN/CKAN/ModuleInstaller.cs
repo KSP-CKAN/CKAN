@@ -29,7 +29,7 @@ namespace CKAN {
                 filename = module.StandardName ();
             }
 
-            Console.WriteLine ("    * Downloading " + filename + "...");
+            User.WriteLine ("    * Downloading " + filename + "...");
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
@@ -69,7 +69,7 @@ namespace CKAN {
 
             if (version != null) {
                 // TODO: Check if we can upgrade!
-                Console.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+                User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace CKAN {
                         // find our module.
 
                         // If we can't find it, cry and moan.
-                        Console.WriteLine ("Requirement {0} not found", depends.name);
+                        User.WriteLine ("Requirement {0} not found", depends.name);
                         throw new ModuleNotFoundException (name, depends.version);
                     }
                 }
@@ -126,7 +126,7 @@ namespace CKAN {
                     string ver = registry_manager.registry.InstalledVersion (bundled.identifier);
 
                     if (ver != null) {
-                        Console.WriteLine (
+                        User.WriteLine (
                             "{0} {1} already installed, skipping bundled version {2}",
                             bundled.identifier, ver, bundled.version
                         );

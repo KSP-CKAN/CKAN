@@ -58,11 +58,11 @@ namespace CKAN {
 
                 if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed")) {
 
-                    Console.WriteLine ("\nOh no! Our download failed!\n");
-                    Console.WriteLine ("\t{0}\n",ex.Message);
-                    Console.WriteLine ("If you're on Linux, try running:\n");
-                    Console.WriteLine ("\tmozroots --import --ask-remove\n");
-                    Console.WriteLine ("on the command-line to update your certificate store, and try again.\n");
+                    User.WriteLine ("\nOh no! Our download failed!\n");
+                    User.WriteLine ("\t{0}\n",ex.Message);
+                    User.WriteLine ("If you're on Linux, try running:\n");
+                    User.WriteLine ("\tmozroots --import --ask-remove\n");
+                    User.WriteLine ("on the command-line to update your certificate store, and try again.\n");
 
                     throw new MissingCertificateException ();
 
