@@ -67,5 +67,5 @@ make sure everything goes smoothly.
 ## How can I help more?
 
 Head on over to our [issues page](https://github.com/pjf/CKAN/issues),
-or ask `pjf` on [IRC](http://webchat.esper.net/?channels=kspmodders)
-how you can lend a hand.
+hop onto the [#ckan](http://webchat.esper.net/?channels=ckan) IRC
+channel (irc.esper.net) to see how you can lend a hand.
