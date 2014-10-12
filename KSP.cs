@@ -298,7 +298,7 @@ namespace CKAN {
             string readme = File.ReadAllText(Path.Combine (path, "readme.txt"));
 
             // And find the KSP version. Easy! :)
-            Match match = Regex.Match (readme, @"Version\s*(\d+\.\d+\.\d+)", RegexOptions.IgnoreCase);
+            Match match = Regex.Match (readme, @"^Version\s+(\d+\.\d+\.\d+)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
             if (match.Success) {
                 string version = match.Groups [1].Value;
