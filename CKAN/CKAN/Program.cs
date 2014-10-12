@@ -33,15 +33,14 @@ namespace CKAN {
 
             Options cmdline;
 
-            // If called with no arguments, the parser throws an exception.
-            // TODO: It would be nice if we just *displayed* the help here,
-            //       rather than asking the user to try --help.
-
             try {
                 cmdline = new Options (args);
             }
             catch (NullReferenceException) {
-                Console.WriteLine ("Try ckan --help");
+                // Oops, something went wrong. Generate the help screen instead!
+
+                string[] help = { "--help" }; // Is there a nicer way than a temp var?
+                new Options ( help );
                 return EXIT_BADOPT;
             }
 
