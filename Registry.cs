@@ -82,8 +82,23 @@
             return available_modules.Keys.ToArray();
         }
 
+        /// <summary>
+        /// Returns the latest available version of a module that
+        /// satisifes the user's current requirements and system.
+        /// 
+        /// Throws a ModuleNotFoundException if not available.
+        /// </summary>
         public CkanModule LatestAvailable(string module) {
-            return available_modules[module].Latest();
+
+            // TODO: Check user's KSP version.
+            // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
+
+            try {
+                return available_modules[module].Latest();
+            }
+            catch (KeyNotFoundException) {
+                throw new ModuleNotFoundException (module);
+            }
         }
 
         /// <summary>
