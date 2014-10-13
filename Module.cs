@@ -52,11 +52,20 @@ namespace CKAN {
         [JsonProperty("max_ksp")]
         public string max_ksp; // TODO: Type
 
-        [JsonProperty("requires")]
-        public dynamic[] requires;
+        [JsonProperty("provides")]
+        public string[] provides;
+
+        [JsonProperty("pre_depends")]
+        public dynamic[] pre_depends;
+
+        [JsonProperty("depends")]
+        public dynamic[] depends;
 
         [JsonProperty("recommends")]
         public dynamic[] recommends;
+
+        [JsonProperty("suggests")]
+        public dynamic[] suggests;
 
         [JsonProperty("conflicts")]
         public dynamic[] conflicts;

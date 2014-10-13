@@ -209,16 +209,21 @@ namespace CKAN {
                     return EXIT_BADOPT;
                 }
 
-                Registry registry = RegistryManager.Instance ().registry;
+                // Prepare options. Can these all be done in the new() somehow?
+                var install_ops = new RelationshipResolverOptions ( );
+                install_ops.with_all_suggests = false;
+                install_ops.with_suggests     = false;
+                install_ops.with_recommends    = true;
 
                 // Install everything requested. :)
-
-                foreach (string module_name in options.modules) {
-                    CkanModule module = registry.LatestAvailable (module_name);
-
-                    // TODO: Do we *need* a new module installer each iteration?
+                try {
                     ModuleInstaller installer = new ModuleInstaller ();
-                    installer.Install (module);
+                    installer.InstallList (options.modules, install_ops);
+                }
+                catch (ModuleNotFoundException ex) {
+                    User.WriteLine ("Module {0} required, but not listed in index.", ex.module);
+                    User.WriteLine ("If you're lucky, you can do a `ckan update` and try again.");
+                    return EXIT_ERROR;
                 }
 
                 User.WriteLine ("\nDone!\n");
