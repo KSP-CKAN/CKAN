@@ -21,8 +21,7 @@ namespace CKAN {
         ///
         /// </summary>
         /// <param name="filename">Filename.</param>
-        public string Download (CkanModule module, string filename = null)
-        {
+        public string Download (CkanModule module, string filename = null) {
 
             // Generate a standard filename if none is provided.
             if (filename == null) {
@@ -55,15 +54,25 @@ namespace CKAN {
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
+        public void InstallList(List<string> modules, RelationshipResolverOptions options) {
+            var resolver = new RelationshipResolver (modules, options);
+            foreach (CkanModule module in resolver.ModList ()) {
+                Install (module);
+            }
+
+        }
+
         /// <summary>
         /// Install our mod from the filename supplied.
         /// If no file is supplied, we will fetch() it first.
+        /// 
+        /// Does *not* resolve dependencies; this actually does the heavy listing.
+        /// Use InstallList() for requests from the user.
         /// </summary>
 
-        public void Install (CkanModule module, string filename = null)
-        {
+        void Install (CkanModule module, string filename = null) {
 
-            Console.WriteLine (module.identifier + ":\n");
+            User.WriteLine (module.identifier + ":\n");
 
             string version = registry_manager.registry.InstalledVersion (module.identifier);
 
@@ -71,28 +80,6 @@ namespace CKAN {
                 // TODO: Check if we can upgrade!
                 User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
                 return;
-            }
-
-            // Check our dependencies.
-
-            if (module.requires != null) {
-                foreach (dynamic depends in module.requires) {
-                    string name = depends.name;
-                    string ver = registry_manager.registry.InstalledVersion (name);
-                    // TODO: Compare versions.
-
-                    if (ver == null) {
-
-                        // Oh, it's not installed! Let's see if we can find it.
-
-                        // TODO: A big store of all our known CKAN data, so we can go
-                        // find our module.
-
-                        // If we can't find it, cry and moan.
-                        User.WriteLine ("Requirement {0} not found", depends.name);
-                        throw new ModuleNotFoundException (name, depends.version);
-                    }
-                }
             }
 
             // Fetch our file if we don't already have it.
@@ -292,7 +279,7 @@ namespace CKAN {
         public string version;
 
         // TODO: Is there a way to set the stringify version of this?
-        public ModuleNotFoundException (string mod, string ver) {
+        public ModuleNotFoundException (string mod, string ver = null) {
             module = mod;
             version = ver;
         }
