@@ -23,7 +23,7 @@ tens of thousands of packages.
 ## What's the status of the CKAN?
 
 The CKAN is currently under
-[active development](https://github.com/pjf/CKAN/commits/master).
+[active development](https://github.com/KSP-CKAN/CKAN/commits/master).
 It is not yet suitable for regular use, but testing by authors
 and experienced users is strongly encouraged. We very much welcome
 contributions, discussions, and especially pull-requests.
@@ -33,7 +33,7 @@ contributions, discussions, and especially pull-requests.
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
 which comes with a corresponding [JSON Schema](CKAN.schema). This
 repository includes a JSON schema validator in the
-[`bin`](https://github.com/pjf/CKAN/tree/master/bin) directory.
+[`bin`](https://github.com/KSP-CKAN/CKAN/tree/master/bin) directory.
 
 ## Using the CKAN as a user
 
@@ -53,19 +53,19 @@ mods without altering the release process or the workflow of authors.
 For those authors who wish to provide additional support,
 a [CKAN file](Spec.md) can be bundled, facilitating easier
 installation and indexing. Support for
-[github releases](https://github.com/pjf/CKAN/issues/2) will also
+[github releases](https://github.com/KSP-CKAN/CKAN/issues/2) will also
 be provided.
 
 During development we have limited support for
-[selected mods](https://github.com/pjf/CKAN/tree/master/meta) that
+[selected mods](https://github.com/KSP-CKAN/CKAN-meta) that
 we're using for testing. You are encouraged to submit CKAN files
 for additional mods. If you are a mod author, please
-[open a github issue](https://github.com/pjf/CKAN/issues/new) saying
+[open a github issue](https://github.com/KSP-CKAN/CKAN/issues/new) saying
 you'd like to provide support, and we'll work with you to
 make sure everything goes smoothly.
 
 ## How can I help more?
 
-Head on over to our [issues page](https://github.com/pjf/CKAN/issues),
+Head on over to our [issues page](https://github.com/KSP-CKAN/CKAN/issues),
 hop onto the [#ckan](http://webchat.esper.net/?channels=ckan) IRC
 channel (irc.esper.net) to see how you can lend a hand.
