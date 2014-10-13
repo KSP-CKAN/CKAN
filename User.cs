@@ -18,6 +18,32 @@ namespace CKAN {
             // interfaces we'll switch to the appropriate one here.
             Console.WriteLine (message);
         }
+
+        /// <summary>
+        /// Prompts the user for a Y/N response.
+        /// Returns true for yes, false for no.
+        /// </summary>
+
+        public static bool YesNo(string text = null) {
+
+            if (text != null) {
+                User.WriteLine ("{0} [Y/N]", text);
+            }
+
+            while (true) {
+                ConsoleKeyInfo keypress = Console.ReadKey(true);
+
+                if (keypress.Key == ConsoleKey.Y) {
+                    return true;
+                }
+                else if (keypress.Key == ConsoleKey.N) {
+                    return false;
+                }
+
+                // TODO: Can we end up in an infinite loop here?
+                // What if the console disappears or something?
+            }
+        }
     }
 }
 
