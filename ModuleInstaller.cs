@@ -12,7 +12,7 @@ namespace CKAN {
 
     public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
-        // private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
+        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -219,10 +219,19 @@ namespace CKAN {
                     return;
                 }
 
-                // Console.WriteLine ("Making directory " + fullPath);
+                log.DebugFormat("Making directory {0}",fullPath);
                 Directory.CreateDirectory (fullPath);
             } else {
-                // Console.WriteLine ("Writing file " + fullPath);
+
+                log.DebugFormat("Writing file {0}", fullPath);
+
+                // Sometimes there are zipfiles that don't contain entries for the
+                // directories their files are in. No, I understand either, but
+                // the result is we have to make sure our directories exist, just in case.
+                if (makeDirs) {
+                    string directory = Path.GetDirectoryName (fullPath);
+                    Directory.CreateDirectory (directory);
+                }
 
                 // It's a file! Prepare the streams
                 Stream zipStream = zipfile.GetInputStream (entry);
