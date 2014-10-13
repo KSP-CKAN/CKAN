@@ -38,8 +38,6 @@ namespace CKAN {
             // Now that we've already pre-populated modlist, we can resolve
             // the rest of our dependencies.
 
-            log.Debug ("ABout to do the thing!");
-
             foreach (CkanModule module in user_mods) {
                 log.InfoFormat ("Resolving relationships for {0}", module.identifier);
                 Resolve (module, options);
