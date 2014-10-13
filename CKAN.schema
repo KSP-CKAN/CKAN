@@ -81,6 +81,12 @@
             "description" : "Optional list of conflicting mods",
             "$ref"        : "#/definitions/relationship"
         },
+        "provides" : {
+            "description" : "A list of virtual packages this mod provides",
+            "type" : "array",
+            "items" : { "type" : "string" },
+            "uniqueItems" : true
+        },
         "resources" : {
             "description" : "Additional resources",
             "type" : "object",
