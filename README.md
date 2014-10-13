@@ -23,7 +23,7 @@ tens of thousands of packages.
 ## What's the status of the CKAN?
 
 The CKAN is currently under
-[active development](https://github.com/pjf/CKAN/commits/master).
+[active development](https://github.com/KSP-CKAN/CKAN/commits/master).
 It is not yet suitable for regular use, but testing by authors
 and experienced users is strongly encouraged. We very much welcome
 contributions, discussions, and especially pull-requests.
@@ -33,7 +33,7 @@ contributions, discussions, and especially pull-requests.
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
 which comes with a corresponding [JSON Schema](CKAN.schema). This
 repository includes a JSON schema validator in the
-[`bin`](https://github.com/pjf/CKAN/tree/master/bin) directory.
+[`bin`](https://github.com/KSP-CKAN/CKAN/tree/master/bin) directory.
 
 ## Using the CKAN as a user
 
