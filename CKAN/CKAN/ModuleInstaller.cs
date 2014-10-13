@@ -56,6 +56,22 @@ namespace CKAN {
 
         public void InstallList(List<string> modules, RelationshipResolverOptions options) {
             var resolver = new RelationshipResolver (modules, options);
+
+            User.WriteLine ("About to install...\n");
+
+            foreach (CkanModule module in resolver.ModList()) {
+                User.WriteLine (" * {0} {1}", module.identifier, module.version);
+            }
+
+            bool ok = User.YesNo ("\nContinue?");
+
+            if (!ok) {
+                log.Debug ("Halting install at user request");
+                return;
+            }
+
+            User.WriteLine (""); // Just to look tidy.
+
             foreach (CkanModule module in resolver.ModList ()) {
                 Install (module);
             }
