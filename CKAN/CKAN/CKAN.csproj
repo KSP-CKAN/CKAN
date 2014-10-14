@@ -60,6 +60,7 @@
     <Compile Include="AvailableModule.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Version.cs" />
+    <Compile Include="RelationshipResolver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

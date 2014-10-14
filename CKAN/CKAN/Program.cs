@@ -205,20 +205,25 @@ namespace CKAN {
 
                 if (options.modules.Count == 0) {
                     // What? No files specified?
-                    User.WriteLine ("Usage: ckan install [-z zipfile] [-c ckanfile] Mod [Mod2, ...]");
+                    User.WriteLine ("Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
-                Registry registry = RegistryManager.Instance ().registry;
+                // Prepare options. Can these all be done in the new() somehow?
+                var install_ops = new RelationshipResolverOptions ( );
+                install_ops.with_all_suggests =   options.with_all_suggests;
+                install_ops.with_suggests     =   options.with_suggests;
+                install_ops.with_recommends   = ! options.no_recommends;
 
                 // Install everything requested. :)
-
-                foreach (string module_name in options.modules) {
-                    CkanModule module = registry.LatestAvailable (module_name);
-
-                    // TODO: Do we *need* a new module installer each iteration?
+                try {
                     ModuleInstaller installer = new ModuleInstaller ();
-                    installer.Install (module);
+                    installer.InstallList (options.modules, install_ops);
+                }
+                catch (ModuleNotFoundException ex) {
+                    User.WriteLine ("Module {0} required, but not listed in index.", ex.module);
+                    User.WriteLine ("If you're lucky, you can do a `ckan update` and try again.");
+                    return EXIT_ERROR;
                 }
 
                 User.WriteLine ("\nDone!\n");
@@ -361,6 +366,15 @@ namespace CKAN {
 
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
+
+        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
 
         // TODO: How do we provide helptext on this?
         [ValueList(typeof(List<string>))]
