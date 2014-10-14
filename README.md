@@ -37,6 +37,35 @@ repository includes a JSON schema validator in the
 
 ## Using the CKAN as a user
 
+```
+$ ckan help
+
+CKAN v0.04-17-gd42c8d6
+Copyright CKAN Team, https://github.com/KSP-CKAN/CKAN
+CC-BY 4.0, LGPL, or MIT; you choose!
+
+  update       Update list of available mods
+
+  available    List available mods
+
+  install      Install a KSP mod
+
+  remove       Remove an installed mod
+
+  scan         Scan for manually installed KSP mods
+
+  list         List installed modules
+
+  show         Show information about a mod
+
+  clean        Clean away downloaded files from the cache
+
+  config       Configure CKAN
+
+  version      Show the version of the CKAN client being used.
+
+```
+
 You can download one of our [releases](https://github.com/KSP-CKAN/CKAN/releases),
 but be aware that anything marked 'pre-release' is considered unstable.
 
