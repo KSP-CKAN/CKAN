@@ -7,3 +7,23 @@ script:
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console Tests/bin/Debug/Tests.dll
+
+before_deploy:
+    - sudo apt-get install libipc-system-simple-perl
+    - cd ..
+    - mkdir uploads
+    - bin/build
+    - cp ckan.exe uploads/ckan-`git describe --long`.exe
+
+deploy:
+  provider: s3
+  access_key_id: AKIAI5JWAEFPFK6GH3XA
+  secret_access_key:
+    secure: b0PPlD7auqysK2LHA8N1US03dE/VKH2rOTwIqpIh50l/gURuXEl7Nd8S7qlf2dpEmz+8D5pIWD+J9scfrdD8Uuakhi3sQbqcV26UiR6+Ye06eGQfmIzqzAECt2naqEy7VJ/xrqq5aaaf8QhcOQMba3qVvwDSzkB2fJeh7+D6EY8=
+  bucket: ckan-travis
+  local-dir: uploads
+  acl: public_read
+  skip_cleanup: true
+  on:
+    repo: KSP-CKAN/CKAN
+    all_branches: true
