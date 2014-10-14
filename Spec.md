@@ -34,15 +34,13 @@ The fundamental design of the CKAN is as follows:
   itself. This facilities easy building of indexes, and means meta-data
   can be created independently of the distribution itself, easing
   adoption by authors.
-- The meta-data file *should* be included in the distribution whenever
-  possible. CKAN files may be placed anywhere inside a distribution.
+- The meta-data file *may* be included in the distribution, to facilitate
+- easier indexing. CKAN files may be placed anywhere inside a distribution.
 - It is an error for a distribution (zipfile) to contain more than one
   CKAN file.
 
-It's intended that all CKAN files will live on their own, independently
-hosted server. This facilitates downloading and mirroring
-of the entire index, and means that CKAN clients can resolve dependencies
-to associated mods.
+Presently the authoritative CKAN metadata repository is
+[hosted on github](https://github.com/KSP-CKAN/CKAN-meta).
 
 ## Validation
 
@@ -56,76 +54,49 @@ about a mod, including its name, license, download location,
 dependencies, compatible versions of KSP, and the like. CKAN
 files are simply JSON files.
 
-When included in a distribution, the metadata *must* be included
-in a file with a `.ckan` extension, which contains JSON data. The
-guidelines for the file name and location are:
-
-- The name of the file *should* match the `identifier` field for
-  the mod it describes. (Eg: `RealSolarSystem.ckan`)
-
-- The name of the file *may* be appended with a dash, followed
-  by the version number of the mod it describes
-  (Eg: `RealSolarSystem-7.3.ckan`).
-
-- When bundled with the mod, the CKAN file *should* be placed in the
-  same directory as the main mod itself. (Eg:
-  `RealSolarSystem/RealSolarSystem.ckan` or
-  `GameData/ExampleMod/ExampleMod.ckan`).
+CKAN files *should* have a naming scheme of their mod's identifier,
+followed by a dash, followed by the version number, followed by
+the extension `.ckan`. For example: `RealSolarSystem-7.3.ckan`.
 
 The CKAN metadata spec is inspired by the
-[CPAN metadata spec](https://metacpan.org/pod/CPAN::Meta::Spec)
+[CPAN metadata spec](https://metacpan.org/pod/CPAN::Meta::Spec),
+the [Debian Policy Manual](https://www.debian.org/doc/debian-policy/)
 and the
 [KSP-RealSolarSystem-Bundler](https://github.com/NathanKell/KSP-RealSolarSystem-Bundler)
 
 ### Example CKAN file
 
     {
-        "spec_version": 1,
-        "name"        : "Real Solar System",
-        "identifier"  : "RealSolarSystem",
-        "abstract"    : "Resizes and rearranges the Kerbal system to more closely resemble he Solar System",
-        "download"    : "https://github.com/NathanKell/RealSolarSystem/releases/download/v7.3/RealSolarSystem_v7.3.zip",
-        "license"     : "CC-BY-NC-SA",
-        "version"     : "7.3",
+        "spec_version"   : 1,
+        "name"           : "Advanced Jet Engine (AJE)",
+        "abstract"       : "Realistic jet engines for KSP",
+        "identifier"     : "AJE",
+        "download"       : "https://github.com/camlost2/AJE/archive/1.6.zip",
+        "license"        : "LGPLv2.1",
+        "version"        : "1.6",
         "release_status" : "stable",
-        "min_ksp" : "0.24.2",
-        "max_ksp" : "0.24.2",
-        "depends" : [
-            { "name" : "RealSolarSystemTextures" }
-        ],
-        "recommends" : [
-            { "name" : "RealismOverhaul" }
-        ],
+        "min_ksp"        : "0.25.0",
+        "max_ksp"        : "0.25.9",
         "resources" : {
-            "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",
+            "homepage" : "http://forum.kerbalspaceprogram.com/threads/70008",
             "github"   : {
-                "url"      : "https://github.com/NathanKell/RealSolarSystem",
+                "url"      : "https://github.com/camlost2/AJE",
                 "releases" : true
             }
         },
         "install" : [
             {
-                "file"       : "RealSolarSystem",
+                "file"       : "AJE-1.6/GameData",
                 "install_to" : "GameData"
             }
         ],
-        "bundles" : [
-            {
-                "file"       : "ModuleManager.2.3.3.dll",
-                "identifier" : "ModuleManager",
-                "version"    : "2.3.3",
-                "install_to" : "GameData",
-                "license"    : "CC-BY-SA",
-                "required"   : true
-            },
-            {
-                "file"       : "CustomBiomes",
-                "identifier" : "CustomBiomes",
-                "version"    : "1.6.6",
-                "install_to" : "GameData",
-                "license"    : "CC-BY-NC-SA",
-                "required"   : false
-            }
+        "depends" : [
+            { "name" : "FerramAerospaceResearch" },
+            { "name" : "ModuleManager", "min_version" : "2.3.5" }
+        ],
+        "recommends" : [
+            { "name" : "RealFuels" },
+            { "name" : "HotRockets" }
         ]
     }
 
@@ -171,37 +142,29 @@ described version of the mod.
 ##### license
 
 The license, or list of licenses, under which the mod is released.
-The following are valid license strings:
+The same rules as per the
+[debian license specification](https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/#license-specification) apply, with the following modifications:
 
-- CC-BY
-- CC-BY-SA
-- CC-BY-ND
-- CC-BY-NC
-- CC-BY-NC-SA
-- CC-BY-NC-ND
-- GPLv1
-- GPLv2
-- GPLv3
-- BSD
-- MIT
-- LGPLv2.1
-- LGPLv3
+* The `MIT` license is always taken to mean the [Expat license](https://www.debian.org/legal/licenses/mit).
+* The creative commons licenses are permitted without a version number, indicating the
+  author did not specify which version applies.
+* Stripping of trailing zeros is not recognised.
 
 The following license strings are also valid and indicate other licensing not
 described above:
 
-- `open_source`: Other Open Source Initiative (OSI) approved license
+- `open-source`: Other Open Source Initiative (OSI) approved license
 - `restricted`: Requires special permission from copyright holder
 - `unrestricted`: Not an OSI approved license, but not restricted
 - `unknown`: License not provided in metadata
 
 A single license, or list of licenses may be provided. The following
 are both valid, the first describing a mod released under the BSD license,
-the second under the user's choice of BSD or MIT licenses.
+the second under the user's choice of BSD-2-clause or GPL-2.0 licenses.
 
-    "license" : "BSD"
+    "license" : "BSD-2-clause"
 
-    "license" : [ "BSD", "MIT" ]
+    "license" : [ "BSD-2-clause", "GPL-2.0" ]
 
 ##### version
 
