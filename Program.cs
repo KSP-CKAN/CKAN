@@ -205,15 +205,15 @@ namespace CKAN {
 
                 if (options.modules.Count == 0) {
                     // What? No files specified?
-                    User.WriteLine ("Usage: ckan install [-z zipfile] [-c ckanfile] Mod [Mod2, ...]");
+                    User.WriteLine ("Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
                 // Prepare options. Can these all be done in the new() somehow?
                 var install_ops = new RelationshipResolverOptions ( );
-                install_ops.with_all_suggests = false;
-                install_ops.with_suggests     = false;
-                install_ops.with_recommends    = true;
+                install_ops.with_all_suggests =   options.with_all_suggests;
+                install_ops.with_suggests     =   options.with_suggests;
+                install_ops.with_recommends   = ! options.no_recommends;
 
                 // Install everything requested. :)
                 try {
@@ -366,6 +366,15 @@ namespace CKAN {
 
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
+
+        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
 
         // TODO: How do we provide helptext on this?
         [ValueList(typeof(List<string>))]
