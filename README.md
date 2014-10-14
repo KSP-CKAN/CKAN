@@ -37,35 +37,36 @@ repository includes a JSON schema validator in the
 
 ## Using the CKAN as a user
 
-As the CKAN is still under active development, you'll need to compile
-the CKAN client to use it. The command `ckan help` will list available
-features.
+You can download one of our [releases](https://github.com/KSP-CKAN/CKAN/releases),
+but be aware that anything marked 'pre-release' is considered unstable.
+
+When reporting bugs, please run the client with the `--debug` switch
+(eg: `ckan install --debug SomeMod`), and provide the output of
+`ckan version`.
 
 ## Using the CKAN as a developer
 
 The CKAN client is written in C#, targets Mono 4.0, and lives in
 the `CKAN` directory of this repository. Contributions are welcome.
 
-## Adding CKAN support to mods
+## Adding a mod to the CKAN
 
-The CKAN is designed so that metadata can be provided for
-mods without altering the release process or the workflow of authors.
-For those authors who wish to provide additional support,
-a [CKAN file](Spec.md) can be bundled, facilitating easier
-installation and indexing. Support for
-[github releases](https://github.com/KSP-CKAN/CKAN/issues/2) will also
-be provided.
+We have a wiki guide for
+[adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN).
+Please **be bold** and improve that guide however you see fit.
 
-During development we have limited support for
-[selected mods](https://github.com/KSP-CKAN/CKAN-meta) that
-we're using for testing. You are encouraged to submit CKAN files
-for additional mods. If you are a mod author, please
-[open a github issue](https://github.com/KSP-CKAN/CKAN/issues/new) saying
-you'd like to provide support, and we'll work with you to
-make sure everything goes smoothly.
+You will also find the [CKAN spec](Spec.md) and
+[CKAN schema](CKAN.schema) useful when writing CKAN files.
 
-## How can I help more?
+## How I find out or help more?
 
-Head on over to our [issues page](https://github.com/KSP-CKAN/CKAN/issues),
-hop onto the [#ckan](http://webchat.esper.net/?channels=ckan) IRC
-channel (irc.esper.net) to see how you can lend a hand.
+* We have [a wiki](https://github.com/KSP-CKAN/CKAN/wiki) that you are
+encouraged to use and contribute to.
+
+* Our [issues page](https://github.com/KSP-CKAN/CKAN/issues)
+lists things that need doing, or are being worked upon. Feel free to
+add to this!
+
+* Hop onto the [#ckan](http://webchat.esper.net/?channels=ckan) IRC
+channel (irc.esper.net) to chat with the team, lend a hand, or
+ask questions.
