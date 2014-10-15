@@ -75,8 +75,7 @@ and the
         "license"        : "LGPLv2.1",
         "version"        : "1.6",
         "release_status" : "stable",
-        "min_ksp"        : "0.25.0",
-        "max_ksp"        : "0.25.9",
+        "ksp_version"    : "0.25",
         "resources" : {
             "homepage" : "http://forum.kerbalspaceprogram.com/threads/70008",
             "github"   : {
@@ -284,15 +283,26 @@ placed upon this field.
 The release status of the mod, one of `alpha`, `beta`, `stable`,
 or `development`. If not specified, a value of `stable` is assumed.
 
-##### min_ksp
+##### ksp_version
+
+The version of KSP this mod is targetting. This may be the string "any",
+a number (eg: `0.23.5`) or may only contain the first two parts of
+the version strin (eg: `0.25`). In the latter case, any realease
+starting with the `ksp_version` is considered acceptable.
+
+If no KSP target version is included, a default of "any" is assumed.
+
+##### ksp_version_min
 
 The minimum version of KSP the mod requires to operate correctly.
-Eg `0.23.5`. If not specified, a default value of `any` is assumed.
+Same format as `ksp_version`. It is an error to include both this
+and the `ksp_version` field.
 
-##### max_ksp
+##### ksp_version_max
 
 The maximum version of KSP the mod requires to operate correctly.
-Eg `0.24.2`. If not specified, a default value of `any` is assumed.
+Same format as `ksp_version`. It is an error to include both this
+and the `ksp_version` field.
 
 ### Relationships
 
