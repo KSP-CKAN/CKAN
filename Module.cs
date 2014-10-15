@@ -1,6 +1,7 @@
 namespace CKAN {
 
     using System;
+    using System.Runtime.Serialization;
     using Newtonsoft.Json;
     using log4net;
 
@@ -46,11 +47,14 @@ namespace CKAN {
         [JsonProperty("release_status")]
         public string release_status; // TODO: Strong type
 
-        [JsonProperty("min_ksp")]
-        public string min_ksp; // TODO: Type
+        [JsonProperty("ksp_version")]
+        public KSPVersion ksp_version;
 
-        [JsonProperty("max_ksp")]
-        public string max_ksp; // TODO: Type
+        [JsonProperty("ksp_version_min")]
+        public KSPVersion ksp_version_min;
+
+        [JsonProperty("ksp_version_max")]
+        public KSPVersion ksp_version_max;
 
         [JsonProperty("provides")]
         public string[] provides;
@@ -73,9 +77,59 @@ namespace CKAN {
         [JsonProperty("resources")]
         public dynamic resources;
 
-        public string serialise ()
-        {
+        public string serialise () {
             return JsonConvert.SerializeObject (this);
+        }
+
+        [OnDeserialized]
+        private void DeSerialisationFixes(StreamingContext like_i_could_care) {
+
+            if (ksp_version != null && (ksp_version_max != null || ksp_version_min != null)) {
+                // KSP version mixed with min/max.
+                throw new InvalidModuleAttributesException ("ksp_version mixed wtih ksp_version_(min|max)", this);
+            }
+
+            // Make sure our version fields are populated.
+
+            if (ksp_version_min == null) {
+                ksp_version_min = new KSPVersion (null);
+            } else {
+                ksp_version_min.ToLongMin ();
+            }
+
+            if (ksp_version_max == null) {
+                ksp_version_max = new KSPVersion (null);
+            } else {
+                ksp_version_max.ToLongMax ();
+            }
+
+        }
+
+        /// <summary>
+        /// Returns true if our mod is compatible with the KSP version specified.
+        /// </summary>
+
+        public bool IsCompatibleKSP(string v) {
+
+            KSPVersion version = new KSPVersion (v);
+
+            // Check the min and max versions.
+
+            if (ksp_version_min.IsNotAny() && version < ksp_version_min ) {
+                return false;
+            }
+
+            if (ksp_version_max.IsNotAny() && version > ksp_version_max) {
+                return false;
+            }
+
+            // We didn't hit the min/max guards. They may not have existed.
+
+            // Note that since ksp_version is "any" if not specified, this
+            // will work fine if there's no target, or if there were min/max
+            // fields and we passed them successfully.
+
+            return ksp_version.Targets (version);
         }
     }
     
@@ -152,5 +206,25 @@ namespace CKAN {
             return identifier + "-" + version + ".zip";
         }
 
+    }
+
+    public class InvalidModuleAttributesException : Exception {
+        private string why;
+        private Module module;
+
+        public InvalidModuleAttributesException(string why, Module module = null) {
+            this.why = why;
+            this.module = module;
+        }
+
+        public override string ToString () {
+            string modname = "unknown";
+
+            if (module != null) {
+                modname = module.identifier;
+            }
+
+            return string.Format ("[InvalidModuleAttributesException] {0} in {1}", why, modname);
+        }
     }
 }
