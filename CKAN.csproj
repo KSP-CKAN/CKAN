@@ -62,6 +62,7 @@
     <Compile Include="Version.cs" />
     <Compile Include="RelationshipResolver.cs" />
     <Compile Include="KSPVersion.cs" />
+    <Compile Include="JsonSimpleStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

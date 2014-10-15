@@ -90,7 +90,7 @@ namespace CKAN {
 
             User.WriteLine (module.identifier + ":\n");
 
-            string version = registry_manager.registry.InstalledVersion (module.identifier);
+            Version version = registry_manager.registry.InstalledVersion (module.identifier);
 
             if (version != null) {
                 // TODO: Check if we can upgrade!
@@ -126,7 +126,7 @@ namespace CKAN {
                 foreach (dynamic stanza in module.bundles) {
                     BundledModule bundled = new BundledModule (stanza);
 
-                    string ver = registry_manager.registry.InstalledVersion (bundled.identifier);
+                    Version ver = registry_manager.registry.InstalledVersion (bundled.identifier);
 
                     if (ver != null) {
                         User.WriteLine (
