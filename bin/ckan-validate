@@ -38,6 +38,18 @@ my @allowed_fields = keys %{ $schema->{properties} };
 foreach my $file (@files) {
     my $ckan = $json->decode( slurp($file) );
 
+    $errors += test_extra_fields(\@allowed_fields, $ckan, $file);
+}
+
+# Exit with the number of errors found. A zero means we passed!
+exit $errors; 
+
+# ----- Nothing past here but subroutines -----
+
+sub test_extra_fields {
+    my ($allowed_fields, $ckan, $filename) = @_;
+    my $errors = 0;
+
     # Produce a list of top-level fields in our CKAN file.
     my @ckan_fields = keys %$ckan;
 
@@ -53,20 +65,17 @@ foreach my $file (@files) {
     # file, and remove everything that's allowed by our schema. If
     # there's anything left, that's paddling.
 
-    delete @ckan_set{ @allowed_fields };
+    delete @ckan_set{ @$allowed_fields };
 
     foreach my $forbidden (keys %ckan_set) {
-        say "Invalid field '$forbidden' in $file";
+        say "Invalid field '$forbidden' in $filename";
         $errors++;
     }
 
     # TODO: Do the same with sub-fields.
+
+    return $errors;
 }
-
-# Exit with the number of errors found. A zero means we passed!
-exit $errors; 
-
-# ----- Nothing past here but subroutines -----
 
 # Slurp a file into a string.
 sub slurp {
