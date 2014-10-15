@@ -138,8 +138,11 @@ namespace CKAN {
         static int Available() {
             List<CkanModule> available = RegistryManager.Instance().registry.Available();
 
+            User.WriteLine ("Mods available for KSP {0}", KSP.Version());
+            User.WriteLine ("");
+
             foreach (CkanModule module in available) {
-                User.WriteLine("* {0} ({1})", module.identifier, module.version);
+                User.WriteLine("* {0}", module);
             }
 
             return EXIT_OK;
