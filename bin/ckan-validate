@@ -39,6 +39,7 @@ foreach my $file (@files) {
     my $ckan = $json->decode( slurp($file) );
 
     $errors += test_extra_fields(\@allowed_fields, $ckan, $file);
+    $errors += test_version_fields($ckan,$file);
 }
 
 # Exit with the number of errors found. A zero means we passed!
@@ -73,6 +74,20 @@ sub test_extra_fields {
     }
 
     # TODO: Do the same with sub-fields.
+
+    return $errors;
+}
+
+sub test_version_fields {
+    my ($ckan, $file) = @_;
+    my $errors = 0;
+
+    if ($ckan->{ksp_version}) {
+        if ($ckan->{ksp_version_min} || $ckan->{ksp_version_max}) {
+            say "Cannot include ksp_version and ksp_version_(min|max) together in $file";
+            $errors++;
+        }
+    }
 
     return $errors;
 }
