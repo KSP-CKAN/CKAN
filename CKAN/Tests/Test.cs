@@ -19,8 +19,7 @@ namespace Tests
     ""license""  : ""GPLv3"",
     ""version""  : ""0.14"",
     ""release_status"" : ""stable"",
-    ""min_ksp"" : ""0.24.2"",
-    ""max_ksp"" : ""0.24.2"",
+    ""ksp_version"" : ""0.24.2"",
     ""resources"" : {
         ""homepage"" : ""http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13"",
         ""manual""   : ""http://ksp-kos.github.io/KOS_DOC/"",
@@ -43,6 +42,13 @@ namespace Tests
             CkanModule module = CkanModule.from_string (ckan_string);
 
             Assert.AreEqual (module.StandardName (), "kOS-0.14.zip");
+        }
+
+        [Test()]
+        public void CompatibleWith() {
+            var module = CkanModule.from_string (ckan_string);
+
+            Assert.IsTrue (module.IsCompatibleKSP ("0.24.2"));
         }
     }
 
