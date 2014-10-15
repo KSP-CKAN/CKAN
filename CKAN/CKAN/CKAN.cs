@@ -80,7 +80,7 @@ namespace CKAN {
             File.Delete (repo_file);
 
             // Return how many we got!
-            return registry_manager.registry.Available ().Length;
+            return registry_manager.registry.Available ().Count;
 
         }
     }

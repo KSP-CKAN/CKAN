@@ -28,6 +28,7 @@ namespace Tests {
             Assert.IsFalse (vlong.IsAny ());
         }
 
+        [Test()]
         public void MinMax() {
             var min = new CKAN.KSPVersion ("0.23");
             var max = new CKAN.KSPVersion ("0.23");
@@ -42,6 +43,7 @@ namespace Tests {
             Assert.IsTrue (max > min);
         }
 
+        [Test()]
         public void Targets() {
             var any = new CKAN.KSPVersion (null);
             var vshort = new CKAN.KSPVersion ("0.23");
@@ -54,6 +56,16 @@ namespace Tests {
             Assert.That (new TestDelegate (BadTarget), Throws.Exception );
         }
 
+        [Test()]
+        public void Strings() {
+            var any = new CKAN.KSPVersion (null);
+            var vshort = new CKAN.KSPVersion ("0.23");
+            var vlong = new CKAN.KSPVersion ("0.23.5");
+
+            Assert.AreSame( any.ToString(), null);
+            Assert.AreSame( vshort.ToString(), "0.23");
+            Assert.AreSame( vlong.ToString(), "0.23.5");
+        }
 
         private void BadTarget() {
             var any = new CKAN.KSPVersion (null);

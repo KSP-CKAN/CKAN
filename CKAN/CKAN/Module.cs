@@ -15,6 +15,8 @@ namespace CKAN {
     [JsonObject(MemberSerialization.OptIn)]
     public class Module {
 
+        private static readonly ILog log = LogManager.GetLogger (typeof(Module));
+
         // identifier, license, and version are always required, so we know
         // what we've got.
 
@@ -25,7 +27,7 @@ namespace CKAN {
         public dynamic license; // TODO: Strong type
 
         [JsonProperty("version", Required = Required.Always)]
-        public string version; // TODO: Strong type
+        public Version version;
 
         // We also have lots of optional attributes.
 
@@ -81,15 +83,15 @@ namespace CKAN {
             return JsonConvert.SerializeObject (this);
         }
 
+        public override string ToString () {
+            return string.Format ("{0} {1}",identifier, version);
+        }
+
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care) {
 
-            if (ksp_version != null && (ksp_version_max != null || ksp_version_min != null)) {
-                // KSP version mixed with min/max.
-                throw new InvalidModuleAttributesException ("ksp_version mixed wtih ksp_version_(min|max)", this);
-            }
-
             // Make sure our version fields are populated.
+            // TODO: There's got to be a better way of doing this, right?
 
             if (ksp_version_min == null) {
                 ksp_version_min = new KSPVersion (null);
@@ -103,15 +105,30 @@ namespace CKAN {
                 ksp_version_max.ToLongMax ();
             }
 
+            if (ksp_version == null) {
+                ksp_version = new KSPVersion (null);
+            }
+
+            // Now see if we've got version with version min/max.
+            if (ksp_version.IsNotAny() && (ksp_version_max.IsNotAny() || ksp_version_min.IsNotAny())) {
+                // KSP version mixed with min/max.
+                throw new InvalidModuleAttributesException ("ksp_version mixed wtih ksp_version_(min|max)", this);
+            }
+
+
         }
 
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
 
-        public bool IsCompatibleKSP(string v) {
+        public bool IsCompatibleKSP(string version) {
+            return IsCompatibleKSP (new KSPVersion (version));
+        }
 
-            KSPVersion version = new KSPVersion (v);
+        public bool IsCompatibleKSP(KSPVersion version) {
+
+            log.DebugFormat ("Testing if {0} is compatible with KSP {1}", this, version);
 
             // Check the min and max versions.
 

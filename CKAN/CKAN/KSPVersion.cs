@@ -2,7 +2,9 @@ namespace CKAN {
     using System;
     using log4net;
     using System.Text.RegularExpressions;
+    using Newtonsoft.Json;
 
+    [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class KSPVersion : IComparable<KSPVersion> {
         private string version;
 
@@ -144,6 +146,10 @@ namespace CKAN {
 
         public static bool operator >=(KSPVersion v1, KSPVersion v2) {
             return v1.CompareTo (v2) >= 0;
+        }
+
+        public override string ToString () {
+            return this.Version();
         }
 
     }

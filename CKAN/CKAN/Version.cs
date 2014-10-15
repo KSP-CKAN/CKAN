@@ -2,15 +2,17 @@ namespace CKAN {
     using System.Text.RegularExpressions;
     using log4net;
     using System;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Version comparison utilities.
     /// </summary>
 
+    [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
-        int epoch = 0;
-        string version = null;
-        string orig_string = null;
+        private int epoch = 0;
+        private string version = null;
+        private string orig_string = null;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
 
         struct Comparison {
@@ -35,6 +37,11 @@ namespace CKAN {
 
         override public string ToString() {
             return orig_string;
+        }
+
+        // When cast from a string.
+        public static explicit operator Version(string v) {
+            return new Version (v);
         }
 
         /// <summary>
@@ -152,8 +159,18 @@ namespace CKAN {
 
             return comp;
         }
+    }
 
+    // This class represents a DllVersion. They don't have real
+    // version numbers or anything.
 
+    // We probably need a better way of doing these, but believe
+    // it or not this is better than what we had before.
+
+    public class DllVersion : Version {
+        public DllVersion() : base("autodetected_dll") {
+
+        }
     }
 }
 

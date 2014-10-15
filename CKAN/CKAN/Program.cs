@@ -136,10 +136,10 @@ namespace CKAN {
         }
 
         static int Available() {
-            string[] available = RegistryManager.Instance().registry.Available();
+            List<CkanModule> available = RegistryManager.Instance().registry.Available();
 
-            foreach (string module in available) {
-                User.WriteLine("* {0}", module);
+            foreach (CkanModule module in available) {
+                User.WriteLine("* {0} ({1})", module.identifier, module.version);
             }
 
             return EXIT_OK;
