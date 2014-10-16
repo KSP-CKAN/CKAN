@@ -34,19 +34,45 @@ namespace CKAN
         private WaitDialog m_WaitDialog = new WaitDialog();
         private ApplyChangesDialog m_ApplyChangesDialog = new ApplyChangesDialog();
 
-        private BackgroundWorker m_UpdateRepoWorker = new BackgroundWorker();
+        private BackgroundWorker m_UpdateRepoWorker = null;
+        private BackgroundWorker m_InstallWorker = null;
+
         private GUIModFilter m_ModFilter = GUIModFilter.All;
 
         public Main()
         {
+            m_Instance = this;
+
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
             m_UpdateRepoWorker.WorkerSupportsCancellation = true;
             m_UpdateRepoWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostUpdateRepo);
             m_UpdateRepoWorker.DoWork += new DoWorkEventHandler(UpdateRepo);
 
+            m_InstallWorker = new BackgroundWorker();
+            m_InstallWorker.WorkerReportsProgress = true;
+            m_InstallWorker.WorkerSupportsCancellation = true;
+            m_InstallWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostInstallMods);
+            m_InstallWorker.DoWork += new DoWorkEventHandler(InstallMods);
+
+            User.noConsole = true;
+
             InitializeComponent();
             UpdateModsList();
+        }
+
+        private static Main m_Instance = null;
+        public static Main Instance
+        {
+            get
+            {
+                return m_Instance;
+            }
+        }
+
+        private void UpdateRepo(object sender, DoWorkEventArgs e)
+        {
+            Repo.Update();
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
@@ -56,9 +82,36 @@ namespace CKAN
             Enabled = true;
         }
 
-        private void UpdateRepo(object sender, DoWorkEventArgs e)
+        private void InstallMods(object sender, DoWorkEventArgs e)
         {
-            Repo.Update();
+            var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
+
+            List<string> toInstall = new List<string>();
+            foreach (var change in opts.Key)
+            {
+                if (change.Value == GUIModChangeType.Install || change.Value == GUIModChangeType.Update)
+                {
+                    toInstall.Add(change.Key.name);
+                }
+            }
+
+            ModuleInstaller installer = new ModuleInstaller();
+            installer.InstallList(toInstall, opts.Value);
+
+            foreach (var change in opts.Key)
+            {
+                if (change.Value == GUIModChangeType.Remove)
+                {
+                    installer.Uninstall(change.Key.name);
+                }
+            }
+        }
+
+        private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
+        {
+            UpdateModsList();
+            m_WaitDialog.Close();
+            Enabled = true;
         }
 
         private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
@@ -236,12 +289,24 @@ namespace CKAN
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
             var changeset = ComputeChangeSetFromModList();
-            m_ApplyChangesDialog.ShowApplyChangesDialog(changeset);
+            m_ApplyChangesDialog.ShowApplyChangesDialog(changeset, m_InstallWorker);
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        public void ShowWaitDialog()
+        {
+            Enabled = false;
+            m_WaitDialog.ShowWaitDialog();
+        }
+
+        public void HideWaitDialog()
+        {
+            m_WaitDialog.Close();
+            Enabled = true;
         }
     }
 }

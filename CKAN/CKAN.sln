@@ -1,35 +1,77 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN", "CKAN\CKAN.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{92442BD6-F533-4BB8-8E04-9D93A038035E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdLine", "CmdLine\CmdLine.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-GUI", "GUI\CKAN-GUI.csproj", "{A79F9D54-315C-472B-928F-713A5860B2BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271} = {3B9AEA22-FA3B-4E43-9283-EABDD81CF271}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|x86.ActiveCfg = Debug|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|x86.Build.0 = Debug|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Any CPU.ActiveCfg = Release|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|x86.ActiveCfg = Release|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|x86.Build.0 = Release|x86
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.Build.0 = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.ActiveCfg = Release|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.Build.0 = Release|Any CPU
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.ActiveCfg = Debug|x86
 		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.Build.0 = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.ActiveCfg = Release|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|x86.ActiveCfg = Release|x86
 		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|x86.Build.0 = Release|x86
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = CKAN\CKAN.csproj
 		Policies = $0
-		$0.TextStylePolicy = $1
+		$0.TextStylePolicy = $3
 		$1.inheritsSet = null
 		$1.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $2
@@ -38,7 +80,6 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
-		$0.TextStylePolicy = $3
 		$3.inheritsSet = VisualStudio
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
