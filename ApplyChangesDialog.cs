@@ -12,14 +12,20 @@ namespace CKAN
 {
     public partial class ApplyChangesDialog : Form
     {
-        
+
+        private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset = null;
+        private BackgroundWorker m_InstallWorker = null;
+
         public ApplyChangesDialog()
         {
             InitializeComponent();
         }
 
-        public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset)
+        public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset, BackgroundWorker installWorker)
         {
+            m_Changeset = changeset;
+            m_InstallWorker = installWorker;
+
             ChangesListView.Items.Clear();
 
             foreach (var change in changeset)
@@ -40,6 +46,28 @@ namespace CKAN
             }
 
             ShowDialog();
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            m_Changeset = null;
+            m_InstallWorker = null;
+            Close();
+        }
+
+        private void ConfirmButton_Click(object sender, EventArgs e)
+        {
+            var install_ops = new RelationshipResolverOptions();
+            install_ops.with_all_suggests =   true;
+            install_ops.with_suggests     =   true;
+            install_ops.with_recommends   =   true;
+
+            m_InstallWorker.RunWorkerAsync(new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(m_Changeset, install_ops));
+            m_InstallWorker = null;
+            m_Changeset = null;
+            Close();
+
+            Main.Instance.ShowWaitDialog();
         }
     }
 }

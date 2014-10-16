@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "Test",
             "Test2"}, -1);
             this.ChangesListView = new System.Windows.Forms.ListView();
@@ -44,7 +44,7 @@
             this.ModName,
             this.ChangeType});
             this.ChangesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.ChangesListView.Location = new System.Drawing.Point(12, 12);
             this.ChangesListView.Name = "ChangesListView";
             this.ChangesListView.Size = new System.Drawing.Size(451, 259);
@@ -70,6 +70,7 @@
             this.ConfirmButton.TabIndex = 2;
             this.ConfirmButton.Text = "Confirm";
             this.ConfirmButton.UseVisualStyleBackColor = true;
+            this.ConfirmButton.Click += new System.EventHandler(this.ConfirmButton_Click);
             // 
             // CancelButton
             // 
@@ -79,6 +80,7 @@
             this.CancelButton.TabIndex = 3;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // ApplyChangesDialog
             // 
