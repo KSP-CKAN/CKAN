@@ -9,9 +9,9 @@ namespace CKAN {
     /// <summary>
     /// Class for downloading the CKAN meta-info itself.
     /// </summary>
-    class CKAN {
+    public class Repo {
 
-        static readonly ILog log = LogManager.GetLogger (typeof(CKAN));
+        static readonly ILog log = LogManager.GetLogger (typeof(Repo));
 
         // Right now we only use the default repo, but in the future we'll
         // want to let users add their own.
