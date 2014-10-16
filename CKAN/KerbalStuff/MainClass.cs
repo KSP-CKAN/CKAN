@@ -5,6 +5,7 @@ namespace CKAN.KerbalStuff {
     using System.IO;
     using CKAN;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System.Text.RegularExpressions;
     using ICSharpCode.SharpZipLib.Zip;
     using log4net;
@@ -13,67 +14,58 @@ namespace CKAN.KerbalStuff {
     using System.Net;
 
     class MainClass {
-        private static readonly string kerbalstuff_url     = "https://kerbalstuff.com";
-        private static readonly string kerbalstuff_mod_api = kerbalstuff_url + "/api/mod/";
         private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
-
+       
         public static void Main (string[] args) {
 
             BasicConfigurator.Configure ();
             LogManager.GetRepository ().Threshold = Level.Debug;
             log.Debug ("KerbalStuff2CKAN started");
 
-            foreach (string mod in args) {
+            string identifier = args[0];
+            int ksid = Convert.ToInt32(args[1]);
 
-                log.InfoFormat ("Processing {0}", mod);
+            log.InfoFormat ("Processing {0}", identifier);
 
-                WebClient web = new WebClient ();
+            KSMod ks = KSAPI.Mod(ksid);
+            CKAN.Version version = ks.versions[0].friendly_version;
 
-                string api_call = kerbalstuff_mod_api + mod;
-                log.DebugFormat ("Calling {0}", api_call);
+            log.DebugFormat ("Mod: {0} {1}", ks.name, version);
 
-                string kerbalstuff_json = web.DownloadString (api_call);
+            string filename = ks.versions[0].Download(identifier);
 
-                KSMod ks = KSMod.FromString (kerbalstuff_json);
+            ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
-                log.DebugFormat ("Mod name: {0}", ks.name);
+            foreach (ZipEntry entry in zipfile) {
 
-                string download_url = kerbalstuff_url + ks.versions[0].download_path;
-
-                log.DebugFormat ("Downloading {0}", download_url);
-
-                string filename = Net.Download (download_url);
-
-                log.Debug ("Downloaded.");
-
-                ZipFile zipfile = new ZipFile (File.OpenRead (filename));
-
-                foreach (ZipEntry entry in zipfile) {
-
-                    // Skip everything but embedded .ckan files.
-                    if (! Regex.IsMatch (entry.Name, ".CKAN$", RegexOptions.IgnoreCase)) {
-                        continue;
-                    }
-
-                    log.DebugFormat ("Reading {0}", entry.Name);
-
-                    Stream zipStream = zipfile.GetInputStream (entry);
-
-                    dynamic meta_ckan = DeserializeFromStream (zipStream);
-
-                    log.DebugFormat ("We're working with {0}", meta_ckan.identifier);
+                // Skip everything but embedded .ckan files.
+                if (! Regex.IsMatch (entry.Name, ".CKAN$", RegexOptions.IgnoreCase)) {
+                    continue;
                 }
+
+                log.DebugFormat ("Reading {0}", entry.Name);
+
+                Stream zipStream = zipfile.GetInputStream (entry);
+
+                JObject meta_ckan = DeserializeFromStream (zipStream);
+
+                log.DebugFormat ("We're working with {0} {1}", meta_ckan.GetValue("identifier"), meta_ckan.GetValue("$ref"));
+
+                var propertyInfo = meta_ckan.GetType ();
+                // var value = propertyInfo.GetValue(meta_ckan, null);
+
+                log.DebugFormat ("Reference is {0}", propertyInfo);
             }
         }
 
-
         // Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118 
-        public static object DeserializeFromStream(Stream stream) {
-            var serializer = new JsonSerializer();
+        private static JObject DeserializeFromStream(Stream stream) {
+            // var serializer = new JsonSerializer();
 
             using (var sr = new StreamReader(stream)) {
                 using (var jsonTextReader = new JsonTextReader(sr)) {
-                    return serializer.Deserialize (jsonTextReader);
+                    return (JObject) JObject.ReadFrom(jsonTextReader);
+                    // return serializer.Deserialize (jsonTextReader);
                 }
             }
         }
