@@ -21,21 +21,16 @@ namespace CKAN {
         ///
         /// </summary>
         /// <param name="filename">Filename.</param>
-        public string Download (CkanModule module, string filename = null) {
-
-            // Generate a standard filename if none is provided.
-            if (filename == null) {
-                filename = module.StandardName ();
-            }
+        public static string Download (Uri url, string filename) {
 
             User.WriteLine ("    * Downloading " + filename + "...");
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
-            return Net.Download (module.download, full_path);
+            return Net.Download (url, full_path);
         }
 
-        public string CachedOrDownload(CkanModule module, string filename = null) {
+        public static string CachedOrDownload(CkanModule module, string filename = null) {
             if (filename == null) {
                 filename = module.StandardName ();
             }
@@ -47,10 +42,26 @@ namespace CKAN {
                 return fullPath;
             }
 
-            return Download (module, filename);
+            return Download (module.download, filename);
         }
 
-        public string CachePath(string file) {
+        public static string CachedOrDownload(string identifier, Version version, Uri url, string filename = null) {
+            if (filename == null) {
+                filename = CkanModule.StandardName (identifier, version);
+            }
+
+            string fullPath = CachePath (filename);
+
+            if (File.Exists (fullPath)) {
+                Console.WriteLine ("    * Using {0} (cached)", filename);
+                return fullPath;
+            }
+
+            return Download (url, filename);
+
+        }
+
+        public static string CachePath(string file) {
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
