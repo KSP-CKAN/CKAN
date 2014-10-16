@@ -59,13 +59,16 @@
     <Compile Include="CKAN.cs" />
     <Compile Include="AvailableModule.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="Version.cs" />
+    <Compile Include="Types/Version.cs" />
     <Compile Include="RelationshipResolver.cs" />
-    <Compile Include="KSPVersion.cs" />
-    <Compile Include="JsonSimpleStringConverter.cs" />
+    <Compile Include="Types/KSPVersion.cs" />
+    <Compile Include="Types/JsonSimpleStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Types\" />
   </ItemGroup>
 </Project>
