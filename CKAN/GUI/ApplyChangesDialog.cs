@@ -36,7 +36,7 @@ namespace CKAN
                 }
 
                 ListViewItem item = new ListViewItem();
-                item.Text = change.Key.name;
+                item.Text = String.Format("{0} v{1}", change.Key.name, change.Key.version.ToString());
 
                 var subChangeType = new ListViewItem.ListViewSubItem();
                 subChangeType.Text = change.Value.ToString();

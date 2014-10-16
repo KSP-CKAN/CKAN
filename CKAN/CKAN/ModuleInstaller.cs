@@ -176,6 +176,11 @@ namespace CKAN {
         }
 
         string Sha1Sum (string path) {
+            if (System.IO.Path.GetFileName(path).Length == 0)
+            {
+                return null;
+            }
+
             SHA1 hasher = new SHA1CryptoServiceProvider();
 
             try {
@@ -187,7 +192,7 @@ namespace CKAN {
         }
 
         void InstallComponent (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files) {
-            string fileToInstall = stanza.file;
+            string fileToInstall = (string)stanza.file;
 
             Console.WriteLine ("    * Installing " + fileToInstall);
 
@@ -294,19 +299,32 @@ namespace CKAN {
 
             foreach (string file in files.Keys) {
                 string path = Path.Combine (KSP.GameDir (), file);
+                try
+                {
+                    FileAttributes attr = File.GetAttributes(path);
 
-                FileAttributes attr = File.GetAttributes (path);
+                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
 
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                        // TODO: Actually prune empty directories
+                        if (!System.IO.Directory.GetFiles(path).Any())
+                        {
+                            System.IO.Directory.Delete(path);
+                        }
 
-                    // TODO: Actually prune empty directories
-
-                    Console.WriteLine ("Skipping directory {0}", file);
+                        Console.WriteLine("Skipping directory {0}", file);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Removing {0}", file);
+                        File.Delete(path);
+                    }
                 }
-                else {
-                    Console.WriteLine ("Removing {0}", file);
-                    File.Delete (Path.Combine (KSP.GameDir (), file));
+                catch (Exception)
+                {
+                    continue;
                 }
+               
             }
 
             // Remove from registry.

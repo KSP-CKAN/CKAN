@@ -23,18 +23,35 @@ namespace CKAN
             this.ShowDialog();
         }
 
-        public void SetDescription(string message)
+        public void HideWaitDialog()
         {
-            if (ActionDescriptionLabel.InvokeRequired)
+            if (MessageTextBox.InvokeRequired)
             {
-                ActionDescriptionLabel.Invoke(new MethodInvoker(delegate
+                MessageTextBox.Invoke(new MethodInvoker(delegate
                 {
-                    ActionDescriptionLabel.Text = "(" + message + ")";
+                    MessageTextBox.Text = "Waiting for operation to complete";
                 }));
             }
             else
             {
-                ActionDescriptionLabel.Text = "(" + message + ")";
+                MessageTextBox.Text = "Waiting for operation to complete";
+            }
+
+            Close();
+        }
+
+        public void SetDescription(string message)
+        {
+            if (MessageTextBox.InvokeRequired)
+            {
+                MessageTextBox.Invoke(new MethodInvoker(delegate
+                {
+                    MessageTextBox.Text = "(" + message + ")";
+                }));
+            }
+            else
+            {
+                MessageTextBox.Text = "(" + message + ")";
             }
         }
 

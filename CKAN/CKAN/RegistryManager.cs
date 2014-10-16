@@ -50,11 +50,15 @@ namespace CKAN {
 
         public void LoadOrCreate() {
             try {
-                Load ();
+                Load();
             }
             catch (System.IO.FileNotFoundException) {
-                Create ();
-                Load ();
+                Create();
+                Load();
+            }
+            catch (System.IO.DirectoryNotFoundException) {
+                Create();
+                Load();
             }
         }
 
@@ -64,13 +68,23 @@ namespace CKAN {
             Save ();
         }
 
-        public string Serialise () {
+        public string Serialize () {
             return JsonConvert.SerializeObject (registry);
         }
 
         public void Save () {
             log.DebugFormat ("Saving CKAN registry at {0}", path);
-            System.IO.File.WriteAllText(path, Serialise ());
+            var directoryPath = System.IO.Path.GetDirectoryName(path);
+
+            if (directoryPath == null) {
+                log.DebugFormat("Failed to save registry, invalid path: {0}", path);
+            }
+
+            if (!System.IO.Directory.Exists(directoryPath)) {
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+
+            System.IO.File.WriteAllText(path, Serialize());
         }
     }
 }
