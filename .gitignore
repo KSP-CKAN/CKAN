@@ -1,4 +1,4 @@
-build
+build/
 CKAN/*/bin
 CKAN/*/obj
 test-results
@@ -7,3 +7,4 @@ TestResult.xml
 StyleCop.Cache
 ckan.exe
 .*.swp
+.fatten.out
