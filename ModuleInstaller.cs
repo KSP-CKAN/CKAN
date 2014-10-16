@@ -10,9 +10,13 @@ namespace CKAN {
     using System.Text.RegularExpressions;
     using log4net;
 
+    public delegate void ModuleInstallerReportProgress(string message, int progress);
+
     public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
+
+        public ModuleInstallerReportProgress onReportProgress = null;
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -31,6 +35,10 @@ namespace CKAN {
             User.WriteLine ("    * Downloading " + filename + "...");
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
+
+            if (onReportProgress != null) {
+                onReportProgress(String.Format("Downloading \"{0}\"", module.download), 0);
+            }
 
             return Net.Download (module.download, full_path);
         }
@@ -88,6 +96,11 @@ namespace CKAN {
 
         void Install (CkanModule module, string filename = null) {
 
+            if (onReportProgress != null)
+            {
+                onReportProgress(String.Format("Installing \"{0}\"", module.name), 0);
+            }
+
             User.WriteLine (module.identifier + ":\n");
 
             Version version = registry_manager.registry.InstalledVersion (module.identifier);
@@ -112,9 +125,17 @@ namespace CKAN {
             // Open our zip file for processing
             ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
+            int counter = 0;
             // Walk through our install instructions.
             foreach (dynamic stanza in module.install) {
+
+                if (onReportProgress != null)
+                {
+                    onReportProgress(String.Format("Installing \"{0}\"", module.name), (counter * 100) / module.install.Count());
+                }
+
                 InstallComponent (stanza, zipfile, module_files);
+                counter++;
             }
 
             // Register our files.
@@ -138,6 +159,7 @@ namespace CKAN {
 
                     // Not installed, so let's get about installing it!
                     Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
+
 
                     InstallComponent (stanza, zipfile, installed_files);
 
