@@ -106,10 +106,11 @@ namespace CKAN {
                 try {
                     candidate = registry.LatestAvailable (dep_name);
                 }
-                catch (KeyNotFoundException) {
+                catch (ModuleNotFoundException) {
                     log.ErrorFormat ("Dependency on {0} found, but nothing provides it.", dep_name);
                     throw new ModuleNotFoundException (dep_name);
                 }
+
                 Add(candidate);
                 Resolve (candidate, options);
             }
