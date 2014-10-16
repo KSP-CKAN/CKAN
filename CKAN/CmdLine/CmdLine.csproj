@@ -5,10 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>CKAN</RootNamespace>
-    <AssemblyName>CKAN</AssemblyName>
+    <ProjectGuid>{E97D81F6-85E2-4F1F-906D-BE21766602E5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CmdLine</RootNamespace>
+    <AssemblyName>CmdLine</AssemblyName>
+    <StartupObject>CKAN.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,42 +33,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Module.cs" />
-    <Compile Include="KSP.cs" />
-    <Compile Include="InstalledModule.cs" />
-    <Compile Include="RegistryManager.cs" />
-    <Compile Include="Registry.cs" />
-    <Compile Include="ModuleInstaller.cs" />
-    <Compile Include="Net.cs" />
-    <Compile Include="AvailableModule.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="RelationshipResolver.cs" />
-    <Compile Include="Types\Version.cs" />
-    <Compile Include="Types\KSPVersion.cs" />
-    <Compile Include="Types\JsonSimpleStringConverter.cs" />
-    <Compile Include="Repo.cs" />
+    <Compile Include="Main.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Types\" />
+    <ProjectReference Include="..\CKAN\CKAN.csproj">
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
+      <Name>CKAN</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

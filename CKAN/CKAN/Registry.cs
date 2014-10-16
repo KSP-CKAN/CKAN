@@ -75,26 +75,50 @@
         } 
 
         /// <summary>
-        /// Returns a simple array of all available modules.
+        /// Returns a simple array of all available modules for
+        /// the specified version of KSP (installed version by default)
         /// </summary>
 
-        public string[] Available() {
-            return available_modules.Keys.ToArray();
+        public List<CkanModule> Available(KSPVersion ksp_version = null) {
+
+            // Default to the user's current KSP install for version.
+            if (ksp_version == null) {
+                ksp_version = KSP.Version ();
+            }
+
+            var candidates = new List<string> (available_modules.Keys);
+            var compatible = new List<CkanModule> ();
+
+            // It's nice to see things in alphabetical order, so sort our keys first.
+            candidates.Sort ();
+
+            // Now find what we can give our user.
+            foreach (string candidate in candidates) {
+                CkanModule available = LatestAvailable (candidate, ksp_version);
+
+                if (available != null) {
+                    compatible.Add (available);
+                }
+            }
+
+            return compatible;
         }
 
         /// <summary>
         /// Returns the latest available version of a module that
-        /// satisifes the user's current requirements and system.
+        /// satisifes the specified version.
         /// 
-        /// Throws a ModuleNotFoundException if not available.
+        /// Throws a ModuleNotFoundException if asked for a non-existant module.
+        /// Returns null if there's simply no compatible version for this system.
         /// </summary>
-        public CkanModule LatestAvailable(string module) {
+        public CkanModule LatestAvailable(string module, KSPVersion ksp_version = null) {
 
-            // TODO: Check user's KSP version.
+            log.DebugFormat ("Finding latest available for {0}", module);
+
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
 
             try {
-                return available_modules[module].Latest();
+                return available_modules[module].Latest(ksp_version);
             }
             catch (KeyNotFoundException) {
                 throw new ModuleNotFoundException (module);
@@ -140,12 +164,12 @@
         /// <returns>The version.</returns>
         /// <param name="modName">Mod name.</param>
 
-        public string InstalledVersion(string modName) {
+        public Version InstalledVersion(string modName) {
             if (installed_modules.ContainsKey(modName)) {
                 return installed_modules [modName].source_module.version;
             }
             else if (installed_dlls.ContainsKey(modName)) {
-                return "0";    // We probably want a better way to signal auto-detected modules.
+                return new DllVersion ();
             }
 
             return null;

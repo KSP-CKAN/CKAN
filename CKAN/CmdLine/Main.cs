@@ -16,6 +16,7 @@ namespace CKAN {
     using log4net;
     using log4net.Config;
     using log4net.Core;
+    using CKAN;
 
     class MainClass {
 
@@ -128,7 +129,7 @@ namespace CKAN {
 
             User.WriteLine ("Downloading updates...");
 
-            int updated = CKAN.Update(options.repo);
+            int updated = Repo.Update (options.repo);
 
             User.WriteLine ("Updated information on {0} available modules", updated);
 
@@ -136,9 +137,12 @@ namespace CKAN {
         }
 
         static int Available() {
-            string[] available = RegistryManager.Instance().registry.Available();
+            List<CkanModule> available = RegistryManager.Instance().registry.Available();
 
-            foreach (string module in available) {
+            User.WriteLine ("Mods available for KSP {0}", KSP.Version());
+            User.WriteLine ("");
+
+            foreach (CkanModule module in available) {
                 User.WriteLine("* {0}", module);
             }
 

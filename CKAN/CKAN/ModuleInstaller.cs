@@ -90,7 +90,7 @@ namespace CKAN {
 
             User.WriteLine (module.identifier + ":\n");
 
-            string version = registry_manager.registry.InstalledVersion (module.identifier);
+            Version version = registry_manager.registry.InstalledVersion (module.identifier);
 
             if (version != null) {
                 // TODO: Check if we can upgrade!
@@ -126,7 +126,7 @@ namespace CKAN {
                 foreach (dynamic stanza in module.bundles) {
                     BundledModule bundled = new BundledModule (stanza);
 
-                    string ver = registry_manager.registry.InstalledVersion (bundled.identifier);
+                    Version ver = registry_manager.registry.InstalledVersion (bundled.identifier);
 
                     if (ver != null) {
                         User.WriteLine (
@@ -179,8 +179,8 @@ namespace CKAN {
                 installDir = KSP.Ships ();
                 makeDirs = false; // Don't allow directory creation in ships directory
             } else {
-                // Is this the best exception to use here??
-                throw new BadCommandException ("Unknown install location: " + stanza.install_to);
+                // What is the best exception to use here??
+                throw new Exception ("Unknown install location: " + stanza.install_to);
             }
 
             // Console.WriteLine("InstallDir is "+installDir);
@@ -299,7 +299,7 @@ namespace CKAN {
     }
 
 
-    class ModuleNotFoundException : Exception {
+    public class ModuleNotFoundException : Exception {
         public string module;
         public string version;
 

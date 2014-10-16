@@ -17,8 +17,8 @@ namespace CKAN {
 
         static readonly ILog log = LogManager.GetLogger (typeof(KSP));
 
-        static string cached_gamedir = null;
-        static string cached_version = null;
+        private static string cached_gamedir = null;
+        private static KSPVersion cached_version = null;
 
         private const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
         private const string CKAN_GAMEDIR_VALUE = @"GameDir";
@@ -283,7 +283,7 @@ namespace CKAN {
             registry_manager.Save();
         }
 
-        public static string Version() {
+        public static KSPVersion Version() {
 
             if (cached_version != null) {
                 return cached_version;
@@ -292,7 +292,7 @@ namespace CKAN {
             return cached_version = DetectVersion (GameDir ());
         }
 
-        private static string DetectVersion(string path) {
+        private static KSPVersion DetectVersion(string path) {
 
             // Slurp our README into memory
             string readme = File.ReadAllText(Path.Combine (path, "readme.txt"));
@@ -303,7 +303,7 @@ namespace CKAN {
             if (match.Success) {
                 string version = match.Groups [1].Value;
                 log.DebugFormat ("Found version {0}", version);
-                return version;
+                return new KSPVersion(version);
             }
 
             // Oh noes! We couldn't find the version!
