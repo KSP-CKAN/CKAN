@@ -9,7 +9,6 @@ script:
     - nunit-console Tests/bin/Debug/Tests.dll
 
 before_deploy:
-    - sudo apt-get install libipc-system-simple-perl
     - cd ..
     - mkdir uploads
     - bin/build
