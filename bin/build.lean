@@ -50,9 +50,9 @@ chdir("$Bin/..");
 system(
     $REPACK,
     "--out:ckan.exe",
-    "--lib:build/CKAN/bin/$TARGET",
-    "build/CKAN/bin/$TARGET/CKAN.exe",
-    glob("build/CKAN/bin/$TARGET/*.dll"),
+    "--lib:build/CmdLine/bin/$TARGET",
+    "build/CmdLine/bin/$TARGET/CmdLine.exe",
+    glob("build/CmdLine/bin/$TARGET/*.dll"),
 );
 
 say "\n\n=== Tidying up===\n\n";
