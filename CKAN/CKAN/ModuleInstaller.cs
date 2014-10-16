@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace CKAN {
 
     using System;
@@ -291,10 +293,43 @@ namespace CKAN {
             return;
         }
 
+        public List<string> FindReverseDependencies(string modName) {
+            var rootMod = registry_manager.registry.installed_modules[modName].source_module;
+
+            List<string> reverseDependencies = new List<string>();
+
+            foreach (var keyValue in registry_manager.registry.installed_modules) {
+                var mod = keyValue.Value.source_module;
+                bool isDependency = false;
+
+                if (mod.depends != null)
+                {
+                    foreach (dynamic dependency in mod.depends)
+                    {
+                        if (dependency.name == modName)
+                        {
+                            isDependency = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isDependency) {
+                    reverseDependencies.Add(mod.identifier);
+                }
+            }
+
+            return reverseDependencies;
+        }
+
         public void Uninstall(string modName) {
+            // Find all mods that depend on this one
+            var reverseDependencies = FindReverseDependencies(modName);
+            foreach (var reverseDependency in reverseDependencies) {
+                Uninstall(reverseDependency);
+            }
 
             // Walk our registry to find all files for this mod.
-
             Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
             foreach (string file in files.Keys) {
@@ -333,7 +368,6 @@ namespace CKAN {
             registry_manager.Save ();
 
             // And we're done! :)
-
             return;
         }
     }

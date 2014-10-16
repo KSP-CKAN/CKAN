@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace CKAN
         InstalledUpdateAvailable = 2,
         NewInRepository = 3,
         NotInstalled = 4,
+        Incompatible = 5,
     }
 
     public enum GUIModChangeType
@@ -151,9 +153,79 @@ namespace CKAN
             Enabled = true;
         }
 
+        private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)
+        {
+            List<string> tmp = new List<string>();
+            tmp.Add(module.identifier);
+
+            RelationshipResolver resolver = null;
+            
+            try
+            {
+                 resolver = new RelationshipResolver(tmp, options);
+            }
+            catch (ModuleNotFoundException)
+            {
+                return null;
+            }
+
+            return resolver.ModList();
+        }
+
         private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
         {
-            List<KeyValuePair<CkanModule, GUIModChangeType>> changeset = new List<KeyValuePair<CkanModule, GUIModChangeType>>();
+            HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
+
+            var modulesToInstall = new HashSet<string>();
+            var modulesToRemove = new HashSet<string>();
+
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (CkanModule) row.Tag;
+                if (mod == null)
+                {
+                    continue;
+                }
+
+                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                var isInstalledChecked = (bool)isInstalledCell.Value;
+
+                if (!isInstalled && isInstalledChecked)
+                {
+                    modulesToInstall.Add(mod.identifier);
+                }
+                else if (isInstalled && !isInstalledChecked)
+                {
+                    modulesToRemove.Add(mod.identifier);
+                }
+            }
+
+            RelationshipResolverOptions options = new RelationshipResolverOptions();
+            options.with_all_suggests = true;
+            options.with_recommends = true;
+            options.with_suggests = true;
+
+            var resolver = new RelationshipResolver(modulesToInstall.ToList(), options);
+
+            foreach (CkanModule mod in resolver.ModList())
+            {
+                changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install));
+            }
+
+            var installer = new ModuleInstaller();
+
+            List<string> reverseDependencies = new List<string>();
+
+            foreach (var moduleName in modulesToRemove)
+            {
+                reverseDependencies = installer.FindReverseDependencies(moduleName);
+                foreach (var reverseDependency in reverseDependencies)
+                {
+                    var mod = RegistryManager.Instance().registry.available_modules[reverseDependency].Latest();
+                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule)mod, GUIModChangeType.Remove));
+                }
+            }
 
             foreach (DataGridViewRow row in ModList.Rows)
             {
@@ -175,13 +247,9 @@ namespace CKAN
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Update));
                 }
-                else if (!isInstalled && isInstalledChecked)
-                {
-                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install));
-                }
             }
 
-            return changeset;
+            return changeset.ToList();
         }
 
         private int CountModsByFilter(GUIModFilter filter)
@@ -239,6 +307,9 @@ namespace CKAN
                 case GUIModFilter.NotInstalled:
                     modules.RemoveAll(m => RegistryManager.Instance().registry.IsInstalled(m.identifier));
                     break;
+                case GUIModFilter.Incompatible:
+                    modules = RegistryManager.Instance().registry.Incompatible();
+                    break;
             }
 
             return modules;
@@ -251,6 +322,7 @@ namespace CKAN
             ModFilter.Items[2] = String.Format("Updated ({0})", CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
             ModFilter.Items[3] = String.Format("New in repository ({0})", CountModsByFilter(GUIModFilter.NewInRepository));
             ModFilter.Items[4] = String.Format("Not installed ({0})", CountModsByFilter(GUIModFilter.NotInstalled));
+            ModFilter.Items[5] = String.Format("Incompatible ({0})", CountModsByFilter(GUIModFilter.Incompatible));
         }
 
         private void UpdateModsList(bool markUpdates = false)
@@ -279,6 +351,8 @@ namespace CKAN
                 case GUIModFilter.NotInstalled:
                     modules.RemoveAll(m => RegistryManager.Instance().registry.IsInstalled(m.identifier));
                     break;
+                case GUIModFilter.Incompatible:
+                    break;
             }
 
             // filter by name
@@ -289,11 +363,21 @@ namespace CKAN
                 DataGridViewRow item = new DataGridViewRow();
                 item.Tag = mod;
 
-                // installed
                 var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
-                var installedCell = new DataGridViewCheckBoxCell();
-                installedCell.Value = isInstalled;
-                item.Cells.Add(installedCell);
+
+                // installed
+                if (m_ModFilter != GUIModFilter.Incompatible)
+                {
+                    var installedCell = new DataGridViewCheckBoxCell();
+                    installedCell.Value = isInstalled;
+                    item.Cells.Add(installedCell);
+                }
+                else
+                {
+                    var installedCell = new DataGridViewTextBoxCell();
+                    installedCell.Value = "-";
+                    item.Cells.Add(installedCell);
+                }
 
                 // want update
                 if (!isInstalled)
@@ -516,6 +600,59 @@ namespace CKAN
 
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (m_ModFilter == GUIModFilter.Incompatible)
+            {
+                return;
+            }
+
+            if (e.ColumnIndex == 0 && ModList.Rows.Count > e.RowIndex) // if user clicked install
+            {
+                var row = ModList.Rows[e.RowIndex];
+                var cell = row.Cells[0] as DataGridViewCheckBoxCell;
+                var mod = (CkanModule)row.Tag;
+
+                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                if ((bool)cell.Value == false && !isInstalled)
+                {
+                    var options = new RelationshipResolverOptions();
+                    options.with_all_suggests = true;
+                    options.with_recommends = true;
+                    options.with_suggests = true;
+                    List<CkanModule> dependencies = GetInstallDependencies(mod, options);
+
+                    if (dependencies == null)
+                    {
+                        return;
+                    }
+
+                    foreach (CkanModule dependency in dependencies)
+                    {
+                        foreach (DataGridViewRow depRow in ModList.Rows)
+                        {
+                            if ((CkanModule) depRow.Tag == dependency)
+                            {
+                                (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = true;
+                            }
+                        }
+                    }
+                }
+                else if ((bool) cell.Value == true && isInstalled)
+                {
+                    var installer = new ModuleInstaller();
+                    List<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
+                    foreach (string dependency in reverseDependencies)
+                    {
+                        foreach (DataGridViewRow depRow in ModList.Rows)
+                        {
+                            if (((CkanModule)depRow.Tag).identifier == dependency)
+                            {
+                                (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = false;
+                            }
+                        }
+                    }
+                }
+            }
+
             ModList.EndEdit();
 
             if (ComputeChangeSetFromModList().Any())

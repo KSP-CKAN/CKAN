@@ -38,8 +38,6 @@ namespace CKAN
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
-            this.MainPanel = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.ModInfo = new System.Windows.Forms.TextBox();
             this.ModFilter = new System.Windows.Forms.ListBox();
@@ -58,12 +56,15 @@ namespace CKAN
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
-            this.MainPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.FilterByNamePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -74,7 +75,7 @@ namespace CKAN
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(869, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(823, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -110,9 +111,9 @@ namespace CKAN
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 634);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 615);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(869, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(823, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -129,36 +130,11 @@ namespace CKAN
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
-            // MainPanel
-            // 
-            this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainPanel.Controls.Add(this.panel1);
-            this.MainPanel.Controls.Add(this.ModInfo);
-            this.MainPanel.Controls.Add(this.ModFilter);
-            this.MainPanel.Location = new System.Drawing.Point(0, 68);
-            this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(869, 563);
-            this.MainPanel.TabIndex = 3;
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.ModList);
-            this.panel1.Location = new System.Drawing.Point(208, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(658, 398);
-            this.panel1.TabIndex = 4;
-            // 
             // ModList
             // 
             this.ModList.AllowUserToAddRows = false;
             this.ModList.AllowUserToDeleteRows = false;
             this.ModList.AllowUserToResizeRows = false;
-            this.ModList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.ModList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -172,26 +148,25 @@ namespace CKAN
             this.LatestVersion,
             this.Description,
             this.Homepage});
-            this.ModList.Location = new System.Drawing.Point(0, -4);
+            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModList.Location = new System.Drawing.Point(0, 0);
             this.ModList.MultiSelect = false;
             this.ModList.Name = "ModList";
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(661, 402);
+            this.ModList.Size = new System.Drawing.Size(616, 280);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
             // 
             // ModInfo
             // 
-            this.ModInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ModInfo.Location = new System.Drawing.Point(208, 408);
+            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfo.Location = new System.Drawing.Point(0, 0);
             this.ModInfo.Multiline = true;
             this.ModInfo.Name = "ModInfo";
             this.ModInfo.ReadOnly = true;
-            this.ModInfo.Size = new System.Drawing.Size(658, 140);
+            this.ModInfo.Size = new System.Drawing.Size(616, 260);
             this.ModInfo.TabIndex = 2;
             this.ModInfo.Text = "Mod description etc";
             // 
@@ -207,8 +182,9 @@ namespace CKAN
             "Installed",
             "Installed (update available)",
             "New in repository",
-            "Not installed"});
-            this.ModFilter.Location = new System.Drawing.Point(4, 4);
+            "Not installed",
+            "Incompatible"});
+            this.ModFilter.Location = new System.Drawing.Point(0, 67);
             this.ModFilter.Name = "ModFilter";
             this.ModFilter.Size = new System.Drawing.Size(197, 544);
             this.ModFilter.TabIndex = 0;
@@ -217,7 +193,7 @@ namespace CKAN
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(86, 18);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(89, 18);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 4;
@@ -235,13 +211,12 @@ namespace CKAN
             // 
             // FilterByNamePanel
             // 
-            this.FilterByNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.FilterByNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FilterByNamePanel.Controls.Add(this.FilterByNameLabel);
             this.FilterByNamePanel.Controls.Add(this.FilterByNameTextBox);
-            this.FilterByNamePanel.Location = new System.Drawing.Point(655, 27);
+            this.FilterByNamePanel.Location = new System.Drawing.Point(606, 27);
             this.FilterByNamePanel.Name = "FilterByNamePanel";
-            this.FilterByNamePanel.Size = new System.Drawing.Size(214, 39);
+            this.FilterByNamePanel.Size = new System.Drawing.Size(217, 39);
             this.FilterByNamePanel.TabIndex = 6;
             // 
             // Installed
@@ -340,13 +315,34 @@ namespace CKAN
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(203, 67);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.ModList);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.ModInfo);
+            this.splitContainer1.Size = new System.Drawing.Size(616, 544);
+            this.splitContainer1.SplitterDistance = 280;
+            this.splitContainer1.TabIndex = 7;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(869, 656);
+            this.ClientSize = new System.Drawing.Size(823, 637);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.FilterByNamePanel);
-            this.Controls.Add(this.MainPanel);
+            this.Controls.Add(this.ModFilter);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.menuStrip2);
@@ -358,12 +354,14 @@ namespace CKAN
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
-            this.MainPanel.ResumeLayout(false);
-            this.MainPanel.PerformLayout();
-            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.FilterByNamePanel.ResumeLayout(false);
             this.FilterByNamePanel.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -381,13 +379,11 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
-        private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.ListBox ModFilter;
         private System.Windows.Forms.TextBox ModInfo;
         private System.Windows.Forms.TextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByNameLabel;
         private System.Windows.Forms.DataGridView ModList;
-        private Panel panel1;
         private Panel FilterByNamePanel;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
@@ -398,6 +394,7 @@ namespace CKAN
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem aboutToolStripMenuItem;
+        private SplitContainer splitContainer1;
     }
 }
 
