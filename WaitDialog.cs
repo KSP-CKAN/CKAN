@@ -22,5 +22,26 @@ namespace CKAN
             StartPosition = FormStartPosition.CenterScreen;
             this.ShowDialog();
         }
+
+        public void SetDescription(string message)
+        {
+            if (ActionDescriptionLabel.InvokeRequired)
+            {
+                ActionDescriptionLabel.Invoke(new MethodInvoker(delegate
+                {
+                    ActionDescriptionLabel.Text = "(" + message + ")";
+                }));
+            }
+            else
+            {
+                ActionDescriptionLabel.Text = "(" + message + ")";
+            }
+        }
+
+        private void ActionDescriptionLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

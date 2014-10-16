@@ -82,10 +82,32 @@ namespace CKAN
             Enabled = true;
         }
 
+        private void InstallModsReportProgress(string message, int percent)
+        {
+            if (m_WaitDialog != null)
+            {
+                m_WaitDialog.SetDescription(message + " " + percent.ToString() + "%");
+            }
+
+        }
+
         private void InstallMods(object sender, DoWorkEventArgs e)
         {
             var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
 
+            ModuleInstaller installer = new ModuleInstaller();
+            installer.onReportProgress += InstallModsReportProgress;
+
+            // first we uninstall selected mods
+            foreach (var change in opts.Key)
+            {
+                if (change.Value == GUIModChangeType.Remove)
+                {
+                    installer.Uninstall(change.Key.name);
+                }
+            }
+
+            // install everything else
             List<string> toInstall = new List<string>();
             foreach (var change in opts.Key)
             {
@@ -95,16 +117,7 @@ namespace CKAN
                 }
             }
 
-            ModuleInstaller installer = new ModuleInstaller();
             installer.InstallList(toInstall, opts.Value);
-
-            foreach (var change in opts.Key)
-            {
-                if (change.Value == GUIModChangeType.Remove)
-                {
-                    installer.Uninstall(change.Key.name);
-                }
-            }
         }
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
@@ -228,6 +241,7 @@ namespace CKAN
         {
             m_UpdateRepoWorker.RunWorkerAsync();
             Enabled = false;
+            m_WaitDialog.SetDescription("Contacting repository..");
             m_WaitDialog.ShowWaitDialog();
         }
 
