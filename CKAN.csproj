@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>CKAN</RootNamespace>
     <AssemblyName>CKAN</AssemblyName>
   </PropertyGroup>
@@ -47,7 +47,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="KSP.cs" />
@@ -56,13 +55,13 @@
     <Compile Include="Registry.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Net.cs" />
-    <Compile Include="CKAN.cs" />
     <Compile Include="AvailableModule.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="Types/Version.cs" />
     <Compile Include="RelationshipResolver.cs" />
-    <Compile Include="Types/KSPVersion.cs" />
-    <Compile Include="Types/JsonSimpleStringConverter.cs" />
+    <Compile Include="Types\Version.cs" />
+    <Compile Include="Types\KSPVersion.cs" />
+    <Compile Include="Types\JsonSimpleStringConverter.cs" />
+    <Compile Include="Repo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
