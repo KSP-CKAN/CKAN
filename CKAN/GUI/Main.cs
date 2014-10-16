@@ -103,7 +103,7 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Remove)
                 {
-                    installer.Uninstall(change.Key.name);
+                    installer.Uninstall(change.Key.identifier);
                 }
             }
 
@@ -113,7 +113,7 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Install || change.Value == GUIModChangeType.Update)
                 {
-                    toInstall.Add(change.Key.name);
+                    toInstall.Add(change.Key.identifier);
                 }
             }
 
@@ -139,14 +139,14 @@ namespace CKAN
                     continue;
                 }
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.name);
+                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
                 var isChecked = item.Checked;
 
                 if (isInstalled && !isChecked)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
                 }
-                else if (isInstalled && isChecked && mod.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(mod.name)))
+                else if (isInstalled && isChecked && mod.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(mod.identifier)))
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Update));
                 }
@@ -174,19 +174,19 @@ namespace CKAN
                 case GUIModFilter.All:
                     break;
                 case GUIModFilter.Installed:
-                    modules.RemoveAll(m => !RegistryManager.Instance().registry.IsInstalled(m.name));
+                    modules.RemoveAll(m => !RegistryManager.Instance().registry.IsInstalled(m.identifier));
                     break;
                 case GUIModFilter.InstalledUpdateAvailable:
                     modules.RemoveAll
                     (
-                        m => !(RegistryManager.Instance().registry.IsInstalled(m.name) &&
-                            m.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(m.name)))
+                        m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
+                            m.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
                     );
                     break;
                 case GUIModFilter.NewInRepository:
                     break;
                 case GUIModFilter.NotInstalled:
-                    modules.RemoveAll(m => RegistryManager.Instance().registry.IsInstalled(m.name));
+                    modules.RemoveAll(m => RegistryManager.Instance().registry.IsInstalled(m.identifier));
                     break;
             }
 
@@ -195,13 +195,13 @@ namespace CKAN
                 ListViewItem item = new ListViewItem();
                 item.Tag = mod;
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.name);
+                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
 
-                if (isInstalled && RegistryManager.Instance().registry.InstalledVersion(mod.name).IsLessThan(mod.version) && markUpdates)
+                if (isInstalled && RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version) && markUpdates)
                 {
                     item.Checked = true;
                 }
-                else if (isInstalled && !RegistryManager.Instance().registry.InstalledVersion(mod.name).IsLessThan(mod.version))
+                else if (isInstalled && !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version))
                 {
                     item.Checked = isInstalled;
                 }
@@ -213,7 +213,7 @@ namespace CKAN
                 var subInstalledVersion = new ListViewItem.ListViewSubItem();
                 if (isInstalled)
                 {
-                    subInstalledVersion.Text = RegistryManager.Instance().registry.InstalledVersion(mod.name).ToString();
+                    subInstalledVersion.Text = RegistryManager.Instance().registry.InstalledVersion(mod.identifier).ToString();
                 }
                 else
                 {
