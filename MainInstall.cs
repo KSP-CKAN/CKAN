@@ -18,7 +18,8 @@ namespace CKAN
         {
             if (m_WaitDialog != null)
             {
-                m_WaitDialog.SetDescription(message + " " + percent.ToString() + "%");
+                m_WaitDialog.SetDescription(message + " - " + percent.ToString() + "%");
+                m_WaitDialog.SetProgress(percent);
             }
         }
 

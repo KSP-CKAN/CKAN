@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.MessageTextBox = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -46,13 +46,13 @@
             this.MessageTextBox.Text = "Waiting for operation to complete";
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // progressBar1
+            // DialogProgressBar
             // 
-            this.progressBar1.Location = new System.Drawing.Point(13, 35);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(380, 23);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar1.TabIndex = 1;
+            this.DialogProgressBar.Location = new System.Drawing.Point(13, 35);
+            this.DialogProgressBar.Name = "DialogProgressBar";
+            this.DialogProgressBar.Size = new System.Drawing.Size(380, 23);
+            this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.DialogProgressBar.TabIndex = 1;
             // 
             // LogTextBox
             // 
@@ -69,7 +69,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(404, 280);
             this.Controls.Add(this.LogTextBox);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.DialogProgressBar);
             this.Controls.Add(this.MessageTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "WaitDialog";
@@ -82,7 +82,7 @@
         #endregion
 
         private System.Windows.Forms.TextBox MessageTextBox;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
 
     }
