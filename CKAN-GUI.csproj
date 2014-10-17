@@ -67,6 +67,9 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainInstall.cs">
       <SubType>Form</SubType>
     </Compile>
