@@ -254,6 +254,13 @@ namespace CKAN {
         // TODO: We should have a command (probably this one) that shows
         // info about uninstalled modules.
         static int Show(ShowOptions options) {
+            if (options.Modname == null)
+            {
+                // empty argument
+                User.WriteLine("show <module> - module name argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
             RegistryManager registry_manager = RegistryManager.Instance();
             InstalledModule module;
 
