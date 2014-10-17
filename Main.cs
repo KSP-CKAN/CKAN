@@ -68,6 +68,7 @@ namespace CKAN
             KSP.Init();
             User.yesNoDialog = YesNoDialog;
             User.displayMessage = AddStatusMessage;
+            User.displayError = ErrorDialog;
 
             UpdateModsList();
             UpdateModFilterList();
@@ -93,6 +94,11 @@ namespace CKAN
             }
 
             m_WaitDialog.AddLogMessage(String.Format(text, args));
+        }
+
+        public void ErrorDialog(string text, params object[] args)
+        {
+            m_ErrorDialog.ShowErrorDialog(String.Format(text, args));
         }
 
         public bool YesNoDialog(string text)
@@ -521,6 +527,7 @@ namespace CKAN
             m_UpdateRepoWorker.RunWorkerAsync();
             Enabled = false;
             m_WaitDialog.SetDescription("Contacting repository..");
+            m_WaitDialog.ClearLog();
             m_WaitDialog.ShowWaitDialog();
         }
 
