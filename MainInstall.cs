@@ -32,6 +32,9 @@ namespace CKAN
             installer.onReportProgress += InstallModsReportProgress;
 
             // first we uninstall selected mods
+
+
+
             foreach (var change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Remove)
@@ -57,7 +60,8 @@ namespace CKAN
                             foreach (dynamic mod in change.Key.recommends)
                             {
                                 if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
-                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()))
+                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
+                                    !toInstall.Contains(mod.name.ToString()))
                                 {
                                     recommended.Add(mod.name.ToString());
                                 }
@@ -137,6 +141,7 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
+            AddStatusMessage("");
             m_WaitDialog.Close();
             Enabled = true;
         }
