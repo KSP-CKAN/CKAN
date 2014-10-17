@@ -16,9 +16,25 @@ namespace CKAN
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void SettingsDialog_Load(object sender, EventArgs e)
         {
+            CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
+        }
 
+        private void CKANRepositoryApplyButton_Click(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.Repository = CKANRepositoryTextBox.Text;
+            Main.Instance.UpdateRepo();
+            Main.Instance.m_Configuration.Save();
+            Close();
+        }
+
+        private void CKANRepositoryDefaultButton_Click(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.Repository = Repo.default_ckan_repo;
+            Main.Instance.UpdateRepo();
+            Main.Instance.m_Configuration.Save();
+            Close();
         }
     }
 }

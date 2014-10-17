@@ -30,33 +30,45 @@
         {
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.LogTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // MessageTextBox
             // 
+            this.MessageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MessageTextBox.Enabled = false;
             this.MessageTextBox.Location = new System.Drawing.Point(12, 12);
             this.MessageTextBox.Multiline = true;
             this.MessageTextBox.Name = "MessageTextBox";
             this.MessageTextBox.ReadOnly = true;
-            this.MessageTextBox.Size = new System.Drawing.Size(268, 36);
+            this.MessageTextBox.Size = new System.Drawing.Size(380, 17);
             this.MessageTextBox.TabIndex = 0;
             this.MessageTextBox.Text = "Waiting for operation to complete";
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 54);
+            this.progressBar1.Location = new System.Drawing.Point(13, 35);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(268, 23);
+            this.progressBar1.Size = new System.Drawing.Size(380, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 1;
+            // 
+            // LogTextBox
+            // 
+            this.LogTextBox.Location = new System.Drawing.Point(13, 64);
+            this.LogTextBox.Multiline = true;
+            this.LogTextBox.Name = "LogTextBox";
+            this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.Size = new System.Drawing.Size(379, 204);
+            this.LogTextBox.TabIndex = 2;
             // 
             // WaitDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 89);
+            this.ClientSize = new System.Drawing.Size(404, 280);
+            this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.MessageTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -71,6 +83,7 @@
 
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.TextBox LogTextBox;
 
     }
 }
