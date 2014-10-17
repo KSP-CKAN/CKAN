@@ -62,6 +62,7 @@
     <Compile Include="Types\KSPVersion.cs" />
     <Compile Include="Types\JsonSimpleStringConverter.cs" />
     <Compile Include="Repo.cs" />
+    <Compile Include="Meta.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
