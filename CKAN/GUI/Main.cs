@@ -67,17 +67,8 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            var assemblies = (AssemblyInformationalVersionAttribute[])Assembly.GetAssembly(typeof(RegistryManager)).GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false);
+            Text = "CKAN (" + Meta.Version() + ")";
 
-            if (assemblies.Length == 0 || assemblies[0].InformationalVersion == null)
-            {
-                // Dunno the version. Some dev probably built it. 
-                Text = "CKAN (development)";
-            }
-            else
-            {
-                Text = String.Format("CKAN {0}", assemblies[0].InformationalVersion);
-            }
         }
 
         private static Main m_Instance = null;
