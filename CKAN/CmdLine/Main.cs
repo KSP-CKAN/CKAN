@@ -32,6 +32,12 @@ namespace CKAN {
             LogManager.GetRepository ().Threshold = Level.Warn;
             log.Debug ("CKAN started");
 
+            // If we're starting with no options, invoke the GUI instead.
+
+            if (args.Length == 0) {
+                return Gui ();
+            }
+
             Options cmdline;
 
             try {
@@ -73,6 +79,9 @@ namespace CKAN {
 
             switch (cmdline.action) {
 
+                case "gui":
+                    return Gui();
+                
                 case "version":
                     return Version ();
 
@@ -108,6 +117,16 @@ namespace CKAN {
                     return EXIT_BADOPT;
 
             }
+        }
+
+        static int Gui() {
+
+            // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
+            // but trying to catch it here doesn't seem to help. Dunno why.
+
+            GUI.Main ();
+
+            return EXIT_OK;
         }
 
         static int Version() {
@@ -315,6 +334,9 @@ namespace CKAN {
     // TODO: Figure out how to do per action help screens.
 
     class Actions {
+        [VerbOption("gui", HelpText = "Start the CKAN GUI")]
+        public GuiOptions GuiOptions { get; set; }
+
         [VerbOption("update", HelpText = "Update list of available mods")]
         public UpdateOptions Update { get; set; }
 
@@ -390,6 +412,7 @@ namespace CKAN {
     class VersionOptions   : CommonOptions { }
     class CleanOptions     : CommonOptions { }
     class AvailableOptions : CommonOptions { }
+    class GuiOptions       : CommonOptions { }
 
     class UpdateOptions    : CommonOptions {
 
