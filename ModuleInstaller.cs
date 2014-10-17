@@ -14,14 +14,14 @@ namespace CKAN {
 
     public delegate void ModuleInstallerReportProgress(string message, int progress);
 
-    public delegate void ModuleInstallerReportDownloadComplete(Uri[] urls, string[] filenames, CkanModule[] modules);
+    public delegate void ModuleInstallerReportModInstalled(CkanModule module);
 
     public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
         public ModuleInstallerReportProgress onReportProgress = null;
-        public ModuleInstallerReportDownloadComplete onDownloadComplete = null;
+        public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -66,10 +66,7 @@ namespace CKAN {
        onReportProgress(String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond / 1024, bytesLeft / 1024 / 1024), percent);
             }
 
-            if (onDownloadComplete != null)
-            {
-                downloader.onCompleted = (uris, strings) => onDownloadComplete(urls, fullPaths, modules);
-            }
+            downloader.onCompleted = (uris, strings, errors) => OnDownloadsComplete(urls, fullPaths, modules, errors);
 
             return downloader;
         }
@@ -164,12 +161,22 @@ namespace CKAN {
 
             var downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
             var downloadPaths = downloader.StartDownload();
-            downloader.WaitForAllDownloads();
+        }
 
-
-            for (int i = 0; i < modulesToDownload.Length; i++)
+        private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
+        {
+            for (int i = 0; i < errors.Length; i++)
             {
-                Install(modulesToDownload[i], modulesToDownloadPaths[i]);
+                if (errors[i] != null)
+                {
+                    User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                    return;
+                }
+            }
+
+            for (int i = 0; i < urls.Length; i++)
+            {
+                Install(modules[i], filenames[i]);
             }
         }
 
@@ -208,8 +215,18 @@ namespace CKAN {
             // And a list of files to record them to.
             Dictionary<string, InstalledModuleFile> module_files = new Dictionary<string, InstalledModuleFile> ();
 
+            ZipFile zipfile = null;
+
             // Open our zip file for processing
-            ZipFile zipfile = new ZipFile (File.OpenRead (filename));
+            try
+            {
+                zipfile = new ZipFile(File.OpenRead(filename));
+            }
+            catch (Exception)
+            {
+                User.Error("Failed to open archive \"{0}\"", filename);
+                return;
+            }
 
             // Walk through our install instructions.
             foreach (dynamic stanza in module.install) {
@@ -247,8 +264,10 @@ namespace CKAN {
             // Done! Save our registry changes!
             registry_manager.Save();
 
-            return;
-
+            if (onReportModInstalled != null)
+            {
+                onReportModInstalled(module);
+            }
         }
 
         string Sha1Sum (string path) {

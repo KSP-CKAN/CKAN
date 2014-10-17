@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CKAN {
@@ -13,7 +14,7 @@ namespace CKAN {
 
     public delegate void NetAsyncProgressReport(int percent, int bytesPerSecond, long bytesLeft);
 
-    public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames);
+    public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
 
     public class NetAsyncDownloader
     {
@@ -25,6 +26,7 @@ namespace CKAN {
 
         private Uri[] fileUrls = null;
         private string[] filePaths = null;
+        private Exception[] errors = null;
         private int queuePointer = 0;
         private WebClient[] agents = null;
         private int[] percentageComplete = null;
@@ -58,6 +60,7 @@ namespace CKAN {
             }
 
             agents = new WebClient[fileUrls.Length];
+            errors = new Exception[fileUrls.Length];
             percentageComplete = new int[fileUrls.Length];
             lastProgressUpdateTime = new DateTime[fileUrls.Length];
             lastProgressUpdateSize = new int[fileUrls.Length];
@@ -67,6 +70,7 @@ namespace CKAN {
             for (int i = 0; i < fileUrls.Length; i++)
             {
                 agents[i] = new WebClient();
+                errors[i] = null;
                 percentageComplete[i] = 0;
                 lastProgressUpdateTime[i] = DateTime.Now;
                 lastProgressUpdateSize[i] = 0;
@@ -77,7 +81,7 @@ namespace CKAN {
                 agents[i].DownloadProgressChanged +=
                         (sender, args) => FileProgressReport(index, args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive - args.BytesReceived);
 
-                agents[i].DownloadFileCompleted += (sender, args) => FileDownloadComplete(index);
+                agents[i].DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
                 agents[i].DownloadFileAsync(fileUrls[i], filePaths[i]);
             }
 
@@ -126,14 +130,16 @@ namespace CKAN {
             }
         }
 
-        private void FileDownloadComplete(int index)
+        private void FileDownloadComplete(int index, Exception error)
         {
             queuePointer++;
+            errors[index] = error;
+
             if (queuePointer == fileUrls.Length)
             {
                 if (onCompleted != null)
                 {
-                    onCompleted(fileUrls, filePaths);
+                    onCompleted(fileUrls, filePaths, errors);
                 }
 
                 return;
