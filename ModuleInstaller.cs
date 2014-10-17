@@ -333,6 +333,8 @@ namespace CKAN {
             // Walk our registry to find all files for this mod.
             Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
+            HashSet<string> directoriesToDelete = new HashSet<string>();
+
             foreach (string file in files.Keys) {
                 string path = Path.Combine (KSP.GameDir (), file);
                 try
@@ -341,14 +343,7 @@ namespace CKAN {
 
                     if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                     {
-
-                        // TODO: Actually prune empty directories
-                        if (!System.IO.Directory.GetFiles(path).Any())
-                        {
-                            System.IO.Directory.Delete(path);
-                        }
-
-                        User.WriteLine("Skipping directory {0}", file);
+                        directoriesToDelete.Add(path);
                     }
                     else
                     {
@@ -366,7 +361,22 @@ namespace CKAN {
             // Remove from registry.
 
             registry_manager.registry.DeregisterModule (modName);
-            registry_manager.Save ();
+            registry_manager.Save();
+
+            foreach (var directory in directoriesToDelete)
+            {
+                if (!System.IO.Directory.GetFiles(directory).Any())
+                {
+                    try
+                    {
+                        System.IO.Directory.Delete(directory);
+                    }
+                    catch (Exception)
+                    {
+                        User.WriteLine("Couldn't delete directory {0}", directory);
+                    }
+                }
+            }
 
             // And we're done! :)
             return;
