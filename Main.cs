@@ -131,15 +131,7 @@ namespace CKAN {
 
         static int Version() {
 
-            // SeriouslyLongestClassNamesEverThanksMicrosoft
-            var assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
-
-            if (assemblies.Length == 0 || assemblies[0].InformationalVersion == null) {
-                // Dunno the version. Some dev probably built it. 
-                User.WriteLine ("development");
-            } else {
-                User.WriteLine (assemblies[0].InformationalVersion);
-            }
+            User.WriteLine (Meta.Version ());
 
             return EXIT_OK;
         }
