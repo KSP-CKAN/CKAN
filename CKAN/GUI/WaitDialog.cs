@@ -15,6 +15,8 @@ namespace CKAN
         public WaitDialog()
         {
             InitializeComponent();
+            DialogProgressBar.Minimum = 0;
+            DialogProgressBar.Maximum = 100;
         }
 
         public void ShowWaitDialog()
@@ -38,6 +40,38 @@ namespace CKAN
             }
 
             Close();
+        }
+
+        public void SetProgress(int progress)
+        {
+            if (DialogProgressBar.InvokeRequired)
+            {
+                DialogProgressBar.Invoke(new MethodInvoker(delegate
+                {
+                    DialogProgressBar.Value = progress;
+                    DialogProgressBar.Style = ProgressBarStyle.Continuous;
+                }));
+            }
+            else
+            {
+                DialogProgressBar.Value = progress;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            }
+        }
+
+        public void ResetProgress()
+        {
+            if (DialogProgressBar.InvokeRequired)
+            {
+                DialogProgressBar.Invoke(new MethodInvoker(delegate
+                {
+                    DialogProgressBar.Style = ProgressBarStyle.Marquee;
+                }));
+            }
+            else
+            {
+                DialogProgressBar.Style = ProgressBarStyle.Marquee;
+            }
         }
 
         public void SetDescription(string message)
