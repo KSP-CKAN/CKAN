@@ -61,7 +61,7 @@ namespace CKAN {
 
             // Right now we always send to the console, but when we add extra
             // interfaces we'll switch to the appropriate one here.
-            User.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }
