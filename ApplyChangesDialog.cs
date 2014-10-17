@@ -53,6 +53,7 @@ namespace CKAN
             m_Changeset = null;
             m_InstallWorker = null;
             Close();
+            Main.Instance.UpdateModsList();
         }
 
         private void ConfirmButton_Click(object sender, EventArgs e)

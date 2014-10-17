@@ -20,7 +20,7 @@ namespace CKAN
             {
                 m_WaitDialog.SetDescription(message + " - " + percent.ToString() + "%");
                 m_WaitDialog.SetProgress(percent);
-                AddStatusMessage(message + " - " + percent.ToString() + "%");
+                //AddStatusMessage(message + " - " + percent.ToString() + "%");
             }
         }
 
@@ -39,6 +39,7 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Remove || change.Value == GUIModChangeType.Update)
                 {
+                    m_WaitDialog.SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
                     installer.Uninstall(change.Key.identifier);
                 }
             }
@@ -151,6 +152,7 @@ namespace CKAN
 
         private void OnModInstalled(CkanModule mod)
         {
+            AddStatusMessage("Module \"{0}\" successfully installed", mod.name);
             UpdateModsList();
         }
 
