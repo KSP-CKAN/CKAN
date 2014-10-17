@@ -30,6 +30,7 @@ namespace CKAN
                 ErrorMessage.Text = message;
             }
 
+            StartPosition = FormStartPosition.CenterScreen;
             ShowDialog();
         }
 

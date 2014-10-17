@@ -58,6 +58,8 @@ namespace CKAN
                 }
             }
 
+            StartPosition = FormStartPosition.CenterScreen;
+
             if (ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 List<string> selected = new List<string>();

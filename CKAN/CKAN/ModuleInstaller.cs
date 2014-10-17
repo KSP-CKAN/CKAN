@@ -82,8 +82,18 @@ namespace CKAN {
 
             User.WriteLine (""); // Just to look tidy.
 
-            foreach (CkanModule module in resolver.ModList ()) {
+            int counter = 0;
+            var modList = resolver.ModList ();
+            foreach (CkanModule module in modList) {
                 Install (module);
+
+                counter++;
+
+                if (onReportProgress != null)
+                {
+                    var percentDone = (counter * 100) / modList.Count();
+                    onReportProgress(String.Format("Installing \"{0}\"", module.name), percentDone);
+                }
             }
 
         }
@@ -127,17 +137,9 @@ namespace CKAN {
             // Open our zip file for processing
             ZipFile zipfile = new ZipFile (File.OpenRead (filename));
 
-            int counter = 0;
             // Walk through our install instructions.
             foreach (dynamic stanza in module.install) {
-
-                if (onReportProgress != null)
-                {
-                    onReportProgress(String.Format("Installing \"{0}\"", module.name), (counter * 100) / module.install.Count());
-                }
-
                 InstallComponent (stanza, zipfile, module_files);
-                counter++;
             }
 
             // Register our files.

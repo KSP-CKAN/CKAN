@@ -30,10 +30,10 @@
         {
             this.MessageLabel = new System.Windows.Forms.Label();
             this.RecommendedListView = new System.Windows.Forms.ListView();
-            this.Selected = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ModName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button1 = new System.Windows.Forms.Button();
             this.SelectAllButton = new System.Windows.Forms.Button();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // MessageLabel
@@ -49,23 +49,14 @@
             // 
             this.RecommendedListView.CheckBoxes = true;
             this.RecommendedListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Selected,
-            this.ModName});
+            this.columnHeader1,
+            this.columnHeader2});
             this.RecommendedListView.Location = new System.Drawing.Point(12, 25);
             this.RecommendedListView.Name = "RecommendedListView";
             this.RecommendedListView.Size = new System.Drawing.Size(432, 313);
             this.RecommendedListView.TabIndex = 1;
             this.RecommendedListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedListView.View = System.Windows.Forms.View.Details;
-            // 
-            // Selected
-            // 
-            this.Selected.Text = "Selected";
-            // 
-            // ModName
-            // 
-            this.ModName.DisplayIndex = 0;
-            this.ModName.Text = "Name";
             // 
             // button1
             // 
@@ -87,6 +78,15 @@
             this.SelectAllButton.UseVisualStyleBackColor = true;
             this.SelectAllButton.Click += new System.EventHandler(this.SelectAllButton_Click);
             // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Selected";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Width = 200;
+            // 
             // RecommendsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -107,9 +107,9 @@
 
         private System.Windows.Forms.Label MessageLabel;
         private System.Windows.Forms.ListView RecommendedListView;
-        private System.Windows.Forms.ColumnHeader Selected;
-        private System.Windows.Forms.ColumnHeader ModName;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button SelectAllButton;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }
