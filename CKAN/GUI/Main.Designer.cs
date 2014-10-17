@@ -340,6 +340,7 @@ namespace CKAN
             // 
             // StatusPanel
             // 
+            this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.StatusPanel.Controls.Add(this.StatusLabel);
             this.StatusPanel.Location = new System.Drawing.Point(0, 617);
             this.StatusPanel.Name = "StatusPanel";
