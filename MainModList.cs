@@ -180,6 +180,21 @@ namespace CKAN
 
         private void UpdateModsList(bool markUpdates = false)
         {
+            if (ModList.InvokeRequired)
+            {
+                ModList.Invoke(new MethodInvoker(delegate
+                {
+                    _UpdateModsList(markUpdates);
+                }));
+            }
+            else
+            {
+                _UpdateModsList(markUpdates);
+            }
+        }
+
+        private void _UpdateModsList(bool markUpdates)
+        {
             ModList.Rows.Clear();
 
             var modules = GetModsByFilter(m_ModFilter);

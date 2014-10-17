@@ -20,6 +20,7 @@ namespace CKAN
             {
                 m_WaitDialog.SetDescription(message + " - " + percent.ToString() + "%");
                 m_WaitDialog.SetProgress(percent);
+                AddStatusMessage(message + " - " + percent.ToString() + "%");
             }
         }
 
@@ -143,8 +144,14 @@ namespace CKAN
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
+                installer.onReportModInstalled = OnModInstalled;
                 installer.InstallList(toInstall.ToList(), opts.Value);
             }
+        }
+
+        private void OnModInstalled(CkanModule mod)
+        {
+            UpdateModsList();
         }
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
