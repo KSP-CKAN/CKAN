@@ -180,7 +180,8 @@
                 return available_modules[module].Latest(ksp_version);
             }
             catch (KeyNotFoundException) {
-                throw new ModuleNotFoundException(module);
+                return null;
+//                throw new ModuleNotFoundException(module);
             }
         }
 
