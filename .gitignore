@@ -9,3 +9,4 @@ ckan.exe
 .*.swp
 .fatten.out
 *.resources
+*.suo
