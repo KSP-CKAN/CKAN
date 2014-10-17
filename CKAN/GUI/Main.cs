@@ -35,6 +35,7 @@ namespace CKAN
         private SettingsDialog m_SettingsDialog = new SettingsDialog();
         private ErrorDialog m_ErrorDialog = new ErrorDialog();
         private YesNoDialog m_YesNoDialog = new YesNoDialog();
+        private RecommendsDialog m_RecommendsDialog = new RecommendsDialog();
 
         private BackgroundWorker m_UpdateRepoWorker = null;
         private BackgroundWorker m_InstallWorker = null;
@@ -167,9 +168,77 @@ namespace CKAN
             }
 
             // install everything else
+            HashSet<string> recommendedDialogShown = new HashSet<string>();
+            HashSet<string> suggestedDialogShown = new HashSet<string>();
+
             List<string> toInstall = new List<string>();
             foreach (var change in opts.Key)
             {
+                if (change.Value == GUIModChangeType.Install)
+                {
+                    if (!recommendedDialogShown.Contains(change.Key.identifier))
+                    {
+                        List<string> recommended = new List<string>();
+                        if (change.Key.recommends != null)
+                        {
+                            foreach (dynamic mod in change.Key.recommends)
+                            {
+                                recommended.Add(mod.name);
+                            }
+                        }
+
+                        if (recommended.Count() > 0)
+                        {
+                            List<string> recommendedToInstall = m_RecommendsDialog.ShowRecommendsDialog
+                            (
+                                String.Format("{0} recommends the following mods:", change.Key.name),
+                                recommended
+                            );
+
+                            if (recommendedToInstall != null)
+                            {
+                                foreach (var mod in recommendedToInstall)
+                                {
+                                    toInstall.Add(mod);
+                                }
+                            }
+
+                            recommendedDialogShown.Add(change.Key.identifier);
+                        }
+                    }
+
+                    if (!suggestedDialogShown.Contains(change.Key.identifier))
+                    {
+                        List<string> suggested = new List<string>();
+                        if (change.Key.suggests != null)
+                        {
+                            foreach (dynamic mod in change.Key.suggests)
+                            {
+                                suggested.Add(mod.name);
+                            }
+                        }
+
+                        if (suggested.Count() > 0)
+                        {
+                            List<string> suggestedToInstall = m_RecommendsDialog.ShowRecommendsDialog
+                            (
+                                String.Format("{0} suggests the following mods:", change.Key.name),
+                                suggested
+                            );
+
+                            if (suggestedToInstall != null)
+                            {
+                                foreach (var mod in suggestedToInstall)
+                                {
+                                    toInstall.Add(mod);
+                                }
+                            }
+
+                            suggestedDialogShown.Add(change.Key.identifier);
+                        }
+                    }
+                }
+
                 if (change.Value == GUIModChangeType.Install || change.Value == GUIModChangeType.Update)
                 {
                     toInstall.Add(change.Key.identifier);
@@ -239,11 +308,19 @@ namespace CKAN
             }
 
             RelationshipResolverOptions options = new RelationshipResolverOptions();
-            options.with_all_suggests = true;
-            options.with_recommends = true;
-            options.with_suggests = true;
+            options.with_all_suggests = false;
+            options.with_recommends = false;
+            options.with_suggests = false;
 
-            var resolver = new RelationshipResolver(modulesToInstall.ToList(), options);
+            RelationshipResolver resolver = null;
+            try
+            {
+                resolver = new RelationshipResolver(modulesToInstall.ToList(), options);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
             foreach (CkanModule mod in resolver.ModList())
             {
@@ -609,6 +686,56 @@ namespace CKAN
             ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version.ToString()));
             ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
             ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
+
+            ModInfo.AppendText("\r\n");
+
+            var dependencies = "";
+            if (module.depends != null)
+            {
+                for (int i = 0; i < module.depends.Count(); i++)
+                {
+                    dependencies += module.depends[i].name;
+                    if (i != module.depends.Count() - 1)
+                    {
+                        dependencies += ", ";
+                    }
+                }
+            }
+
+            ModInfo.AppendText(String.Format("Dependencies: {0}\r\n", dependencies));
+            ModInfo.AppendText("\r\n");
+
+            var recommended = "";
+            if (module.recommends != null)
+            {
+                for (int i = 0; i < module.recommends.Count(); i++)
+                {
+                    recommended += module.recommends[i].name;
+                    if (i != module.recommends.Count() - 1)
+                    {
+                        recommended += ", ";
+                    }
+                }
+            }
+
+            ModInfo.AppendText(String.Format("Recommends: {0}\r\n", recommended));
+            ModInfo.AppendText("\r\n");
+
+            var suggested = "";
+            if (module.suggests != null)
+            {
+                for (int i = 0; i < module.suggests.Count(); i++)
+                {
+                    suggested += module.suggests[i].name;
+                    if (i != module.suggests.Count() - 1)
+                    {
+                        suggested += ", ";
+                    }
+                }
+            }
+
+            ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
+            ModInfo.AppendText("\r\n");
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
@@ -664,9 +791,9 @@ namespace CKAN
                 if ((bool)cell.Value == false && !isInstalled)
                 {
                     var options = new RelationshipResolverOptions();
-                    options.with_all_suggests = true;
-                    options.with_recommends = true;
-                    options.with_suggests = true;
+                    options.with_all_suggests = false;
+                    options.with_recommends = false;
+                    options.with_suggests = false;
                     List<CkanModule> dependencies = GetInstallDependencies(mod, options);
 
                     if (dependencies == null)
