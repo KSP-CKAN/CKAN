@@ -31,6 +31,7 @@ namespace CKAN {
         }
 
         public static string Download (string url, string filename = null) {
+            User.WriteLine("Downloading {0}", url);
 
             // Generate a temporary file if none is provided.
             if (filename == null) {

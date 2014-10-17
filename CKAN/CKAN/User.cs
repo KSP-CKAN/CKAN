@@ -6,37 +6,31 @@ namespace CKAN {
 
     public delegate bool DisplayYesNoDialog(string message);
     public delegate void DisplayMessage(string message, params object[] args);
+    public delegate void DisplayError(string message, params object[] args);
 
     public class User {
 
         public static DisplayYesNoDialog yesNoDialog = YesNoDialogConsole;
         public static DisplayMessage displayMessage = WriteLineConsole;
-
-        public static void WriteLine(string text, params object[] args)
-        {
-            displayMessage(text, args);
-        }
+        public static DisplayError displayError = WriteLineConsole;
 
         // Send a line to the user. On a console, this does what you expect.
         // In the GUI, this should update the status bar.
         // This is also an obvious place to do logging as well.
-        public static void WriteLineConsole(string text, params object[] args) {
-
-            // Format our message.
-            string message = String.Format (text, args);
-
-            // Right now we always send to the console, but when we add extra
-            // interfaces we'll switch to the appropriate one here.
-            User.WriteLine (message);
+        public static void WriteLine(string text, params object[] args) {
+            displayMessage(text, args);
         }
 
         /// <summary>
         /// Prompts the user for a Y/N response.
         /// Returns true for yes, false for no.
         /// </summary>
-
         public static bool YesNo(string text = null) {
             return yesNoDialog(text);
+        }
+
+        public static void Error(string text, params object[] args) {
+            displayError(text, args);
         }
 
         public static bool YesNoDialogConsole(string text = null) {
@@ -57,6 +51,17 @@ namespace CKAN {
                 // TODO: Can we end up in an infinite loop here?
                 // What if the console disappears or something?
             }
+        }
+
+        public static void WriteLineConsole(string text, params object[] args)
+        {
+
+            // Format our message.
+            string message = String.Format(text, args);
+
+            // Right now we always send to the console, but when we add extra
+            // interfaces we'll switch to the appropriate one here.
+            User.WriteLine(message);
         }
     }
 }
