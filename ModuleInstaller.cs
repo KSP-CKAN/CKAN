@@ -14,11 +14,14 @@ namespace CKAN {
 
     public delegate void ModuleInstallerReportProgress(string message, int progress);
 
+    public delegate void ModuleInstallerReportDownloadComplete(Uri[] urls, string[] filenames, CkanModule[] modules);
+
     public class ModuleInstaller {
         RegistryManager registry_manager = RegistryManager.Instance();
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
         public ModuleInstallerReportProgress onReportProgress = null;
+        public ModuleInstallerReportDownloadComplete onDownloadComplete = null;
 
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
@@ -45,7 +48,33 @@ namespace CKAN {
             return Net.Download (module.download, full_path);
         }
 
-        public string CachedOrDownload(CkanModule module, string filename = null) {
+        public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
+        {
+            Uri[] urls = new Uri[modules.Length];
+            string[] fullPaths = new string[modules.Length];
+
+            for (int i = 0; i < modules.Length; i++) {
+                fullPaths[i] = Path.Combine(KSP.DownloadCacheDir(), filenames[i]);
+                urls[i] = modules[i].download;
+            }
+
+            NetAsyncDownloader downloader = new NetAsyncDownloader(urls, fullPaths);
+
+            if (onReportProgress != null)
+            {
+                downloader.onProgressReport = (percent, bytesPerSecond, bytesLeft) =>
+       onReportProgress(String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond / 1024, bytesLeft / 1024 / 1024), percent);
+            }
+
+            if (onDownloadComplete != null)
+            {
+                downloader.onCompleted = (uris, strings) => onDownloadComplete(urls, fullPaths, modules);
+            }
+
+            return downloader;
+        }
+
+        public string CachedOrDownload (CkanModule module, string filename = null) {
             if (filename == null) {
                 filename = module.StandardName ();
             }
@@ -60,11 +89,23 @@ namespace CKAN {
             return Download (module, filename);
         }
 
-        public string CachePath(string file) {
+        public bool IsCached(string filename, out string fullPath)
+        {
+            fullPath = CachePath(filename);
+
+            if (File.Exists(fullPath))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public string CachePath (string file) {
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
-        public void InstallList(List<string> modules, RelationshipResolverOptions options) {
+        public void InstallList (List<string> modules, RelationshipResolverOptions options) {
             var resolver = new RelationshipResolver (modules, options);
 
             User.WriteLine ("About to install...\n");
@@ -84,18 +125,52 @@ namespace CKAN {
 
             int counter = 0;
             var modList = resolver.ModList ();
-            foreach (CkanModule module in modList) {
-                Install (module);
 
-                counter++;
+            List<CkanModule> notCached = new List<CkanModule>();
 
-                if (onReportProgress != null)
+            foreach (CkanModule module in modList)
+            {
+                string fullPath;
+                if (IsCached(module.StandardName(), out fullPath))
                 {
-                    var percentDone = (counter * 100) / modList.Count();
-                    onReportProgress(String.Format("Installing \"{0}\"", module.name), percentDone);
+                    Install(module, fullPath);
+
+                    counter++;
+                    if (onReportProgress != null)
+                    {
+                        var percentDone = (counter * 100) / modList.Count();
+                        onReportProgress(String.Format("Installing \"{0}\"", module.name), percentDone);
+                    }
+                }
+                else
+                {
+                    notCached.Add(module);
                 }
             }
 
+            if (!notCached.Any())
+            {
+                return;
+            }
+
+            CkanModule[] modulesToDownload = new CkanModule[notCached.Count];
+            string[] modulesToDownloadPaths = new string[notCached.Count];
+
+            for (int i = 0; i < notCached.Count; i++)
+            {
+                modulesToDownload[i] = notCached[i];
+                modulesToDownloadPaths[i] = CachePath(notCached[i].StandardName());
+            }
+
+            var downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
+            var downloadPaths = downloader.StartDownload();
+            downloader.WaitForAllDownloads();
+
+
+            for (int i = 0; i < modulesToDownload.Length; i++)
+            {
+                Install(modulesToDownload[i], modulesToDownloadPaths[i]);
+            }
         }
 
         /// <summary>
@@ -106,10 +181,9 @@ namespace CKAN {
         /// Use InstallList() for requests from the user.
         /// </summary>
 
-        void Install (CkanModule module, string filename = null) {
+        private void Install (CkanModule module, string filename = null) {
 
-            if (onReportProgress != null)
-            {
+            if (onReportProgress != null) {
                 onReportProgress(String.Format("Installing \"{0}\"", module.name), 0);
             }
 
@@ -125,7 +199,7 @@ namespace CKAN {
 
             // Fetch our file if we don't already have it.
             if (filename == null) {
-                filename = CachedOrDownload (module);
+                filename = CachedOrDownload(module);
             }
 
             // We'll need our registry to record which files we've installed.
@@ -164,11 +238,9 @@ namespace CKAN {
                     // Not installed, so let's get about installing it!
                     Dictionary<string, InstalledModuleFile> installed_files = new Dictionary<string, InstalledModuleFile> ();
 
-
                     InstallComponent (stanza, zipfile, installed_files);
 
                     registry.RegisterModule (new InstalledModule (installed_files, bundled, DateTime.Now));
-
                 }
             }
 
@@ -263,7 +335,7 @@ namespace CKAN {
             if (entry.IsDirectory) {
 
                 // Skip if we're not making directories for this install.
-                if (! makeDirs) {
+                if (!makeDirs) {
                     return;
                 }
 
@@ -297,20 +369,16 @@ namespace CKAN {
         }
 
         public List<string> FindReverseDependencies(string modName) {
-            var rootMod = registry_manager.registry.installed_modules[modName].source_module;
-
             List<string> reverseDependencies = new List<string>();
 
+            // loop through all installed modules
             foreach (var keyValue in registry_manager.registry.installed_modules) {
                 var mod = keyValue.Value.source_module;
                 bool isDependency = false;
 
-                if (mod.depends != null)
-                {
-                    foreach (dynamic dependency in mod.depends)
-                    {
-                        if (dependency.name == modName)
-                        {
+                if (mod.depends != null) {
+                    foreach (dynamic dependency in mod.depends) {
+                        if (dependency.name == modName) {
                             isDependency = true;
                             break;
                         }
@@ -339,25 +407,20 @@ namespace CKAN {
 
             foreach (string file in files.Keys) {
                 string path = Path.Combine (KSP.GameDir (), file);
-                try
-                {
+
+                try {
                     FileAttributes attr = File.GetAttributes(path);
 
-                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                    {
+                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
                         directoriesToDelete.Add(path);
-                    }
-                    else
-                    {
+                    }  else {
                         User.WriteLine("Removing {0}", file);
                         File.Delete(path);
                     }
                 }
-                catch (Exception)
-                {
+                catch (Exception) {
                     continue;
                 }
-               
             }
 
             // Remove from registry.
@@ -365,16 +428,11 @@ namespace CKAN {
             registry_manager.registry.DeregisterModule (modName);
             registry_manager.Save();
 
-            foreach (var directory in directoriesToDelete)
-            {
-                if (!System.IO.Directory.GetFiles(directory).Any())
-                {
-                    try
-                    {
+            foreach (var directory in directoriesToDelete) {
+                if (!System.IO.Directory.GetFiles(directory).Any()) {
+                    try {
                         System.IO.Directory.Delete(directory);
-                    }
-                    catch (Exception)
-                    {
+                    } catch (Exception) {
                         User.WriteLine("Couldn't delete directory {0}", directory);
                     }
                 }
