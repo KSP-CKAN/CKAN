@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -645,6 +646,12 @@ namespace CKAN
             if (m_ModFilter == GUIModFilter.Incompatible)
             {
                 return;
+            }
+
+            if (ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewLinkCell)
+            {
+                var cell = ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewLinkCell;
+                Process.Start((string)cell.Value.ToString());
             }
 
             if (e.ColumnIndex == 0 && ModList.Rows.Count > e.RowIndex) // if user clicked install
