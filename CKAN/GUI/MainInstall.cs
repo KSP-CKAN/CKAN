@@ -22,36 +22,37 @@ namespace CKAN
             }
         }
 
-        private void InstallMods(object sender, DoWorkEventArgs e)
+        private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
             m_WaitDialog.ClearLog();
 
             var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
 
             ModuleInstaller installer = new ModuleInstaller();
+            // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
-            // first we uninstall selected mods
-
-
-
+            // first we uninstall whatever the user wanted to plus the mods we want to update
             foreach (var change in opts.Key)
             {
-                if (change.Value == GUIModChangeType.Remove)
+                if (change.Value == GUIModChangeType.Remove || change.Value == GUIModChangeType.Update)
                 {
                     installer.Uninstall(change.Key.identifier);
                 }
             }
 
-            // install everything else
+            // these keep the history of dialogs asking the user which recommendations/suggestions to install
             HashSet<string> recommendedDialogShown = new HashSet<string>();
             HashSet<string> suggestedDialogShown = new HashSet<string>();
 
+            // this will be the final list of mods we want to install 
             HashSet<string> toInstall = new HashSet<string>();
+
             foreach (var change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Install)
                 {
+                    // check if we haven't already displayed the recommended dialog for this mod
                     if (!recommendedDialogShown.Contains(change.Key.identifier))
                     {
                         List<string> recommended = new List<string>();
@@ -59,10 +60,14 @@ namespace CKAN
                         {
                             foreach (dynamic mod in change.Key.recommends)
                             {
+                                // if the mod is available for the current KSP version _and_
+                                // the mod is not installed _and_
+                                // the mod is not already in the install list
                                 if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
+                                    // add it to the list of recommended mods we display to the user
                                     recommended.Add(mod.name.ToString());
                                 }
                             }
@@ -123,16 +128,20 @@ namespace CKAN
                             suggestedDialogShown.Add(change.Key.identifier);
                         }
                     }
-                }
 
-                if (change.Value == GUIModChangeType.Install || change.Value == GUIModChangeType.Update)
+                    // finally add the mod itself to the install list
+                    toInstall.Add(change.Key.identifier);
+                }
+                else if(change.Value == GUIModChangeType.Update)
                 {
+                    // any mods for update we just put in the install list
                     toInstall.Add(change.Key.identifier);
                 }
             }
 
             if (toInstall.Any())
             {
+                // actual magic happens here, we run the installer with our mod list
                 installer.InstallList(toInstall.ToList(), opts.Value);
             }
         }

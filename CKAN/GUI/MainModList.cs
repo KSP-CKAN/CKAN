@@ -15,10 +15,12 @@ namespace CKAN
         private GUIModFilter m_ModFilter = GUIModFilter.All;
         private string m_ModNameFilter = "";
 
-        private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
+        // this functions computes a changeset from the user's choices in the GUI
+        private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList() // this probably needs to be refactored
         {
             HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
 
+            // these are the lists
             var modulesToInstall = new HashSet<string>();
             var modulesToRemove = new HashSet<string>();
 

@@ -40,7 +40,13 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
-            m_Configuration = Configuration.LoadOrCreateConfiguration(System.IO.Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"), Repo.default_ckan_repo);
+            KSP.Init();
+
+            m_Configuration = Configuration.LoadOrCreateConfiguration
+            (
+                System.IO.Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Repo.default_ckan_repo
+            );
 
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
@@ -54,7 +60,6 @@ namespace CKAN
             m_InstallWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostInstallMods);
             m_InstallWorker.DoWork += new DoWorkEventHandler(InstallMods);
 
-            KSP.Init();
             User.yesNoDialog = YesNoDialog;
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
@@ -65,7 +70,6 @@ namespace CKAN
             ApplyToolButton.Enabled = false;
 
             Text = "CKAN (" + Meta.Version() + ")";
-
         }
 
         private static Main m_Instance = null;
@@ -255,6 +259,7 @@ namespace CKAN
                     options.with_all_suggests = false;
                     options.with_recommends = false;
                     options.with_suggests = false;
+
                     List<CkanModule> dependencies = GetInstallDependencies(mod, options);
 
                     if (dependencies == null)
