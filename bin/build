@@ -1183,13 +1183,18 @@ say "\n\n=== Repacking ===\n\n";
 
 chdir("$Bin/..");
 
-system(
+my @cmd = (
     $REPACK,
     "--out:ckan.exe",
     "--lib:build/CmdLine/bin/$TARGET",
     "build/CmdLine/bin/$TARGET/CmdLine.exe",
     glob("build/CmdLine/bin/$TARGET/*.dll"),
+    "build/CmdLine/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
 );
+
+say "@cmd";
+
+system(@cmd);
 
 say "\n\n=== Tidying up===\n\n";
 
