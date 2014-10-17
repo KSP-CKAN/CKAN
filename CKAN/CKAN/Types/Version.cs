@@ -20,9 +20,9 @@ namespace CKAN {
             public string remainder1;
             public string remainder2;
         }
-
+        
         public Version (string version_string) {
-            orig_string = version_string;
+             orig_string = version_string;
 
             // TODO: Can we get rid of $1 here? Does C# support (?:syntax)?
             Match match = Regex.Match (version_string, "^(([0-9]+):)?(.*)$");

@@ -178,7 +178,7 @@ namespace CKAN
             ModFilter.Items[5] = String.Format("Incompatible ({0})", CountModsByFilter(GUIModFilter.Incompatible));
         }
 
-        private void UpdateModsList(bool markUpdates = false)
+        public void UpdateModsList(bool markUpdates = false)
         {
             if (ModList.InvokeRequired)
             {

@@ -23,6 +23,10 @@ namespace CKAN {
         public ModuleInstallerReportProgress onReportProgress = null;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
+        private NetAsyncDownloader downloader = null;
+
+        private FilesystemTransaction currentTransaction = null;
+
         /// <summary>
         /// Download the given mod. Returns the filename it was saved to.
         ///
@@ -58,7 +62,7 @@ namespace CKAN {
                 urls[i] = modules[i].download;
             }
 
-            NetAsyncDownloader downloader = new NetAsyncDownloader(urls, fullPaths);
+            downloader = new NetAsyncDownloader(urls, fullPaths);
 
             if (onReportProgress != null)
             {
@@ -90,8 +94,7 @@ namespace CKAN {
         {
             fullPath = CachePath(filename);
 
-            if (File.Exists(fullPath))
-            {
+            if (File.Exists(fullPath)) {
                 return true;
             }
 
@@ -103,6 +106,8 @@ namespace CKAN {
         }
 
         public void InstallList (List<string> modules, RelationshipResolverOptions options) {
+            currentTransaction = new FilesystemTransaction();
+
             var resolver = new RelationshipResolver (modules, options);
 
             User.WriteLine ("About to install...\n");
@@ -125,16 +130,13 @@ namespace CKAN {
 
             List<CkanModule> notCached = new List<CkanModule>();
 
-            foreach (CkanModule module in modList)
-            {
+            foreach (CkanModule module in modList) {
                 string fullPath;
-                if (IsCached(module.StandardName(), out fullPath))
-                {
+                if (IsCached(module.StandardName(), out fullPath)) {
                     Install(module, fullPath);
 
                     counter++;
-                    if (onReportProgress != null)
-                    {
+                    if (onReportProgress != null) {
                         var percentDone = (counter * 100) / modList.Count();
                         onReportProgress(String.Format("Installing \"{0}\"", module.name), percentDone);
                     }
@@ -147,37 +149,39 @@ namespace CKAN {
 
             if (!notCached.Any())
             {
+                currentTransaction.Commit();
                 return;
             }
 
             CkanModule[] modulesToDownload = new CkanModule[notCached.Count];
             string[] modulesToDownloadPaths = new string[notCached.Count];
 
-            for (int i = 0; i < notCached.Count; i++)
-            {
+            for (int i = 0; i < notCached.Count; i++) {
                 modulesToDownload[i] = notCached[i];
                 modulesToDownloadPaths[i] = CachePath(notCached[i].StandardName());
             }
 
-            var downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
-            var downloadPaths = downloader.StartDownload();
+            downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
+            downloader.StartDownload();
+            while (downloader != null) {}
+
+            currentTransaction.Commit();
         }
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
-            for (int i = 0; i < errors.Length; i++)
-            {
-                if (errors[i] != null)
-                {
+            for (int i = 0; i < errors.Length; i++) {
+                if (errors[i] != null) {
                     User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
                     return;
                 }
             }
 
-            for (int i = 0; i < urls.Length; i++)
-            {
+            for (int i = 0; i < urls.Length; i++) {
                 Install(modules[i], filenames[i]);
             }
+
+            downloader = null;
         }
 
         /// <summary>
@@ -218,12 +222,10 @@ namespace CKAN {
             ZipFile zipfile = null;
 
             // Open our zip file for processing
-            try
-            {
+            try {
                 zipfile = new ZipFile(File.OpenRead(filename));
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 User.Error("Failed to open archive \"{0}\"", filename);
                 return;
             }
@@ -264,15 +266,13 @@ namespace CKAN {
             // Done! Save our registry changes!
             registry_manager.Save();
 
-            if (onReportModInstalled != null)
-            {
+            if (onReportModInstalled != null) {
                 onReportModInstalled(module);
             }
         }
 
         string Sha1Sum (string path) {
-            if (System.IO.Path.GetFileName(path).Length == 0)
-            {
+            if (System.IO.Path.GetFileName(path).Length == 0) {
                 return null;
             }
 
@@ -332,7 +332,6 @@ namespace CKAN {
                 // TODO: There's got to be a nicer way of doing path resolution.
                 outputName = Regex.Replace (outputName, @"^/?(.*(GameData|Ships)/)?", "");
 
-
                 // Aww hell yes, let's write this file out!
 
                 string fullPath = Path.Combine (installDir, outputName);
@@ -342,7 +341,7 @@ namespace CKAN {
                 User.WriteLine("    * Copying " + entry.ToString());
 
                 module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
-                    sha1_sum = Sha1Sum (fullPath),
+                    sha1_sum = ""//Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
                 });
             }
 
@@ -359,7 +358,7 @@ namespace CKAN {
                 }
 
                 log.DebugFormat("Making directory {0}",fullPath);
-                Directory.CreateDirectory (fullPath);
+                currentTransaction.CreateDirectory(fullPath);
             } else {
 
                 log.DebugFormat("Writing file {0}", fullPath);
@@ -369,13 +368,14 @@ namespace CKAN {
                 // the result is we have to make sure our directories exist, just in case.
                 if (makeDirs) {
                     string directory = Path.GetDirectoryName (fullPath);
-                    Directory.CreateDirectory (directory);
+                    currentTransaction.CreateDirectory(directory);
                 }
 
                 // It's a file! Prepare the streams
                 Stream zipStream = zipfile.GetInputStream (entry);
-                FileStream output = File.Create (fullPath);
 
+                var file = currentTransaction.OpenFile(fullPath);
+                FileStream output = file.Stream;
                 // Copy
                 zipStream.CopyTo (output);
 
@@ -413,6 +413,12 @@ namespace CKAN {
         }
 
         public void Uninstall(string modName) {
+            if (!registry_manager.registry.IsInstalled(modName))
+            {
+                User.Error("Trying to uninstall {0} but it's not installed", modName);
+                return;
+            }
+            
             // Find all mods that depend on this one
             var reverseDependencies = FindReverseDependencies(modName);
             foreach (var reverseDependency in reverseDependencies) {
@@ -450,7 +456,7 @@ namespace CKAN {
             foreach (var directory in directoriesToDelete) {
                 if (!System.IO.Directory.GetFiles(directory).Any()) {
                     try {
-                        System.IO.Directory.Delete(directory);
+                        currentTransaction.DeleteDirectory(directory);
                     } catch (Exception) {
                         User.WriteLine("Couldn't delete directory {0}", directory);
                     }

@@ -51,7 +51,6 @@ namespace CKAN
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.ModInfo = new System.Windows.Forms.TextBox();
             this.ModFilter = new System.Windows.Forms.ListBox();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
@@ -59,6 +58,7 @@ namespace CKAN
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.ModInfo = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -258,17 +258,6 @@ namespace CKAN
             this.Homepage.ReadOnly = true;
             this.Homepage.Width = 65;
             // 
-            // ModInfo
-            // 
-            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModInfo.Location = new System.Drawing.Point(0, 0);
-            this.ModInfo.Multiline = true;
-            this.ModInfo.Name = "ModInfo";
-            this.ModInfo.ReadOnly = true;
-            this.ModInfo.Size = new System.Drawing.Size(616, 260);
-            this.ModInfo.TabIndex = 2;
-            this.ModInfo.Text = "Mod description etc";
-            // 
             // ModFilter
             // 
             this.ModFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -356,6 +345,17 @@ namespace CKAN
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // ModInfo
+            // 
+            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfo.Location = new System.Drawing.Point(0, 0);
+            this.ModInfo.Multiline = true;
+            this.ModInfo.Name = "ModInfo";
+            this.ModInfo.ReadOnly = true;
+            this.ModInfo.Size = new System.Drawing.Size(616, 260);
+            this.ModInfo.TabIndex = 2;
+            this.ModInfo.Text = "Mod description etc";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -403,7 +403,6 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
         private System.Windows.Forms.ListBox ModFilter;
-        private System.Windows.Forms.TextBox ModInfo;
         private System.Windows.Forms.TextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByNameLabel;
         private System.Windows.Forms.DataGridView ModList;
@@ -420,6 +419,7 @@ namespace CKAN
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
         private Label StatusLabel;
+        private TextBox ModInfo;
     }
 }
 
