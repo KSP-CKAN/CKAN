@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN", "CKAN\CKAN.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{92442BD6-F533-4BB8-8E04-9D93A038035E}"
@@ -10,9 +8,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdLine", "CmdLine\CmdLine.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-GUI", "GUI\CKAN-GUI.csproj", "{A79F9D54-315C-472B-928F-713A5860B2BE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271} = {3B9AEA22-FA3B-4E43-9283-EABDD81CF271}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,33 +18,33 @@ Global
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Debug|Any CPU.Build.0 = Debug|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Any CPU.ActiveCfg = Release|x86
+		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Any CPU.Build.0 = Release|x86
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.ActiveCfg = Release|x86
 		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.Build.0 = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.ActiveCfg = Release|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = CKAN\CKAN.csproj
 		Policies = $0
-		$0.TextStylePolicy = $3
-		$1.inheritsSet = null
-		$1.scope = text/x-csharp
-		$0.CSharpFormattingPolicy = $2
-		$2.ElseIfNewLinePlacement = SameLine
-		$2.AfterDelegateDeclarationParameterComma = True
-		$2.inheritsSet = Mono
-		$2.inheritsScope = text/x-csharp
-		$2.scope = text/x-csharp
-		$3.inheritsSet = VisualStudio
-		$3.inheritsScope = text/plain
-		$3.scope = text/plain
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabsToSpaces = False
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$0.DotNetNamingPolicy = $2
+		$2.DirectoryNamespaceAssociation = None
+		$2.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
