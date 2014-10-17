@@ -56,6 +56,7 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="AvailableModule.cs" />
+    <Compile Include="TransactionalFilesystem.cs" />
     <Compile Include="User.cs" />
     <Compile Include="RelationshipResolver.cs" />
     <Compile Include="Types\Version.cs" />

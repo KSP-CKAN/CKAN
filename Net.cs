@@ -16,8 +16,7 @@ namespace CKAN {
 
     public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
 
-    public class NetAsyncDownloader
-    {
+    public class NetAsyncDownloader {
 
         static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
@@ -35,23 +34,19 @@ namespace CKAN {
         private int[] bytesPerSecond = null;
         private long[] bytesLeft = null;
 
-        public NetAsyncDownloader(Uri[] urls, string[] filenames = null)
-        {
+        public NetAsyncDownloader(Uri[] urls, string[] filenames = null) {
             fileUrls = urls;
             filePaths = filenames;
         }
 
         // starts the download and return the destination filename
-        public string[] StartDownload()
-        {
-            foreach (var url in fileUrls)
-            {
+        public string[] StartDownload() {
+            foreach (var url in fileUrls) {
                 User.WriteLine("Downloading \"{0}\"", url);
             }
 
             // Generate a temporary file if none is provided.
-            if (filePaths == null)
-            {
+            if (filePaths == null) {
                 filePaths = new string[fileUrls.Length];
                 for (int i = 0; i < fileUrls.Length; i++)
                 {
@@ -67,8 +62,7 @@ namespace CKAN {
             bytesPerSecond = new int[fileUrls.Length];
             bytesLeft = new long[fileUrls.Length];
 
-            for (int i = 0; i < fileUrls.Length; i++)
-            {
+            for (int i = 0; i < fileUrls.Length; i++) {
                 agents[i] = new WebClient();
                 errors[i] = null;
                 percentageComplete[i] = 0;
@@ -88,14 +82,12 @@ namespace CKAN {
             return filePaths;
         }
 
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long _bytesLeft)
-        {
+        private void FileProgressReport(int index, int percent, long bytesDownloaded, long _bytesLeft) {
             percentageComplete[index] = percent;
 
             var now = DateTime.Now;
             var timeSpan = now - lastProgressUpdateTime[index];
-            if (timeSpan.Seconds >= 1.0)
-            {
+            if (timeSpan.Seconds >= 1.0) {
                 var bytesChange = bytesDownloaded - lastProgressUpdateSize[index];
                 lastProgressUpdateSize[index] = (int)bytesDownloaded;
                 lastProgressUpdateTime[index] = now;
@@ -104,25 +96,21 @@ namespace CKAN {
 
             bytesLeft[index] = _bytesLeft;
 
-            if (onProgressReport != null)
-            {
+            if (onProgressReport != null) {
                 int totalPercentage = 0;
-                for (int i = 0; i < percentageComplete.Length; i++)
-                {
+                for (int i = 0; i < percentageComplete.Length; i++) {
                     totalPercentage += percentageComplete[i];
                 }
 
                 totalPercentage /= percentageComplete.Length;
 
                 int totalBytesPerSecond = 0;
-                for (int i = 0; i < bytesPerSecond.Length; i++)
-                {
+                for (int i = 0; i < bytesPerSecond.Length; i++) {
                     totalBytesPerSecond += bytesPerSecond[i];
                 }
 
                 long totalBytesLeft = 0;
-                for (int i = 0; i < bytesLeft.Length; i++)
-                {
+                for (int i = 0; i < bytesLeft.Length; i++) {
                     totalBytesLeft += bytesLeft[i];
                 }
 
@@ -135,10 +123,8 @@ namespace CKAN {
             queuePointer++;
             errors[index] = error;
 
-            if (queuePointer == fileUrls.Length)
-            {
-                if (onCompleted != null)
-                {
+            if (queuePointer == fileUrls.Length) {
+                if (onCompleted != null) {
                     onCompleted(fileUrls, filePaths, errors);
                 }
 
@@ -148,18 +134,15 @@ namespace CKAN {
 
         public void WaitForAllDownloads()
         {
-            while (queuePointer < fileUrls.Length)
-            {
+            while (queuePointer < fileUrls.Length) {
             }
         }
 
-        public static string Download(string url, string filename = null)
-        {
+        public static string Download(string url, string filename = null) {
             User.WriteLine("Downloading {0}", url);
 
             // Generate a temporary file if none is provided.
-            if (filename == null)
-            {
+            if (filename == null) {
                 filename = Path.GetTempFileName();
             }
 
@@ -167,27 +150,21 @@ namespace CKAN {
 
             WebClient agent = new WebClient();
 
-            try
-            {
+            try {
                 agent.DownloadFile(url, filename);
             }
-            catch (Exception ex)
-            {
-
+            catch (Exception ex) {
                 // Clean up our file, it's unlikely to be complete.
                 // It's okay if this fails.
-                try
-                {
+                try {
                     log.DebugFormat("Removing {0} after web error failure", filename);
                     File.Delete(filename);
                 }
-                catch
-                {
+                catch {
                     // Apparently we need a catch, even if we do nothing.
                 }
 
-                if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed"))
-                {
+                if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed")) {
 
                     User.WriteLine("\nOh no! Our download failed!\n");
                     User.WriteLine("\t{0}\n", ex.Message);

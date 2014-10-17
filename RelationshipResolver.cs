@@ -30,6 +30,10 @@ namespace CKAN {
 
             foreach (string module in modules) {
                 CkanModule mod = registry.LatestAvailable (module);
+                if (mod == null) {
+                    throw new ModuleNotFoundException(module);
+                }
+
                 log.DebugFormat ("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
                 user_mods.Add(mod);
                 this.Add(mod);
