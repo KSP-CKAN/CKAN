@@ -76,12 +76,12 @@ namespace CKAN
             {
                 LogTextBox.Invoke(new MethodInvoker(delegate
                 {
-                    LogTextBox.Text += message + "\r\n";
+                    LogTextBox.AppendText(message + "\r\n");
                 }));
             }
             else
             {
-                LogTextBox.Text += message + "\r\n";
+                LogTextBox.AppendText(message + "\r\n");
             }
         }
 
