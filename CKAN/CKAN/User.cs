@@ -4,14 +4,23 @@
 namespace CKAN {
     using System;
 
+    public delegate bool DisplayYesNoDialog(string message);
+    public delegate void DisplayMessage(string message, params object[] args);
+
     public class User {
 
-        public static bool noConsole = false;
+        public static DisplayYesNoDialog yesNoDialog = YesNoDialogConsole;
+        public static DisplayMessage displayMessage = WriteLineConsole;
+
+        public static void WriteLine(string text, params object[] args)
+        {
+            displayMessage(text, args);
+        }
 
         // Send a line to the user. On a console, this does what you expect.
         // In the GUI, this should update the status bar.
         // This is also an obvious place to do logging as well.
-        public static void WriteLine(string text, params object[] args) {
+        public static void WriteLineConsole(string text, params object[] args) {
 
             // Format our message.
             string message = String.Format (text, args);
@@ -27,14 +36,12 @@ namespace CKAN {
         /// </summary>
 
         public static bool YesNo(string text = null) {
+            return yesNoDialog(text);
+        }
 
-            if (noConsole)
-            {
-                return true;
-            }
-
+        public static bool YesNoDialogConsole(string text = null) {
             if (text != null) {
-                User.WriteLine ("{0} [Y/N]", text);
+                User.WriteLine("{0} [Y/N]", text);
             }
 
             while (true) {

@@ -55,6 +55,36 @@ namespace CKAN
             }
         }
 
+        public void ClearLog()
+        {
+            if (LogTextBox.InvokeRequired)
+            {
+                LogTextBox.Invoke(new MethodInvoker(delegate
+                {
+                    LogTextBox.Text = "";
+                }));
+            }
+            else
+            {
+                LogTextBox.Text = "";
+            }
+        }
+
+        public void AddLogMessage(string message)
+        {
+            if (LogTextBox.InvokeRequired)
+            {
+                LogTextBox.Invoke(new MethodInvoker(delegate
+                {
+                    LogTextBox.Text += message + "\r\n";
+                }));
+            }
+            else
+            {
+                LogTextBox.Text += message + "\r\n";
+            }
+        }
+
         private void ActionDescriptionLabel_Click(object sender, EventArgs e)
         {
 

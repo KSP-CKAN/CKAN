@@ -54,6 +54,13 @@
     <Compile Include="ApplyChangesDialog.Designer.cs">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,8 +81,17 @@
     <Compile Include="WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="YesNoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="YesNoDialog.Designer.cs">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ApplyChangesDialog.resx">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -95,6 +111,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WaitDialog.resx">
       <DependentUpon>WaitDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YesNoDialog.resx">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

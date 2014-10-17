@@ -32,12 +32,16 @@ namespace CKAN
         private WaitDialog m_WaitDialog = new WaitDialog();
         private ApplyChangesDialog m_ApplyChangesDialog = new ApplyChangesDialog();
         private SettingsDialog m_SettingsDialog = new SettingsDialog();
+        private ErrorDialog m_ErrorDialog = new ErrorDialog();
+        private YesNoDialog m_YesNoDialog = new YesNoDialog();
 
         private BackgroundWorker m_UpdateRepoWorker = null;
         private BackgroundWorker m_InstallWorker = null;
 
         private GUIModFilter m_ModFilter = GUIModFilter.All;
         private string m_ModNameFilter = "";
+
+        public Configuration m_Configuration = null;
 
         public Main()
         {
@@ -47,6 +51,8 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
+            m_Configuration = Configuration.LoadOrCreateConfiguration(System.IO.Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"), Repo.default_ckan_repo);
+
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
             m_UpdateRepoWorker.WorkerSupportsCancellation = true;
@@ -60,7 +66,8 @@ namespace CKAN
             m_InstallWorker.DoWork += new DoWorkEventHandler(InstallMods);
 
             KSP.Init();
-            User.noConsole = true;
+            User.yesNoDialog = YesNoDialog;
+            User.displayMessage = AddStatusMessage;
 
             UpdateModsList();
             UpdateModFilterList();
@@ -69,6 +76,28 @@ namespace CKAN
 
             Text = "CKAN (" + Meta.Version() + ")";
 
+        }
+
+        public void AddStatusMessage(string text, params object[] args)
+        {
+            if (StatusLabel.InvokeRequired)
+            {
+                StatusLabel.Invoke(new MethodInvoker(delegate
+                {
+                    StatusLabel.Text = String.Format(text, args);
+                }));
+            }
+            else
+            {
+                StatusLabel.Text = String.Format(text, args);
+            }
+
+            m_WaitDialog.AddLogMessage(String.Format(text, args));
+        }
+
+        public bool YesNoDialog(string text)
+        {
+            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
 
         private static Main m_Instance = null;
@@ -82,7 +111,14 @@ namespace CKAN
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
-            Repo.Update();
+            try
+            {
+                Repo.Update(m_Configuration.Repository);
+            }
+            catch (Exception)
+            {
+                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository");
+            }
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
@@ -103,11 +139,12 @@ namespace CKAN
             {
                 m_WaitDialog.SetDescription(message + " " + percent.ToString() + "%");
             }
-
         }
 
         private void InstallMods(object sender, DoWorkEventArgs e)
         {
+            m_WaitDialog.ClearLog();
+
             var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
 
             ModuleInstaller installer = new ModuleInstaller();
@@ -132,7 +169,10 @@ namespace CKAN
                 }
             }
 
-            installer.InstallList(toInstall, opts.Value);
+            if (toInstall.Any())
+            {
+                installer.InstallList(toInstall, opts.Value);
+            }
         }
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
@@ -476,12 +516,17 @@ namespace CKAN
             }
         }
 
-        private void RefreshToolButton_Click(object sender, EventArgs e)
+        public void UpdateRepo()
         {
             m_UpdateRepoWorker.RunWorkerAsync();
             Enabled = false;
             m_WaitDialog.SetDescription("Contacting repository..");
             m_WaitDialog.ShowWaitDialog();
+        }
+
+        private void RefreshToolButton_Click(object sender, EventArgs e)
+        {
+            UpdateRepo();
         }
 
         private void ModFilter_SelectedIndexChanged(object sender, EventArgs e)
