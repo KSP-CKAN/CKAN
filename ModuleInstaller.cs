@@ -53,7 +53,7 @@ namespace CKAN {
             string fullPath = CachePath (filename);
 
             if (File.Exists (fullPath)) {
-                Console.WriteLine ("    * Using {0} (cached)", filename);
+                User.WriteLine ("    * Using {0} (cached)", filename);
                 return fullPath;
             }
 
@@ -196,7 +196,7 @@ namespace CKAN {
         void InstallComponent (dynamic stanza, ZipFile zipfile, Dictionary<string, InstalledModuleFile> module_files) {
             string fileToInstall = (string)stanza.file;
 
-            Console.WriteLine ("    * Installing " + fileToInstall);
+            User.WriteLine ("    * Installing " + fileToInstall);
 
             string installDir;
             bool makeDirs;
@@ -212,7 +212,7 @@ namespace CKAN {
                 throw new Exception ("Unknown install location: " + stanza.install_to);
             }
 
-            // Console.WriteLine("InstallDir is "+installDir);
+            // User.WriteLine("InstallDir is "+installDir);
 
             // Is there a better way to extract a tree?
             string filter = "^" + stanza.file + "(/|$)";
@@ -243,9 +243,10 @@ namespace CKAN {
                 // Aww hell yes, let's write this file out!
 
                 string fullPath = Path.Combine (installDir, outputName);
-                // Console.WriteLine (fullPath);
+                // User.WriteLine (fullPath);
 
                 CopyZipEntry (zipfile, entry, fullPath, makeDirs);
+                User.WriteLine("    * Copying " + entry.ToString());
 
                 module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
                     sha1_sum = Sha1Sum (fullPath),
@@ -347,11 +348,11 @@ namespace CKAN {
                             System.IO.Directory.Delete(path);
                         }
 
-                        Console.WriteLine("Skipping directory {0}", file);
+                        User.WriteLine("Skipping directory {0}", file);
                     }
                     else
                     {
-                        Console.WriteLine("Removing {0}", file);
+                        User.WriteLine("Removing {0}", file);
                         File.Delete(path);
                     }
                 }
