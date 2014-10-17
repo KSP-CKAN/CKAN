@@ -53,5 +53,9 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
+      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
+      <Name>CKAN-GUI</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
