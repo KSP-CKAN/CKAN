@@ -8,3 +8,5 @@ StyleCop.Cache
 ckan.exe
 .*.swp
 .fatten.out
+*.resources
+*.suo

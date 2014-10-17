@@ -97,11 +97,70 @@
                 CkanModule available = LatestAvailable (candidate, ksp_version);
 
                 if (available != null) {
-                    compatible.Add (available);
+                    // we need to check that we can get everything we depend on
+                    bool failedDepedency = false;
+
+                    if (available.depends != null)
+                    {
+                        foreach (dynamic dependency in available.depends)
+                        {
+                            try
+                            {
+                                if (LatestAvailable((string)dependency.name, ksp_version) == null)
+                                {
+                                    failedDepedency = true;
+                                    break;
+                                }
+                            }
+                            catch (ModuleNotFoundException)
+                            {
+                                failedDepedency = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!failedDepedency) {
+                        compatible.Add(available);
+                    }
                 }
             }
 
             return compatible;
+        }
+
+        /// <summary>
+        /// Returns a simple array of all incompatible modules for
+        /// the specified version of KSP (installed version by default)
+        /// </summary>
+
+        public List<CkanModule> Incompatible(KSPVersion ksp_version = null)
+        {
+
+            // Default to the user's current KSP install for version.
+            if (ksp_version == null)
+            {
+                ksp_version = KSP.Version();
+            }
+
+            var candidates = new List<string>(available_modules.Keys);
+            var incompatible = new List<CkanModule>();
+
+            // It's nice to see things in alphabetical order, so sort our keys first.
+            candidates.Sort();
+
+            // Now find what we can give our user.
+            foreach (string candidate in candidates)
+            {
+                CkanModule available = LatestAvailable(candidate, ksp_version);
+
+                if (available == null)
+                {
+                    incompatible.Add(LatestAvailable(candidate, null));
+                }
+            }
+
+            return incompatible;
         }
 
         /// <summary>
@@ -121,7 +180,7 @@
                 return available_modules[module].Latest(ksp_version);
             }
             catch (KeyNotFoundException) {
-                throw new ModuleNotFoundException (module);
+                throw new ModuleNotFoundException(module);
             }
         }
 

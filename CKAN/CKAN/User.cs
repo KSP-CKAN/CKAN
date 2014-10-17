@@ -6,6 +6,8 @@ namespace CKAN {
 
     public class User {
 
+        public static bool noConsole = false;
+
         // Send a line to the user. On a console, this does what you expect.
         // In the GUI, this should update the status bar.
         // This is also an obvious place to do logging as well.
@@ -25,6 +27,11 @@ namespace CKAN {
         /// </summary>
 
         public static bool YesNo(string text = null) {
+
+            if (noConsole)
+            {
+                return true;
+            }
 
             if (text != null) {
                 User.WriteLine ("{0} [Y/N]", text);
