@@ -44,7 +44,7 @@ namespace CKAN
             HashSet<string> recommendedDialogShown = new HashSet<string>();
             HashSet<string> suggestedDialogShown = new HashSet<string>();
 
-            List<string> toInstall = new List<string>();
+            HashSet<string> toInstall = new HashSet<string>();
             foreach (var change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Install)
@@ -56,7 +56,8 @@ namespace CKAN
                         {
                             foreach (dynamic mod in change.Key.recommends)
                             {
-                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null)
+                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()))
                                 {
                                     recommended.Add(mod.name.ToString());
                                 }
@@ -90,7 +91,9 @@ namespace CKAN
                         {
                             foreach (dynamic mod in change.Key.suggests)
                             {
-                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null)
+                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
+                                    !toInstall.Contains(mod.name.ToString()))
                                 {
                                     suggested.Add(mod.name);
                                 }
@@ -126,7 +129,7 @@ namespace CKAN
 
             if (toInstall.Any())
             {
-                installer.InstallList(toInstall, opts.Value);
+                installer.InstallList(toInstall.ToList(), opts.Value);
             }
         }
 

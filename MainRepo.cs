@@ -44,6 +44,7 @@ namespace CKAN
             KSP.ScanGameData();
 
             m_WaitDialog.HideWaitDialog();
+            AddStatusMessage("Repository successfully updated");
             Enabled = true;
         }
     }
