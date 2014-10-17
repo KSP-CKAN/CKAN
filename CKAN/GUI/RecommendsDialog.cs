@@ -66,7 +66,8 @@ namespace CKAN
                 {
                     if (item.Checked)
                     {
-                        selected.Add(item.SubItems[0].Text);
+                        var name = item.SubItems[1].Text;
+                        selected.Add(name);
                     }
                 }
 

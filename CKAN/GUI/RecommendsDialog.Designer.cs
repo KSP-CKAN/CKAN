@@ -30,8 +30,8 @@
         {
             this.MessageLabel = new System.Windows.Forms.Label();
             this.RecommendedListView = new System.Windows.Forms.ListView();
-            this.ModName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Selected = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ModName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button1 = new System.Windows.Forms.Button();
             this.SelectAllButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -56,16 +56,16 @@
             this.RecommendedListView.Size = new System.Drawing.Size(432, 313);
             this.RecommendedListView.TabIndex = 1;
             this.RecommendedListView.UseCompatibleStateImageBehavior = false;
+            this.RecommendedListView.View = System.Windows.Forms.View.Details;
+            // 
+            // Selected
+            // 
+            this.Selected.Text = "Selected";
             // 
             // ModName
             // 
             this.ModName.DisplayIndex = 0;
             this.ModName.Text = "Name";
-            // 
-            // Selected
-            // 
-            this.Selected.DisplayIndex = 1;
-            this.Selected.Text = "Selected";
             // 
             // button1
             // 

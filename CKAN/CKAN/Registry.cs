@@ -106,7 +106,7 @@
                         {
                             try
                             {
-                                if (LatestAvailable((string)dependency.name, ksp_version) == null)
+                                if (LatestAvailable(dependency.name.Value, ksp_version) == null)
                                 {
                                     failedDepedency = true;
                                     break;

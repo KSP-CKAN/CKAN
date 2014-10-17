@@ -56,7 +56,10 @@ namespace CKAN
                         {
                             foreach (dynamic mod in change.Key.recommends)
                             {
-                                recommended.Add(mod.name);
+                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null)
+                                {
+                                    recommended.Add(mod.name.ToString());
+                                }
                             }
                         }
 
@@ -87,7 +90,10 @@ namespace CKAN
                         {
                             foreach (dynamic mod in change.Key.suggests)
                             {
-                                suggested.Add(mod.name);
+                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null)
+                                {
+                                    suggested.Add(mod.name);
+                                }
                             }
                         }
 
