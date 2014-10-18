@@ -123,7 +123,7 @@ namespace CKAN {
                 User.WriteLine (" * {0} {1}", module.identifier, module.version);
             }
 
-            bool ok = User.YesNo ("\nContinue?");
+            bool ok = User.YesNo ("\nContinue?", FrontEndType.CommandLine);
 
             if (!ok) {
                 log.Debug ("Halting install at user request");

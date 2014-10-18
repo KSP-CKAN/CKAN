@@ -60,6 +60,7 @@ namespace CKAN
             m_InstallWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostInstallMods);
             m_InstallWorker.DoWork += new DoWorkEventHandler(InstallMods);
 
+            User.frontEnd = FrontEndType.UI;
             User.yesNoDialog = YesNoDialog;
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
@@ -94,6 +95,8 @@ namespace CKAN
 
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
+            UpdateModsList();
+
             foreach(DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
@@ -103,17 +106,18 @@ namespace CKAN
                 }
 
                 var isUpToDate = !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
-                if (isUpToDate)
+                if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
                     {
                         var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
                         updateCell.Value = true;
+                        ApplyToolButton.Enabled = true;
                     }
                 }
             }
 
-            UpdateModsList();
+            ModList.Refresh();
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
