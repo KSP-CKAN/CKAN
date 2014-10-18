@@ -456,7 +456,7 @@ namespace CKAN {
             foreach (var directory in directoriesToDelete) {
                 if (!System.IO.Directory.GetFiles(directory).Any()) {
                     try {
-                        currentTransaction.DeleteDirectory(directory);
+                        Directory.Delete(directory);
                     } catch (Exception) {
                         User.WriteLine("Couldn't delete directory {0}", directory);
                     }
