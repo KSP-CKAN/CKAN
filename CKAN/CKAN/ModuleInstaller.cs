@@ -429,7 +429,7 @@ namespace CKAN {
             return reverseDependencies;
         }
 
-        public void Uninstall(string modName) {
+        public void Uninstall(string modName, bool uninstallDependencies) {
             if (!registry_manager.registry.IsInstalled(modName))
             {
                 User.Error("Trying to uninstall {0} but it's not installed", modName);
@@ -437,11 +437,15 @@ namespace CKAN {
             }
             
             // Find all mods that depend on this one
-            var reverseDependencies = FindReverseDependencies(modName);
-            foreach (var reverseDependency in reverseDependencies) {
-                Uninstall(reverseDependency);
+            if (uninstallDependencies)
+            {
+                var reverseDependencies = FindReverseDependencies(modName);
+                foreach (var reverseDependency in reverseDependencies)
+                {
+                    Uninstall(reverseDependency, uninstallDependencies);
+                }
             }
-
+            
             // Walk our registry to find all files for this mod.
             Dictionary<string, InstalledModuleFile> files = registry_manager.registry.installed_modules [modName].installed_files;
 
