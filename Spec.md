@@ -237,7 +237,7 @@ mandatory directives:
   Valid values for this entry are `GameData`, `Ships`, `Tutorial`,
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
-  be created when installing to `GameData`.
+  be created when installing to `GameData` or `Tutorial`.
 
 An install directive may also include the following optional fields:
 
