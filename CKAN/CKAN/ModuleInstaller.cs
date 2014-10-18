@@ -325,12 +325,12 @@ namespace CKAN {
             else if (stanza.install_to == "Tutorial")
             {
                 installDir = Path.Combine(Path.Combine(KSP.GameDir(), "saves"), "training");
-                makeDirs = false;
+                makeDirs = true;
             }
             else if (stanza.install_to == "GameRoot")
             {
                 installDir = KSP.GameDir();
-                makeDirs = true;
+                makeDirs = false;
             } else {
                 // What is the best exception to use here??
                 throw new Exception("Unknown install location: " + stanza.install_to);
