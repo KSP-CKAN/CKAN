@@ -300,9 +300,19 @@ namespace CKAN {
             } else if (stanza.install_to == "Ships") {
                 installDir = KSP.Ships ();
                 makeDirs = false; // Don't allow directory creation in ships directory
+            }
+            else if (stanza.install_to == "Tutorial")
+            {
+                installDir = Path.Combine(Path.Combine(KSP.GameDir(), "saves"), "training");
+                makeDirs = false;
+            }
+            else if (stanza.install_to == "GameRoot")
+            {
+                installDir = KSP.GameDir();
+                makeDirs = true;
             } else {
                 // What is the best exception to use here??
-                throw new Exception ("Unknown install location: " + stanza.install_to);
+                throw new Exception("Unknown install location: " + stanza.install_to);
             }
 
             // User.WriteLine("InstallDir is "+installDir);
@@ -374,7 +384,7 @@ namespace CKAN {
                 // It's a file! Prepare the streams
                 Stream zipStream = zipfile.GetInputStream (entry);
 
-                var file = currentTransaction.OpenFile(fullPath);
+                var file = currentTransaction.OpenFileWrite(fullPath);
                 FileStream output = file.Stream;
                 // Copy
                 zipStream.CopyTo (output);
