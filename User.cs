@@ -8,8 +8,17 @@ namespace CKAN {
     public delegate void DisplayMessage(string message, params object[] args);
     public delegate void DisplayError(string message, params object[] args);
 
-    public class User {
+    public enum FrontEndType
+    {
+        All,
+        CommandLine,
+        UI,
+    }
 
+    public class User
+    {
+
+        public static FrontEndType frontEnd = FrontEndType.CommandLine;
         public static DisplayYesNoDialog yesNoDialog = YesNoDialogConsole;
         public static DisplayMessage displayMessage = WriteLineConsole;
         public static DisplayError displayError = WriteLineConsole;
@@ -25,7 +34,12 @@ namespace CKAN {
         /// Prompts the user for a Y/N response.
         /// Returns true for yes, false for no.
         /// </summary>
-        public static bool YesNo(string text = null) {
+        public static bool YesNo(string text = null, FrontEndType _frontEnd = FrontEndType.All) {
+            if (_frontEnd != FrontEndType.All && _frontEnd != frontEnd)
+            {
+                return true;
+            }
+
             return yesNoDialog(text);
         }
 

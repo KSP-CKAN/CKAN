@@ -29,16 +29,29 @@ namespace CKAN
         }
 
         public void Commit() {
+            
             foreach (var directory in directoriesToCreate) {
-                Directory.CreateDirectory(directory);
+                if (!Directory.Exists(directory)) {
+                    Directory.CreateDirectory(directory);
+                }
+            }
+
+            foreach (var pair in files)
+            {
+                var file = pair.Value;
+                file.Close();
+                
+                // verify that all files can be copied
+                if (!File.Exists(file.TemporaryPath)) {
+                    log.ErrorFormat("Commit failed because {0} is missing", file.TemporaryPath);
+                    return;
+                }
             }
 
             foreach (var pair in files) {
                 var file = pair.Value;
-                file.Close();
 
-                if (System.IO.File.Exists(file.path) && file.neverOverwrite)
-                {
+                if (System.IO.File.Exists(file.path) && file.neverOverwrite) {
                     log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.");
                     File.Delete(file.TemporaryPath);
                     continue;
@@ -49,11 +62,15 @@ namespace CKAN
             }
 
             foreach (var path in filesToRemove) {
-                File.Delete(path);
+                if (File.Exists(path)) {
+                    File.Delete(path);
+                }
             }
 
             foreach (var path in directoriesToRemove) {
-                Directory.Delete(path);
+                if (Directory.Exists(path)) {
+                    Directory.Delete(path);
+                }
             }
 
             files = null;

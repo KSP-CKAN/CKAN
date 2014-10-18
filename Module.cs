@@ -155,7 +155,8 @@ namespace CKAN {
 
         public BundledModule(dynamic stanza) {
             // For now, we just copy across the fields from our stanza.
-            version    = new Version(stanza.version);
+            JValue jVersion = (JValue) stanza.version;
+            version = new Version((string)jVersion.Value);
             identifier = stanza.identifier;
             license    = stanza.license;
         }
