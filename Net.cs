@@ -65,8 +65,7 @@ namespace CKAN {
             var filePaths = new string[downloads.Length];
             transaction = new FilesystemTransaction();
 
-            for (int i = 0; i < downloads.Length; i++)
-            {
+            for (int i = 0; i < downloads.Length; i++) {
                 User.WriteLine("Downloading \"{0}\"", downloads[i].url);
 
                 // Generate a temporary file if none is provided.
@@ -161,8 +160,7 @@ namespace CKAN {
                     var filePaths = new string[downloads.Length];
                     var errors = new Exception[downloads.Length];
 
-                    for (int i = 0; i < downloads.Length; i++)
-                    {
+                    for (int i = 0; i < downloads.Length; i++) {
                         fileUrls[i] = downloads[i].url;
                         filePaths[i] = downloads[i].path;
                         errors[i] = downloads[i].error;
