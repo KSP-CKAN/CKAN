@@ -105,6 +105,13 @@ namespace CKAN {
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
+        /// <summary>
+        /// Installs all modules given a list of identifiers. Resolves dependencies.
+        /// The function initializes a filesystem transaction, then installs all cached mods
+        /// this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives
+        /// After this we try to download the rest of the mods (asynchronously) and install them
+        /// Finally, only if everything is successful, we commit the transaction
+        /// </summary>
         public void InstallList (List<string> modules, RelationshipResolverOptions options) {
             currentTransaction = new FilesystemTransaction();
 

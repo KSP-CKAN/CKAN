@@ -28,6 +28,7 @@ namespace CKAN {
         public int lastProgressUpdateSize;
         public int bytesPerSecond;
         public long bytesLeft;
+        public TransactionalFileWriter fileWriter;
     }
 
     public class NetAsyncDownloader {
@@ -39,6 +40,8 @@ namespace CKAN {
 
         private NetAsyncDownloaderDownloadPart[] downloads = null;
         private int queuePointer = 0;
+
+        private FilesystemTransaction transaction = null;
 
         public NetAsyncDownloader(Uri[] urls, string[] filenames = null) {
             downloads = new NetAsyncDownloaderDownloadPart[urls.Length];
@@ -60,6 +63,7 @@ namespace CKAN {
         // starts the download and return the destination filename
         public string[] StartDownload() {
             var filePaths = new string[downloads.Length];
+            transaction = new FilesystemTransaction();
 
             for (int i = 0; i < downloads.Length; i++)
             {
@@ -86,7 +90,9 @@ namespace CKAN {
                         (sender, args) => FileProgressReport(index, args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive - args.BytesReceived);
 
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
-                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
+
+                downloads[i].fileWriter = transaction.OpenFileWrite(downloads[i].path, false);
+                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].fileWriter.TemporaryPath);
             }
             
             return filePaths;
@@ -134,6 +140,22 @@ namespace CKAN {
             downloads[index].error = error;
 
             if (queuePointer == downloads.Length) {
+                // verify no errors before commit
+
+                bool err = false;
+                for (int i = 0; i < downloads.Length; i++)
+                {
+                    if (downloads[i].error != null)
+                    {
+                        err = true;
+                    }
+                }
+
+                if (!err)
+                {
+                    transaction.Commit();
+                }
+                
                 if (onCompleted != null) {
                     var fileUrls = new Uri[downloads.Length];
                     var filePaths = new string[downloads.Length];
@@ -218,7 +240,6 @@ namespace CKAN {
                     User.WriteLine ("on the command-line to update your certificate store, and try again.\n");
 
                     throw new MissingCertificateException ();
-
                 }
 
                 // Not the exception we were looking for! Throw it further upwards!

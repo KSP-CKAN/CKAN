@@ -8,12 +8,23 @@ using log4net;
 namespace CKAN
 {
 
-    class FilesystemTransaction
+    public class FilesystemTransaction
     {
 
         private static readonly ILog log = LogManager.GetLogger(typeof(FilesystemTransaction));
 
+        private static string tempPath = "temp/";
+
+        public static string TempPath
+        {
+            get { return Path.Combine(KSP.CkanDir(), tempPath); }
+        }
+
         public FilesystemTransaction() {
+            if (!Directory.Exists(TempPath)) {
+                Directory.CreateDirectory(TempPath);
+            }
+
             uuid = Guid.NewGuid().ToString();
         }
 
@@ -89,7 +100,7 @@ namespace CKAN
 
     }
 
-    class TransactionalFileWriter {
+    public class TransactionalFileWriter {
 
         public TransactionalFileWriter
         (
@@ -100,18 +111,28 @@ namespace CKAN
             path = _path;
             uuid = Guid.NewGuid().ToString();
 
-            temporaryPath = Path.Combine(Path.Combine(KSP.GameDir(), "CKAN"), String.Format("{0}_{1}", transaction.uuid, uuid));
-            temporaryStream = File.Create(temporaryPath);
+            temporaryPath = Path.Combine(FilesystemTransaction.TempPath, String.Format("{0}_{1}", transaction.uuid, uuid));
+            temporaryStream = null;//File.Create(temporaryPath);
             neverOverwrite = _neverOverwrite;
         }
 
         public void Close() {
-            temporaryStream.Close();
-            temporaryStream = null;
+            if (temporaryStream != null)
+            {
+                temporaryStream.Close();
+                temporaryStream = null;
+            }
         }
 
         public FileStream Stream {
-            get { return temporaryStream; }
+            get
+            {
+                if (temporaryStream == null) {
+                    temporaryStream = File.Create(temporaryPath);
+                }
+
+                return temporaryStream;
+            }
         }
 
         public string TemporaryPath {
