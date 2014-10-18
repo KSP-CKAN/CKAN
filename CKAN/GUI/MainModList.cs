@@ -46,10 +46,7 @@ namespace CKAN
                 }
             }
 
-            RelationshipResolverOptions options = new RelationshipResolverOptions();
-            options.with_all_suggests = false;
-            options.with_recommends = false;
-            options.with_suggests = false;
+            RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
 
             RelationshipResolver resolver = null;
             try

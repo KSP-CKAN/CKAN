@@ -10,6 +10,9 @@ namespace CKAN {
         public bool with_all_suggests;
     }
 
+	// Alas, it appears that structs cannot have defaults. Try
+	// DefaultOpts() to get friendly defaults.
+
     public class RelationshipResolver {
 
         // A list of all the mods we're going to install.
@@ -48,6 +51,19 @@ namespace CKAN {
             }
 
         }
+
+		/// <summary>
+		/// Returns the default options for relationship resolution.
+		/// </summary>
+		public static RelationshipResolverOptions DefaultOpts()
+		{
+			var opts = new RelationshipResolverOptions ();
+			opts.with_recommends = true;
+			opts.with_suggests = false;
+			opts.with_all_suggests = false;
+
+			return opts;
+		}
 
         // Resolve all relationships for a module.
         // May recurse to ResolveStanza.
