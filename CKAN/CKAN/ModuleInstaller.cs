@@ -371,7 +371,7 @@ namespace CKAN {
                 CopyZipEntry (zipfile, entry, fullPath, makeDirs);
                 User.WriteLine("    * Copying " + entry.ToString());
 
-                module_files.Add (Path.Combine((string) stanza.install_to, outputName), new InstalledModuleFile {
+                module_files.Add (Path.Combine(installDir, outputName), new InstalledModuleFile {
                     sha1_sum = ""//Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
                 });
             }
