@@ -57,6 +57,7 @@ namespace CKAN
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KSPVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.menuStrip1.SuspendLayout();
@@ -184,6 +185,7 @@ namespace CKAN
             this.Author,
             this.InstalledVersion,
             this.LatestVersion,
+            this.KSPVersion,
             this.Description,
             this.Homepage});
             this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -335,6 +337,12 @@ namespace CKAN
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.Width = 88;
             // 
+            // KSPVersion
+            // 
+            this.KSPVersion.HeaderText = "KSP version";
+            this.KSPVersion.Name = "KSPVersion";
+            this.KSPVersion.Width = 81;
+            // 
             // Description
             // 
             this.Description.HeaderText = "Description";
@@ -413,6 +421,7 @@ namespace CKAN
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;
         private DataGridViewTextBoxColumn LatestVersion;
+        private DataGridViewTextBoxColumn KSPVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
     }

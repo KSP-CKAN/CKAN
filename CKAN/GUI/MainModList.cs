@@ -331,6 +331,21 @@ namespace CKAN
 
                 item.Cells.Add(latestVersionCell);
 
+                // KSP version
+                var kspVersion = mod.ksp_version;
+                var kspVersionCell = new DataGridViewTextBoxCell();
+
+                if (kspVersion != null)
+                {
+                    kspVersionCell.Value = kspVersion.ToString();
+                }
+                else
+                {
+                    kspVersionCell.Value = "-";
+                }
+
+                item.Cells.Add(kspVersionCell);
+
                 // description
                 var descriptionCell = new DataGridViewTextBoxCell();
                 descriptionCell.Value = mod.@abstract;
