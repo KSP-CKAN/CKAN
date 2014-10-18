@@ -182,15 +182,21 @@ namespace CKAN {
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
+            bool noErrors = true;
+
             for (int i = 0; i < errors.Length; i++) {
-                if (errors[i] != null) {
+                if (errors[i] != null)
+                {
+                    noErrors = false;
                     User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
-                    return;
                 }
             }
 
-            for (int i = 0; i < urls.Length; i++) {
-                Install(modules[i], filenames[i]);
+            if (noErrors)
+            {
+                for (int i = 0; i < urls.Length; i++) {
+                    Install(modules[i], filenames[i]);
+                }   
             }
 
             lock (downloader)
