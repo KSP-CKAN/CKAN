@@ -176,8 +176,6 @@ namespace CKAN {
             {
                 Monitor.Wait(downloader);
             }
-
-            currentTransaction.Commit();
         }
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
@@ -196,7 +194,9 @@ namespace CKAN {
             {
                 for (int i = 0; i < urls.Length; i++) {
                     Install(modules[i], filenames[i]);
-                }   
+                }
+
+                currentTransaction.Commit();
             }
 
             lock (downloader)
