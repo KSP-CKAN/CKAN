@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace CKAN {
 
@@ -170,7 +171,11 @@ namespace CKAN {
 
             downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
             downloader.StartDownload();
-            while (downloader != null) {}
+
+            lock (downloader)
+            {
+                Monitor.Wait(downloader);
+            }
 
             currentTransaction.Commit();
         }
@@ -188,7 +193,10 @@ namespace CKAN {
                 Install(modules[i], filenames[i]);
             }
 
-            downloader = null;
+            lock (downloader)
+            {
+                Monitor.Pulse(downloader);
+            }
         }
 
         /// <summary>
