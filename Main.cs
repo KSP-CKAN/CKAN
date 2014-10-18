@@ -203,7 +203,7 @@ namespace CKAN {
         static int Remove(RemoveOptions options) {
 
             ModuleInstaller installer = new ModuleInstaller ();
-            installer.Uninstall (options.Modname);
+            installer.Uninstall (options.Modname, true);
 
             return EXIT_OK;
         }
