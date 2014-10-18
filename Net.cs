@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
 
 namespace CKAN {
@@ -16,6 +17,19 @@ namespace CKAN {
 
     public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
 
+    public struct NetAsyncDownloaderDownloadPart
+    {
+        public Uri url;
+        public string path;
+        public Exception error;
+        public WebClient agent;
+        public int percentComplete;
+        public DateTime lastProgressUpdateTime;
+        public int lastProgressUpdateSize;
+        public int bytesPerSecond;
+        public long bytesLeft;
+    }
+
     public class NetAsyncDownloader {
 
         static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
@@ -23,96 +37,92 @@ namespace CKAN {
         public NetAsyncProgressReport onProgressReport = null;
         public NetAsyncCompleted onCompleted = null;
 
-        private Uri[] fileUrls = null;
-        private string[] filePaths = null;
-        private Exception[] errors = null;
+        private NetAsyncDownloaderDownloadPart[] downloads = null;
         private int queuePointer = 0;
-        private WebClient[] agents = null;
-        private int[] percentageComplete = null;
-        private DateTime[] lastProgressUpdateTime = null;
-        private int[] lastProgressUpdateSize = null;
-        private int[] bytesPerSecond = null;
-        private long[] bytesLeft = null;
 
         public NetAsyncDownloader(Uri[] urls, string[] filenames = null) {
-            fileUrls = urls;
-            filePaths = filenames;
+            downloads = new NetAsyncDownloaderDownloadPart[urls.Length];
+
+            for (int i = 0; i < downloads.Length; i++)
+            {
+                downloads[i].url = urls[i];
+                if (filenames != null)
+                {
+                    downloads[i].path = filenames[i];
+                }
+                else
+                {
+                    downloads[i].path = null;
+                }
+            }
         }
 
         // starts the download and return the destination filename
         public string[] StartDownload() {
-            foreach (var url in fileUrls) {
-                User.WriteLine("Downloading \"{0}\"", url);
-            }
+            var filePaths = new string[downloads.Length];
 
-            // Generate a temporary file if none is provided.
-            if (filePaths == null) {
-                filePaths = new string[fileUrls.Length];
-                for (int i = 0; i < fileUrls.Length; i++)
+            for (int i = 0; i < downloads.Length; i++)
+            {
+                User.WriteLine("Downloading \"{0}\"", downloads[i].url);
+
+                // Generate a temporary file if none is provided.
+                if (downloads[i].path == null)
                 {
-                    filePaths[i] = Path.GetTempFileName();
+                    downloads[i].path = Path.GetTempFileName();
                 }
-            }
 
-            agents = new WebClient[fileUrls.Length];
-            errors = new Exception[fileUrls.Length];
-            percentageComplete = new int[fileUrls.Length];
-            lastProgressUpdateTime = new DateTime[fileUrls.Length];
-            lastProgressUpdateSize = new int[fileUrls.Length];
-            bytesPerSecond = new int[fileUrls.Length];
-            bytesLeft = new long[fileUrls.Length];
+                filePaths[i] = downloads[i].path;
 
-            for (int i = 0; i < fileUrls.Length; i++) {
-                agents[i] = new WebClient();
-                errors[i] = null;
-                percentageComplete[i] = 0;
-                lastProgressUpdateTime[i] = DateTime.Now;
-                lastProgressUpdateSize[i] = 0;
-                bytesPerSecond[i] = 0;
-                bytesLeft[i] = 0;
+                downloads[i].agent = new WebClient();
+                downloads[i].error = null;
+                downloads[i].percentComplete = 0;
+                downloads[i].lastProgressUpdateTime = DateTime.Now;
+                downloads[i].lastProgressUpdateSize = 0;
+                downloads[i].bytesPerSecond = 0;
+                downloads[i].bytesLeft = 0;
 
                 int index = i;
-                agents[i].DownloadProgressChanged +=
+                downloads[i].agent.DownloadProgressChanged +=
                         (sender, args) => FileProgressReport(index, args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive - args.BytesReceived);
 
-                agents[i].DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
-                agents[i].DownloadFileAsync(fileUrls[i], filePaths[i]);
+                downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
+                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
-
+            
             return filePaths;
         }
 
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long _bytesLeft) {
-            percentageComplete[index] = percent;
+        private void FileProgressReport(int index, int percent, long bytesDownloaded, long _bytesLeft)
+        {
+            var download = downloads[index];
+
+            download.percentComplete = percent;
 
             var now = DateTime.Now;
-            var timeSpan = now - lastProgressUpdateTime[index];
+            var timeSpan = now - download.lastProgressUpdateTime;
             if (timeSpan.Seconds >= 1.0) {
-                var bytesChange = bytesDownloaded - lastProgressUpdateSize[index];
-                lastProgressUpdateSize[index] = (int)bytesDownloaded;
-                lastProgressUpdateTime[index] = now;
-                bytesPerSecond[index] = (int)bytesChange / timeSpan.Seconds;
+                var bytesChange = bytesDownloaded - download.lastProgressUpdateSize;
+                download.lastProgressUpdateSize = (int)bytesDownloaded;
+                download.lastProgressUpdateTime = now;
+                download.bytesPerSecond = (int)bytesChange / timeSpan.Seconds;
             }
 
-            bytesLeft[index] = _bytesLeft;
+            download.bytesLeft = _bytesLeft;
+            downloads[index] = download;
 
             if (onProgressReport != null) {
+               
                 int totalPercentage = 0;
-                for (int i = 0; i < percentageComplete.Length; i++) {
-                    totalPercentage += percentageComplete[i];
-                }
-
-                totalPercentage /= percentageComplete.Length;
-
                 int totalBytesPerSecond = 0;
-                for (int i = 0; i < bytesPerSecond.Length; i++) {
-                    totalBytesPerSecond += bytesPerSecond[i];
+                long totalBytesLeft = 0;
+                
+                for (int i = 0; i < downloads.Length; i++) {
+                    totalBytesPerSecond += downloads[i].bytesPerSecond;
+                    totalBytesLeft += downloads[i].bytesLeft;
+                    totalPercentage += downloads[i].percentComplete;
                 }
 
-                long totalBytesLeft = 0;
-                for (int i = 0; i < bytesLeft.Length; i++) {
-                    totalBytesLeft += bytesLeft[i];
-                }
+                totalPercentage /= downloads.Length;
 
                 onProgressReport(totalPercentage, totalBytesPerSecond, totalBytesLeft);
             }
@@ -121,10 +131,21 @@ namespace CKAN {
         private void FileDownloadComplete(int index, Exception error)
         {
             queuePointer++;
-            errors[index] = error;
+            downloads[index].error = error;
 
-            if (queuePointer == fileUrls.Length) {
+            if (queuePointer == downloads.Length) {
                 if (onCompleted != null) {
+                    var fileUrls = new Uri[downloads.Length];
+                    var filePaths = new string[downloads.Length];
+                    var errors = new Exception[downloads.Length];
+
+                    for (int i = 0; i < downloads.Length; i++)
+                    {
+                        fileUrls[i] = downloads[i].url;
+                        filePaths[i] = downloads[i].path;
+                        errors[i] = downloads[i].error;
+                    }
+
                     onCompleted(fileUrls, filePaths, errors);
                 }
 
@@ -134,53 +155,8 @@ namespace CKAN {
 
         public void WaitForAllDownloads()
         {
-            while (queuePointer < fileUrls.Length) {
+            while (queuePointer < downloads.Length) {
             }
-        }
-
-        public static string Download(string url, string filename = null) {
-            User.WriteLine("Downloading {0}", url);
-
-            // Generate a temporary file if none is provided.
-            if (filename == null) {
-                filename = Path.GetTempFileName();
-            }
-
-            log.DebugFormat("Downloading {0} to {1}", url, filename);
-
-            WebClient agent = new WebClient();
-
-            try {
-                agent.DownloadFile(url, filename);
-            }
-            catch (Exception ex) {
-                // Clean up our file, it's unlikely to be complete.
-                // It's okay if this fails.
-                try {
-                    log.DebugFormat("Removing {0} after web error failure", filename);
-                    File.Delete(filename);
-                }
-                catch {
-                    // Apparently we need a catch, even if we do nothing.
-                }
-
-                if (ex is System.Net.WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed")) {
-
-                    User.WriteLine("\nOh no! Our download failed!\n");
-                    User.WriteLine("\t{0}\n", ex.Message);
-                    User.WriteLine("If you're on Linux, try running:\n");
-                    User.WriteLine("\tmozroots --import --ask-remove\n");
-                    User.WriteLine("on the command-line to update your certificate store, and try again.\n");
-
-                    throw new MissingCertificateException();
-
-                }
-
-                // Not the exception we were looking for! Throw it further upwards!
-                throw;
-            }
-
-            return filename;
         }
 
     }
