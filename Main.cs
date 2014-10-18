@@ -222,7 +222,7 @@ namespace CKAN {
                 if (options.modules.Count == 0)
                 {
                     // What? No files specified?
-                    User.WriteLine("Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                    User.WriteLine("Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
