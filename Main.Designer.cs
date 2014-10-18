@@ -43,6 +43,14 @@ namespace CKAN
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
+            this.ModFilter = new System.Windows.Forms.ListBox();
+            this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByNameLabel = new System.Windows.Forms.Label();
+            this.FilterByNamePanel = new System.Windows.Forms.Panel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ModInfo = new System.Windows.Forms.TextBox();
+            this.StatusPanel = new System.Windows.Forms.Panel();
+            this.StatusLabel = new System.Windows.Forms.Label();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -51,14 +59,6 @@ namespace CKAN
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.ModFilter = new System.Windows.Forms.ListBox();
-            this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
-            this.FilterByNameLabel = new System.Windows.Forms.Label();
-            this.FilterByNamePanel = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.StatusPanel = new System.Windows.Forms.Panel();
-            this.StatusLabel = new System.Windows.Forms.Label();
-            this.ModInfo = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -78,7 +78,7 @@ namespace CKAN
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(823, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(870, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -122,7 +122,7 @@ namespace CKAN
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 615);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(823, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(870, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -170,10 +170,12 @@ namespace CKAN
             // 
             this.ModList.AllowUserToAddRows = false;
             this.ModList.AllowUserToDeleteRows = false;
+            this.ModList.AllowUserToResizeColumns = false;
             this.ModList.AllowUserToResizeRows = false;
             this.ModList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
@@ -190,73 +192,10 @@ namespace CKAN
             this.ModList.Name = "ModList";
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(616, 280);
+            this.ModList.Size = new System.Drawing.Size(663, 355);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            // 
-            // Installed
-            // 
-            this.Installed.Frozen = true;
-            this.Installed.HeaderText = "Installed";
-            this.Installed.Name = "Installed";
-            this.Installed.Width = 52;
-            // 
-            // Update
-            // 
-            this.Update.Frozen = true;
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.Width = 48;
-            // 
-            // ModName
-            // 
-            this.ModName.Frozen = true;
-            this.ModName.HeaderText = "Name";
-            this.ModName.Name = "ModName";
-            this.ModName.ReadOnly = true;
-            this.ModName.Width = 60;
-            // 
-            // Author
-            // 
-            this.Author.Frozen = true;
-            this.Author.HeaderText = "Author";
-            this.Author.Name = "Author";
-            this.Author.ReadOnly = true;
-            this.Author.Width = 63;
-            // 
-            // InstalledVersion
-            // 
-            this.InstalledVersion.Frozen = true;
-            this.InstalledVersion.HeaderText = "Installed version";
-            this.InstalledVersion.Name = "InstalledVersion";
-            this.InstalledVersion.ReadOnly = true;
-            this.InstalledVersion.Width = 99;
-            // 
-            // LatestVersion
-            // 
-            this.LatestVersion.Frozen = true;
-            this.LatestVersion.HeaderText = "Latest version";
-            this.LatestVersion.Name = "LatestVersion";
-            this.LatestVersion.ReadOnly = true;
-            this.LatestVersion.Width = 90;
-            // 
-            // Description
-            // 
-            this.Description.Frozen = true;
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.Width = 85;
-            // 
-            // Homepage
-            // 
-            this.Homepage.Frozen = true;
-            this.Homepage.HeaderText = "Homepage";
-            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.Homepage.Name = "Homepage";
-            this.Homepage.ReadOnly = true;
-            this.Homepage.Width = 65;
             // 
             // ModFilter
             // 
@@ -302,7 +241,7 @@ namespace CKAN
             this.FilterByNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FilterByNamePanel.Controls.Add(this.FilterByNameLabel);
             this.FilterByNamePanel.Controls.Add(this.FilterByNameTextBox);
-            this.FilterByNamePanel.Location = new System.Drawing.Point(606, 27);
+            this.FilterByNamePanel.Location = new System.Drawing.Point(653, 27);
             this.FilterByNamePanel.Name = "FilterByNamePanel";
             this.FilterByNamePanel.Size = new System.Drawing.Size(217, 39);
             this.FilterByNamePanel.TabIndex = 6;
@@ -323,9 +262,20 @@ namespace CKAN
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ModInfo);
-            this.splitContainer1.Size = new System.Drawing.Size(616, 544);
-            this.splitContainer1.SplitterDistance = 280;
+            this.splitContainer1.Size = new System.Drawing.Size(663, 544);
+            this.splitContainer1.SplitterDistance = 355;
             this.splitContainer1.TabIndex = 7;
+            // 
+            // ModInfo
+            // 
+            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfo.Location = new System.Drawing.Point(0, 0);
+            this.ModInfo.Multiline = true;
+            this.ModInfo.Name = "ModInfo";
+            this.ModInfo.ReadOnly = true;
+            this.ModInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.ModInfo.Size = new System.Drawing.Size(663, 185);
+            this.ModInfo.TabIndex = 2;
             // 
             // StatusPanel
             // 
@@ -345,22 +295,67 @@ namespace CKAN
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // ModInfo
+            // Installed
             // 
-            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModInfo.Location = new System.Drawing.Point(0, 0);
-            this.ModInfo.Multiline = true;
-            this.ModInfo.Name = "ModInfo";
-            this.ModInfo.ReadOnly = true;
-            this.ModInfo.Size = new System.Drawing.Size(616, 260);
-            this.ModInfo.TabIndex = 2;
-            this.ModInfo.Text = "Mod description etc";
+            this.Installed.HeaderText = "Installed";
+            this.Installed.Name = "Installed";
+            this.Installed.Width = 50;
+            // 
+            // Update
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.Width = 46;
+            // 
+            // ModName
+            // 
+            this.ModName.HeaderText = "Name";
+            this.ModName.Name = "ModName";
+            this.ModName.ReadOnly = true;
+            this.ModName.Width = 58;
+            // 
+            // Author
+            // 
+            this.Author.HeaderText = "Author";
+            this.Author.Name = "Author";
+            this.Author.ReadOnly = true;
+            this.Author.Width = 61;
+            // 
+            // InstalledVersion
+            // 
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.Width = 97;
+            // 
+            // LatestVersion
+            // 
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.Width = 88;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.Width = 83;
+            // 
+            // Homepage
+            // 
+            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Homepage.HeaderText = "Homepage";
+            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Homepage.Name = "Homepage";
+            this.Homepage.ReadOnly = true;
+            this.Homepage.Width = 63;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(823, 637);
+            this.ClientSize = new System.Drawing.Size(870, 637);
             this.Controls.Add(this.StatusPanel);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.FilterByNamePanel);
@@ -407,6 +402,11 @@ namespace CKAN
         private System.Windows.Forms.Label FilterByNameLabel;
         private System.Windows.Forms.DataGridView ModList;
         private Panel FilterByNamePanel;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private SplitContainer splitContainer1;
+        private Panel StatusPanel;
+        private Label StatusLabel;
+        private TextBox ModInfo;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
@@ -415,11 +415,6 @@ namespace CKAN
         private DataGridViewTextBoxColumn LatestVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
-        private ToolStripMenuItem aboutToolStripMenuItem;
-        private SplitContainer splitContainer1;
-        private Panel StatusPanel;
-        private Label StatusLabel;
-        private TextBox ModInfo;
     }
 }
 

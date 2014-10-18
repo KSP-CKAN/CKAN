@@ -95,8 +95,6 @@ namespace CKAN
 
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
-            UpdateModsList();
-
             foreach(DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;

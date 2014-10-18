@@ -35,12 +35,14 @@ namespace CKAN
             installer.onReportProgress += InstallModsReportProgress;
 
             // first we uninstall whatever the user wanted to plus the mods we want to update
-            foreach (var change in opts.Key)
-            {
-                if (change.Value == GUIModChangeType.Remove || change.Value == GUIModChangeType.Update)
-                {
+            foreach (var change in opts.Key) {
+                if (change.Value == GUIModChangeType.Remove) {
                     m_WaitDialog.SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
-                    installer.Uninstall(change.Key.identifier);
+                    installer.Uninstall(change.Key.identifier, true);
+                }
+                else if (change.Value == GUIModChangeType.Update)
+                {
+                    installer.Uninstall(change.Key.identifier, false);
                 }
             }
 
