@@ -54,14 +54,39 @@
     <Compile Include="ApplyChangesDialog.Designer.cs">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainInstall.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainModList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainRepo.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecommendsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecommendsDialog.Designer.cs">
+      <DependentUpon>RecommendsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,11 +99,21 @@
     <Compile Include="WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="YesNoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="YesNoDialog.Designer.cs">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ApplyChangesDialog.resx">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -90,11 +125,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="RecommendsDialog.resx">
+      <DependentUpon>RecommendsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WaitDialog.resx">
       <DependentUpon>WaitDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YesNoDialog.resx">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

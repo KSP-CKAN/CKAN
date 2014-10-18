@@ -106,7 +106,7 @@
                         {
                             try
                             {
-                                if (LatestAvailable((string)dependency.name, ksp_version) == null)
+                                if (LatestAvailable(dependency.name.Value, ksp_version) == null)
                                 {
                                     failedDepedency = true;
                                     break;
@@ -204,6 +204,11 @@
 
             string relPath = match.Groups[1].Value;
             string modName = match.Groups[2].Value;
+
+            if (modName.Length == 0 || relPath.Length == 0)
+            {
+                return;
+            }
 
             User.WriteLine ("Registering {0} -> {1}", modName, relPath);
 

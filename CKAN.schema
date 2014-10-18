@@ -239,7 +239,7 @@
         },
         "install_to" : {
             "description" : "Where file should be installed to",
-            "enum" : [ "GameData", "Ships" ]
+            "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial" ]
         },
         "license" : {
             "description" : "A license.",

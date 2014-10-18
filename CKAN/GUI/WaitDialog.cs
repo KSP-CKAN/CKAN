@@ -15,6 +15,8 @@ namespace CKAN
         public WaitDialog()
         {
             InitializeComponent();
+            DialogProgressBar.Minimum = 0;
+            DialogProgressBar.Maximum = 100;
         }
 
         public void ShowWaitDialog()
@@ -40,6 +42,38 @@ namespace CKAN
             Close();
         }
 
+        public void SetProgress(int progress)
+        {
+            if (DialogProgressBar.InvokeRequired)
+            {
+                DialogProgressBar.Invoke(new MethodInvoker(delegate
+                {
+                    DialogProgressBar.Value = progress;
+                    DialogProgressBar.Style = ProgressBarStyle.Continuous;
+                }));
+            }
+            else
+            {
+                DialogProgressBar.Value = progress;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            }
+        }
+
+        public void ResetProgress()
+        {
+            if (DialogProgressBar.InvokeRequired)
+            {
+                DialogProgressBar.Invoke(new MethodInvoker(delegate
+                {
+                    DialogProgressBar.Style = ProgressBarStyle.Marquee;
+                }));
+            }
+            else
+            {
+                DialogProgressBar.Style = ProgressBarStyle.Marquee;
+            }
+        }
+
         public void SetDescription(string message)
         {
             if (MessageTextBox.InvokeRequired)
@@ -52,6 +86,36 @@ namespace CKAN
             else
             {
                 MessageTextBox.Text = "(" + message + ")";
+            }
+        }
+
+        public void ClearLog()
+        {
+            if (LogTextBox.InvokeRequired)
+            {
+                LogTextBox.Invoke(new MethodInvoker(delegate
+                {
+                    LogTextBox.Text = "";
+                }));
+            }
+            else
+            {
+                LogTextBox.Text = "";
+            }
+        }
+
+        public void AddLogMessage(string message)
+        {
+            if (LogTextBox.InvokeRequired)
+            {
+                LogTextBox.Invoke(new MethodInvoker(delegate
+                {
+                    LogTextBox.AppendText(message + "\r\n");
+                }));
+            }
+            else
+            {
+                LogTextBox.AppendText(message + "\r\n");
             }
         }
 
