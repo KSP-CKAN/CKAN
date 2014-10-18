@@ -52,7 +52,7 @@ namespace CKAN
                 var file = pair.Value;
 
                 if (System.IO.File.Exists(file.path) && file.neverOverwrite) {
-                    log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.");
+                    log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.", file.path);
                     File.Delete(file.TemporaryPath);
                     continue;
                 }
