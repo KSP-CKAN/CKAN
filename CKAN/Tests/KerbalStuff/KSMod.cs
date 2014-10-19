@@ -29,6 +29,16 @@ namespace Tests
             CKAN.KerbalStuff.KSMod.Inflate(meta, "author", "Jeb");
             Assert.AreEqual((string) meta["author"], "Jeb");
         }
+
+        [Test()]
+        public void KSHome()
+        {
+            var ks = new CKAN.KerbalStuff.KSMod();
+            ks.name = "foo bar";
+            ks.id = 123;
+
+            Assert.AreEqual("https://kerbalstuff.com/mod/123/foo%20bar", ks.KSHome());
+        }
     }
 }
 
