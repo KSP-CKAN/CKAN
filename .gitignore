@@ -11,3 +11,5 @@ ckan.exe
 .fatten.out
 *.resources
 *.suo
+*.orig
+*.ckan
