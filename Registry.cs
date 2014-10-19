@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 
@@ -113,7 +114,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailable(dependency.name.Value, ksp_version) == null)
+                                if (LatestAvailableWithProvides(dependency.name.Value, ksp_version).Count == 0)
                                 {
                                     failedDepedency = true;
                                     break;
@@ -189,6 +190,54 @@ namespace CKAN
             {
                 throw new ModuleNotFoundException(module);
             }
+        }
+
+        /// <summary>
+        ///     Returns the latest available version of a module that
+        ///     satisifes the specified version. Takes into account module 'provides'
+        ///     Throws a ModuleNotFoundException if asked for a non-existant module.
+        ///     Returns null if there's simply no compatible version for this system.
+        /// </summary>
+        public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version = null)
+        {
+            log.DebugFormat("Finding latest available for {0}", module);
+
+            // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
+
+            List<CkanModule> modules = new List<CkanModule>();
+
+            try
+            {
+                var mod = LatestAvailable(module, ksp_version);
+                if (mod != null)
+                {
+                    modules.Add(mod);
+                }
+            }
+            catch (ModuleNotFoundException)
+            {
+                foreach (var pair in available_modules)
+                {
+                    if (pair.Value.Latest(ksp_version) == null)
+                    {
+                        continue;
+                    }
+
+                    var provides = pair.Value.Latest(ksp_version).provides;
+                    if (provides != null)
+                    {
+                        foreach (var provided in provides)
+                        {
+                            if (provided == module)
+                            {
+                                modules.Add(pair.Value.Latest(ksp_version));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return modules;
         }
 
         /// <summary>
