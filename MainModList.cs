@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public partial class Main : Form
     {
-
         private GUIModFilter m_ModFilter = GUIModFilter.All;
         private string m_ModNameFilter = "";
 
         // this functions computes a changeset from the user's choices in the GUI
-        private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList() // this probably needs to be refactored
+        private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
+            // this probably needs to be refactored
         {
-            HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
+            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
 
             // these are the lists
             var modulesToInstall = new HashSet<string>();
@@ -26,15 +22,15 @@ namespace CKAN
 
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = (CkanModule)row.Tag;
+                var mod = (CkanModule) row.Tag;
                 if (mod == null)
                 {
                     continue;
                 }
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
                 var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
-                var isInstalledChecked = (bool)isInstalledCell.Value;
+                var isInstalledChecked = (bool) isInstalledCell.Value;
 
                 if (!isInstalled && isInstalledChecked)
                 {
@@ -65,35 +61,36 @@ namespace CKAN
 
             var installer = new ModuleInstaller();
 
-            List<string> reverseDependencies = new List<string>();
+            var reverseDependencies = new List<string>();
 
-            foreach (var moduleName in modulesToRemove)
+            foreach (string moduleName in modulesToRemove)
             {
                 reverseDependencies = installer.FindReverseDependencies(moduleName);
-                foreach (var reverseDependency in reverseDependencies)
+                foreach (string reverseDependency in reverseDependencies)
                 {
-                    var mod = RegistryManager.Instance().registry.available_modules[reverseDependency].Latest();
-                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule)mod, GUIModChangeType.Remove));
+                    CkanModule mod = RegistryManager.Instance().registry.available_modules[reverseDependency].Latest();
+                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
                 }
             }
 
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = (CkanModule)row.Tag;
+                var mod = (CkanModule) row.Tag;
                 if (mod == null)
                 {
                     continue;
                 }
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
                 var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
-                var isInstalledChecked = (bool)isInstalledCell.Value;
+                var isInstalledChecked = (bool) isInstalledCell.Value;
 
                 if (isInstalled && !isInstalledChecked)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
                 }
-                else if (isInstalled && isInstalledChecked && mod.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(mod.identifier)))
+                else if (isInstalled && isInstalledChecked &&
+                         mod.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(mod.identifier)))
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Update));
                 }
@@ -118,10 +115,11 @@ namespace CKAN
                     break;
                 case GUIModFilter.InstalledUpdateAvailable:
                     count -= modules.Count
-                    (
-                        m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
-                            m.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
-                    );
+                        (
+                            m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
+                                   m.version.IsGreaterThan(
+                                       RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
+                        );
                     break;
                 case GUIModFilter.NewInRepository:
                     break;
@@ -150,10 +148,11 @@ namespace CKAN
                     break;
                 case GUIModFilter.InstalledUpdateAvailable:
                     modules.RemoveAll
-                    (
-                        m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
-                            m.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
-                    );
+                        (
+                            m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
+                                   m.version.IsGreaterThan(
+                                       RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
+                        );
                     break;
                 case GUIModFilter.NewInRepository:
                     break;
@@ -173,7 +172,8 @@ namespace CKAN
             ModFilter.Items[0] = String.Format("All ({0})", CountModsByFilter(GUIModFilter.All));
             ModFilter.Items[1] = String.Format("Installed ({0})", CountModsByFilter(GUIModFilter.Installed));
             ModFilter.Items[2] = String.Format("Updated ({0})", CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            ModFilter.Items[3] = String.Format("New in repository ({0})", CountModsByFilter(GUIModFilter.NewInRepository));
+            ModFilter.Items[3] = String.Format("New in repository ({0})",
+                CountModsByFilter(GUIModFilter.NewInRepository));
             ModFilter.Items[4] = String.Format("Not installed ({0})", CountModsByFilter(GUIModFilter.NotInstalled));
             ModFilter.Items[5] = String.Format("Incompatible ({0})", CountModsByFilter(GUIModFilter.Incompatible));
         }
@@ -182,10 +182,7 @@ namespace CKAN
         {
             if (ModList.InvokeRequired)
             {
-                ModList.Invoke(new MethodInvoker(delegate
-                {
-                    _UpdateModsList(markUpdates);
-                }));
+                ModList.Invoke(new MethodInvoker(delegate { _UpdateModsList(markUpdates); }));
             }
             else
             {
@@ -197,7 +194,7 @@ namespace CKAN
         {
             ModList.Rows.Clear();
 
-            var modules = GetModsByFilter(m_ModFilter);
+            List<CkanModule> modules = GetModsByFilter(m_ModFilter);
 
             // filter by left menu selection
             switch (m_ModFilter)
@@ -209,10 +206,11 @@ namespace CKAN
                     break;
                 case GUIModFilter.InstalledUpdateAvailable:
                     modules.RemoveAll
-                    (
-                        m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
-                            m.version.IsGreaterThan(RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
-                    );
+                        (
+                            m => !(RegistryManager.Instance().registry.IsInstalled(m.identifier) &&
+                                   m.version.IsGreaterThan(
+                                       RegistryManager.Instance().registry.InstalledVersion(m.identifier)))
+                        );
                     break;
                 case GUIModFilter.NewInRepository:
                     break;
@@ -228,10 +226,10 @@ namespace CKAN
 
             foreach (CkanModule mod in modules)
             {
-                DataGridViewRow item = new DataGridViewRow();
+                var item = new DataGridViewRow();
                 item.Tag = mod;
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
 
                 // installed
                 if (m_ModFilter != GUIModFilter.Incompatible)
@@ -257,7 +255,8 @@ namespace CKAN
                 }
                 else
                 {
-                    var isUpToDate = !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    bool isUpToDate =
+                        !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                     if (!isUpToDate)
                     {
                         var updateCell = new DataGridViewCheckBoxCell();
@@ -282,7 +281,7 @@ namespace CKAN
                 var authorCell = new DataGridViewTextBoxCell();
                 if (mod.author != null)
                 {
-                    var authors = "";
+                    string authors = "";
                     for (int i = 0; i < mod.author.Count(); i++)
                     {
                         authors += mod.author[i];
@@ -302,7 +301,7 @@ namespace CKAN
                 item.Cells.Add(authorCell);
 
                 // installed version
-                var installedVersion = RegistryManager.Instance().registry.InstalledVersion(mod.identifier);
+                Version installedVersion = RegistryManager.Instance().registry.InstalledVersion(mod.identifier);
                 var installedVersionCell = new DataGridViewTextBoxCell();
 
                 if (installedVersion != null)
@@ -317,7 +316,7 @@ namespace CKAN
                 item.Cells.Add(installedVersionCell);
 
                 // latest version
-                var latestVersion = mod.version;
+                Version latestVersion = mod.version;
                 var latestVersionCell = new DataGridViewTextBoxCell();
 
                 if (latestVersion != null)
@@ -332,7 +331,7 @@ namespace CKAN
                 item.Cells.Add(latestVersionCell);
 
                 // KSP version
-                var kspVersion = mod.ksp_version;
+                KSPVersion kspVersion = mod.ksp_version;
                 var kspVersionCell = new DataGridViewTextBoxCell();
 
                 if (kspVersion != null)
@@ -357,7 +356,6 @@ namespace CKAN
                 try
                 {
                     homepageCell.Value = mod.resources["homepage"];
-
                 }
                 catch (Exception)
                 {
@@ -368,7 +366,5 @@ namespace CKAN
                 ModList.Rows.Add(item);
             }
         }
-
     }
-
 }

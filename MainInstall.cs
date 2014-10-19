@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public partial class Main : Form
     {
-
-        private BackgroundWorker m_InstallWorker = null;
+        private BackgroundWorker m_InstallWorker;
 
         private void InstallModsReportProgress(string message, int percent)
         {
             if (m_WaitDialog != null)
             {
-                m_WaitDialog.SetDescription(message + " - " + percent.ToString() + "%");
+                m_WaitDialog.SetDescription(message + " - " + percent + "%");
                 m_WaitDialog.SetProgress(percent);
                 //AddStatusMessage(message + " - " + percent.ToString() + "%");
             }
@@ -28,15 +24,18 @@ namespace CKAN
         {
             m_WaitDialog.ClearLog();
 
-            var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
+            var opts =
+                (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            ModuleInstaller installer = new ModuleInstaller();
+            var installer = new ModuleInstaller();
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
             // first we uninstall whatever the user wanted to plus the mods we want to update
-            foreach (var change in opts.Key) {
-                if (change.Value == GUIModChangeType.Remove) {
+            foreach (var change in opts.Key)
+            {
+                if (change.Value == GUIModChangeType.Remove)
+                {
                     m_WaitDialog.SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
                     installer.Uninstall(change.Key.identifier, true);
                 }
@@ -47,11 +46,11 @@ namespace CKAN
             }
 
             // these keep the history of dialogs asking the user which recommendations/suggestions to install
-            HashSet<string> recommendedDialogShown = new HashSet<string>();
-            HashSet<string> suggestedDialogShown = new HashSet<string>();
+            var recommendedDialogShown = new HashSet<string>();
+            var suggestedDialogShown = new HashSet<string>();
 
             // this will be the final list of mods we want to install 
-            HashSet<string> toInstall = new HashSet<string>();
+            var toInstall = new HashSet<string>();
 
             foreach (var change in opts.Key)
             {
@@ -60,7 +59,7 @@ namespace CKAN
                     // check if we haven't already displayed the recommended dialog for this mod
                     if (!recommendedDialogShown.Contains(change.Key.identifier))
                     {
-                        List<string> recommended = new List<string>();
+                        var recommended = new List<string>();
                         if (change.Key.recommends != null)
                         {
                             foreach (dynamic mod in change.Key.recommends)
@@ -68,7 +67,9 @@ namespace CKAN
                                 // if the mod is available for the current KSP version _and_
                                 // the mod is not installed _and_
                                 // the mod is not already in the install list
-                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                if (
+                                    RegistryManager.Instance()
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -81,14 +82,14 @@ namespace CKAN
                         if (recommended.Count() > 0)
                         {
                             List<string> recommendedToInstall = m_RecommendsDialog.ShowRecommendsDialog
-                            (
-                                String.Format("{0} recommends the following mods:", change.Key.name),
-                                recommended
-                            );
+                                (
+                                    String.Format("{0} recommends the following mods:", change.Key.name),
+                                    recommended
+                                );
 
                             if (recommendedToInstall != null)
                             {
-                                foreach (var mod in recommendedToInstall)
+                                foreach (string mod in recommendedToInstall)
                                 {
                                     toInstall.Add(mod);
                                 }
@@ -100,12 +101,14 @@ namespace CKAN
 
                     if (!suggestedDialogShown.Contains(change.Key.identifier))
                     {
-                        List<string> suggested = new List<string>();
+                        var suggested = new List<string>();
                         if (change.Key.suggests != null)
                         {
                             foreach (dynamic mod in change.Key.suggests)
                             {
-                                if (RegistryManager.Instance().registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                if (
+                                    RegistryManager.Instance()
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -117,14 +120,14 @@ namespace CKAN
                         if (suggested.Count() > 0)
                         {
                             List<string> suggestedToInstall = m_RecommendsDialog.ShowRecommendsDialog
-                            (
-                                String.Format("{0} suggests the following mods:", change.Key.name),
-                                suggested
-                            );
+                                (
+                                    String.Format("{0} suggests the following mods:", change.Key.name),
+                                    suggested
+                                );
 
                             if (suggestedToInstall != null)
                             {
-                                foreach (var mod in suggestedToInstall)
+                                foreach (string mod in suggestedToInstall)
                                 {
                                     toInstall.Add(mod);
                                 }
@@ -137,7 +140,7 @@ namespace CKAN
                     // finally add the mod itself to the install list
                     toInstall.Add(change.Key.identifier);
                 }
-                else if(change.Value == GUIModChangeType.Update)
+                else if (change.Value == GUIModChangeType.Update)
                 {
                     // any mods for update we just put in the install list
                     toInstall.Add(change.Key.identifier);
@@ -169,7 +172,7 @@ namespace CKAN
 
         private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)
         {
-            List<string> tmp = new List<string>();
+            var tmp = new List<string>();
             tmp.Add(module.identifier);
 
             RelationshipResolver resolver = null;
@@ -185,7 +188,5 @@ namespace CKAN
 
             return resolver.ModList();
         }
-
     }
-
 }

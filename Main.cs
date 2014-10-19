@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public enum GUIModFilter
     {
         All = 0,
@@ -29,7 +28,7 @@ namespace CKAN
 
     public partial class Main : Form
     {
-
+        private static Main m_Instance;
         public Configuration m_Configuration = null;
 
         public Main()
@@ -38,27 +37,32 @@ namespace CKAN
             InitializeComponent();
         }
 
+        public static Main Instance
+        {
+            get { return m_Instance; }
+        }
+
         private void Main_Load(object sender, EventArgs e)
         {
             KSP.Init();
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
-            (
-                System.IO.Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
-                Repo.default_ckan_repo
-            );
+                (
+                    Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                    Repo.default_ckan_repo
+                );
 
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
             m_UpdateRepoWorker.WorkerSupportsCancellation = true;
-            m_UpdateRepoWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostUpdateRepo);
-            m_UpdateRepoWorker.DoWork += new DoWorkEventHandler(UpdateRepo);
+            m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
+            m_UpdateRepoWorker.DoWork += UpdateRepo;
 
             m_InstallWorker = new BackgroundWorker();
             m_InstallWorker.WorkerReportsProgress = true;
             m_InstallWorker.WorkerSupportsCancellation = true;
-            m_InstallWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(PostInstallMods);
-            m_InstallWorker.DoWork += new DoWorkEventHandler(InstallMods);
+            m_InstallWorker.RunWorkerCompleted += PostInstallMods;
+            m_InstallWorker.DoWork += InstallMods;
 
             User.frontEnd = FrontEndType.UI;
             User.yesNoDialog = YesNoDialog;
@@ -73,15 +77,6 @@ namespace CKAN
             Text = "CKAN (" + Meta.Version() + ")";
         }
 
-        private static Main m_Instance = null;
-        public static Main Instance
-        {
-            get
-            {
-                return m_Instance;
-            }
-        }
-
         private void RefreshToolButton_Click(object sender, EventArgs e)
         {
             UpdateRepo();
@@ -89,13 +84,13 @@ namespace CKAN
 
         private void ModFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            m_ModFilter = (GUIModFilter)ModFilter.SelectedIndex;
+            m_ModFilter = (GUIModFilter) ModFilter.SelectedIndex;
             UpdateModsList();
         }
 
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
-            foreach(DataGridViewRow row in ModList.Rows)
+            foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
                 if (!RegistryManager.Instance().registry.IsInstalled(mod.identifier))
@@ -103,7 +98,8 @@ namespace CKAN
                     continue;
                 }
 
-                var isUpToDate = !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                bool isUpToDate =
+                    !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
@@ -125,13 +121,13 @@ namespace CKAN
                 return;
             }
 
-            var selectedItem = ModList.SelectedRows[0];
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
             if (selectedItem == null)
             {
                 return;
             }
 
-            var module = (CkanModule)selectedItem.Tag;
+            var module = (CkanModule) selectedItem.Tag;
             if (module == null)
             {
                 return;
@@ -146,7 +142,7 @@ namespace CKAN
             if (module.author != null)
             {
                 string authors = "";
-                foreach (var auth in module.author)
+                foreach (string auth in module.author)
                 {
                     authors += auth + ", ";
                 }
@@ -155,15 +151,15 @@ namespace CKAN
             }
 
             ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
-            ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download.ToString()));
+            ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
             ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
-            ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version.ToString()));
+            ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version));
             ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
             ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
 
             ModInfo.AppendText("\r\n");
 
-            var dependencies = "";
+            string dependencies = "";
             if (module.depends != null)
             {
                 for (int i = 0; i < module.depends.Count(); i++)
@@ -179,7 +175,7 @@ namespace CKAN
             ModInfo.AppendText(String.Format("Dependencies: {0}\r\n", dependencies));
             ModInfo.AppendText("\r\n");
 
-            var recommended = "";
+            string recommended = "";
             if (module.recommends != null)
             {
                 for (int i = 0; i < module.recommends.Count(); i++)
@@ -195,7 +191,7 @@ namespace CKAN
             ModInfo.AppendText(String.Format("Recommends: {0}\r\n", recommended));
             ModInfo.AppendText("\r\n");
 
-            var suggested = "";
+            string suggested = "";
             if (module.suggests != null)
             {
                 for (int i = 0; i < module.suggests.Count(); i++)
@@ -214,7 +210,7 @@ namespace CKAN
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            var changeset = ComputeChangeSetFromModList();
+            List<KeyValuePair<CkanModule, GUIModChangeType>> changeset = ComputeChangeSetFromModList();
             m_ApplyChangesDialog.ShowApplyChangesDialog(changeset, m_InstallWorker);
             ApplyToolButton.Enabled = false;
         }
@@ -245,17 +241,17 @@ namespace CKAN
             if (ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewLinkCell)
             {
                 var cell = ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewLinkCell;
-                Process.Start((string)cell.Value.ToString());
+                Process.Start(cell.Value.ToString());
             }
 
             if (e.ColumnIndex == 0 && ModList.Rows.Count > e.RowIndex) // if user clicked install
             {
-                var row = ModList.Rows[e.RowIndex];
+                DataGridViewRow row = ModList.Rows[e.RowIndex];
                 var cell = row.Cells[0] as DataGridViewCheckBoxCell;
-                var mod = (CkanModule)row.Tag;
+                var mod = (CkanModule) row.Tag;
 
-                var isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
-                if ((bool)cell.Value == false && !isInstalled)
+                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                if ((bool) cell.Value == false && !isInstalled)
                 {
                     var options = new RelationshipResolverOptions();
                     options.with_all_suggests = false;
@@ -273,14 +269,14 @@ namespace CKAN
                     {
                         foreach (DataGridViewRow depRow in ModList.Rows)
                         {
-                            if ((CkanModule) depRow.Tag == dependency)
+                            if (depRow.Tag == dependency)
                             {
                                 (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = true;
                             }
                         }
                     }
                 }
-                else if ((bool) cell.Value == true && isInstalled)
+                else if ((bool) cell.Value && isInstalled)
                 {
                     var installer = new ModuleInstaller();
                     List<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
@@ -288,7 +284,7 @@ namespace CKAN
                     {
                         foreach (DataGridViewRow depRow in ModList.Rows)
                         {
-                            if (((CkanModule)depRow.Tag).identifier == dependency)
+                            if (((CkanModule) depRow.Tag).identifier == dependency)
                             {
                                 (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = false;
                             }
