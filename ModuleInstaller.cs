@@ -35,20 +35,20 @@ namespace CKAN {
         ///
         /// </summary>
         /// <param name="filename">Filename.</param>
-        public static string Download (Uri url, string filename) {
+        public string Download (Uri url, string filename) {
 
             User.WriteLine ("    * Downloading " + filename + "...");
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
             if (onReportProgress != null) {
-                onReportProgress(String.Format("Downloading \"{0}\"", module.download), 0);
+                onReportProgress(String.Format("Downloading \"{0}\"", url), 0);
             }
 
             return Net.Download (url, full_path);
         }
 
-        public static string CachedOrDownload(CkanModule module, string filename = null) {
+        public string CachedOrDownload(CkanModule module, string filename = null) {
             if (filename == null) {
                 filename = module.StandardName ();
             }
@@ -86,7 +86,7 @@ namespace CKAN {
             return downloader;
         }
 
-        public static string CachedOrDownload (string identifier, Version version, Uri url, string filename = null) {
+        public string CachedOrDownload (string identifier, Version version, Uri url, string filename = null) {
             if (filename == null) {
                 filename = CkanModule.StandardName (identifier, version);
             }
