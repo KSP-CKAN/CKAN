@@ -1,0 +1,19 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "RemoteTech",
+    "$kref"          : "#/ckan/kerbalstuff",
+    "license"        : "restricted",
+    "release_status" : "stable",
+    "resources"      : {
+        "github"       : {
+            "url"      : "https://github.com/RemoteTechnologiesGroup/RemoteTech"
+        }
+    },
+    "depends": [ { "name" : "ModuleManager" } ],
+    "install" : [
+        {
+            "file"       : "GameData/RemoteTech",
+            "install_to" : "GameData"
+        }
+    ]
+}

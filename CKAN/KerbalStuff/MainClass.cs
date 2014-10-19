@@ -36,6 +36,7 @@ namespace CKAN.KerbalStuff
 
             string identifier = args[0];
             int ksid = Convert.ToInt32(args[1]);
+            string output_path = args[2] ?? ".";
 
             log.InfoFormat("Processing {0}", identifier);
 
@@ -47,7 +48,16 @@ namespace CKAN.KerbalStuff
             KSVersion latest = ks.versions[0];
             string filename = latest.Download(identifier);
 
-            JObject metadata = ExtractCkanInfo(filename);
+            JObject metadata = null;
+            try
+            {
+                metadata = ExtractCkanInfo(filename);
+            }
+            catch (MetadataNotFoundKraken)
+            {
+                log.WarnFormat ("Reading BootKAN metadata for {0}", filename);
+                metadata = BootKAN (identifier);
+            }
 
             // Check if we should auto-inflate!
             if ((string) metadata[expand_token] == ks_expand_path)
@@ -72,7 +82,9 @@ namespace CKAN.KerbalStuff
 
             // All done! Write it out!
 
-            File.WriteAllText(String.Format("{0}-{1}.ckan", mod.identifier, mod.version), metadata.ToString());
+            string final_path = Path.Combine(output_path, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
+
+            File.WriteAllText(final_path, metadata.ToString());
 
             return EXIT_OK;
         }
@@ -116,6 +128,16 @@ namespace CKAN.KerbalStuff
             }
 
             throw new MetadataNotFoundKraken(filename);
+        }
+
+        /// <summary>
+        /// Returns the metadata fragment found in the BootKAN/ directory for
+        /// this identifier, if it exists.
+        /// </summary>
+        internal static JObject BootKAN(string identifier)
+        {
+            string fragment = File.ReadAllText(Path.Combine ("BootKAN", identifier + ".ckan"));
+            return JObject.Parse(fragment);
         }
     }
 
