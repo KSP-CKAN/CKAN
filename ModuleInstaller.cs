@@ -35,22 +35,32 @@ namespace CKAN {
         ///
         /// </summary>
         /// <param name="filename">Filename.</param>
-        public string Download (CkanModule module, string filename = null) {
-
-            // Generate a standard filename if none is provided.
-            if (filename == null) {
-                filename = module.StandardName ();
-            }
+        public string Download (Uri url, string filename) {
 
             User.WriteLine ("    * Downloading " + filename + "...");
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
             if (onReportProgress != null) {
-                onReportProgress(String.Format("Downloading \"{0}\"", module.download), 0);
+                onReportProgress(String.Format("Downloading \"{0}\"", url), 0);
             }
 
-            return Net.Download (module.download, full_path);
+            return Net.Download (url, full_path);
+        }
+
+        public string CachedOrDownload(CkanModule module, string filename = null) {
+            if (filename == null) {
+                filename = module.StandardName ();
+            }
+
+            string fullPath = CachePath (filename);
+
+            if (File.Exists (fullPath)) {
+                Console.WriteLine ("    * Using {0} (cached)", filename);
+                return fullPath;
+            }
+
+            return Download (module.download, filename);
         }
 
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
@@ -76,9 +86,9 @@ namespace CKAN {
             return downloader;
         }
 
-        public string CachedOrDownload (CkanModule module, string filename = null) {
+        public string CachedOrDownload (string identifier, Version version, Uri url, string filename = null) {
             if (filename == null) {
-                filename = module.StandardName ();
+                filename = CkanModule.StandardName (identifier, version);
             }
 
             string fullPath = CachePath (filename);
@@ -88,7 +98,7 @@ namespace CKAN {
                 return fullPath;
             }
 
-            return Download (module, filename);
+            return Download (url, filename);
         }
 
         public bool IsCached(string filename, out string fullPath)
@@ -102,7 +112,7 @@ namespace CKAN {
             return false;
         }
 
-        public string CachePath (string file) {
+        public static string CachePath(string file) {
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
@@ -281,6 +291,7 @@ namespace CKAN {
                     InstallComponent (stanza, zipfile, installed_files);
 
                     registry.RegisterModule (new InstalledModule (installed_files, bundled, DateTime.Now));
+
                 }
             }
 
