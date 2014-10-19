@@ -1,5 +1,6 @@
 namespace CKAN.KerbalStuff {
     using System;
+    using System.Runtime.Serialization;
     using CKAN;
     using log4net;
 
@@ -13,14 +14,21 @@ namespace CKAN.KerbalStuff {
         public KSPVersion KSP_version;
         public string changelog;
 
-        public string Download(string identifier) {
-            Uri download_url = KSAPI.ExpandPath(download_path);
+        [OnDeserialized]
+        private void DeSerialisationFixes(StreamingContext like_i_could_care)
+        {
+            // Turn our download path into a fully qualified URL.
+            download_path = KSAPI.ExpandPath(download_path).ToString();
 
-            log.DebugFormat ("Downloading {0}", download_url);
+            log.DebugFormat("Download path is {0}", download_path);
+        }
+
+        public string Download(string identifier) {
+            log.DebugFormat ("Downloading {0}", download_path);
 
             var installer = new ModuleInstaller();
 
-            string filename = installer.CachedOrDownload (identifier, friendly_version, download_url);
+            string filename = installer.CachedOrDownload (identifier, friendly_version, new Uri(download_path));
 
             log.Debug ("Downloaded.");
 

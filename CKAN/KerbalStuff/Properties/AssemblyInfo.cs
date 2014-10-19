@@ -20,3 +20,5 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 
+// Our tests can see all internals.
+[assembly: InternalsVisibleTo("Tests")]
