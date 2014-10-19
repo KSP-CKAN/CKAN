@@ -19,7 +19,7 @@ namespace CKAN
 
         public ControlFactory()
         {
-			m_MainThreadID = Thread.CurrentThread.ManagedThreadId;
+            m_MainThreadID = Thread.CurrentThread.ManagedThreadId;
         }
 
         public T CreateControl<T>() where T : new()
