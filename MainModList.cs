@@ -128,6 +128,9 @@ namespace CKAN
                 case GUIModFilter.NotInstalled:
                     count -= modules.RemoveAll(m => RegistryManager.Instance().registry.IsInstalled(m.identifier));
                     break;
+                case GUIModFilter.Incompatible:
+                    count = RegistryManager.Instance().registry.Incompatible().Count;
+                    break;
             }
 
             return count;
