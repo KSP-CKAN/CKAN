@@ -1,219 +1,225 @@
-
 // Reference CKAN client
 // Paul '@pjf' Fenwick
 //
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
-using System.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using CommandLine;
+using log4net;
+using log4net.Config;
+using log4net.Core;
 
-namespace CKAN {
-
-    using System;
-    using System.IO;
-    using System.Text;
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using CommandLine;
-    using log4net;
-    using log4net.Config;
-    using log4net.Core;
-    using CKAN;
-
-    class MainClass {
-
-        public const int EXIT_OK     = 0;
-        public const int EXIT_ERROR  = 1;
+namespace CKAN
+{
+    internal class MainClass
+    {
+        public const int EXIT_OK = 0;
+        public const int EXIT_ERROR = 1;
         public const int EXIT_BADOPT = 2;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
+        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
-        public static int Main (string[] args) {
-
-            BasicConfigurator.Configure ();
-            LogManager.GetRepository ().Threshold = Level.Warn;
-            log.Debug ("CKAN started");
+        public static int Main(string[] args)
+        {
+            BasicConfigurator.Configure();
+            LogManager.GetRepository().Threshold = Level.Warn;
+            log.Debug("CKAN started");
 
             // If we're starting with no options, invoke the GUI instead.
 
-            if (args.Length == 0) {
-                return Gui ();
+            if (args.Length == 0)
+            {
+                return Gui();
             }
 
             Options cmdline;
 
-            try {
-                cmdline = new Options (args);
+            try
+            {
+                cmdline = new Options(args);
             }
-            catch (NullReferenceException) {
+            catch (NullReferenceException)
+            {
                 // Oops, something went wrong. Generate the help screen instead!
 
-                string[] help = { "--help" }; // Is there a nicer way than a temp var?
-                new Options ( help );
+                string[] help = {"--help"}; // Is there a nicer way than a temp var?
+                new Options(help);
                 return EXIT_BADOPT;
             }
 
             // Process commandline options.
 
-            CommonOptions options = (CommonOptions) cmdline.options;
+            var options = (CommonOptions) cmdline.options;
 
-            if (options.Debug) {
-                LogManager.GetRepository ().Threshold = Level.Debug;
-            } else if (options.Verbose) {
-                LogManager.GetRepository ().Threshold = Level.Info;
+            if (options.Debug)
+            {
+                LogManager.GetRepository().Threshold = Level.Debug;
+            }
+            else if (options.Verbose)
+            {
+                LogManager.GetRepository().Threshold = Level.Info;
             }
 
             // User provided KSP directory
-            if (options.KSP != null) {
-                try {
+            if (options.KSP != null)
+            {
+                try
+                {
                     log.DebugFormat("Setting KSP directory to {0}", options.KSP);
-                    KSP.SetGameDir (options.KSP);
+                    KSP.SetGameDir(options.KSP);
                 }
-                catch (DirectoryNotFoundException) {
-                    log.FatalFormat ("KSP not found in {0}", options.KSP);
-                    User.WriteLine ("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                catch (DirectoryNotFoundException)
+                {
+                    log.FatalFormat("KSP not found in {0}", options.KSP);
+                    User.WriteLine("Error: {0} does not appear to be a KSP directory.", options.KSP);
                     return EXIT_BADOPT;
                 }
             }
 
             // Find KSP, create CKAN dir, perform housekeeping.
-            KSP.Init ();
+            KSP.Init();
 
-            switch (cmdline.action) {
-
+            switch (cmdline.action)
+            {
                 case "gui":
                     return Gui();
-                
+
                 case "version":
-                    return Version ();
+                    return Version();
 
                 case "update":
-                    return Update ((UpdateOptions) options);
+                    return Update((UpdateOptions) options);
 
                 case "available":
-                    return Available ();
+                    return Available();
 
                 case "install":
-                    return Install ((InstallOptions) cmdline.options);
-                
+                    return Install((InstallOptions) cmdline.options);
+
                 case "scan":
-                    return Scan ();
+                    return Scan();
 
                 case "list":
-                    return List ();
+                    return List();
 
                 case "show":
-                    return Show ((ShowOptions) cmdline.options);
+                    return Show((ShowOptions) cmdline.options);
 
                 case "remove":
-                    return Remove ((RemoveOptions)cmdline.options);
+                    return Remove((RemoveOptions) cmdline.options);
 
                 case "upgrade":
                     return Upgrade((UpgradeOptions) cmdline.options);
 
                 case "clean":
-                    return Clean ();
+                    return Clean();
 
                 case "config":
-                    return Config ((ConfigOptions) cmdline.options);
+                    return Config((ConfigOptions) cmdline.options);
 
-                default :
-                    User.WriteLine ("Unknown command, try --help");
+                default:
+                    User.WriteLine("Unknown command, try --help");
                     return EXIT_BADOPT;
-
             }
         }
 
-        static int Gui() {
-
+        private static int Gui()
+        {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            GUI.Main ();
+            GUI.Main();
 
             return EXIT_OK;
         }
 
-        static int Version() {
-
-            User.WriteLine (Meta.Version ());
-
-            return EXIT_OK;
-        }
-
-        static int Update(UpdateOptions options) {
-
-            User.WriteLine ("Downloading updates...");
-
-            int updated = Repo.Update (options.repo);
-
-            User.WriteLine ("Updated information on {0} available modules", updated);
+        private static int Version()
+        {
+            User.WriteLine(Meta.Version());
 
             return EXIT_OK;
         }
 
-        static int Available() {
+        private static int Update(UpdateOptions options)
+        {
+            User.WriteLine("Downloading updates...");
+
+            int updated = Repo.Update(options.repo);
+
+            User.WriteLine("Updated information on {0} available modules", updated);
+
+            return EXIT_OK;
+        }
+
+        private static int Available()
+        {
             List<CkanModule> available = RegistryManager.Instance().registry.Available();
 
-            User.WriteLine ("Mods available for KSP {0}", KSP.Version());
-            User.WriteLine ("");
+            User.WriteLine("Mods available for KSP {0}", KSP.Version());
+            User.WriteLine("");
 
-            foreach (CkanModule module in available) {
+            foreach (CkanModule module in available)
+            {
                 User.WriteLine("* {0}", module);
             }
 
             return EXIT_OK;
         }
 
-        static int Scan() {
+        private static int Scan()
+        {
             KSP.ScanGameData();
 
             return EXIT_OK;
         }
 
-        static int List() {
+        private static int List()
+        {
+            string ksp_path = KSP.GameDir();
 
-            string ksp_path = KSP.GameDir ();
-
-            User.WriteLine ("\nKSP found at {0}\n", ksp_path);
-            User.WriteLine ("KSP Version: {0}\n", KSP.Version ());
+            User.WriteLine("\nKSP found at {0}\n", ksp_path);
+            User.WriteLine("KSP Version: {0}\n", KSP.Version());
 
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
 
-            User.WriteLine ("Installed Modules:\n");
+            User.WriteLine("Installed Modules:\n");
 
-            foreach (InstalledModule mod in registry.installed_modules.Values) {
-                User.WriteLine ("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
+            foreach (InstalledModule mod in registry.installed_modules.Values)
+            {
+                User.WriteLine("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
             }
 
-            User.WriteLine ("\nDetected DLLs (`ckan scan` to rebuild):\n");
+            User.WriteLine("\nDetected DLLs (`ckan scan` to rebuild):\n");
 
             // Walk our dlls, but *don't* show anything we've already displayed as
             // a module.
-            foreach (string dll in registry.installed_dlls.Keys) {
-                if (! registry.installed_modules.ContainsKey(dll)) {
-                    User.WriteLine ("* {0}", dll);
+            foreach (string dll in registry.installed_dlls.Keys)
+            {
+                if (! registry.installed_modules.ContainsKey(dll))
+                {
+                    User.WriteLine("* {0}", dll);
                 }
             }
 
             // Blank line at the end makes for nicer looking output.
-            User.WriteLine ("");
+            User.WriteLine("");
 
             return EXIT_OK;
-
         }
 
         // Uninstalls a module, if it exists.
-        static int Remove(RemoveOptions options) {
-
-            ModuleInstaller installer = new ModuleInstaller ();
-            installer.Uninstall (options.Modname, true);
+        private static int Remove(RemoveOptions options)
+        {
+            var installer = new ModuleInstaller();
+            installer.Uninstall(options.Modname, true);
 
             return EXIT_OK;
         }
 
-        static int Upgrade(UpgradeOptions options)
+        private static int Upgrade(UpgradeOptions options)
         {
             if (options.zip_file == null && options.ckan_file == null)
             {
@@ -222,13 +228,14 @@ namespace CKAN {
                 if (options.modules.Count == 0)
                 {
                     // What? No files specified?
-                    User.WriteLine("Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                    User.WriteLine(
+                        "Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
-                ModuleInstaller installer = new ModuleInstaller();
+                var installer = new ModuleInstaller();
 
-                foreach (var module in options.modules)
+                foreach (string module in options.modules)
                 {
                     installer.Uninstall(module, false);
                 }
@@ -261,40 +268,46 @@ namespace CKAN {
             return EXIT_BADOPT;
         }
 
-        static int Clean() {
-            KSP.CleanCache ();
+        private static int Clean()
+        {
+            KSP.CleanCache();
             return EXIT_OK;
         }
 
-        static int Install(InstallOptions options) { 
-
-            if (options.zip_file == null && options.ckan_file == null) {
+        private static int Install(InstallOptions options)
+        {
+            if (options.zip_file == null && options.ckan_file == null)
+            {
                 // Typical case, install from cached CKAN info.
 
-                if (options.modules.Count == 0) {
+                if (options.modules.Count == 0)
+                {
                     // What? No files specified?
-                    User.WriteLine ("Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                    User.WriteLine(
+                        "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                     return EXIT_BADOPT;
                 }
 
                 // Prepare options. Can these all be done in the new() somehow?
-                var install_ops = new RelationshipResolverOptions ( );
-                install_ops.with_all_suggests =   options.with_all_suggests;
-                install_ops.with_suggests     =   options.with_suggests;
-                install_ops.with_recommends   = ! options.no_recommends;
+                var install_ops = new RelationshipResolverOptions();
+                install_ops.with_all_suggests = options.with_all_suggests;
+                install_ops.with_suggests = options.with_suggests;
+                install_ops.with_recommends = ! options.no_recommends;
 
                 // Install everything requested. :)
-                try {
-                    ModuleInstaller installer = new ModuleInstaller ();
-                    installer.InstallList (options.modules, install_ops);
+                try
+                {
+                    var installer = new ModuleInstaller();
+                    installer.InstallList(options.modules, install_ops);
                 }
-                catch (ModuleNotFoundException ex) {
-                    User.WriteLine ("Module {0} required, but not listed in index.", ex.module);
-                    User.WriteLine ("If you're lucky, you can do a `ckan update` and try again.");
+                catch (ModuleNotFoundException ex)
+                {
+                    User.WriteLine("Module {0} required, but not listed in index.", ex.module);
+                    User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
                     return EXIT_ERROR;
                 }
 
-                User.WriteLine ("\nDone!\n");
+                User.WriteLine("\nDone!\n");
 
                 return EXIT_OK;
             }
@@ -306,7 +319,8 @@ namespace CKAN {
 
         // TODO: We should have a command (probably this one) that shows
         // info about uninstalled modules.
-        static int Show(ShowOptions options) {
+        private static int Show(ShowOptions options)
+        {
             if (options.Modname == null)
             {
                 // empty argument
@@ -317,44 +331,51 @@ namespace CKAN {
             RegistryManager registry_manager = RegistryManager.Instance();
             InstalledModule module;
 
-            try {
-                module = registry_manager.registry.installed_modules [options.Modname];
+            try
+            {
+                module = registry_manager.registry.installed_modules[options.Modname];
             }
-            catch (KeyNotFoundException) {
-                User.WriteLine ("{0} not installed.", options.Modname);
-                User.WriteLine ("Try `ckan list` to show installed modules");
+            catch (KeyNotFoundException)
+            {
+                User.WriteLine("{0} not installed.", options.Modname);
+                User.WriteLine("Try `ckan list` to show installed modules");
                 return EXIT_BADOPT;
             }
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine ("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine("{0} version {1}", module.source_module.name, module.source_module.version);
 
-            User.WriteLine ("\n== Files ==\n");
+            User.WriteLine("\n== Files ==\n");
 
             Dictionary<string, InstalledModuleFile> files = module.installed_files;
 
-            foreach (string file in files.Keys) {
-                User.WriteLine (file);
+            foreach (string file in files.Keys)
+            {
+                User.WriteLine(file);
             }
 
             return EXIT_OK;
         }
 
-        static int Config(ConfigOptions options) {
-            switch (options.option) {
+        private static int Config(ConfigOptions options)
+        {
+            switch (options.option)
+            {
                 case "gamedir":
-                    try {
-                        KSP.PopulateGamedirRegistry (options.value);
+                    try
+                    {
+                        KSP.PopulateGamedirRegistry(options.value);
                         return EXIT_OK;
                     }
-                    catch (DirectoryNotFoundException) {
-                        User.WriteLine ("Sorry, {0} doesn't look like a KSP dir", options.value);
+                    catch (DirectoryNotFoundException)
+                    {
+                        User.WriteLine("Sorry, {0} doesn't look like a KSP dir", options.value);
                         return EXIT_BADOPT;
                     }
 
-                default: 
-                    User.WriteLine ("Unknown config option {0}", options.option);
+                default:
+                    User.WriteLine("Unknown config option {0}", options.option);
                     return EXIT_BADOPT;
             }
         }
@@ -364,28 +385,33 @@ namespace CKAN {
     // Look, parsing options is so easy and beautiful I made
     // it into a special class for you to admire!
 
-    class Options {
-        public string action  { get; set; }
-        public object options { get; set; }
-
-        public Options( string[] args) {
-            if (! CommandLine.Parser.Default.ParseArgumentsStrict (
-                args, new Actions (), (verb, suboptions) => {
+    internal class Options
+    {
+        public Options(string[] args)
+        {
+            if (! Parser.Default.ParseArgumentsStrict(
+                args, new Actions(), (verb, suboptions) =>
+                {
                     action = verb;
                     options = suboptions;
                 }
-            )) {
-                throw(new BadCommandException("Try ckan --help"));
+                ))
+            {
+                throw (new BadCommandException("Try ckan --help"));
             }
 
             // If we're here, success!
         }
+
+        public string action { get; set; }
+        public object options { get; set; }
     }
 
     // Actions supported by our client go here.
     // TODO: Figure out how to do per action help screens.
 
-    class Actions {
+    internal class Actions
+    {
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
 
@@ -421,13 +447,12 @@ namespace CKAN {
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
-    
     }
 
     // Options common to all classes.
 
-    class CommonOptions {
-
+    internal class CommonOptions
+    {
         [Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
         public bool Verbose { get; set; }
 
@@ -441,28 +466,7 @@ namespace CKAN {
     // Each action defines its own options that it supports.
     // Don't forget to cast to this type when you're processing them later on.
 
-    class InstallOptions : CommonOptions {
-        [Option('z', "zipfile", HelpText = "Zipfile to process")]
-        public string zip_file { get; set; }
-
-        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
-
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
-        public bool no_recommends { get; set; }
-
-        [Option("with-suggests", HelpText = "Install suggested modules")]
-        public bool with_suggests { get; set; }
-
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
-        public bool with_all_suggests { get; set; }
-
-        // TODO: How do we provide helptext on this?
-        [ValueList(typeof(List<string>))]
-        public List<string> modules { get; set; }
-    }
-
-    class UpgradeOptions : CommonOptions
+    internal class InstallOptions : CommonOptions
     {
         [Option('z', "zipfile", HelpText = "Zipfile to process")]
         public string zip_file { get; set; }
@@ -480,35 +484,77 @@ namespace CKAN {
         public bool with_all_suggests { get; set; }
 
         // TODO: How do we provide helptext on this?
-        [ValueList(typeof(List<string>))]
+        [ValueList(typeof (List<string>))]
         public List<string> modules { get; set; }
     }
 
-    class ScanOptions      : CommonOptions { }
-    class ListOptions      : CommonOptions { }
-    class VersionOptions   : CommonOptions { }
-    class CleanOptions     : CommonOptions { }
-    class AvailableOptions : CommonOptions { }
-    class GuiOptions       : CommonOptions { }
+    internal class UpgradeOptions : CommonOptions
+    {
+        [Option('z', "zipfile", HelpText = "Zipfile to process")]
+        public string zip_file { get; set; }
 
-    class UpdateOptions    : CommonOptions {
+        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
+        public string ckan_file { get; set; }
 
+        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
+
+        // TODO: How do we provide helptext on this?
+        [ValueList(typeof (List<string>))]
+        public List<string> modules { get; set; }
+    }
+
+    internal class ScanOptions : CommonOptions
+    {
+    }
+
+    internal class ListOptions : CommonOptions
+    {
+    }
+
+    internal class VersionOptions : CommonOptions
+    {
+    }
+
+    internal class CleanOptions : CommonOptions
+    {
+    }
+
+    internal class AvailableOptions : CommonOptions
+    {
+    }
+
+    internal class GuiOptions : CommonOptions
+    {
+    }
+
+    internal class UpdateOptions : CommonOptions
+    {
         // This option is really meant for devs testing their CKAN-meta forks.
         [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
         public string repo { get; set; }
     }
 
-    class RemoveOptions : CommonOptions {
+    internal class RemoveOptions : CommonOptions
+    {
         [ValueOption(0)]
         public string Modname { get; set; }
     }
 
-    class ShowOptions : CommonOptions {
+    internal class ShowOptions : CommonOptions
+    {
         [ValueOption(0)]
-        public string Modname { get; set; } 
+        public string Modname { get; set; }
     }
 
-    class ConfigOptions : CommonOptions {
+    internal class ConfigOptions : CommonOptions
+    {
         [ValueOption(0)]
         public string option { get; set; }
 
@@ -517,9 +563,11 @@ namespace CKAN {
     }
 
     // Exception class, so we can signal errors in command options.
-    
-    class BadCommandException : Exception {
-        public BadCommandException(string message) : base(message) {}
-    }
 
+    internal class BadCommandException : Exception
+    {
+        public BadCommandException(string message) : base(message)
+        {
+        }
+    }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -22,17 +15,15 @@ namespace CKAN
         public void ShowWaitDialog()
         {
             StartPosition = FormStartPosition.CenterScreen;
-            this.ShowDialog();
+            ShowDialog();
         }
 
         public void HideWaitDialog()
         {
             if (MessageTextBox.InvokeRequired)
             {
-                MessageTextBox.Invoke(new MethodInvoker(delegate
-                {
-                    MessageTextBox.Text = "Waiting for operation to complete";
-                }));
+                MessageTextBox.Invoke(
+                    new MethodInvoker(delegate { MessageTextBox.Text = "Waiting for operation to complete"; }));
             }
             else
             {
@@ -63,10 +54,8 @@ namespace CKAN
         {
             if (DialogProgressBar.InvokeRequired)
             {
-                DialogProgressBar.Invoke(new MethodInvoker(delegate
-                {
-                    DialogProgressBar.Style = ProgressBarStyle.Marquee;
-                }));
+                DialogProgressBar.Invoke(
+                    new MethodInvoker(delegate { DialogProgressBar.Style = ProgressBarStyle.Marquee; }));
             }
             else
             {
@@ -78,10 +67,7 @@ namespace CKAN
         {
             if (MessageTextBox.InvokeRequired)
             {
-                MessageTextBox.Invoke(new MethodInvoker(delegate
-                {
-                    MessageTextBox.Text = "(" + message + ")";
-                }));
+                MessageTextBox.Invoke(new MethodInvoker(delegate { MessageTextBox.Text = "(" + message + ")"; }));
             }
             else
             {
@@ -93,10 +79,7 @@ namespace CKAN
         {
             if (LogTextBox.InvokeRequired)
             {
-                LogTextBox.Invoke(new MethodInvoker(delegate
-                {
-                    LogTextBox.Text = "";
-                }));
+                LogTextBox.Invoke(new MethodInvoker(delegate { LogTextBox.Text = ""; }));
             }
             else
             {
@@ -108,10 +91,7 @@ namespace CKAN
         {
             if (LogTextBox.InvokeRequired)
             {
-                LogTextBox.Invoke(new MethodInvoker(delegate
-                {
-                    LogTextBox.AppendText(message + "\r\n");
-                }));
+                LogTextBox.Invoke(new MethodInvoker(delegate { LogTextBox.AppendText(message + "\r\n"); }));
             }
             else
             {
@@ -121,8 +101,6 @@ namespace CKAN
 
         private void ActionDescriptionLabel_Click(object sender, EventArgs e)
         {
-
         }
-
     }
 }

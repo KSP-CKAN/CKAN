@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -20,10 +14,7 @@ namespace CKAN
         {
             if (ErrorMessage.InvokeRequired)
             {
-                ErrorMessage.Invoke(new MethodInvoker(delegate
-                {
-                    ErrorMessage.Text = message;
-                }));
+                ErrorMessage.Invoke(new MethodInvoker(delegate { ErrorMessage.Text = message; }));
             }
             else
             {
@@ -43,6 +34,5 @@ namespace CKAN
         {
             Close();
         }
-
     }
 }

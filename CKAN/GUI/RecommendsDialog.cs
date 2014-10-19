@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -20,10 +15,7 @@ namespace CKAN
         {
             if (MessageLabel.InvokeRequired)
             {
-                MessageLabel.Invoke(new MethodInvoker(delegate
-                {
-                    MessageLabel.Text = message;
-                }));
+                MessageLabel.Invoke(new MethodInvoker(delegate { MessageLabel.Text = message; }));
             }
             else
             {
@@ -60,25 +52,22 @@ namespace CKAN
 
             StartPosition = FormStartPosition.CenterScreen;
 
-            if (ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (ShowDialog() == DialogResult.OK)
             {
-                List<string> selected = new List<string>();
+                var selected = new List<string>();
 
                 foreach (ListViewItem item in RecommendedListView.Items)
                 {
                     if (item.Checked)
                     {
-                        var name = item.SubItems[1].Text;
+                        string name = item.SubItems[1].Text;
                         selected.Add(name);
                     }
                 }
 
                 return selected;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         private void SelectAllButton_Click(object sender, EventArgs e)

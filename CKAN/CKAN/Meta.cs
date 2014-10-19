@@ -1,27 +1,27 @@
-namespace CKAN {
-    using System;
-    using System.Reflection;
+using System.Reflection;
 
-    public static class Meta {
+namespace CKAN
+{
+    public static class Meta
+    {
         /// <summary>
-        /// Returns the version of the CKAN.dll used.
+        ///     Returns the version of the CKAN.dll used.
         /// </summary>
-
-        public static string Version() {
-
-            var assembly = Assembly.GetExecutingAssembly();
+        public static string Version()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
 
             // SeriouslyLongestClassNamesEverThanksMicrosoft
-            var attr = (AssemblyInformationalVersionAttribute[]) assembly.GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
+            var attr =
+                (AssemblyInformationalVersionAttribute[])
+                    assembly.GetCustomAttributes(typeof (AssemblyInformationalVersionAttribute), false);
 
-            if (attr.Length == 0 || attr [0].InformationalVersion == null) {
+            if (attr.Length == 0 || attr[0].InformationalVersion == null)
+            {
                 // Dunno the version. Some dev probably built it. 
                 return "development";
-            } else {
-                return attr[0].InformationalVersion;
             }
-
+            return attr[0].InformationalVersion;
         }
     }
 }
-
