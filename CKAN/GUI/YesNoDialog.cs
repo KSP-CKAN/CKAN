@@ -7,6 +7,7 @@ namespace CKAN
         public YesNoDialog()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public DialogResult ShowYesNoDialog(string text)
@@ -20,13 +21,19 @@ namespace CKAN
                 DescriptionLabel.Text = text;
             }
 
-            StartPosition = FormStartPosition.CenterScreen;
             return ShowDialog();
         }
 
         public void HideYesNoDialog()
         {
-            Close();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Close(); }));
+            }
+            else
+            {
+                Close();
+            }
         }
     }
 }

@@ -8,14 +8,21 @@ namespace CKAN
         public WaitDialog()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
             DialogProgressBar.Minimum = 0;
             DialogProgressBar.Maximum = 100;
         }
 
         public void ShowWaitDialog()
         {
-            StartPosition = FormStartPosition.CenterScreen;
-            ShowDialog();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { ShowDialog(); }));
+            }
+            else
+            {
+                ShowDialog();
+            }
         }
 
         public void HideWaitDialog()
@@ -30,7 +37,14 @@ namespace CKAN
                 MessageTextBox.Text = "Waiting for operation to complete";
             }
 
-            Close();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Close(); }));
+            }
+            else
+            {
+                Close();
+            }
         }
 
         public void SetProgress(int progress)

@@ -24,6 +24,8 @@ namespace CKAN
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
         public ModuleInstallerReportProgress onReportProgress = null;
 
+        private bool m_LastDownloadSuccessful = false;
+
         /// <summary>
         ///     Download the given mod. Returns the filename it was saved to.
         ///     If no filename is provided, the standard_name() will be used.
@@ -199,6 +201,16 @@ namespace CKAN
             {
                 Monitor.Wait(downloader);
             }
+
+            if (m_LastDownloadSuccessful)
+            {
+                for (int i = 0; i < modulesToDownload.Length; i++)
+                {
+                    Install(modulesToDownload[i], modulesToDownloadPaths[i]);
+                }
+            }
+
+            currentTransaction.Commit();
         }
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
@@ -214,15 +226,7 @@ namespace CKAN
                 }
             }
 
-            if (noErrors)
-            {
-                for (int i = 0; i < urls.Length; i++)
-                {
-                    Install(modules[i], filenames[i]);
-                }
-
-                currentTransaction.Commit();
-            }
+            m_LastDownloadSuccessful = noErrors;
 
             lock (downloader)
             {

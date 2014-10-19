@@ -18,6 +18,28 @@ namespace CKAN
         public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset,
             BackgroundWorker installWorker)
         {
+            if (ChangesListView.InvokeRequired)
+            {
+                ChangesListView.Invoke(new MethodInvoker(delegate { _ShowApplyChangesDialog(changeset, installWorker); }));
+            }
+            else
+            {
+                _ShowApplyChangesDialog(changeset, installWorker);
+            }
+
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { ShowDialog(); }));
+            }
+            else
+            {
+                ShowDialog();
+            }
+        }
+
+        private void _ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset,
+            BackgroundWorker installWorker)
+        {
             m_Changeset = changeset;
             m_InstallWorker = installWorker;
 
@@ -39,8 +61,6 @@ namespace CKAN
                 item.SubItems.Add(subChangeType);
                 ChangesListView.Items.Add(item);
             }
-
-            ShowDialog();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)

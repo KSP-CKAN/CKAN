@@ -5,12 +5,12 @@ namespace CKAN
 {
     public partial class Main : Form
     {
-        private readonly ApplyChangesDialog m_ApplyChangesDialog = new ApplyChangesDialog();
-        private readonly ErrorDialog m_ErrorDialog = new ErrorDialog();
-        private readonly RecommendsDialog m_RecommendsDialog = new RecommendsDialog();
-        private readonly SettingsDialog m_SettingsDialog = new SettingsDialog();
-        private readonly WaitDialog m_WaitDialog = new WaitDialog();
-        private readonly YesNoDialog m_YesNoDialog = new YesNoDialog();
+        private readonly ApplyChangesDialog m_ApplyChangesDialog = null;
+        private readonly ErrorDialog m_ErrorDialog = null;
+        private readonly RecommendsDialog m_RecommendsDialog = null;
+        private readonly SettingsDialog m_SettingsDialog = null;
+        private readonly WaitDialog m_WaitDialog = null;
+        private readonly YesNoDialog m_YesNoDialog = null;
 
         public void AddStatusMessage(string text, params object[] args)
         {
@@ -38,14 +38,30 @@ namespace CKAN
 
         public void ShowWaitDialog()
         {
-            Enabled = false;
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Enabled = false; }));
+            }
+            else
+            {
+                Enabled = false;
+            }
+            
             m_WaitDialog.ShowWaitDialog();
         }
 
         public void HideWaitDialog()
         {
             m_WaitDialog.Close();
-            Enabled = true;
+
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Enabled = true; }));
+            }
+            else
+            {
+                Enabled = true;
+            }
         }
     }
 }

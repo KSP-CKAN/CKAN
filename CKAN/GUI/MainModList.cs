@@ -170,6 +170,18 @@ namespace CKAN
 
         private void UpdateModFilterList()
         {
+            if (menuStrip2.InvokeRequired)
+            {
+                menuStrip2.Invoke(new MethodInvoker(delegate { _UpdateModFilterList(); }));
+            }
+            else
+            {
+                _UpdateModFilterList();
+            }
+        }
+
+        private void _UpdateModFilterList()
+        {
             FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
                 CountModsByFilter(GUIModFilter.All));
 

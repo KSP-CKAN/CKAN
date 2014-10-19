@@ -55,6 +55,7 @@
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration.cs" />
+    <Compile Include="ControlFactory.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
