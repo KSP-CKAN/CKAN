@@ -4,30 +4,52 @@
 namespace CKAN {
     using System;
 
-    public class User {
+    public delegate bool DisplayYesNoDialog(string message);
+    public delegate void DisplayMessage(string message, params object[] args);
+    public delegate void DisplayError(string message, params object[] args);
+
+    public enum FrontEndType
+    {
+        All,
+        CommandLine,
+        UI,
+    }
+
+    public class User
+    {
+
+        public static FrontEndType frontEnd = FrontEndType.CommandLine;
+        public static DisplayYesNoDialog yesNoDialog = YesNoDialogConsole;
+        public static DisplayMessage displayMessage = WriteLineConsole;
+        public static DisplayError displayError = WriteLineConsole;
 
         // Send a line to the user. On a console, this does what you expect.
         // In the GUI, this should update the status bar.
         // This is also an obvious place to do logging as well.
         public static void WriteLine(string text, params object[] args) {
-
-            // Format our message.
-            string message = String.Format (text, args);
-
-            // Right now we always send to the console, but when we add extra
-            // interfaces we'll switch to the appropriate one here.
-            Console.WriteLine (message);
+            displayMessage(text, args);
         }
 
         /// <summary>
         /// Prompts the user for a Y/N response.
         /// Returns true for yes, false for no.
         /// </summary>
+        public static bool YesNo(string text = null, FrontEndType _frontEnd = FrontEndType.All) {
+            if (_frontEnd != FrontEndType.All && _frontEnd != frontEnd)
+            {
+                return true;
+            }
 
-        public static bool YesNo(string text = null) {
+            return yesNoDialog(text);
+        }
 
+        public static void Error(string text, params object[] args) {
+            displayError(text, args);
+        }
+
+        public static bool YesNoDialogConsole(string text = null) {
             if (text != null) {
-                User.WriteLine ("{0} [Y/N]", text);
+                User.WriteLine("{0} [Y/N]", text);
             }
 
             while (true) {
@@ -43,6 +65,17 @@ namespace CKAN {
                 // TODO: Can we end up in an infinite loop here?
                 // What if the console disappears or something?
             }
+        }
+
+        public static void WriteLineConsole(string text, params object[] args)
+        {
+
+            // Format our message.
+            string message = String.Format(text, args);
+
+            // Right now we always send to the console, but when we add extra
+            // interfaces we'll switch to the appropriate one here.
+            Console.WriteLine(message);
         }
     }
 }

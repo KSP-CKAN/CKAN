@@ -234,8 +234,10 @@ mandatory directives:
   during install. (Eg: `MyMods/KSP/Foo` will be installed into
   `GameData/Foo`.)
 - `install_to`: The location where this section should be installed.
-  Presently the only valid values for this entry are `GameData`
-  and `Ships`. Paths will be preserved, 
+  Valid values for this entry are `GameData`, `Ships`, `Tutorial`,
+  and `GameRoot` (which should be used sparingly, if at all).
+  Paths will be preserved, but directories will *only*
+  be created when installing to `GameData` or `Tutorial`.
 
 An install directive may also include the following optional fields:
 

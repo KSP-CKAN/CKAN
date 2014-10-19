@@ -10,6 +10,9 @@ namespace CKAN {
         public bool with_all_suggests;
     }
 
+	// Alas, it appears that structs cannot have defaults. Try
+	// DefaultOpts() to get friendly defaults.
+
     public class RelationshipResolver {
 
         // A list of all the mods we're going to install.
@@ -30,6 +33,10 @@ namespace CKAN {
 
             foreach (string module in modules) {
                 CkanModule mod = registry.LatestAvailable (module);
+                if (mod == null) {
+                    throw new ModuleNotFoundException(module);
+                }
+
                 log.DebugFormat ("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
                 user_mods.Add(mod);
                 this.Add(mod);
@@ -44,6 +51,19 @@ namespace CKAN {
             }
 
         }
+
+		/// <summary>
+		/// Returns the default options for relationship resolution.
+		/// </summary>
+		public static RelationshipResolverOptions DefaultOpts()
+		{
+			var opts = new RelationshipResolverOptions ();
+			opts.with_recommends = true;
+			opts.with_suggests = false;
+			opts.with_all_suggests = false;
+
+			return opts;
+		}
 
         // Resolve all relationships for a module.
         // May recurse to ResolveStanza.
@@ -106,10 +126,11 @@ namespace CKAN {
                 try {
                     candidate = registry.LatestAvailable (dep_name);
                 }
-                catch (KeyNotFoundException) {
+                catch (ModuleNotFoundException) {
                     log.ErrorFormat ("Dependency on {0} found, but nothing provides it.", dep_name);
                     throw new ModuleNotFoundException (dep_name);
                 }
+
                 Add(candidate);
                 Resolve (candidate, options);
             }

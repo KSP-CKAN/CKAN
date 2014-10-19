@@ -233,6 +233,17 @@ namespace CKAN {
                 Directory.CreateDirectory (DownloadCacheDir ());
             }
 
+            if (!Directory.Exists(FilesystemTransaction.TempPath))
+            {
+                Directory.CreateDirectory(FilesystemTransaction.TempPath);
+            }
+            else
+            {
+                var directory = new DirectoryInfo(FilesystemTransaction.TempPath);
+                foreach (System.IO.FileInfo file in directory.GetFiles()) file.Delete();
+                foreach (System.IO.DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+            }
+
             // If we've got no game in the registry, then store this one.
             // If we *do* have a game there, don't touch it.
 

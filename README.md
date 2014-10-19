@@ -1,4 +1,4 @@
-# The Comrpehensive Kerbal Archive Network (CKAN)
+# The Comprehensive Kerbal Archive Network (CKAN)
 
 **The CKAN Spec can be found [here](Spec.md)**.
 

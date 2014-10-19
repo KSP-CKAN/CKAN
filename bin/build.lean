@@ -17,7 +17,11 @@ my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
 my @CP      = qw(cp -r --reflink=auto --sparse=always);
 my $VERSION = capturex(qw(git describe --long));
-my $ASSEMBLY_INFO = File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs");
+my @ASSEMBLY_INFO = (
+    File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs"),
+    File::Spec->catdir($BUILD,"CmdLine/Properties/AssemblyInfo.cs"),
+    File::Spec->catdir($BUILD,"GUI/Properties/AssemblyInfo.cs"),
+);
 
 # Remove newline
 chomp($VERSION);
@@ -33,9 +37,12 @@ remove_tree(File::Spec->catdir($BUILD, "CKAN/bin"));
 remove_tree(File::Spec->catdir($BUILD, "CKAN/obj"));
 
 # Before we build, add our version number in.
-open(my $assembly_fh, ">>", $ASSEMBLY_INFO);
-say {$assembly_fh} qq{[assembly: AssemblyInformationalVersion ("$VERSION")]};
-close($assembly_fh);
+
+foreach my $assembly (@ASSEMBLY_INFO) {
+    open(my $assembly_fh, ">>", $assembly);
+    say {$assembly_fh} qq{[assembly: AssemblyInformationalVersion ("$VERSION")]};
+    close($assembly_fh);
+}
 
 # Change to our build directory
 chdir($BUILD);
@@ -47,13 +54,18 @@ say "\n\n=== Repacking ===\n\n";
 
 chdir("$Bin/..");
 
-system(
+my @cmd = (
     $REPACK,
     "--out:ckan.exe",
     "--lib:build/CmdLine/bin/$TARGET",
     "build/CmdLine/bin/$TARGET/CmdLine.exe",
     glob("build/CmdLine/bin/$TARGET/*.dll"),
+    "build/CmdLine/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
 );
+
+say "@cmd";
+
+system(@cmd);
 
 say "\n\n=== Tidying up===\n\n";
 

@@ -3,8 +3,11 @@ CKAN/*/bin
 CKAN/*/obj
 test-results
 *.userprefs
+*.csproj.user
 TestResult.xml
 StyleCop.Cache
 ckan.exe
 .*.swp
 .fatten.out
+*.resources
+*.suo

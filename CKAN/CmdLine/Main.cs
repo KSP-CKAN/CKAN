@@ -4,6 +4,8 @@
 //
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
+using System.Configuration;
+
 namespace CKAN {
 
     using System;
@@ -31,6 +33,12 @@ namespace CKAN {
             BasicConfigurator.Configure ();
             LogManager.GetRepository ().Threshold = Level.Warn;
             log.Debug ("CKAN started");
+
+            // If we're starting with no options, invoke the GUI instead.
+
+            if (args.Length == 0) {
+                return Gui ();
+            }
 
             Options cmdline;
 
@@ -73,6 +81,9 @@ namespace CKAN {
 
             switch (cmdline.action) {
 
+                case "gui":
+                    return Gui();
+                
                 case "version":
                     return Version ();
 
@@ -97,6 +108,9 @@ namespace CKAN {
                 case "remove":
                     return Remove ((RemoveOptions)cmdline.options);
 
+                case "upgrade":
+                    return Upgrade((UpgradeOptions) cmdline.options);
+
                 case "clean":
                     return Clean ();
 
@@ -110,17 +124,19 @@ namespace CKAN {
             }
         }
 
+        static int Gui() {
+
+            // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
+            // but trying to catch it here doesn't seem to help. Dunno why.
+
+            GUI.Main ();
+
+            return EXIT_OK;
+        }
+
         static int Version() {
 
-            // SeriouslyLongestClassNamesEverThanksMicrosoft
-            var assemblies = (AssemblyInformationalVersionAttribute[]) Assembly.GetAssembly (typeof(MainClass)).GetCustomAttributes (typeof(AssemblyInformationalVersionAttribute), false);
-
-            if (assemblies.Length == 0 || assemblies[0].InformationalVersion == null) {
-                // Dunno the version. Some dev probably built it. 
-                User.WriteLine ("development");
-            } else {
-                User.WriteLine (assemblies[0].InformationalVersion);
-            }
+            User.WriteLine (Meta.Version ());
 
             return EXIT_OK;
         }
@@ -192,9 +208,57 @@ namespace CKAN {
         static int Remove(RemoveOptions options) {
 
             ModuleInstaller installer = new ModuleInstaller ();
-            installer.Uninstall (options.Modname);
+            installer.Uninstall (options.Modname, true);
 
             return EXIT_OK;
+        }
+
+        static int Upgrade(UpgradeOptions options)
+        {
+            if (options.zip_file == null && options.ckan_file == null)
+            {
+                // Typical case, install from cached CKAN info.
+
+                if (options.modules.Count == 0)
+                {
+                    // What? No files specified?
+                    User.WriteLine("Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                    return EXIT_BADOPT;
+                }
+
+                ModuleInstaller installer = new ModuleInstaller();
+
+                foreach (var module in options.modules)
+                {
+                    installer.Uninstall(module, false);
+                }
+
+                // Prepare options. Can these all be done in the new() somehow?
+                var install_ops = new RelationshipResolverOptions();
+                install_ops.with_all_suggests = options.with_all_suggests;
+                install_ops.with_suggests = options.with_suggests;
+                install_ops.with_recommends = !options.no_recommends;
+
+                // Install everything requested. :)
+                try
+                {
+                    installer.InstallList(options.modules, install_ops);
+                }
+                catch (ModuleNotFoundException ex)
+                {
+                    User.WriteLine("Module {0} required, but not listed in index.", ex.module);
+                    User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                    return EXIT_ERROR;
+                }
+
+                User.WriteLine("\nDone!\n");
+
+                return EXIT_OK;
+            }
+
+            User.WriteLine("\nUnsupported option at this time.");
+
+            return EXIT_BADOPT;
         }
 
         static int Clean() {
@@ -243,6 +307,13 @@ namespace CKAN {
         // TODO: We should have a command (probably this one) that shows
         // info about uninstalled modules.
         static int Show(ShowOptions options) {
+            if (options.Modname == null)
+            {
+                // empty argument
+                User.WriteLine("show <module> - module name argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
             RegistryManager registry_manager = RegistryManager.Instance();
             InstalledModule module;
 
@@ -315,6 +386,9 @@ namespace CKAN {
     // TODO: Figure out how to do per action help screens.
 
     class Actions {
+        [VerbOption("gui", HelpText = "Start the CKAN GUI")]
+        public GuiOptions GuiOptions { get; set; }
+
         [VerbOption("update", HelpText = "Update list of available mods")]
         public UpdateOptions Update { get; set; }
 
@@ -326,6 +400,9 @@ namespace CKAN {
 
         [VerbOption("remove", HelpText = "Remove an installed mod")]
         public RemoveOptions Remove { get; set; }
+
+        [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
+        public UpgradeOptions Upgrade { get; set; }
 
         [VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
         public ScanOptions Scan { get; set; }
@@ -385,11 +462,34 @@ namespace CKAN {
         public List<string> modules { get; set; }
     }
 
+    class UpgradeOptions : CommonOptions
+    {
+        [Option('z', "zipfile", HelpText = "Zipfile to process")]
+        public string zip_file { get; set; }
+
+        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
+        public string ckan_file { get; set; }
+
+        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
+
+        // TODO: How do we provide helptext on this?
+        [ValueList(typeof(List<string>))]
+        public List<string> modules { get; set; }
+    }
+
     class ScanOptions      : CommonOptions { }
     class ListOptions      : CommonOptions { }
     class VersionOptions   : CommonOptions { }
     class CleanOptions     : CommonOptions { }
     class AvailableOptions : CommonOptions { }
+    class GuiOptions       : CommonOptions { }
 
     class UpdateOptions    : CommonOptions {
 

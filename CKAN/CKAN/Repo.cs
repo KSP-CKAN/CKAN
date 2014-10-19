@@ -15,7 +15,7 @@ namespace CKAN {
 
         // Right now we only use the default repo, but in the future we'll
         // want to let users add their own.
-        static readonly string default_ckan_repo = "https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip";
+        public static readonly string default_ckan_repo = "https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip";
 
         /// <summary>
         /// Download and update the local CKAN meta-info.
