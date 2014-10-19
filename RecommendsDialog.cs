@@ -9,6 +9,7 @@ namespace CKAN
         public RecommendsDialog()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public List<string> ShowRecommendsDialog(string message, List<string> recommended)
@@ -50,7 +51,6 @@ namespace CKAN
                 }
             }
 
-            StartPosition = FormStartPosition.CenterScreen;
 
             if (ShowDialog() == DialogResult.OK)
             {

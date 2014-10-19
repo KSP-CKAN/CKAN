@@ -42,6 +42,13 @@ namespace CKAN
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -56,20 +63,14 @@ namespace CKAN
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.FilterByNamePanel = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ModInfo = new System.Windows.Forms.TextBox();
-            this.StatusPanel = new System.Windows.Forms.Panel();
-            this.StatusLabel = new System.Windows.Forms.Label();
-            this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.ModInfo = new System.Windows.Forms.TextBox();
             this.DependsTabPage = new System.Windows.Forms.TabPage();
             this.GraphTreeView = new System.Windows.Forms.TreeView();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.StatusPanel = new System.Windows.Forms.Panel();
+            this.StatusLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -78,10 +79,10 @@ namespace CKAN
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.StatusPanel.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.DependsTabPage.SuspendLayout();
+            this.StatusPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -150,7 +151,7 @@ namespace CKAN
             this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 24);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(445, 40);
+            this.menuStrip2.Size = new System.Drawing.Size(537, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -180,6 +181,63 @@ namespace CKAN
             this.ApplyToolButton.Size = new System.Drawing.Size(121, 36);
             this.ApplyToolButton.Text = "Apply changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
+            // 
+            // FilterToolButton
+            // 
+            this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FilterAllButton,
+            this.FilterInstalledButton,
+            this.FilterInstalledUpdateButton,
+            this.FilterNewButton,
+            this.FilterNotInstalledButton,
+            this.FilterIncompatibleButton});
+            this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
+            this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.FilterToolButton.Name = "FilterToolButton";
+            this.FilterToolButton.Size = new System.Drawing.Size(97, 36);
+            this.FilterToolButton.Text = "Filter (All)";
+            // 
+            // FilterAllButton
+            // 
+            this.FilterAllButton.Name = "FilterAllButton";
+            this.FilterAllButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterAllButton.Text = "All";
+            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            // 
+            // FilterInstalledButton
+            // 
+            this.FilterInstalledButton.Name = "FilterInstalledButton";
+            this.FilterInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledButton.Text = "Installed";
+            this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
+            // 
+            // FilterInstalledUpdateButton
+            // 
+            this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
+            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledUpdateButton.Text = "Installed (update available)";
+            this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
+            // 
+            // FilterNewButton
+            // 
+            this.FilterNewButton.Name = "FilterNewButton";
+            this.FilterNewButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNewButton.Text = "New in repository";
+            this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
+            // 
+            // FilterNotInstalledButton
+            // 
+            this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
+            this.FilterNotInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNotInstalledButton.Text = "Not installed";
+            this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
+            // 
+            // FilterIncompatibleButton
+            // 
+            this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
+            this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterIncompatibleButton.Text = "Incompatible";
+            this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
             // 
             // ModList
             // 
@@ -323,96 +381,11 @@ namespace CKAN
             this.splitContainer1.SplitterDistance = 626;
             this.splitContainer1.TabIndex = 7;
             // 
-            // ModInfo
-            // 
-            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModInfo.Location = new System.Drawing.Point(3, 3);
-            this.ModInfo.Multiline = true;
-            this.ModInfo.Name = "ModInfo";
-            this.ModInfo.ReadOnly = true;
-            this.ModInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ModInfo.Size = new System.Drawing.Size(219, 512);
-            this.ModInfo.TabIndex = 2;
-            // 
-            // StatusPanel
-            // 
-            this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.StatusPanel.Controls.Add(this.StatusLabel);
-            this.StatusPanel.Location = new System.Drawing.Point(0, 617);
-            this.StatusPanel.Name = "StatusPanel";
-            this.StatusPanel.Size = new System.Drawing.Size(797, 19);
-            this.StatusPanel.TabIndex = 8;
-            // 
-            // StatusLabel
-            // 
-            this.StatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StatusLabel.Location = new System.Drawing.Point(0, 0);
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(797, 19);
-            this.StatusLabel.TabIndex = 0;
-            this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // FilterToolButton
-            // 
-            this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FilterAllButton,
-            this.FilterInstalledButton,
-            this.FilterInstalledUpdateButton,
-            this.FilterNewButton,
-            this.FilterNotInstalledButton,
-            this.FilterIncompatibleButton});
-            this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
-            this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.FilterToolButton.Name = "FilterToolButton";
-            this.FilterToolButton.Size = new System.Drawing.Size(97, 36);
-            this.FilterToolButton.Text = "Filter (All)";
-            // 
-            // FilterAllButton
-            // 
-            this.FilterAllButton.Name = "FilterAllButton";
-            this.FilterAllButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterAllButton.Text = "All";
-            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
-            // 
-            // FilterInstalledButton
-            // 
-            this.FilterInstalledButton.Name = "FilterInstalledButton";
-            this.FilterInstalledButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterInstalledButton.Text = "Installed";
-            this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
-            // 
-            // FilterInstalledUpdateButton
-            // 
-            this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
-            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterInstalledUpdateButton.Text = "Installed (update available)";
-            this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
-            // 
-            // FilterNewButton
-            // 
-            this.FilterNewButton.Name = "FilterNewButton";
-            this.FilterNewButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterNewButton.Text = "New in repository";
-            this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
-            // 
-            // FilterNotInstalledButton
-            // 
-            this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
-            this.FilterNotInstalledButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterNotInstalledButton.Text = "Not installed";
-            this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
-            // 
-            // FilterIncompatibleButton
-            // 
-            this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
-            this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterIncompatibleButton.Text = "Incompatible";
-            this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
-            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.DependsTabPage);
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -430,6 +403,17 @@ namespace CKAN
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Metadata";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // ModInfo
+            // 
+            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfo.Location = new System.Drawing.Point(3, 3);
+            this.ModInfo.Multiline = true;
+            this.ModInfo.Name = "ModInfo";
+            this.ModInfo.ReadOnly = true;
+            this.ModInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.ModInfo.Size = new System.Drawing.Size(219, 512);
+            this.ModInfo.TabIndex = 2;
             // 
             // DependsTabPage
             // 
@@ -449,6 +433,34 @@ namespace CKAN
             this.GraphTreeView.Name = "GraphTreeView";
             this.GraphTreeView.Size = new System.Drawing.Size(219, 512);
             this.GraphTreeView.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(225, 518);
+            this.tabPage2.TabIndex = 2;
+            this.tabPage2.Text = "Contents";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // StatusPanel
+            // 
+            this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.StatusPanel.Controls.Add(this.StatusLabel);
+            this.StatusPanel.Location = new System.Drawing.Point(0, 617);
+            this.StatusPanel.Name = "StatusPanel";
+            this.StatusPanel.Size = new System.Drawing.Size(797, 19);
+            this.StatusPanel.TabIndex = 8;
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.StatusLabel.Location = new System.Drawing.Point(0, 0);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(797, 19);
+            this.StatusLabel.TabIndex = 0;
+            this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Main
             // 
@@ -476,11 +488,11 @@ namespace CKAN
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.StatusPanel.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.DependsTabPage.ResumeLayout(false);
+            this.StatusPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -527,6 +539,7 @@ namespace CKAN
         private TabPage tabPage1;
         private TabPage DependsTabPage;
         private TreeView GraphTreeView;
+        private TabPage tabPage2;
     }
 }
 

@@ -8,6 +8,7 @@ namespace CKAN
         public ErrorDialog()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public void ShowErrorDialog(string message)
@@ -21,13 +22,26 @@ namespace CKAN
                 ErrorMessage.Text = message;
             }
 
-            StartPosition = FormStartPosition.CenterScreen;
-            ShowDialog();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { ShowDialog(); }));
+            }
+            else
+            {
+                ShowDialog();
+            }
         }
 
         public void HideErrorDialog()
         {
-            Close();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Close(); }));
+            }
+            else
+            {
+                Close();
+            }
         }
 
         private void DismissButton_Click(object sender, EventArgs e)

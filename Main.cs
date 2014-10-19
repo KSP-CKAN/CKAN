@@ -31,10 +31,20 @@ namespace CKAN
         private static Main m_Instance;
         public Configuration m_Configuration = null;
 
+        public ControlFactory controlFactory = null;
+
         public Main()
         {
+            controlFactory = new ControlFactory();
             m_Instance = this;
             InitializeComponent();
+
+            m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
+            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
+            m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
+            m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
+            m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
+            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
         }
 
         public static Main Instance
@@ -109,6 +119,18 @@ namespace CKAN
         }
 
         private void UpdateModInfo(CkanModule module)
+        {
+            if (ModInfo.InvokeRequired)
+            {
+                ModInfo.Invoke(new MethodInvoker(delegate { _UpdateModInfo(module); }));
+            }
+            else
+            {
+                _UpdateModInfo(module);
+            }
+        }
+
+        private void _UpdateModInfo(CkanModule module)
         {
             ModInfo.Text = "";
 
@@ -215,10 +237,24 @@ namespace CKAN
 
         private void UpgradeModDependencyGraph(CkanModule module)
         {
+            if (GraphTreeView.InvokeRequired)
+            {
+                GraphTreeView.Invoke(new MethodInvoker(delegate { _UpgradeModDependencyGraph(module); }));
+            }
+            else
+            {
+                _UpgradeModDependencyGraph(module);
+            }
+        }
+
+        private void _UpgradeModDependencyGraph(CkanModule module)
+        {
             GraphTreeView.Nodes.Clear();
             GraphTreeView.Nodes.Add("");
 
             UpdateModDependencyGraphRecursively(GraphTreeView.Nodes[0], module);
+
+            GraphTreeView.Nodes[0].ExpandAll();
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
