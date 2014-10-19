@@ -16,6 +16,8 @@ namespace CKAN.KerbalStuff {
     class MainClass {
         private static readonly int EXIT_OK = 0;
         private static readonly int EXIT_BADOPT = 1;
+        private static readonly int EXIT_ERROR = 2;
+
         private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
         private static readonly string expand_token = "$kref"; // See #70 for naming reasons
         private static readonly string ks_expand_path = "#/ckan/kerbalstuff";
@@ -55,7 +57,22 @@ namespace CKAN.KerbalStuff {
                 metadata.Remove(expand_token);
             }
 
-            Console.WriteLine(metadata.ToString());
+            // Make sure that at the very least this validates against our own
+            // internal model.
+
+            CkanModule mod = CkanModule.from_string(metadata.ToString());
+
+            // Make sure our identifiers match.
+
+            if (mod.identifier != identifier)
+            {
+                log.FatalFormat("Error: Mod ident {0} does not match expected {1}", mod.identifier, identifier);
+                return EXIT_ERROR;
+            }
+
+            // All done! Write it out!
+
+            File.WriteAllText(String.Format("{0}-{1}.ckan", mod.identifier, mod.version), metadata.ToString());
 
             return EXIT_OK;
         }
