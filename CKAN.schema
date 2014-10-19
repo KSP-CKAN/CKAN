@@ -41,6 +41,10 @@
             "type"        : "string",
             "format"      : "uri"
         },
+        "download_size" : {
+            "description" : "The size of the download in bytes",
+            "type" : "integer"
+        },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
             "$ref"      : "#/definitions/licenses"

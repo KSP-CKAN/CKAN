@@ -63,7 +63,7 @@ namespace CKAN.KerbalStuff
             if ((string) metadata[expand_token] == ks_expand_path)
             {
                 log.InfoFormat("Inflating...");
-                ks.InflateMetadata(metadata, latest);
+                ks.InflateMetadata(metadata, latest, filename);
                 metadata.Remove(expand_token);
             }
 

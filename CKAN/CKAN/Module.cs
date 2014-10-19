@@ -29,6 +29,9 @@ namespace CKAN
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> author;
 
+        [JsonProperty("download_size")]
+        public long download_size;
+
         [JsonProperty("comment")] public string comment;
         [JsonProperty("conflicts")] public dynamic[] conflicts;
         [JsonProperty("depends")] public dynamic[] depends;
