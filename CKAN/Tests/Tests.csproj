@@ -33,12 +33,16 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="Version.cs" />
     <Compile Include="KSPVersion.cs" />
+    <Compile Include="KerbalStuff\KSMod.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -46,8 +50,15 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KerbalStuff\KerbalStuff.csproj">
+      <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
+      <Name>KerbalStuff</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="KerbalStuff\" />
   </ItemGroup>
 </Project>
