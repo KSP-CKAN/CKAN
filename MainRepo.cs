@@ -51,11 +51,12 @@ namespace CKAN
 
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(delegate { Enabled = true; }));
+				Invoke(new MethodInvoker(delegate { Enabled = true; RecreateDialogs ();}));
             }
             else
             {
                 Enabled = true;
+				RecreateDialogs ();
             }
         }
     }

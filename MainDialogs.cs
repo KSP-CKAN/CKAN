@@ -5,12 +5,12 @@ namespace CKAN
 {
     public partial class Main : Form
     {
-        private readonly ApplyChangesDialog m_ApplyChangesDialog = null;
-        private readonly ErrorDialog m_ErrorDialog = null;
-        private readonly RecommendsDialog m_RecommendsDialog = null;
-        private readonly SettingsDialog m_SettingsDialog = null;
-        private readonly WaitDialog m_WaitDialog = null;
-        private readonly YesNoDialog m_YesNoDialog = null;
+        private ApplyChangesDialog m_ApplyChangesDialog = null;
+        private ErrorDialog m_ErrorDialog = null;
+        private RecommendsDialog m_RecommendsDialog = null;
+        private SettingsDialog m_SettingsDialog = null;
+        private WaitDialog m_WaitDialog = null;
+        private YesNoDialog m_YesNoDialog = null;
 
         public void AddStatusMessage(string text, params object[] args)
         {
