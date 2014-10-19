@@ -1,3 +1,6 @@
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+
 namespace CKAN {
 
     using System;
@@ -114,8 +117,6 @@ namespace CKAN {
                 // KSP version mixed with min/max.
                 throw new InvalidModuleAttributesException ("ksp_version mixed wtih ksp_version_(min|max)", this);
             }
-
-
         }
 
         /// <summary>
@@ -154,11 +155,14 @@ namespace CKAN {
 
         public BundledModule(dynamic stanza) {
             // For now, we just copy across the fields from our stanza.
-            version    = stanza.version;
+            JValue jVersion = (JValue) stanza.version;
+            version = new Version((string)jVersion.Value);
             identifier = stanza.identifier;
             license    = stanza.license;
         }
     }
+
+    public class CkanInvalidMetadataJson : Exception { }
 
     public class CkanModule : Module {
 
@@ -185,6 +189,37 @@ namespace CKAN {
 
         private static readonly ILog log = LogManager.GetLogger (typeof(CkanModule));
 
+        private static JsonSchema metadata_schema = null;
+        private static string metadata_schema_path = "CKAN.schema";
+        private static bool metadata_schema_missing_warning_fired = false;
+
+        private static bool validate_json_against_schema(string json)
+        {
+            return true;
+            // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
+
+            if (metadata_schema == null) {
+                string schema = "";
+
+                try {
+                    schema = System.IO.File.ReadAllText(metadata_schema_path);
+                }
+                catch (Exception) {
+                    if (!metadata_schema_missing_warning_fired) {
+                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files", metadata_schema_path);
+                        metadata_schema_missing_warning_fired = true;
+                    }
+
+                    return true;
+                }
+
+                metadata_schema = JsonSchema.Parse(schema);
+            }
+
+            JObject obj = JObject.Parse(json);
+            return obj.IsValid(metadata_schema);
+        }
+
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
         public static CkanModule from_file(string filename) {
             string json = System.IO.File.ReadAllText (filename);
@@ -195,6 +230,11 @@ namespace CKAN {
         /// Also validates that all required fields are present.
         /// </summary>
         public static CkanModule from_string(string json) {
+            if (!validate_json_against_schema(json))
+            {
+                throw new CkanInvalidMetadataJson();
+            }
+
             CkanModule newModule = JsonConvert.DeserializeObject<CkanModule> (json);
 
             // Check everything in the spec if defined.
@@ -211,7 +251,6 @@ namespace CKAN {
 
             // All good! Return module
             return newModule;
-
         }
 
         /// <summary>

@@ -41,10 +41,6 @@ namespace CKAN {
 
             string full_path = Path.Combine (KSP.DownloadCacheDir(), filename);
 
-            if (onReportProgress != null) {
-                onReportProgress(String.Format("Downloading \"{0}\"", module.download), 0);
-            }
-
             return Net.Download (url, full_path);
         }
 
@@ -60,7 +56,17 @@ namespace CKAN {
                 return fullPath;
             }
 
+<<<<<<< HEAD
             return Download (module.download, filename);
+        }
+
+        public static string CachedOrDownload(string identifier, Version version, Uri url, string filename = null) {
+=======
+            if (onReportProgress != null) {
+                onReportProgress(String.Format("Downloading \"{0}\"", module.download), 0);
+            }
+
+            return Net.Download (module.download, full_path);
         }
 
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
@@ -86,7 +92,8 @@ namespace CKAN {
             return downloader;
         }
 
-        public static string CachedOrDownload (string identifier, Version version, Uri url, string filename = null) {
+        public string CachedOrDownload (CkanModule module, string filename = null) {
+>>>>>>> master
             if (filename == null) {
                 filename = CkanModule.StandardName (identifier, version);
             }
@@ -99,8 +106,12 @@ namespace CKAN {
             }
 
             return Download (url, filename);
+
         }
 
+<<<<<<< HEAD
+        public static string CachePath(string file) {
+=======
         public bool IsCached(string filename, out string fullPath)
         {
             fullPath = CachePath(filename);
@@ -112,7 +123,8 @@ namespace CKAN {
             return false;
         }
 
-        public static string CachePath(string file) {
+        public string CachePath (string file) {
+>>>>>>> master
             return Path.Combine (KSP.DownloadCacheDir (), file);
         }
 
@@ -291,7 +303,6 @@ namespace CKAN {
                     InstallComponent (stanza, zipfile, installed_files);
 
                     registry.RegisterModule (new InstalledModule (installed_files, bundled, DateTime.Now));
-
                 }
             }
 
