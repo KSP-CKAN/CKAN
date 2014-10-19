@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,7 +25,10 @@ namespace CKAN
 
         [JsonProperty("abstract")] public string @abstract;
 
-        [JsonProperty("author")] public string[] author;
+        [JsonProperty("author")]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+        public List<string> author;
+
         [JsonProperty("comment")] public string comment;
         [JsonProperty("conflicts")] public dynamic[] conflicts;
         [JsonProperty("depends")] public dynamic[] depends;
