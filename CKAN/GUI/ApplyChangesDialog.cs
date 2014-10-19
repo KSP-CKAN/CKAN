@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CKAN
 {
     public partial class ApplyChangesDialog : Form
     {
-
-        private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset = null;
-        private BackgroundWorker m_InstallWorker = null;
+        private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset;
+        private BackgroundWorker m_InstallWorker;
 
         public ApplyChangesDialog()
         {
             InitializeComponent();
         }
 
-        public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset, BackgroundWorker installWorker)
+        public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset,
+            BackgroundWorker installWorker)
         {
             m_Changeset = changeset;
             m_InstallWorker = installWorker;
@@ -35,8 +30,8 @@ namespace CKAN
                     continue;
                 }
 
-                ListViewItem item = new ListViewItem();
-                item.Text = String.Format("{0} v{1}", change.Key.name, change.Key.version.ToString());
+                var item = new ListViewItem();
+                item.Text = String.Format("{0} v{1}", change.Key.name, change.Key.version);
 
                 var subChangeType = new ListViewItem.ListViewSubItem();
                 subChangeType.Text = change.Value.ToString();
@@ -60,7 +55,9 @@ namespace CKAN
         {
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
 
-            m_InstallWorker.RunWorkerAsync(new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(m_Changeset, install_ops));
+            m_InstallWorker.RunWorkerAsync(
+                new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
+                    m_Changeset, install_ops));
             m_InstallWorker = null;
             m_Changeset = null;
             Close();

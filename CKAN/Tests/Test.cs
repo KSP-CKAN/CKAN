@@ -1,15 +1,14 @@
-using NUnit.Framework;
-using System;
-using CKAN;
 using System.Text.RegularExpressions;
+using CKAN;
+using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture()]
-    public class Module {
-
+    [TestFixture]
+    public class Module
+    {
         // Oh dear. The horror. We should load this from a file. Please.
-        static string ckan_string = @"
+        private static string ckan_string = @"
 {
     ""spec_version"": 1,
     ""name""     : ""kOS - Kerbal OS"",
@@ -36,37 +35,35 @@ namespace Tests
     ]
 }";
 
-        [Test()]
-        public void StandardName() {
+        [Test]
+        public void CompatibleWith()
+        {
+            CkanModule module = CkanModule.from_string(ckan_string);
 
-            CkanModule module = CkanModule.from_string (ckan_string);
-
-            Assert.AreEqual (module.StandardName (), "kOS-0.14.zip");
+            Assert.IsTrue(module.IsCompatibleKSP("0.24.2"));
         }
 
-        [Test()]
-        public void CompatibleWith() {
-            var module = CkanModule.from_string (ckan_string);
+        [Test]
+        public void StandardName()
+        {
+            CkanModule module = CkanModule.from_string(ckan_string);
 
-            Assert.IsTrue (module.IsCompatibleKSP ("0.24.2"));
+            Assert.AreEqual(module.StandardName(), "kOS-0.14.zip");
         }
     }
 
 
-    [TestFixture()]
+    [TestFixture]
     public class KSP
     {
-
         // Disabled, because Travis machines don't have a KSP intall.
         // TODO: How do we mark tests as 'TODO' in Nunit? Does it even have that?
         // [Test()]
-        public void TestCase ()
+        public void TestCase()
         {
+            string gameData = CKAN.KSP.GameData();
 
-            string gameData = CKAN.KSP.GameData ();
-
-            Assert.IsTrue (Regex.IsMatch (gameData, "GameData/?$", RegexOptions.IgnoreCase));
+            Assert.IsTrue(Regex.IsMatch(gameData, "GameData/?$", RegexOptions.IgnoreCase));
         }
     }
 }
-

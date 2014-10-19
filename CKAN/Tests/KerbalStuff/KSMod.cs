@@ -1,19 +1,16 @@
-using NUnit.Framework;
-using System;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using CKAN.KerbalStuff;
+using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture()]
+    [TestFixture]
     public class KSMod
     {
-        [Test()]
+        [Test]
         public void Inflate()
         {
             string json = @"{ 'foo': 'bar'}";
-            var meta = JObject.Parse(json);
+            JObject meta = JObject.Parse(json);
 
             // Sanity check.
             Assert.AreEqual((string) meta["foo"], "bar");
@@ -30,7 +27,7 @@ namespace Tests
             Assert.AreEqual((string) meta["author"], "Jeb");
         }
 
-        [Test()]
+        [Test]
         public void KSHome()
         {
             var ks = new CKAN.KerbalStuff.KSMod();
@@ -41,4 +38,3 @@ namespace Tests
         }
     }
 }
-

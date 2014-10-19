@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -20,10 +13,7 @@ namespace CKAN
         {
             if (DescriptionLabel.InvokeRequired)
             {
-                DescriptionLabel.Invoke(new MethodInvoker(delegate
-                {
-                    DescriptionLabel.Text = text;
-                }));
+                DescriptionLabel.Invoke(new MethodInvoker(delegate { DescriptionLabel.Text = text; }));
             }
             else
             {
@@ -38,6 +28,5 @@ namespace CKAN
         {
             Close();
         }
-
     }
 }

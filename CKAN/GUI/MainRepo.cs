@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public partial class Main : Form
     {
-
-        private BackgroundWorker m_UpdateRepoWorker = null;
+        private BackgroundWorker m_UpdateRepoWorker;
 
         public void UpdateRepo()
         {
@@ -48,5 +42,4 @@ namespace CKAN
             Enabled = true;
         }
     }
-
 }
