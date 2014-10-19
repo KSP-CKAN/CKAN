@@ -167,7 +167,16 @@ namespace CKAN
             UpdateModFilterList();
             AddStatusMessage("");
             m_WaitDialog.Close();
-            Enabled = true;
+
+			if(InvokeRequired)
+			{
+				Invoke(new MethodInvoker(delegate { Enabled = true; RecreateDialogs(); }));
+			}
+			else
+			{
+				RecreateDialogs ();
+				Enabled = true;
+			}
         }
 
         private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)

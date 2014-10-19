@@ -19,12 +19,12 @@ namespace CKAN
 
         public ControlFactory()
         {
-            m_MainThreadID = AppDomain.GetCurrentThreadId();
+			m_MainThreadID = Thread.CurrentThread.ManagedThreadId;
         }
 
         public T CreateControl<T>() where T : new()
         {
-            if (AppDomain.GetCurrentThreadId() != m_MainThreadID)
+            if (Thread.CurrentThread.ManagedThreadId != m_MainThreadID)
             {
                 Debugger.Break();
             }

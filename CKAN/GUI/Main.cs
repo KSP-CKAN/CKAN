@@ -39,13 +39,18 @@ namespace CKAN
             m_Instance = this;
             InitializeComponent();
 
-            m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
-            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
-            m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
-            m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
-            m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
-            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+			RecreateDialogs ();
         }
+
+		public void RecreateDialogs()
+		{
+			m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
+			m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
+			m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
+			m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
+			m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
+			m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+		}
 
         public static Main Instance
         {
@@ -152,8 +157,13 @@ namespace CKAN
             ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
             ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
             ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
-            ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version));
-            ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
+
+			if (module.ksp_version != null)
+			{
+				ModInfo.AppendText (String.Format ("KSP Version: {0}\r\n", module.ksp_version));
+			}
+
+			ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
             ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
 
             ModInfo.AppendText("\r\n");
