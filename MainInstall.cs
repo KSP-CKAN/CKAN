@@ -30,7 +30,7 @@ namespace CKAN
 
             var opts = (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>)e.Argument;
 
-            ModuleInstaller installer = ModuleInstaller.Instance;
+            ModuleInstaller installer = new ModuleInstaller();
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
