@@ -4,7 +4,7 @@
     "$kref"          : "#/ckan/kerbalstuff",
     "install" : [
         {
-            "file"       : "GameData/CrewFiles",
+            "file"       : "CrewFiles/GameData/CrewFiles",
             "install_to" : "GameData"
         }
     ]
