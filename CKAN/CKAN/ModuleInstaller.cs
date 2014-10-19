@@ -107,6 +107,18 @@ namespace CKAN
             return Download(url, filename);
         }
 
+        public static bool IsCached(CkanModule module)
+        {
+            var filename = CkanModule.StandardName(module.identifier, module.version);
+            var path = CachePath(filename);
+            if (File.Exists(path))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public bool IsCached(string filename, out string fullPath)
         {
             fullPath = CachePath(filename);

@@ -67,10 +67,13 @@ namespace CKAN
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.ModInfo = new System.Windows.Forms.TextBox();
             this.DependsTabPage = new System.Windows.Forms.TabPage();
-            this.GraphTreeView = new System.Windows.Forms.TreeView();
+            this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
+            this.NotCachedLabel = new System.Windows.Forms.Label();
+            this.ContentsDownloadButton = new System.Windows.Forms.Button();
+            this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -82,6 +85,7 @@ namespace CKAN
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.DependsTabPage.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.StatusPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -151,7 +155,7 @@ namespace CKAN
             this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 24);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(537, 40);
+            this.menuStrip2.Size = new System.Drawing.Size(445, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -417,7 +421,7 @@ namespace CKAN
             // 
             // DependsTabPage
             // 
-            this.DependsTabPage.Controls.Add(this.GraphTreeView);
+            this.DependsTabPage.Controls.Add(this.DependsGraphTree);
             this.DependsTabPage.Location = new System.Drawing.Point(4, 22);
             this.DependsTabPage.Name = "DependsTabPage";
             this.DependsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -426,16 +430,20 @@ namespace CKAN
             this.DependsTabPage.Text = "Depends";
             this.DependsTabPage.UseVisualStyleBackColor = true;
             // 
-            // GraphTreeView
+            // DependsGraphTree
             // 
-            this.GraphTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GraphTreeView.Location = new System.Drawing.Point(3, 3);
-            this.GraphTreeView.Name = "GraphTreeView";
-            this.GraphTreeView.Size = new System.Drawing.Size(219, 512);
-            this.GraphTreeView.TabIndex = 0;
+            this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DependsGraphTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DependsGraphTree.Location = new System.Drawing.Point(3, 3);
+            this.DependsGraphTree.Name = "DependsGraphTree";
+            this.DependsGraphTree.Size = new System.Drawing.Size(219, 512);
+            this.DependsGraphTree.TabIndex = 0;
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.ContentsPreviewTree);
+            this.tabPage2.Controls.Add(this.ContentsDownloadButton);
+            this.tabPage2.Controls.Add(this.NotCachedLabel);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -461,6 +469,35 @@ namespace CKAN
             this.StatusLabel.Size = new System.Drawing.Size(797, 19);
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // NotCachedLabel
+            // 
+            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
+            this.NotCachedLabel.Name = "NotCachedLabel";
+            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
+            this.NotCachedLabel.TabIndex = 0;
+            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
+            // 
+            // ContentsDownloadButton
+            // 
+            this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
+            this.ContentsDownloadButton.Name = "ContentsDownloadButton";
+            this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
+            this.ContentsDownloadButton.TabIndex = 1;
+            this.ContentsDownloadButton.Text = "Download";
+            this.ContentsDownloadButton.UseVisualStyleBackColor = true;
+            // 
+            // ContentsPreviewTree
+            // 
+            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ContentsPreviewTree.Enabled = false;
+            this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
+            this.ContentsPreviewTree.Name = "ContentsPreviewTree";
+            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
+            this.ContentsPreviewTree.TabIndex = 2;
             // 
             // Main
             // 
@@ -492,6 +529,7 @@ namespace CKAN
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.DependsTabPage.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.StatusPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -538,8 +576,11 @@ namespace CKAN
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage DependsTabPage;
-        private TreeView GraphTreeView;
+        private TreeView DependsGraphTree;
         private TabPage tabPage2;
+        private Label NotCachedLabel;
+        private TreeView ContentsPreviewTree;
+        private Button ContentsDownloadButton;
     }
 }
 
