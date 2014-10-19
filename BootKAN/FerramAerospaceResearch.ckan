@@ -1,0 +1,28 @@
+{
+    "spec_version": 1,
+    "identifier": "FerramAerospaceResearch",
+    "$kref" : "#/ckan/kerbalstuff",
+    "license"  : "GPL-3.0",
+    "release_status" : "stable",
+    "comment" : "Setting to *no* github releases so the code doesn't try to confuse NEAR with FAR",
+    "resources" : {
+        "github"   : {
+            "url"      : "https://github.com/ferram4/Ferram-Aerospace-Research",
+            "releases" : false
+        }
+    },
+    "depends" : [ { "name" : "ModuleManager" } ],
+    "install" : [
+        {
+            "file"       : "GameData/FerramAerospaceResearch",
+            "install_to" : "GameData"
+        },
+        {
+            "file"        : "Ships",
+            "install_to"  : "Ships",
+            "optional"    : true,
+            "description" : "FAR example craft"
+        }
+
+    ]
+}

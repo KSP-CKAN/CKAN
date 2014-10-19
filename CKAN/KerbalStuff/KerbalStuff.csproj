@@ -8,7 +8,7 @@
     <ProjectGuid>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>CKAN.KerbalStuff</RootNamespace>
-    <AssemblyName>KerbalStuff</AssemblyName>
+    <AssemblyName>ks2ckan</AssemblyName>
     <StartupObject>CKAN.KerbalStuff.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
