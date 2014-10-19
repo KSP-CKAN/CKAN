@@ -54,7 +54,8 @@ namespace CKAN
         private void ConfirmButton_Click(object sender, EventArgs e)
         {
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-
+            install_ops.with_recommends = false;
+            
             m_InstallWorker.RunWorkerAsync(
                 new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                     m_Changeset, install_ops));
