@@ -43,6 +43,7 @@ namespace CKAN
             }
 
             RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
+            options.with_recommends = false;
 
             RelationshipResolver resolver = null;
             try
