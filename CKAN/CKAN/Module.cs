@@ -257,8 +257,11 @@ namespace CKAN {
         /// Returns a standardised name for this module, in the form
         /// "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
         /// </summary>
-        public string StandardName ()
-        {
+        public string StandardName () {
+            return StandardName (this.identifier, this.version);
+        }
+
+        public static string StandardName(string identifier, Version version) {
             return identifier + "-" + version + ".zip";
         }
 

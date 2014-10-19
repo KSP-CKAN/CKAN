@@ -375,14 +375,19 @@ are described:
   github page for the project. It *may* include a `releases` key
   with a boolean value (which defaults to false) indicating if github releases
   should be used when searching for updates.
+- `kerbalstuff` is an object which *must* contain a `url` pointing to the
+  mod hosted on KerbalStuff.
 
 Example resources:
 
     "resources" : {
-        "homepage" : "http://examele.com/jebinator",
+        "homepage" : "http://tinyurl.com/DogeCoinFlag",
         "github"   : {
-            "url"      : "http://github.com/example/jebinator",
+            "url"      : "http://github.com/pjf/DogeCoinFlag",
             "releases" : "true"
+        },
+        "kerbalstuff"  : {
+            "url"      : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
         }
     }
 
