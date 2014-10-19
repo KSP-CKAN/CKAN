@@ -38,7 +38,9 @@ namespace CKAN
         public static void SaveConfiguration(Configuration configuration, string path)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
-            serializer.Serialize(new StreamWriter(path), configuration);
+            var writer = new StreamWriter(path);
+            serializer.Serialize(writer, configuration);
+            writer.Close();
         }
     }
 }
