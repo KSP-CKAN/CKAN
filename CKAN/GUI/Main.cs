@@ -82,12 +82,6 @@ namespace CKAN
             UpdateRepo();
         }
 
-        private void ModFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            m_ModFilter = (GUIModFilter) ModFilter.SelectedIndex;
-            UpdateModsList();
-        }
-
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in ModList.Rows)
@@ -114,25 +108,8 @@ namespace CKAN
             ModList.Refresh();
         }
 
-        private void ModList_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateModInfo(CkanModule module)
         {
-            if (ModList.SelectedRows.Count == 0)
-            {
-                return;
-            }
-
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
-            {
-                return;
-            }
-
-            var module = (CkanModule) selectedItem.Tag;
-            if (module == null)
-            {
-                return;
-            }
-
             ModInfo.Text = "";
 
             ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
@@ -206,6 +183,65 @@ namespace CKAN
 
             ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
             ModInfo.AppendText("\r\n");
+        }
+
+        private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module)
+        {
+            int i = 0;
+
+            node.Text = module.name;
+            node.Nodes.Clear();
+
+            if (module.depends != null)
+            {
+                foreach (dynamic dependency in module.depends)
+                {
+                    Registry registry = RegistryManager.Instance().registry;
+
+                    try
+                    {
+                        dynamic dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
+
+                        node.Nodes.Add("");
+                        UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);
+                        i++;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+        }
+
+        private void UpgradeModDependencyGraph(CkanModule module)
+        {
+            GraphTreeView.Nodes.Clear();
+            GraphTreeView.Nodes.Add("");
+
+            UpdateModDependencyGraphRecursively(GraphTreeView.Nodes[0], module);
+        }
+
+        private void ModList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ModList.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var module = (CkanModule) selectedItem.Tag;
+            if (module == null)
+            {
+                return;
+            }
+
+            UpdateModInfo(module);
+            UpgradeModDependencyGraph(module);
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
@@ -295,7 +331,8 @@ namespace CKAN
 
             ModList.EndEdit();
 
-            if (ComputeChangeSetFromModList().Any())
+            var changeset = ComputeChangeSetFromModList();
+            if (changeset != null && changeset.Any())
             {
                 ApplyToolButton.Enabled = true;
             }
@@ -308,6 +345,48 @@ namespace CKAN
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             m_SettingsDialog.ShowDialog();
+        }
+
+        private void FilterAllButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.All;
+            FilterToolButton.Text = "Filter (All)";
+            UpdateModsList();
+        }
+
+        private void FilterInstalledButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.Installed;
+            FilterToolButton.Text = "Filter (Installed)";
+            UpdateModsList();
+        }
+
+        private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.InstalledUpdateAvailable;
+            FilterToolButton.Text = "Filter (Updated)";
+            UpdateModsList();
+        }
+
+        private void FilterNewButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.NewInRepository;
+            FilterToolButton.Text = "Filter (New)";
+            UpdateModsList();
+        }
+
+        private void FilterNotInstalledButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.NotInstalled;
+            FilterToolButton.Text = "Filter (Not installed)";
+            UpdateModsList();
+        }
+
+        private void FilterIncompatibleButton_Click(object sender, EventArgs e)
+        {
+            m_ModFilter = GUIModFilter.Incompatible;
+            FilterToolButton.Text = "Filter (Incompatible)";
+            UpdateModsList();
         }
     }
 }
