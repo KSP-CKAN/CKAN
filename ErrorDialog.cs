@@ -13,35 +13,13 @@ namespace CKAN
 
         public void ShowErrorDialog(string message)
         {
-            if (ErrorMessage.InvokeRequired)
-            {
-                ErrorMessage.Invoke(new MethodInvoker(delegate { ErrorMessage.Text = message; }));
-            }
-            else
-            {
-                ErrorMessage.Text = message;
-            }
-
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { ShowDialog(); }));
-            }
-            else
-            {
-                ShowDialog();
-            }
+            Util.Invoke(ErrorMessage, () => ErrorMessage.Text = message);
+            Util.Invoke(this, () => ShowDialog());
         }
 
         public void HideErrorDialog()
         {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { Close(); }));
-            }
-            else
-            {
-                Close();
-            }
+            Util.Invoke(this, () => Close());
         }
 
         private void DismissButton_Click(object sender, EventArgs e)
