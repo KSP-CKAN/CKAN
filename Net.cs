@@ -16,6 +16,7 @@ namespace CKAN
     public struct NetAsyncDownloaderDownloadPart
     {
         public WebClient agent;
+        public long bytesDownloaded;
         public long bytesLeft;
         public int bytesPerSecond;
         public Exception error;
@@ -97,7 +98,7 @@ namespace CKAN
             return filePaths;
         }
 
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long _bytesLeft)
+        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
             NetAsyncDownloaderDownloadPart download = downloads[index];
 
@@ -113,7 +114,8 @@ namespace CKAN
                 download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
             }
 
-            download.bytesLeft = _bytesLeft;
+            download.bytesLeft = bytesLeft;
+            download.bytesDownloaded = bytesDownloaded;
             downloads[index] = download;
 
             if (onProgressReport != null)
@@ -121,15 +123,17 @@ namespace CKAN
                 int totalPercentage = 0;
                 int totalBytesPerSecond = 0;
                 long totalBytesLeft = 0;
+                long totalBytesDownloaded = 0;
 
                 for (int i = 0; i < downloads.Length; i++)
                 {
                     totalBytesPerSecond += downloads[i].bytesPerSecond;
                     totalBytesLeft += downloads[i].bytesLeft;
-                    totalPercentage += downloads[i].percentComplete;
+                    totalBytesDownloaded += downloads[i].bytesDownloaded;
+                    totalBytesLeft += downloads[i].bytesLeft;
                 }
 
-                totalPercentage /= downloads.Length;
+                totalPercentage = (int)((totalBytesDownloaded * 100) / (totalBytesLeft + totalBytesDownloaded + 1));
 
                 onProgressReport(totalPercentage, totalBytesPerSecond, totalBytesLeft);
             }
