@@ -14,14 +14,7 @@ namespace CKAN
 
         public List<string> ShowRecommendsDialog(string message, List<string> recommended)
         {
-            if (MessageLabel.InvokeRequired)
-            {
-                MessageLabel.Invoke(new MethodInvoker(delegate { MessageLabel.Text = message; }));
-            }
-            else
-            {
-                MessageLabel.Text = message;
-            }
+            Util.Invoke(MessageLabel, () => MessageLabel.Text = message);
 
             if (RecommendedListView.InvokeRequired)
             {

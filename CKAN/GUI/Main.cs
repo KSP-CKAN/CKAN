@@ -125,14 +125,7 @@ namespace CKAN
 
         private void UpdateModInfo(CkanModule module)
         {
-            if (ModInfo.InvokeRequired)
-            {
-                ModInfo.Invoke(new MethodInvoker(delegate { _UpdateModInfo(module); }));
-            }
-            else
-            {
-                _UpdateModInfo(module);
-            }
+            Util.Invoke(ModInfo, () => _UpdateModInfo(module));
         }
 
         private void _UpdateModInfo(CkanModule module)
@@ -247,23 +240,14 @@ namespace CKAN
 
         private void UpgradeModDependencyGraph(CkanModule module)
         {
-            if (GraphTreeView.InvokeRequired)
-            {
-                GraphTreeView.Invoke(new MethodInvoker(delegate { _UpgradeModDependencyGraph(module); }));
-            }
-            else
-            {
-                _UpgradeModDependencyGraph(module);
-            }
+            Util.Invoke(GraphTreeView, () => _UpgradeModDependencyGraph(module));
         }
 
         private void _UpgradeModDependencyGraph(CkanModule module)
         {
             GraphTreeView.Nodes.Clear();
             GraphTreeView.Nodes.Add("");
-
             UpdateModDependencyGraphRecursively(GraphTreeView.Nodes[0], module);
-
             GraphTreeView.Nodes[0].ExpandAll();
         }
 

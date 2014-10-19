@@ -12,28 +12,13 @@ namespace CKAN
 
         public DialogResult ShowYesNoDialog(string text)
         {
-            if (DescriptionLabel.InvokeRequired)
-            {
-                DescriptionLabel.Invoke(new MethodInvoker(delegate { DescriptionLabel.Text = text; }));
-            }
-            else
-            {
-                DescriptionLabel.Text = text;
-            }
-
+            Util.Invoke(DescriptionLabel, () => DescriptionLabel.Text = text);
             return ShowDialog();
         }
 
         public void HideYesNoDialog()
         {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { Close(); }));
-            }
-            else
-            {
-                Close();
-            }
+            Util.Invoke(this, () => Close());
         }
     }
 }

@@ -14,15 +14,7 @@ namespace CKAN
 
         public void AddStatusMessage(string text, params object[] args)
         {
-            if (StatusLabel.InvokeRequired)
-            {
-                StatusLabel.Invoke(new MethodInvoker(delegate { StatusLabel.Text = String.Format(text, args); }));
-            }
-            else
-            {
-                StatusLabel.Text = String.Format(text, args);
-            }
-
+            Util.Invoke(StatusLabel, () => StatusLabel.Text = String.Format(text, args));
             m_WaitDialog.AddLogMessage(String.Format(text, args));
         }
 
@@ -38,30 +30,14 @@ namespace CKAN
 
         public void ShowWaitDialog()
         {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { Enabled = false; }));
-            }
-            else
-            {
-                Enabled = false;
-            }
-            
+            Util.Invoke(this, () => Enabled = false);
             m_WaitDialog.ShowWaitDialog();
         }
 
         public void HideWaitDialog()
         {
             m_WaitDialog.Close();
-
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { Enabled = true; }));
-            }
-            else
-            {
-                Enabled = true;
-            }
+            Util.Invoke(this, () => Enabled = true);
         }
     }
 }

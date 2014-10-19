@@ -203,14 +203,7 @@ namespace CKAN
 
         public void UpdateModsList(bool markUpdates = false)
         {
-            if (ModList.InvokeRequired)
-            {
-                ModList.Invoke(new MethodInvoker(delegate { _UpdateModsList(markUpdates); }));
-            }
-            else
-            {
-                _UpdateModsList(markUpdates);
-            }
+            Util.Invoke(this, () => _UpdateModsList(markUpdates));
         }
 
         private void _UpdateModsList(bool markUpdates)

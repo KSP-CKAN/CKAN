@@ -12,14 +12,7 @@ namespace CKAN
         {
             m_UpdateRepoWorker.RunWorkerAsync();
 
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { Enabled = false; }));
-            }
-            else
-            {
-                Enabled = false;
-            }
+            Util.Invoke(this, () => Enabled = false);
 
             m_WaitDialog.SetDescription("Contacting repository..");
             m_WaitDialog.ClearLog();
@@ -49,15 +42,8 @@ namespace CKAN
             m_WaitDialog.HideWaitDialog();
             AddStatusMessage("Repository successfully updated");
 
-            if (InvokeRequired)
-            {
-				Invoke(new MethodInvoker(delegate { Enabled = true; RecreateDialogs ();}));
-            }
-            else
-            {
-                Enabled = true;
-				RecreateDialogs ();
-            }
+            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(this, () => RecreateDialogs());
         }
     }
 }
