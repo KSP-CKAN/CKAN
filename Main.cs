@@ -238,17 +238,46 @@ namespace CKAN
             }
         }
 
-        private void UpgradeModDependencyGraph(CkanModule module)
+        private void UpdateModDependencyGraph(CkanModule module)
         {
-            Util.Invoke(GraphTreeView, () => _UpgradeModDependencyGraph(module));
+            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
         }
 
-        private void _UpgradeModDependencyGraph(CkanModule module)
+        private void UpdateModContentsGraphRecursively(TreeNode node, CkanModule module)
         {
-            GraphTreeView.Nodes.Clear();
-            GraphTreeView.Nodes.Add("");
-            UpdateModDependencyGraphRecursively(GraphTreeView.Nodes[0], module);
-            GraphTreeView.Nodes[0].ExpandAll();
+            
+        }
+
+        private void _UpdateModDependencyGraph(CkanModule module)
+        {
+            DependsGraphTree.Nodes.Clear();
+            DependsGraphTree.Nodes.Add("");
+            UpdateModDependencyGraphRecursively(DependsGraphTree.Nodes[0], module);
+            DependsGraphTree.Nodes[0].ExpandAll();
+        }
+
+        private void UpdateModContentsTree(CkanModule module)
+        {
+            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(module));
+        }
+
+        private void _UpdateModContentsTree(CkanModule module)
+        {
+            if (ModuleInstaller.IsCached(module))
+            {
+                NotCachedLabel.Text = "Module is cached, preview available";
+                ContentsDownloadButton.Enabled = false;
+            }
+            else
+            {
+                NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
+                ContentsDownloadButton.Enabled = true;
+            }
+
+            ContentsPreviewTree.Nodes.Clear();
+            ContentsPreviewTree.Nodes.Add(module.name);
+            UpdateModContentsGraphRecursively(ContentsPreviewTree.Nodes[0], module);
+            ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -271,7 +300,8 @@ namespace CKAN
             }
 
             UpdateModInfo(module);
-            UpgradeModDependencyGraph(module);
+            UpdateModDependencyGraph(module);
+            UpdateModContentsTree(module);
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
