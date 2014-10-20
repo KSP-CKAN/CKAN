@@ -243,11 +243,6 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
         }
 
-        private void UpdateModContentsGraphRecursively(TreeNode node, CkanModule module)
-        {
-            
-        }
-
         private void _UpdateModDependencyGraph(CkanModule module)
         {
             DependsGraphTree.Nodes.Clear();
@@ -267,16 +262,29 @@ namespace CKAN
             {
                 NotCachedLabel.Text = "Module is cached, preview available";
                 ContentsDownloadButton.Enabled = false;
+                ContentsPreviewTree.Enabled = true;
             }
             else
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
+                ContentsPreviewTree.Enabled = false;
             }
 
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
-            UpdateModContentsGraphRecursively(ContentsPreviewTree.Nodes[0], module);
+
+            var contents = ModuleInstaller.Instance.GetModuleContentsList(module);
+            if (contents == null)
+            {
+                return;
+            }
+
+            foreach (var item in contents)
+            {
+                ContentsPreviewTree.Nodes[0].Nodes.Add(item);
+            }
+
             ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
@@ -447,6 +455,34 @@ namespace CKAN
             m_ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
             UpdateModsList();
+        }
+
+        private void ContentsDownloadButton_Click(object sender, EventArgs e)
+        {
+            if (ModList.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var module = (CkanModule)selectedItem.Tag;
+            if (module == null)
+            {
+                return;
+            }
+
+            m_WaitDialog.ResetProgress();
+            ModuleInstaller.Instance.CachedOrDownload(module);
+            m_WaitDialog.ShowWaitDialog();
+            m_WaitDialog.HideWaitDialog();
+
+            UpdateModContentsTree(module);
+            RecreateDialogs();
         }
     }
 }
