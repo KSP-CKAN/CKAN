@@ -47,9 +47,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainClass.cs" />
-    <Compile Include="KSMod.cs" />
-    <Compile Include="KSVersion.cs" />
-    <Compile Include="KSAPI.cs" />
+    <Compile Include="KS\KSAPI.cs" />
+    <Compile Include="KS\KSVersion.cs" />
+    <Compile Include="KS\KSMod.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -57,5 +57,9 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Github\" />
+    <Folder Include="KS\" />
   </ItemGroup>
 </Project>
