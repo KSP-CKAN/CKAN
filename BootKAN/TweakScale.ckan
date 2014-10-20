@@ -15,7 +15,7 @@
     },
     "install" : [
         {
-            "file"       : "GameData/Tweakscale",
+            "file"       : "Gamedata/TweakScale",
             "install_to" : "GameData"
         }
     ],
