@@ -16,11 +16,22 @@ namespace CKAN
 
         private void _UpdateModInfo(CkanModule module)
         {
+            if (module == null)
+            {
+                return;
+            }
+
             ModInfo.Text = "";
 
-            ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
+            if (module.name != null && module.version != null)
+            {
+                ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
+            }
 
-            ModInfo.AppendText(String.Format("Abstract: {0}\r\n", module.@abstract));
+            if (module.@abstract != null)
+            {
+                ModInfo.AppendText(String.Format("Abstract: {0}\r\n", module.@abstract));
+            }
 
             if (module.author != null)
             {
@@ -33,17 +44,35 @@ namespace CKAN
                 ModInfo.AppendText(String.Format("Author: {0}\r\n", authors));
             }
 
-            ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
-            ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
-            ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
+            if (module.comment != null)
+            {
+                ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
+            }
+
+            if (module.download != null)
+            {
+                ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
+            }
+
+            if (module.identifier != null)
+            {
+                ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
+            }
 
             if (module.ksp_version != null)
             {
-                ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version));
+                ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version.ToString()));
             }
 
-            ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
-            ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
+            if (module.license != null)
+            {
+                ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
+            }
+
+            if (module.release_status != null)
+            {
+                ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
+            }
 
             ModInfo.AppendText("\r\n");
 
