@@ -213,7 +213,7 @@ namespace CKAN
         // Uninstalls a module, if it exists.
         private static int Remove(RemoveOptions options)
         {
-            var installer = new ModuleInstaller();
+            var installer = ModuleInstaller.Instance;
             installer.Uninstall(options.Modname, true);
 
             return EXIT_OK;
@@ -233,7 +233,7 @@ namespace CKAN
                     return EXIT_BADOPT;
                 }
 
-                var installer = new ModuleInstaller();
+                var installer = ModuleInstaller.Instance;
 
                 foreach (string module in options.modules)
                 {
@@ -297,7 +297,7 @@ namespace CKAN
                 // Install everything requested. :)
                 try
                 {
-                    var installer = new ModuleInstaller();
+                    var installer = ModuleInstaller.Instance;
                     installer.InstallList(options.modules, install_ops);
                 }
                 catch (ModuleNotFoundException ex)

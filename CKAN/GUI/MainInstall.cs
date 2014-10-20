@@ -27,7 +27,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            var installer = new ModuleInstaller();
+            var installer = ModuleInstaller.Instance;
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 

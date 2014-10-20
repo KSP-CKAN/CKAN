@@ -34,7 +34,7 @@ namespace CKAN
                 log.DebugFormat("Using suppied CKAN registry at {0}", path);
             }
 
-            if (! singleton.ContainsKey(path))
+            if (!singleton.ContainsKey(path))
             {
                 log.Debug("RegistryManager not yet active, loading...");
                 singleton[path] = new RegistryManager(path);

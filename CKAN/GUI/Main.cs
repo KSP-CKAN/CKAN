@@ -374,7 +374,7 @@ namespace CKAN
                 }
                 else if ((bool) cell.Value && isInstalled)
                 {
-                    var installer = new ModuleInstaller();
+                    var installer = ModuleInstaller.Instance;
                     List<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
                     foreach (string dependency in reverseDependencies)
                     {
