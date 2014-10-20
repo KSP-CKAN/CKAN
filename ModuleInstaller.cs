@@ -430,7 +430,12 @@ namespace CKAN
                 string fullPath = Path.Combine(installDir, outputName);
                 // User.WriteLine (fullPath);
 
-                CopyZipEntry(zipfile, entry, fullPath, makeDirs);
+                if (!CopyZipEntry(zipfile, entry, fullPath, makeDirs))
+                {
+                    User.Error("Unable to find entry \"{0}\" in \"{1}\", aborting..", entry.Name, zipfile.Name);
+                    throw new Exception();
+                }
+
                 User.WriteLine("    * Copying " + entry);
 
                 module_files.Add(Path.Combine(installDir, outputName), new InstalledModuleFile
@@ -440,14 +445,14 @@ namespace CKAN
             }
         }
 
-        private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        private bool CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
                 if (!makeDirs)
                 {
-                    return;
+                    return true;
                 }
 
                 log.DebugFormat("Making directory {0}", fullPath);
@@ -467,10 +472,20 @@ namespace CKAN
                 }
 
                 // It's a file! Prepare the streams
-                Stream zipStream = zipfile.GetInputStream(entry);
+                Stream zipStream = null;
+
+                try
+                {
+                    zipStream = zipfile.GetInputStream(entry);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
 
                 TransactionalFileWriter file = currentTransaction.OpenFileWrite(fullPath);
                 FileStream output = file.Stream;
+
                 // Copy
                 zipStream.CopyTo(output);
 
@@ -478,6 +493,8 @@ namespace CKAN
                 zipStream.Close();
                 output.Close();
             }
+
+            return true;
         }
 
         public List<string> FindReverseDependencies(string modName)
