@@ -1,0 +1,21 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "InfernalRobotics",
+    "$kref"          : "#/ckan/kerbalstuff",
+    "license"        : "GPL-3.0",
+    "release_status" : "stable",
+    "resources"      : {
+        "github"       : {
+            "url"      : "https://github.com/sirkut/InfernalRobotics"
+        }
+    },
+    "recommends" : [
+        { "name" : "TweakScale" }
+    ],
+    "install" : [
+        {
+            "file"       : "GameData/MagicSmokeIndustries",
+            "install_to" : "GameData"
+        }
+    ]
+}
