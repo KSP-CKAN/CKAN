@@ -62,6 +62,9 @@
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainModInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
