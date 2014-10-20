@@ -61,7 +61,6 @@ namespace CKAN
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
-            this.FilterByNamePanel = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -69,15 +68,14 @@ namespace CKAN
             this.DependsTabPage = new System.Windows.Forms.TabPage();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
+            this.ContentsDownloadButton = new System.Windows.Forms.Button();
+            this.NotCachedLabel = new System.Windows.Forms.Label();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.NotCachedLabel = new System.Windows.Forms.Label();
-            this.ContentsDownloadButton = new System.Windows.Forms.Button();
-            this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
-            this.FilterByNamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -147,6 +145,9 @@ namespace CKAN
             // 
             // menuStrip2
             // 
+            this.menuStrip2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuStrip2.AutoSize = false;
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshToolButton,
@@ -155,7 +156,7 @@ namespace CKAN
             this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 24);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(445, 40);
+            this.menuStrip2.Size = new System.Drawing.Size(870, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -340,7 +341,7 @@ namespace CKAN
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(89, 18);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(742, 41);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 4;
@@ -350,21 +351,12 @@ namespace CKAN
             // 
             this.FilterByNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FilterByNameLabel.AutoSize = true;
-            this.FilterByNameLabel.Location = new System.Drawing.Point(3, 21);
+            this.FilterByNameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByNameLabel.Location = new System.Drawing.Point(656, 44);
             this.FilterByNameLabel.Name = "FilterByNameLabel";
             this.FilterByNameLabel.Size = new System.Drawing.Size(75, 13);
             this.FilterByNameLabel.TabIndex = 5;
             this.FilterByNameLabel.Text = "Filter by name:";
-            // 
-            // FilterByNamePanel
-            // 
-            this.FilterByNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByNamePanel.Controls.Add(this.FilterByNameLabel);
-            this.FilterByNamePanel.Controls.Add(this.FilterByNameTextBox);
-            this.FilterByNamePanel.Location = new System.Drawing.Point(649, 24);
-            this.FilterByNamePanel.Name = "FilterByNamePanel";
-            this.FilterByNamePanel.Size = new System.Drawing.Size(217, 39);
-            this.FilterByNamePanel.TabIndex = 6;
             // 
             // splitContainer1
             // 
@@ -410,6 +402,7 @@ namespace CKAN
             // 
             // ModInfo
             // 
+            this.ModInfo.BackColor = System.Drawing.SystemColors.Window;
             this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModInfo.Location = new System.Drawing.Point(3, 3);
             this.ModInfo.Multiline = true;
@@ -452,6 +445,35 @@ namespace CKAN
             this.tabPage2.Text = "Contents";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // ContentsPreviewTree
+            // 
+            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ContentsPreviewTree.Enabled = false;
+            this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
+            this.ContentsPreviewTree.Name = "ContentsPreviewTree";
+            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
+            this.ContentsPreviewTree.TabIndex = 2;
+            // 
+            // ContentsDownloadButton
+            // 
+            this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
+            this.ContentsDownloadButton.Name = "ContentsDownloadButton";
+            this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
+            this.ContentsDownloadButton.TabIndex = 1;
+            this.ContentsDownloadButton.Text = "Download";
+            this.ContentsDownloadButton.UseVisualStyleBackColor = true;
+            // 
+            // NotCachedLabel
+            // 
+            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
+            this.NotCachedLabel.Name = "NotCachedLabel";
+            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
+            this.NotCachedLabel.TabIndex = 0;
+            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
+            // 
             // StatusPanel
             // 
             this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -470,47 +492,20 @@ namespace CKAN
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // NotCachedLabel
-            // 
-            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
-            this.NotCachedLabel.Name = "NotCachedLabel";
-            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
-            this.NotCachedLabel.TabIndex = 0;
-            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
-            // 
-            // ContentsDownloadButton
-            // 
-            this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
-            this.ContentsDownloadButton.Name = "ContentsDownloadButton";
-            this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
-            this.ContentsDownloadButton.TabIndex = 1;
-            this.ContentsDownloadButton.Text = "Download";
-            this.ContentsDownloadButton.UseVisualStyleBackColor = true;
-            // 
-            // ContentsPreviewTree
-            // 
-            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ContentsPreviewTree.Enabled = false;
-            this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
-            this.ContentsPreviewTree.Name = "ContentsPreviewTree";
-            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
-            this.ContentsPreviewTree.TabIndex = 2;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(870, 637);
+            this.Controls.Add(this.FilterByNameLabel);
             this.Controls.Add(this.StatusPanel);
+            this.Controls.Add(this.FilterByNameTextBox);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.FilterByNamePanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.menuStrip2);
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -519,8 +514,6 @@ namespace CKAN
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
-            this.FilterByNamePanel.ResumeLayout(false);
-            this.FilterByNamePanel.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -551,7 +544,6 @@ namespace CKAN
         private System.Windows.Forms.TextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByNameLabel;
         private System.Windows.Forms.DataGridView ModList;
-        private Panel FilterByNamePanel;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private SplitContainer splitContainer1;
         private Panel StatusPanel;

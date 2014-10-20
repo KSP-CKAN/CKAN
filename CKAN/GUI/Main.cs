@@ -62,10 +62,10 @@ namespace CKAN
             KSP.Init();
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
-                (
-                    Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
-                    Repo.default_ckan_repo
-                );
+            (
+                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Repo.default_ckan_repo
+            );
 
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
