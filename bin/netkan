@@ -7,11 +7,12 @@ use JSON::PP qw(decode_json);
 use FindBin qw($Bin);
 use File::Copy qw(move);
 
-use constant INDEX    => "$Bin/../KSPAN.json";
+use constant INDEX    => "$Bin/../NetKAN.json";
 use constant KS2CKAN  => "$Bin/../ks2ckan.exe";
 use constant CKANMETA => "$Bin/../../CKAN-meta/";
 
 # Convert KerbalStuff and GitHub releases into CKAN metadata!
+# It's the Networked Kerbal Archive Network. (NetKAN) :)
 
 # Hop over to our project root.
 chdir("$Bin/..");
