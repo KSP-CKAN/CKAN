@@ -55,12 +55,14 @@
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration.cs" />
+    <Compile Include="ControlFactory.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -18,9 +18,15 @@ namespace CKAN
         public void ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset,
             BackgroundWorker installWorker)
         {
+            Util.Invoke(ChangesListView, () => _ShowApplyChangesDialog(changeset, installWorker));
+            Util.Invoke(this, () => ShowDialog());
+        }
+
+        private void _ShowApplyChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset,
+            BackgroundWorker installWorker)
+        {
             m_Changeset = changeset;
             m_InstallWorker = installWorker;
-
             ChangesListView.Items.Clear();
 
             foreach (var change in changeset)
@@ -39,8 +45,6 @@ namespace CKAN
                 item.SubItems.Add(subChangeType);
                 ChangesListView.Items.Add(item);
             }
-
-            ShowDialog();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -54,7 +58,8 @@ namespace CKAN
         private void ConfirmButton_Click(object sender, EventArgs e)
         {
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-
+            install_ops.with_recommends = false;
+            
             m_InstallWorker.RunWorkerAsync(
                 new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                     m_Changeset, install_ops));

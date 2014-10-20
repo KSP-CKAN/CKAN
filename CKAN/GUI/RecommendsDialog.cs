@@ -9,18 +9,12 @@ namespace CKAN
         public RecommendsDialog()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public List<string> ShowRecommendsDialog(string message, List<string> recommended)
         {
-            if (MessageLabel.InvokeRequired)
-            {
-                MessageLabel.Invoke(new MethodInvoker(delegate { MessageLabel.Text = message; }));
-            }
-            else
-            {
-                MessageLabel.Text = message;
-            }
+            Util.Invoke(MessageLabel, () => MessageLabel.Text = message);
 
             if (RecommendedListView.InvokeRequired)
             {
@@ -50,7 +44,6 @@ namespace CKAN
                 }
             }
 
-            StartPosition = FormStartPosition.CenterScreen;
 
             if (ShowDialog() == DialogResult.OK)
             {

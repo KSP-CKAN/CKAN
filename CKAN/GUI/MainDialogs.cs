@@ -5,24 +5,16 @@ namespace CKAN
 {
     public partial class Main : Form
     {
-        private readonly ApplyChangesDialog m_ApplyChangesDialog = new ApplyChangesDialog();
-        private readonly ErrorDialog m_ErrorDialog = new ErrorDialog();
-        private readonly RecommendsDialog m_RecommendsDialog = new RecommendsDialog();
-        private readonly SettingsDialog m_SettingsDialog = new SettingsDialog();
-        private readonly WaitDialog m_WaitDialog = new WaitDialog();
-        private readonly YesNoDialog m_YesNoDialog = new YesNoDialog();
+        private ApplyChangesDialog m_ApplyChangesDialog = null;
+        private ErrorDialog m_ErrorDialog = null;
+        private RecommendsDialog m_RecommendsDialog = null;
+        private SettingsDialog m_SettingsDialog = null;
+        private WaitDialog m_WaitDialog = null;
+        private YesNoDialog m_YesNoDialog = null;
 
         public void AddStatusMessage(string text, params object[] args)
         {
-            if (StatusLabel.InvokeRequired)
-            {
-                StatusLabel.Invoke(new MethodInvoker(delegate { StatusLabel.Text = String.Format(text, args); }));
-            }
-            else
-            {
-                StatusLabel.Text = String.Format(text, args);
-            }
-
+            Util.Invoke(StatusLabel, () => StatusLabel.Text = String.Format(text, args));
             m_WaitDialog.AddLogMessage(String.Format(text, args));
         }
 
@@ -38,14 +30,14 @@ namespace CKAN
 
         public void ShowWaitDialog()
         {
-            Enabled = false;
+            Util.Invoke(this, () => Enabled = false);
             m_WaitDialog.ShowWaitDialog();
         }
 
         public void HideWaitDialog()
         {
             m_WaitDialog.Close();
-            Enabled = true;
+            Util.Invoke(this, () => Enabled = true);
         }
     }
 }

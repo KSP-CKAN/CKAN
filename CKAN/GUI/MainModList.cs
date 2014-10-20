@@ -43,6 +43,7 @@ namespace CKAN
             }
 
             RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
+            options.with_recommends = false;
 
             RelationshipResolver resolver = null;
             try
@@ -169,25 +170,40 @@ namespace CKAN
 
         private void UpdateModFilterList()
         {
-            ModFilter.Items[0] = String.Format("All ({0})", CountModsByFilter(GUIModFilter.All));
-            ModFilter.Items[1] = String.Format("Installed ({0})", CountModsByFilter(GUIModFilter.Installed));
-            ModFilter.Items[2] = String.Format("Updated ({0})", CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            ModFilter.Items[3] = String.Format("New in repository ({0})",
+            if (menuStrip2.InvokeRequired)
+            {
+                menuStrip2.Invoke(new MethodInvoker(delegate { _UpdateModFilterList(); }));
+            }
+            else
+            {
+                _UpdateModFilterList();
+            }
+        }
+
+        private void _UpdateModFilterList()
+        {
+            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
+                CountModsByFilter(GUIModFilter.All));
+
+            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
+                CountModsByFilter(GUIModFilter.Installed));
+
+            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
+                CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+
+            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
                 CountModsByFilter(GUIModFilter.NewInRepository));
-            ModFilter.Items[4] = String.Format("Not installed ({0})", CountModsByFilter(GUIModFilter.NotInstalled));
-            ModFilter.Items[5] = String.Format("Incompatible ({0})", CountModsByFilter(GUIModFilter.Incompatible));
+
+            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
+                CountModsByFilter(GUIModFilter.NotInstalled));
+
+            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
+                CountModsByFilter(GUIModFilter.Incompatible));
         }
 
         public void UpdateModsList(bool markUpdates = false)
         {
-            if (ModList.InvokeRequired)
-            {
-                ModList.Invoke(new MethodInvoker(delegate { _UpdateModsList(markUpdates); }));
-            }
-            else
-            {
-                _UpdateModsList(markUpdates);
-            }
+            Util.Invoke(this, () => _UpdateModsList(markUpdates));
         }
 
         private void _UpdateModsList(bool markUpdates)
