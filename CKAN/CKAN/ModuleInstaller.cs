@@ -162,7 +162,7 @@ namespace CKAN
         ///     After this we try to download the rest of the mods (asynchronously) and install them
         ///     Finally, only if everything is successful, we commit the transaction
         /// </summary>
-        public void InstallList(List<string> modules, RelationshipResolverOptions options)
+        public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
             currentTransaction = new FilesystemTransaction();
 
@@ -195,7 +195,10 @@ namespace CKAN
                 string fullPath;
                 if (IsCached(module.StandardName(), out fullPath))
                 {
-                    Install(module, fullPath);
+                    if (!downloadOnly)
+                    {
+                        Install(module, fullPath);
+                    }
 
                     counter++;
                     if (onReportProgress != null)
@@ -233,15 +236,19 @@ namespace CKAN
                 Monitor.Wait(downloader);
             }
 
-            if (m_LastDownloadSuccessful)
+            if (m_LastDownloadSuccessful && !downloadOnly)
             {
                 for (int i = 0; i < modulesToDownload.Length; i++)
                 {
                     Install(modulesToDownload[i], modulesToDownloadPaths[i]);
                 }
-            }
 
-            currentTransaction.Commit();
+                currentTransaction.Commit();
+            }
+            else
+            {
+                currentTransaction.Rollback();
+            }
         }
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
@@ -263,6 +270,54 @@ namespace CKAN
             {
                 Monitor.Pulse(downloader);
             }
+        }
+
+        public List<string> GetModuleContentsList(CkanModule module)
+        {
+            if (!IsCached(module))
+            {
+                return null;
+            }
+
+            List<string> contents = new List<string>();
+
+            var filename = CachedOrDownload(module);
+
+            ZipFile zipfile = null;
+
+            // Open our zip file for processing
+            try
+            {
+                zipfile = new ZipFile(File.OpenRead(filename));
+            }
+            catch (Exception)
+            {
+                User.Error("Failed to open archive \"{0}\"", filename);
+                return null;
+            }
+
+            foreach (var stanza in module.install)
+            {
+                string filter = "^" + stanza.file + "(/|$)";
+
+                foreach (ZipEntry entry in zipfile)
+                {
+                    if (!Regex.IsMatch(entry.Name, filter))
+                    {
+                        continue;
+                    }
+
+                    // SKIP the file if it's a .CKAN file, these should never be copied to GameData.
+                    if (Regex.IsMatch(entry.Name, ".CKAN", RegexOptions.IgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    contents.Add(entry.Name);
+                }
+            }
+           
+            return contents;
         }
 
         /// <summary>
@@ -376,7 +431,6 @@ namespace CKAN
             {
                 return null;
             }
-            ;
         }
 
         private void InstallComponent(dynamic stanza, ZipFile zipfile,
@@ -426,7 +480,7 @@ namespace CKAN
             foreach (ZipEntry entry in zipfile)
             {
                 // Skip things we don't want.
-                if (! Regex.IsMatch(entry.Name, filter))
+                if (!Regex.IsMatch(entry.Name, filter))
                 {
                     continue;
                 }
