@@ -16,6 +16,25 @@ namespace CKAN
 
     public class ModuleInstaller
     {
+
+        private static ModuleInstaller _Instance = null;
+
+        public static ModuleInstaller Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                {
+                    _Instance = new ModuleInstaller();
+                }
+
+                return _Instance;
+            }
+        }
+
+        // private constructor so we don't accidentally make an instance
+        private ModuleInstaller() { }
+
         private static readonly ILog log = LogManager.GetLogger(typeof (ModuleInstaller));
         private readonly RegistryManager registry_manager = RegistryManager.Instance();
 
