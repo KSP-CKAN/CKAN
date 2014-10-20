@@ -26,6 +26,15 @@ namespace CKAN
 
         public void SetProgress(int progress)
         {
+            if (progress < 0)
+            {
+                progress = 0;
+            }
+            else if (progress > 100)
+            {
+                progress = 100;
+            }
+
             Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = progress);
             Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
         }
