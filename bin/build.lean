@@ -54,6 +54,8 @@ say "\n\n=== Repacking ===\n\n";
 
 chdir("$Bin/..");
 
+# Repack ckan.exe
+
 my @cmd = (
     $REPACK,
     "--out:ckan.exe",
@@ -63,12 +65,23 @@ my @cmd = (
     "build/CmdLine/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
 );
 
-say "@cmd";
+system(@cmd);
+
+# Repack ks2ckan
+
+my @cmd = (
+    $REPACK,
+    "--out:ks2ckan.exe",
+    "--lib:build/KerbalStuff/bin/$TARGET",
+    "build/KerbalStuff/bin/$TARGET/ks2ckan.exe",
+    glob("build/KerbalStuff/bin/$TARGET/*.dll"),
+);
 
 system(@cmd);
 
 say "\n\n=== Tidying up===\n\n";
 
 unlink("$OUTNAME.mdb");
+unlink("ks2ckan.exe.mdb");
 
 say "Done!";

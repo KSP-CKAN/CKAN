@@ -7,9 +7,9 @@ test-results
 TestResult.xml
 StyleCop.Cache
 ckan.exe
+ks2ckan.exe
 .*.swp
 .fatten.out
 *.resources
 *.suo
 *.orig
-*.ckan
