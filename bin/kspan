@@ -34,7 +34,7 @@ foreach my $mod (@modlist) {
     $index->{modlist}{$mod} or die "Cannot find data for $mod\n";
 
     # Convert our mod
-    system(KS2CKAN, $mod, $index->{modlist}{$mod}, CKANMETA);
+    system(KS2CKAN, "ks", $mod, $index->{modlist}{$mod}, CKANMETA);
 
     # TODO: Automatically submit changes to git.
 }
