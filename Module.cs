@@ -170,43 +170,45 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
-        private static JsonSchema metadata_schema;
-        private static string metadata_schema_path = "CKAN.schema";
-        private static bool metadata_schema_missing_warning_fired;
+//        private static JsonSchema metadata_schema;
+//        private static string metadata_schema_path = "CKAN.schema";
+//        private static bool metadata_schema_missing_warning_fired;
         [JsonProperty("bundles")] public dynamic[] bundles;
         [JsonProperty("install")] public dynamic[] install;
         [JsonProperty("spec_version")] public string spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
+
+            log.Debug("In-client JSON schema validation unimplemented.");
             return true;
             // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
 
-            if (metadata_schema == null)
-            {
-                string schema = "";
-
-                try
-                {
-                    schema = File.ReadAllText(metadata_schema_path);
-                }
-                catch (Exception)
-                {
-                    if (!metadata_schema_missing_warning_fired)
-                    {
-                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-                            metadata_schema_path);
-                        metadata_schema_missing_warning_fired = true;
-                    }
-
-                    return true;
-                }
-
-                metadata_schema = JsonSchema.Parse(schema);
-            }
-
-            JObject obj = JObject.Parse(json);
-            return obj.IsValid(metadata_schema);
+//            if (metadata_schema == null)
+//            {
+//                string schema = "";
+//
+//                try
+//                {
+//                    schema = File.ReadAllText(metadata_schema_path);
+//                }
+//                catch (Exception)
+//                {
+//                    if (!metadata_schema_missing_warning_fired)
+//                    {
+//                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
+//                            metadata_schema_path);
+//                        metadata_schema_missing_warning_fired = true;
+//                    }
+//
+//                    return true;
+//                }
+//
+//                metadata_schema = JsonSchema.Parse(schema);
+//            }
+//
+//            JObject obj = JObject.Parse(json);
+//            return obj.IsValid(metadata_schema);
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
