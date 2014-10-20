@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CKAN.KerbalStuff
 {
-    public class KSMod
+    public class KSMod : CkanInflator
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (KSMod));
         public int id; // KSID
@@ -27,8 +27,9 @@ namespace CKAN.KerbalStuff
         ///     Takes a JObject and inflates it with KS metadata.
         ///     This will not overwrite fields that already exist.
         /// </summary>
-        public void InflateMetadata(JObject metadata, KSVersion version, string filename)
+        override public void InflateMetadata(JObject metadata, string filename, object context)
         {
+            var version = (KSVersion)context;
 
             // Check how big our file is
             long download_size = (new FileInfo (filename)).Length;
@@ -62,27 +63,6 @@ namespace CKAN.KerbalStuff
         {
             Uri path = KSAPI.ExpandPath(String.Format("/mod/{0}/{1}", id, name));
             return Uri.EscapeUriString(path.ToString());
-        }
-
-        internal static void Inflate(JObject metadata, string key, string value)
-        {
-            if (metadata[key] == null)
-            {
-                log.DebugFormat("Setting {0} to {1}", key, value);
-                metadata[key] = value;
-            }
-            else
-            {
-                log.DebugFormat("Leaving {0} as {1}", key, metadata[key]);
-            }
-        }
-
-        internal static void Inflate(JObject metadata, string key, long value)
-        {
-            if (metadata[key] == null)
-            {
-                metadata[key] = value;
-            }
         }
 
     }

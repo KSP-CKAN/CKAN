@@ -1,0 +1,24 @@
+{
+    "spec_version"   : 1,
+    "$kref"          : "#/ckan/github",
+    "name"           : "Community Resource Pack",
+    "author"         : "RoverDude",
+    "identifier"     : "CommunityResourcePack",
+    "abstract"       : "Common resources for KSP mods",
+    "license"        : "CC-BY-NC-SA-4.0",
+    "release_status" : "stable",
+    "ksp_version"    : "0.25",
+    "resources" : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/91998"
+    },
+    "install" : [
+        {
+            "file"       : "GameData/CommunityResourcePack",
+            "install_to" : "GameData"
+        },
+        {
+            "file"       : "GameData/TextureReplacer",
+            "install_to" : "GameData"
+        }
+    ]
+}

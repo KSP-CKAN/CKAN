@@ -43,6 +43,7 @@
     <Compile Include="Version.cs" />
     <Compile Include="KSPVersion.cs" />
     <Compile Include="KerbalStuff\KSMod.cs" />
+    <Compile Include="KerbalStuff\GitHubTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
