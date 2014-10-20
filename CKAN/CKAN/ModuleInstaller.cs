@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ICSharpCode.SharpZipLib.Zip; 
+using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 
 namespace CKAN
@@ -16,8 +16,20 @@ namespace CKAN
 
     public class ModuleInstaller
     {
+        private static ModuleInstaller _Instance;
 
-        private static ModuleInstaller _Instance = null;
+        private static readonly ILog log = LogManager.GetLogger(typeof (ModuleInstaller));
+        private readonly RegistryManager registry_manager = RegistryManager.Instance();
+
+        private FilesystemTransaction currentTransaction;
+        private NetAsyncDownloader downloader;
+        private bool m_LastDownloadSuccessful;
+        public ModuleInstallerReportModInstalled onReportModInstalled = null;
+        public ModuleInstallerReportProgress onReportProgress = null;
+
+        private ModuleInstaller()
+        {
+        }
 
         public static ModuleInstaller Instance
         {
@@ -31,19 +43,6 @@ namespace CKAN
                 return _Instance;
             }
         }
-
-        // private constructor so we don't accidentally make an instance
-        private ModuleInstaller() { }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof (ModuleInstaller));
-        private readonly RegistryManager registry_manager = RegistryManager.Instance();
-
-        private FilesystemTransaction currentTransaction;
-        private NetAsyncDownloader downloader;
-        public ModuleInstallerReportModInstalled onReportModInstalled = null;
-        public ModuleInstallerReportProgress onReportProgress = null;
-
-        private bool m_LastDownloadSuccessful = false;
 
         /// <summary>
         ///     Download the given mod. Returns the filename it was saved to.
@@ -128,8 +127,8 @@ namespace CKAN
 
         public static bool IsCached(CkanModule module)
         {
-            var filename = CkanModule.StandardName(module.identifier, module.version);
-            var path = CachePath(filename);
+            string filename = CkanModule.StandardName(module.identifier, module.version);
+            string path = CachePath(filename);
             if (File.Exists(path))
             {
                 return true;
@@ -279,9 +278,9 @@ namespace CKAN
                 return null;
             }
 
-            List<string> contents = new List<string>();
+            var contents = new List<string>();
 
-            var filename = CachedOrDownload(module);
+            string filename = CachedOrDownload(module);
 
             ZipFile zipfile = null;
 
@@ -296,7 +295,7 @@ namespace CKAN
                 return null;
             }
 
-            foreach (var stanza in module.install)
+            foreach (ModuleInstallDescriptor stanza in module.install)
             {
                 string installDir;
                 if (stanza.install_to == "GameData")
@@ -336,14 +335,14 @@ namespace CKAN
                         continue;
                     }
 
-                    var outputName = Regex.Replace(entry.Name, @"^/?(.*(GameData|Ships)/)?", "");
+                    string outputName = Regex.Replace(entry.Name, @"^/?(.*(GameData|Ships)/)?", "");
                     string fullPath = Path.Combine(installDir, outputName);
                     fullPath = fullPath.Substring(KSP.GameDir().Length + 1);
                     fullPath = fullPath.Replace('\\', '/');
                     contents.Add(fullPath);
                 }
             }
-           
+
             return contents;
         }
 
@@ -463,7 +462,7 @@ namespace CKAN
         private void InstallComponent(ModuleInstallDescriptor stanza, ZipFile zipfile,
             Dictionary<string, InstalledModuleFile> module_files)
         {
-            var fileToInstall = (string) stanza.file;
+            string fileToInstall = stanza.file;
 
             User.WriteLine("    * Installing " + fileToInstall);
 

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 
 namespace CKAN
 {
+
     internal class RegistryVersionNotSupportedException : Exception
     {
         public int requested_version;
@@ -103,7 +103,7 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available != null) 
+                if (available != null)
                 {
                     // we need to check that we can get everything we depend on
                     bool failedDepedency = false;
@@ -204,11 +204,11 @@ namespace CKAN
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
 
-            List<CkanModule> modules = new List<CkanModule>();
+            var modules = new List<CkanModule>();
 
             try
             {
-                var mod = LatestAvailable(module, ksp_version);
+                CkanModule mod = LatestAvailable(module, ksp_version);
                 if (mod != null)
                 {
                     modules.Add(mod);
@@ -223,10 +223,10 @@ namespace CKAN
                         continue;
                     }
 
-                    var provides = pair.Value.Latest(ksp_version).provides;
+                    string[] provides = pair.Value.Latest(ksp_version).provides;
                     if (provides != null)
                     {
-                        foreach (var provided in provides)
+                        foreach (string provided in provides)
                         {
                             if (provided == module)
                             {

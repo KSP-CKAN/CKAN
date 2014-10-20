@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using System.Net.Configuration;
-using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,29 +9,28 @@ using Newtonsoft.Json.Schema;
 
 namespace CKAN
 {
-    
     public class RelationshipDescriptor
     {
+        public string max_version;
+        public string min_version;
         public /* required */ string name;
         public string version;
-        public string min_version;
-        public string max_version;
     }
 
     public class BundledModuleDescriptor
     {
         public /* required */ string file;
         public /* required */ string identifier;
-        public /* required */ string version;
         public /* required */ string install_to;
         public /* required */ string license;
         public /* required */ bool required;
+        public /* required */ string version;
     }
 
     public class GitHubResourceDescriptor
     {
-        public string url;
         public bool releases;
+        public string url;
     }
 
     public class KerbalStuffResourceDescriptor
@@ -42,45 +40,90 @@ namespace CKAN
 
     public class ResourcesDescriptor
     {
-        public string homepage;
-
         public GitHubResourceDescriptor github;
+        public string homepage;
 
         public KerbalStuffResourceDescriptor kerbalstuff;
     }
 
     public class ModuleInstallDescriptor
     {
+        public string description;
         public /* required */ string file;
         public /* required */ string install_to;
-        public string requires;
-        public bool overwrite;
         public bool optional;
-        public string description;
+        public bool overwrite;
+        public string requires;
     }
 
     public enum License
     {
-
         public_domain,
-        Apache, Apache_1_0, Apache_2_0,
-        Artistic, Artistic_1_0, Artistic_2_0,
-        BSD_2_clause, BSD_3_clause, BSD_4_clause,
+        Apache,
+        Apache_1_0,
+        Apache_2_0,
+        Artistic,
+        Artistic_1_0,
+        Artistic_2_0,
+        BSD_2_clause,
+        BSD_3_clause,
+        BSD_4_clause,
         ISC,
-        CC_BY, CC_BY_1_0, CC_BY_2_0, CC_BY_2_5, CC_BY_3_0, CC_BY_4_0,
-        CC_BY_SA, CC_BY_SA_1_0, CC_BY_SA_2_0, CC_BY_SA_2_5, CC_BY_SA_3_0, CC_BY_SA_4_0,
-        CC_BY_NC, CC_BY_NC_1_0, CC_BY_NC_2_0, CC_BY_NC_2_5, CC_BY_NC_3_0, CC_BY_NC_4_0,
-        CC_BY_NC_SA, CC_BY_NC_SA_1_0, CC_BY_NC_SA_2_0, CC_BY_NC_SA_2_5, CC_BY_NC_SA_3_0, CC_BY_NC_SA_4_0,
-        CC_BY_NC_ND, CC_BY_NC_ND_1_0, CC_BY_NC_ND_2_0, CC_BY_NC_ND_2_5, CC_BY_NC_ND_3_0, CC_BY_NC_ND_4_0,
+        CC_BY,
+        CC_BY_1_0,
+        CC_BY_2_0,
+        CC_BY_2_5,
+        CC_BY_3_0,
+        CC_BY_4_0,
+        CC_BY_SA,
+        CC_BY_SA_1_0,
+        CC_BY_SA_2_0,
+        CC_BY_SA_2_5,
+        CC_BY_SA_3_0,
+        CC_BY_SA_4_0,
+        CC_BY_NC,
+        CC_BY_NC_1_0,
+        CC_BY_NC_2_0,
+        CC_BY_NC_2_5,
+        CC_BY_NC_3_0,
+        CC_BY_NC_4_0,
+        CC_BY_NC_SA,
+        CC_BY_NC_SA_1_0,
+        CC_BY_NC_SA_2_0,
+        CC_BY_NC_SA_2_5,
+        CC_BY_NC_SA_3_0,
+        CC_BY_NC_SA_4_0,
+        CC_BY_NC_ND,
+        CC_BY_NC_ND_1_0,
+        CC_BY_NC_ND_2_0,
+        CC_BY_NC_ND_2_5,
+        CC_BY_NC_ND_3_0,
+        CC_BY_NC_ND_4_0,
         CC0,
-        CDDL, CPL,
-        EFL_1_0, EFL_2_0,
-        Expat, MIT,
-        GPL_1_0, GPL_2_0, GPL_3_0,
-        LGPL_2_0, LGPL_2_1, LGPL_3_0,
-        GFDL_1_0, GFDL_1_1, GFDL_1_2, GFDL_1_3,
-        GFDL_NIV_1_0, GFDL_NIV_1_1, GFDL_NIV_1_2, GFDL_NIV_1_3,
-        LPPL_1_0, LPPL_1_1, LPPL_1_2, LPPL_1_3c,
+        CDDL,
+        CPL,
+        EFL_1_0,
+        EFL_2_0,
+        Expat,
+        MIT,
+        GPL_1_0,
+        GPL_2_0,
+        GPL_3_0,
+        LGPL_2_0,
+        LGPL_2_1,
+        LGPL_3_0,
+        GFDL_1_0,
+        GFDL_1_1,
+        GFDL_1_2,
+        GFDL_1_3,
+        GFDL_NIV_1_0,
+        GFDL_NIV_1_1,
+        GFDL_NIV_1_2,
+        GFDL_NIV_1_3,
+        LPPL_1_0,
+        LPPL_1_1,
+        LPPL_1_2,
+        LPPL_1_3c,
         MPL_1_1,
         Perl,
         Python_2_0,
@@ -88,8 +131,10 @@ namespace CKAN
         W3C,
         Zlib,
         Zope,
-        open_source, restricted, unrestricted, unknown
-
+        open_source,
+        restricted,
+        unrestricted,
+        unknown
     }
 
     /// <summary>
@@ -108,18 +153,14 @@ namespace CKAN
 
         [JsonProperty("abstract")] public string @abstract;
 
-        [JsonProperty("author")]
-        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
-        public List<string> author;
-
-        [JsonProperty("download_size")]
-        public long download_size;
+        [JsonProperty("author")] [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public List<string> author;
 
         [JsonProperty("comment")] public string comment;
         [JsonProperty("conflicts")] public RelationshipDescriptor[] conflicts;
         [JsonProperty("depends")] public RelationshipDescriptor[] depends;
 
         [JsonProperty("download")] public Uri download;
+        [JsonProperty("download_size")] public long download_size;
         [JsonProperty("identifier", Required = Required.Always)] public string identifier;
 
         [JsonProperty("ksp_version")] public KSPVersion ksp_version;
