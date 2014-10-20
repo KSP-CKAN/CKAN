@@ -50,6 +50,8 @@
     <Compile Include="KS\KSAPI.cs" />
     <Compile Include="KS\KSVersion.cs" />
     <Compile Include="KS\KSMod.cs" />
+    <Compile Include="Github\GithubAPI.cs" />
+    <Compile Include="Github\GithubRelease.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
