@@ -11,9 +11,34 @@ namespace CKAN
 
         private void UpdateModInfo(CkanModule module)
         {
-            Util.Invoke(ModInfo, () => _UpdateModInfo(module));
+            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
+            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
+            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = module.license.ToString());
+            Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
+            
         }
 
+        private void UpdateModInfoAuthor(CkanModule module)
+        {
+            var authors = "";
+
+            if (module.author != null)
+            {
+                for (int i = 0; i < module.author.Count; i++)
+                {
+                    authors += module.author[i];
+
+                    if (i != module.author.Count - 1)
+                    {
+                        authors += ", ";
+                    }
+                }
+            }
+
+            MetadataModuleAuthorLabel.Text = authors;
+        }
+        
+        /*
         private void _UpdateModInfo(CkanModule module)
         {
             if (module == null)
@@ -21,7 +46,9 @@ namespace CKAN
                 return;
             }
 
-            ModInfo.Text = "";
+            //ModInfo.Text = "";
+
+            
 
             if (module.name != null && module.version != null)
             {
@@ -123,7 +150,7 @@ namespace CKAN
 
             ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
             ModInfo.AppendText("\r\n");
-        }
+        }*/
 
         private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module)
         {

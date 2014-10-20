@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -381,6 +382,9 @@ namespace CKAN
                 item.Cells.Add(homepageCell);
 
                 ModList.Rows.Add(item);
+
+                // sort by name
+                ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
             }
         }
     }
