@@ -52,6 +52,7 @@
     <Compile Include="KS\KSMod.cs" />
     <Compile Include="Github\GithubAPI.cs" />
     <Compile Include="Github\GithubRelease.cs" />
+    <Compile Include="CkanInflator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -21,6 +21,7 @@ namespace CKAN.KerbalStuff
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
         private static readonly string expand_token = "$kref"; // See #70 for naming reasons
         private static readonly string ks_expand_path = "#/ckan/kerbalstuff";
+        private static readonly string gh_expand_path = "#/ckan/github";
 
         public static int Main(string[] args)
         {
@@ -28,43 +29,28 @@ namespace CKAN.KerbalStuff
             LogManager.GetRepository().Threshold = Level.Debug;
             log.Debug("KerbalStuff2CKAN started");
 
-            if (args.Length < 2)
+            if (args.Length < 4)
             {
-                User.WriteLine("I need an identifier and a KSID.");
+                User.WriteLine("Usage: ext2ckan ks identifier ksid outputdir  ## KerbalStuff");
+                User.WriteLine("Usage: ext2ckan gh identifier repo outputdir  ## GitHub");
                 return EXIT_BADOPT;
             }
 
-            string identifier = args[0];
-            int ksid = Convert.ToInt32(args[1]);
-            string output_path = args[2] ?? ".";
+            string source = args[0];
+            string identifier = args[1];
+            string remote_id = args[2];
+            string output_path = args[3];
 
-            log.InfoFormat("Processing {0}", identifier);
-
-            KSMod ks = KSAPI.Mod(ksid);
-            Version version = ks.versions[0].friendly_version;
-
-            log.DebugFormat("Mod: {0} {1}", ks.name, version);
-
-            KSVersion latest = ks.versions[0];
-            string filename = latest.Download(identifier);
+            log.InfoFormat("Processing {0} {1} {2}", source, identifier, remote_id);
 
             JObject metadata = null;
-            try
+            if (source == "ks")
             {
-                metadata = ExtractCkanInfo(filename);
+                metadata = KerbalStuff(identifier, remote_id);
             }
-            catch (MetadataNotFoundKraken)
+            else if (source == "gh")
             {
-                log.WarnFormat ("Reading BootKAN metadata for {0}", filename);
-                metadata = BootKAN (identifier);
-            }
-
-            // Check if we should auto-inflate!
-            if ((string) metadata[expand_token] == ks_expand_path)
-            {
-                log.InfoFormat("Inflating...");
-                ks.InflateMetadata(metadata, latest, filename);
-                metadata.Remove(expand_token);
+                metadata = GitHub(identifier, remote_id);
             }
 
             // Make sure that at the very least this validates against our own
@@ -88,6 +74,67 @@ namespace CKAN.KerbalStuff
 
             return EXIT_OK;
         }
+
+        /// <summary>
+        /// Fetch le things from le KerbalStuff.
+        /// Returns a JObject that should be a fully formed CKAN file.
+        /// </summary>
+        private static JObject KerbalStuff(string identifier, string remote_id)
+        {
+            KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
+            Version version = ks.versions[0].friendly_version;
+
+            log.DebugFormat("Mod: {0} {1}", ks.name, version);
+
+            KSVersion latest = ks.versions[0];
+            string filename = latest.Download(identifier);
+
+            JObject metadata = ExtractOrBootKAN(identifier, filename);
+
+            // Check if we should auto-inflate!
+            if ((string) metadata[expand_token] == ks_expand_path)
+            {
+                log.InfoFormat("Inflating...");
+                ks.InflateMetadata(metadata, filename, latest);
+                metadata.Remove(expand_token);
+            }
+
+            return metadata;
+        }
+
+        private static JObject GitHub(string identifier, string repo)
+        {
+            GithubRelease release = GithubAPI.GetLatestRelease(repo);
+            string filename = release.Download(identifier);
+
+            JObject metadata = ExtractOrBootKAN(identifier, filename);
+
+            if ((string)metadata[expand_token] == gh_expand_path)
+            {
+                log.InfoFormat("Inflating from github metadata...");
+                release.InflateMetadata(metadata, filename, repo);
+                metadata.Remove(expand_token);
+            }
+
+            return metadata;
+
+        }
+
+        internal static JObject ExtractOrBootKAN(string identifier, string filename)
+        {
+            JObject metadata = null;
+            try
+            {
+                metadata = ExtractCkanInfo(filename);
+            }
+            catch (MetadataNotFoundKraken)
+            {
+                log.WarnFormat ("Reading BootKAN metadata for {0}", filename);
+                metadata = BootKAN (identifier);
+            }
+            return metadata;
+        }
+
 
         // Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118 
         private static JObject DeserializeFromStream(Stream stream)
