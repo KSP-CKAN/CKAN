@@ -49,6 +49,7 @@ namespace CKAN
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -61,23 +62,34 @@ namespace CKAN
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
-            this.FilterByNamePanel = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.ModInfo = new System.Windows.Forms.TextBox();
             this.DependsTabPage = new System.Windows.Forms.TabPage();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
+            this.ContentsDownloadButton = new System.Windows.Forms.Button();
+            this.NotCachedLabel = new System.Windows.Forms.Label();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.NotCachedLabel = new System.Windows.Forms.Label();
-            this.ContentsDownloadButton = new System.Windows.Forms.Button();
-            this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
+            this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.MetadataModuleReleaseStatusLabel = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.MetadataModuleAuthorLabel = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.MetadataModuleLicenseLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
-            this.FilterByNamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -87,6 +99,7 @@ namespace CKAN
             this.DependsTabPage.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.StatusPanel.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -147,6 +160,9 @@ namespace CKAN
             // 
             // menuStrip2
             // 
+            this.menuStrip2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuStrip2.AutoSize = false;
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshToolButton,
@@ -155,7 +171,7 @@ namespace CKAN
             this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 24);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(445, 40);
+            this.menuStrip2.Size = new System.Drawing.Size(870, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -194,7 +210,8 @@ namespace CKAN
             this.FilterInstalledUpdateButton,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
-            this.FilterIncompatibleButton});
+            this.FilterIncompatibleButton,
+            this.customToolStripMenuItem});
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
@@ -242,6 +259,12 @@ namespace CKAN
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
             this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
+            // 
+            // customToolStripMenuItem
+            // 
+            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
+            this.customToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.customToolStripMenuItem.Text = "Custom";
             // 
             // ModList
             // 
@@ -340,7 +363,7 @@ namespace CKAN
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(89, 18);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(742, 41);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 4;
@@ -350,21 +373,12 @@ namespace CKAN
             // 
             this.FilterByNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FilterByNameLabel.AutoSize = true;
-            this.FilterByNameLabel.Location = new System.Drawing.Point(3, 21);
+            this.FilterByNameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByNameLabel.Location = new System.Drawing.Point(656, 44);
             this.FilterByNameLabel.Name = "FilterByNameLabel";
             this.FilterByNameLabel.Size = new System.Drawing.Size(75, 13);
             this.FilterByNameLabel.TabIndex = 5;
             this.FilterByNameLabel.Text = "Filter by name:";
-            // 
-            // FilterByNamePanel
-            // 
-            this.FilterByNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FilterByNamePanel.Controls.Add(this.FilterByNameLabel);
-            this.FilterByNamePanel.Controls.Add(this.FilterByNameTextBox);
-            this.FilterByNamePanel.Location = new System.Drawing.Point(649, 24);
-            this.FilterByNamePanel.Name = "FilterByNamePanel";
-            this.FilterByNamePanel.Size = new System.Drawing.Size(217, 39);
-            this.FilterByNamePanel.TabIndex = 6;
             // 
             // splitContainer1
             // 
@@ -399,7 +413,7 @@ namespace CKAN
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.ModInfo);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -407,17 +421,6 @@ namespace CKAN
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Metadata";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // ModInfo
-            // 
-            this.ModInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModInfo.Location = new System.Drawing.Point(3, 3);
-            this.ModInfo.Multiline = true;
-            this.ModInfo.Name = "ModInfo";
-            this.ModInfo.ReadOnly = true;
-            this.ModInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ModInfo.Size = new System.Drawing.Size(219, 512);
-            this.ModInfo.TabIndex = 2;
             // 
             // DependsTabPage
             // 
@@ -452,6 +455,36 @@ namespace CKAN
             this.tabPage2.Text = "Contents";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // ContentsPreviewTree
+            // 
+            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ContentsPreviewTree.Enabled = false;
+            this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
+            this.ContentsPreviewTree.Name = "ContentsPreviewTree";
+            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
+            this.ContentsPreviewTree.TabIndex = 2;
+            // 
+            // ContentsDownloadButton
+            // 
+            this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
+            this.ContentsDownloadButton.Name = "ContentsDownloadButton";
+            this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
+            this.ContentsDownloadButton.TabIndex = 1;
+            this.ContentsDownloadButton.Text = "Download";
+            this.ContentsDownloadButton.UseVisualStyleBackColor = true;
+            this.ContentsDownloadButton.Click += new System.EventHandler(this.ContentsDownloadButton_Click);
+            // 
+            // NotCachedLabel
+            // 
+            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
+            this.NotCachedLabel.Name = "NotCachedLabel";
+            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
+            this.NotCachedLabel.TabIndex = 0;
+            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
+            // 
             // StatusPanel
             // 
             this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -470,47 +503,190 @@ namespace CKAN
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // NotCachedLabel
+            // MetadataModuleGitHubLinkLabel
             // 
-            this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
-            this.NotCachedLabel.Name = "NotCachedLabel";
-            this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
-            this.NotCachedLabel.TabIndex = 0;
-            this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
+            this.MetadataModuleGitHubLinkLabel.AutoSize = true;
+            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(112, 192);
+            this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
+            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(55, 13);
+            this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
+            this.MetadataModuleGitHubLinkLabel.TabStop = true;
+            this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
             // 
-            // ContentsDownloadButton
+            // MetadataModuleHomePageLinkLabel
             // 
-            this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
-            this.ContentsDownloadButton.Name = "ContentsDownloadButton";
-            this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
-            this.ContentsDownloadButton.TabIndex = 1;
-            this.ContentsDownloadButton.Text = "Download";
-            this.ContentsDownloadButton.UseVisualStyleBackColor = true;
+            this.MetadataModuleHomePageLinkLabel.AutoSize = true;
+            this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(112, 160);
+            this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
+            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
+            this.MetadataModuleHomePageLinkLabel.TabStop = true;
+            this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
             // 
-            // ContentsPreviewTree
+            // label10
             // 
-            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ContentsPreviewTree.Enabled = false;
-            this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
-            this.ContentsPreviewTree.Name = "ContentsPreviewTree";
-            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
-            this.ContentsPreviewTree.TabIndex = 2;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(3, 224);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(80, 13);
+            this.label10.TabIndex = 12;
+            this.label10.Text = "Release status:";
+            // 
+            // MetadataModuleReleaseStatusLabel
+            // 
+            this.MetadataModuleReleaseStatusLabel.AutoSize = true;
+            this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(112, 224);
+            this.MetadataModuleReleaseStatusLabel.Name = "MetadataModuleReleaseStatusLabel";
+            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(37, 13);
+            this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
+            this.MetadataModuleReleaseStatusLabel.Text = "Stable";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 192);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(43, 13);
+            this.label8.TabIndex = 10;
+            this.label8.Text = "GitHub:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 160);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(62, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Homepage:";
+            // 
+            // MetadataModuleAuthorLabel
+            // 
+            this.MetadataModuleAuthorLabel.AutoSize = true;
+            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(112, 128);
+            this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
+            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(44, 13);
+            this.MetadataModuleAuthorLabel.TabIndex = 6;
+            this.MetadataModuleAuthorLabel.Text = "Nobody";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 128);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Author:";
+            // 
+            // MetadataModuleLicenseLabel
+            // 
+            this.MetadataModuleLicenseLabel.AutoSize = true;
+            this.MetadataModuleLicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(112, 96);
+            this.MetadataModuleLicenseLabel.Name = "MetadataModuleLicenseLabel";
+            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleLicenseLabel.TabIndex = 4;
+            this.MetadataModuleLicenseLabel.Text = "None";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Location = new System.Drawing.Point(3, 96);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(103, 32);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "License:";
+            // 
+            // MetadataModuleVersionLabel
+            // 
+            this.MetadataModuleVersionLabel.AutoSize = true;
+            this.MetadataModuleVersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(112, 64);
+            this.MetadataModuleVersionLabel.Name = "MetadataModuleVersionLabel";
+            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleVersionLabel.TabIndex = 2;
+            this.MetadataModuleVersionLabel.Text = "0.0.0";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Location = new System.Drawing.Point(3, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(103, 32);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Version:";
+            // 
+            // MetadataModuleNameLabel
+            // 
+            this.MetadataModuleNameLabel.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleNameLabel, 2);
+            this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(213, 64);
+            this.MetadataModuleNameLabel.TabIndex = 0;
+            this.MetadataModuleNameLabel.Text = "Mod Name";
+            this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleVersionLabel, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleLicenseLabel, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleAuthorLabel, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.label8, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.label10, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 7);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 13;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(219, 512);
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(870, 637);
+            this.Controls.Add(this.FilterByNameLabel);
             this.Controls.Add(this.StatusPanel);
+            this.Controls.Add(this.FilterByNameTextBox);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.FilterByNamePanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.menuStrip2);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -519,18 +695,17 @@ namespace CKAN
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
-            this.FilterByNamePanel.ResumeLayout(false);
-            this.FilterByNamePanel.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.DependsTabPage.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.StatusPanel.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -551,12 +726,10 @@ namespace CKAN
         private System.Windows.Forms.TextBox FilterByNameTextBox;
         private System.Windows.Forms.Label FilterByNameLabel;
         private System.Windows.Forms.DataGridView ModList;
-        private Panel FilterByNamePanel;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
         private Label StatusLabel;
-        private TextBox ModInfo;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
@@ -574,13 +747,28 @@ namespace CKAN
         private ToolStripMenuItem FilterNotInstalledButton;
         private ToolStripMenuItem FilterIncompatibleButton;
         private TabControl tabControl1;
-        private TabPage tabPage1;
         private TabPage DependsTabPage;
         private TreeView DependsGraphTree;
         private TabPage tabPage2;
         private Label NotCachedLabel;
         private TreeView ContentsPreviewTree;
         private Button ContentsDownloadButton;
+        private ToolStripMenuItem customToolStripMenuItem;
+        private TabPage tabPage1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label MetadataModuleNameLabel;
+        private Label label1;
+        private Label MetadataModuleVersionLabel;
+        private Label label2;
+        private Label MetadataModuleLicenseLabel;
+        private Label label3;
+        private Label MetadataModuleAuthorLabel;
+        private Label label5;
+        private Label label8;
+        private Label MetadataModuleReleaseStatusLabel;
+        private Label label10;
+        private LinkLabel MetadataModuleHomePageLinkLabel;
+        private LinkLabel MetadataModuleGitHubLinkLabel;
     }
 }
 

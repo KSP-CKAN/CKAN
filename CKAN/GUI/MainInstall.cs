@@ -27,7 +27,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            var installer = new ModuleInstaller();
+            var installer = ModuleInstaller.Instance;
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
@@ -62,7 +62,7 @@ namespace CKAN
                         var recommended = new List<string>();
                         if (change.Key.recommends != null)
                         {
-                            foreach (dynamic mod in change.Key.recommends)
+                            foreach (RelationshipDescriptor mod in change.Key.recommends)
                             {
                                 // if the mod is available for the current KSP version _and_
                                 // the mod is not installed _and_
@@ -91,7 +91,7 @@ namespace CKAN
                             {
                                 foreach (string mod in recommendedToInstall)
                                 {
-                                    toInstall.Add(mod);
+                                    toInstall.Add(mod); 
                                 }
                             }
 
@@ -104,7 +104,7 @@ namespace CKAN
                         var suggested = new List<string>();
                         if (change.Key.suggests != null)
                         {
-                            foreach (dynamic mod in change.Key.suggests)
+                            foreach (RelationshipDescriptor mod in change.Key.suggests)
                             {
                                 if (
                                     RegistryManager.Instance()

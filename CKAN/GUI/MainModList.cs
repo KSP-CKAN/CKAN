@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -60,7 +61,7 @@ namespace CKAN
                 changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install));
             }
 
-            var installer = new ModuleInstaller();
+            ModuleInstaller installer = ModuleInstaller.Instance;
 
             var reverseDependencies = new List<string>();
 
@@ -369,17 +370,21 @@ namespace CKAN
                 // homepage
                 var homepageCell = new DataGridViewLinkCell();
 
-                try
+                if (mod.resources != null && mod.resources.homepage != null)
                 {
-                    homepageCell.Value = mod.resources["homepage"];
+                    homepageCell.Value = mod.resources.homepage;
                 }
-                catch (Exception)
+                else
                 {
                     homepageCell.Value = "N/A";
                 }
+
                 item.Cells.Add(homepageCell);
 
                 ModList.Rows.Add(item);
+
+                // sort by name
+                ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
             }
         }
     }
