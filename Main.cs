@@ -88,6 +88,22 @@ namespace CKAN
             );
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                ActiveControl = FilterByNameTextBox;
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.S))
+            {
+                ApplyToolButton_Click(null, null);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         public static Main Instance
         {
             get { return m_Instance; }
