@@ -33,13 +33,59 @@ namespace CKAN
 
         public ControlFactory controlFactory = null;
 
+        private FolderBrowserDialog m_FindKSPRootDialog = new FolderBrowserDialog();
+
         public Main()
         {
+            User.frontEnd = FrontEndType.UI;
+            User.yesNoDialog = YesNoDialog;
+            User.displayMessage = AddStatusMessage;
+            User.displayError = ErrorDialog;
+
             controlFactory = new ControlFactory();
             m_Instance = this;
             InitializeComponent();
+            RecreateDialogs();
 
-            RecreateDialogs ();
+            try
+            {
+                KSP.Init();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                User.Error("Failed to find KSP root directory, press OK to browse");
+                DialogResult result = m_FindKSPRootDialog.ShowDialog();
+
+                if (result != DialogResult.OK)
+                {
+                    Environment.Exit(1);
+                }
+
+                var path = m_FindKSPRootDialog.SelectedPath;
+
+                if (Directory.Exists(path))
+                {
+                    try
+                    {
+                        KSP.PopulateGamedirRegistry(m_FindKSPRootDialog.SelectedPath);
+                        KSP.Init();
+                    }
+                    catch (Exception)
+                    {
+                        User.Error("Invalid KSP directory");
+                    }
+                }
+                else
+                {
+                    User.Error("Directory doesn't exist");
+                }
+            }
+
+            m_Configuration = Configuration.LoadOrCreateConfiguration
+            (
+                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Repo.default_ckan_repo
+            );
         }
 
         public static Main Instance
@@ -49,14 +95,6 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
-            KSP.Init();
-
-            m_Configuration = Configuration.LoadOrCreateConfiguration
-            (
-                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
-                Repo.default_ckan_repo
-            );
-
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
             m_UpdateRepoWorker.WorkerSupportsCancellation = true;
@@ -68,11 +106,6 @@ namespace CKAN
             m_InstallWorker.WorkerSupportsCancellation = true;
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
-
-            User.frontEnd = FrontEndType.UI;
-            User.yesNoDialog = YesNoDialog;
-            User.displayMessage = AddStatusMessage;
-            User.displayError = ErrorDialog;
 
             UpdateModsList();
             UpdateModFilterList();
