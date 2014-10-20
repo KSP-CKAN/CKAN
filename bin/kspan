@@ -7,36 +7,33 @@ use JSON::PP qw(decode_json);
 use FindBin qw($Bin);
 use File::Copy qw(move);
 
-use constant INDEX    => "$Bin/../KSMods.json";
+use constant INDEX    => "$Bin/../KSPAN.json";
 use constant KS2CKAN  => "$Bin/../ks2ckan.exe";
 use constant CKANMETA => "$Bin/../../CKAN-meta/";
 
-# Generate everything we need for the KerbalStuffPAN (ks2ckan)
+# Convert KerbalStuff and GitHub releases into CKAN metadata!
 
 # Hop over to our project root.
 chdir("$Bin/..");
 
 my $index = decode_json( slurp(INDEX) );
 
-my @modlist;
-
-# Process mods listed on the commandline, or the whole modlist by default.
-if (@ARGV) {
-    @modlist = @ARGV;
-}
-else {
-    @modlist = keys %{ $index->{modlist} };
+foreach my $target (keys %$index) {
+    process_target($target, $index->{$target}{modlist});
 }
 
-foreach my $mod (@modlist) {
-    say "$mod...";
+# TODO: Automatically submit changes to git.
 
-    $index->{modlist}{$mod} or die "Cannot find data for $mod\n";
+sub process_target {
+    my ($target, $modlist) = @_;
 
-    # Convert our mod
-    system(KS2CKAN, "ks", $mod, $index->{modlist}{$mod}, CKANMETA);
+    foreach my $mod (keys %$modlist) {
+        say "$target/$mod...";
 
-    # TODO: Automatically submit changes to git.
+        # Convert our mod
+        system(KS2CKAN, $target, $mod, $modlist->{$mod}, CKANMETA);
+
+    }
 }
 
 sub slurp {

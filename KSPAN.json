@@ -1,0 +1,18 @@
+{
+    "ks" : {
+        "modlist" : {
+            "CrewFiles" : 39,
+            "DogeCoinFlag" : 269,
+            "kOS" : 86,
+            "FerramAerospaceResearch" : 52,
+            "RemoteTech" : 134,
+            "InfernalRobotics" : 8
+        }
+    },
+    "gh" : {
+        "modlist" : {
+            "RealSolarSystem" : "NathanKell/RealSolarSystem",
+            "TweakScale"      : "Biotronic/TweakScale"
+        }
+    }
+}
