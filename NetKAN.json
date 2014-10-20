@@ -11,8 +11,9 @@
     },
     "gh" : {
         "modlist" : {
-            "RealSolarSystem" : "NathanKell/RealSolarSystem",
-            "TweakScale"      : "Biotronic/TweakScale"
+            "RealSolarSystem"       : "NathanKell/RealSolarSystem",
+            "TweakScale"            : "Biotronic/TweakScale",
+            "CommunityResourcePack" : "BobPalmer/CommunityResourcePack"
         }
     }
 }
