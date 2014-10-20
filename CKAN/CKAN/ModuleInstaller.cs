@@ -298,6 +298,29 @@ namespace CKAN
 
             foreach (var stanza in module.install)
             {
+                string installDir;
+                if (stanza.install_to == "GameData")
+                {
+                    installDir = KSP.GameData();
+                }
+                else if (stanza.install_to == "Ships")
+                {
+                    installDir = KSP.Ships();
+                }
+                else if (stanza.install_to == "Tutorial")
+                {
+                    installDir = Path.Combine(Path.Combine(KSP.GameDir(), "saves"), "training");
+                }
+                else if (stanza.install_to == "GameRoot")
+                {
+                    installDir = KSP.GameDir();
+                }
+                else
+                {
+                    // What is the best exception to use here??
+                    throw new Exception("Unknown install location: " + stanza.install_to);
+                }
+
                 string filter = "^" + stanza.file + "(/|$)";
 
                 foreach (ZipEntry entry in zipfile)
@@ -313,7 +336,11 @@ namespace CKAN
                         continue;
                     }
 
-                    contents.Add(entry.Name);
+                    var outputName = Regex.Replace(entry.Name, @"^/?(.*(GameData|Ships)/)?", "");
+                    string fullPath = Path.Combine(installDir, outputName);
+                    fullPath = fullPath.Substring(KSP.GameDir().Length + 1);
+                    fullPath = fullPath.Replace('\\', '/');
+                    contents.Add(fullPath);
                 }
             }
            

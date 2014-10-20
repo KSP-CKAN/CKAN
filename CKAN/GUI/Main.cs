@@ -42,16 +42,6 @@ namespace CKAN
             RecreateDialogs ();
         }
 
-        public void RecreateDialogs()
-        {
-            m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
-            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
-            m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
-            m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
-            m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
-            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
-        }
-
         public static Main Instance
         {
             get { return m_Instance; }
@@ -121,171 +111,6 @@ namespace CKAN
             }
 
             ModList.Refresh();
-        }
-
-        private void UpdateModInfo(CkanModule module)
-        {
-            Util.Invoke(ModInfo, () => _UpdateModInfo(module));
-        }
-
-        private void _UpdateModInfo(CkanModule module)
-        {
-            ModInfo.Text = "";
-
-            ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
-
-            ModInfo.AppendText(String.Format("Abstract: {0}\r\n", module.@abstract));
-
-            if (module.author != null)
-            {
-                string authors = "";
-                foreach (string auth in module.author)
-                {
-                    authors += auth + ", ";
-                }
-
-                ModInfo.AppendText(String.Format("Author: {0}\r\n", authors));
-            }
-
-            ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
-            ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
-            ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
-
-            if (module.ksp_version != null)
-            {
-                ModInfo.AppendText (String.Format ("KSP Version: {0}\r\n", module.ksp_version));
-            }
-
-            ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
-            ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
-
-            ModInfo.AppendText("\r\n");
-
-            string dependencies = "";
-            if (module.depends != null)
-            {
-                for (int i = 0; i < module.depends.Count(); i++)
-                {
-                    dependencies += module.depends[i].name;
-                    if (i != module.depends.Count() - 1)
-                    {
-                        dependencies += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Dependencies: {0}\r\n", dependencies));
-            ModInfo.AppendText("\r\n");
-
-            string recommended = "";
-            if (module.recommends != null)
-            {
-                for (int i = 0; i < module.recommends.Count(); i++)
-                {
-                    recommended += module.recommends[i].name;
-                    if (i != module.recommends.Count() - 1)
-                    {
-                        recommended += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Recommends: {0}\r\n", recommended));
-            ModInfo.AppendText("\r\n");
-
-            string suggested = "";
-            if (module.suggests != null)
-            {
-                for (int i = 0; i < module.suggests.Count(); i++)
-                {
-                    suggested += module.suggests[i].name;
-                    if (i != module.suggests.Count() - 1)
-                    {
-                        suggested += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
-            ModInfo.AppendText("\r\n");
-        }
-
-        private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module)
-        {
-            int i = 0;
-
-            node.Text = module.name;
-            node.Nodes.Clear();
-
-            if (module.depends != null)
-            {
-                foreach (dynamic dependency in module.depends)
-                {
-                    Registry registry = RegistryManager.Instance().registry;
-
-                    try
-                    {
-                        dynamic dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
-
-                        node.Nodes.Add("");
-                        UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);
-                        i++;
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
-
-        private void UpdateModDependencyGraph(CkanModule module)
-        {
-            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
-        }
-
-        private void _UpdateModDependencyGraph(CkanModule module)
-        {
-            DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add("");
-            UpdateModDependencyGraphRecursively(DependsGraphTree.Nodes[0], module);
-            DependsGraphTree.Nodes[0].ExpandAll();
-        }
-
-        private void UpdateModContentsTree(CkanModule module)
-        {
-            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(module));
-        }
-
-        private void _UpdateModContentsTree(CkanModule module)
-        {
-            if (ModuleInstaller.IsCached(module))
-            {
-                NotCachedLabel.Text = "Module is cached, preview available";
-                ContentsDownloadButton.Enabled = false;
-                ContentsPreviewTree.Enabled = true;
-            }
-            else
-            {
-                NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
-                ContentsDownloadButton.Enabled = true;
-                ContentsPreviewTree.Enabled = false;
-            }
-
-            ContentsPreviewTree.Nodes.Clear();
-            ContentsPreviewTree.Nodes.Add(module.name);
-
-            var contents = ModuleInstaller.Instance.GetModuleContentsList(module);
-            if (contents == null)
-            {
-                return;
-            }
-
-            foreach (var item in contents)
-            {
-                ContentsPreviewTree.Nodes[0].Nodes.Add(item);
-            }
-
-            ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -477,8 +302,8 @@ namespace CKAN
             }
 
             m_WaitDialog.ResetProgress();
+            m_WaitDialog.ShowWaitDialog(false);
             ModuleInstaller.Instance.CachedOrDownload(module);
-            m_WaitDialog.ShowWaitDialog();
             m_WaitDialog.HideWaitDialog();
 
             UpdateModContentsTree(module);
