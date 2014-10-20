@@ -423,7 +423,7 @@ namespace CKAN
 
                 // Strip off everything up to GameData/Ships
                 // TODO: There's got to be a nicer way of doing path resolution.
-                outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "");
+                outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
 
                 // Aww hell yes, let's write this file out!
 
