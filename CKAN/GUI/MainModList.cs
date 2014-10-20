@@ -369,14 +369,15 @@ namespace CKAN
                 // homepage
                 var homepageCell = new DataGridViewLinkCell();
 
-                try
+                if (mod.resources != null && mod.resources.homepage != null)
                 {
-                    homepageCell.Value = mod.resources["homepage"];
+                    homepageCell.Value = mod.resources.homepage;
                 }
-                catch (Exception)
+                else
                 {
                     homepageCell.Value = "N/A";
                 }
+                
                 item.Cells.Add(homepageCell);
 
                 ModList.Rows.Add(item);

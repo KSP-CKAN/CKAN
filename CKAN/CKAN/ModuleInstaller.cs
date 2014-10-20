@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Zip; 
 using log4net;
 
 namespace CKAN
@@ -397,7 +397,7 @@ namespace CKAN
             }
 
             // Walk through our install instructions.
-            foreach (dynamic stanza in module.install)
+            foreach (ModuleInstallDescriptor stanza in module.install)
             {
                 InstallComponent(stanza, zipfile, module_files);
             }
@@ -408,7 +408,7 @@ namespace CKAN
             // Handle bundled mods, if we have them.
             if (module.bundles != null)
             {
-                foreach (dynamic stanza in module.bundles)
+                foreach (BundledModuleDescriptor stanza in module.bundles)
                 {
                     var bundled = new BundledModule(stanza);
 
@@ -426,7 +426,7 @@ namespace CKAN
                     // Not installed, so let's get about installing it!
                     var installed_files = new Dictionary<string, InstalledModuleFile>();
 
-                    InstallComponent(stanza, zipfile, installed_files);
+                    //InstallComponent(stanza, zipfile, installed_files);
 
                     registry.RegisterModule(new InstalledModule(installed_files, bundled, DateTime.Now));
                 }
@@ -460,7 +460,7 @@ namespace CKAN
             }
         }
 
-        private void InstallComponent(dynamic stanza, ZipFile zipfile,
+        private void InstallComponent(ModuleInstallDescriptor stanza, ZipFile zipfile,
             Dictionary<string, InstalledModuleFile> module_files)
         {
             var fileToInstall = (string) stanza.file;
@@ -609,7 +609,7 @@ namespace CKAN
 
                 if (mod.depends != null)
                 {
-                    foreach (dynamic dependency in mod.depends)
+                    foreach (RelationshipDescriptor dependency in mod.depends)
                     {
                         if (dependency.name == modName)
                         {

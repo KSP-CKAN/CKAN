@@ -44,7 +44,7 @@ namespace CKAN
         }
 
         // Default registry location
-        private static string DefaultRegistry()
+        private static string DefaultRegistry() 
         {
             return Path.Combine(KSP.CkanDir(), "registry.json");
         }

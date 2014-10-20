@@ -134,13 +134,13 @@ namespace CKAN
 
             if (module.depends != null)
             {
-                foreach (dynamic dependency in module.depends)
+                foreach (RelationshipDescriptor dependency in module.depends)
                 {
                     Registry registry = RegistryManager.Instance().registry;
 
                     try
                     {
-                        dynamic dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
+                        CkanModule dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
 
                         node.Nodes.Add("");
                         UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);
@@ -188,7 +188,7 @@ namespace CKAN
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
-                ContentsPreviewTree.Enabled = false;
+                ContentsPreviewTree.Enabled = false; 
             }
 
             ContentsPreviewTree.Nodes.Clear();
