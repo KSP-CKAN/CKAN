@@ -30,7 +30,7 @@ namespace CKAN
 
     public class NetAsyncDownloader
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+//        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         private readonly NetAsyncDownloaderDownloadPart[] downloads;
         public NetAsyncCompleted onCompleted = null;
