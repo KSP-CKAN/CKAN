@@ -60,7 +60,7 @@ namespace CKAN
                 changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install));
             }
 
-            var installer = ModuleInstaller.Instance;
+            ModuleInstaller installer = ModuleInstaller.Instance;
 
             var reverseDependencies = new List<string>();
 
@@ -377,7 +377,7 @@ namespace CKAN
                 {
                     homepageCell.Value = "N/A";
                 }
-                
+
                 item.Cells.Add(homepageCell);
 
                 ModList.Rows.Add(item);
