@@ -60,7 +60,7 @@ namespace CKAN.KerbalStuff
 
             log.DebugFormat("Downloading {0}", download);
 
-            var installer = new ModuleInstaller();
+            var installer = ModuleInstaller.Instance;
 
             string filename = installer.CachedOrDownload(identifier, version, download);
 

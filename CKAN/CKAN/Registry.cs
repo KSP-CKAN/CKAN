@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 
 namespace CKAN
 {
+
     internal class RegistryVersionNotSupportedException : Exception
     {
         public int requested_version;
@@ -110,11 +110,11 @@ namespace CKAN
 
                     if (available.depends != null)
                     {
-                        foreach (dynamic dependency in available.depends)
+                        foreach (RelationshipDescriptor dependency in available.depends)
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name.Value, ksp_version).Count == 0)
+                                if (LatestAvailableWithProvides(dependency.name, ksp_version).Count == 0)
                                 {
                                     failedDepedency = true;
                                     break;
@@ -204,11 +204,11 @@ namespace CKAN
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
 
-            List<CkanModule> modules = new List<CkanModule>();
+            var modules = new List<CkanModule>();
 
             try
             {
-                var mod = LatestAvailable(module, ksp_version);
+                CkanModule mod = LatestAvailable(module, ksp_version);
                 if (mod != null)
                 {
                     modules.Add(mod);
@@ -223,10 +223,10 @@ namespace CKAN
                         continue;
                     }
 
-                    var provides = pair.Value.Latest(ksp_version).provides;
+                    string[] provides = pair.Value.Latest(ksp_version).provides;
                     if (provides != null)
                     {
-                        foreach (var provided in provides)
+                        foreach (string provided in provides)
                         {
                             if (provided == module)
                             {

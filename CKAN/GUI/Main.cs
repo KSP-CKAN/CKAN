@@ -33,23 +33,75 @@ namespace CKAN
 
         public ControlFactory controlFactory = null;
 
+        private FolderBrowserDialog m_FindKSPRootDialog = new FolderBrowserDialog();
+
         public Main()
         {
+            User.frontEnd = FrontEndType.UI;
+            User.yesNoDialog = YesNoDialog;
+            User.displayMessage = AddStatusMessage;
+            User.displayError = ErrorDialog;
+
             controlFactory = new ControlFactory();
             m_Instance = this;
             InitializeComponent();
+            RecreateDialogs();
 
-            RecreateDialogs ();
+            try
+            {
+                KSP.Init();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                User.Error("Failed to find KSP root directory, press OK to browse");
+                DialogResult result = m_FindKSPRootDialog.ShowDialog();
+
+                if (result != DialogResult.OK)
+                {
+                    Environment.Exit(1);
+                }
+
+                var path = m_FindKSPRootDialog.SelectedPath;
+
+                if (Directory.Exists(path))
+                {
+                    try
+                    {
+                        KSP.PopulateGamedirRegistry(m_FindKSPRootDialog.SelectedPath);
+                        KSP.Init();
+                    }
+                    catch (Exception)
+                    {
+                        User.Error("Invalid KSP directory");
+                    }
+                }
+                else
+                {
+                    User.Error("Directory doesn't exist");
+                }
+            }
+
+            m_Configuration = Configuration.LoadOrCreateConfiguration
+            (
+                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Repo.default_ckan_repo
+            );
         }
 
-        public void RecreateDialogs()
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
-            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
-            m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
-            m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
-            m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
-            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                ActiveControl = FilterByNameTextBox;
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.S))
+            {
+                ApplyToolButton_Click(null, null);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         public static Main Instance
@@ -59,14 +111,6 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
-            KSP.Init();
-
-            m_Configuration = Configuration.LoadOrCreateConfiguration
-                (
-                    Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
-                    Repo.default_ckan_repo
-                );
-
             m_UpdateRepoWorker = new BackgroundWorker();
             m_UpdateRepoWorker.WorkerReportsProgress = false;
             m_UpdateRepoWorker.WorkerSupportsCancellation = true;
@@ -78,11 +122,6 @@ namespace CKAN
             m_InstallWorker.WorkerSupportsCancellation = true;
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
-
-            User.frontEnd = FrontEndType.UI;
-            User.yesNoDialog = YesNoDialog;
-            User.displayMessage = AddStatusMessage;
-            User.displayError = ErrorDialog;
 
             UpdateModsList();
             UpdateModFilterList();
@@ -121,163 +160,6 @@ namespace CKAN
             }
 
             ModList.Refresh();
-        }
-
-        private void UpdateModInfo(CkanModule module)
-        {
-            Util.Invoke(ModInfo, () => _UpdateModInfo(module));
-        }
-
-        private void _UpdateModInfo(CkanModule module)
-        {
-            ModInfo.Text = "";
-
-            ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
-
-            ModInfo.AppendText(String.Format("Abstract: {0}\r\n", module.@abstract));
-
-            if (module.author != null)
-            {
-                string authors = "";
-                foreach (string auth in module.author)
-                {
-                    authors += auth + ", ";
-                }
-
-                ModInfo.AppendText(String.Format("Author: {0}\r\n", authors));
-            }
-
-            ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
-            ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
-            ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
-
-            if (module.ksp_version != null)
-            {
-                ModInfo.AppendText (String.Format ("KSP Version: {0}\r\n", module.ksp_version));
-            }
-
-            ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
-            ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
-
-            ModInfo.AppendText("\r\n");
-
-            string dependencies = "";
-            if (module.depends != null)
-            {
-                for (int i = 0; i < module.depends.Count(); i++)
-                {
-                    dependencies += module.depends[i].name;
-                    if (i != module.depends.Count() - 1)
-                    {
-                        dependencies += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Dependencies: {0}\r\n", dependencies));
-            ModInfo.AppendText("\r\n");
-
-            string recommended = "";
-            if (module.recommends != null)
-            {
-                for (int i = 0; i < module.recommends.Count(); i++)
-                {
-                    recommended += module.recommends[i].name;
-                    if (i != module.recommends.Count() - 1)
-                    {
-                        recommended += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Recommends: {0}\r\n", recommended));
-            ModInfo.AppendText("\r\n");
-
-            string suggested = "";
-            if (module.suggests != null)
-            {
-                for (int i = 0; i < module.suggests.Count(); i++)
-                {
-                    suggested += module.suggests[i].name;
-                    if (i != module.suggests.Count() - 1)
-                    {
-                        suggested += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
-            ModInfo.AppendText("\r\n");
-        }
-
-        private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module)
-        {
-            int i = 0;
-
-            node.Text = module.name;
-            node.Nodes.Clear();
-
-            if (module.depends != null)
-            {
-                foreach (dynamic dependency in module.depends)
-                {
-                    Registry registry = RegistryManager.Instance().registry;
-
-                    try
-                    {
-                        dynamic dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
-
-                        node.Nodes.Add("");
-                        UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);
-                        i++;
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
-
-        private void UpdateModDependencyGraph(CkanModule module)
-        {
-            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
-        }
-
-        private void UpdateModContentsGraphRecursively(TreeNode node, CkanModule module)
-        {
-            
-        }
-
-        private void _UpdateModDependencyGraph(CkanModule module)
-        {
-            DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add("");
-            UpdateModDependencyGraphRecursively(DependsGraphTree.Nodes[0], module);
-            DependsGraphTree.Nodes[0].ExpandAll();
-        }
-
-        private void UpdateModContentsTree(CkanModule module)
-        {
-            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(module));
-        }
-
-        private void _UpdateModContentsTree(CkanModule module)
-        {
-            if (ModuleInstaller.IsCached(module))
-            {
-                NotCachedLabel.Text = "Module is cached, preview available";
-                ContentsDownloadButton.Enabled = false;
-            }
-            else
-            {
-                NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
-                ContentsDownloadButton.Enabled = true;
-            }
-
-            ContentsPreviewTree.Nodes.Clear();
-            ContentsPreviewTree.Nodes.Add(module.name);
-            UpdateModContentsGraphRecursively(ContentsPreviewTree.Nodes[0], module);
-            ContentsPreviewTree.Nodes[0].ExpandAll();
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
@@ -374,7 +256,7 @@ namespace CKAN
                 }
                 else if ((bool) cell.Value && isInstalled)
                 {
-                    var installer = new ModuleInstaller();
+                    var installer = ModuleInstaller.Instance;
                     List<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
                     foreach (string dependency in reverseDependencies)
                     {
@@ -447,6 +329,34 @@ namespace CKAN
             m_ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
             UpdateModsList();
+        }
+
+        private void ContentsDownloadButton_Click(object sender, EventArgs e)
+        {
+            if (ModList.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var module = (CkanModule)selectedItem.Tag;
+            if (module == null)
+            {
+                return;
+            }
+
+            m_WaitDialog.ResetProgress();
+            m_WaitDialog.ShowWaitDialog(false);
+            ModuleInstaller.Instance.CachedOrDownload(module);
+            m_WaitDialog.HideWaitDialog();
+
+            UpdateModContentsTree(module);
+            RecreateDialogs();
         }
     }
 }
