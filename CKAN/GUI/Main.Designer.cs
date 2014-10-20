@@ -465,6 +465,7 @@ namespace CKAN
             this.ContentsDownloadButton.TabIndex = 1;
             this.ContentsDownloadButton.Text = "Download";
             this.ContentsDownloadButton.UseVisualStyleBackColor = true;
+            this.ContentsDownloadButton.Click += new System.EventHandler(this.ContentsDownloadButton_Click);
             // 
             // NotCachedLabel
             // 

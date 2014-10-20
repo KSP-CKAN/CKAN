@@ -13,9 +13,16 @@ namespace CKAN
             DialogProgressBar.Maximum = 100;
         }
 
-        public void ShowWaitDialog()
+        public void ShowWaitDialog(bool asDialog = true)
         {
-            Util.Invoke(this, () => ShowDialog());
+            if (asDialog)
+            {
+                Util.Invoke(this, () => ShowDialog());
+            }
+            else
+            {
+                Util.Invoke(this, () => Show());
+            }
         }
 
         public void HideWaitDialog()
