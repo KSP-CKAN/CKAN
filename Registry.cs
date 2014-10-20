@@ -103,18 +103,18 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available != null)
+                if (available != null) 
                 {
                     // we need to check that we can get everything we depend on
                     bool failedDepedency = false;
 
                     if (available.depends != null)
                     {
-                        foreach (dynamic dependency in available.depends)
+                        foreach (RelationshipDescriptor dependency in available.depends)
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name.Value, ksp_version).Count == 0)
+                                if (LatestAvailableWithProvides(dependency.name, ksp_version).Count == 0)
                                 {
                                     failedDepedency = true;
                                     break;
