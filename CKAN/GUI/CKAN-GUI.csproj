@@ -68,6 +68,12 @@
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="KSPCommandLineOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainModInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -201,5 +210,8 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ksp.jpg" />
   </ItemGroup>
 </Project>
