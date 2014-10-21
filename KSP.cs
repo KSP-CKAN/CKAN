@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 
@@ -12,7 +13,19 @@ namespace CKAN
     {
         public const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
         public const string CKAN_GAMEDIR_VALUE = @"GameDir";
+        public const string CKAN_INSTANCES_COUNT_VALUE = @"InstancesCount";
         public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
+
+        public static void SetRegistryValue<T>(string key, T value)
+        {
+            Microsoft.Win32.Registry.SetValue(KSPPathConstants.CKAN_KEY, key, value);
+        }
+
+        public static T GetRegistryValue<T>(string key, T defaultValue)
+        {
+            return (T)Microsoft.Win32.Registry.GetValue(KSPPathConstants.CKAN_KEY, key, defaultValue);
+        }
+
     }
 
     public class KSPPathUtils
@@ -172,14 +185,6 @@ namespace CKAN
                 return exe_dir;
             }
 
-            // Check the registry, maybe it's there.
-            string registry_dir = FindGamedirRegistry();
-
-            if (registry_dir != null)
-            {
-                return registry_dir;
-            }
-
             // See if we can find KSP as part of a Steam install.
 
             string steam = KSPPathUtils.SteamPath();
@@ -200,40 +205,49 @@ namespace CKAN
 
             throw new DirectoryNotFoundException();
         }
-
-        private string FindGamedirRegistry()
+        
+        public static void LoadInstancesFromRegistry()
         {
-            // Check the Windows/Mono registry (GH #28)
-
-            log.DebugFormat("Checking {0}\\{1} for KSP path", KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE);
-
-            var ksp_dir = (string)Microsoft.Win32.Registry.GetValue(KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, null);
-
-            if (ksp_dir != null)
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
+            if (key == null)
             {
-                log.DebugFormat("Found KSP dir in {0} via registry", ksp_dir);
-                return ksp_dir;
+                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
-            return null;
+            var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
+         
+            for (int i = 0; i < instanceCount; i++)
+            {
+                var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
+                var path = KSPPathConstants.GetRegistryValue(@"KSPInstancePath_" + i, "");
+
+                var ksp = new KSP();
+                ksp.SetGameDir(path);
+                Instances.Add(name, ksp);
+            }
         }
 
-        public void PopulateGamedirRegistry(string gamedir = null)
+        public static void PopulateRegistryWithInstances()
         {
-            if (gamedir == null)
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
+            if (key == null)
             {
-                log.Debug("Registering default gamedir in registry.");
-                gamedir = GameDir();
+                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
-            if (! IsKspDir(gamedir))
+            KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", Instances.Count);
+
+            int i = 0;
+            foreach (var instance in Instances)
             {
-                throw new DirectoryNotFoundException();
+                var name = instance.Key;
+                var ksp = instance.Value;
+
+                KSPPathConstants.SetRegistryValue(@"KSPInstanceName_" + i, name);
+                KSPPathConstants.SetRegistryValue(@"KSPInstancePath_" + i, ksp.GameDir());
+                
+                i++;
             }
-
-            log.DebugFormat("Registering KSP {0}\\{1} as {2}", KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, gamedir);
-
-            Microsoft.Win32.Registry.SetValue(KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, gamedir);
         }
 
         // Returns true if we have what looks like a KSP dir.
@@ -298,14 +312,6 @@ namespace CKAN
                 var directory = new DirectoryInfo(FilesystemTransaction.TempPath);
                 foreach (FileInfo file in directory.GetFiles()) file.Delete();
                 foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-            }
-
-            // If we've got no game in the registry, then store this one.
-            // If we *do* have a game there, don't touch it.
-
-            if (FindGamedirRegistry() == null)
-            {
-                PopulateGamedirRegistry();
             }
         }
 
