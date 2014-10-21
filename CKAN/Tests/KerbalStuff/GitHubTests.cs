@@ -10,7 +10,7 @@ namespace GitHubTests
         [Test()]
         public void Release ()
         {
-            GithubRelease ckan = CKAN.KerbalStuff.GithubAPI.GetLatestRelease("KSP-CKAN/CKAN");
+            GithubRelease ckan = CKAN.KerbalStuff.GithubAPI.GetLatestRelease("KSP-CKAN/Test");
             Assert.IsNotNull (ckan.author);
             Assert.IsNotNull (ckan.download);
             Assert.IsNotNull (ckan.size);
