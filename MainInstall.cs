@@ -69,7 +69,7 @@ namespace CKAN
                                 // the mod is not already in the install list
                                 if (
                                     RegistryManager.Instance()
-                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -108,7 +108,7 @@ namespace CKAN
                             {
                                 if (
                                     RegistryManager.Instance()
-                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {

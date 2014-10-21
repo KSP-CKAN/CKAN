@@ -167,7 +167,8 @@ namespace CKAN
 
                     try
                     {
-                        CkanModule dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
+                        CkanModule dependencyModule = registry.LatestAvailable
+                            (dependency.name.ToString(), KSP.CurrentInstance.Version());
 
                         node.Nodes.Add("");
                         UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);

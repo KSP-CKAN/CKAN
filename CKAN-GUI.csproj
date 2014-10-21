@@ -54,6 +54,12 @@
     <Compile Include="ApplyChangesDialog.Designer.cs">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChooseKSPInstance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseKSPInstance.Designer.cs">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configuration.cs" />
     <Compile Include="ControlFactory.cs" />
     <Compile Include="ErrorDialog.cs">
@@ -112,6 +118,9 @@
     </Compile>
     <EmbeddedResource Include="ApplyChangesDialog.resx">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChooseKSPInstance.resx">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>

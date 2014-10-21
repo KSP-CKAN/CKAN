@@ -44,48 +44,24 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             m_Instance = this;
+            
             InitializeComponent();
-            RecreateDialogs();
+            Hide();
 
-            try
+            var result = new ChooseKSPInstance().ShowDialog();
+            if (result == DialogResult.Cancel || result == DialogResult.Abort)
             {
-                KSP.Init();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                User.Error("Failed to find KSP root directory, press OK to browse");
-                DialogResult result = m_FindKSPRootDialog.ShowDialog();
-
-                if (result != DialogResult.OK)
-                {
-                    Environment.Exit(1);
-                }
-
-                var path = m_FindKSPRootDialog.SelectedPath;
-
-                if (Directory.Exists(path))
-                {
-                    try
-                    {
-                        KSP.PopulateGamedirRegistry(m_FindKSPRootDialog.SelectedPath);
-                        KSP.Init();
-                    }
-                    catch (Exception)
-                    {
-                        User.Error("Invalid KSP directory");
-                    }
-                }
-                else
-                {
-                    User.Error("Directory doesn't exist");
-                }
+                Close();
+                return;
             }
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(KSP.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo
             );
+            
+            RecreateDialogs();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -128,7 +104,8 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            Text = "CKAN (" + Meta.Version() + ")";
+            Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSP.CurrentInstance.Version());
+            KSPVersionLabel.Text = String.Format("KSP Version {0}", KSP.CurrentInstance.Version());
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)

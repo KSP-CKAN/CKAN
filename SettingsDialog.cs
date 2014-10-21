@@ -30,5 +30,6 @@ namespace CKAN
             Main.Instance.m_Configuration.Save();
             Close();
         }
+
     }
 }
