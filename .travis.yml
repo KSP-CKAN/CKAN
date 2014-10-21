@@ -33,11 +33,12 @@ deploy:
     # Github releases automatically get a build uploaded!
     # Dang travis is awesome.
     - provider: releases
-      api-key:
-        secure: "ENTJNCLPmXsN7FRMlkhsRL2hkbEIaLRoCiwBfn46Zm91I38NTEAp5zM/HI4ZI+8cJes1Vy6lSvgAk80EEIGsN7ZrJw6C/VUW7fQzkuAa9ykyg7wzxE7HTt9FPs88oy9ZiYmTgqmoCGcXxTNg1IutCbxsm11fDLZyamDi9uoLSws="
+      api_key:
+        secure: X35XDRJwtFa3+55o9mV2JKVkX5w6W1VMy7bw7E8NaTTHzz+UqY8zEcArrAYWHJcJuslSe9/Ttffm7CgW2crCxkytevKmYCrJyxeb56UQuaADbDmvzT/ib2Vrk48VLDEWZZSyuuQQeT8oqy1RAG8cQLiEgO6QQUEShQ5Duv6Pd7w=
       file: ckan.exe
       skip_cleanup: true
       on:
-          tags: true
-          # all_branches needed as a workaround for travis-ci#1675
-          all_branches: true
+        repo: KSP-CKAN/CKAN
+        tags: true
+        # all_branches needed as a workaround for travis-ci#1675
+        all_branches: true
