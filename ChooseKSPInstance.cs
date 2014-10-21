@@ -30,6 +30,7 @@ namespace CKAN
 
             SelectButton.Enabled = false;
             RenameButton.Enabled = false;
+            SetAsDefaultCheckbox.Enabled = false;
         }
 
         private void UpdateInstancesList()
@@ -62,6 +63,13 @@ namespace CKAN
         private void SelectButton_Click(object sender, EventArgs e)
         {
             var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+
+            if (SetAsDefaultCheckbox.Checked)
+            {
+                KSP.AutoStartInstance = instance;
+                KSP.PopulateRegistryWithInstances();
+            }
+
             KSP.InitializeInstance(instance);
             Hide();
             Main.Instance.Show();
@@ -73,11 +81,13 @@ namespace CKAN
             {
                 SelectButton.Enabled = false;
                 RenameButton.Enabled = false;
+                SetAsDefaultCheckbox.Enabled = false;
                 return;
             }
 
             RenameButton.Enabled = true;
             SelectButton.Enabled = true;
+            SetAsDefaultCheckbox.Enabled = true;
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
@@ -94,5 +104,6 @@ namespace CKAN
                 UpdateInstancesList();
             }
         }
+
     }
 }
