@@ -38,6 +38,7 @@
             this.KSPInstallPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectButton = new System.Windows.Forms.Button();
             this.AddNewButton = new System.Windows.Forms.Button();
+            this.RenameButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // KSPInstancesListView
@@ -98,11 +99,22 @@
             this.AddNewButton.UseVisualStyleBackColor = true;
             this.AddNewButton.Click += new System.EventHandler(this.AddNewButton_Click);
             // 
+            // RenameButton
+            // 
+            this.RenameButton.Location = new System.Drawing.Point(125, 320);
+            this.RenameButton.Name = "RenameButton";
+            this.RenameButton.Size = new System.Drawing.Size(75, 23);
+            this.RenameButton.TabIndex = 3;
+            this.RenameButton.Text = "Rename";
+            this.RenameButton.UseVisualStyleBackColor = true;
+            this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
+            // 
             // ChooseKSPInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(374, 355);
+            this.Controls.Add(this.RenameButton);
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.KSPInstancesListView);
@@ -120,5 +132,6 @@
         private System.Windows.Forms.ColumnHeader KSPInstallVersion;
         private System.Windows.Forms.Button SelectButton;
         private System.Windows.Forms.Button AddNewButton;
+        private System.Windows.Forms.Button RenameButton;
     }
 }

@@ -12,10 +12,12 @@ namespace CKAN
     public partial class ChooseKSPInstance : Form
     {
         private FolderBrowserDialog m_BrowseKSPFolder = null;
+        private RenameInstanceDialog m_RenameInstanceDialog = null;
 
         public ChooseKSPInstance()
         {
             InitializeComponent();
+            StartPosition = FormStartPosition.CenterScreen;
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
@@ -67,6 +69,21 @@ namespace CKAN
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectButton.Enabled = true;
+        }
+
+        private void RenameButton_Click(object sender, EventArgs e)
+        {
+            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+
+            m_RenameInstanceDialog = new RenameInstanceDialog();
+            if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
+            {
+                var ksp = KSP.Instances[instance];
+                KSP.Instances.Remove(instance);
+                KSP.Instances.Add(m_RenameInstanceDialog.GetResult(), ksp);
+                KSP.PopulateRegistryWithInstances();
+                UpdateInstancesList();
+            }
         }
     }
 }
