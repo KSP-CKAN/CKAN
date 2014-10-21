@@ -529,11 +529,8 @@ namespace CKAN
                 string fullPath = Path.Combine(installDir, outputName);
                 // User.WriteLine (fullPath);
 
-                if (!CopyZipEntry(zipfile, entry, fullPath, makeDirs))
-                {
-                    User.Error("Unable to find entry \"{0}\" in \"{1}\", aborting..", entry.Name, zipfile.Name);
-                    throw new Exception();
-                }
+
+                CopyZipEntry(zipfile, entry, fullPath, makeDirs);
 
                 User.WriteLine("    * Copying " + entry);
 
@@ -544,14 +541,14 @@ namespace CKAN
             }
         }
 
-        private bool CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
                 if (!makeDirs)
                 {
-                    return true;
+                    return;
                 }
 
                 log.DebugFormat("Making directory {0}", fullPath);
@@ -571,16 +568,7 @@ namespace CKAN
                 }
 
                 // It's a file! Prepare the streams
-                Stream zipStream = null;
-
-                try
-                {
-                    zipStream = zipfile.GetInputStream(entry);
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+                Stream zipStream = zipfile.GetInputStream(entry);
 
                 TransactionalFileWriter file = currentTransaction.OpenFileWrite(fullPath);
                 FileStream output = file.Stream;
@@ -593,7 +581,7 @@ namespace CKAN
                 output.Close();
             }
 
-            return true;
+            return;
         }
 
         public List<string> FindReverseDependencies(string modName)
