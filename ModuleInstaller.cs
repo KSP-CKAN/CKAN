@@ -178,6 +178,11 @@ namespace CKAN
         {
             currentTransaction = new FilesystemTransaction();
 
+            if (onReportProgress != null)
+            {
+                currentTransaction.onProgressReport += (message, percent) => onReportProgress(message, percent);
+            }
+
             var resolver = new RelationshipResolver(modules, options);
 
             User.WriteLine("About to install...\n");
