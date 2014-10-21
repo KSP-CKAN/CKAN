@@ -344,6 +344,12 @@ namespace CKAN
             return from_string(json);
         }
 
+        public static void to_file(CkanModule module, string filename)
+        {
+            var json = to_string(module);
+            File.WriteAllText(filename, json);
+        }
+
         /// <summary>
         ///     Generates a CKAN.META object from a string.
         ///     Also validates that all required fields are present.
@@ -373,6 +379,11 @@ namespace CKAN
 
             // All good! Return module
             return newModule;
+        }
+
+        public static string to_string(CkanModule module)
+        {
+            return JsonConvert.SerializeObject(module);
         }
 
         /// <summary>
