@@ -16,14 +16,28 @@ before_deploy:
     - cp ckan.exe uploads/ckan-`git describe --long`.exe
 
 deploy:
-  provider: s3
-  access_key_id: AKIAI5JWAEFPFK6GH3XA
-  secret_access_key:
-    secure: b0PPlD7auqysK2LHA8N1US03dE/VKH2rOTwIqpIh50l/gURuXEl7Nd8S7qlf2dpEmz+8D5pIWD+J9scfrdD8Uuakhi3sQbqcV26UiR6+Ye06eGQfmIzqzAECt2naqEy7VJ/xrqq5aaaf8QhcOQMba3qVvwDSzkB2fJeh7+D6EY8=
-  bucket: ckan-travis
-  local-dir: uploads
-  acl: public_read
-  skip_cleanup: true
-  on:
-    repo: KSP-CKAN/CKAN
-    all_branches: true
+    # Any merge to master gets sent to
+    # http://ckan-travis.s3-website-us-east-1.amazonaws.com/
+    - provider: s3
+      access_key_id: AKIAI5JWAEFPFK6GH3XA
+      secret_access_key:
+        secure: b0PPlD7auqysK2LHA8N1US03dE/VKH2rOTwIqpIh50l/gURuXEl7Nd8S7qlf2dpEmz+8D5pIWD+J9scfrdD8Uuakhi3sQbqcV26UiR6+Ye06eGQfmIzqzAECt2naqEy7VJ/xrqq5aaaf8QhcOQMba3qVvwDSzkB2fJeh7+D6EY8=
+      bucket: ckan-travis
+      local-dir: uploads
+      acl: public_read
+      skip_cleanup: true
+      on:
+        repo: KSP-CKAN/CKAN
+        all_branches: true
+
+    # Github releases automatically get a build uploaded!
+    # Dang travis is awesome.
+    - provider: releases
+      api-key:
+        secure: "ENTJNCLPmXsN7FRMlkhsRL2hkbEIaLRoCiwBfn46Zm91I38NTEAp5zM/HI4ZI+8cJes1Vy6lSvgAk80EEIGsN7ZrJw6C/VUW7fQzkuAa9ykyg7wzxE7HTt9FPs88oy9ZiYmTgqmoCGcXxTNg1IutCbxsm11fDLZyamDi9uoLSws="
+      file: ckan.exe
+      skip_cleanup: true
+      on:
+          tags: true
+          # all_branches needed as a workaround for travis-ci#1675
+          all_branches: true
