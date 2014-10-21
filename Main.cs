@@ -68,7 +68,9 @@ namespace CKAN
                 try
                 {
                     log.DebugFormat("Setting KSP directory to {0}", options.KSP);
-                    KSP.SetGameDir(options.KSP);
+                    var instance = new KSP();
+                    instance.SetGameDir(options.KSP);
+                    KSP.CurrentInstance = instance;
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -78,8 +80,19 @@ namespace CKAN
                 }
             }
 
-            // Find KSP, create CKAN dir, perform housekeeping.
-            KSP.Init();
+            if (KSP.CurrentInstance == null)
+            {
+                if (KSP.Instances.Count == 0)
+                {
+                    KSP.AddDefaultInstance();
+                }
+
+                foreach (var instance in KSP.Instances)
+                {
+                    KSP.InitializeInstance(instance.Key);
+                    break;
+                }
+            }
 
             switch (cmdline.action)
             {
@@ -157,7 +170,7 @@ namespace CKAN
         {
             List<CkanModule> available = RegistryManager.Instance().registry.Available();
 
-            User.WriteLine("Mods available for KSP {0}", KSP.Version());
+            User.WriteLine("Mods available for KSP {0}", KSP.CurrentInstance.Version());
             User.WriteLine("");
 
             foreach (CkanModule module in available)
@@ -170,17 +183,17 @@ namespace CKAN
 
         private static int Scan()
         {
-            KSP.ScanGameData();
+            KSP.CurrentInstance.ScanGameData();
 
             return EXIT_OK;
         }
 
         private static int List()
         {
-            string ksp_path = KSP.GameDir();
+            string ksp_path = KSP.CurrentInstance.GameDir();
 
             User.WriteLine("\nKSP found at {0}\n", ksp_path);
-            User.WriteLine("KSP Version: {0}\n", KSP.Version());
+            User.WriteLine("KSP Version: {0}\n", KSP.CurrentInstance.Version());
 
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
@@ -270,7 +283,7 @@ namespace CKAN
 
         private static int Clean()
         {
-            KSP.CleanCache();
+            KSP.CurrentInstance.CleanCache();
             return EXIT_OK;
         }
 
@@ -365,7 +378,7 @@ namespace CKAN
                 case "gamedir":
                     try
                     {
-                        KSP.PopulateGamedirRegistry(options.value);
+                       // KSP.PopulateGamedirRegistry(options.value);
                         return EXIT_OK;
                     }
                     catch (DirectoryNotFoundException)
