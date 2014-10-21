@@ -61,7 +61,7 @@ namespace CKAN
         {
             User.WriteLine("    * Downloading " + filename + "...");
 
-            string full_path = Path.Combine(KSP.DownloadCacheDir(), filename);
+            string full_path = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filename);
 
             if (onReportProgress != null)
             {
@@ -96,7 +96,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = Path.Combine(KSP.DownloadCacheDir(), filenames[i]);
+                fullPaths[i] = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filenames[i]);
                 urls[i] = modules[i].download;
             }
 
@@ -164,7 +164,7 @@ namespace CKAN
 
         public static string CachePath(string file)
         {
-            return Path.Combine(KSP.DownloadCacheDir(), file);
+            return Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), file);
         }
 
         /// <summary>
@@ -492,22 +492,22 @@ namespace CKAN
 
             if (stanza.install_to == "GameData")
             {
-                installDir = KSP.GameData();
+                installDir = KSP.CurrentInstance.GameData();
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
             {
-                installDir = KSP.Ships();
+                installDir = KSP.CurrentInstance.Ships();
                 makeDirs = false; // Don't allow directory creation in ships directory
             }
             else if (stanza.install_to == "Tutorial")
             {
-                installDir = Path.Combine(Path.Combine(KSP.GameDir(), "saves"), "training");
+                installDir = Path.Combine(Path.Combine(KSP.CurrentInstance.GameDir(), "saves"), "training");
                 makeDirs = true;
             }
             else if (stanza.install_to == "GameRoot")
             {
-                installDir = KSP.GameDir();
+                installDir = KSP.CurrentInstance.GameDir();
                 makeDirs = false;
             }
             else
@@ -636,7 +636,7 @@ namespace CKAN
         {
             if (!registry_manager.registry.IsInstalled(modName))
             {
-                User.Error("Trying to uninstall {0} but it's not installed", modName);
+                log.WarnFormat("Trying to uninstall {0} but it's not installed", modName);
                 return;
             }
 
@@ -658,7 +658,7 @@ namespace CKAN
 
             foreach (string file in files.Keys)
             {
-                string path = Path.Combine(KSP.GameDir(), file);
+                string path = Path.Combine(KSP.CurrentInstance.GameDir(), file);
 
                 try
                 {

@@ -89,7 +89,7 @@ namespace CKAN
             // Default to the user's current KSP install for version.
             if (ksp_version == null)
             {
-                ksp_version = KSP.Version();
+                ksp_version = KSP.CurrentInstance.Version();
             }
 
             var candidates = new List<string>(available_modules.Keys);
@@ -147,7 +147,7 @@ namespace CKAN
             // Default to the user's current KSP install for version.
             if (ksp_version == null)
             {
-                ksp_version = KSP.Version();
+                ksp_version = KSP.CurrentInstance.Version();
             }
 
             var candidates = new List<string>(available_modules.Keys);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -6,27 +7,23 @@ using log4net;
 
 namespace CKAN
 {
-    /// <summary>
-    ///     Everything for dealing with KSP itself.
-    /// </summary>
-    public class KSP
+
+    public class KSPPathConstants
     {
-        // Where to find KSP relative to Steam's root.
-        private const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
-        private const string CKAN_GAMEDIR_VALUE = @"GameDir";
-        private static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
+        public const string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
+        public const string CKAN_GAMEDIR_VALUE = @"GameDir";
+        public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
+    }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (KSP));
-
-        private static string cached_gamedir;
-        private static KSPVersion cached_version;
-
+    public class KSPPathUtils
+    {
+        private static readonly ILog log = LogManager.GetLogger(typeof(KSPPathUtils));
 
         /// <summary>
         ///     Finds Steam on the current machine.
         /// </summary>
         /// <returns>The path to steam, or null if not found</returns>
-        private static string SteamPath()
+        public static string SteamPath()
         {
             // First check the registry.
 
@@ -35,7 +32,7 @@ namespace CKAN
 
             log.DebugFormat("Checking {0}\\{1} for Steam path", reg_key, reg_value);
 
-            var steam = (string) Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
+            var steam = (string)Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
 
             // If that directory exists, we've found steam!
             if (steam != null && Directory.Exists(steam))
@@ -79,8 +76,46 @@ namespace CKAN
             log.Info("Steam not found on this system.");
             return null;
         }
+    }
 
-        public static string GameDir()
+    /// <summary>
+    ///     Everything for dealing with KSP itself.
+    /// </summary>
+    public class KSP
+    {
+        // Where to find KSP relative to Steam's root.
+        private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
+
+        public static Dictionary<string, KSP> Instances = new Dictionary<string, KSP>();
+        public static KSP CurrentInstance = null;
+
+        public static void AddDefaultInstance()
+        {
+            Instances.Add("Auto-detected instance", new KSP());
+        }
+
+        public static void AddInstance(string name, string path)
+        {
+            var ksp = new KSP();
+            ksp.SetGameDir(path);
+            Instances.Add(name, ksp);
+        }
+
+        public static void InitializeInstance(string name)
+        {
+            if (!Instances.ContainsKey(name))
+            {
+                throw new InvalidKSPInstanceException();
+            }
+
+            CurrentInstance = Instances[name];
+            Instances[name].Init();
+        }
+
+        private string cached_gamedir;
+        private KSPVersion cached_version;
+
+        public string GameDir()
         {
             // Return cached if found.
             if (cached_gamedir != null)
@@ -94,7 +129,7 @@ namespace CKAN
 
         // This can be called to set our GameDir directly.
         // It's primary use it cmdline argument switches.
-        public static void SetGameDir(string directory)
+        public void SetGameDir(string directory)
         {
             if (cached_gamedir != null)
             {
@@ -119,7 +154,7 @@ namespace CKAN
             cached_gamedir = directory;
         }
 
-        private static string FindGameDir()
+        private string FindGameDir()
         {
             // See if KSP is in the same dir as we're installed (GH #23)
 
@@ -147,10 +182,10 @@ namespace CKAN
 
             // See if we can find KSP as part of a Steam install.
 
-            string steam = SteamPath();
+            string steam = KSPPathUtils.SteamPath();
             if (steam != null)
             {
-                string ksp_dir = Path.Combine(steam, steamKSP);
+                string ksp_dir = Path.Combine(steam, KSPPathConstants.steamKSP);
 
                 if (Directory.Exists(ksp_dir))
                 {
@@ -166,13 +201,13 @@ namespace CKAN
             throw new DirectoryNotFoundException();
         }
 
-        private static string FindGamedirRegistry()
+        private string FindGamedirRegistry()
         {
             // Check the Windows/Mono registry (GH #28)
 
-            log.DebugFormat("Checking {0}\\{1} for KSP path", CKAN_KEY, CKAN_GAMEDIR_VALUE);
+            log.DebugFormat("Checking {0}\\{1} for KSP path", KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE);
 
-            var ksp_dir = (string) Microsoft.Win32.Registry.GetValue(CKAN_KEY, CKAN_GAMEDIR_VALUE, null);
+            var ksp_dir = (string)Microsoft.Win32.Registry.GetValue(KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, null);
 
             if (ksp_dir != null)
             {
@@ -183,7 +218,7 @@ namespace CKAN
             return null;
         }
 
-        public static void PopulateGamedirRegistry(string gamedir = null)
+        public void PopulateGamedirRegistry(string gamedir = null)
         {
             if (gamedir == null)
             {
@@ -196,13 +231,13 @@ namespace CKAN
                 throw new DirectoryNotFoundException();
             }
 
-            log.DebugFormat("Registering KSP {0}\\{1} as {2}", CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
+            log.DebugFormat("Registering KSP {0}\\{1} as {2}", KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, gamedir);
 
-            Microsoft.Win32.Registry.SetValue(CKAN_KEY, CKAN_GAMEDIR_VALUE, gamedir);
+            Microsoft.Win32.Registry.SetValue(KSPPathConstants.CKAN_KEY, KSPPathConstants.CKAN_GAMEDIR_VALUE, gamedir);
         }
 
         // Returns true if we have what looks like a KSP dir.
-        private static bool IsKspDir(string directory)
+        private bool IsKspDir(string directory)
         {
             if (!Directory.Exists(Path.Combine(directory, "GameData")))
             {
@@ -213,22 +248,22 @@ namespace CKAN
             return true;
         }
 
-        public static string GameData()
+        public string GameData()
         {
             return Path.Combine(GameDir(), "GameData");
         }
 
-        public static string CkanDir()
+        public string CkanDir()
         {
             return Path.Combine(GameDir(), "CKAN");
         }
 
-        public static string DownloadCacheDir()
+        public string DownloadCacheDir()
         {
             return Path.Combine(CkanDir(), "downloads");
         }
 
-        public static string Ships()
+        public string Ships()
         {
             return Path.Combine(GameDir(), "Ships");
         }
@@ -236,7 +271,7 @@ namespace CKAN
         /// <summary>
         ///     Create the CKAN directory and any supporting files.
         /// </summary>
-        public static void Init()
+        public void Init()
         {
             if (! Directory.Exists(CkanDir()))
             {
@@ -274,7 +309,7 @@ namespace CKAN
             }
         }
 
-        public static void CleanCache()
+        public void CleanCache()
         {
             log.Debug("Cleaning cahce directory");
 
@@ -293,7 +328,7 @@ namespace CKAN
             }
         }
 
-        public static void ScanGameData()
+        public void ScanGameData()
         {
             RegistryManager registry_manager = RegistryManager.Instance();
             Registry registry = registry_manager.registry;
@@ -315,7 +350,7 @@ namespace CKAN
             registry_manager.Save();
         }
 
-        public static KSPVersion Version()
+        public KSPVersion Version()
         {
             if (cached_version != null)
             {
@@ -325,7 +360,7 @@ namespace CKAN
             return cached_version = DetectVersion(GameDir());
         }
 
-        private static KSPVersion DetectVersion(string path)
+        private KSPVersion DetectVersion(string path)
         {
             // Slurp our README into memory
             string readme = File.ReadAllText(Path.Combine(path, "readme.txt"));
@@ -351,4 +386,9 @@ namespace CKAN
     public class BadVersionException : Exception
     {
     }
+
+    public class InvalidKSPInstanceException : Exception
+    {
+    }
+
 }
