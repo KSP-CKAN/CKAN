@@ -17,11 +17,15 @@ namespace CKAN
         public string version;
     }
 
-    public class BundledModuleDescriptor
+    public abstract class InstallableDescriptor
     {
         public /* required */ string file;
-        public /* required */ string identifier;
         public /* required */ string install_to;
+    }
+
+    public class BundledModuleDescriptor : InstallableDescriptor
+    {
+        public /* required */ string identifier;
         public /* required */ string license;
         public /* required */ bool required;
         public /* required */ string version;
@@ -46,11 +50,9 @@ namespace CKAN
         public KerbalStuffResourceDescriptor kerbalstuff;
     }
 
-    public class ModuleInstallDescriptor
+    public class ModuleInstallDescriptor : InstallableDescriptor
     {
         public string description;
-        public /* required */ string file;
-        public /* required */ string install_to;
         public bool optional;
         public bool overwrite;
         public string requires;
