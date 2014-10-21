@@ -31,9 +31,10 @@ namespace CKAN
 
         private FilesystemTransaction currentTransaction;
         private NetAsyncDownloader downloader;
-        private bool m_LastDownloadSuccessful;
+        private bool lastDownloadSuccessful;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
         public ModuleInstallerReportProgress onReportProgress = null;
+        private bool installCanceled = false;
 
         private ModuleInstaller()
         {
@@ -110,7 +111,7 @@ namespace CKAN
                         percent);
             }
 
-            downloader.onCompleted = (uris, strings, errors) => OnDownloadsComplete(urls, fullPaths, modules, errors);
+            downloader.onCompleted = (_uris, strings, errors) => OnDownloadsComplete(_uris, fullPaths, modules, errors);
 
             return downloader;
         }
@@ -176,6 +177,7 @@ namespace CKAN
         /// </summary>
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
+            installCanceled = false;
             currentTransaction = new FilesystemTransaction();
 
             if (onReportProgress != null)
@@ -232,7 +234,12 @@ namespace CKAN
                 modulesToDownloadPaths[i] = CachePath(notCached[i].StandardName());
             }
 
-            m_LastDownloadSuccessful = true;
+            lastDownloadSuccessful = true;
+
+            if (installCanceled)
+            {
+                return;
+            }
 
             if (modulesToDownload.Length > 0)
             {
@@ -243,6 +250,11 @@ namespace CKAN
                 {
                     Monitor.Wait(downloader);
                 }
+            }
+
+            if (installCanceled)
+            {
+                return;
             }
 
             var modsToInstall = new List<KeyValuePair<CkanModule, string>>();
@@ -256,7 +268,7 @@ namespace CKAN
                 modsToInstall.Add(new KeyValuePair<CkanModule, string>(pair.Key, pair.Value));
             }
 
-            if (m_LastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
+            if (lastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
@@ -277,20 +289,35 @@ namespace CKAN
             currentTransaction.Rollback();
         }
 
+        public void CancelInstall()
+        {
+            if (downloader != null)
+            {
+                downloader.CancelDownload();
+            }
+
+            installCanceled = true;
+        }
+
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
-            bool noErrors = true;
+            bool noErrors = false;
 
-            for (int i = 0; i < errors.Length; i++)
+            if (urls != null)
             {
-                if (errors[i] != null)
+                noErrors = true;
+                
+                for (int i = 0; i < errors.Length; i++)
                 {
-                    noErrors = false;
-                    User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                    if (errors[i] != null)
+                    {
+                        noErrors = false;
+                        User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                    }
                 }
             }
 
-            m_LastDownloadSuccessful = noErrors;
+            lastDownloadSuccessful = noErrors;
 
             lock (downloader)
             {
