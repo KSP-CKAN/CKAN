@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -196,10 +197,10 @@ namespace CKAN
 
             User.WriteLine(""); // Just to look tidy.
 
-            int counter = 0;
             List<CkanModule> modList = resolver.ModList();
 
             var notCached = new List<CkanModule>();
+            var cached = new List<KeyValuePair<CkanModule, string>>();
 
             foreach (CkanModule module in modList)
             {
@@ -208,14 +209,7 @@ namespace CKAN
                 {
                     if (!downloadOnly)
                     {
-                        Install(module, fullPath);
-                    }
-
-                    counter++;
-                    if (onReportProgress != null)
-                    {
-                        int percentDone = (counter*100)/modList.Count();
-                        onReportProgress(String.Format("Installing \"{0}\"", module.name), percentDone);
+                        cached.Add(new KeyValuePair<CkanModule, string>(module, fullPath));
                     }
                 }
                 else
@@ -224,9 +218,9 @@ namespace CKAN
                 }
             }
 
-            if (!notCached.Any())
+            if (!notCached.Any() && !cached.Any())
             {
-                currentTransaction.Commit();
+                currentTransaction.Rollback();
                 return;
             }
 
@@ -239,27 +233,49 @@ namespace CKAN
                 modulesToDownloadPaths[i] = CachePath(notCached[i].StandardName());
             }
 
-            downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
-            downloader.StartDownload();
+            m_LastDownloadSuccessful = true;
 
-            lock (downloader)
+            if (modulesToDownload.Length > 0)
             {
-                Monitor.Wait(downloader);
+                downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
+                downloader.StartDownload();
+
+                lock (downloader)
+                {
+                    Monitor.Wait(downloader);
+                }
             }
 
-            if (m_LastDownloadSuccessful && !downloadOnly)
+            var modsToInstall = new List<KeyValuePair<CkanModule, string>>();
+            for (int i = 0; i < modulesToDownload.Length; i++)
             {
-                for (int i = 0; i < modulesToDownload.Length; i++)
+                modsToInstall.Add(new KeyValuePair<CkanModule, string>(modulesToDownload[i], modulesToDownloadPaths[i]));;
+            }
+
+            foreach (var pair in cached)
+            {
+                modsToInstall.Add(new KeyValuePair<CkanModule, string>(pair.Key, pair.Value));
+            }
+
+            if (m_LastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
+            {
+                for (int i = 0; i < modsToInstall.Count; i++)
                 {
-                    Install(modulesToDownload[i], modulesToDownloadPaths[i]);
+                    int percentComplete = (i * 100) / modsToInstall.Count;
+                    if (onReportProgress != null)
+                    {
+                        onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i].Key.name),
+                            percentComplete);
+                    }
+
+                    Install(modsToInstall[i].Key, modsToInstall[i].Value);
                 }
 
                 currentTransaction.Commit();
+                return;
             }
-            else
-            {
-                currentTransaction.Rollback();
-            }
+         
+            currentTransaction.Rollback();
         }
 
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
@@ -339,11 +355,6 @@ namespace CKAN
         /// </summary>
         private void Install(CkanModule module, string filename = null)
         {
-            if (onReportProgress != null)
-            {
-                onReportProgress(String.Format("Installing \"{0}\"", module.name), 0);
-            }
-
             User.WriteLine(module.identifier + ":\n");
 
             Version version = registry_manager.registry.InstalledVersion(module.identifier);

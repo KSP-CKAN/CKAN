@@ -236,11 +236,9 @@ namespace CKAN
                 }
             }
 
-            int counter = 0;
             foreach (var item in contents)
             {
                 ContentsPreviewTree.Nodes[0].Nodes.Add(item);
-
             }
 
             ContentsPreviewTree.Nodes[0].ExpandAll();
