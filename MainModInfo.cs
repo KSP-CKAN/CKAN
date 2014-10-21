@@ -59,14 +59,33 @@ namespace CKAN
 
             MetadataModuleAuthorLabel.Text = authors;
         }
-       
-        private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module, RelationshipType relationship)
-        {
-            int i = 0;
 
-            node.Text = module.name;
-            node.Nodes.Clear();
-           
+        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
+       
+        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth)
+        {
+            TreeNode node = null;
+            if (depth > 0 && dependencyGraphRootModule == module)
+            {
+                return node;
+            }
+
+            if (alreadyVisited.Contains(module))
+            {
+                return node;
+            }
+
+            alreadyVisited.Add(module);
+
+            if (parentNode == null)
+            {
+                node = new TreeNode(module.name);
+            }
+            else
+            {
+                node = parentNode.Nodes.Add(module.name);
+            }
+
             RelationshipDescriptor[] relationships = null;
             switch (relationship)
             {
@@ -86,37 +105,57 @@ namespace CKAN
 
             if (relationships == null)
             {
-                return;
+                return node;
             }
 
+            int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
                 Registry registry = RegistryManager.Instance().registry;
 
                 try
                 {
-                    CkanModule dependencyModule = registry.LatestAvailable
+                    CkanModule dependencyModule = null;
+
+                    try
+                    {
+                        dependencyModule = registry.LatestAvailable
+                        (dependency.name.ToString(), KSP.CurrentInstance.Version());
+                        UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
+                    }
+                    catch (ModuleNotFoundException)
+                    {
+                        List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
                         (dependency.name.ToString(), KSP.CurrentInstance.Version());
 
-                    if (dependencyModule == null)
-                    {
-                        continue;
-                    }
+                        if (dependencyModules == null)
+                        {
+                            continue;
+                        }
 
-                    node.Nodes.Add("");
-                    UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule, relationship);
-                    i++;
+                        var newNode = node.Nodes.Add(dependency.name + " (provided by)");
+
+                        foreach (var dep in dependencyModules)
+                        {
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1);
+                            i++;
+                        }
+                    }
                 }
                 catch (Exception)
                 {
                 }
             }
+
+            return node;
         }
 
         private void UpdateModDependencyGraph(CkanModule module)
         {
             Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
         }
+
+        private CkanModule dependencyGraphRootModule = null;
 
         private void _UpdateModDependencyGraph(CkanModule module)
         {
@@ -127,9 +166,11 @@ namespace CKAN
 
             var relationshipType = (RelationshipType) ModuleRelationshipType.SelectedIndex;
 
+            dependencyGraphRootModule = module;
+            alreadyVisited.Clear();
+
             DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add("");
-            UpdateModDependencyGraphRecursively(DependsGraphTree.Nodes[0], module, relationshipType);
+            DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
             DependsGraphTree.Nodes[0].ExpandAll();
         }
 
