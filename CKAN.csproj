@@ -65,6 +65,7 @@
     <Compile Include="Repo.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="Types\JsonSingleOrArrayConverter.cs" />
+    <Compile Include="Types\Kraken.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
