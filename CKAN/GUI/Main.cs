@@ -267,7 +267,9 @@ namespace CKAN
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Enabled = false;
             m_SettingsDialog.ShowDialog();
+            Enabled = true;
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
@@ -338,6 +340,38 @@ namespace CKAN
 
             UpdateModContentsTree(module);
             RecreateDialogs();
+        }
+
+        private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(MetadataModuleHomePageLinkLabel.Text);
+        }
+
+        private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(MetadataModuleGitHubLinkLabel.Text);
+        }
+
+        private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ModList.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var module = (CkanModule)selectedItem.Tag;
+            if (module == null)
+            {
+                return;
+            }
+
+            UpdateModDependencyGraph(module);
         }
     }
 }

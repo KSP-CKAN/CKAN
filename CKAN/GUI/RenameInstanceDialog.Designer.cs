@@ -35,15 +35,17 @@
             // 
             // NameTextBox
             // 
+            this.NameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.NameTextBox.Location = new System.Drawing.Point(13, 13);
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(302, 20);
+            this.NameTextBox.Size = new System.Drawing.Size(294, 20);
             this.NameTextBox.TabIndex = 0;
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(240, 39);
+            this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.OKButton.Location = new System.Drawing.Point(232, 39);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 1;
@@ -53,7 +55,8 @@
             // CancelButton
             // 
             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(159, 39);
+            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelButton.Location = new System.Drawing.Point(151, 39);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);
             this.CancelButton.TabIndex = 2;

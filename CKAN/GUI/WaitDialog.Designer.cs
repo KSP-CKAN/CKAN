@@ -56,6 +56,7 @@
             // 
             // LogTextBox
             // 
+            this.LogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LogTextBox.Location = new System.Drawing.Point(13, 64);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";

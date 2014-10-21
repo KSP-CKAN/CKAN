@@ -66,6 +66,7 @@ namespace CKAN
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.MetadataModuleAbstractLabel = new System.Windows.Forms.TextBox();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
@@ -79,7 +80,7 @@ namespace CKAN
             this.label10 = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.DependsTabPage = new System.Windows.Forms.TabPage();
+            this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
@@ -88,6 +89,7 @@ namespace CKAN
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
+            this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -98,7 +100,7 @@ namespace CKAN
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.DependsTabPage.SuspendLayout();
+            this.RelationshipTabPage.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.StatusPanel.SuspendLayout();
             this.SuspendLayout();
@@ -364,7 +366,8 @@ namespace CKAN
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(88, 591);
+            this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(83, 591);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 4;
@@ -402,8 +405,9 @@ namespace CKAN
             // 
             // tabControl1
             // 
+            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.DependsTabPage);
+            this.tabControl1.Controls.Add(this.RelationshipTabPage);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -415,10 +419,10 @@ namespace CKAN
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tableLayoutPanel1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(225, 492);
+            this.tabPage1.Size = new System.Drawing.Size(225, 489);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Metadata";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -426,9 +430,8 @@ namespace CKAN
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.MetadataModuleVersionLabel, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 4);
@@ -441,13 +444,15 @@ namespace CKAN
             this.tableLayoutPanel1.Controls.Add(this.label10, 0, 8);
             this.tableLayoutPanel1.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleAbstractLabel, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 13;
+            this.tableLayoutPanel1.RowCount = 14;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
@@ -459,10 +464,21 @@ namespace CKAN
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(219, 486);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(219, 483);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // MetadataModuleAbstractLabel
+            // 
+            this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleAbstractLabel, 2);
+            this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 43);
+            this.MetadataModuleAbstractLabel.Multiline = true;
+            this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
+            this.MetadataModuleAbstractLabel.ReadOnly = true;
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(213, 58);
+            this.MetadataModuleAbstractLabel.TabIndex = 27;
+            this.MetadataModuleAbstractLabel.Text = "Description";
             // 
             // MetadataModuleNameLabel
             // 
@@ -472,7 +488,8 @@ namespace CKAN
             this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(213, 64);
+            this.tableLayoutPanel1.SetRowSpan(this.MetadataModuleNameLabel, 2);
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(213, 40);
             this.MetadataModuleNameLabel.TabIndex = 0;
             this.MetadataModuleNameLabel.Text = "Mod Name";
             this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -481,9 +498,9 @@ namespace CKAN
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 64);
+            this.label1.Location = new System.Drawing.Point(3, 104);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 32);
+            this.label1.Size = new System.Drawing.Size(80, 32);
             this.label1.TabIndex = 1;
             this.label1.Text = "Version:";
             // 
@@ -491,9 +508,9 @@ namespace CKAN
             // 
             this.MetadataModuleVersionLabel.AutoSize = true;
             this.MetadataModuleVersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(112, 64);
+            this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(89, 104);
             this.MetadataModuleVersionLabel.Name = "MetadataModuleVersionLabel";
-            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleVersionLabel.TabIndex = 2;
             this.MetadataModuleVersionLabel.Text = "0.0.0";
             // 
@@ -501,9 +518,9 @@ namespace CKAN
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(3, 96);
+            this.label2.Location = new System.Drawing.Point(3, 136);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 32);
+            this.label2.Size = new System.Drawing.Size(80, 32);
             this.label2.TabIndex = 3;
             this.label2.Text = "License:";
             // 
@@ -511,105 +528,117 @@ namespace CKAN
             // 
             this.MetadataModuleLicenseLabel.AutoSize = true;
             this.MetadataModuleLicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(112, 96);
+            this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(89, 136);
             this.MetadataModuleLicenseLabel.Name = "MetadataModuleLicenseLabel";
-            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 128);
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Location = new System.Drawing.Point(3, 168);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.Size = new System.Drawing.Size(80, 32);
             this.label3.TabIndex = 5;
             this.label3.Text = "Author:";
             // 
             // MetadataModuleAuthorLabel
             // 
             this.MetadataModuleAuthorLabel.AutoSize = true;
-            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(112, 128);
+            this.MetadataModuleAuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(89, 168);
             this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
-            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(44, 13);
+            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleAuthorLabel.TabIndex = 6;
             this.MetadataModuleAuthorLabel.Text = "Nobody";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 160);
+            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label5.Location = new System.Drawing.Point(3, 200);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(62, 13);
+            this.label5.Size = new System.Drawing.Size(80, 32);
             this.label5.TabIndex = 7;
             this.label5.Text = "Homepage:";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 192);
+            this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label8.Location = new System.Drawing.Point(3, 232);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(43, 13);
+            this.label8.Size = new System.Drawing.Size(80, 32);
             this.label8.TabIndex = 10;
             this.label8.Text = "GitHub:";
             // 
             // MetadataModuleReleaseStatusLabel
             // 
             this.MetadataModuleReleaseStatusLabel.AutoSize = true;
-            this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(112, 224);
+            this.MetadataModuleReleaseStatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(89, 264);
             this.MetadataModuleReleaseStatusLabel.Name = "MetadataModuleReleaseStatusLabel";
-            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(37, 13);
+            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
             this.MetadataModuleReleaseStatusLabel.Text = "Stable";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(3, 224);
+            this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label10.Location = new System.Drawing.Point(3, 264);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(80, 13);
+            this.label10.Size = new System.Drawing.Size(80, 32);
             this.label10.TabIndex = 12;
             this.label10.Text = "Release status:";
             // 
             // MetadataModuleHomePageLinkLabel
             // 
-            this.MetadataModuleHomePageLinkLabel.AutoSize = true;
+            this.MetadataModuleHomePageLinkLabel.AutoEllipsis = true;
             this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(112, 160);
+            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(89, 200);
             this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
-            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(104, 32);
+            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
+            this.MetadataModuleHomePageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MetadataModuleHomePageLinkLabel_LinkClicked);
             // 
             // MetadataModuleGitHubLinkLabel
             // 
-            this.MetadataModuleGitHubLinkLabel.AutoSize = true;
-            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(112, 192);
+            this.MetadataModuleGitHubLinkLabel.AutoEllipsis = true;
+            this.MetadataModuleGitHubLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(89, 232);
             this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
-            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(55, 13);
+            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(127, 32);
             this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
+            this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MetadataModuleGitHubLinkLabel_LinkClicked);
             // 
-            // DependsTabPage
+            // RelationshipTabPage
             // 
-            this.DependsTabPage.Controls.Add(this.DependsGraphTree);
-            this.DependsTabPage.Location = new System.Drawing.Point(4, 22);
-            this.DependsTabPage.Name = "DependsTabPage";
-            this.DependsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.DependsTabPage.Size = new System.Drawing.Size(225, 518);
-            this.DependsTabPage.TabIndex = 1;
-            this.DependsTabPage.Text = "Depends";
-            this.DependsTabPage.UseVisualStyleBackColor = true;
+            this.RelationshipTabPage.Controls.Add(this.ModuleRelationshipType);
+            this.RelationshipTabPage.Controls.Add(this.DependsGraphTree);
+            this.RelationshipTabPage.Location = new System.Drawing.Point(4, 25);
+            this.RelationshipTabPage.Name = "RelationshipTabPage";
+            this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.RelationshipTabPage.Size = new System.Drawing.Size(225, 489);
+            this.RelationshipTabPage.TabIndex = 1;
+            this.RelationshipTabPage.Text = "Relationships";
+            this.RelationshipTabPage.UseVisualStyleBackColor = true;
             // 
             // DependsGraphTree
             // 
+            this.DependsGraphTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.DependsGraphTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DependsGraphTree.Location = new System.Drawing.Point(3, 3);
+            this.DependsGraphTree.Location = new System.Drawing.Point(3, 34);
             this.DependsGraphTree.Name = "DependsGraphTree";
-            this.DependsGraphTree.Size = new System.Drawing.Size(219, 512);
+            this.DependsGraphTree.Size = new System.Drawing.Size(219, 449);
             this.DependsGraphTree.TabIndex = 0;
             // 
             // tabPage2
@@ -617,10 +646,10 @@ namespace CKAN
             this.tabPage2.Controls.Add(this.ContentsPreviewTree);
             this.tabPage2.Controls.Add(this.ContentsDownloadButton);
             this.tabPage2.Controls.Add(this.NotCachedLabel);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(225, 518);
+            this.tabPage2.Size = new System.Drawing.Size(225, 489);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "Contents";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -634,7 +663,7 @@ namespace CKAN
             this.ContentsPreviewTree.Enabled = false;
             this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 65);
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
-            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 450);
+            this.ContentsPreviewTree.Size = new System.Drawing.Size(222, 421);
             this.ContentsPreviewTree.TabIndex = 2;
             // 
             // ContentsDownloadButton
@@ -683,6 +712,23 @@ namespace CKAN
             this.KSPVersionLabel.TabIndex = 1;
             this.KSPVersionLabel.Text = "KSP Version 0.25.0";
             // 
+            // ModuleRelationshipType
+            // 
+            this.ModuleRelationshipType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ModuleRelationshipType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ModuleRelationshipType.FormattingEnabled = true;
+            this.ModuleRelationshipType.Items.AddRange(new object[] {
+            "Depends",
+            "Pre-depends",
+            "Recommends",
+            "Suggests"});
+            this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
+            this.ModuleRelationshipType.Name = "ModuleRelationshipType";
+            this.ModuleRelationshipType.Size = new System.Drawing.Size(213, 21);
+            this.ModuleRelationshipType.TabIndex = 1;
+            this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -715,7 +761,7 @@ namespace CKAN
             this.tabPage1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.DependsTabPage.ResumeLayout(false);
+            this.RelationshipTabPage.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.StatusPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -759,7 +805,7 @@ namespace CKAN
         private ToolStripMenuItem FilterNotInstalledButton;
         private ToolStripMenuItem FilterIncompatibleButton;
         private TabControl tabControl1;
-        private TabPage DependsTabPage;
+        private TabPage RelationshipTabPage;
         private TreeView DependsGraphTree;
         private TabPage tabPage2;
         private Label NotCachedLabel;
@@ -767,8 +813,8 @@ namespace CKAN
         private Button ContentsDownloadButton;
         private ToolStripMenuItem customToolStripMenuItem;
         private TabPage tabPage1;
+        private Label KSPVersionLabel;
         private TableLayoutPanel tableLayoutPanel1;
-        private Label MetadataModuleNameLabel;
         private Label label1;
         private Label MetadataModuleVersionLabel;
         private Label label2;
@@ -781,7 +827,9 @@ namespace CKAN
         private Label label10;
         private LinkLabel MetadataModuleHomePageLinkLabel;
         private LinkLabel MetadataModuleGitHubLinkLabel;
-        private Label KSPVersionLabel;
+        private Label MetadataModuleNameLabel;
+        private TextBox MetadataModuleAbstractLabel;
+        private ComboBox ModuleRelationshipType;
     }
 }
 
