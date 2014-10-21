@@ -28,7 +28,7 @@ namespace CKAN.KerbalStuff
         {
             log.DebugFormat("Downloading {0}", download_path);
 
-            var installer = new ModuleInstaller();
+            var installer = ModuleInstaller.Instance;
 
             string filename = installer.CachedOrDownload(identifier, friendly_version, new Uri(download_path));
 

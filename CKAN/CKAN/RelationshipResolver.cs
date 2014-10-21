@@ -40,12 +40,12 @@ namespace CKAN
                 {
                     throw new ModuleNotFoundException(module);
                 }
-
+                 
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
                 user_mods.Add(mod);
                 Add(mod);
             }
-
+             
             // Now that we've already pre-populated modlist, we can resolve
             // the rest of our dependencies.
 
@@ -105,14 +105,14 @@ namespace CKAN
 
         // Resolve a relationship stanza (a list of relationships).
         // May recurse back to Resolve.
-        private void ResolveStanza(dynamic[] stanza, RelationshipResolverOptions options)
+        private void ResolveStanza(RelationshipDescriptor[] stanza, RelationshipResolverOptions options)
         {
             if (stanza == null)
             {
                 return;
             }
 
-            foreach (dynamic dep in stanza)
+            foreach (RelationshipDescriptor dep in stanza)
             {
                 string dep_name = dep.name;
 
