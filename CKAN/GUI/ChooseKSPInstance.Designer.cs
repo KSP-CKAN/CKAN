@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "dsadsa",
             "",
             ""}, -1);
@@ -52,7 +52,7 @@
             this.KSPInstallPath});
             this.KSPInstancesListView.FullRowSelect = true;
             this.KSPInstancesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem3});
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);
             this.KSPInstancesListView.Name = "KSPInstancesListView";
             this.KSPInstancesListView.Size = new System.Drawing.Size(350, 301);
@@ -101,6 +101,7 @@
             // 
             // RenameButton
             // 
+            this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.Location = new System.Drawing.Point(125, 320);
             this.RenameButton.Name = "RenameButton";
             this.RenameButton.Size = new System.Drawing.Size(75, 23);

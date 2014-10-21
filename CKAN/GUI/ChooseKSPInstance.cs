@@ -29,6 +29,7 @@ namespace CKAN
             UpdateInstancesList();
 
             SelectButton.Enabled = false;
+            RenameButton.Enabled = false;
         }
 
         private void UpdateInstancesList()
@@ -71,9 +72,11 @@ namespace CKAN
             if (KSPInstancesListView.SelectedItems.Count == 0)
             {
                 SelectButton.Enabled = false;
+                RenameButton.Enabled = false;
                 return;
             }
 
+            RenameButton.Enabled = true;
             SelectButton.Enabled = true;
         }
 
