@@ -14,6 +14,13 @@ namespace CKAN
 
     public delegate void ModuleInstallerReportModInstalled(CkanModule module);
 
+    internal struct InstallableFile 
+    {
+        public ZipEntry source;
+        public string destination;
+        public bool makedir;
+    }
+
     public class ModuleInstaller
     {
         private static ModuleInstaller _Instance;
@@ -125,6 +132,11 @@ namespace CKAN
             return Download(url, filename);
         }
 
+        /// <summary>
+        /// Returns true if the given module is present in our cache.
+        /// </summary>
+        //
+        // TODO: Update this if we start caching by URL (GH #111)
         public static bool IsCached(CkanModule module)
         {
             string filename = CkanModule.StandardName(module.identifier, module.version);
@@ -271,14 +283,19 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Returns the module contents if and only if we have it
+        /// available in our cache. Returns null, otherwise.
+        ///
+        /// Intended for previews.
+        /// </summary>
         public List<string> GetModuleContentsList(CkanModule module)
         {
+
             if (!IsCached(module))
             {
                 return null;
             }
-
-            var contents = new List<string>();
 
             string filename = CachedOrDownload(module);
 
@@ -295,55 +312,23 @@ namespace CKAN
                 return null;
             }
 
+            var contents = new List<InstallableFile> ();
+
             foreach (ModuleInstallDescriptor stanza in module.install)
             {
-                string installDir;
-                if (stanza.install_to == "GameData")
-                {
-                    installDir = KSP.GameData();
-                }
-                else if (stanza.install_to == "Ships")
-                {
-                    installDir = KSP.Ships();
-                }
-                else if (stanza.install_to == "Tutorial")
-                {
-                    installDir = Path.Combine(Path.Combine(KSP.GameDir(), "saves"), "training");
-                }
-                else if (stanza.install_to == "GameRoot")
-                {
-                    installDir = KSP.GameDir();
-                }
-                else
-                {
-                    // What is the best exception to use here??
-                    throw new Exception("Unknown install location: " + stanza.install_to);
-                }
+                contents.AddRange( FindInstallableFiles(stanza, zipfile) );
+            }
+            
+            var pretty_filenames = new List<string> ();
 
-                string filter = "^" + stanza.file + "(/|$)";
+            foreach (var entry in contents)
+            {
+                string path = entry.destination;
 
-                foreach (ZipEntry entry in zipfile)
-                {
-                    if (!Regex.IsMatch(entry.Name, filter))
-                    {
-                        continue;
-                    }
-
-                    // SKIP the file if it's a .CKAN file, these should never be copied to GameData.
-                    if (Regex.IsMatch(entry.Name, ".CKAN", RegexOptions.IgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    string outputName = Regex.Replace(entry.Name, @"^/?(.*(GameData|Ships)/)?", "");
-                    string fullPath = Path.Combine(installDir, outputName);
-                    fullPath = fullPath.Substring(KSP.GameDir().Length + 1);
-                    fullPath = fullPath.Replace('\\', '/');
-                    contents.Add(fullPath);
-                }
+                pretty_filenames.Add(path);
             }
 
-            return contents;
+            return pretty_filenames;
         }
 
         /// <summary>
@@ -459,15 +444,40 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Install the component described in the stanza.
+        /// Modifies the supplied module_files to contain the files installed.
+        /// </summary>
         private void InstallComponent(InstallableDescriptor stanza, ZipFile zipfile,
             Dictionary<string, InstalledModuleFile> module_files)
         {
-            string fileToInstall = stanza.file;
+            List<InstallableFile> files = FindInstallableFiles(stanza, zipfile);
 
-            User.WriteLine("    * Installing " + fileToInstall);
+            foreach (var file in files) {
 
+                User.WriteLine("    * Copying " + file.source.Name);
+
+                CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+
+                // TODO: We really should be computing sha1sums again!
+                module_files.Add(file.destination, new InstalledModuleFile
+                {
+                    sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
+                });
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of files to be installed from the given stanza.
+        ///
+        /// Throws a BadInstallLocationKraken if the install stanza targets an
+        /// unknown install location.
+        /// </summary>
+        internal List<InstallableFile> FindInstallableFiles(InstallableDescriptor stanza, ZipFile zipfile)
+        {
             string installDir;
             bool makeDirs;
+            var files = new List<InstallableFile> ();
 
             if (stanza.install_to == "GameData")
             {
@@ -491,11 +501,8 @@ namespace CKAN
             }
             else
             {
-                // What is the best exception to use here??
-                throw new Exception("Unknown install location: " + stanza.install_to);
+                throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
             }
-
-            // User.WriteLine("InstallDir is "+installDir);
 
             // Is there a better way to extract a tree?
             string filter = "^" + stanza.file + "(/|$)";
@@ -524,21 +531,20 @@ namespace CKAN
                 // TODO: There's got to be a nicer way of doing path resolution.
                 outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
 
-                // Aww hell yes, let's write this file out!
+                string full_path = Path.Combine(installDir, outputName);
 
-                string fullPath = Path.Combine(installDir, outputName);
-                // User.WriteLine (fullPath);
+                // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
+                full_path = full_path.Replace('\\', '/');
 
+                InstallableFile file_info = new InstallableFile (); 
+                file_info.source = entry;
+                file_info.destination = full_path;
+                file_info.makedir = makeDirs;
 
-                CopyZipEntry(zipfile, entry, fullPath, makeDirs);
-
-                User.WriteLine("    * Copying " + entry);
-
-                module_files.Add(Path.Combine(installDir, outputName), new InstalledModuleFile
-                {
-                    sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
-                });
+                files.Add(file_info);
             }
+
+            return files;
         }
 
         private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
