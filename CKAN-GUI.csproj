@@ -71,6 +71,12 @@
     <Compile Include="MainModInfo.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="RenameInstanceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameInstanceDialog.Designer.cs">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -141,6 +147,9 @@
     </Compile>
     <EmbeddedResource Include="RecommendsDialog.resx">
       <DependentUpon>RecommendsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenameInstanceDialog.resx">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
