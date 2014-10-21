@@ -68,6 +68,12 @@ namespace CKAN
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (KSPInstancesListView.SelectedItems.Count == 0)
+            {
+                SelectButton.Enabled = false;
+                return;
+            }
+
             SelectButton.Enabled = true;
         }
 
