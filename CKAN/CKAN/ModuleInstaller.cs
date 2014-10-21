@@ -425,7 +425,7 @@ namespace CKAN
                     // Not installed, so let's get about installing it!
                     var installed_files = new Dictionary<string, InstalledModuleFile>();
 
-                    //InstallComponent(stanza, zipfile, installed_files);
+                    InstallComponent(stanza, zipfile, installed_files);
 
                     registry.RegisterModule(new InstalledModule(installed_files, bundled, DateTime.Now));
                 }
@@ -459,7 +459,7 @@ namespace CKAN
             }
         }
 
-        private void InstallComponent(ModuleInstallDescriptor stanza, ZipFile zipfile,
+        private void InstallComponent(InstallableDescriptor stanza, ZipFile zipfile,
             Dictionary<string, InstalledModuleFile> module_files)
         {
             string fileToInstall = stanza.file;
