@@ -28,7 +28,7 @@ namespace CKAN
 
         public static string TempPath
         {
-            get { return Path.Combine(KSP.CkanDir(), tempPath); }
+            get { return Path.Combine(KSP.CurrentInstance.CkanDir(), tempPath); }
         }
 
         public void Commit()
