@@ -6,6 +6,7 @@ use autodie qw(:all);
 use JSON::PP qw(decode_json);
 use FindBin qw($Bin);
 use File::Copy qw(move);
+use Try::Tiny;
 
 use constant INDEX    => "$Bin/../NetKAN.json";
 use constant KS2CKAN  => "$Bin/../ks2ckan.exe";
@@ -32,7 +33,12 @@ sub process_target {
         say "$target/$mod...";
 
         # Convert our mod
-        system(KS2CKAN, $target, $mod, $modlist->{$mod}, CKANMETA);
+        try {
+            system(KS2CKAN, $target, $mod, $modlist->{$mod}, CKANMETA);
+        }
+        catch {
+            warn "Processing $target/$mod FAILED\n";
+        };
 
     }
 }
