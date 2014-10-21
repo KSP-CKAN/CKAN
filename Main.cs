@@ -34,6 +34,8 @@ namespace CKAN
         public ControlFactory controlFactory = null;
 
         private FolderBrowserDialog m_FindKSPRootDialog = new FolderBrowserDialog();
+        private OpenFileDialog m_ImportCkanDialog = new OpenFileDialog();
+        private SaveFileDialog m_ExportInstalledModsDialog = new SaveFileDialog();
 
         public Main()
         {
@@ -72,7 +74,10 @@ namespace CKAN
                 Path.Combine(KSP.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo
             );
-            
+
+            FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
+            launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
+
             RecreateDialogs();
         }
 
@@ -380,6 +385,30 @@ namespace CKAN
             }
 
             UpdateModDependencyGraph(module);
+        }
+
+        private void exportInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+        }
+
+        private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new KSPCommandLineOptionsDialog();
+            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
+                m_Configuration.Save();
+            }
         }
     }
 }
