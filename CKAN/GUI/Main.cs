@@ -122,7 +122,7 @@ namespace CKAN
             ApplyToolButton.Enabled = false;
 
             Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSP.CurrentInstance.Version());
-            KSPVersionLabel.Text = String.Format("KSP Version {0}", KSP.CurrentInstance.Version());
+            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSP.CurrentInstance.Version());
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -395,9 +395,17 @@ namespace CKAN
         {
         }
 
+      
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+            if (Util.IsLinux)
+            {
+                Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.x86"), m_Configuration.CommandLineArguments);
+            }
+            else
+            {
+                Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+            }
         }
 
         private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)

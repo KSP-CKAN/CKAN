@@ -49,7 +49,7 @@
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.Size = new System.Drawing.Size(267, 117);
             this.ErrorMessage.TabIndex = 0;
-            this.ErrorMessage.Text = "Error";
+            this.ErrorMessage.Text = "Error!";
             this.ErrorMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // DismissButton
@@ -68,11 +68,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 171);
+            this.ControlBox = false;
             this.Controls.Add(this.DismissButton);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ErrorDialog";
-            this.Text = "Error";
+            this.Text = "Error!";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
