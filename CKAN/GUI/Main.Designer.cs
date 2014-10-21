@@ -188,11 +188,11 @@ namespace CKAN
             this.menuStrip2.AutoSize = false;
             this.menuStrip2.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.launchKSPToolStripMenuItem,
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
-            this.FilterToolButton,
-            this.launchKSPToolStripMenuItem});
+            this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 24);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(870, 40);

@@ -90,7 +90,11 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                ApplyToolButton_Click(null, null);
+                if (ComputeChangeSetFromModList().Any())
+                {
+                    ApplyToolButton_Click(null, null);
+                }
+
                 return true;
             }
 
@@ -347,7 +351,7 @@ namespace CKAN
             }
 
             m_WaitDialog.ResetProgress();
-            m_WaitDialog.ShowWaitDialog(false);
+            m_WaitDialog.ShowWaitDialog(false, false);
             ModuleInstaller.Instance.CachedOrDownload(module);
             m_WaitDialog.HideWaitDialog();
 

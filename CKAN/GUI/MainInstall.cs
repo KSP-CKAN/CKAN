@@ -151,6 +151,9 @@ namespace CKAN
             {
                 // actual magic happens here, we run the installer with our mod list
                 installer.onReportModInstalled = OnModInstalled;
+                m_WaitDialog.cancelCallback = () => { installer.CancelInstall();
+                                                        m_WaitDialog = null;
+                };
                 installer.InstallList(toInstall.ToList(), opts.Value);
             }
         }
@@ -165,8 +168,12 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
-            AddStatusMessage("");
-            m_WaitDialog.Close();
+
+            if (m_WaitDialog != null)
+            {
+                AddStatusMessage("");
+                m_WaitDialog.Close();    
+            }
 
             Util.Invoke(this, () => RecreateDialogs());
             Util.Invoke(this, () => Enabled = true);
