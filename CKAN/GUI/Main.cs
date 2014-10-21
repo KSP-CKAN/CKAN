@@ -42,6 +42,8 @@ namespace CKAN
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
 
+            KSP.LoadInstancesFromRegistry();
+
             controlFactory = new ControlFactory();
             m_Instance = this;
             
@@ -54,6 +56,8 @@ namespace CKAN
                 Close();
                 return;
             }
+
+            KSP.PopulateRegistryWithInstances();
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
