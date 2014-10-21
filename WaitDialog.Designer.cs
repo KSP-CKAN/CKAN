@@ -31,6 +31,7 @@
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.LogTextBox = new System.Windows.Forms.TextBox();
+            this.CancelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // MessageTextBox
@@ -41,7 +42,7 @@
             this.MessageTextBox.Multiline = true;
             this.MessageTextBox.Name = "MessageTextBox";
             this.MessageTextBox.ReadOnly = true;
-            this.MessageTextBox.Size = new System.Drawing.Size(380, 17);
+            this.MessageTextBox.Size = new System.Drawing.Size(460, 17);
             this.MessageTextBox.TabIndex = 0;
             this.MessageTextBox.Text = "Waiting for operation to complete";
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -50,7 +51,7 @@
             // 
             this.DialogProgressBar.Location = new System.Drawing.Point(13, 35);
             this.DialogProgressBar.Name = "DialogProgressBar";
-            this.DialogProgressBar.Size = new System.Drawing.Size(380, 23);
+            this.DialogProgressBar.Size = new System.Drawing.Size(459, 23);
             this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.DialogProgressBar.TabIndex = 1;
             // 
@@ -61,15 +62,26 @@
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(379, 204);
+            this.LogTextBox.Size = new System.Drawing.Size(459, 175);
             this.LogTextBox.TabIndex = 2;
+            // 
+            // CancelButton
+            // 
+            this.CancelButton.Location = new System.Drawing.Point(397, 245);
+            this.CancelButton.Name = "CancelButton";
+            this.CancelButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelButton.TabIndex = 3;
+            this.CancelButton.Text = "Cancel";
+            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // WaitDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 280);
+            this.ClientSize = new System.Drawing.Size(484, 280);
             this.ControlBox = false;
+            this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.DialogProgressBar);
             this.Controls.Add(this.MessageTextBox);
@@ -86,6 +98,7 @@
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
+        private System.Windows.Forms.Button CancelButton;
 
     }
 }
