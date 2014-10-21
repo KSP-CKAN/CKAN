@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -15,6 +16,8 @@ namespace CKAN
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
             CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
+
+            KSPInstallPathLabel.Text = KSP.CurrentInstance.GameDir();
 
             UpdateCacheInfo();
         }
@@ -34,7 +37,7 @@ namespace CKAN
 
             CKANCacheLabel.Text = String.Format
             (
-                "There are currently {0} files in the cache, taking up {1} MiB",
+                "There are currently {0} files in the cache for a total of {1} MiB",
                 count,
                 cacheSize / 1024 / 1024
             );
@@ -61,10 +64,25 @@ namespace CKAN
             var cachePath = Path.Combine(KSP.CurrentInstance.CkanDir(), "downloads");
             foreach (var file in Directory.GetFiles(cachePath))
             {
-                File.Delete(file);
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception)
+                {
+                }
             }
 
             UpdateCacheInfo();
+        }
+
+        private void ResetAutoStartChoice_Click(object sender, EventArgs e)
+        {
+            KSP.AutoStartInstance = "";
+            KSP.PopulateRegistryWithInstances();
+
+            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Application.Exit();
         }
 
     }

@@ -39,6 +39,7 @@
             this.SelectButton = new System.Windows.Forms.Button();
             this.AddNewButton = new System.Windows.Forms.Button();
             this.RenameButton = new System.Windows.Forms.Button();
+            this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // KSPInstancesListView
@@ -55,6 +56,7 @@
             this.KSPInstancesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);
+            this.KSPInstancesListView.MultiSelect = false;
             this.KSPInstancesListView.Name = "KSPInstancesListView";
             this.KSPInstancesListView.Size = new System.Drawing.Size(350, 301);
             this.KSPInstancesListView.TabIndex = 0;
@@ -114,11 +116,22 @@
             this.RenameButton.UseVisualStyleBackColor = true;
             this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
             // 
+            // SetAsDefaultCheckbox
+            // 
+            this.SetAsDefaultCheckbox.AutoSize = true;
+            this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
+            this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
+            this.SetAsDefaultCheckbox.Size = new System.Drawing.Size(91, 17);
+            this.SetAsDefaultCheckbox.TabIndex = 4;
+            this.SetAsDefaultCheckbox.Text = "Set as default";
+            this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
+            // 
             // ChooseKSPInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(374, 355);
+            this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
@@ -126,6 +139,7 @@
             this.Name = "ChooseKSPInstance";
             this.Text = "Select KSP install";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -138,5 +152,6 @@
         private System.Windows.Forms.Button SelectButton;
         private System.Windows.Forms.Button AddNewButton;
         private System.Windows.Forms.Button RenameButton;
+        private System.Windows.Forms.CheckBox SetAsDefaultCheckbox;
     }
 }

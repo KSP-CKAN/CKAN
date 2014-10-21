@@ -26,7 +26,7 @@ namespace CKAN
     {
         private static ModuleInstaller _Instance;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (ModuleInstaller));
+        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
         private readonly RegistryManager registry_manager = RegistryManager.Instance();
 
         private FilesystemTransaction currentTransaction;
@@ -216,12 +216,6 @@ namespace CKAN
                 {
                     notCached.Add(module);
                 }
-            }
-
-            if (!notCached.Any() && !cached.Any())
-            {
-                currentTransaction.Rollback();
-                return;
             }
 
             var modulesToDownload = new CkanModule[notCached.Count];

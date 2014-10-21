@@ -101,6 +101,7 @@ namespace CKAN
 
         public static Dictionary<string, KSP> Instances = new Dictionary<string, KSP>();
         public static KSP CurrentInstance = null;
+        public static string AutoStartInstance = null;
 
         public static void AddDefaultInstance()
         {
@@ -208,12 +209,15 @@ namespace CKAN
         
         public static void LoadInstancesFromRegistry()
         {
+            Instances.Clear();
+
             var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
             if (key == null)
             {
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
+            AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
             var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
          
             for (int i = 0; i < instanceCount; i++)
@@ -235,6 +239,7 @@ namespace CKAN
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
+            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", AutoStartInstance);
             KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", Instances.Count);
 
             int i = 0;

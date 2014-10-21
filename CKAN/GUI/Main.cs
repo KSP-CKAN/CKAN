@@ -48,16 +48,24 @@ namespace CKAN
             m_Instance = this;
             
             InitializeComponent();
-            Hide();
 
-            var result = new ChooseKSPInstance().ShowDialog();
-            if (result == DialogResult.Cancel || result == DialogResult.Abort)
+            if (KSP.AutoStartInstance == "")
             {
-                Close();
-                return;
-            }
+                Hide();
 
-            KSP.PopulateRegistryWithInstances();
+                var result = new ChooseKSPInstance().ShowDialog();
+                if (result == DialogResult.Cancel || result == DialogResult.Abort)
+                {
+                    Close();
+                    return;
+                }
+
+                KSP.PopulateRegistryWithInstances();
+            }
+            else
+            {
+                KSP.InitializeInstance(KSP.AutoStartInstance);
+            }
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
