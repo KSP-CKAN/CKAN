@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "Test",
             "Test2"}, -1);
             this.ChangesListView = new System.Windows.Forms.ListView();
@@ -40,11 +40,12 @@
             // 
             // ChangesListView
             // 
+            this.ChangesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ChangesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ModName,
             this.ChangeType});
             this.ChangesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.ChangesListView.Location = new System.Drawing.Point(12, 12);
             this.ChangesListView.Name = "ChangesListView";
             this.ChangesListView.Size = new System.Drawing.Size(451, 259);
@@ -64,6 +65,7 @@
             // 
             // ConfirmButton
             // 
+            this.ConfirmButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ConfirmButton.Location = new System.Drawing.Point(390, 277);
             this.ConfirmButton.Name = "ConfirmButton";
             this.ConfirmButton.Size = new System.Drawing.Size(75, 23);
@@ -74,6 +76,7 @@
             // 
             // CancelButton
             // 
+            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.Location = new System.Drawing.Point(309, 277);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(75, 23);

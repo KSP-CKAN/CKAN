@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "dsadsa",
             "",
             ""}, -1);
@@ -46,13 +46,14 @@
             this.KSPInstancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.KSPInstancesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.KSPInstancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.KSPInstallName,
             this.KSPInstallVersion,
             this.KSPInstallPath});
             this.KSPInstancesListView.FullRowSelect = true;
             this.KSPInstancesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3});
+            listViewItem1});
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);
             this.KSPInstancesListView.Name = "KSPInstancesListView";
             this.KSPInstancesListView.Size = new System.Drawing.Size(350, 301);
@@ -80,6 +81,7 @@
             // 
             this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SelectButton.Location = new System.Drawing.Point(287, 320);
             this.SelectButton.Name = "SelectButton";
             this.SelectButton.Size = new System.Drawing.Size(75, 23);
@@ -91,6 +93,7 @@
             // AddNewButton
             // 
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNewButton.Location = new System.Drawing.Point(206, 320);
             this.AddNewButton.Name = "AddNewButton";
             this.AddNewButton.Size = new System.Drawing.Size(75, 23);
@@ -102,6 +105,7 @@
             // RenameButton
             // 
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RenameButton.Location = new System.Drawing.Point(125, 320);
             this.RenameButton.Name = "RenameButton";
             this.RenameButton.Size = new System.Drawing.Size(75, 23);

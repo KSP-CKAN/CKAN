@@ -33,14 +33,15 @@
             this.CKANRepositoryDefaultButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.ClearCKANCacheButton = new System.Windows.Forms.Button();
+            this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // CKANRepositoryTextBox
             // 
+            this.CKANRepositoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CKANRepositoryTextBox.Location = new System.Drawing.Point(6, 19);
             this.CKANRepositoryTextBox.Name = "CKANRepositoryTextBox";
             this.CKANRepositoryTextBox.Size = new System.Drawing.Size(316, 20);
@@ -48,9 +49,10 @@
             // 
             // CKANRepositoryApplyButton
             // 
-            this.CKANRepositoryApplyButton.Location = new System.Drawing.Point(328, 19);
+            this.CKANRepositoryApplyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CKANRepositoryApplyButton.Location = new System.Drawing.Point(328, 14);
             this.CKANRepositoryApplyButton.Name = "CKANRepositoryApplyButton";
-            this.CKANRepositoryApplyButton.Size = new System.Drawing.Size(68, 20);
+            this.CKANRepositoryApplyButton.Size = new System.Drawing.Size(56, 26);
             this.CKANRepositoryApplyButton.TabIndex = 6;
             this.CKANRepositoryApplyButton.Text = "Apply";
             this.CKANRepositoryApplyButton.UseVisualStyleBackColor = true;
@@ -58,9 +60,10 @@
             // 
             // CKANRepositoryDefaultButton
             // 
-            this.CKANRepositoryDefaultButton.Location = new System.Drawing.Point(402, 19);
+            this.CKANRepositoryDefaultButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CKANRepositoryDefaultButton.Location = new System.Drawing.Point(390, 14);
             this.CKANRepositoryDefaultButton.Name = "CKANRepositoryDefaultButton";
-            this.CKANRepositoryDefaultButton.Size = new System.Drawing.Size(68, 20);
+            this.CKANRepositoryDefaultButton.Size = new System.Drawing.Size(53, 26);
             this.CKANRepositoryDefaultButton.TabIndex = 7;
             this.CKANRepositoryDefaultButton.Text = "Default";
             this.CKANRepositoryDefaultButton.UseVisualStyleBackColor = true;
@@ -71,6 +74,7 @@
             this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryTextBox);
             this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryDefaultButton);
             this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryApplyButton);
+            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 56);
@@ -80,8 +84,9 @@
             // 
             // CacheGroupBox
             // 
-            this.CacheGroupBox.Controls.Add(this.button1);
-            this.CacheGroupBox.Controls.Add(this.label1);
+            this.CacheGroupBox.Controls.Add(this.ClearCKANCacheButton);
+            this.CacheGroupBox.Controls.Add(this.CKANCacheLabel);
+            this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(12, 74);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
@@ -89,23 +94,25 @@
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "CKAN Cache";
             // 
-            // button1
+            // ClearCKANCacheButton
             // 
-            this.button1.Location = new System.Drawing.Point(341, 16);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(129, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Clear cache";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ClearCKANCacheButton.Location = new System.Drawing.Point(328, 16);
+            this.ClearCKANCacheButton.Name = "ClearCKANCacheButton";
+            this.ClearCKANCacheButton.Size = new System.Drawing.Size(129, 23);
+            this.ClearCKANCacheButton.TabIndex = 1;
+            this.ClearCKANCacheButton.Text = "Clear cache";
+            this.ClearCKANCacheButton.UseVisualStyleBackColor = true;
+            this.ClearCKANCacheButton.Click += new System.EventHandler(this.ClearCKANCacheButton_Click);
             // 
-            // label1
+            // CKANCacheLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(273, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "There are currently N files in the cache, taking up M MiB";
+            this.CKANCacheLabel.AutoSize = true;
+            this.CKANCacheLabel.Location = new System.Drawing.Point(3, 21);
+            this.CKANCacheLabel.Name = "CKANCacheLabel";
+            this.CKANCacheLabel.Size = new System.Drawing.Size(273, 13);
+            this.CKANCacheLabel.TabIndex = 0;
+            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MiB";
             // 
             // SettingsDialog
             // 
@@ -133,7 +140,7 @@
         private System.Windows.Forms.Button CKANRepositoryDefaultButton;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
         private System.Windows.Forms.GroupBox CacheGroupBox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label CKANCacheLabel;
+        private System.Windows.Forms.Button ClearCKANCacheButton;
     }
 }

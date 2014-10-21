@@ -54,6 +54,7 @@
             // 
             // DismissButton
             // 
+            this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DismissButton.Location = new System.Drawing.Point(205, 136);
             this.DismissButton.Name = "DismissButton";
             this.DismissButton.Size = new System.Drawing.Size(75, 23);
