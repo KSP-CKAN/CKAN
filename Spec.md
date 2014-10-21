@@ -486,3 +486,46 @@ it's the result of a custom build process.
 
 Extension fields are unrestricted, and may contain any sort of data,
 including lists and objects.
+
+#### Special use fields
+
+##### $kref
+
+The `$kref` field is a special use field that indicates that data
+should be filled in from an external service provider. Documents
+containing the `$kref` field are *not* valid CKAN files, but they
+may be used by external tools to *generate* valid CKAN files.
+
+For example:
+
+    "$kref" : "#/ckan/kerbalstuff"
+
+The following `$kref` values are understood. Only *one* `$kref`
+field may be present in a document.
+
+###### #/ckan/kerbalstuff
+
+Indicates that data should be fetched from KerbalStuff. When used,
+the following fields will be auto-filled if not already present:
+
+- name
+- license
+- abstract
+- author
+- version
+- download
+- download_size
+- homepage
+- resources/kerbalstuff
+- ksp_version
+
+###### #/ckan/github
+
+Indicates data should be fetched from Github. When used, the following
+fields will be auto-filled if not already present:
+
+- author
+- version
+- download
+- download_size
+- resources/github
