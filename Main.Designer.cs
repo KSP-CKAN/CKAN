@@ -33,12 +33,27 @@ namespace CKAN
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
+            this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setCommandlineOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -55,8 +70,6 @@ namespace CKAN
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.MetadataModuleAbstractLabel = new System.Windows.Forms.TextBox();
-            this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -69,7 +82,10 @@ namespace CKAN
             this.label10 = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
+            this.MetadataModuleAbstractLabel = new System.Windows.Forms.TextBox();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
+            this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
@@ -78,22 +94,6 @@ namespace CKAN
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
-            this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
-            this.exportInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.launchKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setCommandlineOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -130,6 +130,20 @@ namespace CKAN
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // installFromckanToolStripMenuItem
+            // 
+            this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
+            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
+            this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
+            // 
+            // exportInstalledModsToolStripMenuItem
+            // 
+            this.exportInstalledModsToolStripMenuItem.Name = "exportInstalledModsToolStripMenuItem";
+            this.exportInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.exportInstalledModsToolStripMenuItem.Text = "Export installed mods";
+            this.exportInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.exportInstalledModsToolStripMenuItem_Click);
             // 
             // ExitToolButton
             // 
@@ -184,6 +198,115 @@ namespace CKAN
             this.menuStrip2.Size = new System.Drawing.Size(870, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
+            // 
+            // RefreshToolButton
+            // 
+            this.RefreshToolButton.Image = global::CKAN.Properties.Resources.refresh;
+            this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.RefreshToolButton.Name = "RefreshToolButton";
+            this.RefreshToolButton.Size = new System.Drawing.Size(89, 36);
+            this.RefreshToolButton.Text = "Refresh";
+            this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
+            // 
+            // UpdateAllToolButton
+            // 
+            this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
+            this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.UpdateAllToolButton.Name = "UpdateAllToolButton";
+            this.UpdateAllToolButton.Size = new System.Drawing.Size(130, 36);
+            this.UpdateAllToolButton.Text = "Mark all updated";
+            this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
+            // 
+            // ApplyToolButton
+            // 
+            this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
+            this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.ApplyToolButton.Name = "ApplyToolButton";
+            this.ApplyToolButton.Size = new System.Drawing.Size(121, 36);
+            this.ApplyToolButton.Text = "Apply changes";
+            this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
+            // 
+            // FilterToolButton
+            // 
+            this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FilterAllButton,
+            this.FilterInstalledButton,
+            this.FilterInstalledUpdateButton,
+            this.FilterNewButton,
+            this.FilterNotInstalledButton,
+            this.FilterIncompatibleButton,
+            this.customToolStripMenuItem});
+            this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
+            this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.FilterToolButton.Name = "FilterToolButton";
+            this.FilterToolButton.Size = new System.Drawing.Size(97, 36);
+            this.FilterToolButton.Text = "Filter (All)";
+            // 
+            // FilterAllButton
+            // 
+            this.FilterAllButton.Name = "FilterAllButton";
+            this.FilterAllButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterAllButton.Text = "All";
+            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            // 
+            // FilterInstalledButton
+            // 
+            this.FilterInstalledButton.Name = "FilterInstalledButton";
+            this.FilterInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledButton.Text = "Installed";
+            this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
+            // 
+            // FilterInstalledUpdateButton
+            // 
+            this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
+            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledUpdateButton.Text = "Installed (update available)";
+            this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
+            // 
+            // FilterNewButton
+            // 
+            this.FilterNewButton.Name = "FilterNewButton";
+            this.FilterNewButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNewButton.Text = "New in repository";
+            this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
+            // 
+            // FilterNotInstalledButton
+            // 
+            this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
+            this.FilterNotInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNotInstalledButton.Text = "Not installed";
+            this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
+            // 
+            // FilterIncompatibleButton
+            // 
+            this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
+            this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterIncompatibleButton.Text = "Incompatible";
+            this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
+            // 
+            // customToolStripMenuItem
+            // 
+            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
+            this.customToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.customToolStripMenuItem.Text = "Custom";
+            // 
+            // launchKSPToolStripMenuItem
+            // 
+            this.launchKSPToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setCommandlineOptionsToolStripMenuItem});
+            this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
+            this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
+            this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(106, 36);
+            this.launchKSPToolStripMenuItem.Text = "Launch KSP";
+            this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
+            // 
+            // setCommandlineOptionsToolStripMenuItem
+            // 
+            this.setCommandlineOptionsToolStripMenuItem.Name = "setCommandlineOptionsToolStripMenuItem";
+            this.setCommandlineOptionsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.setCommandlineOptionsToolStripMenuItem.Text = "Set command-line arguments";
+            this.setCommandlineOptionsToolStripMenuItem.Click += new System.EventHandler(this.setCommandlineOptionsToolStripMenuItem_Click);
             // 
             // ModList
             // 
@@ -384,36 +507,11 @@ namespace CKAN
             this.tableLayoutPanel1.Size = new System.Drawing.Size(219, 483);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // MetadataModuleAbstractLabel
-            // 
-            this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleAbstractLabel, 2);
-            this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 60);
-            this.MetadataModuleAbstractLabel.Multiline = true;
-            this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
-            this.MetadataModuleAbstractLabel.ReadOnly = true;
-            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(213, 48);
-            this.MetadataModuleAbstractLabel.TabIndex = 27;
-            this.MetadataModuleAbstractLabel.Text = "Description";
-            // 
-            // MetadataModuleNameLabel
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleNameLabel, 2);
-            this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
-            this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
-            this.tableLayoutPanel1.SetRowSpan(this.MetadataModuleNameLabel, 2);
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(213, 57);
-            this.MetadataModuleNameLabel.TabIndex = 0;
-            this.MetadataModuleNameLabel.Text = "Mod Name";
-            this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label1.Location = new System.Drawing.Point(3, 111);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(80, 33);
@@ -434,6 +532,7 @@ namespace CKAN
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label2.Location = new System.Drawing.Point(3, 144);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(80, 32);
@@ -454,6 +553,7 @@ namespace CKAN
             // 
             this.label3.AutoSize = true;
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label3.Location = new System.Drawing.Point(3, 176);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(80, 32);
@@ -474,6 +574,7 @@ namespace CKAN
             // 
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label5.Location = new System.Drawing.Point(3, 208);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(80, 35);
@@ -484,6 +585,7 @@ namespace CKAN
             // 
             this.label8.AutoSize = true;
             this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label8.Location = new System.Drawing.Point(3, 243);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(80, 43);
@@ -504,6 +606,7 @@ namespace CKAN
             // 
             this.label10.AutoSize = true;
             this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label10.Location = new System.Drawing.Point(3, 286);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(80, 25);
@@ -534,6 +637,34 @@ namespace CKAN
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
             this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MetadataModuleGitHubLinkLabel_LinkClicked);
             // 
+            // MetadataModuleNameLabel
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleNameLabel, 2);
+            this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MetadataModuleNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
+            this.tableLayoutPanel1.SetRowSpan(this.MetadataModuleNameLabel, 2);
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(213, 57);
+            this.MetadataModuleNameLabel.TabIndex = 0;
+            this.MetadataModuleNameLabel.Text = "Mod Name";
+            this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // MetadataModuleAbstractLabel
+            // 
+            this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tableLayoutPanel1.SetColumnSpan(this.MetadataModuleAbstractLabel, 2);
+            this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 60);
+            this.MetadataModuleAbstractLabel.Multiline = true;
+            this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
+            this.MetadataModuleAbstractLabel.ReadOnly = true;
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(213, 48);
+            this.MetadataModuleAbstractLabel.TabIndex = 27;
+            this.MetadataModuleAbstractLabel.Text = "Description";
+            this.MetadataModuleAbstractLabel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // RelationshipTabPage
             // 
             this.RelationshipTabPage.Controls.Add(this.ModuleRelationshipType);
@@ -545,6 +676,23 @@ namespace CKAN
             this.RelationshipTabPage.TabIndex = 1;
             this.RelationshipTabPage.Text = "Relationships";
             this.RelationshipTabPage.UseVisualStyleBackColor = true;
+            // 
+            // ModuleRelationshipType
+            // 
+            this.ModuleRelationshipType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ModuleRelationshipType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ModuleRelationshipType.FormattingEnabled = true;
+            this.ModuleRelationshipType.Items.AddRange(new object[] {
+            "Depends",
+            "Pre-depends",
+            "Recommends",
+            "Suggests"});
+            this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
+            this.ModuleRelationshipType.Name = "ModuleRelationshipType";
+            this.ModuleRelationshipType.Size = new System.Drawing.Size(213, 21);
+            this.ModuleRelationshipType.TabIndex = 1;
+            this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
             // 
             // DependsGraphTree
             // 
@@ -622,151 +770,11 @@ namespace CKAN
             // 
             this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(763, 594);
+            this.KSPVersionLabel.Location = new System.Drawing.Point(716, 594);
             this.KSPVersionLabel.Name = "KSPVersionLabel";
-            this.KSPVersionLabel.Size = new System.Drawing.Size(99, 13);
+            this.KSPVersionLabel.Size = new System.Drawing.Size(146, 13);
             this.KSPVersionLabel.TabIndex = 1;
-            this.KSPVersionLabel.Text = "KSP Version 0.25.0";
-            // 
-            // ModuleRelationshipType
-            // 
-            this.ModuleRelationshipType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ModuleRelationshipType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ModuleRelationshipType.FormattingEnabled = true;
-            this.ModuleRelationshipType.Items.AddRange(new object[] {
-            "Depends",
-            "Pre-depends",
-            "Recommends",
-            "Suggests"});
-            this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
-            this.ModuleRelationshipType.Name = "ModuleRelationshipType";
-            this.ModuleRelationshipType.Size = new System.Drawing.Size(213, 21);
-            this.ModuleRelationshipType.TabIndex = 1;
-            this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
-            // 
-            // exportInstalledModsToolStripMenuItem
-            // 
-            this.exportInstalledModsToolStripMenuItem.Name = "exportInstalledModsToolStripMenuItem";
-            this.exportInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.exportInstalledModsToolStripMenuItem.Text = "Export installed mods";
-            this.exportInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.exportInstalledModsToolStripMenuItem_Click);
-            // 
-            // installFromckanToolStripMenuItem
-            // 
-            this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
-            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
-            this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
-            // 
-            // RefreshToolButton
-            // 
-            this.RefreshToolButton.Image = global::CKAN.Properties.Resources.refresh;
-            this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.RefreshToolButton.Name = "RefreshToolButton";
-            this.RefreshToolButton.Size = new System.Drawing.Size(89, 36);
-            this.RefreshToolButton.Text = "Refresh";
-            this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
-            // 
-            // UpdateAllToolButton
-            // 
-            this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
-            this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.UpdateAllToolButton.Name = "UpdateAllToolButton";
-            this.UpdateAllToolButton.Size = new System.Drawing.Size(130, 36);
-            this.UpdateAllToolButton.Text = "Mark all updated";
-            this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
-            // 
-            // ApplyToolButton
-            // 
-            this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
-            this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.ApplyToolButton.Name = "ApplyToolButton";
-            this.ApplyToolButton.Size = new System.Drawing.Size(121, 36);
-            this.ApplyToolButton.Text = "Apply changes";
-            this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
-            // 
-            // FilterToolButton
-            // 
-            this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FilterAllButton,
-            this.FilterInstalledButton,
-            this.FilterInstalledUpdateButton,
-            this.FilterNewButton,
-            this.FilterNotInstalledButton,
-            this.FilterIncompatibleButton,
-            this.customToolStripMenuItem});
-            this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
-            this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.FilterToolButton.Name = "FilterToolButton";
-            this.FilterToolButton.Size = new System.Drawing.Size(97, 36);
-            this.FilterToolButton.Text = "Filter (All)";
-            // 
-            // FilterAllButton
-            // 
-            this.FilterAllButton.Name = "FilterAllButton";
-            this.FilterAllButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterAllButton.Text = "All";
-            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
-            // 
-            // FilterInstalledButton
-            // 
-            this.FilterInstalledButton.Name = "FilterInstalledButton";
-            this.FilterInstalledButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterInstalledButton.Text = "Installed";
-            this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
-            // 
-            // FilterInstalledUpdateButton
-            // 
-            this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
-            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterInstalledUpdateButton.Text = "Installed (update available)";
-            this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
-            // 
-            // FilterNewButton
-            // 
-            this.FilterNewButton.Name = "FilterNewButton";
-            this.FilterNewButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterNewButton.Text = "New in repository";
-            this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
-            // 
-            // FilterNotInstalledButton
-            // 
-            this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
-            this.FilterNotInstalledButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterNotInstalledButton.Text = "Not installed";
-            this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
-            // 
-            // FilterIncompatibleButton
-            // 
-            this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
-            this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
-            this.FilterIncompatibleButton.Text = "Incompatible";
-            this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
-            // 
-            // customToolStripMenuItem
-            // 
-            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
-            this.customToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.customToolStripMenuItem.Text = "Custom";
-            // 
-            // launchKSPToolStripMenuItem
-            // 
-            this.launchKSPToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setCommandlineOptionsToolStripMenuItem});
-            this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
-            this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
-            this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(106, 36);
-            this.launchKSPToolStripMenuItem.Text = "Launch KSP";
-            this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
-            // 
-            // setCommandlineOptionsToolStripMenuItem
-            // 
-            this.setCommandlineOptionsToolStripMenuItem.Name = "setCommandlineOptionsToolStripMenuItem";
-            this.setCommandlineOptionsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.setCommandlineOptionsToolStripMenuItem.Text = "Set command-line arguments";
-            this.setCommandlineOptionsToolStripMenuItem.Click += new System.EventHandler(this.setCommandlineOptionsToolStripMenuItem_Click);
+            this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
             // 
             // Main
             // 

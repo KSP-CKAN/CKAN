@@ -12,6 +12,16 @@ namespace CKAN
     public class Util
     {
 
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
+
+
         // utility helper to deal with multi-threading and UI
         public static void Invoke<T>(T obj, Action action) where T : System.Windows.Forms.Control
         {
