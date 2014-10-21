@@ -16,7 +16,7 @@ my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
 my @CP      = qw(cp -r --reflink=auto --sparse=always);
-my $VERSION = capturex(qw(git describe --long));
+my $VERSION = capturex(qw(git describe --tags --long));
 my @ASSEMBLY_INFO = (
     File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs"),
     File::Spec->catdir($BUILD,"CmdLine/Properties/AssemblyInfo.cs"),

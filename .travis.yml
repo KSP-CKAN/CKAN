@@ -34,10 +34,11 @@ deploy:
     # Dang travis is awesome.
     - provider: releases
       api-key:
-        secure: "ENTJNCLPmXsN7FRMlkhsRL2hkbEIaLRoCiwBfn46Zm91I38NTEAp5zM/HI4ZI+8cJes1Vy6lSvgAk80EEIGsN7ZrJw6C/VUW7fQzkuAa9ykyg7wzxE7HTt9FPs88oy9ZiYmTgqmoCGcXxTNg1IutCbxsm11fDLZyamDi9uoLSws="
+        secure: "EqOmz9LI4AUn11gJxAet1e6a2huEIl78ky738nr6/FDd1sUx4Z6Qmu26QRTP00fGogiG1O2kL+aQbfS6gTQ15aUaOkQ3hdYfZja9rGm9pmibbTWGP2E5NQM1AIiUl3Tt2gPDM2mY1oWJ5ZWZDHkZxPqg/VmvELHP5Y3yeXzh9/8="
       file: ckan.exe
       skip_cleanup: true
       on:
+          repo: KSP-CKAN/CKAN
           tags: true
           # all_branches needed as a workaround for travis-ci#1675
           all_branches: true
