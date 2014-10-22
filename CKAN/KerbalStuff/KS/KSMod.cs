@@ -45,7 +45,6 @@ namespace CKAN.KerbalStuff
                 metadata["resources"]["kerbalstuff"] = new JObject();
             }
 
-            Inflate(metadata, "spec_version", "1"); // CKAN spec version
             Inflate(metadata, "name", name);
             Inflate(metadata, "license", license);
             Inflate(metadata, "abstract", short_description);
