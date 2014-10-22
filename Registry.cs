@@ -120,7 +120,7 @@ namespace CKAN
                                     break;
                                 }
                             }
-                            catch (ModuleNotFoundException)
+                            catch (ModuleNotFoundKraken)
                             {
                                 failedDepedency = true;
                                 break;
@@ -188,7 +188,7 @@ namespace CKAN
             }
             catch (KeyNotFoundException)
             {
-                throw new ModuleNotFoundException(module);
+                throw new ModuleNotFoundKraken(module);
             }
         }
 
@@ -214,7 +214,7 @@ namespace CKAN
                     modules.Add(mod);
                 }
             }
-            catch (ModuleNotFoundException)
+            catch (ModuleNotFoundKraken)
             {
                 foreach (var pair in available_modules)
                 {
