@@ -531,6 +531,9 @@ namespace CKAN
 
             KSP.AutoStartInstance = options.name;
             KSP.PopulateRegistryWithInstances();
+
+            User.WriteLine("Successfully set \"{0}\" as the default KSP installation", options.name);
+            return EXIT_OK;
         }
 
     }
