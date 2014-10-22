@@ -26,10 +26,5 @@ namespace CKAN
         {
             return NameTextBox.Text;
         }
-
-        private void RenameInstanceDialog_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -16,7 +16,6 @@ namespace CKAN
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
             CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
-
             KSPInstallPathLabel.Text = KSP.CurrentInstance.GameDir();
 
             UpdateCacheInfo();
