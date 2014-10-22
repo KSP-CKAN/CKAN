@@ -363,8 +363,9 @@ namespace CKAN
 
             foreach (string file in dllFiles)
             {
+                var fixedPath = file.Replace('\\', '/');
                 // register_dll does the heavy lifting of turning it into a modname
-                registry.RegisterDll(file);
+                registry.RegisterDll(fixedPath);
             }
 
             registry_manager.Save();
