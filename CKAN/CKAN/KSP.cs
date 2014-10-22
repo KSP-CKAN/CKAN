@@ -100,7 +100,16 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
         public static Dictionary<string, KSP> Instances = new Dictionary<string, KSP>();
-        public static KSP CurrentInstance = null;
+        private static KSP _CurrentInstance = null;
+
+        public static KSP CurrentInstance
+        {
+            get
+            {
+                return _CurrentInstance;
+            }
+        }
+
         public static string AutoStartInstance = null;
 
         public static void AddDefaultInstance()
@@ -122,7 +131,7 @@ namespace CKAN
                 throw new InvalidKSPInstanceException();
             }
 
-            CurrentInstance = Instances[name];
+            _CurrentInstance = Instances[name];
             Instances[name].Init();
         }
 
