@@ -65,6 +65,12 @@ namespace CKAN
         private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth)
         {
             TreeNode node = null;
+            
+            if (module == null)
+            {
+                return node;
+            }
+
             if (depth > 0 && dependencyGraphRootModule == module)
             {
                 return node;
