@@ -663,8 +663,9 @@ namespace CKAN
                         File.Delete(path);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
                 }
             }
 
