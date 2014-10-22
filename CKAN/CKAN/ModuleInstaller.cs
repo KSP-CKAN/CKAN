@@ -691,18 +691,4 @@ namespace CKAN
             // And we're done! :)
         }
     }
-
-
-    public class ModuleNotFoundException : Exception
-    {
-        public string module;
-        public string version;
-
-        // TODO: Is there a way to set the stringify version of this?
-        public ModuleNotFoundException(string mod, string ver = null)
-        {
-            module = mod;
-            version = ver;
-        }
-    }
 }

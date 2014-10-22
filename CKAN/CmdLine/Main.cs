@@ -251,7 +251,7 @@ namespace CKAN
                 {
                     installer.InstallList(options.modules, install_ops);
                 }
-                catch (ModuleNotFoundException ex)
+                catch (ModuleNotFoundKraken ex)
                 {
                     User.WriteLine("Module {0} required, but not listed in index.", ex.module);
                     User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
@@ -300,7 +300,7 @@ namespace CKAN
                     var installer = ModuleInstaller.Instance;
                     installer.InstallList(options.modules, install_ops);
                 }
-                catch (ModuleNotFoundException ex)
+                catch (ModuleNotFoundKraken ex)
                 {
                     User.WriteLine("Module {0} required, but not listed in index.", ex.module);
                     User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
