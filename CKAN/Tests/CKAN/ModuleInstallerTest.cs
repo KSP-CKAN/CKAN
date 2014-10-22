@@ -24,7 +24,11 @@ namespace Tests
 
             TestDogeCoinStanza(stanza2);
 
-            // TODO: Now what happens if we can't find what to install?
+            // Now what happens if we can't find what to install?
+
+            Assert.Throws<FileNotFoundKraken>(delegate {
+                ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+            });
         }
 
         private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
