@@ -24,4 +24,7 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 
+// Tests can see our internals.
+[assembly: InternalsVisibleTo("Tests")]
+
 // NB: The CKAN build/release process appends an AssemblyInformationalVersion to this file.
