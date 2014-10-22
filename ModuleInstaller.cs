@@ -446,7 +446,10 @@ namespace CKAN
 
         /// <summary>
         /// Returns a default install stanza for the module provided. This finds the topmost
-        /// directory which matches the module identifier, and installs that into GameData.
+        /// directory which matches the module identifier, and generates a stanza that
+        /// installs that into GameData.
+        /// 
+        /// Throws a FileNotFoundKraken() if unable to locate a suitable directory.
         /// </summary>
         internal static ModuleInstallDescriptor GenerateDefaultInstall(string identifier, ZipFile zipfile)
         {
@@ -478,6 +481,13 @@ namespace CKAN
 
             var candidates = new List<string>(candidate_set);
             candidates.Sort((a,b) => a.Length.CompareTo(b.Length));
+
+            if (candidates.Count == 0)
+            {
+                throw new FileNotFoundKraken(
+                    String.Format("Could not find {0} directory in zipfile to install", identifier)
+                );
+            }
 
             // Fill in our stanza!
             stanza.file = candidates[0];
