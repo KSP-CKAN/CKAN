@@ -62,21 +62,27 @@ namespace CKAN
                 LogManager.GetRepository().Threshold = Level.Info;
             }
 
+            KSP.LoadInstancesFromRegistry();
+
             // User provided KSP directory
             if (options.KSP != null)
             {
-                try
+                if (!KSP.Instances.ContainsKey(options.KSP))
                 {
-                    log.DebugFormat("Setting KSP directory to {0}", options.KSP);
-                    var instance = new KSP();
-                    instance.SetGameDir(options.KSP);
-                    KSP.CurrentInstance = instance;
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    log.FatalFormat("KSP not found in {0}", options.KSP);
-                    User.WriteLine("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                    User.WriteLine("Invalid KSP installation specified \"{0}\", use 'list-installs' to see known KSP installations", options.KSP);
                     return EXIT_BADOPT;
+                }
+                else
+                {
+                    KSP.InitializeInstance(options.KSP);
+                }
+            }
+            else
+            {
+                foreach (var instance in KSP.Instances)
+                {
+                    KSP.InitializeInstance(instance.Key);
+                    break;
                 }
             }
 
@@ -131,6 +137,18 @@ namespace CKAN
 
                 case "config":
                     return Config((ConfigOptions) cmdline.options);
+
+                case "list-installs":
+                    return ListInstalls();
+
+                case "add-install":
+                    return AddInstall((AddInstallOptions) cmdline.options);
+
+                case "rename-install":
+                    return RenameInstall((RenameInstallOptions)cmdline.options);
+
+                case "remove-install":
+                    return RemoveInstall((RemoveInstallOptions)cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
@@ -392,6 +410,97 @@ namespace CKAN
                     return EXIT_BADOPT;
             }
         }
+
+        private static int ListInstalls()
+        {
+            User.WriteLine("Listing all known KSP installations:");
+            User.WriteLine("");
+
+            int count = 1;
+            foreach (var instance in KSP.Instances)
+            {
+                User.WriteLine("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
+                count++;
+            }
+
+            return EXIT_OK;
+        }
+
+        private static int AddInstall(AddInstallOptions options)
+        {
+            if (options.name == null || options.path == null)
+            {
+                User.WriteLine("add-install <name> <path> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (KSP.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Install with name \"{0}\" already exists, aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            try
+            {
+                var ksp = new KSP();
+                ksp.SetGameDir(options.path);
+                KSP.Instances.Add(options.name, ksp);
+                KSP.PopulateRegistryWithInstances();
+
+                User.WriteLine("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
+                return EXIT_OK;
+            }
+            catch (Exception)
+            {
+                User.WriteLine("Failed to add \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
+                return EXIT_BADOPT;
+            }
+        }
+
+        private static int RenameInstall(RenameInstallOptions options)
+        {
+            if (options.old_name == null || options.new_name == null)
+            {
+                User.WriteLine("rename-install <old_name> <new_name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSP.Instances.ContainsKey(options.old_name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.old_name);
+                return EXIT_BADOPT;
+            }
+
+            var ksp = KSP.Instances[options.old_name];
+            KSP.Instances.Remove(options.old_name);
+            KSP.Instances.Add(options.new_name, ksp);
+            KSP.PopulateRegistryWithInstances();
+
+            User.WriteLine("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
+            return EXIT_OK;
+        }
+
+        private static int RemoveInstall(RemoveInstallOptions options)
+        {
+            if (options.name == null)
+            {
+                User.WriteLine("remove-install <name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSP.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            KSP.Instances.Remove(options.name);
+            KSP.PopulateRegistryWithInstances();
+
+            User.WriteLine("Successfully removed \"{0}\"", options.name);
+            return EXIT_OK;
+        }
+
     }
 
 
@@ -457,6 +566,18 @@ namespace CKAN
 
         [VerbOption("config", HelpText = "Configure CKAN")]
         public ConfigOptions Config { get; set; }
+
+        [VerbOption("list-installs", HelpText = "List all known KSP installations")]
+        public ListInstallsOptions ListInstalls { get; set; }
+
+        [VerbOption("add-install", HelpText = "Add a new KSP installation")]
+        public AddInstallOptions AddInstall { get; set; }
+
+        [VerbOption("rename-install", HelpText = "Rename a known KSP installation")]
+        public RenameInstallOptions RenameInstall { get; set; }
+
+        [VerbOption("remove-install", HelpText = "Remove a known KSP installation")]
+        public RemoveInstallOptions RemoveInstall { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -573,6 +694,34 @@ namespace CKAN
 
         [ValueOption(1)]
         public string value { get; set; }
+    }
+
+    internal class ListInstallsOptions : CommonOptions
+    {
+    }
+
+    internal class AddInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string name { get; set; }
+
+        [ValueOption(1)]
+        public string path { get; set; }
+    }
+
+    internal class RenameInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string old_name { get; set; }
+
+        [ValueOption(1)]
+        public string new_name { get; set; }
+    }
+
+    internal class RemoveInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string name { get; set; }
     }
 
     // Exception class, so we can signal errors in command options.
