@@ -64,7 +64,7 @@ namespace CKAN
 
             KSP.LoadInstancesFromRegistry();
 
-            // User provided KSP directory
+            // User provided KSP instance
             if (options.KSP != null)
             {
                 if (!KSP.Instances.ContainsKey(options.KSP))
@@ -79,10 +79,19 @@ namespace CKAN
             }
             else
             {
-                foreach (var instance in KSP.Instances)
+                // auto-start instance specified
+                if (KSP.AutoStartInstance != null)
                 {
-                    KSP.InitializeInstance(instance.Key);
-                    break;
+                    KSP.InitializeInstance(KSP.AutoStartInstance);
+                }
+                else
+                {
+                    // just select the first available instance
+                    foreach (var instance in KSP.Instances)
+                    {
+                        KSP.InitializeInstance(instance.Key);
+                        break;
+                    }
                 }
             }
 
@@ -99,6 +108,8 @@ namespace CKAN
                     break;
                 }
             }
+
+            User.WriteLine("Using KSP installation at \"{1}\"", KSP.CurrentInstance.GameDir());
 
             switch (cmdline.action)
             {
@@ -149,6 +160,9 @@ namespace CKAN
 
                 case "remove-install":
                     return RemoveInstall((RemoveInstallOptions)cmdline.options);
+
+                case "set-default-install":
+                    return SetDefaultInstall((SetDefaultInstallOptions)cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
@@ -501,6 +515,24 @@ namespace CKAN
             return EXIT_OK;
         }
 
+        private static int SetDefaultInstall(SetDefaultInstallOptions options)
+        {
+            if (options.name == null)
+            {
+                User.WriteLine("set-default-install <name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSP.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            KSP.AutoStartInstance = options.name;
+            KSP.PopulateRegistryWithInstances();
+        }
+
     }
 
 
@@ -578,6 +610,9 @@ namespace CKAN
 
         [VerbOption("remove-install", HelpText = "Remove a known KSP installation")]
         public RemoveInstallOptions RemoveInstall { get; set; }
+
+        [VerbOption("set-default-install", HelpText = "Sets a known KSP installation as default")]
+        public SetDefaultInstallOptions SetDefaultInstall { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -719,6 +754,12 @@ namespace CKAN
     }
 
     internal class RemoveInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string name { get; set; }
+    }
+
+    internal class SetDefaultInstallOptions : CommonOptions
     {
         [ValueOption(0)]
         public string name { get; set; }
