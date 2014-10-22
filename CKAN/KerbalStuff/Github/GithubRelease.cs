@@ -45,7 +45,6 @@ namespace CKAN.KerbalStuff
                 metadata["resources"]["github"] = new JObject();
             }
 
-            Inflate(metadata, "spec_version", "1"); // CKAN spec version
             Inflate(metadata, "author", author);
             Inflate(metadata, "version", version.ToString());
             Inflate(metadata, "download", Uri.EscapeUriString(download.ToString()));

@@ -1,0 +1,6 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "DogeCoinFlag",
+    "$kref"          : "#/ckan/kerbalstuff",
+    "ksp_version"    : "any"
+}

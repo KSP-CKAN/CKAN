@@ -26,13 +26,11 @@ namespace CKAN.KerbalStuff
         public static int Main(string[] args)
         {
             BasicConfigurator.Configure();
-            LogManager.GetRepository().Threshold = Level.Debug;
-            log.Debug("KerbalStuff2CKAN started");
 
             if (args.Length < 4)
             {
-                User.WriteLine("Usage: ext2ckan ks identifier ksid outputdir  ## KerbalStuff");
-                User.WriteLine("Usage: ext2ckan gh identifier repo outputdir  ## GitHub");
+                User.WriteLine("Usage: ext2ckan ks identifier ksid outputdir [--verbose|--debug] ## KerbalStuff");
+                User.WriteLine("Usage: ext2ckan gh identifier repo outputdir [--verbose|--debug]  ## GitHub");
                 return EXIT_BADOPT;
             }
 
@@ -40,6 +38,29 @@ namespace CKAN.KerbalStuff
             string identifier = args[1];
             string remote_id = args[2];
             string output_path = args[3];
+
+            // Process logging options.
+
+            if (args.Length >= 5)
+            {
+                if (args[4] == "--verbose")
+                {
+                    LogManager.GetRepository().Threshold = Level.Info;
+                }
+                else if (args[4] == "--debug")
+                {
+                    LogManager.GetRepository().Threshold = Level.Debug;
+                }
+                else
+                {
+                    Console.WriteLine("Unknown option {0}, did you mean --verbose or --debug?",args[4]);
+                    return EXIT_BADOPT;
+                }
+            }
+            else
+            {
+                LogManager.GetRepository().Threshold = Level.Error;
+            }
 
             log.InfoFormat("Processing {0} {1} {2}", source, identifier, remote_id);
 

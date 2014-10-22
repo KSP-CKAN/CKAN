@@ -7,7 +7,7 @@ namespace CKAN.KerbalStuff
 {
     public class KSMod : CkanInflator
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (KSMod));
+        // private static readonly ILog log = LogManager.GetLogger(typeof (KSMod));
         public int id; // KSID
 
         // These get filled in from JSON deserialisation.
@@ -45,7 +45,6 @@ namespace CKAN.KerbalStuff
                 metadata["resources"]["kerbalstuff"] = new JObject();
             }
 
-            Inflate(metadata, "spec_version", "1"); // CKAN spec version
             Inflate(metadata, "name", name);
             Inflate(metadata, "license", license);
             Inflate(metadata, "abstract", short_description);

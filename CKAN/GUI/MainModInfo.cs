@@ -129,7 +129,7 @@ namespace CKAN
                         (dependency.name.ToString(), KSP.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
-                    catch (ModuleNotFoundException)
+                    catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
                         (dependency.name.ToString(), KSP.CurrentInstance.Version());
