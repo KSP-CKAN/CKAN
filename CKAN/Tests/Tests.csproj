@@ -36,6 +36,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
@@ -44,6 +47,7 @@
     <Compile Include="KSPVersion.cs" />
     <Compile Include="KerbalStuff\KSMod.cs" />
     <Compile Include="KerbalStuff\GitHubTests.cs" />
+    <Compile Include="CKAN\ModuleInstallerTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,5 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="KerbalStuff\" />
+    <Folder Include="CKAN\" />
   </ItemGroup>
 </Project>

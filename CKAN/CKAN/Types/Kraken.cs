@@ -14,6 +14,9 @@ namespace CKAN
 
     public class FileNotFoundKraken : Kraken
     {
+        public FileNotFoundKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        {
+        }
     }
 
     /// <summary>
@@ -30,5 +33,21 @@ namespace CKAN
         {
         }
     }
+
+    public class ModuleNotFoundKraken : Kraken
+    {
+        public string module;
+        public string version;
+
+        // TODO: Is there a way to set the stringify version of this?
+        public ModuleNotFoundKraken(string module, string version = null, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.module = module;
+            this.version = version;
+        }
+    }
+
+
 }
 

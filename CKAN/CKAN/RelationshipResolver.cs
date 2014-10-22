@@ -38,7 +38,7 @@ namespace CKAN
                 CkanModule mod = registry.LatestAvailable(module);
                 if (mod == null)
                 {
-                    throw new ModuleNotFoundException(module);
+                    throw new ModuleNotFoundKraken(module);
                 }
                  
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
@@ -137,10 +137,10 @@ namespace CKAN
                 {
                     candidate = registry.LatestAvailable(dep_name);
                 }
-                catch (ModuleNotFoundException)
+                catch (ModuleNotFoundKraken)
                 {
                     log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
-                    throw new ModuleNotFoundException(dep_name);
+                    throw new ModuleNotFoundKraken(dep_name);
                 }
 
                 Add(candidate);

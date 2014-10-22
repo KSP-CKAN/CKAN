@@ -183,7 +183,7 @@ namespace CKAN
             {
                 resolver = new RelationshipResolver(tmp, options);
             }
-            catch (ModuleNotFoundException)
+            catch (ModuleNotFoundKraken)
             {
                 return null;
             }
