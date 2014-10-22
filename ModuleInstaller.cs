@@ -208,6 +208,7 @@ namespace CKAN
                 {
                     if (!downloadOnly)
                     {
+                        log.DebugFormat("Intalling {0} from {1}", module, fullPath);
                         Install(module, fullPath);
                     }
 
@@ -336,6 +337,9 @@ namespace CKAN
         ///     If no file is supplied, we will fetch() it first.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
         ///     Use InstallList() for requests from the user.
+        /// 
+        ///     XXX: This provides no way to check if the install failed,
+        ///     it *should* throw an exception if it does.
         /// </summary>
         private void Install(CkanModule module, string filename = null)
         {
@@ -376,14 +380,29 @@ namespace CKAN
             }
             catch (Exception)
             {
+                // TODO: I'm not sure we want to just be returing here
+                // on error. A failed install is enough of a reason to
+                // bail out entirely. This should be throwing an exception.
                 User.Error("Failed to open archive \"{0}\"", filename);
                 return;
             }
 
-            // Walk through our install instructions.
-            foreach (ModuleInstallDescriptor stanza in module.install)
+            if (module.install == null || module.install.Length == 0)
             {
+                log.DebugFormat("No install stanzas found for {0}, using defaults", module);
+
+                // This throws a FileNotFoundKraken on failure. We intentionally
+                // don't catch it, because that's an irrecoverable error.
+                var stanza = GenerateDefaultInstall(module.identifier, zipfile);
                 InstallComponent(stanza, zipfile, module_files);
+            }
+            else
+            {
+                // Walk through our install instructions.
+                foreach (ModuleInstallDescriptor stanza in module.install)
+                {
+                    InstallComponent(stanza, zipfile, module_files);
+                }
             }
 
             // Register our files.
