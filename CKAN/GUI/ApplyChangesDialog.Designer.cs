@@ -17,6 +17,7 @@
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -98,7 +99,6 @@
             this.Name = "ApplyChangesDialog";
             this.Text = "Apply changes";
             this.ResumeLayout(false);
-
         }
 
         #endregion

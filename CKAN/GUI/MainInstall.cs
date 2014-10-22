@@ -54,6 +54,11 @@ namespace CKAN
 
             foreach (var change in opts.Key)
             {
+                toInstall.Add(change.Key.identifier);
+            }
+
+            foreach (var change in opts.Key)
+            {
                 if (change.Value == GUIModChangeType.Install)
                 {
                     // check if we haven't already displayed the recommended dialog for this mod
@@ -79,7 +84,7 @@ namespace CKAN
                             }
                         }
 
-                        if (recommended.Count() > 0)
+                        if (recommended.Any())
                         {
                             List<string> recommendedToInstall = m_RecommendsDialog.ShowRecommendsDialog
                                 (
@@ -117,7 +122,7 @@ namespace CKAN
                             }
                         }
 
-                        if (suggested.Count() > 0)
+                        if (suggested.Any())
                         {
                             List<string> suggestedToInstall = m_RecommendsDialog.ShowRecommendsDialog
                                 (
@@ -136,9 +141,6 @@ namespace CKAN
                             suggestedDialogShown.Add(change.Key.identifier);
                         }
                     }
-
-                    // finally add the mod itself to the install list
-                    toInstall.Add(change.Key.identifier);
                 }
                 else if (change.Value == GUIModChangeType.Update)
                 {
@@ -147,14 +149,22 @@ namespace CKAN
                 }
             }
 
+            InstallList(toInstall, opts.Value);
+        }
+
+        private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
+        {
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
-                installer.onReportModInstalled = OnModInstalled;
-                m_WaitDialog.cancelCallback = () => { installer.CancelInstall();
-                                                        m_WaitDialog = null;
+                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
+                m_WaitDialog.cancelCallback = () =>
+                {
+                    ModuleInstaller.Instance.CancelInstall();
+                    m_WaitDialog = null;
                 };
-                installer.InstallList(toInstall.ToList(), opts.Value);
+
+                ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
             }
         }
 
@@ -175,7 +185,7 @@ namespace CKAN
                 m_WaitDialog.Close();    
             }
 
-            Util.Invoke(this, () => RecreateDialogs());
+            Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, () => Enabled = true);
         }
 

@@ -347,7 +347,7 @@ namespace CKAN
             }
             catch (Exception)
             {
-                User.Error("Failed to open archive \"{0}\"", filename);
+                User.Error("Failed to open archive \"{0}\". Try clearing the cache.", filename);
                 return null;
             }
 

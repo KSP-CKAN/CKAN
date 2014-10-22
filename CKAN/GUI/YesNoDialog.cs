@@ -18,7 +18,7 @@ namespace CKAN
 
         public void HideYesNoDialog()
         {
-            Util.Invoke(this, () => Close());
+            Util.Invoke(this, Close);
         }
     }
 }

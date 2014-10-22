@@ -29,14 +29,14 @@ namespace CKAN
             }
             else
             {
-                Util.Invoke(this, () => Show());
+                Util.Invoke(this, Show);
             }
         }
 
         public void HideWaitDialog()
         {
             Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "Waiting for operation to complete");
-            Util.Invoke(this, () => Close());
+            Util.Invoke(this, Close);
         }
 
         public void SetProgress(int progress)

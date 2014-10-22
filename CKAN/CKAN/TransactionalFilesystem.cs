@@ -78,6 +78,12 @@ namespace CKAN
                     return;
                 }
 
+                if (!file.neverOverwrite)
+                {
+                    File.Open(file.path, FileMode.Create).Close();
+                    File.Delete(file.path);
+                }
+
                 ReportProgress("Validating files", (i * 100) / count);
 
                 i++;
@@ -90,11 +96,16 @@ namespace CKAN
             {
                 TransactionalFileWriter file = pair.Value;
 
-                if (File.Exists(file.path) && file.neverOverwrite)
+                bool fileExists = File.Exists(file.path);
+                if (fileExists && file.neverOverwrite)
                 {
                     log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.", file.path);
                     File.Delete(file.TemporaryPath);
                     continue;
+                }
+                else if (fileExists)
+                {
+                    File.Delete(file.path);
                 }
 
                 File.Move(file.TemporaryPath, file.path);

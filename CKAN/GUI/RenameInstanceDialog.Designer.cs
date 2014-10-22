@@ -75,7 +75,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "RenameInstanceDialog";
             this.Text = "Rename installation";
-            this.Load += new System.EventHandler(this.RenameInstanceDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
