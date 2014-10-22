@@ -80,7 +80,7 @@ namespace CKAN
             else
             {
                 // auto-start instance specified
-                if (KSP.AutoStartInstance != null)
+                if (KSP.AutoStartInstance != null && KSP.AutoStartInstance != "" && KSP.Instances.ContainsKey(KSP.AutoStartInstance))
                 {
                     KSP.InitializeInstance(KSP.AutoStartInstance);
                 }
@@ -109,7 +109,7 @@ namespace CKAN
                 }
             }
 
-            User.WriteLine("Using KSP installation at \"{1}\"", KSP.CurrentInstance.GameDir());
+            User.WriteLine("Using KSP installation at \"{0}\"", KSP.CurrentInstance.GameDir());
 
             switch (cmdline.action)
             {
