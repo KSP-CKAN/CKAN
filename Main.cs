@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Remoting.Messaging;
 using CommandLine;
 using log4net;
 using log4net.Config;
@@ -163,6 +164,9 @@ namespace CKAN
 
                 case "set-default-install":
                     return SetDefaultInstall((SetDefaultInstallOptions)cmdline.options);
+
+                case "clear-cache":
+                    return ClearCache((ClearCacheOptions)cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
@@ -536,6 +540,25 @@ namespace CKAN
             return EXIT_OK;
         }
 
+        private static int ClearCache(ClearCacheOptions options)
+        {
+            User.WriteLine("Clearing download cache..");
+
+            var cachePath = Path.Combine(KSP.CurrentInstance.CkanDir(), "downloads");
+            foreach (var file in Directory.GetFiles(cachePath))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return EXIT_OK;
+        }
+
     }
 
 
@@ -616,6 +639,9 @@ namespace CKAN
 
         [VerbOption("set-default-install", HelpText = "Sets a known KSP installation as default")]
         public SetDefaultInstallOptions SetDefaultInstall { get; set; }
+
+        [VerbOption("clear-cache", HelpText = "Clears the download cache")]
+        public ClearCacheOptions ClearCache { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -766,6 +792,10 @@ namespace CKAN
     {
         [ValueOption(0)]
         public string name { get; set; }
+    }
+
+    internal class ClearCacheOptions : CommonOptions
+    {
     }
 
     // Exception class, so we can signal errors in command options.
