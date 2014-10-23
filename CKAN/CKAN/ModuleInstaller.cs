@@ -727,7 +727,10 @@ namespace CKAN
         {
             if (!registry_manager.registry.IsInstalled(modName))
             {
-                log.WarnFormat("Trying to uninstall {0} but it's not installed", modName);
+                // TODO: This could indicates a logic error somewhere;
+                // change to a kraken, the calling code can always catch it
+                // if it expects that it may try to uninstall a module twice.
+                log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
                 return;
             }
 
@@ -791,7 +794,7 @@ namespace CKAN
                 }
             }
 
-            // And we're done! :)
+            return;
         }
     }
 }
