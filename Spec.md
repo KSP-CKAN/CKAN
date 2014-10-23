@@ -371,6 +371,7 @@ for its installation or indexing. Presently the following fields
 are described:
 
 - `homepage` is a URL that goes to the preferred landing page for the mod.
+- `bugtracker` is a URL that goes to the mod's bugtracker if it exists.
 - `github` is an object which *must* contain a `url` pointing to the
   github page for the project. It *may* include a `releases` key
   with a boolean value (which defaults to false) indicating if github releases
@@ -381,8 +382,9 @@ are described:
 Example resources:
 
     "resources" : {
-        "homepage" : "http://tinyurl.com/DogeCoinFlag",
-        "github"   : {
+        "homepage"   : "http://tinyurl.com/DogeCoinFlag",
+        "bugtracker" : "https://github.com/pjf/DogeCoinFlag/issues",
+	"github"   : {
             "url"      : "http://github.com/pjf/DogeCoinFlag",
             "releases" : "true"
         },
