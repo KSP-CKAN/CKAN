@@ -48,6 +48,16 @@ namespace CKAN
         }
     }
 
+    public class NotKSPDirKraken : Kraken
+    {
+        public string path;
+
+        public NotKSPDirKraken(string path, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.path = path;
+        }
+    }
 
 }
 

@@ -467,9 +467,9 @@ namespace CKAN
                 User.WriteLine("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
                 return EXIT_OK;
             }
-            catch (Exception)
+            catch (NotKSPDirKraken ex)
             {
-                User.WriteLine("Failed to add \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
+                User.WriteLine("Sorry, {0} does not appear to be a KSP directory", ex.path);
                 return EXIT_BADOPT;
             }
         }

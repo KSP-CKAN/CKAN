@@ -169,7 +169,7 @@ namespace CKAN
             if (!IsKspDir(directory))
             {
                 log.FatalFormat("Cannot find GameData in {0}", directory);
-                throw new DirectoryNotFoundException();
+                throw new NotKSPDirKraken (directory);
             }
 
             // All good. Set our gamedir for this session.
