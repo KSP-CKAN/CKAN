@@ -459,6 +459,8 @@ namespace CKAN
 
             try
             {
+                // TODO: These are too many steps. This should just be
+                // `KSP.AddInstall(options.path)`, possibly with a catch for when that fails.
                 var ksp = new KSP();
                 ksp.SetGameDir(options.path);
                 KSP.Instances.Add(options.name, ksp);
