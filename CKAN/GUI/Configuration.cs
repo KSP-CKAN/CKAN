@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Xml.Serialization;
 
 namespace CKAN
 {
-
     public class Configuration
     {
         public string Repository = "";
-        public string CommandLineArguments = "";
 
         private string m_Path = "";
 

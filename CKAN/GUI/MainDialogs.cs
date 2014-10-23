@@ -25,11 +25,6 @@ namespace CKAN
 
         public void AddStatusMessage(string text, params object[] args)
         {
-            if (m_WaitDialog == null)
-            {
-                return;
-            }
-
             Util.Invoke(StatusLabel, () => StatusLabel.Text = String.Format(text, args));
             m_WaitDialog.AddLogMessage(String.Format(text, args));
         }

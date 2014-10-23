@@ -30,10 +30,10 @@
         {
             this.MessageLabel = new System.Windows.Forms.Label();
             this.RecommendedListView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button1 = new System.Windows.Forms.Button();
             this.SelectAllButton = new System.Windows.Forms.Button();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // MessageLabel
@@ -47,7 +47,6 @@
             // 
             // RecommendedListView
             // 
-            this.RecommendedListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.RecommendedListView.CheckBoxes = true;
             this.RecommendedListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
@@ -59,19 +58,9 @@
             this.RecommendedListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedListView.View = System.Windows.Forms.View.Details;
             // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Selected";
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Name";
-            this.columnHeader2.Width = 200;
-            // 
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Location = new System.Drawing.Point(369, 344);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
@@ -81,7 +70,6 @@
             // 
             // SelectAllButton
             // 
-            this.SelectAllButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SelectAllButton.Location = new System.Drawing.Point(12, 344);
             this.SelectAllButton.Name = "SelectAllButton";
             this.SelectAllButton.Size = new System.Drawing.Size(75, 23);
@@ -90,19 +78,26 @@
             this.SelectAllButton.UseVisualStyleBackColor = true;
             this.SelectAllButton.Click += new System.EventHandler(this.SelectAllButton_Click);
             // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Selected";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Width = 200;
+            // 
             // RecommendsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(457, 379);
-            this.ControlBox = false;
             this.Controls.Add(this.SelectAllButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.RecommendedListView);
             this.Controls.Add(this.MessageLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "RecommendsDialog";
-            this.Text = "Choose recommended mods";
             this.ResumeLayout(false);
             this.PerformLayout();
 

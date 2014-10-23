@@ -3,14 +3,8 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-
-    public delegate void WaitDialogCancelCallback();
-
     public partial class WaitDialog : Form
     {
-
-        public WaitDialogCancelCallback cancelCallback = null;
-
         public WaitDialog()
         {
             InitializeComponent();
@@ -19,24 +13,22 @@ namespace CKAN
             DialogProgressBar.Maximum = 100;
         }
 
-        public void ShowWaitDialog(bool asDialog = true, bool cancelable = true)
+        public void ShowWaitDialog(bool asDialog = true)
         {
-            Util.Invoke(CancelButton, () => CancelButton.Enabled = cancelable);
-
             if (asDialog)
             {
                 Util.Invoke(this, () => ShowDialog());
             }
             else
             {
-                Util.Invoke(this, Show);
+                Util.Invoke(this, () => Show());
             }
         }
 
         public void HideWaitDialog()
         {
             Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "Waiting for operation to complete");
-            Util.Invoke(this, Close);
+            Util.Invoke(this, () => Close());
         }
 
         public void SetProgress(int progress)
@@ -72,16 +64,6 @@ namespace CKAN
         public void AddLogMessage(string message)
         {
             Util.Invoke(LogTextBox, () => LogTextBox.AppendText(message + "\r\n"));
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            if (cancelCallback != null)
-            {
-                cancelCallback();
-                CancelButton.Enabled = false;
-                HideWaitDialog();
-            }
         }
 
     }

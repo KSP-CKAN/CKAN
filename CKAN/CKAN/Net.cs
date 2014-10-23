@@ -38,7 +38,6 @@ namespace CKAN
         private int queuePointer;
 
         private FilesystemTransaction transaction;
-        private bool downloadCanceled = false;
 
         public NetAsyncDownloader(Uri[] urls, string[] filenames = null)
         {
@@ -99,28 +98,8 @@ namespace CKAN
             return filePaths;
         }
 
-        public void CancelDownload()
-        {
-            foreach (var download in downloads)
-            {
-                download.agent.CancelAsync();
-            }
-
-            if (onCompleted != null)
-            {
-                onCompleted(null, null, null);
-            }
-
-            downloadCanceled = true;
-        }
-
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
-            if (downloadCanceled)
-            {
-                return;
-            }
-
             NetAsyncDownloaderDownloadPart download = downloads[index];
 
             download.percentComplete = percent;
@@ -156,10 +135,7 @@ namespace CKAN
 
                 totalPercentage = (int)((totalBytesDownloaded * 100) / (totalBytesLeft + totalBytesDownloaded + 1));
 
-                if (!downloadCanceled)
-                {
-                    onProgressReport(totalPercentage, totalBytesPerSecond, totalBytesLeft);
-                }
+                onProgressReport(totalPercentage, totalBytesPerSecond, totalBytesLeft);
             }
         }
 
