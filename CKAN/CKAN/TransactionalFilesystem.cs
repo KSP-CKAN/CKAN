@@ -5,6 +5,9 @@ using log4net;
 
 namespace CKAN
 {
+
+    public delegate void FilesystemTransactionProgressReport(string message, int percent);
+
     public class FilesystemTransaction
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (FilesystemTransaction));
@@ -15,6 +18,7 @@ namespace CKAN
         private readonly List<string> filesToRemove = new List<string>();
         private Dictionary<string, TransactionalFileWriter> files = new Dictionary<string, TransactionalFileWriter>();
         public string uuid = null;
+        public FilesystemTransactionProgressReport onProgressReport = null;
 
         public FilesystemTransaction()
         {
@@ -28,18 +32,39 @@ namespace CKAN
 
         public static string TempPath
         {
-            get { return Path.Combine(KSP.CkanDir(), tempPath); }
+            get { return Path.Combine(KSP.CurrentInstance.CkanDir(), tempPath); }
+        }
+
+        private void ReportProgress(string message, int percent)
+        {
+            if (onProgressReport != null)
+            {
+                onProgressReport(message, percent);
+            }
         }
 
         public void Commit()
         {
+            ReportProgress("Creating directories", 0);
+
+            int i = 0;
+            int count = directoriesToCreate.Count;
+
             foreach (string directory in directoriesToCreate)
             {
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
+
+                ReportProgress("Creating directories", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Validating files", 0);
+            i = 0;
+            count = files.Count;
 
             foreach (var pair in files)
             {
@@ -52,22 +77,45 @@ namespace CKAN
                     log.ErrorFormat("Commit failed because {0} is missing", file.TemporaryPath);
                     return;
                 }
+
+                if (!file.neverOverwrite)
+                {
+                    File.Open(file.path, FileMode.Create).Close();
+                    File.Delete(file.path);
+                }
+
+                ReportProgress("Validating files", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Moving files", 0);
+            i = 0;
 
             foreach (var pair in files)
             {
                 TransactionalFileWriter file = pair.Value;
 
-                if (File.Exists(file.path) && file.neverOverwrite)
+                bool fileExists = File.Exists(file.path);
+                if (fileExists && file.neverOverwrite)
                 {
                     log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.", file.path);
                     File.Delete(file.TemporaryPath);
                     continue;
                 }
+                else if (fileExists)
+                {
+                    File.Delete(file.path);
+                }
 
-                File.Copy(file.TemporaryPath, file.path);
-                File.Delete(file.TemporaryPath);
+                File.Move(file.TemporaryPath, file.path);
+                ReportProgress("Moving files", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Removing files", 0);
+            i = 0;
 
             foreach (string path in filesToRemove)
             {
@@ -75,7 +123,13 @@ namespace CKAN
                 {
                     File.Delete(path);
                 }
+
+                ReportProgress("Removing files", (i * 100) / count);
+                i++;
             }
+
+            ReportProgress("Removing directories", 0);
+            i = 0;
 
             foreach (string path in directoriesToRemove)
             {
@@ -83,8 +137,12 @@ namespace CKAN
                 {
                     Directory.Delete(path);
                 }
+
+                ReportProgress("Removing directories", (i * 100) / count);
+                i++;
             }
 
+            ReportProgress("Done!", 100);
             files = null;
         }
 

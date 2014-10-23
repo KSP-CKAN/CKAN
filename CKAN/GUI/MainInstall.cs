@@ -54,6 +54,11 @@ namespace CKAN
 
             foreach (var change in opts.Key)
             {
+                toInstall.Add(change.Key.identifier);
+            }
+
+            foreach (var change in opts.Key)
+            {
                 if (change.Value == GUIModChangeType.Install)
                 {
                     // check if we haven't already displayed the recommended dialog for this mod
@@ -69,7 +74,7 @@ namespace CKAN
                                 // the mod is not already in the install list
                                 if (
                                     RegistryManager.Instance()
-                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -79,7 +84,7 @@ namespace CKAN
                             }
                         }
 
-                        if (recommended.Count() > 0)
+                        if (recommended.Any())
                         {
                             List<string> recommendedToInstall = m_RecommendsDialog.ShowRecommendsDialog
                                 (
@@ -108,7 +113,7 @@ namespace CKAN
                             {
                                 if (
                                     RegistryManager.Instance()
-                                        .registry.LatestAvailable(mod.name.ToString(), KSP.Version()) != null &&
+                                        .registry.LatestAvailable(mod.name.ToString(), KSP.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -117,7 +122,7 @@ namespace CKAN
                             }
                         }
 
-                        if (suggested.Count() > 0)
+                        if (suggested.Any())
                         {
                             List<string> suggestedToInstall = m_RecommendsDialog.ShowRecommendsDialog
                                 (
@@ -136,9 +141,6 @@ namespace CKAN
                             suggestedDialogShown.Add(change.Key.identifier);
                         }
                     }
-
-                    // finally add the mod itself to the install list
-                    toInstall.Add(change.Key.identifier);
                 }
                 else if (change.Value == GUIModChangeType.Update)
                 {
@@ -147,11 +149,22 @@ namespace CKAN
                 }
             }
 
+            InstallList(toInstall, opts.Value);
+        }
+
+        private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
+        {
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
-                installer.onReportModInstalled = OnModInstalled;
-                installer.InstallList(toInstall.ToList(), opts.Value);
+                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
+                m_WaitDialog.cancelCallback = () =>
+                {
+                    ModuleInstaller.Instance.CancelInstall();
+                    m_WaitDialog = null;
+                };
+
+                ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
             }
         }
 
@@ -165,10 +178,14 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
-            AddStatusMessage("");
-            m_WaitDialog.Close();
 
-            Util.Invoke(this, () => RecreateDialogs());
+            if (m_WaitDialog != null)
+            {
+                AddStatusMessage("");
+                m_WaitDialog.Close();    
+            }
+
+            Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, () => Enabled = true);
         }
 
