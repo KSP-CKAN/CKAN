@@ -66,6 +66,9 @@
     <Compile Include="Meta.cs" />
     <Compile Include="Types\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\Kraken.cs" />
+    <Compile Include="KSPManager.cs" />
+    <Compile Include="KSPPathUtils.cs" />
+    <Compile Include="KSPPathConstants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
