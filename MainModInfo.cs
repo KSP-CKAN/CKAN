@@ -28,13 +28,13 @@ namespace CKAN
             if (module.resources != null && module.resources.homepage != null)
             {
                 Util.Invoke(MetadataModuleHomePageLinkLabel,
-                    () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage);     
+                    () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
             }
 
             if (module.resources != null && module.resources.github != null && module.resources.github.url != null)
             {
                 Util.Invoke(MetadataModuleGitHubLinkLabel,
-                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.github.url);     
+                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.github.url.ToString());
             }
 
             Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status);
