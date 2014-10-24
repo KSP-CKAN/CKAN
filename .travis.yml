@@ -1,44 +1,23 @@
 language: c
-
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console
-    - mozroots --import --ask-remove
-
+- sudo apt-get install mono-devel mono-gmcs nunit-console
+- mozroots --import --ask-remove
 script:
-    - cd CKAN
-    - xbuild CKAN.sln
-    - nunit-console Tests/bin/Debug/Tests.dll
-
+- cd CKAN
+- xbuild CKAN.sln
+- nunit-console Tests/bin/Debug/Tests.dll
 before_deploy:
-    - cd ..
-    - mkdir uploads
-    - bin/build
-    - cp ckan.exe uploads/ckan-`git describe --long`.exe
-
+- cd ..
+- mkdir uploads
+- bin/build
+- cp ckan.exe uploads/ckan-`git describe --long`.exe
 deploy:
-    # Any merge to master gets sent to
-    # http://ckan-travis.s3-website-us-east-1.amazonaws.com/
-    - provider: s3
-      access_key_id: AKIAI5JWAEFPFK6GH3XA
-      secret_access_key:
-        secure: b0PPlD7auqysK2LHA8N1US03dE/VKH2rOTwIqpIh50l/gURuXEl7Nd8S7qlf2dpEmz+8D5pIWD+J9scfrdD8Uuakhi3sQbqcV26UiR6+Ye06eGQfmIzqzAECt2naqEy7VJ/xrqq5aaaf8QhcOQMba3qVvwDSzkB2fJeh7+D6EY8=
-      bucket: ckan-travis
-      local-dir: uploads
-      acl: public_read
-      skip_cleanup: true
-      on:
-        repo: KSP-CKAN/CKAN
-        all_branches: true
-
-    # Github releases automatically get a build uploaded!
-    # Dang travis is awesome.
-    - provider: releases
-      api_key:
-        secure: X35XDRJwtFa3+55o9mV2JKVkX5w6W1VMy7bw7E8NaTTHzz+UqY8zEcArrAYWHJcJuslSe9/Ttffm7CgW2crCxkytevKmYCrJyxeb56UQuaADbDmvzT/ib2Vrk48VLDEWZZSyuuQQeT8oqy1RAG8cQLiEgO6QQUEShQ5Duv6Pd7w=
-      file: ckan.exe
-      skip_cleanup: true
-      on:
+    provider: releases
+    api_key:
+        secure: AjwbRLStNJZb9hAOLfRLK85KlFo2q2Dr1NKCoDS4elek1nqSiOjL1hH0kDgUMx/PJqQVnFU8tbJPL30t9Pj7jcJhp0LhbbPipQE3TCSpafTneSEbdz5HT+OdghWCZhUhfs07wGNTFUwcAO4WBZ7wv1AnfdfogHdA5RMdykiIl38=
+    file: ckan.exe
+    on:
         repo: KSP-CKAN/CKAN
         tags: true
-        # all_branches needed as a workaround for travis-ci#1675
         all_branches: true
+
