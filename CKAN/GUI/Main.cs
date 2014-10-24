@@ -44,14 +44,14 @@ namespace CKAN
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
 
-            KSP.LoadInstancesFromRegistry();
-
             controlFactory = new ControlFactory();
             m_Instance = this;
             
             InitializeComponent();
 
-            if (KSP.AutoStartInstance == "")
+            // We want to check our current instance is null first, as it may
+            // have already been set by a command-line option.
+            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() != null)
             {
                 Hide();
 
@@ -61,17 +61,11 @@ namespace CKAN
                     Close();
                     return;
                 }
-
-                KSP.PopulateRegistryWithInstances();
-            }
-            else
-            {
-                KSP.InitializeInstance(KSP.AutoStartInstance);
             }
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(KSP.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(KSPManager.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo
             );
 
@@ -125,8 +119,8 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSP.CurrentInstance.Version());
-            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSP.CurrentInstance.Version());
+            Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
+            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -139,13 +133,13 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
-                if (!RegistryManager.Instance().registry.IsInstalled(mod.identifier))
+                if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
@@ -226,7 +220,7 @@ namespace CKAN
                 var cell = row.Cells[0] as DataGridViewCheckBoxCell;
                 var mod = (CkanModule) row.Tag;
 
-                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier);
                 if ((bool) cell.Value == false && !isInstalled)
                 {
                     var options = new RelationshipResolverOptions();
@@ -284,6 +278,7 @@ namespace CKAN
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Flipping enabled here hides the main form itself.
             Enabled = false;
             m_SettingsDialog.ShowDialog();
             Enabled = true;
@@ -404,11 +399,11 @@ namespace CKAN
         {
             if (Util.IsLinux)
             {
-                Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.x86"), m_Configuration.CommandLineArguments);
+                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.x86"), m_Configuration.CommandLineArguments);
             }
             else
             {
-                Process.Start(Path.Combine(KSP.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
             }
         }
 

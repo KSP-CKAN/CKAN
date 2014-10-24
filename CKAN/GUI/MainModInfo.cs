@@ -117,7 +117,7 @@ namespace CKAN
             int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
-                Registry registry = RegistryManager.Instance().registry;
+                Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
                 try
                 {
@@ -126,13 +126,13 @@ namespace CKAN
                     try
                     {
                         dependencyModule = registry.LatestAvailable
-                        (dependency.name.ToString(), KSP.CurrentInstance.Version());
+                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                        (dependency.name.ToString(), KSP.CurrentInstance.Version());
+                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
 
                         if (dependencyModules == null)
                         {

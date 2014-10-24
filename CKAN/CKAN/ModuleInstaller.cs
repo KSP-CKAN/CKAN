@@ -27,14 +27,14 @@ namespace CKAN
         private static ModuleInstaller _Instance;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
-        private readonly RegistryManager registry_manager = RegistryManager.Instance();
+        private RegistryManager registry_manager;
 
         private FilesystemTransaction currentTransaction;
         private NetAsyncDownloader downloader;
         private bool lastDownloadSuccessful;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
         public ModuleInstallerReportProgress onReportProgress = null;
-        private bool installCanceled = false;
+        private bool installCanceled = false; // Used for inter-thread communication.
 
         private ModuleInstaller()
         {
@@ -47,6 +47,7 @@ namespace CKAN
                 if (_Instance == null)
                 {
                     _Instance = new ModuleInstaller();
+                    _Instance.registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance.CkanDir());
                 }
 
                 return _Instance;
@@ -62,7 +63,7 @@ namespace CKAN
         {
             User.WriteLine("    * Downloading " + filename + "...");
 
-            string full_path = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filename);
+            string full_path = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filename);
 
             if (onReportProgress != null)
             {
@@ -97,7 +98,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filenames[i]);
+                fullPaths[i] = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filenames[i]);
                 urls[i] = modules[i].download;
             }
 
@@ -165,7 +166,7 @@ namespace CKAN
 
         public static string CachePath(string file)
         {
-            return Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), file);
+            return Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), file);
         }
 
         /// <summary>
@@ -175,17 +176,19 @@ namespace CKAN
         ///     After this we try to download the rest of the mods (asynchronously) and install them
         ///     Finally, only if everything is successful, we commit the transaction
         /// </summary>
+        //
+        // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
-            installCanceled = false;
-            currentTransaction = new FilesystemTransaction();
+            installCanceled = false; // Can be set by another thread
+            currentTransaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
 
             if (onReportProgress != null)
             {
                 currentTransaction.onProgressReport += (message, percent) => onReportProgress(message, percent);
             }
 
-            var resolver = new RelationshipResolver(modules, options);
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
 
             User.WriteLine("About to install...\n");
 
@@ -286,6 +289,7 @@ namespace CKAN
             currentTransaction.Rollback();
         }
 
+        /// <summary>Call this to cancel the installs being performed by other threads</summary>
         public void CancelInstall()
         {
             if (downloader != null)
@@ -583,22 +587,22 @@ namespace CKAN
 
             if (stanza.install_to == "GameData")
             {
-                installDir = KSP.CurrentInstance.GameData();
+                installDir = KSPManager.CurrentInstance.GameData();
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
             {
-                installDir = KSP.CurrentInstance.Ships();
+                installDir = KSPManager.CurrentInstance.Ships();
                 makeDirs = false; // Don't allow directory creation in ships directory
             }
             else if (stanza.install_to == "Tutorial")
             {
-                installDir = Path.Combine(Path.Combine(KSP.CurrentInstance.GameDir(), "saves"), "training");
+                installDir = Path.Combine(Path.Combine(KSPManager.CurrentInstance.GameDir(), "saves"), "training");
                 makeDirs = true;
             }
             else if (stanza.install_to == "GameRoot")
             {
-                installDir = KSP.CurrentInstance.GameDir();
+                installDir = KSPManager.CurrentInstance.GameDir();
                 makeDirs = false;
             }
             else
@@ -727,7 +731,10 @@ namespace CKAN
         {
             if (!registry_manager.registry.IsInstalled(modName))
             {
-                log.WarnFormat("Trying to uninstall {0} but it's not installed", modName);
+                // TODO: This could indicates a logic error somewhere;
+                // change to a kraken, the calling code can always catch it
+                // if it expects that it may try to uninstall a module twice.
+                log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
                 return;
             }
 
@@ -749,7 +756,7 @@ namespace CKAN
 
             foreach (string file in files.Keys)
             {
-                string path = Path.Combine(KSP.CurrentInstance.GameDir(), file);
+                string path = Path.Combine(KSPManager.CurrentInstance.GameDir(), file);
 
                 try
                 {
@@ -791,7 +798,7 @@ namespace CKAN
                 }
             }
 
-            // And we're done! :)
+            return;
         }
     }
 }
