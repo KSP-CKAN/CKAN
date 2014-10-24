@@ -2,6 +2,7 @@
     "spec_version"   : 1,
     "identifier"     : "RetroFuture",
     "$kref"          : "#/ckan/kerbalstuff",
+    "license"        : "CC-BY-NC-SA-4.0",
     "depends" : [
         { "name" : "Firespitter" },
         { "name" : "ModuleManager", "min_version" : "2.5.1" }
