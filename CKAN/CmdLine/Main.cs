@@ -62,9 +62,18 @@ namespace CKAN
                 LogManager.GetRepository().Threshold = Level.Info;
             }
 
+            // TODO: Allow the user to specify just a directory.
             // User provided KSP instance
+
+            if (options.KSPdir != null && options.KSP != null)
+            {
+                User.WriteLine("--ksp and --kspdir can't be specified at the same time");
+                return EXIT_BADOPT;
+            }
+
             if (options.KSP != null)
             {
+                // Set a KSP directory by its alias.
 
                 try
                 {
@@ -72,10 +81,18 @@ namespace CKAN
                 }
                 catch (InvalidKSPInstanceKraken)
                 {
-                    User.WriteLine("Invalid KSP installation specified \"{0}\", use 'list-installs' to see known KSP installations", options.KSP);
+                    User.WriteLine("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
                     return EXIT_BADOPT;
                 }
             }
+            else if (options.KSPdir != null)
+            {
+                // Set a KSP directory by its path
+
+                KSPManager.SetCurrentInstanceByPath(options.KSPdir);
+
+            }
+
             else
             {
                 // auto-start instance
@@ -596,8 +613,11 @@ namespace CKAN
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
-        [Option('k', "ksp", DefaultValue = null, HelpText = "KSP directory to use")]
+        [Option("ksp", DefaultValue = null, HelpText = "KSP install to use")]
         public string KSP { get; set; }
+
+        [Option("kspdir", DefaultValue = null, HelpText = "KSP dir to use")]
+        public string KSPdir { get; set; }
     }
 
     // Each action defines its own options that it supports.
