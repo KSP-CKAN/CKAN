@@ -73,9 +73,9 @@ namespace CKAN
                                 // the mod is not installed _and_
                                 // the mod is not already in the install list
                                 if (
-                                    RegistryManager.Instance()
+                                    RegistryManager.Instance(KSPManager.CurrentInstance)
                                         .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
+                                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
                                     // add it to the list of recommended mods we display to the user
@@ -112,9 +112,9 @@ namespace CKAN
                             foreach (RelationshipDescriptor mod in change.Key.suggests)
                             {
                                 if (
-                                    RegistryManager.Instance()
+                                    RegistryManager.Instance(KSPManager.CurrentInstance)
                                         .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance().registry.IsInstalled(mod.name.ToString()) &&
+                                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
                                     suggested.Add(mod.name);
@@ -198,7 +198,7 @@ namespace CKAN
 
             try
             {
-                resolver = new RelationshipResolver(tmp, options);
+                resolver = new RelationshipResolver(tmp, options, RegistryManager.Instance(KSPManager.CurrentInstance).registry);
             }
             catch (ModuleNotFoundKraken)
             {

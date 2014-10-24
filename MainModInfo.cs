@@ -117,7 +117,7 @@ namespace CKAN
             int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
-                Registry registry = RegistryManager.Instance().registry;
+                Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
                 try
                 {
