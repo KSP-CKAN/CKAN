@@ -104,6 +104,11 @@
                     "type" : "string",
                     "format" : "uri"
                 },
+                "bugtracker" : {
+                    "description" : "Mod bugtracker",
+                    "type" : "string",
+                    "format" : "uri"
+                },
                 "github" : {
                     "description" : "Project on github",
                     "type" : "object",
