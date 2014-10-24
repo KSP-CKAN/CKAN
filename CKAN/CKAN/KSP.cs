@@ -131,7 +131,7 @@ namespace CKAN
 
             // Checking for a GameData directory probably isn't the best way to
             // detect KSP, but it works. More robust implementations welcome.
-            if (Directory.Exists(Path.Combine(exe_dir, "GameData")))
+            if (IsKspDir(exe_dir))
             {
                 log.InfoFormat("KSP found at {0}", exe_dir);
                 return exe_dir;
@@ -140,7 +140,7 @@ namespace CKAN
             // Check the registry, maybe it's there.
             string registry_dir = FindGamedirRegistry();
 
-            if (registry_dir != null)
+            if (registry_dir != null && IsKspDir(registry_dir))
             {
                 return registry_dir;
             }
@@ -204,9 +204,20 @@ namespace CKAN
         // Returns true if we have what looks like a KSP dir.
         private static bool IsKspDir(string directory)
         {
+            //first we need to check is directory exists
             if (!Directory.Exists(Path.Combine(directory, "GameData")))
             {
                 log.FatalFormat("Cannot find GameData in {0}", directory);
+                return false;
+            }
+            //next we should be able to get game version
+            try
+            {
+                KSPVersion version = DetectVersion(directory);
+            }
+            catch
+            {
+                log.FatalFormat("Cannot detect KSP version in {0}", directory);
                 return false;
             }
             log.DebugFormat("{0} looks like a GameDir", directory);
@@ -327,8 +338,17 @@ namespace CKAN
 
         private static KSPVersion DetectVersion(string path)
         {
-            // Slurp our README into memory
-            string readme = File.ReadAllText(Path.Combine(path, "readme.txt"));
+            string readme = "";
+            try
+            {
+                // Slurp our README into memory
+                readme = File.ReadAllText(Path.Combine(path, "readme.txt"));
+            }
+            catch
+            {
+                log.Error("Could not open KSP readme.txt");
+                throw new BadVersionException();
+            }
 
             // And find the KSP version. Easy! :)
             Match match = Regex.Match(readme, @"^Version\s+(\d+\.\d+\.\d+)",
