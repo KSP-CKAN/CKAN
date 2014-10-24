@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using CKAN.KerbalStuff;
 
-namespace GitHubTests
+namespace NetKAN.GitHubTests
 {
     [TestFixture()]
     public class GithubAPITests
