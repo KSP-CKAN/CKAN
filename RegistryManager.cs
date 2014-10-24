@@ -18,35 +18,33 @@ namespace CKAN
         // enforce this being an instance (via Instance() above)
         private RegistryManager(string path)
         {
-            this.path = path;
+            this.path = Path.Combine(path, "registry.json");
             LoadOrCreate();
         }
 
-        public static RegistryManager Instance(string path = null)
+        /// <summary>
+        /// Returns an instance of the registry manager for the given path.
+        /// The file `registry.json` is assumed.
+        /// </summary>
+        public static RegistryManager Instance(string directory)
         {
-            if (path == null)
-            {
-                path = DefaultRegistry();
-                log.DebugFormat("Using default CKAN registry at {0}", path);
-            }
-            else
-            {
-                log.DebugFormat("Using suppied CKAN registry at {0}", path);
-            }
+            log.DebugFormat("Using suppied CKAN registry at {0}", directory);
 
-            if (!singleton.ContainsKey(path))
+            if (!singleton.ContainsKey(directory))
             {
                 log.Debug("RegistryManager not yet active, loading...");
-                singleton[path] = new RegistryManager(path);
+                singleton[directory] = new RegistryManager(directory);
             }
 
-            return singleton[path];
+            return singleton[directory];
         }
 
-        // Default registry location
-        private static string DefaultRegistry()
+        /// <summary>
+        /// Returns the registry manager for the supplied KSP instance.
+        /// </summary>
+        public static RegistryManager Instance(KSP ksp)
         {
-            return Path.Combine(KSPManager.CurrentInstance.CkanDir(), "registry.json");
+            return Instance(ksp.CkanDir());
         }
 
         public void Load()

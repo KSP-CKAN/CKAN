@@ -27,7 +27,7 @@ namespace CKAN
         private static ModuleInstaller _Instance;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
-        private readonly RegistryManager registry_manager = RegistryManager.Instance();
+        private RegistryManager registry_manager;
 
         private FilesystemTransaction currentTransaction;
         private NetAsyncDownloader downloader;
@@ -47,6 +47,7 @@ namespace CKAN
                 if (_Instance == null)
                 {
                     _Instance = new ModuleInstaller();
+                    _Instance.registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance.CkanDir());
                 }
 
                 return _Instance;
@@ -185,7 +186,7 @@ namespace CKAN
                 currentTransaction.onProgressReport += (message, percent) => onReportProgress(message, percent);
             }
 
-            var resolver = new RelationshipResolver(modules, options);
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
 
             User.WriteLine("About to install...\n");
 

@@ -23,7 +23,7 @@ namespace CKAN
         /// </summary>
         public static int Update(string repo = null)
         {
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
 
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)

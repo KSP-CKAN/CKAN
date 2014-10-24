@@ -151,7 +151,7 @@ namespace CKAN
         /// Renames an instance in the registry and saves.
         /// </summary>
         /// 
-        /// TODO: What should we do if our target name already exists?
+        // TODO: What should we do if our target name already exists?
         public static void RenameInstance(string from, string to)
         {
             var ksp = Instances[from];
@@ -166,12 +166,20 @@ namespace CKAN
         /// </summary>
         public static void SetCurrentInstance(string name)
         {
+            // TODO: Should we disallow this if _CurrentInstance is already set?
+
             if (!Instances.ContainsKey(name))
             {
                 throw new InvalidKSPInstanceKraken(name);
             }
 
             _CurrentInstance = Instances[name];
+        }
+
+        public static void SetCurrentInstanceByPath(string name)
+        {
+            // TODO: Should we disallow this if _CurrentInstance is already set?
+            _CurrentInstance = new KSP(name);
         }
 
         /// <summary>

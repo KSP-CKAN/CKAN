@@ -195,7 +195,7 @@ namespace CKAN
 
         public void ScanGameData()
         {
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(CkanDir());
             Registry registry = registry_manager.registry;
 
             // Forget that we've seen any DLLs, as we're going to refresh them all.
