@@ -119,8 +119,8 @@ namespace CKAN
                 case "clean":
                     return Clean();
 
-                case "config":
-                    return Config((ConfigOptions) cmdline.options);
+                // TODO: Combine all of these into `ckan kspdir ...` or something similar
+                // Eg: `ckan kspdir add` `ckan kspdir list` etc
 
                 case "list-installs":
                     return ListInstalls();
@@ -379,28 +379,6 @@ namespace CKAN
             return EXIT_OK;
         }
 
-        private static int Config(ConfigOptions options)
-        {
-            switch (options.option)
-            {
-                case "gamedir":
-                    try
-                    {
-                       // KSP.PopulateGamedirRegistry(options.value);
-                        return EXIT_OK;
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        User.WriteLine("Sorry, {0} doesn't look like a KSP dir", options.value);
-                        return EXIT_BADOPT;
-                    }
-
-                default:
-                    User.WriteLine("Unknown config option {0}", options.option);
-                    return EXIT_BADOPT;
-            }
-        }
-
         private static int ListInstalls()
         {
             User.WriteLine("Listing all known KSP installations:");
@@ -586,9 +564,6 @@ namespace CKAN
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
-        [VerbOption("config", HelpText = "Configure CKAN")]
-        public ConfigOptions Config { get; set; }
-
         [VerbOption("list-installs", HelpText = "List all known KSP installations")]
         public ListInstallsOptions ListInstalls { get; set; }
 
@@ -713,15 +688,6 @@ namespace CKAN
     {
         [ValueOption(0)]
         public string Modname { get; set; }
-    }
-
-    internal class ConfigOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string option { get; set; }
-
-        [ValueOption(1)]
-        public string value { get; set; }
     }
 
     internal class ListInstallsOptions : CommonOptions
