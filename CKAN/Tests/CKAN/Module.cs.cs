@@ -11,7 +11,7 @@ namespace CKANTests
         [Test]
         public void CompatibleWith()
         {
-            CkanModule module = CkanModule.from_string(TestData.kOS_014());
+            CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
             Assert.IsTrue(module.IsCompatibleKSP("0.24.2"));
         }
@@ -19,7 +19,7 @@ namespace CKANTests
         [Test]
         public void StandardName()
         {
-            CkanModule module = CkanModule.from_string(TestData.kOS_014());
+            CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
             Assert.AreEqual(module.StandardName(), "kOS-0.14.zip");
         }

@@ -62,7 +62,7 @@ namespace CKAN
 
                 log.Debug("Converting from JSON...");
 
-                CkanModule module = CkanModule.from_string(metadata_json);
+                CkanModule module = CkanModule.FromJson(metadata_json);
 
                 log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
 
