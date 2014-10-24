@@ -34,7 +34,7 @@ namespace CKAN
     public class GitHubResourceDescriptor
     {
         public bool releases;
-        public string url;
+        public Uri url;
     }
 
     public class KerbalStuffResourceDescriptor
@@ -45,7 +45,8 @@ namespace CKAN
     public class ResourcesDescriptor
     {
         public GitHubResourceDescriptor github;
-        public string homepage;
+        public Uri homepage;
+        public Uri bugtracker;
 
         public KerbalStuffResourceDescriptor kerbalstuff;
     }
