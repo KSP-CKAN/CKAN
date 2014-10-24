@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -15,13 +16,29 @@ namespace Tests
             return Path.Combine(current, "../../../../t/data");
         }
 
-        public static string DogeCoinFlagZip() {
+        public static string DogeCoinFlagZip()
+        {
             string such_zip_very_currency_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01.zip");
 
             return such_zip_very_currency_wow;
         }
 
-        public static string kOS_014() {
+        public static string good_ksp_dir()
+        {
+            return Path.Combine(DataDir(), "KSP/KSP-0.25");
+        }
+
+        public static List<string> bad_ksp_dirs()
+        {
+            var dirs = new List<string>();
+            dirs.Add(Path.Combine(DataDir(), "KSP/bad-ksp"));
+            dirs.Add(Path.Combine(DataDir(), "KSP/missing-gamedata"));
+
+            return dirs;
+        }
+
+        public static string kOS_014()
+        {
             return @"
                 {
                     ""spec_version"": 1,

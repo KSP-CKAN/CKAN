@@ -10,7 +10,12 @@ namespace CKANTests
         [Test()]
         public void IsGameDir()
         {
+            Assert.IsTrue(CKAN.KSP.IsKspDir(Tests.TestData.good_ksp_dir()));
 
+            foreach (string dir in Tests.TestData.bad_ksp_dirs())
+            {
+                Assert.IsFalse(CKAN.KSP.IsKspDir(dir));
+            }
         }
     }
 }

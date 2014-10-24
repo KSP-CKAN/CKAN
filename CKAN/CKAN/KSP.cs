@@ -202,7 +202,7 @@ namespace CKAN
         }
 
         // Returns true if we have what looks like a KSP dir.
-        private static bool IsKspDir(string directory)
+        internal static bool IsKspDir(string directory)
         {
             //first we need to check is directory exists
             if (!Directory.Exists(Path.Combine(directory, "GameData")))
@@ -213,7 +213,7 @@ namespace CKAN
             //next we should be able to get game version
             try
             {
-                KSPVersion version = DetectVersion(directory);
+                DetectVersion(directory);
             }
             catch
             {
