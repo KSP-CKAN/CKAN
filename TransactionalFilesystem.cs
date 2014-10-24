@@ -79,6 +79,15 @@ namespace CKAN
                     return;
                 }
 
+                // TODO: I'm not convinced about this.
+                // - `!file.neverOverwrite` means flipping logic twice in my head, does this mean file.Overwrite?
+                // - This makes a file and deletes it; presumably to throw an exception if that fails, we
+                //   we should document that's what it's doing.
+                // - This looks like it's DELETING all the files we're going to write in the target dir,
+                //   before we write them. So if something goes wrong part-way through, we've altered our
+                //   target dir.
+                // - We'd notice if we can't write to our target dir when we start writing our files out there
+                //   anyway, so this seems redundant as well as dangerous.
                 if (!file.neverOverwrite)
                 {
                     File.Open(file.path, FileMode.Create).Close();
