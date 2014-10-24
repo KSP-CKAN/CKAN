@@ -94,7 +94,7 @@ namespace CKAN
             //first we need to check is directory exists
             if (!Directory.Exists(Path.Combine(directory, "GameData")))
             {
-                log.FatalFormat("Cannot find GameData in {0}", directory);
+                log.DebugFormat("Cannot find GameData in {0}", directory);
                 return false;
             }
             //next we should be able to get game version
@@ -104,7 +104,7 @@ namespace CKAN
             }
             catch
             {
-                log.FatalFormat("Cannot detect KSP version in {0}", directory);
+                log.DebugFormat("Cannot detect KSP version in {0}", directory);
                 return false;
             }
             log.DebugFormat("{0} looks like a GameDir", directory);
