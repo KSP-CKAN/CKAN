@@ -278,6 +278,7 @@ namespace CKAN
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Flipping enabled here hides the main form itself.
             Enabled = false;
             m_SettingsDialog.ShowDialog();
             Enabled = true;
