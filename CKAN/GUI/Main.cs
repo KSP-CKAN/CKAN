@@ -133,13 +133,13 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
-                if (!RegistryManager.Instance().registry.IsInstalled(mod.identifier))
+                if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
@@ -220,7 +220,7 @@ namespace CKAN
                 var cell = row.Cells[0] as DataGridViewCheckBoxCell;
                 var mod = (CkanModule) row.Tag;
 
-                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier);
                 if ((bool) cell.Value == false && !isInstalled)
                 {
                     var options = new RelationshipResolverOptions();

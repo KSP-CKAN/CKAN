@@ -176,7 +176,7 @@ namespace CKAN
 
         private static int Available()
         {
-            List<CkanModule> available = RegistryManager.Instance().registry.Available();
+            List<CkanModule> available = RegistryManager.Instance(KSPManager.CurrentInstance).registry.Available();
 
             User.WriteLine("Mods available for KSP {0}", KSPManager.CurrentInstance.Version());
             User.WriteLine("");
@@ -203,7 +203,7 @@ namespace CKAN
             User.WriteLine("\nKSP found at {0}\n", ksp_path);
             User.WriteLine("KSP Version: {0}\n", KSPManager.CurrentInstance.Version());
 
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
             Registry registry = registry_manager.registry;
 
             User.WriteLine("Installed Modules:\n");
@@ -349,7 +349,7 @@ namespace CKAN
                 return EXIT_BADOPT;
             }
 
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
             InstalledModule module;
 
             try
