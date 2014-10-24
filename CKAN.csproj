@@ -69,6 +69,7 @@
     <Compile Include="KSPManager.cs" />
     <Compile Include="KSPPathUtils.cs" />
     <Compile Include="KSPPathConstants.cs" />
+    <Compile Include="NetAsyncDownloader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
