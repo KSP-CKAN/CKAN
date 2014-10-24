@@ -62,7 +62,7 @@ namespace CKAN
         {
             User.WriteLine("    * Downloading " + filename + "...");
 
-            string full_path = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filename);
+            string full_path = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filename);
 
             if (onReportProgress != null)
             {
@@ -97,7 +97,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), filenames[i]);
+                fullPaths[i] = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filenames[i]);
                 urls[i] = modules[i].download;
             }
 
@@ -165,7 +165,7 @@ namespace CKAN
 
         public static string CachePath(string file)
         {
-            return Path.Combine(KSP.CurrentInstance.DownloadCacheDir(), file);
+            return Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), file);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
             installCanceled = false;
-            currentTransaction = new FilesystemTransaction();
+            currentTransaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
 
             if (onReportProgress != null)
             {
@@ -583,22 +583,22 @@ namespace CKAN
 
             if (stanza.install_to == "GameData")
             {
-                installDir = KSP.CurrentInstance.GameData();
+                installDir = KSPManager.CurrentInstance.GameData();
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
             {
-                installDir = KSP.CurrentInstance.Ships();
+                installDir = KSPManager.CurrentInstance.Ships();
                 makeDirs = false; // Don't allow directory creation in ships directory
             }
             else if (stanza.install_to == "Tutorial")
             {
-                installDir = Path.Combine(Path.Combine(KSP.CurrentInstance.GameDir(), "saves"), "training");
+                installDir = Path.Combine(Path.Combine(KSPManager.CurrentInstance.GameDir(), "saves"), "training");
                 makeDirs = true;
             }
             else if (stanza.install_to == "GameRoot")
             {
-                installDir = KSP.CurrentInstance.GameDir();
+                installDir = KSPManager.CurrentInstance.GameDir();
                 makeDirs = false;
             }
             else
@@ -752,7 +752,7 @@ namespace CKAN
 
             foreach (string file in files.Keys)
             {
-                string path = Path.Combine(KSP.CurrentInstance.GameDir(), file);
+                string path = Path.Combine(KSPManager.CurrentInstance.GameDir(), file);
 
                 try
                 {

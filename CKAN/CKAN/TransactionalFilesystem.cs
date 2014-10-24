@@ -12,7 +12,7 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (FilesystemTransaction));
 
-        private static string tempPath = "temp/";
+        private string TempPath;
         private readonly List<string> directoriesToCreate = new List<string>();
         private readonly List<string> directoriesToRemove = new List<string>();
         private readonly List<string> filesToRemove = new List<string>();
@@ -20,19 +20,20 @@ namespace CKAN
         public string uuid = null;
         public FilesystemTransactionProgressReport onProgressReport = null;
 
-        public FilesystemTransaction()
+        /// <summary>
+        /// Creates a new FilesystemTransaction object.
+        /// The path provided will be used to store temporary files, and
+        /// will be created if it does not already exist.
+        /// </summary>
+        public FilesystemTransaction(string path)
         {
+            TempPath = path;
             if (!Directory.Exists(TempPath))
             {
                 Directory.CreateDirectory(TempPath);
             }
 
             uuid = Guid.NewGuid().ToString();
-        }
-
-        public static string TempPath
-        {
-            get { return Path.Combine(KSP.CurrentInstance.CkanDir(), tempPath); }
         }
 
         private void ReportProgress(string message, int percent)
@@ -183,6 +184,11 @@ namespace CKAN
         {
             directoriesToRemove.Add(path);
         }
+
+        public string GetTempPath()
+        {
+            return TempPath;
+        }
     }
 
     public class TransactionalFileWriter
@@ -203,7 +209,7 @@ namespace CKAN
             path = _path;
             uuid = Guid.NewGuid().ToString();
 
-            temporaryPath = Path.Combine(FilesystemTransaction.TempPath,
+            temporaryPath = Path.Combine(transaction.GetTempPath(),
                 String.Format("{0}_{1}", transaction.uuid, uuid));
             temporaryStream = null; //File.Create(temporaryPath);
             neverOverwrite = _neverOverwrite;

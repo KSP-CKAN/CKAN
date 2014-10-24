@@ -23,9 +23,9 @@ namespace CKANTests
         {
             // Make sure that LoadInstancesFromRegistry sets the
             // internal instances_loaded variable correctly.
-            Assert.IsFalse(CKAN.KSP.instances_loaded);
-            CKAN.KSP.LoadInstancesFromRegistry();
-            Assert.IsTrue(CKAN.KSP.instances_loaded);
+            Assert.IsFalse(CKAN.KSPManager.instances_loaded);
+            CKAN.KSPManager.LoadInstancesFromRegistry();
+            Assert.IsTrue(CKAN.KSPManager.instances_loaded);
         }
 
     }
