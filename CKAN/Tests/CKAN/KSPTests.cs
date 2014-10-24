@@ -17,6 +17,17 @@ namespace CKANTests
                 Assert.IsFalse(CKAN.KSP.IsKspDir(dir));
             }
         }
+
+        [Test()]
+        public void InstanceAccessorState()
+        {
+            // Make sure that LoadInstancesFromRegistry sets the
+            // internal instances_loaded variable correctly.
+            Assert.IsFalse(CKAN.KSP.instances_loaded);
+            CKAN.KSP.LoadInstancesFromRegistry();
+            Assert.IsTrue(CKAN.KSP.instances_loaded);
+        }
+
     }
 }
 
