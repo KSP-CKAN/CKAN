@@ -7,7 +7,7 @@ install:
 script:
     - cd CKAN
     - xbuild CKAN.sln
-    - nunit-console Tests/bin/Debug/Tests.dll
+    - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
 
 before_deploy:
     - cd ..
