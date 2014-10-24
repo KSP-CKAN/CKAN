@@ -6,6 +6,14 @@ using System.Windows.Forms;
 namespace CKAN
 {
 
+    public enum RelationshipType
+    {
+        Depends = 0,
+        PreDepends = 1,
+        Recommends = 2,
+        Suggests = 3
+    }
+
     public partial class Main : Form
     {
 
@@ -15,7 +23,21 @@ namespace CKAN
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = module.license.ToString());
             Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
-            
+            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
+
+            if (module.resources != null && module.resources.homepage != null)
+            {
+                Util.Invoke(MetadataModuleHomePageLinkLabel,
+                    () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage);     
+            }
+
+            if (module.resources != null && module.resources.github != null && module.resources.github.url != null)
+            {
+                Util.Invoke(MetadataModuleGitHubLinkLabel,
+                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.github.url);     
+            }
+
+            Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status);
         }
 
         private void UpdateModInfoAuthor(CkanModule module)
@@ -37,147 +59,101 @@ namespace CKAN
 
             MetadataModuleAuthorLabel.Text = authors;
         }
-        
-        /*
-        private void _UpdateModInfo(CkanModule module)
+
+        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
+       
+        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth)
         {
+            TreeNode node = null;
+            
             if (module == null)
             {
-                return;
+                return node;
             }
 
-            //ModInfo.Text = "";
-
-            
-
-            if (module.name != null && module.version != null)
+            if (depth > 0 && dependencyGraphRootModule == module)
             {
-                ModInfo.AppendText(String.Format("\"{0}\" - version {1}\r\n", module.name, module.version));
+                return node;
             }
 
-            if (module.@abstract != null)
+            if (alreadyVisited.Contains(module))
             {
-                ModInfo.AppendText(String.Format("Abstract: {0}\r\n", module.@abstract));
+                return node;
             }
 
-            if (module.author != null)
+            alreadyVisited.Add(module);
+
+            if (parentNode == null)
             {
-                string authors = "";
-                foreach (string auth in module.author)
-                {
-                    authors += auth + ", ";
-                }
-
-                ModInfo.AppendText(String.Format("Author: {0}\r\n", authors));
+                node = new TreeNode(module.name);
             }
-
-            if (module.comment != null)
+            else
             {
-                ModInfo.AppendText(String.Format("Comment: {0}\r\n", module.comment));
+                node = parentNode.Nodes.Add(module.name);
             }
 
-            if (module.download != null)
+            RelationshipDescriptor[] relationships = null;
+            switch (relationship)
             {
-                ModInfo.AppendText(String.Format("Download: {0}\r\n", module.download));
+                case RelationshipType.Depends:
+                    relationships = module.depends;
+                    break;
+                case RelationshipType.PreDepends:
+                    relationships = module.pre_depends;
+                    break;
+                case RelationshipType.Recommends:
+                    relationships = module.recommends;
+                    break;
+                case RelationshipType.Suggests:
+                    relationships = module.suggests;
+                    break;
             }
 
-            if (module.identifier != null)
+            if (relationships == null)
             {
-                ModInfo.AppendText(String.Format("Identifier: {0}\r\n", module.identifier));
+                return node;
             }
 
-            if (module.ksp_version != null)
-            {
-                ModInfo.AppendText(String.Format("KSP Version: {0}\r\n", module.ksp_version.ToString()));
-            }
-
-            if (module.license != null)
-            {
-                ModInfo.AppendText(String.Format("License: {0}\r\n", module.license.ToString()));
-            }
-
-            if (module.release_status != null)
-            {
-                ModInfo.AppendText(String.Format("Release status: {0}\r\n", module.release_status));
-            }
-
-            ModInfo.AppendText("\r\n");
-
-            string dependencies = "";
-            if (module.depends != null)
-            {
-                for (int i = 0; i < module.depends.Count(); i++)
-                {
-                    dependencies += module.depends[i].name;
-                    if (i != module.depends.Count() - 1)
-                    {
-                        dependencies += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Dependencies: {0}\r\n", dependencies));
-            ModInfo.AppendText("\r\n");
-
-            string recommended = "";
-            if (module.recommends != null)
-            {
-                for (int i = 0; i < module.recommends.Count(); i++)
-                {
-                    recommended += module.recommends[i].name;
-                    if (i != module.recommends.Count() - 1)
-                    {
-                        recommended += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Recommends: {0}\r\n", recommended));
-            ModInfo.AppendText("\r\n");
-
-            string suggested = "";
-            if (module.suggests != null)
-            {
-                for (int i = 0; i < module.suggests.Count(); i++)
-                {
-                    suggested += module.suggests[i].name;
-                    if (i != module.suggests.Count() - 1)
-                    {
-                        suggested += ", ";
-                    }
-                }
-            }
-
-            ModInfo.AppendText(String.Format("Suggested: {0}\r\n", suggested));
-            ModInfo.AppendText("\r\n");
-        }*/
-
-        private void UpdateModDependencyGraphRecursively(TreeNode node, CkanModule module)
-        {
             int i = 0;
-
-            node.Text = module.name;
-            node.Nodes.Clear();
-
-            if (module.depends != null)
+            foreach (RelationshipDescriptor dependency in relationships)
             {
-                foreach (RelationshipDescriptor dependency in module.depends)
+                Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
+
+                try
                 {
-                    Registry registry = RegistryManager.Instance().registry;
+                    CkanModule dependencyModule = null;
 
                     try
                     {
-                        CkanModule dependencyModule = registry.LatestAvailable(dependency.name.ToString(), KSP.Version());
-
-                        node.Nodes.Add("");
-                        UpdateModDependencyGraphRecursively(node.Nodes[i], dependencyModule);
-                        i++;
+                        dependencyModule = registry.LatestAvailable
+                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+                        UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
-                    catch (Exception)
+                    catch (ModuleNotFoundKraken)
                     {
+                        List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
+                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+
+                        if (dependencyModules == null)
+                        {
+                            continue;
+                        }
+
+                        var newNode = node.Nodes.Add(dependency.name + " (provided by)");
+
+                        foreach (var dep in dependencyModules)
+                        {
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1);
+                            i++;
+                        }
                     }
                 }
+                catch (Exception)
+                {
+                }
             }
+
+            return node;
         }
 
         private void UpdateModDependencyGraph(CkanModule module)
@@ -185,11 +161,22 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
         }
 
+        private CkanModule dependencyGraphRootModule = null;
+
         private void _UpdateModDependencyGraph(CkanModule module)
         {
+            if (ModuleRelationshipType.SelectedIndex == -1)
+            {
+                ModuleRelationshipType.SelectedIndex = 0;
+            }
+
+            var relationshipType = (RelationshipType) ModuleRelationshipType.SelectedIndex;
+
+            dependencyGraphRootModule = module;
+            alreadyVisited.Clear();
+
             DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add("");
-            UpdateModDependencyGraphRecursively(DependsGraphTree.Nodes[0], module);
+            DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
             DependsGraphTree.Nodes[0].ExpandAll();
         }
 
@@ -236,11 +223,9 @@ namespace CKAN
                 }
             }
 
-            int counter = 0;
             foreach (var item in contents)
             {
                 ContentsPreviewTree.Nodes[0].Nodes.Add(item);
-
             }
 
             ContentsPreviewTree.Nodes[0].ExpandAll();

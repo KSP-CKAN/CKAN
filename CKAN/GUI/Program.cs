@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -11,9 +12,20 @@ namespace CKAN
         [STAThread]
         public static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
+        }
+
+        public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = e.ExceptionObject;
+
+            // Provide a stack backtrace, so our users and non-debugging devs can
+            // see what's gone wrong.
+            Console.WriteLine(exception.ToString());
+            Debugger.Break();
         }
     }
 }

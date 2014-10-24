@@ -5,19 +5,29 @@ using log4net;
 
 namespace CKAN
 {
+
+    public delegate void FilesystemTransactionProgressReport(string message, int percent);
+
     public class FilesystemTransaction
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (FilesystemTransaction));
 
-        private static string tempPath = "temp/";
+        private string TempPath;
         private readonly List<string> directoriesToCreate = new List<string>();
         private readonly List<string> directoriesToRemove = new List<string>();
         private readonly List<string> filesToRemove = new List<string>();
         private Dictionary<string, TransactionalFileWriter> files = new Dictionary<string, TransactionalFileWriter>();
         public string uuid = null;
+        public FilesystemTransactionProgressReport onProgressReport = null;
 
-        public FilesystemTransaction()
+        /// <summary>
+        /// Creates a new FilesystemTransaction object.
+        /// The path provided will be used to store temporary files, and
+        /// will be created if it does not already exist.
+        /// </summary>
+        public FilesystemTransaction(string path)
         {
+            TempPath = path;
             if (!Directory.Exists(TempPath))
             {
                 Directory.CreateDirectory(TempPath);
@@ -26,20 +36,36 @@ namespace CKAN
             uuid = Guid.NewGuid().ToString();
         }
 
-        public static string TempPath
+        private void ReportProgress(string message, int percent)
         {
-            get { return Path.Combine(KSP.CkanDir(), tempPath); }
+            if (onProgressReport != null)
+            {
+                onProgressReport(message, percent);
+            }
         }
 
         public void Commit()
         {
+            ReportProgress("Creating directories", 0);
+
+            int i = 0;
+            int count = directoriesToCreate.Count;
+
             foreach (string directory in directoriesToCreate)
             {
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
+
+                ReportProgress("Creating directories", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Validating files", 0);
+            i = 0;
+            count = files.Count;
 
             foreach (var pair in files)
             {
@@ -52,22 +78,54 @@ namespace CKAN
                     log.ErrorFormat("Commit failed because {0} is missing", file.TemporaryPath);
                     return;
                 }
+
+                // TODO: I'm not convinced about this.
+                // - `!file.neverOverwrite` means flipping logic twice in my head, does this mean file.Overwrite?
+                // - This makes a file and deletes it; presumably to throw an exception if that fails, we
+                //   we should document that's what it's doing.
+                // - This looks like it's DELETING all the files we're going to write in the target dir,
+                //   before we write them. So if something goes wrong part-way through, we've altered our
+                //   target dir.
+                // - We'd notice if we can't write to our target dir when we start writing our files out there
+                //   anyway, so this seems redundant as well as dangerous.
+                if (!file.neverOverwrite)
+                {
+                    File.Open(file.path, FileMode.Create).Close();
+                    File.Delete(file.path);
+                }
+
+                ReportProgress("Validating files", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Moving files", 0);
+            i = 0;
 
             foreach (var pair in files)
             {
                 TransactionalFileWriter file = pair.Value;
 
-                if (File.Exists(file.path) && file.neverOverwrite)
+                bool fileExists = File.Exists(file.path);
+                if (fileExists && file.neverOverwrite)
                 {
                     log.WarnFormat("Skipping \"{0}\", file exists but overwrite disabled.", file.path);
                     File.Delete(file.TemporaryPath);
                     continue;
                 }
+                else if (fileExists)
+                {
+                    File.Delete(file.path);
+                }
 
-                File.Copy(file.TemporaryPath, file.path);
-                File.Delete(file.TemporaryPath);
+                File.Move(file.TemporaryPath, file.path);
+                ReportProgress("Moving files", (i * 100) / count);
+
+                i++;
             }
+
+            ReportProgress("Removing files", 0);
+            i = 0;
 
             foreach (string path in filesToRemove)
             {
@@ -75,7 +133,13 @@ namespace CKAN
                 {
                     File.Delete(path);
                 }
+
+                ReportProgress("Removing files", (i * 100) / count);
+                i++;
             }
+
+            ReportProgress("Removing directories", 0);
+            i = 0;
 
             foreach (string path in directoriesToRemove)
             {
@@ -83,8 +147,12 @@ namespace CKAN
                 {
                     Directory.Delete(path);
                 }
+
+                ReportProgress("Removing directories", (i * 100) / count);
+                i++;
             }
 
+            ReportProgress("Done!", 100);
             files = null;
         }
 
@@ -125,6 +193,11 @@ namespace CKAN
         {
             directoriesToRemove.Add(path);
         }
+
+        public string GetTempPath()
+        {
+            return TempPath;
+        }
     }
 
     public class TransactionalFileWriter
@@ -145,7 +218,7 @@ namespace CKAN
             path = _path;
             uuid = Guid.NewGuid().ToString();
 
-            temporaryPath = Path.Combine(FilesystemTransaction.TempPath,
+            temporaryPath = Path.Combine(transaction.GetTempPath(),
                 String.Format("{0}_{1}", transaction.uuid, uuid));
             temporaryStream = null; //File.Create(temporaryPath);
             neverOverwrite = _neverOverwrite;

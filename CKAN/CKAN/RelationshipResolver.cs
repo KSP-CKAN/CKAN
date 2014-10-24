@@ -20,10 +20,13 @@ namespace CKAN
         // A list of all the mods we're going to install.
         private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
-        private readonly Registry registry = RegistryManager.Instance().registry;
+        private Registry registry;
 
-        public RelationshipResolver(List<string> modules, RelationshipResolverOptions options)
+        public RelationshipResolver(List<string> modules, RelationshipResolverOptions options, Registry registry)
         {
+
+            this.registry = registry;
+
             // Start by figuring out what versions we're installing, and then
             // adding them to the list. This *must* be pre-populated with all
             // user-specified modules, as they may be supplying things that provide

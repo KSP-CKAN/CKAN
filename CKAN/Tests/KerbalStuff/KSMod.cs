@@ -1,7 +1,7 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
-namespace Tests
+namespace NetKAN.KerbalStuffTests
 {
     [TestFixture]
     public class KSMod

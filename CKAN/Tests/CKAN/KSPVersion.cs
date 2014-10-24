@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Tests
+namespace CKANTests
 {
     [TestFixture]
     public class KSPVersion

@@ -62,24 +62,44 @@ namespace CKAN
                 LogManager.GetRepository().Threshold = Level.Info;
             }
 
-            // User provided KSP directory
+            // TODO: Allow the user to specify just a directory.
+            // User provided KSP instance
+
+            if (options.KSPdir != null && options.KSP != null)
+            {
+                User.WriteLine("--ksp and --kspdir can't be specified at the same time");
+                return EXIT_BADOPT;
+            }
+
             if (options.KSP != null)
             {
+                // Set a KSP directory by its alias.
+
                 try
                 {
-                    log.DebugFormat("Setting KSP directory to {0}", options.KSP);
-                    KSP.SetGameDir(options.KSP);
+                    KSPManager.SetCurrentInstance(options.KSP);
                 }
-                catch (DirectoryNotFoundException)
+                catch (InvalidKSPInstanceKraken)
                 {
-                    log.FatalFormat("KSP not found in {0}", options.KSP);
-                    User.WriteLine("Error: {0} does not appear to be a KSP directory.", options.KSP);
+                    User.WriteLine("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
                     return EXIT_BADOPT;
                 }
             }
+            else if (options.KSPdir != null)
+            {
+                // Set a KSP directory by its path
 
-            // Find KSP, create CKAN dir, perform housekeeping.
-            KSP.Init();
+                KSPManager.SetCurrentInstanceByPath(options.KSPdir);
+
+            }
+
+            else
+            {
+                // auto-start instance
+                KSPManager.GetPreferredInstance();
+            }
+
+            User.WriteLine("Using KSP installation at \"{0}\"", KSPManager.CurrentInstance.GameDir());
 
             switch (cmdline.action)
             {
@@ -116,8 +136,26 @@ namespace CKAN
                 case "clean":
                     return Clean();
 
-                case "config":
-                    return Config((ConfigOptions) cmdline.options);
+                // TODO: Combine all of these into `ckan kspdir ...` or something similar
+                // Eg: `ckan kspdir add` `ckan kspdir list` etc
+
+                case "list-installs":
+                    return ListInstalls();
+
+                case "add-install":
+                    return AddInstall((AddInstallOptions) cmdline.options);
+
+                case "rename-install":
+                    return RenameInstall((RenameInstallOptions)cmdline.options);
+
+                case "remove-install":
+                    return RemoveInstall((RemoveInstallOptions)cmdline.options);
+
+                case "set-default-install":
+                    return SetDefaultInstall((SetDefaultInstallOptions)cmdline.options);
+
+                case "clear-cache":
+                    return ClearCache((ClearCacheOptions)cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
@@ -155,9 +193,9 @@ namespace CKAN
 
         private static int Available()
         {
-            List<CkanModule> available = RegistryManager.Instance().registry.Available();
+            List<CkanModule> available = RegistryManager.Instance(KSPManager.CurrentInstance).registry.Available();
 
-            User.WriteLine("Mods available for KSP {0}", KSP.Version());
+            User.WriteLine("Mods available for KSP {0}", KSPManager.CurrentInstance.Version());
             User.WriteLine("");
 
             foreach (CkanModule module in available)
@@ -170,19 +208,19 @@ namespace CKAN
 
         private static int Scan()
         {
-            KSP.ScanGameData();
+            KSPManager.CurrentInstance.ScanGameData();
 
             return EXIT_OK;
         }
 
         private static int List()
         {
-            string ksp_path = KSP.GameDir();
+            string ksp_path = KSPManager.CurrentInstance.GameDir();
 
             User.WriteLine("\nKSP found at {0}\n", ksp_path);
-            User.WriteLine("KSP Version: {0}\n", KSP.Version());
+            User.WriteLine("KSP Version: {0}\n", KSPManager.CurrentInstance.Version());
 
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
             Registry registry = registry_manager.registry;
 
             User.WriteLine("Installed Modules:\n");
@@ -270,7 +308,7 @@ namespace CKAN
 
         private static int Clean()
         {
-            KSP.CleanCache();
+            KSPManager.CurrentInstance.CleanCache();
             return EXIT_OK;
         }
 
@@ -328,7 +366,7 @@ namespace CKAN
                 return EXIT_BADOPT;
             }
 
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
             InstalledModule module;
 
             try
@@ -358,27 +396,128 @@ namespace CKAN
             return EXIT_OK;
         }
 
-        private static int Config(ConfigOptions options)
+        private static int ListInstalls()
         {
-            switch (options.option)
-            {
-                case "gamedir":
-                    try
-                    {
-                        KSP.PopulateGamedirRegistry(options.value);
-                        return EXIT_OK;
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        User.WriteLine("Sorry, {0} doesn't look like a KSP dir", options.value);
-                        return EXIT_BADOPT;
-                    }
+            User.WriteLine("Listing all known KSP installations:");
+            User.WriteLine("");
 
-                default:
-                    User.WriteLine("Unknown config option {0}", options.option);
-                    return EXIT_BADOPT;
+            int count = 1;
+            foreach (var instance in KSPManager.Instances)
+            {
+                User.WriteLine("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
+                count++;
+            }
+
+            return EXIT_OK;
+        }
+
+        private static int AddInstall(AddInstallOptions options)
+        {
+            if (options.name == null || options.path == null)
+            {
+                User.WriteLine("add-install <name> <path> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (KSPManager.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Install with name \"{0}\" already exists, aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            try
+            {
+
+                KSPManager.AddInstance(options.name, options.path);
+                User.WriteLine("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
+                return EXIT_OK;
+            }
+            catch (NotKSPDirKraken ex)
+            {
+                User.WriteLine("Sorry, {0} does not appear to be a KSP directory", ex.path);
+                return EXIT_BADOPT;
             }
         }
+
+        private static int RenameInstall(RenameInstallOptions options)
+        {
+            if (options.old_name == null || options.new_name == null)
+            {
+                User.WriteLine("rename-install <old_name> <new_name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSPManager.Instances.ContainsKey(options.old_name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.old_name);
+                return EXIT_BADOPT;
+            }
+
+            KSPManager.RenameInstance(options.old_name, options.new_name);
+
+            User.WriteLine("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
+            return EXIT_OK;
+        }
+
+        private static int RemoveInstall(RemoveInstallOptions options)
+        {
+            if (options.name == null)
+            {
+                User.WriteLine("remove-install <name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSPManager.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            KSPManager.RemoveInstance(options.name);
+
+            User.WriteLine("Successfully removed \"{0}\"", options.name);
+            return EXIT_OK;
+        }
+
+        private static int SetDefaultInstall(SetDefaultInstallOptions options)
+        {
+            if (options.name == null)
+            {
+                User.WriteLine("set-default-install <name> - argument missing, perhaps you forgot it?");
+                return EXIT_BADOPT;
+            }
+
+            if (!KSPManager.Instances.ContainsKey(options.name))
+            {
+                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
+                return EXIT_BADOPT;
+            }
+
+            KSPManager.SetAutoStart(options.name);
+
+            User.WriteLine("Successfully set \"{0}\" as the default KSP installation", options.name);
+            return EXIT_OK;
+        }
+
+        private static int ClearCache(ClearCacheOptions options)
+        {
+            User.WriteLine("Clearing download cache..");
+
+            var cachePath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "downloads");
+            foreach (var file in Directory.GetFiles(cachePath))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return EXIT_OK;
+        }
+
     }
 
 
@@ -442,8 +581,23 @@ namespace CKAN
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
-        [VerbOption("config", HelpText = "Configure CKAN")]
-        public ConfigOptions Config { get; set; }
+        [VerbOption("list-installs", HelpText = "List all known KSP installations")]
+        public ListInstallsOptions ListInstalls { get; set; }
+
+        [VerbOption("add-install", HelpText = "Add a new KSP installation")]
+        public AddInstallOptions AddInstall { get; set; }
+
+        [VerbOption("rename-install", HelpText = "Rename a known KSP installation")]
+        public RenameInstallOptions RenameInstall { get; set; }
+
+        [VerbOption("remove-install", HelpText = "Remove a known KSP installation")]
+        public RemoveInstallOptions RemoveInstall { get; set; }
+
+        [VerbOption("set-default-install", HelpText = "Sets a known KSP installation as default")]
+        public SetDefaultInstallOptions SetDefaultInstall { get; set; }
+
+        [VerbOption("clear-cache", HelpText = "Clears the download cache")]
+        public ClearCacheOptions ClearCache { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -459,8 +613,11 @@ namespace CKAN
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
-        [Option('k', "ksp", DefaultValue = null, HelpText = "KSP directory to use")]
+        [Option("ksp", DefaultValue = null, HelpText = "KSP install to use")]
         public string KSP { get; set; }
+
+        [Option("kspdir", DefaultValue = null, HelpText = "KSP dir to use")]
+        public string KSPdir { get; set; }
     }
 
     // Each action defines its own options that it supports.
@@ -553,13 +710,42 @@ namespace CKAN
         public string Modname { get; set; }
     }
 
-    internal class ConfigOptions : CommonOptions
+    internal class ListInstallsOptions : CommonOptions
+    {
+    }
+
+    internal class AddInstallOptions : CommonOptions
     {
         [ValueOption(0)]
-        public string option { get; set; }
+        public string name { get; set; }
 
         [ValueOption(1)]
-        public string value { get; set; }
+        public string path { get; set; }
+    }
+
+    internal class RenameInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string old_name { get; set; }
+
+        [ValueOption(1)]
+        public string new_name { get; set; }
+    }
+
+    internal class RemoveInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string name { get; set; }
+    }
+
+    internal class SetDefaultInstallOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string name { get; set; }
+    }
+
+    internal class ClearCacheOptions : CommonOptions
+    {
     }
 
     // Exception class, so we can signal errors in command options.
