@@ -21,9 +21,9 @@ namespace CKAN
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
-            if (!KSP.Instances.Any())
+            if (!KSPManager.Instances.Any())
             {
-                KSP.AddDefaultInstance();
+                KSPManager.FindAndRegisterDefaultInstance();
             }
 
             UpdateInstancesList();
@@ -37,7 +37,7 @@ namespace CKAN
         {
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in KSP.Instances)
+            foreach (var instance in KSPManager.Instances)
             {
                 var item = new ListViewItem() { Text = instance.Key, Tag = instance.Key };
 
@@ -53,9 +53,8 @@ namespace CKAN
         {
             if (m_BrowseKSPFolder.ShowDialog() == DialogResult.OK)
             {
-                var instance = new KSP();
-                instance.SetGameDir(m_BrowseKSPFolder.SelectedPath);
-                KSP.Instances.Add("New instance", instance);
+                var instance = new KSP(m_BrowseKSPFolder.SelectedPath);
+                KSPManager.Instances.Add("New instance", instance);
                 UpdateInstancesList();
             }
         }
@@ -66,11 +65,10 @@ namespace CKAN
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                KSP.AutoStartInstance = instance;
-                KSP.PopulateRegistryWithInstances();
+                KSPManager.SetAutoStart(instance);
             }
 
-            KSP.InitializeInstance(instance);
+            KSPManager.SetCurrentInstance(instance);
             Hide();
             Main.Instance.Show();
         }
@@ -97,10 +95,7 @@ namespace CKAN
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                var ksp = KSP.Instances[instance];
-                KSP.Instances.Remove(instance);
-                KSP.Instances.Add(m_RenameInstanceDialog.GetResult(), ksp);
-                KSP.PopulateRegistryWithInstances();
+                KSPManager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
         }
