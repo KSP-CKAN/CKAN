@@ -23,7 +23,7 @@ namespace CKAN
         /// </summary>
         public static int Update(string repo = null)
         {
-            RegistryManager registry_manager = RegistryManager.Instance();
+            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
 
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -62,7 +62,7 @@ namespace CKAN
 
                 log.Debug("Converting from JSON...");
 
-                CkanModule module = CkanModule.from_string(metadata_json);
+                CkanModule module = CkanModule.FromJson(metadata_json);
 
                 log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
 

@@ -77,7 +77,7 @@ namespace CKAN.KerbalStuff
             // Make sure that at the very least this validates against our own
             // internal model.
 
-            CkanModule mod = CkanModule.from_string(metadata.ToString());
+            CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             // Make sure our identifiers match.
 

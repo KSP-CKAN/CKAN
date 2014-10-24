@@ -41,13 +41,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
-    <Compile Include="Net.cs" />
-    <Compile Include="Version.cs" />
-    <Compile Include="KSPVersion.cs" />
     <Compile Include="KerbalStuff\KSMod.cs" />
     <Compile Include="KerbalStuff\GitHubTests.cs" />
     <Compile Include="CKAN\ModuleInstallerTest.cs" />
+    <Compile Include="CKAN\KSPTests.cs" />
+    <Compile Include="TestData.cs" />
+    <Compile Include="CKAN\Module.cs.cs" />
+    <Compile Include="CKAN\KSPVersion.cs" />
+    <Compile Include="CKAN\Net.cs" />
+    <Compile Include="CKAN\Version.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

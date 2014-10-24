@@ -34,6 +34,8 @@ namespace CKAN
         public ControlFactory controlFactory = null;
 
         private FolderBrowserDialog m_FindKSPRootDialog = new FolderBrowserDialog();
+        private OpenFileDialog m_ImportCkanDialog = new OpenFileDialog();
+        private SaveFileDialog m_ExportInstalledModsDialog = new SaveFileDialog();
 
         public Main()
         {
@@ -44,48 +46,33 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             m_Instance = this;
+            
             InitializeComponent();
-            RecreateDialogs();
 
-            try
+            // We want to check our current instance is null first, as it may
+            // have already been set by a command-line option.
+            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() != null)
             {
-                KSP.Init();
-            }
-            catch (DirectoryNotFoundException)
-            {
-                User.Error("Failed to find KSP root directory, press OK to browse");
-                DialogResult result = m_FindKSPRootDialog.ShowDialog();
+                Hide();
 
-                if (result != DialogResult.OK)
+                var result = new ChooseKSPInstance().ShowDialog();
+                if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
-                    Environment.Exit(1);
-                }
-
-                var path = m_FindKSPRootDialog.SelectedPath;
-
-                if (Directory.Exists(path))
-                {
-                    try
-                    {
-                        KSP.PopulateGamedirRegistry(m_FindKSPRootDialog.SelectedPath);
-                        KSP.Init();
-                    }
-                    catch (Exception)
-                    {
-                        User.Error("Invalid KSP directory");
-                    }
-                }
-                else
-                {
-                    User.Error("Directory doesn't exist");
+                    Close();
+                    return;
                 }
             }
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(KSP.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(KSPManager.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo
             );
+
+            FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
+            launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
+
+            RecreateDialogs();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -97,7 +84,11 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                ApplyToolButton_Click(null, null);
+                if (ComputeChangeSetFromModList().Any())
+                {
+                    ApplyToolButton_Click(null, null);
+                }
+
                 return true;
             }
 
@@ -128,7 +119,8 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            Text = "CKAN (" + Meta.Version() + ")";
+            Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
+            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -141,13 +133,13 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
-                if (!RegistryManager.Instance().registry.IsInstalled(mod.identifier))
+                if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance().registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
@@ -228,7 +220,7 @@ namespace CKAN
                 var cell = row.Cells[0] as DataGridViewCheckBoxCell;
                 var mod = (CkanModule) row.Tag;
 
-                bool isInstalled = RegistryManager.Instance().registry.IsInstalled(mod.identifier);
+                bool isInstalled = RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier);
                 if ((bool) cell.Value == false && !isInstalled)
                 {
                     var options = new RelationshipResolverOptions();
@@ -286,7 +278,10 @@ namespace CKAN
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Flipping enabled here hides the main form itself.
+            Enabled = false;
             m_SettingsDialog.ShowDialog();
+            Enabled = true;
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
@@ -351,12 +346,76 @@ namespace CKAN
             }
 
             m_WaitDialog.ResetProgress();
-            m_WaitDialog.ShowWaitDialog(false);
+            m_WaitDialog.ShowWaitDialog(false, false);
             ModuleInstaller.Instance.CachedOrDownload(module);
             m_WaitDialog.HideWaitDialog();
 
             UpdateModContentsTree(module);
             RecreateDialogs();
+        }
+
+        private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(MetadataModuleHomePageLinkLabel.Text);
+        }
+
+        private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(MetadataModuleGitHubLinkLabel.Text);
+        }
+
+        private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ModList.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow selectedItem = ModList.SelectedRows[0];
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var module = (CkanModule)selectedItem.Tag;
+            if (module == null)
+            {
+                return;
+            }
+
+            UpdateModDependencyGraph(module);
+        }
+
+        private void exportInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+      
+        private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Util.IsLinux)
+            {
+                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.x86"), m_Configuration.CommandLineArguments);
+            }
+            else
+            {
+                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+            }
+        }
+
+        private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new KSPCommandLineOptionsDialog();
+            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
+                m_Configuration.Save();
+            }
         }
     }
 }

@@ -54,6 +54,12 @@
     <Compile Include="ApplyChangesDialog.Designer.cs">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChooseKSPInstance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseKSPInstance.Designer.cs">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configuration.cs" />
     <Compile Include="ControlFactory.cs" />
     <Compile Include="ErrorDialog.cs">
@@ -62,8 +68,20 @@
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="KSPCommandLineOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainModInfo.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameInstanceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameInstanceDialog.Designer.cs">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
@@ -113,8 +131,14 @@
     <EmbeddedResource Include="ApplyChangesDialog.resx">
       <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ChooseKSPInstance.resx">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -132,6 +156,9 @@
     </Compile>
     <EmbeddedResource Include="RecommendsDialog.resx">
       <DependentUpon>RecommendsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenameInstanceDialog.resx">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
@@ -183,5 +210,8 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ksp.jpg" />
   </ItemGroup>
 </Project>

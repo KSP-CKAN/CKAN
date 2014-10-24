@@ -338,17 +338,23 @@ namespace CKAN
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
-        public static CkanModule from_file(string filename)
+        public static CkanModule FromFile(string filename)
         {
             string json = File.ReadAllText(filename);
-            return from_string(json);
+            return FromJson(json);
+        }
+
+        public static void ToFile(CkanModule module, string filename)
+        {
+            var json = ToJson(module);
+            File.WriteAllText(filename, json);
         }
 
         /// <summary>
         ///     Generates a CKAN.META object from a string.
         ///     Also validates that all required fields are present.
         /// </summary>
-        public static CkanModule from_string(string json)
+        public static CkanModule FromJson(string json)
         {
             if (!validate_json_against_schema(json))
             {
@@ -373,6 +379,11 @@ namespace CKAN
 
             // All good! Return module
             return newModule;
+        }
+
+        public static string ToJson(CkanModule module)
+        {
+            return JsonConvert.SerializeObject(module);
         }
 
         /// <summary>
