@@ -99,7 +99,22 @@ namespace CKAN
         // Where to find KSP relative to Steam's root.
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
-        public static Dictionary<string, KSP> Instances = new Dictionary<string, KSP>();
+        internal static bool instances_loaded = false;
+        internal static Dictionary<string, KSP> _Instances = new Dictionary<string, KSP>();
+
+        public static Dictionary<string,KSP> Instances
+        {
+            get
+            {
+                if (! instances_loaded)
+                {
+                    // This also sets instances_loaded to true.
+                    LoadInstancesFromRegistry ();
+                }
+                return _Instances;
+            }
+        }
+
         private static KSP _CurrentInstance = null;
 
         public static KSP CurrentInstance
@@ -114,25 +129,25 @@ namespace CKAN
 
         public static void AddDefaultInstance()
         {
-            Instances.Add("Auto-detected instance", new KSP());
+            _Instances.Add("Auto-detected instance", new KSP());
         }
 
         public static void AddInstance(string name, string path)
         {
             var ksp = new KSP();
             ksp.SetGameDir(path);
-            Instances.Add(name, ksp);
+            _Instances.Add(name, ksp);
         }
 
         public static void InitializeInstance(string name)
         {
-            if (!Instances.ContainsKey(name))
+            if (!_Instances.ContainsKey(name))
             {
                 throw new InvalidKSPInstanceException();
             }
 
-            _CurrentInstance = Instances[name];
-            Instances[name].Init();
+            _CurrentInstance = _Instances[name];
+            _Instances[name].Init();
         }
 
         private string cached_gamedir;
@@ -218,7 +233,7 @@ namespace CKAN
         
         public static void LoadInstancesFromRegistry()
         {
-            Instances.Clear();
+            _Instances.Clear();
 
             var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
             if (key == null)
@@ -236,8 +251,10 @@ namespace CKAN
 
                 var ksp = new KSP();
                 ksp.SetGameDir(path);
-                Instances.Add(name, ksp);
+                _Instances.Add(name, ksp);
             }
+
+            instances_loaded = true;
         }
 
         public static void PopulateRegistryWithInstances()
@@ -249,10 +266,10 @@ namespace CKAN
             }
 
             KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", AutoStartInstance == null ? "" : AutoStartInstance);
-            KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", Instances.Count);
+            KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", _Instances.Count);
 
             int i = 0;
-            foreach (var instance in Instances)
+            foreach (var instance in _Instances)
             {
                 var name = instance.Key;
                 var ksp = instance.Value;
