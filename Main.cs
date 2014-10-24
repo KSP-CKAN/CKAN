@@ -49,7 +49,9 @@ namespace CKAN
             
             InitializeComponent();
 
-            if (KSPManager.GetPreferredInstance() != null)
+            // We want to check our current instance is null first, as it may
+            // have already been set by a command-line option.
+            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() != null)
             {
                 Hide();
 
