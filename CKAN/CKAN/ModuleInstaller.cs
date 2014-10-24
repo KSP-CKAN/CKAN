@@ -34,7 +34,7 @@ namespace CKAN
         private bool lastDownloadSuccessful;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
         public ModuleInstallerReportProgress onReportProgress = null;
-        private bool installCanceled = false;
+        private bool installCanceled = false; // Used for inter-thread communication.
 
         private ModuleInstaller()
         {
@@ -178,7 +178,7 @@ namespace CKAN
         /// </summary>
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
-            installCanceled = false;
+            installCanceled = false; // Can be set by another thread
             currentTransaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
 
             if (onReportProgress != null)
@@ -287,6 +287,7 @@ namespace CKAN
             currentTransaction.Rollback();
         }
 
+        /// <summary>Call this to cancel the installs being performed by other threads</summary>
         public void CancelInstall()
         {
             if (downloader != null)
