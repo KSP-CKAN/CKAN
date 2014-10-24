@@ -176,6 +176,8 @@ namespace CKAN
         ///     After this we try to download the rest of the mods (asynchronously) and install them
         ///     Finally, only if everything is successful, we commit the transaction
         /// </summary>
+        //
+        // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
             installCanceled = false; // Can be set by another thread
