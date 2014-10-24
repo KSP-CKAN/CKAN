@@ -384,7 +384,7 @@ Example resources:
     "resources" : {
         "homepage"   : "http://tinyurl.com/DogeCoinFlag",
         "bugtracker" : "https://github.com/pjf/DogeCoinFlag/issues",
-	"github"   : {
+        "github"   : {
             "url"      : "http://github.com/pjf/DogeCoinFlag",
             "releases" : "true"
         },

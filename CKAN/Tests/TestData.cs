@@ -53,6 +53,7 @@ namespace Tests
                     ""resources"" : {
                         ""homepage"" : ""http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13"",
                         ""manual""   : ""http://ksp-kos.github.io/KOS_DOC/"",
+                        ""bugtracker"": ""https://github.com/KSP-KOS/KOS/issues"",
                         ""github""   : {
                             ""url""      : ""https://github.com/KSP-KOS/KOS"",
                             ""releases"" : true
