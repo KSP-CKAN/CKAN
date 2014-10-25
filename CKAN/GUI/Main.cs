@@ -61,7 +61,7 @@ namespace CKAN
                 var result = new ChooseKSPInstance().ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
-                    Close();
+                    Application.Exit();
                     return;
                 }
             }
@@ -76,6 +76,9 @@ namespace CKAN
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
 
             RecreateDialogs();
+
+            // We should run application only when we really sure.
+            Application.Run(this);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
