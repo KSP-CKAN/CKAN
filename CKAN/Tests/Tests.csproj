@@ -46,10 +46,12 @@
     <Compile Include="CKAN\ModuleInstallerTest.cs" />
     <Compile Include="CKAN\KSPTests.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="CKAN\Module.cs.cs" />
     <Compile Include="CKAN\KSPVersion.cs" />
     <Compile Include="CKAN\Net.cs" />
     <Compile Include="CKAN\Version.cs" />
+    <Compile Include="CKAN\Module.cs" />
+    <Compile Include="CKAN\Registry.cs" />
+    <Compile Include="CKAN\Repo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
