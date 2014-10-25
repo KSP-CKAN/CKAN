@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using log4net;
+using System.IO;
 
 namespace CKAN
 {
@@ -119,7 +120,16 @@ namespace CKAN
         {
             if (Instances.Count == 0)
             {
-                string gamedir = KSP.FindGameDir();
+                string gamedir;
+                try
+                {
+                    gamedir = KSP.FindGameDir();
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    return null;
+                }
+                 
                 return AddInstance ("Auto-detected instance", gamedir);
             }
 

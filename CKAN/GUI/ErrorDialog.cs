@@ -11,9 +11,9 @@ namespace CKAN
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        public void ShowErrorDialog(string message)
+        public void ShowErrorDialog(string text, params object[] args)
         {
-            Util.Invoke(ErrorMessage, () => ErrorMessage.Text = message);
+            Util.Invoke(ErrorMessage, () => ErrorMessage.Text = String.Format(text, args));
             Util.Invoke(this, () => ShowDialog());
         }
 
