@@ -43,6 +43,11 @@ namespace CKAN
 
         public static int Update(string repo = null)
         {
+            if (repo == null)
+            {
+                return Update((Uri) null);
+            }
+
             return Update(new Uri(repo));
         }
 
