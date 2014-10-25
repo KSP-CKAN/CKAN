@@ -53,7 +53,15 @@ namespace CKAN
         {
             if (m_BrowseKSPFolder.ShowDialog() == DialogResult.OK)
             {
-                var instance = new KSP(m_BrowseKSPFolder.SelectedPath);
+                KSP instance;
+                try
+                {
+                     instance = new KSP(m_BrowseKSPFolder.SelectedPath);
+                }
+                catch (NotKSPDirKraken){
+                    User.displayError("Directory {0} is not valid KSP directory.", m_BrowseKSPFolder.SelectedPath);
+                    return;
+                }
                 KSPManager.Instances.Add("New instance", instance);
                 UpdateInstancesList();
             }
