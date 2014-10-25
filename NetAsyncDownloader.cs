@@ -57,7 +57,7 @@ namespace CKAN
         public string[] StartDownload()
         {
             var filePaths = new string[downloads.Length];
-            transaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
+            transaction = new FilesystemTransaction();
 
             for (int i = 0; i < downloads.Length; i++)
             {

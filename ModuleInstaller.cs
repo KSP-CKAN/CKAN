@@ -181,7 +181,7 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
             installCanceled = false; // Can be set by another thread
-            currentTransaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
+            currentTransaction = new FilesystemTransaction();
 
             if (onReportProgress != null)
             {
