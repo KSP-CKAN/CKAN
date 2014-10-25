@@ -49,6 +49,9 @@ namespace CKAN
             
             InitializeComponent();
 
+            // We need to initialize error dialog first to display errors
+            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
+
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
             if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() == null)

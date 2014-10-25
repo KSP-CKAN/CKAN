@@ -16,7 +16,6 @@ namespace CKAN
         public void RecreateDialogs()
         {
             m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
-            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
             m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
             m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
             m_WaitDialog = controlFactory.CreateControl<WaitDialog>();
