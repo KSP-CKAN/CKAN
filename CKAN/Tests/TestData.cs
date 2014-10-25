@@ -23,6 +23,11 @@ namespace Tests
             return such_zip_very_currency_wow;
         }
 
+        public static Uri TestKAN()
+        {
+            return new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/testkan.zip");
+        }
+
         public static string good_ksp_dir()
         {
             return Path.Combine(DataDir(), "KSP/KSP-0.25");
