@@ -15,7 +15,7 @@ namespace CKAN
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            new Main();
         }
 
         public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
