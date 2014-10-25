@@ -52,7 +52,7 @@ namespace CKAN
 
         private void CKANRepositoryDefaultButton_Click(object sender, EventArgs e)
         {
-            Main.Instance.m_Configuration.Repository = Repo.default_ckan_repo;
+            Main.Instance.m_Configuration.Repository = Repo.default_ckan_repo.ToString();
             Main.Instance.UpdateRepo();
             Main.Instance.m_Configuration.Save();
             Close();
