@@ -81,6 +81,23 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Remove the given module from the registry of available modules.
+        /// Does *nothing* if the module is not present to begin with.
+        /// </summary>
+        public void RemoveAvailable(string identifier, Version version)
+        {
+            if (available_modules.ContainsKey(identifier))
+            {
+                available_modules[identifier].Remove(version);
+            }
+        }
+
+        public void RemoveAvailable(Module module)
+        {
+            RemoveAvailable(module.identifier, module.version);
+        }
+
+        /// <summary>
         ///     Returns a simple array of all available modules for
         ///     the specified version of KSP (installed version by default)
         /// </summary>
@@ -250,6 +267,10 @@ namespace CKAN
             installed_modules.Add(mod.source_module.identifier, mod);
         }
 
+        /// <summary>
+        /// Register the supplied module as having been uninstalled, thereby
+        /// forgetting abouts its metadata and files.
+        /// </summary>
         public void DeregisterModule(string module)
         {
             installed_modules.Remove(module);
