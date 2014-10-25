@@ -33,10 +33,6 @@ namespace CKAN
 
         public ControlFactory controlFactory = null;
 
-        private FolderBrowserDialog m_FindKSPRootDialog = new FolderBrowserDialog();
-        private OpenFileDialog m_ImportCkanDialog = new OpenFileDialog();
-        private SaveFileDialog m_ExportInstalledModsDialog = new SaveFileDialog();
-
         public Main()
         {
             User.frontEnd = FrontEndType.UI;
