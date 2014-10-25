@@ -45,7 +45,7 @@ namespace CKANTests
         }
 
         [Test()]
-        public void RemoveAvailable()
+        public void RemoveAvailableByName()
         {
             // Add our module and test it's there.
             registry.AddAvailable(module);
@@ -53,6 +53,19 @@ namespace CKANTests
 
             // Remove it, and make sure it's gone.
             registry.RemoveAvailable(identifier, module.version);
+
+            Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
+        }
+
+        [Test()]
+        public void RemoveAvailableByModule()
+        {
+            // Add our module and test it's there.
+            registry.AddAvailable(module);
+            Assert.IsNotNull(registry.LatestAvailable(identifier, v0_24_2));
+
+            // Remove it, and make sure it's gone.
+            registry.RemoveAvailable(module);
 
             Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
         }
