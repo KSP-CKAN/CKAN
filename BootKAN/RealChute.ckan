@@ -1,0 +1,11 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "RealChute",
+    "license"        : "restricted",
+    "$kref"          : "#/ckan/kerbalstuff",
+    "resources"      : {
+        "github" : {
+            "url" : "https://github.com/StupidChris/RealChute"
+        }
+    }
+}
