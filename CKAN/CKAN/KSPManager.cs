@@ -95,6 +95,13 @@ namespace CKAN
             // Return the autostart, if we can find it.
             if (AutoStartInstance != null)
             {
+                // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
+                // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
+                if (AutoStartInstance == "")
+                {
+                    return null;
+                }
+
                 if (Instances.ContainsKey(AutoStartInstance))
                 {
                     return Instances[AutoStartInstance];
