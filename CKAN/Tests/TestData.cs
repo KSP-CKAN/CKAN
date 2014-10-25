@@ -74,6 +74,11 @@ namespace Tests
             ;
         }
 
+        public static CKAN.CkanModule kOS_014_module()
+        {
+            return CKAN.CkanModule.FromJson(kOS_014());
+        }
+
     }
 }
 
