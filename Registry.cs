@@ -92,6 +92,11 @@ namespace CKAN
             }
         }
 
+        public void RemoveAvailable(Module module)
+        {
+            RemoveAvailable(module.identifier, module.version);
+        }
+
         /// <summary>
         ///     Returns a simple array of all available modules for
         ///     the specified version of KSP (installed version by default)
