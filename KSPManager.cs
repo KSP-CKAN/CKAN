@@ -16,7 +16,7 @@ namespace CKAN
         internal static bool instances_loaded = false;
         internal static Dictionary<string, KSP> _Instances = new Dictionary<string, KSP>();
         internal static KSP _CurrentInstance = null;
-        internal static string AutoStartInstance = null;
+        internal static string _AutoStartInstance = null;
 
         public static Dictionary<string,KSP> Instances
         {
@@ -36,6 +36,19 @@ namespace CKAN
             get
             {
                 return _CurrentInstance;
+            }
+        }
+
+        public static string AutoStartInstance
+        {
+            get
+            {
+                if (!instances_loaded)
+                {
+                    // This also sets instances_loaded to true.
+                    LoadInstancesFromRegistry();
+                }
+                return _AutoStartInstance;
             }
         }
 
@@ -82,12 +95,10 @@ namespace CKAN
             // Return the autostart, if we can find it.
             if (AutoStartInstance != null)
             {
-                KSP instance = Instances[AutoStartInstance];
-                if (instance == null)
+                if (Instances.ContainsKey(AutoStartInstance))
                 {
-                    throw new KSPManagerKraken(String.Format("Auto-start instance {0} registered but not found", AutoStartInstance));
+                    return Instances[AutoStartInstance];
                 }
-                return instance;
             }
 
             // If we only know of a single instance, return that.
@@ -202,13 +213,13 @@ namespace CKAN
                 throw new InvalidKSPInstanceKraken(name);
             }
 
-            AutoStartInstance = name;
+            _AutoStartInstance = name;
             PopulateRegistryWithInstances();
         }
 
         public static void ClearAutoStart()
         {
-            AutoStartInstance = null;
+            _AutoStartInstance = null;
             PopulateRegistryWithInstances();
         }
 
@@ -224,7 +235,7 @@ namespace CKAN
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
-            AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
+            _AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
             var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
 
             for (int i = 0; i < instanceCount; i++)
@@ -251,7 +262,7 @@ namespace CKAN
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
-            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", AutoStartInstance == null ? "" : AutoStartInstance);
+            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", _AutoStartInstance == null ? "" : _AutoStartInstance);
             KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", _Instances.Count);
 
             int i = 0;
