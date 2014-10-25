@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ChinhDo.Transactions</name>
+    </assembly>
+    <members>
+        <member name="M:ChinhDo.Transactions.FileUtils.EnsureTempFolderExists">
+            <summary>
+            Ensures that the folder that contains the temporary files exists.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.FileUtils.GetTempFileName(System.String)">
+            <summary>
+            Returns a unique temporary file name.
+            </summary>
+            <param name="extension"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ChinhDo.Transactions.MoveOperation">
+            <summary>
+            Rollbackable operation which moves a file to a new location.
+            </summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.IRollbackableOperation">
+            <summary>
+            Represents a transactional file operation.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.IRollbackableOperation.Execute">
+            <summary>
+            Executes the operation.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.IRollbackableOperation.Rollback">
+            <summary>
+            Rolls back the operation, restores the original state.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.MoveOperation.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="sourceFileName">The name of the file to move.</param>
+            <param name="destFileName">The new path for the file.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.AppendAllTextOperation">
+            <summary>
+            Rollbackable operation which appends a string to an existing file, or creates the file if it doesn't exist.
+            </summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.SingleFileOperation">
+            <summary>
+            Class that contains common code for those rollbackable file operations which need
+            to backup a single file and restore it when Rollback() is called.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.SingleFileOperation.Finalize">
+            <summary>
+            Disposes the resources used by this class.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.SingleFileOperation.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.SingleFileOperation.InnerDispose">
+            <summary>
+            Disposes the resources of this class.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.AppendAllTextOperation.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The file to append the string to.</param>
+            <param name="contents">The string to append to the file.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.IFileManager">
+            <summary>
+            Classes implementing this interface provide methods to work with files.
+            </summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.IFileOperations">
+            <summary>
+            Classes implementing this interface provide methods to manipulate files.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.AppendAllText(System.String,System.String)">
+            <summary>
+            Appends the specified string the file, creating the file if it doesn't already exist.
+            </summary>
+            <param name="path">The file to append the string to.</param>
+            <param name="contents">The string to append to the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.Copy(System.String,System.String,System.Boolean)">
+            <summary>
+            Copies the specified <paramref name="sourceFileName"/> to <paramref name="destFileName"/>.
+            </summary>
+            <param name="sourceFileName">The file to copy.</param>
+            <param name="destFileName">The name of the destination file.</param>
+            <param name="overwrite">true if the destination file can be overwritten, otherwise false.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.CreateDirectory(System.String)">
+            <summary>
+            Creates all directories in the specified path.
+            </summary>
+            <param name="path">The directory path to create.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.Delete(System.String)">
+            <summary>
+            Deletes the specified file. An exception is not thrown if the file does not exist.
+            </summary>
+            <param name="path">The file to be deleted.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.DeleteDirectory(System.String)">
+            <summary>
+            Deletes the specified directory and all its contents. An exception is not thrown if the directory does not exist.
+            </summary>
+            <param name="path">The directory to be deleted.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.Move(System.String,System.String)">
+            <summary>
+            Moves the specified file to a new location.
+            </summary>
+            <param name="srcFileName">The name of the file to move.</param>
+            <param name="destFileName">The new path for the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.Snapshot(System.String)">
+            <summary>
+            Take a snapshot of the specified file. The snapshot is used to rollback the file later if needed.
+            </summary>
+            <param name="fileName">The file to take a snapshot for.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileOperations.WriteAllText(System.String,System.String)">
+            <summary>
+            Creates a file, write the specified <paramref name="contents"/> to the file.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The string to write to the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileManager.DirectoryExists(System.String)">
+            <summary>
+            Determines whether the specified path refers to a directory that exists on disk.
+            </summary>
+            <param name="path">The directory to check.</param>
+            <returns>True if the directory exists.</returns>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileManager.FileExists(System.String)">
+            <summary>
+            Determines whether the specified file exists.
+            </summary>
+            <param name="path">The file to check.</param>
+            <returns>True if the file exists.</returns>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileManager.GetTempFileName(System.String)">
+            <summary>
+            Creates a temporary file name. The file is not automatically created.
+            </summary>
+            <param name="extension">File extension (with the dot).</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.IFileManager.GetTempFileName">
+            <summary>
+            Gets a temporary filename. The file is not automatically created.
+            </summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.CopyOperation">
+            <summary>
+            Rollbackable operation which copies a file.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.CopyOperation.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="sourceFileName">The file to copy.</param>
+            <param name="destFileName">The name of the destination file.</param>
+            <param name="overwrite">true if the destination file can be overwritten, otherwise false.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.FileEventHandler">
+            <summary>Delegate to call when a new found is found.</summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.CreateDirectoryOperation">
+            <summary>
+            Creates all directories in the specified path.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.CreateDirectoryOperation.#ctor(System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The directory path to create.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.TxFileManager">
+            <summary>
+            File Resource Manager. Allows inclusion of file system operations in transactions.
+            http://www.chinhdo.com/20080825/transactional-file-manager/
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.#ctor">
+            <summary>
+            Initializes the <see cref="T:ChinhDo.Transactions.TxFileManager"/> class.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.AppendAllText(System.String,System.String)">
+            <summary>Appends the specified string the file, creating the file if it doesn't already exist.</summary>
+            <param name="path">The file to append the string to.</param>
+            <param name="contents">The string to append to the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.Copy(System.String,System.String,System.Boolean)">
+            <summary>Copies the specified <paramref name="sourceFileName"/> to <paramref name="destFileName"/>.</summary>
+            <param name="sourceFileName">The file to copy.</param>
+            <param name="destFileName">The name of the destination file.</param>
+            <param name="overwrite">true if the destination file can be overwritten, otherwise false.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.CreateDirectory(System.String)">
+            <summary>Creates all directories in the specified path.</summary>
+            <param name="path">The directory path to create.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.Delete(System.String)">
+            <summary>Deletes the specified file. An exception is not thrown if the file does not exist.</summary>
+            <param name="path">The file to be deleted.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.DeleteDirectory(System.String)">
+            <summary>Deletes the specified directory and all its contents. An exception is not thrown if the directory does not exist.</summary>
+            <param name="path">The directory to be deleted.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.Move(System.String,System.String)">
+            <summary>Moves the specified file to a new location.</summary>
+            <param name="srcFileName">The name of the file to move.</param>
+            <param name="destFileName">The new path for the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.Snapshot(System.String)">
+            <summary>Take a snapshot of the specified file. The snapshot is used to rollback the file later if needed.</summary>
+            <param name="fileName">The file to take a snapshot for.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.WriteAllText(System.String,System.String)">
+            <summary>Creates a file, write the specified <paramref name="contents"/> to the file.</summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The string to write to the file.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.DirectoryExists(System.String)">
+            <summary>Determines whether the specified path refers to a directory that exists on disk.</summary>
+            <param name="path">The directory to check.</param>
+            <returns>True if the directory exists.</returns>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.FileExists(System.String)">
+            <summary>Determines whether the specified file exists.</summary>
+            <param name="path">The file to check.</param>
+            <returns>True if the file exists.</returns>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.GetFiles(System.String,ChinhDo.Transactions.FileEventHandler,System.Boolean)">
+            <summary>Gets the files in the specified directory.</summary>
+            <param name="path">The directory to get files.</param>
+            <param name="handler">The <see cref="T:ChinhDo.Transactions.FileEventHandler"/> object to call on each file found.</param>
+            <param name="recursive">if set to <c>true</c>, include files in sub directories recursively.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.GetTempFileName(System.String)">
+            <summary>Creates a temporary file name. File is not automatically created.</summary>
+            <param name="extension">File extension (with the dot).</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.GetTempFileName">
+            <summary>Creates a temporary file name. File is not automatically created.</summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.GetTempDirectory">
+            <summary>Gets a temporary directory.</summary>
+            <returns>The path to the newly created temporary directory.</returns>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxFileManager.GetTempDirectory(System.String,System.String)">
+            <summary>Gets a temporary directory.</summary>
+            <param name="parentDirectory">The parent directory.</param>
+            <param name="prefix">The prefix of the directory name.</param>
+            <returns>Path to the temporary directory. The temporary directory is created automatically.</returns>
+        </member>
+        <member name="F:ChinhDo.Transactions.TxFileManager._enlistments">
+            <summary>Dictionary of transaction enlistment objects for the current thread.</summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.SnapshotOperation">
+            <summary>
+            Rollbackable operation which takes a snapshot of a file. The snapshot is used to rollback the file later if needed.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.SnapshotOperation.#ctor(System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The file to take a snapshot for.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.DeleteDirectoryOperation">
+            <summary>
+            Deletes the specified directory and all its contents.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteDirectoryOperation.#ctor(System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The directory path to delete.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteDirectoryOperation.Finalize">
+            <summary>
+            Disposes the resources used by this class.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteDirectoryOperation.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteDirectoryOperation.MoveDirectory(System.String,System.String)">
+            <summary>
+            Moves a directory, recursively, from one path to another.
+            This is a version of <see cref="M:System.IO.Directory.Move(System.String,System.String)"/> that works across volumes.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteDirectoryOperation.InnerDispose">
+            <summary>
+            Disposes the resources of this class.
+            </summary>
+        </member>
+        <member name="T:ChinhDo.Transactions.WriteAllTextOperation">
+            <summary>
+            Creates a file, and writes the specified contents to it.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.WriteAllTextOperation.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The file to write to.</param>
+            <param name="contents">The string to write to the file.</param>
+        </member>
+        <member name="T:ChinhDo.Transactions.TxEnlistment">
+            <summary>Provides two-phase commits/rollbacks/etc for a single <see cref="T:System.Transactions.Transaction"/>.</summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxEnlistment.#ctor(System.Transactions.Transaction)">
+            <summary>Initializes a new instance of the <see cref="T:ChinhDo.Transactions.TxEnlistment"/> class.</summary>
+            <param name="tx">The Transaction.</param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxEnlistment.EnlistOperation(ChinhDo.Transactions.IRollbackableOperation)">
+            <summary>
+            Enlists <paramref name="operation"/> in its journal, so it will be committed or rolled
+            together with the other enlisted operations.
+            </summary>
+            <param name="operation"></param>
+        </member>
+        <member name="M:ChinhDo.Transactions.TxEnlistment.Rollback(System.Transactions.Enlistment)">
+            <summary>Notifies an enlisted object that a transaction is being rolled back (aborted).</summary>
+            <param name="enlistment">A <see cref="T:System.Transactions.Enlistment"></see> object used to send a response to the transaction manager.</param>
+            <remarks>This is typically called on a different thread from the transaction thread.</remarks>
+        </member>
+        <member name="T:ChinhDo.Transactions.DeleteFileOperation">
+            <summary>
+            Rollbackable operation which deletes a file. An exception is not thrown if the file does not exist.
+            </summary>
+        </member>
+        <member name="M:ChinhDo.Transactions.DeleteFileOperation.#ctor(System.String)">
+            <summary>
+            Instantiates the class.
+            </summary>
+            <param name="path">The file to be deleted.</param>
+        </member>
+    </members>
+</doc>
