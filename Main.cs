@@ -69,7 +69,7 @@ namespace CKAN
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
                 Path.Combine(KSPManager.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
-                Repo.default_ckan_repo
+                Repo.default_ckan_repo.ToString()
             );
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
