@@ -18,14 +18,14 @@ namespace CKAN
         private TransactionScope scope = new TransactionScope();
         private Dictionary<string, string> TempFiles = new Dictionary<string, string>();
 
-        private static readonly TxFileManager fileManager = new TxFileManager();
+        private TxFileManager fileManager = new TxFileManager();
 
         /// <summary>
         /// Creates a new FilesystemTransaction object.
         /// The path provided will be used to store temporary files, and
         /// will be created if it does not already exist.
         /// </summary>
-        public FilesystemTransaction(string path)
+        public FilesystemTransaction()
         {
         }
 
@@ -39,13 +39,40 @@ namespace CKAN
 
         public void Commit()
         {
+            if (scope == null)
+            {
+                log.ErrorFormat("Trying to commit a transaction twice or transaction was rolled-back");
+                return;
+            }
+
             ReportProgress("Committing filesystem transaction", 0);
+
+            int count = 0;
+            foreach (var pair in TempFiles)
+            {
+                var targetPath = pair.Key;
+                var tempPath = pair.Value;
+
+                fileManager.Move(tempPath, targetPath);
+                ReportProgress("Moving files", (count * 100) / TempFiles.Count);
+                count++;
+            }
+
+            TempFiles.Clear();
+            
             scope.Complete();
             ReportProgress("Done!", 100);
+
+            scope = null;
         }
 
         public void Rollback()
         {
+            if (scope == null)
+            {
+                log.ErrorFormat("Trying to rollback a transaction twice or transaction already committed");
+            }
+
             scope = null;
         }
 
