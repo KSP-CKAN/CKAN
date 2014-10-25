@@ -257,9 +257,10 @@ namespace CKAN
             return EXIT_OK;
         }
 
+        // TODO: This needs work! See GH #160.
         private static int Upgrade(UpgradeOptions options)
         {
-            if (options.zip_file == null && options.ckan_file == null)
+            if (options.ckan_file == null)
             {
                 // Typical case, install from cached CKAN info.
 
@@ -314,45 +315,58 @@ namespace CKAN
 
         private static int Install(InstallOptions options)
         {
-            if (options.zip_file == null && options.ckan_file == null)
+            if (options.ckan_file != null)
             {
-                // Typical case, install from cached CKAN info.
+                // Oooh! We're installing from a CKAN file.
+                log.InfoFormat("Installing from CKAN file {0}", options.ckan_file);
 
-                if (options.modules.Count == 0)
-                {
-                    // What? No files specified?
-                    User.WriteLine(
-                        "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
-                    return EXIT_BADOPT;
-                }
+                CkanModule module = CkanModule.FromFile(options.ckan_file);
 
-                // Prepare options. Can these all be done in the new() somehow?
-                var install_ops = new RelationshipResolverOptions();
-                install_ops.with_all_suggests = options.with_all_suggests;
-                install_ops.with_suggests = options.with_suggests;
-                install_ops.with_recommends = ! options.no_recommends;
+                // We'll need to make some registry changes to do this.
+                RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
 
-                // Install everything requested. :)
-                try
-                {
-                    var installer = ModuleInstaller.Instance;
-                    installer.InstallList(options.modules, install_ops);
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    User.WriteLine("Module {0} required, but not listed in index.", ex.module);
-                    User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                    return EXIT_ERROR;
-                }
+                // Remove this version of the module in the registry, if it exists.
+                registry_manager.registry.RemoveAvailable(module);
 
-                User.WriteLine("\nDone!\n");
+                // Sneakily add our version in...
+                registry_manager.registry.AddAvailable(module);
 
-                return EXIT_OK;
+                // Add our module to the things we should install...
+                options.modules.Add(module.identifier);
+
+                // And continue with our install as per normal.
+            }
+ 
+            if (options.modules.Count == 0)
+            {
+                // What? No files specified?
+                User.WriteLine(
+                    "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                return EXIT_BADOPT;
             }
 
-            User.WriteLine("\nUnsupported option at this time.");
+            // Prepare options. Can these all be done in the new() somehow?
+            var install_ops = new RelationshipResolverOptions();
+            install_ops.with_all_suggests = options.with_all_suggests;
+            install_ops.with_suggests = options.with_suggests;
+            install_ops.with_recommends = ! options.no_recommends;
 
-            return EXIT_BADOPT;
+            // Install everything requested. :)
+            try
+            {
+                var installer = ModuleInstaller.Instance;
+                installer.InstallList(options.modules, install_ops);
+            }
+            catch (ModuleNotFoundKraken ex)
+            {
+                User.WriteLine("Module {0} required, but not listed in index.", ex.module);
+                User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                return EXIT_ERROR;
+            }
+
+            User.WriteLine("\nDone!\n");
+
+            return EXIT_OK;
         }
 
         // TODO: We should have a command (probably this one) that shows
@@ -625,9 +639,6 @@ namespace CKAN
 
     internal class InstallOptions : CommonOptions
     {
-        [Option('z', "zipfile", HelpText = "Zipfile to process")]
-        public string zip_file { get; set; }
-
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
 
@@ -647,9 +658,6 @@ namespace CKAN
 
     internal class UpgradeOptions : CommonOptions
     {
-        [Option('z', "zipfile", HelpText = "Zipfile to process")]
-        public string zip_file { get; set; }
-
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
 
