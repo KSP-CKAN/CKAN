@@ -64,6 +64,10 @@ namespace CKAN.KerbalStuff
 
             log.InfoFormat("Processing {0} {1} {2}", source, identifier, remote_id);
 
+            // We need to find where KSP lives because we use its cache directory
+            // TODO: This really should be configurable.
+            KSPManager.GetPreferredInstance();
+
             JObject metadata = null;
             if (source == "ks")
             {
