@@ -357,9 +357,16 @@ namespace CKAN
 
             var contents = new List<InstallableFile> ();
 
-            foreach (ModuleInstallDescriptor stanza in module.install)
+            if (module.install != null)
             {
-                contents.AddRange( FindInstallableFiles(stanza, zipfile) );
+                foreach (ModuleInstallDescriptor stanza in module.install)
+                {
+                    contents.AddRange(FindInstallableFiles(stanza, zipfile));
+                }
+            }
+            else
+            {
+                contents.AddRange(FindAllFiles(zipfile));
             }
             
             var pretty_filenames = new List<string> ();
@@ -653,6 +660,43 @@ namespace CKAN
             return files;
         }
 
+        internal List<InstallableFile> FindAllFiles(ZipFile zipfile)
+        {
+            string installDir;
+            bool makeDirs;
+            var files = new List<InstallableFile>();
+
+            foreach (ZipEntry entry in zipfile)
+            {
+                // SKIP the file if it's a .CKAN file, these should never be copied to GameData.
+                if (Regex.IsMatch(entry.Name, ".CKAN", RegexOptions.IgnoreCase))
+                {
+                    continue;
+                }
+
+                // Get the full name of the file.
+                string outputName = entry.Name;
+
+                // Strip off everything up to GameData/Ships
+                // TODO: There's got to be a nicer way of doing path resolution.
+                outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
+
+                string full_path = Path.Combine("GameData", outputName);
+
+                // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
+                full_path = full_path.Replace('\\', '/');
+
+                InstallableFile file_info = new InstallableFile();
+                file_info.source = entry;
+                file_info.destination = full_path;
+                file_info.makedir = false;
+
+                files.Add(file_info);
+            }
+
+            return files;
+        }
+
         private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             if (entry.IsDirectory)
@@ -682,8 +726,7 @@ namespace CKAN
                 // It's a file! Prepare the streams
                 Stream zipStream = zipfile.GetInputStream(entry);
 
-                TransactionalFileWriter file = currentTransaction.OpenFileWrite(fullPath);
-                FileStream output = file.Stream;
+                FileStream output = currentTransaction.OpenFileWrite(fullPath);
 
                 // Copy
                 zipStream.CopyTo(output);

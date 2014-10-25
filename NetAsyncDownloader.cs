@@ -15,7 +15,7 @@ namespace CKAN
         public long bytesLeft;
         public int bytesPerSecond;
         public Exception error;
-        public TransactionalFileWriter fileWriter;
+        public FileStream fileStream;
         public int lastProgressUpdateSize;
         public DateTime lastProgressUpdateTime;
         public string path;
@@ -87,8 +87,8 @@ namespace CKAN
 
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
 
-                downloads[i].fileWriter = transaction.OpenFileWrite(downloads[i].path, false);
-                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].fileWriter.TemporaryPath);
+                transaction.Snapshot(downloads[i].path);
+                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
 
             return filePaths;
