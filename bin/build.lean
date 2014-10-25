@@ -7,6 +7,8 @@ use FindBin qw($Bin);
 use File::Path qw(remove_tree);
 use IPC::System::Simple qw(systemx capturex);
 use File::Spec;
+use File::Copy::Recursive qw(rcopy);
+use autodie qw(rcopy);
 
 # Simple script to build and repack
 
@@ -15,7 +17,6 @@ my $TARGET  = "Release";     # 'Debug' is okay too.
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
-my @CP      = qw(cp -r --reflink=auto --sparse=always);
 my $VERSION = capturex(qw(git describe --tags --long));
 my @ASSEMBLY_INFO = (
     File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs"),
@@ -30,7 +31,7 @@ chomp($VERSION);
 remove_tree($BUILD);
 
 # Copy our project files over.
-systemx(@CP, $SOURCE, $BUILD);
+copy($SOURCE, $BUILD);
 
 # Remove any old build artifacts
 remove_tree(File::Spec->catdir($BUILD, "CKAN/bin"));
@@ -69,7 +70,7 @@ system(@cmd);
 
 # Repack ks2ckan
 
-my @cmd = (
+@cmd = (
     $REPACK,
     "--out:ks2ckan.exe",
     "--lib:build/KerbalStuff/bin/$TARGET",
@@ -85,3 +86,20 @@ unlink("$OUTNAME.mdb");
 unlink("ks2ckan.exe.mdb");
 
 say "Done!";
+
+# Do an appropriate copy for our system
+sub copy {
+    my ($src, $dst) = @_;
+
+    if ($^O eq "MSWin32") {
+        # Use File::Copy::Recursive under Windows
+        rcopy($src, $dst);
+    }
+    else {
+        # Use friggin' awesome btrfs magic under Linux.
+        # This still works, even if not using btrfs (justh with less magic)
+        my @CP      = qw(cp -r --reflink=auto --sparse=always);
+        system(@CP,$src,$dst);
+    }
+    return;
+}
