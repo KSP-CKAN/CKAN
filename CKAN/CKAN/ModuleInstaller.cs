@@ -28,6 +28,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
         private RegistryManager registry_manager;
+        private KSP ksp;
 
         private FilesystemTransaction currentTransaction;
         private NetAsyncDownloader downloader;
@@ -36,18 +37,32 @@ namespace CKAN
         public ModuleInstallerReportProgress onReportProgress = null;
         private bool installCanceled = false; // Used for inter-thread communication.
 
-        private ModuleInstaller()
+        // Our own cache is that of the KSP instance we're using.
+        public Cache Cache
         {
+            get
+            {
+                return ksp.Cache;
+            }
         }
 
+        private ModuleInstaller(KSP ksp)
+        {
+            this.ksp = ksp;
+            this.registry_manager = RegistryManager.Instance(ksp.CkanDir());
+        }
+
+        // TODO: It'd be really lovely if this wasn't a singleton. It prevents code that
+        // wishes to deal with multiple KSP installs.
+        //
+        // It would be totally fine to have this be an instance based upon KSP path, mind.
         public static ModuleInstaller Instance
         {
             get
             {
                 if (_Instance == null)
                 {
-                    _Instance = new ModuleInstaller();
-                    _Instance.registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance.CkanDir());
+                    _Instance = new ModuleInstaller( KSPManager.CurrentInstance);
                 }
 
                 return _Instance;

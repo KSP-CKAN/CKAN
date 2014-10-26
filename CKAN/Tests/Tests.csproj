@@ -52,6 +52,7 @@
     <Compile Include="CKAN\Module.cs" />
     <Compile Include="CKAN\Registry.cs" />
     <Compile Include="CKAN\Repo.cs" />
+    <Compile Include="CKAN\Cache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
