@@ -29,6 +29,16 @@ namespace CKANTests
             Assert.Throws<FileNotFoundKraken>(delegate {
                 ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
             });
+
+            // Make sure the FNFKraken looks like what we expect.
+            try
+            {
+                ModuleInstaller.GenerateDefaultInstall("Xyzzy",zipfile);
+            }
+            catch (FileNotFoundKraken kraken)
+            {
+                Assert.AreEqual("Xyzzy", kraken.file);
+            }
         }
 
         private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)

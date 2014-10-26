@@ -14,8 +14,23 @@ namespace CKAN
 
     public class FileNotFoundKraken : Kraken
     {
-        public FileNotFoundKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        public string file;
+
+        public FileNotFoundKraken(string file, string reason = null, Exception inner_exception = null) 
+            :base(reason, inner_exception)
         {
+            this.file = file;
+        }
+    }
+
+    public class DirectoryNotFoundKraken : Kraken
+    {
+        public string directory;
+
+        public DirectoryNotFoundKraken(string directory, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.directory = directory;
         }
     }
 

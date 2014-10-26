@@ -502,6 +502,7 @@ namespace CKAN
             if (candidates.Count == 0)
             {
                 throw new FileNotFoundKraken(
+                    identifier,
                     String.Format("Could not find {0} directory in zipfile to install", identifier)
                 );
             }
