@@ -139,6 +139,11 @@ namespace CKAN
             return Path.Combine(GameDir(), "Ships");
         }
 
+        public string Tutorial()
+        {
+            return Path.Combine(GameDir(), "saves", "training");
+        }
+
         public string TempDir()
         {
             return Path.Combine(CkanDir(), "temp");

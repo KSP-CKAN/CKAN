@@ -53,6 +53,7 @@
     <Compile Include="CKAN\Cache.cs" />
     <Compile Include="CKAN\KSP.cs" />
     <Compile Include="CKAN\ModuleInstaller.cs" />
+    <Compile Include="CKAN\KSPManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
