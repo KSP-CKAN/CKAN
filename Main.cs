@@ -363,6 +363,12 @@ namespace CKAN
                 User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
                 return EXIT_ERROR;
             }
+            catch (BadMetadataKraken ex)
+            {
+                User.WriteLine("Bad metadata detected for module {0}", ex.module);
+                User.WriteLine(ex.Message);
+                return EXIT_ERROR;
+            }
 
             User.WriteLine("\nDone!\n");
 
