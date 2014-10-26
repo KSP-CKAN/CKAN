@@ -7,7 +7,7 @@ using CKAN;
 namespace CKANTests
 {
     [TestFixture()]
-    public class ModuleInstallerTest
+    public class ModuleInstaller
     {
         [Test()]
         public void GenerateDefaultInstall()
@@ -15,25 +15,25 @@ namespace CKANTests
             string filename = Tests.TestData.DogeCoinFlagZip();
             var zipfile = new ZipFile(File.OpenRead(filename));
 
-            ModuleInstallDescriptor stanza = ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+            ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
 
             TestDogeCoinStanza(stanza);
 
             // Same again, but screwing up the case (we see this *all the time*)
-            ModuleInstallDescriptor stanza2 = ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+            ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
 
             TestDogeCoinStanza(stanza2);
 
             // Now what happens if we can't find what to install?
 
             Assert.Throws<FileNotFoundKraken>(delegate {
-                ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
             });
 
             // Make sure the FNFKraken looks like what we expect.
             try
             {
-                ModuleInstaller.GenerateDefaultInstall("Xyzzy",zipfile);
+                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy",zipfile);
             }
             catch (FileNotFoundKraken kraken)
             {

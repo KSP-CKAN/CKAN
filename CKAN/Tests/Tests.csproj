@@ -43,8 +43,6 @@
   <ItemGroup>
     <Compile Include="KerbalStuff\KSMod.cs" />
     <Compile Include="KerbalStuff\GitHubTests.cs" />
-    <Compile Include="CKAN\ModuleInstallerTest.cs" />
-    <Compile Include="CKAN\KSPTests.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="CKAN\KSPVersion.cs" />
     <Compile Include="CKAN\Net.cs" />
@@ -53,6 +51,8 @@
     <Compile Include="CKAN\Registry.cs" />
     <Compile Include="CKAN\Repo.cs" />
     <Compile Include="CKAN\Cache.cs" />
+    <Compile Include="CKAN\KSP.cs" />
+    <Compile Include="CKAN\ModuleInstaller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
