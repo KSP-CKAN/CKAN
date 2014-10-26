@@ -30,7 +30,7 @@
         {
             this.AdditionalArguments = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.AcceptButton = new System.Windows.Forms.Button();
+            this.AcceptChangesButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -50,15 +50,15 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Arguments:";
             // 
-            // AcceptButton
+            // AcceptChangesButton
             // 
-            this.AcceptButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.AcceptButton.Location = new System.Drawing.Point(397, 51);
-            this.AcceptButton.Name = "AcceptButton";
-            this.AcceptButton.Size = new System.Drawing.Size(75, 23);
-            this.AcceptButton.TabIndex = 3;
-            this.AcceptButton.Text = "OK";
-            this.AcceptButton.UseVisualStyleBackColor = true;
+            this.AcceptChangesButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.AcceptChangesButton.Location = new System.Drawing.Point(397, 51);
+            this.AcceptChangesButton.Name = "AcceptChangesButton";
+            this.AcceptChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.AcceptChangesButton.TabIndex = 3;
+            this.AcceptChangesButton.Text = "OK";
+            this.AcceptChangesButton.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -77,7 +77,7 @@
             this.ClientSize = new System.Drawing.Size(481, 85);
             this.ControlBox = false;
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.AcceptButton);
+            this.Controls.Add(this.AcceptChangesButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AdditionalArguments);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -91,7 +91,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button AcceptButton;
+        private System.Windows.Forms.Button AcceptChangesButton;
         private System.Windows.Forms.Button button1;
         public System.Windows.Forms.TextBox AdditionalArguments;
     }

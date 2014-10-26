@@ -31,7 +31,7 @@
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.LogTextBox = new System.Windows.Forms.TextBox();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // MessageTextBox
@@ -65,15 +65,15 @@
             this.LogTextBox.Size = new System.Drawing.Size(459, 175);
             this.LogTextBox.TabIndex = 2;
             // 
-            // CancelButton
+            // CancelCurrentActionButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(397, 245);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 3;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelCurrentActionButton.Location = new System.Drawing.Point(397, 245);
+            this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
+            this.CancelCurrentActionButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelCurrentActionButton.TabIndex = 3;
+            this.CancelCurrentActionButton.Text = "Cancel";
+            this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
+            this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // WaitDialog
             // 
@@ -81,7 +81,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 280);
             this.ControlBox = false;
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelCurrentActionButton);
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.DialogProgressBar);
             this.Controls.Add(this.MessageTextBox);
@@ -98,7 +98,7 @@
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelCurrentActionButton;
 
     }
 }

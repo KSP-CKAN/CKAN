@@ -21,7 +21,7 @@ namespace CKAN
 
         public void ShowWaitDialog(bool asDialog = true, bool cancelable = true)
         {
-            Util.Invoke(CancelButton, () => CancelButton.Enabled = cancelable);
+            Util.Invoke(CancelCurrentActionButton, () => CancelCurrentActionButton.Enabled = cancelable);
 
             if (asDialog)
             {
@@ -79,7 +79,7 @@ namespace CKAN
             if (cancelCallback != null)
             {
                 cancelCallback();
-                CancelButton.Enabled = false;
+                CancelCurrentActionButton.Enabled = false;
                 HideWaitDialog();
             }
         }
