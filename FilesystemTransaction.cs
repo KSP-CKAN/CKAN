@@ -42,7 +42,7 @@ namespace CKAN
             if (scope == null)
             {
                 log.ErrorFormat("Trying to commit a transaction twice or transaction was rolled-back");
-                return;
+                throw new TransactionalKraken("Attempted to commit a non-existent scope (double-rollback/commit?)");
             }
 
             ReportProgress("Committing filesystem transaction", 0);
@@ -72,6 +72,7 @@ namespace CKAN
             if (scope == null)
             {
                 log.ErrorFormat("Trying to rollback a transaction twice or transaction already committed");
+                throw new TransactionalKraken("Attempted to commit a non-existent scope (double-rollback/commit?");
             }
 
             scope.Dispose();
