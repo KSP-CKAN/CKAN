@@ -60,7 +60,6 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="AvailableModule.cs" />
-    <Compile Include="TransactionalFilesystem.cs" />
     <Compile Include="User.cs" />
     <Compile Include="RelationshipResolver.cs" />
     <Compile Include="Types\Version.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="KSPPathUtils.cs" />
     <Compile Include="KSPPathConstants.cs" />
     <Compile Include="NetAsyncDownloader.cs" />
+    <Compile Include="FilesystemTransaction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
