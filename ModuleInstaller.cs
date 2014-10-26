@@ -157,7 +157,7 @@ namespace CKAN
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
             installCanceled = false; // Can be set by another thread
-            currentTransaction = new FilesystemTransaction(KSPManager.CurrentInstance.TempDir());
+            currentTransaction = new FilesystemTransaction();
 
             if (onReportProgress != null)
             {
@@ -308,6 +308,9 @@ namespace CKAN
         ///
         /// Intended for previews.
         /// </summary>
+
+        // TODO: This has a lot of code that's in common with Install(), they
+        // should be using the same functions underneath.
         public List<string> GetModuleContentsList(CkanModule module)
         {
 
@@ -333,9 +336,17 @@ namespace CKAN
 
             var contents = new List<InstallableFile> ();
 
-            foreach (ModuleInstallDescriptor stanza in module.install)
+            if (module.install != null)
             {
-                contents.AddRange( FindInstallableFiles(stanza, zipfile) );
+                foreach (ModuleInstallDescriptor stanza in module.install)
+                {
+                    contents.AddRange(FindInstallableFiles(stanza, zipfile));
+                }
+            }
+            else
+            {
+                ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                contents.AddRange(FindInstallableFiles(default_stanza,zipfile));
             }
             
             var pretty_filenames = new List<string> ();
@@ -659,8 +670,7 @@ namespace CKAN
                 // It's a file! Prepare the streams
                 Stream zipStream = zipfile.GetInputStream(entry);
 
-                TransactionalFileWriter file = currentTransaction.OpenFileWrite(fullPath);
-                FileStream output = file.Stream;
+                FileStream output = currentTransaction.OpenFileWrite(fullPath);
 
                 // Copy
                 zipStream.CopyTo(output);
