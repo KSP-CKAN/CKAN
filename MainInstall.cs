@@ -54,7 +54,10 @@ namespace CKAN
 
             foreach (var change in opts.Key)
             {
-                toInstall.Add(change.Key.identifier);
+                if (change.Value == GUIModChangeType.Install)
+                {
+                    toInstall.Add(change.Key.identifier);
+                }
             }
 
             foreach (var change in opts.Key)
