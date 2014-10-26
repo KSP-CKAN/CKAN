@@ -18,6 +18,14 @@ namespace CKAN
 
         private string gamedir;
         private KSPVersion version;
+        private Cache _Cache;
+        public Cache Cache
+        {
+            get
+            {
+                return _Cache;
+            }
+        }
 
         public KSP(string directory)
         {
@@ -28,7 +36,7 @@ namespace CKAN
             
             gamedir = directory;
             Init();
-
+            _Cache = new Cache(DownloadCacheDir());
         }
 
         public string GameDir()
@@ -129,6 +137,11 @@ namespace CKAN
         public string Ships()
         {
             return Path.Combine(GameDir(), "Ships");
+        }
+
+        public string Tutorial()
+        {
+            return Path.Combine(GameDir(), "saves", "training");
         }
 
         public string TempDir()
