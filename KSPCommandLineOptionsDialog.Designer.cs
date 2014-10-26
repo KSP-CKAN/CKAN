@@ -91,7 +91,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        new private System.Windows.Forms.Button AcceptButton;
+        private System.Windows.Forms.Button AcceptButton;
         private System.Windows.Forms.Button button1;
         public System.Windows.Forms.TextBox AdditionalArguments;
     }

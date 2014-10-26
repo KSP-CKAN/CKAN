@@ -84,6 +84,6 @@
 
         private System.Windows.Forms.TextBox NameTextBox;
         private System.Windows.Forms.Button OKButton;
-        new private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelButton;
     }
 }
