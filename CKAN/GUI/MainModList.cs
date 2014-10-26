@@ -88,13 +88,18 @@ namespace CKAN
                 bool isInstalled = registry.IsInstalled(mod.identifier);
                 var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
                 var isInstalledChecked = (bool) isInstalledCell.Value;
+                DataGridViewCell shouldBeUpdatedCell = row.Cells[1];
+                bool shouldBeUpdated = false;
+                if(shouldBeUpdatedCell is DataGridViewCheckBoxCell && shouldBeUpdatedCell.Value != null){
+                    shouldBeUpdated = (bool)shouldBeUpdatedCell.Value;
+                }
 
                 if (isInstalled && !isInstalledChecked)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
                 }
                 else if (isInstalled && isInstalledChecked &&
-                         mod.version.IsGreaterThan(registry.InstalledVersion(mod.identifier)))
+                         mod.version.IsGreaterThan(registry.InstalledVersion(mod.identifier)) && shouldBeUpdated)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Update));
                 }
