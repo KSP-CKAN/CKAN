@@ -105,7 +105,7 @@
 
         private System.Windows.Forms.ListView ChangesListView;
         private System.Windows.Forms.Button ConfirmButton;
-        private System.Windows.Forms.Button CancelButton;
+        new private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.ColumnHeader ModName;
         private System.Windows.Forms.ColumnHeader ChangeType;
 
