@@ -541,6 +541,8 @@ namespace CKAN
         /// 
         /// Throws a BadInstallLocationKraken if the install stanza targets an
         /// unknown install location (eg: not GameData, Ships, etc)
+        /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         internal static List<InstallableFile> FindInstallableFiles(InstallableDescriptor stanza, ZipFile zipfile, KSP ksp)
         {
@@ -621,6 +623,13 @@ namespace CKAN
                 files.Add(file_info);
             }
 
+            // If we have no files, then something is wrong! (KSP-CKAN/CKAN#93)
+            if (files.Count == 0)
+            {
+                // We have null as the first argument here, because we don't know which module we're installing
+                throw new BadMetadataKraken(null, String.Format("No files found in {0} to install!", stanza.file));
+            }
+
             return files;
         }
 
@@ -629,23 +638,35 @@ namespace CKAN
         /// for this module.
         /// 
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
+        /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         internal static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
         {
             var files = new List<InstallableFile> ();
 
-            // Use the provided stanzas, or use the default install stanza if they're absent.
-            if (module.install != null && module.install.Length != 0)
+            try
             {
-                foreach (ModuleInstallDescriptor stanza in module.install)
+                // Use the provided stanzas, or use the default install stanza if they're absent.
+                if (module.install != null && module.install.Length != 0)
                 {
-                    files.AddRange(FindInstallableFiles(stanza, zipfile, ksp));
+                    foreach (ModuleInstallDescriptor stanza in module.install)
+                    {
+                        files.AddRange(FindInstallableFiles(stanza, zipfile, ksp));
+                    }
+                }
+                else
+                {
+                    ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                    files.AddRange(FindInstallableFiles(default_stanza, zipfile, ksp));
                 }
             }
-            else
+            catch (BadMetadataKraken kraken)
             {
-                ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
-                files.AddRange(FindInstallableFiles(default_stanza, zipfile, ksp));
+                // Decorate our kraken with the current module, as the lower-level
+                // methods won't know it.
+                kraken.module = module;
+                throw;
             }
 
             return files;
@@ -657,6 +678,8 @@ namespace CKAN
         /// 
         /// This *will* throw an exception if the file does not exist.
         /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
+        ///
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
         /// </summary>
         // TODO: Document which exception!
