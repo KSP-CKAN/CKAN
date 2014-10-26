@@ -63,6 +63,7 @@ namespace CKAN
             scope.Complete();
             ReportProgress("Done!", 100);
 
+            scope.Dispose();
             scope = null;
         }
 
@@ -73,6 +74,7 @@ namespace CKAN
                 log.ErrorFormat("Trying to rollback a transaction twice or transaction already committed");
             }
 
+            scope.Dispose();
             scope = null;
         }
 
