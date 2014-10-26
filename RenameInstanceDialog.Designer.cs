@@ -30,7 +30,7 @@
         {
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.OKButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelRenameInstanceButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // NameTextBox
@@ -52,16 +52,16 @@
             this.OKButton.Text = "OK";
             this.OKButton.UseVisualStyleBackColor = true;
             // 
-            // CancelButton
+            // CancelRenameInstanceButton
             // 
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelButton.Location = new System.Drawing.Point(151, 39);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 2;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelRenameInstanceButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelRenameInstanceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelRenameInstanceButton.Location = new System.Drawing.Point(151, 39);
+            this.CancelRenameInstanceButton.Name = "CancelRenameInstanceButton";
+            this.CancelRenameInstanceButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelRenameInstanceButton.TabIndex = 2;
+            this.CancelRenameInstanceButton.Text = "Cancel";
+            this.CancelRenameInstanceButton.UseVisualStyleBackColor = true;
             // 
             // RenameInstanceDialog
             // 
@@ -69,7 +69,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 68);
             this.ControlBox = false;
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelRenameInstanceButton);
             this.Controls.Add(this.OKButton);
             this.Controls.Add(this.NameTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -84,6 +84,6 @@
 
         private System.Windows.Forms.TextBox NameTextBox;
         private System.Windows.Forms.Button OKButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelRenameInstanceButton;
     }
 }

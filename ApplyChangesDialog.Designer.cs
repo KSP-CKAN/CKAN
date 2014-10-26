@@ -36,7 +36,7 @@
             this.ModName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ConfirmButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelChangesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ChangesListView
@@ -75,16 +75,16 @@
             this.ConfirmButton.UseVisualStyleBackColor = true;
             this.ConfirmButton.Click += new System.EventHandler(this.ConfirmButton_Click);
             // 
-            // CancelButton
+            // CancelChangesButton
             // 
-            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelButton.Location = new System.Drawing.Point(309, 277);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 3;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelChangesButton.Location = new System.Drawing.Point(309, 277);
+            this.CancelChangesButton.Name = "CancelChangesButton";
+            this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelChangesButton.TabIndex = 3;
+            this.CancelChangesButton.Text = "Cancel";
+            this.CancelChangesButton.UseVisualStyleBackColor = true;
+            this.CancelChangesButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // ApplyChangesDialog
             // 
@@ -92,7 +92,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(475, 312);
             this.ControlBox = false;
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelChangesButton);
             this.Controls.Add(this.ConfirmButton);
             this.Controls.Add(this.ChangesListView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -105,7 +105,7 @@
 
         private System.Windows.Forms.ListView ChangesListView;
         private System.Windows.Forms.Button ConfirmButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelChangesButton;
         private System.Windows.Forms.ColumnHeader ModName;
         private System.Windows.Forms.ColumnHeader ChangeType;
 
