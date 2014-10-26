@@ -46,6 +46,7 @@ namespace CKAN
             }
         }
 
+        // Constructor
         private ModuleInstaller(KSP ksp)
         {
             this.ksp = ksp;
@@ -148,9 +149,9 @@ namespace CKAN
         /// <summary>
         ///     Installs all modules given a list of identifiers. Resolves dependencies.
         ///     The function initializes a filesystem transaction, then installs all cached mods
-        ///     this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives
-        ///     After this we try to download the rest of the mods (asynchronously) and install them
-        ///     Finally, only if everything is successful, we commit the transaction
+        ///     this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives.
+        ///     After this we try to download the rest of the mods (asynchronously) and install them.
+        ///     Finally, only if everything is successful, we commit the transaction.
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
@@ -562,10 +563,11 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a list of files to be installed from the given stanza.
+        /// Given a stanza and an open zipfile, returns all files that would be installed
+        /// for this stanza.
         ///
         /// Throws a BadInstallLocationKraken if the install stanza targets an
-        /// unknown install location.
+        /// unknown install location (eg: not GameData, Ships, etc)
         /// </summary>
         internal List<InstallableFile> FindInstallableFiles(InstallableDescriptor stanza, ZipFile zipfile)
         {
@@ -639,6 +641,47 @@ namespace CKAN
             }
 
             return files;
+        }
+
+        /// <summary>
+        /// Given a module and an open zipfile, return all the files that would be installed
+        /// for this module.
+        /// </summary>
+        internal List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile)
+        {
+            var files = new List<InstallableFile> ();
+
+            // Use the provided stanzas, or use the default install stanza if they're absent.
+            if (module.install != null && module.install.Length != 0)
+            {
+                foreach (ModuleInstallDescriptor stanza in module.install)
+                {
+                    files.AddRange(FindInstallableFiles(stanza, zipfile));
+                }
+            }
+            else
+            {
+                ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                files.AddRange(FindInstallableFiles(default_stanza,zipfile));
+            }
+
+            return files;
+        }
+
+        /// <summary>
+        /// Given a module and a path to a zipfile, returns all the files that would be installed
+        /// from that zip for this module.
+        /// 
+        /// This *will* throw an exception if the file does not exist.
+        /// </summary>
+        // TODO: Document which exception!
+        internal List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename)
+        {
+            // `using` makes sure our zipfile gets closed when we exit this block.
+            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            {
+                return FindInstallableFiles(module, zipfile);
+            }
         }
 
         private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
