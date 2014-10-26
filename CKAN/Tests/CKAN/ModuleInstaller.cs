@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
 
@@ -39,6 +40,36 @@ namespace CKANTests
             {
                 Assert.AreEqual("Xyzzy", kraken.file);
             }
+        }
+
+        [Test()]
+        public void FindInstallableFiles()
+        {
+            string dogezip = Tests.TestData.DogeCoinFlagZip();
+            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+
+            Console.WriteLine("{0}", dogezip);
+
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
+
+            Assert.IsNotNull(contents);
+
+            // Make sure it's actually got files!
+            Assert.IsTrue(contents.Count > 0);
+
+            foreach (var file in contents)
+            {
+                // Make sure the destination paths are null, because we supplied no KSP instance.
+                Assert.IsNull(file.destination);
+
+                // Make sure the source paths are not null, that would be silly!
+                Assert.IsNotNull(file.source);
+
+                // And make sure our makeDir info is filled in.
+                Assert.IsNotNull(file.makedir);
+            }
+
+            // TODO: Ensure it's got a file we expect.
         }
 
         private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
