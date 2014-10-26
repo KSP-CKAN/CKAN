@@ -332,6 +332,9 @@ namespace CKAN
         ///
         /// Intended for previews.
         /// </summary>
+
+        // TODO: This has a lot of code that's in common with Install(), they
+        // should be using the same functions underneath.
         public List<string> GetModuleContentsList(CkanModule module)
         {
 
@@ -366,7 +369,8 @@ namespace CKAN
             }
             else
             {
-                contents.AddRange(FindAllFiles(zipfile));
+                ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                contents.AddRange(FindInstallableFiles(default_stanza,zipfile));
             }
             
             var pretty_filenames = new List<string> ();
@@ -653,43 +657,6 @@ namespace CKAN
                 file_info.source = entry;
                 file_info.destination = full_path;
                 file_info.makedir = makeDirs;
-
-                files.Add(file_info);
-            }
-
-            return files;
-        }
-
-        internal List<InstallableFile> FindAllFiles(ZipFile zipfile)
-        {
-            string installDir;
-            bool makeDirs;
-            var files = new List<InstallableFile>();
-
-            foreach (ZipEntry entry in zipfile)
-            {
-                // SKIP the file if it's a .CKAN file, these should never be copied to GameData.
-                if (Regex.IsMatch(entry.Name, ".CKAN", RegexOptions.IgnoreCase))
-                {
-                    continue;
-                }
-
-                // Get the full name of the file.
-                string outputName = entry.Name;
-
-                // Strip off everything up to GameData/Ships
-                // TODO: There's got to be a nicer way of doing path resolution.
-                outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
-
-                string full_path = Path.Combine("GameData", outputName);
-
-                // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
-                full_path = full_path.Replace('\\', '/');
-
-                InstallableFile file_info = new InstallableFile();
-                file_info.source = entry;
-                file_info.destination = full_path;
-                file_info.makedir = false;
 
                 files.Add(file_info);
             }
