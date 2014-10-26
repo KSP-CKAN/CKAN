@@ -76,7 +76,7 @@ namespace CKAN
         /// <summary>
         /// Returns the path to a cached copy of a module if it exists, or downloads
         /// and returns the downloaded copy otherwise.
-        /// 
+        ///
         /// If no filename is provided, the module's standard name will be used.
         /// In all caches, the CachePath() location is checked for the filename before downloading.
         /// </summary>
@@ -103,6 +103,7 @@ namespace CKAN
             return Download(url, filename);
         }
 
+        // TODO: Document me!!!
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
         {
             var urls = new Uri[modules.Length];
@@ -136,28 +137,36 @@ namespace CKAN
         // TODO: Update this if we start caching by URL (GH #111)
         public static bool IsCached(CkanModule module)
         {
-            string filename = CkanModule.StandardName(module.identifier, module.version);
-            string path = CachePath(filename);
-            if (File.Exists(path))
-            {
-                return true;
-            }
-
-            return false;
+            return IsCached(module.StandardName());
         }
 
-        public bool IsCached(string filename, out string fullPath)
+        public static bool IsCached(string filename)
         {
-            fullPath = CachePath(filename);
-
-            if (File.Exists(fullPath))
-            {
-                return true;
-            }
-
-            return false;
+            // It's cached if we can find it on a cache lookup.
+            return CachedFile(filename) != null;
         }
 
+        /// <summary>
+        /// Returns the path to the cached copy of the file or module, or null if it's not cached.
+        /// </summary>
+        public static string CachedFile(string file)
+        {
+            string full_path = CachePath(file);
+            if (File.Exists(full_path))
+            {
+                return full_path;
+            }
+            return null;
+        }
+
+        public static string CachedFile(CkanModule module)
+        {
+            return CachedFile(module.StandardName());
+        }
+
+        /// <summary>
+        /// Returns where the given file is cached, or would be cached if it we had it.
+        /// </summary>
         public static string CachePath(string file)
         {
             return Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), file);
@@ -208,8 +217,8 @@ namespace CKAN
 
             foreach (CkanModule module in modList)
             {
-                string fullPath;
-                if (IsCached(module.StandardName(), out fullPath))
+                string fullPath = CachedFile(module);
+                if (fullPath != null)
                 {
                     cached.Add(new KeyValuePair<CkanModule, string>(module, fullPath));
                 }
