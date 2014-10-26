@@ -192,7 +192,7 @@ namespace CKAN
 
         private void _UpdateModContentsTree(CkanModule module)
         {
-            if (ModuleInstaller.IsCached(module))
+            if (Cache.IsCached(module))
             {
                 NotCachedLabel.Text = "Module is cached, preview available";
                 ContentsDownloadButton.Enabled = false;

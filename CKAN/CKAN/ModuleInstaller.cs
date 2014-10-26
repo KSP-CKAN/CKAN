@@ -92,12 +92,12 @@ namespace CKAN
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string fullPath = CachePath(filename);
+            string full_path = Cache.CachedFile(filename);
 
-            if (File.Exists(fullPath))
+            if (full_path != null)
             {
                 log.DebugFormat("Using {0} (cached)", filename);
-                return fullPath;
+                return full_path;
             }
 
             return Download(url, filename);
@@ -128,48 +128,6 @@ namespace CKAN
             downloader.onCompleted = (_uris, strings, errors) => OnDownloadsComplete(_uris, fullPaths, modules, errors);
 
             return downloader;
-        }
-
-        /// <summary>
-        /// Returns true if the given module is present in our cache.
-        /// </summary>
-        //
-        // TODO: Update this if we start caching by URL (GH #111)
-        public static bool IsCached(CkanModule module)
-        {
-            return IsCached(module.StandardName());
-        }
-
-        public static bool IsCached(string filename)
-        {
-            // It's cached if we can find it on a cache lookup.
-            return CachedFile(filename) != null;
-        }
-
-        /// <summary>
-        /// Returns the path to the cached copy of the file or module, or null if it's not cached.
-        /// </summary>
-        public static string CachedFile(string file)
-        {
-            string full_path = CachePath(file);
-            if (File.Exists(full_path))
-            {
-                return full_path;
-            }
-            return null;
-        }
-
-        public static string CachedFile(CkanModule module)
-        {
-            return CachedFile(module.StandardName());
-        }
-
-        /// <summary>
-        /// Returns where the given file is cached, or would be cached if it we had it.
-        /// </summary>
-        public static string CachePath(string file)
-        {
-            return Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), file);
         }
 
         /// <summary>
@@ -217,7 +175,7 @@ namespace CKAN
 
             foreach (CkanModule module in modList)
             {
-                string fullPath = CachedFile(module);
+                string fullPath = Cache.CachedFile(module);
                 if (fullPath != null)
                 {
                     cached.Add(new KeyValuePair<CkanModule, string>(module, fullPath));
@@ -234,7 +192,7 @@ namespace CKAN
             for (int i = 0; i < notCached.Count; i++)
             {
                 modulesToDownload[i] = notCached[i];
-                modulesToDownloadPaths[i] = CachePath(notCached[i].StandardName());
+                modulesToDownloadPaths[i] = Cache.CachePath(notCached[i].StandardName());
             }
 
             lastDownloadSuccessful = true;
@@ -338,7 +296,7 @@ namespace CKAN
         public List<string> GetModuleContentsList(CkanModule module)
         {
 
-            if (!IsCached(module))
+            if (!Cache.IsCached(module))
             {
                 return null;
             }
