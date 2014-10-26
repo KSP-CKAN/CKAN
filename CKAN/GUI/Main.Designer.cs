@@ -836,7 +836,7 @@ namespace CKAN
         private Panel StatusPanel;
         private Label StatusLabel;
         private DataGridViewCheckBoxColumn Installed;
-        private DataGridViewCheckBoxColumn Update;
+        new private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;

@@ -98,7 +98,7 @@
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
-        private System.Windows.Forms.Button CancelButton;
+        new private System.Windows.Forms.Button CancelButton;
 
     }
 }
