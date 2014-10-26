@@ -73,22 +73,34 @@ namespace CKAN
             return Net.Download(url, full_path);
         }
 
+        /// <summary>
+        /// Returns the path to a cached copy of a module if it exists, or downloads
+        /// and returns the downloaded copy otherwise.
+        /// 
+        /// If no filename is provided, the module's standard name will be used.
+        /// In all caches, the CachePath() location is checked for the filename before downloading.
+        /// </summary>
         public string CachedOrDownload(CkanModule module, string filename = null)
+        {
+            return CachedOrDownload(module.identifier, module.version, module.download, filename);
+        }
+
+        public string CachedOrDownload(string identifier, Version version, Uri url, string filename = null)
         {
             if (filename == null)
             {
-                filename = module.StandardName();
+                filename = CkanModule.StandardName(identifier, version);
             }
 
             string fullPath = CachePath(filename);
 
             if (File.Exists(fullPath))
             {
-                Console.WriteLine("    * Using {0} (cached)", filename);
+                log.DebugFormat("Using {0} (cached)", filename);
                 return fullPath;
             }
 
-            return Download(module.download, filename);
+            return Download(url, filename);
         }
 
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
@@ -115,24 +127,6 @@ namespace CKAN
             downloader.onCompleted = (_uris, strings, errors) => OnDownloadsComplete(_uris, fullPaths, modules, errors);
 
             return downloader;
-        }
-
-        public string CachedOrDownload(string identifier, Version version, Uri url, string filename = null)
-        {
-            if (filename == null)
-            {
-                filename = CkanModule.StandardName(identifier, version);
-            }
-
-            string fullPath = CachePath(filename);
-
-            if (File.Exists(fullPath))
-            {
-                User.WriteLine("    * Using {0} (cached)", filename);
-                return fullPath;
-            }
-
-            return Download(url, filename);
         }
 
         /// <summary>
