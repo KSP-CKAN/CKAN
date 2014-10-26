@@ -31,6 +31,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChinhDo.Transactions">
+      <HintPath>..\packages\TxFileManager.1.3\lib\net20\ChinhDo.Transactions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="CommandLine">
@@ -45,6 +48,7 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,7 +60,6 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="AvailableModule.cs" />
-    <Compile Include="TransactionalFilesystem.cs" />
     <Compile Include="User.cs" />
     <Compile Include="RelationshipResolver.cs" />
     <Compile Include="Types\Version.cs" />
@@ -71,10 +74,10 @@
     <Compile Include="KSPPathConstants.cs" />
     <Compile Include="NetAsyncDownloader.cs" />
     <Compile Include="Cache.cs" />
+    <Compile Include="FilesystemTransaction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
 </Project>
