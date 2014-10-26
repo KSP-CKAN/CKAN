@@ -99,7 +99,10 @@ namespace CKAN
                 KSPManager.GetPreferredInstance();
             }
 
-            User.WriteLine("Using KSP installation at \"{0}\"", KSPManager.CurrentInstance.GameDir());
+            if (KSPManager.CurrentInstance != null)
+            {
+                User.WriteLine("Using KSP installation at \"{0}\"", KSPManager.CurrentInstance.GameDir());
+            }
 
             switch (cmdline.action)
             {
