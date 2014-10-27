@@ -79,7 +79,7 @@ namespace CKAN
         {
             User.WriteLine("    * Downloading " + filename + "...");
 
-            string full_path = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filename);
+            string full_path = Path.Combine(ksp.DownloadCacheDir(), filename);
 
             if (onReportProgress != null)
             {
@@ -809,7 +809,7 @@ namespace CKAN
 
             foreach (string file in files.Keys)
             {
-                string path = Path.Combine(KSPManager.CurrentInstance.GameDir(), file);
+                string path = Path.Combine(ksp.GameDir(), file);
 
                 try
                 {
