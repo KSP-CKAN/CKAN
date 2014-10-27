@@ -305,6 +305,29 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns a dictionary of all modules installed, along with their
+        /// versions. This includes DLLs, which will have a version type of `DllVersion`.
+        /// </summary>
+        public Dictionary<string, Version> Installed()
+        {
+            var installed = new Dictionary<string, Version>();
+
+            // Index our DLLs, as much as we dislike them.
+            foreach (var dllinfo in installed_dlls)
+            {
+                installed[dllinfo.Key] = new DllVersion();
+            }
+
+            // Index our installed modules (which may overwrite the installed DLLs)
+            foreach (var modinfo in installed_modules)
+            {
+                installed[modinfo.Key] = modinfo.Value.source_module.version;
+            }
+
+            return installed;
+        }
+
+        /// <summary>
         ///     Returns the installed version of a given mod.
         ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
         ///     If the mod is not found, a null will be returned.
