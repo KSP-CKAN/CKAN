@@ -411,27 +411,27 @@ namespace CKAN
 
         }
 
-        private string Sha1Sum(string path)
+        /// <summary>
+        /// Returns the sha1 sum of the given filename.
+        /// Returns null if passed a directory.
+        /// Throws an exception on failure to access the file.
+        /// </summary>
+        internal string Sha1Sum(string path)
         {
-            if (Path.GetFileName(path).Length == 0)
+            if (Directory.Exists(path))
             {
                 return null;
             }
 
             SHA1 hasher = new SHA1CryptoServiceProvider();
 
-            try
+            // Even if we throw an exception, the using block here makes sure
+            // we close our file.
+            using (var fh = File.OpenRead(path))
             {
-                using (var fh = File.OpenRead(path))
-                {
-                    string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
-                    fh.Close();
-                    return sha1;
-                }
-            }
-            catch
-            {
-                return null;
+                string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
+                fh.Close();
+                return sha1;
             }
         }
 
@@ -509,10 +509,9 @@ namespace CKAN
 
                     CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
 
-                    // TODO: We really should be computing sha1sums again!
                     module_files.Add(file.destination, new InstalledModuleFile
                     {
-                        sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
+                        sha1_sum = Sha1Sum(file.destination)
                     });
                 }
             }
@@ -532,11 +531,10 @@ namespace CKAN
                 foreach (var file in files)
                 {
                     log.InfoFormat("Copying {0}", file.source.Name);
-                    CopyZipEntry(zipfile,file.source,file.destination,file.makedir);
+                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
                     installed_files.Add(file.destination, new InstalledModuleFile
                     {
-                        // TODO: Re-enable checksums!!!
-                        sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
+                        sha1_sum = Sha1Sum(file.destination)
                     });
                 }
             }
