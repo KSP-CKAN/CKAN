@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -110,4 +111,28 @@ namespace CKAN
             requested_version = v;
         }
     }
+
+    public class TooManyModsProvideKraken : Kraken
+    {
+        public List<CkanModule> modules;
+        public string requested;
+
+        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception inner_exception = null)
+            :base(FormatMessage(requested, modules), inner_exception)
+        {
+            this.modules = modules;
+            this.requested = requested;
+        }
+
+        internal static string FormatMessage(string requested, List<CkanModule> modules)
+        {
+            string oops = string.Format("Too many mods provide {0}:\n\n", requested);
+            foreach (var mod in modules)
+            {
+                oops += "* " + mod + "\n";
+            }
+            return oops;
+        }
+    }
+
 }
