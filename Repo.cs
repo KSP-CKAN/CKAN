@@ -62,45 +62,50 @@ namespace CKAN
 
             string repo_file = Net.Download(repo);
 
-            // Open our zip file for processing
-            var zipfile = new ZipFile(File.OpenRead(repo_file));
-
-            // Clear our list of known modules.
-            registry.ClearAvailable();
-
-            // Walk the archive, looking for .ckan files.
-            string filter = @"\.ckan$";
-
-            foreach (ZipEntry entry in zipfile)
+            using (var zipfile = new ZipFile(repo_file))
             {
-                string filename = entry.Name;
+                // Clear our list of known modules.
+                registry.ClearAvailable();
 
-                // Skip things we don't want.
-                if (! Regex.IsMatch(filename, filter))
+                // Walk the archive, looking for .ckan files.
+                string filter = @"\.ckan$";
+
+                foreach (ZipEntry entry in zipfile)
                 {
-                    log.DebugFormat("Skipping archive entry {0}", filename);
-                    continue;
+                    string filename = entry.Name;
+
+                    // Skip things we don't want.
+                    if (! Regex.IsMatch(filename, filter))
+                    {
+                        log.DebugFormat("Skipping archive entry {0}", filename);
+                        continue;
+                    }
+
+                    log.DebugFormat("Reading CKAN data from {0}", filename);
+
+                    // Read each file into a string.
+                    string metadata_json;
+                    using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
+                    {
+                        metadata_json = stream.ReadToEnd();
+                        stream.Close();
+                    }
+
+                    log.Debug("Converting from JSON...");
+
+                    CkanModule module = CkanModule.FromJson(metadata_json);
+
+                    log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
+
+                    // Hooray! Now save it in our registry.
+                    registry.AddAvailable(module);
                 }
 
-                log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                // Read each file into a string.
-                string metadata_json = new StreamReader(zipfile.GetInputStream(entry)).ReadToEnd();
-
-                log.Debug("Converting from JSON...");
-
-                CkanModule module = CkanModule.FromJson(metadata_json);
-
-                log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
-
-                // Hooray! Now save it in our registry.
-                registry.AddAvailable(module);
+                zipfile.Close();
             }
 
-            // Clean up!
-            zipfile.Close();
+            // Remove our downloaded meta-data now we've processed it.
             File.Delete(repo_file);
-
         }
     }
 }

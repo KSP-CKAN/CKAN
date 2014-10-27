@@ -84,6 +84,12 @@ namespace CKAN
             fileManager.Snapshot(path);
         }
 
+        /// <summary>
+        /// Opens a file for writing as part of this transaction.
+        /// The caller is responsible for closing and disposing of the filehandle as appropraite.
+        /// </summary>
+
+        // TODO: neverOverwrite seems to be unused here, remove it.
         public FileStream OpenFileWrite(string path, bool neverOverwrite = true)
         {
             if (TempFiles.ContainsKey(path))
