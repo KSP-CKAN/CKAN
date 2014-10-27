@@ -5,17 +5,13 @@ using log4net;
 
 namespace CKAN
 {
-
-    internal class RegistryVersionNotSupportedException : Exception
-    {
-        public int requested_version;
-
-        public RegistryVersionNotSupportedException(int v)
-        {
-            requested_version = v;
-        }
-    }
-
+    /// <summary>
+    /// This is the CKAN registry. All the modules that we know about or have installed
+    /// are contained in here.
+    /// 
+    /// Please try to avoid accessing the attributes directly. Right now they're public
+    /// so our JSON layer can access them, but in the future they will become private.
+    /// </summary>
     public class Registry
     {
         private const int LATEST_REGISTRY_VERSION = 0;
@@ -40,7 +36,7 @@ namespace CKAN
             /* TODO: support more than just the latest version */
             if (version != LATEST_REGISTRY_VERSION)
             {
-                throw new RegistryVersionNotSupportedException(version);
+                throw new RegistryVersionNotSupportedKraken(version);
             }
 
             installed_modules = mods;
@@ -276,8 +272,26 @@ namespace CKAN
             installed_modules.Remove(module);
         }
 
+        /// <summary>
+        /// Registers the given DLL as having been installed. This provides some support
+        /// for pre-CKAN modules.
+        /// 
+        /// Does nothing if the DLL is already part of an installed module.
+        /// </summary>
         public void RegisterDll(string path)
         {
+            // TODO: This is awful, as it's O(N^2), but it means we never index things which are
+            // part of another mod.
+
+            foreach (var mod in installed_modules.Values)
+            {
+                if (mod.installed_files.ContainsKey(path))
+                {
+                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.source_module);
+                    return;
+                }
+            }
+
             // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
             Match match = Regex.Match(path, @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)");
 
@@ -286,36 +300,107 @@ namespace CKAN
 
             if (modName.Length == 0 || relPath.Length == 0)
             {
+                log.WarnFormat("Attempted to index {0} which is not a DLL", path);
                 return;
             }
 
-            User.WriteLine("Registering {0} -> {1}", modName, relPath);
+            log.InfoFormat("Registering {0} -> {1}", modName, path);
 
             // We're fine if we overwrite an existing key.
             installed_dlls[modName] = relPath;
         }
 
+        /// <summary>
+        /// Clears knowledge of all DLLs from the registry.
+        /// </summary>
         public void ClearDlls()
         {
             installed_dlls = new Dictionary<string, string>();
         }
 
         /// <summary>
+        /// Returns a dictionary of all modules installed, along with their
+        /// versions.
+        /// This includes DLLs, which will have a version type of `DllVersion`.
+        /// This includes Provides, which will have a version of `ProvidesVersion`.
+        /// </summary>
+        public Dictionary<string, Version> Installed()
+        {
+            var installed = new Dictionary<string, Version>();
+
+            // Index our DLLs, as much as we dislike them.
+            foreach (var dllinfo in installed_dlls)
+            {
+                installed[dllinfo.Key] = new DllVersion();
+            }
+
+            // Index our provides list, so users can see virtual packages
+            foreach (var provided in Provided())
+            {
+                installed[provided.Key] = provided.Value;
+            }
+
+            // Index our installed modules (which may overwrite the installed DLLs and provides)
+            foreach (var modinfo in installed_modules)
+            {
+                installed[modinfo.Key] = modinfo.Value.source_module.version;
+            }
+
+            return installed;
+        }
+
+        /// <summary>
+        /// Returns a dictionary of provided (virtual) modules, and a
+        /// ProvidesVersion indicating what provides them.
+        /// </summary>
+
+        // TODO: In the future it would be nice to cache this list, and mark it for rebuild
+        // if our installed modules change.
+        internal Dictionary<string, ProvidesVersion> Provided()
+        {
+            var installed = new Dictionary<string, ProvidesVersion>();
+
+            foreach (var modinfo in installed_modules)
+            {
+                Module module = modinfo.Value.source_module;
+
+                // Skip if this module provides nothing.
+                if (module.provides == null)
+                {
+                    continue;
+                }
+
+                foreach (string provided in module.provides)
+                {
+                    installed[provided] = new ProvidesVersion(module.identifier);
+                }
+            }
+
+            return installed;
+        }
+
+        /// <summary>
         ///     Returns the installed version of a given mod.
-        ///     If the mod was autodetected (but present), a "0" is returned.
+        ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
+        ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
-        /// <returns>The version.</returns>
-        /// <param name="modName">Mod name.</param>
         public Version InstalledVersion(string modName)
         {
             if (installed_modules.ContainsKey(modName))
             {
                 return installed_modules[modName].source_module.version;
             }
-            if (installed_dlls.ContainsKey(modName))
+            else if (installed_dlls.ContainsKey(modName))
             {
                 return new DllVersion();
+            }
+
+            var provided = Provided();
+
+            if (provided.ContainsKey(modName))
+            {
+                return provided[modName];
             }
 
             return null;

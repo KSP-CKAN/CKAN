@@ -215,31 +215,20 @@ namespace CKAN
 
         private static int List()
         {
-            string ksp_path = KSPManager.CurrentInstance.GameDir();
+            KSP ksp = KSPManager.CurrentInstance;
 
-            User.WriteLine("\nKSP found at {0}\n", ksp_path);
-            User.WriteLine("KSP Version: {0}\n", KSPManager.CurrentInstance.Version());
+            User.WriteLine("\nKSP found at {0}\n", ksp.GameDir());
+            User.WriteLine("KSP Version: {0}\n",ksp.Version());
 
-            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
-            Registry registry = registry_manager.registry;
+            Registry registry = RegistryManager.Instance(ksp).registry;
 
             User.WriteLine("Installed Modules:\n");
 
-            foreach (InstalledModule mod in registry.installed_modules.Values)
-            {
-                User.WriteLine("* {0} {1}", mod.source_module.identifier, mod.source_module.version);
-            }
+            var installed = new SortedDictionary<string, Version>(registry.Installed());
 
-            User.WriteLine("\nDetected DLLs (`ckan scan` to rebuild):\n");
-
-            // Walk our dlls, but *don't* show anything we've already displayed as
-            // a module.
-            foreach (string dll in registry.installed_dlls.Keys)
+            foreach (var mod in installed)
             {
-                if (! registry.installed_modules.ContainsKey(dll))
-                {
-                    User.WriteLine("* {0}", dll);
-                }
+                User.WriteLine("* {0} {1}", mod.Key, mod.Value);
             }
 
             // Blank line at the end makes for nicer looking output.
@@ -361,6 +350,12 @@ namespace CKAN
             {
                 User.WriteLine("Module {0} required, but not listed in index.", ex.module);
                 User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                return EXIT_ERROR;
+            }
+            catch (BadMetadataKraken ex)
+            {
+                User.WriteLine("Bad metadata detected for module {0}", ex.module);
+                User.WriteLine(ex.Message);
                 return EXIT_ERROR;
             }
 

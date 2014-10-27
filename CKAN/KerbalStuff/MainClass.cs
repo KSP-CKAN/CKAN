@@ -180,25 +180,29 @@ namespace CKAN.KerbalStuff
         /// </summary>
         private static JObject ExtractCkanInfo(string filename)
         {
-            var zipfile = new ZipFile(File.OpenRead(filename));
-
-            foreach (ZipEntry entry in zipfile)
+            using (var zipfile = new ZipFile(filename))
             {
-                // Skip everything but embedded .ckan files.
-                if (! Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase))
+                foreach (ZipEntry entry in zipfile)
                 {
-                    continue;
+                    // Skip everything but embedded .ckan files.
+                    if (! Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    log.DebugFormat("Reading {0}", entry.Name);
+
+                    using (Stream zipStream = zipfile.GetInputStream(entry))
+                    {
+                        JObject meta_ckan = DeserializeFromStream(zipStream);
+                        zipStream.Close();
+
+                        return meta_ckan;
+                    }
                 }
-
-                log.DebugFormat("Reading {0}", entry.Name);
-
-                Stream zipStream = zipfile.GetInputStream(entry);
-
-                JObject meta_ckan = DeserializeFromStream(zipStream);
-
-                return meta_ckan;
             }
 
+            // No metadata found? Uh oh!
             throw new MetadataNotFoundKraken(filename);
         }
 

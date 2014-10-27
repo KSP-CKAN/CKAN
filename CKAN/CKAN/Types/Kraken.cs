@@ -82,5 +82,32 @@ namespace CKAN
         }
     }
 
-}
+    /// <summary>
+    /// We had bad metadata that resulted in an invalid operation occuring.
+    /// For example: a file install stanza that produces no files.
+    /// </summary>
+    public class BadMetadataKraken : Kraken
+    {
+        public CkanModule module;
 
+        public BadMetadataKraken(CkanModule module, string reason = null, Exception inner_exception = null)
+            :base(reason,inner_exception)
+        {
+            this.module = module;
+        }
+    }
+
+    /// <summary>
+    /// Thrown if we try to load an incompatible CKAN registry.
+    /// </summary>
+    public class RegistryVersionNotSupportedKraken : Kraken
+    {
+        public int requested_version;
+
+        public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            requested_version = v;
+        }
+    }
+}

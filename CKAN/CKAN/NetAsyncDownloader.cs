@@ -15,7 +15,6 @@ namespace CKAN
         public long bytesLeft;
         public int bytesPerSecond;
         public Exception error;
-        public FileStream fileStream;
         public int lastProgressUpdateSize;
         public DateTime lastProgressUpdateTime;
         public string path;
