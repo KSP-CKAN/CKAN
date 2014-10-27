@@ -45,5 +45,19 @@ namespace CKANTests
 
             Assert.That(v1.IsLessThan(v2));
         }
+
+        [Test]
+        public void DllVersion()
+        {
+            var v1 = new CKAN.DllVersion();
+            Assert.AreEqual("autodetected dll", v1.ToString());
+        }
+
+        [Test]
+        public void ProvidesVersion()
+        {
+            var v1 = new CKAN.ProvidesVersion("SomeModule");
+            Assert.AreEqual("provided by SomeModule", v1.ToString());
+        }
     }
 }

@@ -161,15 +161,36 @@ namespace CKAN {
         }
     }
 
-    // This class represents a DllVersion. They don't have real
-    // version numbers or anything.
-
-    // We probably need a better way of doing these, but believe
-    // it or not this is better than what we had before.
-
+    /// <summary>
+    /// This class represents a DllVersion. They don't have real
+    /// version numbers or anything
+    /// </summary>
     public class DllVersion : Version {
-        public DllVersion() : base("autodetected_dll") {
+        public DllVersion() :base("0")
+        {
+        }
 
+        override public string ToString()
+        {
+            return "autodetected dll";
+        }
+    }
+
+    /// <summary>
+    /// This class represents a virtual version that was provided by
+    /// another module.
+    /// </summary>
+    public class ProvidesVersion : Version {
+        internal string provided_by;
+
+        public ProvidesVersion(string provided_by) :base("0")
+        {
+            this.provided_by = provided_by;
+        }
+
+        override public string ToString()
+        {
+            return string.Format("provided by {0}", provided_by);
         }
     }
 }
