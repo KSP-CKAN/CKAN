@@ -321,6 +321,31 @@ namespace CKAN
             }
 
             // Index our provides list, so users can see virtual packages
+            foreach (var provided in Provided())
+            {
+                installed[provided.Key] = provided.Value;
+            }
+
+            // Index our installed modules (which may overwrite the installed DLLs and provides)
+            foreach (var modinfo in installed_modules)
+            {
+                installed[modinfo.Key] = modinfo.Value.source_module.version;
+            }
+
+            return installed;
+        }
+
+        /// <summary>
+        /// Returns a dictionary of provided (virtual) modules, and a
+        /// ProvidesVersion indicating what provides them.
+        /// </summary>
+
+        // TODO: In the future it would be nice to cache this list, and mark it for rebuild
+        // if our installed modules change.
+        internal Dictionary<string, ProvidesVersion> Provided()
+        {
+            var installed = new Dictionary<string, ProvidesVersion>();
+
             foreach (var modinfo in installed_modules)
             {
                 Module module = modinfo.Value.source_module;
@@ -337,18 +362,13 @@ namespace CKAN
                 }
             }
 
-            // Index our installed modules (which may overwrite the installed DLLs and provides)
-            foreach (var modinfo in installed_modules)
-            {
-                installed[modinfo.Key] = modinfo.Value.source_module.version;
-            }
-
             return installed;
         }
 
         /// <summary>
         ///     Returns the installed version of a given mod.
         ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
+        ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
         public Version InstalledVersion(string modName)
@@ -360,6 +380,13 @@ namespace CKAN
             else if (installed_dlls.ContainsKey(modName))
             {
                 return new DllVersion();
+            }
+
+            var provided = Provided();
+
+            if (provided.ContainsKey(modName))
+            {
+                return provided[modName];
             }
 
             return null;
