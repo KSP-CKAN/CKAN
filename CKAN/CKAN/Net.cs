@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using log4net;
+using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -13,6 +14,7 @@ namespace CKAN
     public class Net
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Net));
+        private static TxFileManager file_transaction = new TxFileManager();
 
         /// <summary>
         ///     Downloads the specified url, and stores it in the filename given.
@@ -34,7 +36,7 @@ namespace CKAN
             // Generate a temporary file if none is provided.
             if (filename == null)
             {
-                filename = Path.GetTempFileName();
+                filename = file_transaction.GetTempFileName();
             }
 
             log.DebugFormat("Downloading {0} to {1}", url, filename);
@@ -48,11 +50,12 @@ namespace CKAN
             catch (Exception ex)
             {
                 // Clean up our file, it's unlikely to be complete.
+                // We do this even though we're using transactional files, as we may not be in a transaction.
                 // It's okay if this fails.
                 try
                 {
                     log.DebugFormat("Removing {0} after web error failure", filename);
-                    File.Delete(filename);
+                    file_transaction.Delete(filename);
                 }
                 catch
                 {

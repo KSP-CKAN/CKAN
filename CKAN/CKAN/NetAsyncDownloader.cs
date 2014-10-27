@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using ChinhDo.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -28,7 +29,7 @@ namespace CKAN
     /// </summary>
     public class NetAsyncDownloader
     {
-        //        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         private readonly NetAsyncDownloaderDownloadPart[] downloads;
         public NetAsyncCompleted onCompleted = null;
@@ -67,6 +68,8 @@ namespace CKAN
         {
             var filePaths = new string[downloads.Length];
             var file_transaction = new TxFileManager ();
+
+            log.Debug("Starting download");
 
             for (int i = 0; i < downloads.Length; i++)
             {
@@ -111,6 +114,8 @@ namespace CKAN
         /// </summary>
         public void CancelDownload()
         {
+            log.Debug("Cancelling download");
+
             foreach (var download in downloads)
             {
                 download.agent.CancelAsync();
@@ -126,6 +131,8 @@ namespace CKAN
 
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
+            log.Debug("Reporting file progress");
+
             if (downloadCanceled)
             {
                 return;
@@ -175,11 +182,14 @@ namespace CKAN
 
         private void FileDownloadComplete(int index, Exception error)
         {
+            log.DebugFormat("File {0} finished downloading", index);
             queuePointer++;
             downloads[index].error = error;
 
             if (queuePointer == downloads.Length)
             {
+                log.Debug("All files finished downloading");
+
                 // verify no errors before commit
 
                 bool err = false;
@@ -189,6 +199,7 @@ namespace CKAN
                     {
                         err = true;
                         // TODO: XXX: Shouldn't we throw a kraken here?
+                        log.Error("Something went wrong but I don't know what!");
                     }
                 }
 
@@ -205,6 +216,7 @@ namespace CKAN
                         errors[i] = downloads[i].error;
                     }
 
+                    log.Debug("Signalling completion via callback");
                     onCompleted(fileUrls, filePaths, errors);
                 }
             }
@@ -212,6 +224,7 @@ namespace CKAN
 
         public void WaitForAllDownloads()
         {
+            log.Debug("Waiting for downloads to finish");
             // TODO: Isn't this going to busy-wait?
             while (queuePointer < downloads.Length)
             {
