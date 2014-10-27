@@ -306,7 +306,9 @@ namespace CKAN
 
         /// <summary>
         /// Returns a dictionary of all modules installed, along with their
-        /// versions. This includes DLLs, which will have a version type of `DllVersion`.
+        /// versions.
+        /// This includes DLLs, which will have a version type of `DllVersion`.
+        /// This includes Provides, which will have a version of `ProvidesVersion`.
         /// </summary>
         public Dictionary<string, Version> Installed()
         {
@@ -318,7 +320,24 @@ namespace CKAN
                 installed[dllinfo.Key] = new DllVersion();
             }
 
-            // Index our installed modules (which may overwrite the installed DLLs)
+            // Index our provides list, so users can see virtual packages
+            foreach (var modinfo in installed_modules)
+            {
+                Module module = modinfo.Value.source_module;
+
+                // Skip if this module provides nothing.
+                if (module.provides == null)
+                {
+                    continue;
+                }
+
+                foreach (string provided in module.provides)
+                {
+                    installed[provided] = new ProvidesVersion(module.identifier);
+                }
+            }
+
+            // Index our installed modules (which may overwrite the installed DLLs and provides)
             foreach (var modinfo in installed_modules)
             {
                 installed[modinfo.Key] = modinfo.Value.source_module.version;
