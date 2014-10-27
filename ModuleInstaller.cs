@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ICSharpCode.SharpZipLib.Zip;
+using System.Transactions;
+using ChinhDo.Transactions;
 using log4net;
 
 namespace CKAN
@@ -30,7 +32,6 @@ namespace CKAN
         private RegistryManager registry_manager;
         private KSP ksp;
 
-        private FilesystemTransaction currentTransaction;
         private NetAsyncDownloader downloader;
         private bool lastDownloadSuccessful;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
@@ -119,15 +120,17 @@ namespace CKAN
             return Download(url, filename);
         }
 
-        // TODO: Document me!!!
-        public NetAsyncDownloader DownloadAsync(CkanModule[] modules, string[] filenames = null)
+        /// <summary>
+        /// Downloads all the modules specified to the cache.
+        /// </summary>
+        public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
         {
             var urls = new Uri[modules.Length];
             var fullPaths = new string[modules.Length];
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = Path.Combine(KSPManager.CurrentInstance.DownloadCacheDir(), filenames[i]);
+                fullPaths[i] = ksp.Cache.CachePath(modules[i]);
                 urls[i] = modules[i].download;
             }
 
@@ -147,6 +150,16 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Downloads all the modules specified to the cache.
+        /// </summary>
+        public NetAsyncDownloader DownloadAsync(List<CkanModule> modules)
+        {
+            var mod_array = new CkanModule[modules.Count];
+            modules.CopyTo(mod_array);
+            return DownloadAsync(mod_array);
+        }
+
+        /// <summary>
         ///     Installs all modules given a list of identifiers. Resolves dependencies.
         ///     The function initializes a filesystem transaction, then installs all cached mods
         ///     this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives.
@@ -157,113 +170,86 @@ namespace CKAN
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
-            installCanceled = false; // Can be set by another thread
-            currentTransaction = new FilesystemTransaction();
-
-            if (onReportProgress != null)
+            using (TransactionScope transaction = new TransactionScope())
             {
-                currentTransaction.onProgressReport += (message, percent) => onReportProgress(message, percent);
-            }
 
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
+                installCanceled = false; // Can be set by another thread
 
-            User.WriteLine("About to install...\n");
+                var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
+                List<CkanModule> modsToInstall = resolver.ModList();
+                List<CkanModule> downloads = new List<CkanModule> (); 
 
-            foreach (CkanModule module in resolver.ModList())
-            {
-                User.WriteLine(" * {0} {1}", module.identifier, module.version);
-            }
+                User.WriteLine("About to install...\n");
 
-            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
-
-            if (!ok)
-            {
-                log.Debug("Halting install at user request");
-                return;
-            }
-
-            User.WriteLine(""); // Just to look tidy.
-
-            List<CkanModule> modList = resolver.ModList();
-
-            var notCached = new List<CkanModule>();
-            var cached = new List<KeyValuePair<CkanModule, string>>();
-
-            foreach (CkanModule module in modList)
-            {
-                string fullPath = Cache.CachedFile(module);
-                if (fullPath != null)
+                foreach (CkanModule module in modsToInstall)
                 {
-                    cached.Add(new KeyValuePair<CkanModule, string>(module, fullPath));
-                }
-                else
-                {
-                    notCached.Add(module);
-                }
-            }
-
-            var modulesToDownload = new CkanModule[notCached.Count];
-            var modulesToDownloadPaths = new string[notCached.Count];
-
-            for (int i = 0; i < notCached.Count; i++)
-            {
-                modulesToDownload[i] = notCached[i];
-                modulesToDownloadPaths[i] = Cache.CachePath(notCached[i].StandardName());
-            }
-
-            lastDownloadSuccessful = true;
-
-            if (installCanceled)
-            {
-                return;
-            }
-
-            if (modulesToDownload.Length > 0)
-            {
-                downloader = DownloadAsync(modulesToDownload, modulesToDownloadPaths);
-                downloader.StartDownload();
-
-                lock (downloader)
-                {
-                    Monitor.Wait(downloader);
-                }
-            }
-
-            if (installCanceled)
-            {
-                return;
-            }
-
-            var modsToInstall = new List<KeyValuePair<CkanModule, string>>();
-            for (int i = 0; i < modulesToDownload.Length; i++)
-            {
-                modsToInstall.Add(new KeyValuePair<CkanModule, string>(modulesToDownload[i], modulesToDownloadPaths[i]));;
-            }
-
-            foreach (var pair in cached)
-            {
-                modsToInstall.Add(new KeyValuePair<CkanModule, string>(pair.Key, pair.Value));
-            }
-
-            if (lastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
-            {
-                for (int i = 0; i < modsToInstall.Count; i++)
-                {
-                    int percentComplete = (i * 100) / modsToInstall.Count;
-                    if (onReportProgress != null)
+                    if (Cache.IsCached(module))
                     {
-                        onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i].Key.name),
-                            percentComplete);
+                        User.WriteLine(" * {0} (cached)", module);
+                    }
+                    else
+                    {
+                        User.WriteLine(" * {0}", module);
+                        downloads.Add(module);
+                    }
+                }
+
+                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+
+                if (!ok)
+                {
+                    log.Debug("Halting install at user request");
+                    return;
+                }
+
+                User.WriteLine(""); // Just to look tidy.
+
+                // TODO: Is this really where we want to be setting this?
+                lastDownloadSuccessful = true;
+
+                if (installCanceled)
+                {
+                    log.Warn("Pre-download halted at user request");
+                    return;
+                }
+
+                if (downloads.Count > 0)
+                {
+                    downloader = DownloadAsync(downloads);
+                    downloader.StartDownload();
+
+                    lock (downloader)
+                    {
+                        Monitor.Wait(downloader);
+                    }
+                }
+
+                if (installCanceled)
+                {
+                    log.Warn("Download halted at user request");
+                    return;
+                }
+
+                if (lastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
+                {
+                    for (int i = 0; i < modsToInstall.Count; i++)
+                    {
+                        int percentComplete = (i * 100) / modsToInstall.Count;
+                        if (onReportProgress != null)
+                        {
+                            onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
+                                             percentComplete);
+                        }
+
+                        Install(modsToInstall[i]);
                     }
 
-                    Install(modsToInstall[i].Key, modsToInstall[i].Value);
+                    transaction.Complete();
+                    return;
                 }
-
-                currentTransaction.Commit();
-                return;
+             
+                transaction.Dispose(); // Rollback
             }
-         
-            currentTransaction.Rollback();
         }
 
         /// <summary>Call this to cancel the installs being performed by other threads</summary>
@@ -708,6 +694,8 @@ namespace CKAN
 
         private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
+            var file_transaction = new TxFileManager();
+
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
@@ -717,7 +705,7 @@ namespace CKAN
                 }
 
                 log.DebugFormat("Making directory {0}", fullPath);
-                currentTransaction.CreateDirectory(fullPath);
+                file_transaction.CreateDirectory(fullPath);
             }
             else
             {
@@ -729,20 +717,14 @@ namespace CKAN
                 if (makeDirs)
                 {
                     string directory = Path.GetDirectoryName(fullPath);
-                    currentTransaction.CreateDirectory(directory);
+                    file_transaction.CreateDirectory(directory);
                 }
 
                 // It's a file! Prepare the streams
                 using (Stream zipStream = zipfile.GetInputStream(entry))
-                using (FileStream output = currentTransaction.OpenFileWrite(fullPath))
+                using (StreamReader reader = new StreamReader(zipStream))
                 {
-                    // Copy
-                    zipStream.CopyTo(output);
-
-                    // Tidy up. Possibly not needed inside a `using` block, but almost certainly
-                    // doesn't hurt.
-                    zipStream.Close();
-                    output.Close();
+                    file_transaction.WriteAllText(fullPath, reader.ReadToEnd());
                 }
             }
 
