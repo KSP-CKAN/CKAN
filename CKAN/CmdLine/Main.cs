@@ -348,14 +348,26 @@ namespace CKAN
             }
             catch (ModuleNotFoundKraken ex)
             {
-                User.WriteLine("Module {0} required, but not listed in index.", ex.module);
+                User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
                 User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                User.WriteLine("Try `ckan install --no-recommends` to skip installation of recommended modules");
                 return EXIT_ERROR;
             }
             catch (BadMetadataKraken ex)
             {
                 User.WriteLine("Bad metadata detected for module {0}", ex.module);
                 User.WriteLine(ex.Message);
+                return EXIT_ERROR;
+            }
+            catch (TooManyModsProvideKraken ex)
+            {
+                User.WriteLine("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
+
+                foreach (CkanModule mod in ex.modules)
+                {
+                    User.WriteLine("* {0}", mod.identifier);
+                }
+
                 return EXIT_ERROR;
             }
 
