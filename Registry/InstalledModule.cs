@@ -8,6 +8,12 @@ namespace CKAN
         public string sha1_sum;
     }
 
+    /// <summary>
+    /// A simple clss that represents an installed module. Includes the time of installation,
+    /// the module itself, and a list of files installed with it.
+    /// 
+    /// Primarily used by the Registry class.
+    /// </summary>
     public class InstalledModule
     {
         public DateTime install_time;
