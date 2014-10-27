@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using log4net;
 using Newtonsoft.Json;
+using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -12,6 +13,8 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
+        private readonly TxFileManager file_transaction = new TxFileManager();
+
         public Registry registry;
 
         // We require our constructor to be private so we can
@@ -99,7 +102,7 @@ namespace CKAN
                 Directory.CreateDirectory(directoryPath);
             }
 
-            File.WriteAllText(path, Serialize());
+            file_transaction.WriteAllText(path, Serialize());
         }
     }
 }

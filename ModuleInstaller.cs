@@ -29,6 +29,8 @@ namespace CKAN
         private static ModuleInstaller _Instance;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
+        private static readonly TxFileManager file_transaction = new TxFileManager ();
+
         private RegistryManager registry_manager;
         private KSP ksp;
 
@@ -331,74 +333,82 @@ namespace CKAN
 
         internal void Install(CkanModule module, string filename = null)
         {
-            User.WriteLine(module.identifier + ":\n");
-
-            Version version = registry_manager.registry.InstalledVersion(module.identifier);
-
-            // TODO: This really should be handled by higher-up code.
-            if (version != null)
+            using (var transaction = new TransactionScope())
             {
-                User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
-                return;
-            }
 
-            // Fetch our file if we don't already have it.
-            if (filename == null)
-            {
-                filename = CachedOrDownload(module);
-            }
 
-            // We'll need our registry to record which files we've installed.
-            Registry registry = registry_manager.registry;
+                User.WriteLine(module.identifier + ":\n");
 
-            // And a list of files to record them to.
-            var module_files = new Dictionary<string, InstalledModuleFile>();
+                Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
-            // Install all the things!
-            InstallModule(module, filename, module_files);
-
-            // Register our files.
-            registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
-
-            // Handle bundled mods, if we have them.
-            // TODO: Deprecate bundles!
-
-            if (module.bundles != null)
-            {
-                foreach (BundledModuleDescriptor stanza in module.bundles)
+                // TODO: This really should be handled by higher-up code.
+                if (version != null)
                 {
-                    var bundled = new BundledModule(stanza);
-
-                    Version ver = registry_manager.registry.InstalledVersion(bundled.identifier);
-
-                    if (ver != null)
-                    {
-                        User.WriteLine(
-                            "{0} {1} already installed, skipping bundled version {2}",
-                            bundled.identifier, ver, bundled.version
-                            );
-                        continue;
-                    }
-
-                    // Not installed, so let's get about installing it!
-                    var installed_files = new Dictionary<string, InstalledModuleFile>();
-
-                    InstallComponent(stanza, filename, installed_files);
-
-                    registry.RegisterModule(new InstalledModule(installed_files, bundled, DateTime.Now));
+                    User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+                    return;
                 }
+
+                // Fetch our file if we don't already have it.
+                if (filename == null)
+                {
+                    filename = CachedOrDownload(module);
+                }
+
+                // We'll need our registry to record which files we've installed.
+                Registry registry = registry_manager.registry;
+
+                // And a list of files to record them to.
+                var module_files = new Dictionary<string, InstalledModuleFile>();
+
+                // Install all the things!
+                InstallModule(module, filename, module_files);
+
+                // Register our files.
+                registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
+
+                // Handle bundled mods, if we have them.
+                // TODO: Deprecate bundles!
+
+                if (module.bundles != null)
+                {
+                    foreach (BundledModuleDescriptor stanza in module.bundles)
+                    {
+                        var bundled = new BundledModule(stanza);
+
+                        Version ver = registry_manager.registry.InstalledVersion(bundled.identifier);
+
+                        if (ver != null)
+                        {
+                            User.WriteLine(
+                                "{0} {1} already installed, skipping bundled version {2}",
+                                bundled.identifier, ver, bundled.version
+                            );
+                            continue;
+                        }
+
+                        // Not installed, so let's get about installing it!
+                        var installed_files = new Dictionary<string, InstalledModuleFile>();
+
+                        InstallComponent(stanza, filename, installed_files);
+
+                        registry.RegisterModule(new InstalledModule(installed_files, bundled, DateTime.Now));
+                    }
+                }
+
+                // Done! Save our registry changes!
+                // This is fine from a transaction standpoint, as we may not have an enclosing
+                // transaction, and if we do, they can always roll us back.
+                registry_manager.Save();
+
+                transaction.Complete();
             }
 
-            // Done! Save our registry changes!
-            // TODO: From a transaction standpoint, we probably don't want to save the registry,
-            // and instead want something higher up the call-chain to do that.
-
-            registry_manager.Save();
-
+            // Fire our callback that we've installed a module, if we have one.
             if (onReportModInstalled != null)
             {
                 onReportModInstalled(module);
             }
+
         }
 
         private string Sha1Sum(string path)
@@ -694,8 +704,6 @@ namespace CKAN
 
         private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
-            var file_transaction = new TxFileManager();
-
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
@@ -762,75 +770,87 @@ namespace CKAN
             return reverseDependencies;
         }
 
+        /// <summary>
+        /// Uninstall the module provided.
+        /// </summary>
+         
+        // TODO: Remove second arg; shouldn't we *always* uninstall dependencies?
         public void Uninstall(string modName, bool uninstallDependencies)
         {
-            if (!registry_manager.registry.IsInstalled(modName))
+            using (var transaction = new TransactionScope())
             {
-                // TODO: This could indicates a logic error somewhere;
-                // change to a kraken, the calling code can always catch it
-                // if it expects that it may try to uninstall a module twice.
-                log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
-                return;
-            }
 
-            // Find all mods that depend on this one
-            if (uninstallDependencies)
-            {
-                List<string> reverseDependencies = FindReverseDependencies(modName);
-                foreach (string reverseDependency in reverseDependencies)
+                if (!registry_manager.registry.IsInstalled(modName))
                 {
-                    Uninstall(reverseDependency, uninstallDependencies);
+                    // TODO: This could indicates a logic error somewhere;
+                    // change to a kraken, the calling code can always catch it
+                    // if it expects that it may try to uninstall a module twice.
+                    log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
+                    return;
                 }
-            }
 
-            // Walk our registry to find all files for this mod.
-            Dictionary<string, InstalledModuleFile> files =
-                registry_manager.registry.installed_modules[modName].installed_files;
-
-            var directoriesToDelete = new HashSet<string>();
-
-            foreach (string file in files.Keys)
-            {
-                string path = Path.Combine(ksp.GameDir(), file);
-
-                try
+                // Find all mods that depend on this one
+                if (uninstallDependencies)
                 {
-                    FileAttributes attr = File.GetAttributes(path);
-
-                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    List<string> reverseDependencies = FindReverseDependencies(modName);
+                    foreach (string reverseDependency in reverseDependencies)
                     {
-                        directoriesToDelete.Add(path);
-                    }
-                    else
-                    {
-                        User.WriteLine("Removing {0}", file);
-                        File.Delete(path);
+                        Uninstall(reverseDependency, uninstallDependencies);
                     }
                 }
-                catch (Exception ex)
+
+                // Walk our registry to find all files for this mod.
+                Dictionary<string, InstalledModuleFile> files =
+                    registry_manager.registry.installed_modules[modName].installed_files;
+
+                var directoriesToDelete = new HashSet<string>();
+
+                foreach (string file in files.Keys)
                 {
-                    log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
-                }
-            }
+                    string path = Path.Combine(ksp.GameDir(), file);
 
-            // Remove from registry.
-
-            registry_manager.registry.DeregisterModule(modName);
-            registry_manager.Save();
-
-            foreach (string directory in directoriesToDelete)
-            {
-                if (!Directory.GetFiles(directory).Any())
-                {
                     try
                     {
-                        Directory.Delete(directory);
+                        FileAttributes attr = File.GetAttributes(path);
+
+                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                        {
+                            directoriesToDelete.Add(path);
+                        }
+                        else
+                        {
+                            User.WriteLine("Removing {0}", file);
+                            file_transaction.Delete(path);
+                        }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        User.WriteLine("Couldn't delete directory {0}", directory);
+                        // TODO: Report why.
+                        log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
                     }
                 }
+
+                // Remove from registry.
+
+                registry_manager.registry.DeregisterModule(modName);
+                registry_manager.Save();
+
+                foreach (string directory in directoriesToDelete)
+                {
+                    if (!Directory.GetFiles(directory).Any())
+                    {
+                        try
+                        {
+                            file_transaction.Delete(directory);
+                        }
+                        catch (Exception)
+                        {
+                            // TODO: Report why.
+                            User.WriteLine("Couldn't delete directory {0}", directory);
+                        }
+                    }
+                }
+                transaction.Complete();
             }
 
             return;

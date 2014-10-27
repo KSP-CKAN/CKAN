@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -12,6 +13,7 @@ namespace CKAN
     public static class Repo
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static TxFileManager file_transaction = new TxFileManager();
 
         // Right now we only use the default repo, but in the future we'll
         // want to let users add their own.
@@ -105,7 +107,8 @@ namespace CKAN
             }
 
             // Remove our downloaded meta-data now we've processed it.
-            File.Delete(repo_file);
+            // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
+            file_transaction.Delete(repo_file);
         }
     }
 }
