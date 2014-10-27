@@ -22,6 +22,11 @@ namespace CKAN
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private Registry registry;
 
+        /// <summary>
+        /// Creates a new resolver that will find a way to install all the modules specified.
+        /// </summary>
+        //
+        // TODO: This should be able to handle un-installs as well.
         public RelationshipResolver(List<string> modules, RelationshipResolverOptions options, Registry registry)
         {
 
@@ -32,7 +37,7 @@ namespace CKAN
             // user-specified modules, as they may be supplying things that provide
             // virtual packages.
 
-            var user_mods = new List<CkanModule>();
+            var user_requested_mods = new List<CkanModule>();
 
             log.DebugFormat("Processing relationships for {0} modules", modules.Count);
 
@@ -45,14 +50,14 @@ namespace CKAN
                 }
                  
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
-                user_mods.Add(mod);
-                Add(mod);
+                user_requested_mods.Add(mod);
+                this.Add(mod);
             }
              
             // Now that we've already pre-populated modlist, we can resolve
             // the rest of our dependencies.
 
-            foreach (CkanModule module in user_mods)
+            foreach (CkanModule module in user_requested_mods)
             {
                 log.InfoFormat("Resolving relationships for {0}", module.identifier);
                 Resolve(module, options);
@@ -72,8 +77,10 @@ namespace CKAN
             return opts;
         }
 
-        // Resolve all relationships for a module.
-        // May recurse to ResolveStanza.
+        /// <summary>
+        /// Resolves all relationships for a module.
+        /// May recurse to ResolveStanza, which may add additional modules to be installed.
+        /// </summary>
         private void Resolve(CkanModule module, RelationshipResolverOptions options)
         {
             // Even though we may resolve top-level suggests for our module,
@@ -106,8 +113,13 @@ namespace CKAN
             }
         }
 
-        // Resolve a relationship stanza (a list of relationships).
-        // May recurse back to Resolve.
+        /// <summary>
+        /// Resolve a relationship stanza (a list of relationships).
+        /// This will add modules to be installed, if required.
+        /// May recurse back to Resolve for those new modules.
+        /// 
+        /// Throws a TooManyModsProvideKraken if we have too many choices.
+        /// </summary>
         private void ResolveStanza(RelationshipDescriptor[] stanza, RelationshipResolverOptions options)
         {
             if (stanza == null)
@@ -133,24 +145,28 @@ namespace CKAN
                     continue;
                 }
 
-                // Otherwise, find, add, and recurse!
-                CkanModule candidate;
+                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name);
 
-                try
-                {
-                    candidate = registry.LatestAvailable(dep_name);
-                }
-                catch (ModuleNotFoundKraken)
+                if (candidates.Count == 0)
                 {
                     log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
                     throw new ModuleNotFoundKraken(dep_name);
                 }
+                else if (candidates.Count > 1)
+                {
+                    // Oh no, too many to pick from!
+                    throw new TooManyModsProvideKraken(dep_name, candidates);
+                }
 
-                Add(candidate);
-                Resolve(candidate, options);
+                Add(candidates[0]);
+                Resolve(candidates[0], options);
             }
         }
 
+        /// <summary>
+        /// Adds the specified module to the list of modules we're installing.
+        /// This also adds its provides list to what we have available.
+        /// </summary>
         private void Add(CkanModule module)
         {
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
@@ -183,6 +199,9 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Returns a list of all modules to install to satisify the changes required.
+        /// </summary>
         public List<CkanModule> ModList()
         {
             var modules = new HashSet<CkanModule>(modlist.Values);
