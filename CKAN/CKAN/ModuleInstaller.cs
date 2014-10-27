@@ -335,22 +335,23 @@ namespace CKAN
 
         /// <summary>
         ///     Install our mod from the filename supplied.
-        ///     If no file is supplied, we will fetch() it first.
+        ///     If no file is supplied, we will check the cache or download it.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
         ///     Use InstallList() for requests from the user.
         /// 
-        ///     XXX: This provides no way to check if the install failed,
-        ///     it *should* throw an exception if it does.
         /// </summary>
-        private void Install(CkanModule module, string filename = null)
+        // 
+        // TODO: The name of this and InstallModule() need to be made more distinctive.
+
+        internal void Install(CkanModule module, string filename = null)
         {
             User.WriteLine(module.identifier + ":\n");
 
             Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
+            // TODO: This really should be handled by higher-up code.
             if (version != null)
             {
-                // TODO: Check if we can upgrade!
                 User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
                 return;
             }
@@ -367,44 +368,15 @@ namespace CKAN
             // And a list of files to record them to.
             var module_files = new Dictionary<string, InstalledModuleFile>();
 
-            ZipFile zipfile = null;
-
-            // Open our zip file for processing
-            try
-            {
-                zipfile = new ZipFile(File.OpenRead(filename));
-            }
-            catch (Exception)
-            {
-                // TODO: I'm not sure we want to just be returing here
-                // on error. A failed install is enough of a reason to
-                // bail out entirely. This should be throwing an exception.
-                User.Error("Failed to open archive \"{0}\"", filename);
-                return;
-            }
-
-            if (module.install == null || module.install.Length == 0)
-            {
-                log.DebugFormat("No install stanzas found for {0}, using defaults", module);
-
-                // This throws a FileNotFoundKraken on failure. We intentionally
-                // don't catch it, because that's an irrecoverable error.
-                var stanza = GenerateDefaultInstall(module.identifier, zipfile);
-                InstallComponent(stanza, zipfile, module_files);
-            }
-            else
-            {
-                // Walk through our install instructions.
-                foreach (ModuleInstallDescriptor stanza in module.install)
-                {
-                    InstallComponent(stanza, zipfile, module_files);
-                }
-            }
+            // Install all the things!
+            InstallModule(module, filename, module_files);
 
             // Register our files.
             registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
 
             // Handle bundled mods, if we have them.
+            // TODO: Deprecate bundles!
+
             if (module.bundles != null)
             {
                 foreach (BundledModuleDescriptor stanza in module.bundles)
@@ -425,13 +397,16 @@ namespace CKAN
                     // Not installed, so let's get about installing it!
                     var installed_files = new Dictionary<string, InstalledModuleFile>();
 
-                    InstallComponent(stanza, zipfile, installed_files);
+                    InstallComponent(stanza, filename, installed_files);
 
                     registry.RegisterModule(new InstalledModule(installed_files, bundled, DateTime.Now));
                 }
             }
 
             // Done! Save our registry changes!
+            // TODO: From a transaction standpoint, we probably don't want to save the registry,
+            // and instead want something higher up the call-chain to do that.
+
             registry_manager.Save();
 
             if (onReportModInstalled != null)
@@ -513,23 +488,56 @@ namespace CKAN
         /// <summary>
         /// Install the component described in the stanza.
         /// Modifies the supplied module_files to contain the files installed.
+        /// This method should be avoided, as it may be removed in the future.
         /// </summary>
-        private void InstallComponent(InstallableDescriptor stanza, ZipFile zipfile,
+        internal void InstallComponent(InstallableDescriptor stanza, string zip_filename,
             Dictionary<string, InstalledModuleFile> module_files)
         {
-            List<InstallableFile> files = FindInstallableFiles(stanza, zipfile, ksp);
 
-            foreach (var file in files) {
+            // TODO: Can we deprecate this code now please?
+            log.Warn("Soon to be deprecated method InstallComponent called");
 
-                User.WriteLine("    * Copying " + file.source.Name);
+            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            {
+                List<InstallableFile> files = FindInstallableFiles(stanza, zipfile, ksp);
 
-                CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+                foreach (var file in files) {
 
-                // TODO: We really should be computing sha1sums again!
-                module_files.Add(file.destination, new InstalledModuleFile
+                    // TODO: I'd like to replace this with a log.Info
+                    User.WriteLine("    * Copying " + file.source.Name);
+
+                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+
+                    // TODO: We really should be computing sha1sums again!
+                    module_files.Add(file.destination, new InstalledModuleFile
+                    {
+                        sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Installs the module from the zipfile provided, updating the supplied list of installed files provided.
+        /// 
+        /// Propagates up a BadMetadataKraken if our install metadata is bad.
+        /// </summary>
+        internal void InstallModule(CkanModule module, string zip_filename, Dictionary<string, InstalledModuleFile> installed_files)
+        {
+            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            {
+                List<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
+
+                foreach (var file in files)
                 {
-                    sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
-                });
+                    log.InfoFormat("Copying {0}", file.source.Name);
+                    CopyZipEntry(zipfile,file.source,file.destination,file.makedir);
+                    installed_files.Add(file.destination, new InstalledModuleFile
+                    {
+                        // TODO: Re-enable checksums!!!
+                        sha1_sum = "" //Sha1Sum (currentTransaction.OpenFile(fullPath).TemporaryPath)
+                    });
+                }
             }
         }
 
@@ -541,6 +549,8 @@ namespace CKAN
         /// 
         /// Throws a BadInstallLocationKraken if the install stanza targets an
         /// unknown install location (eg: not GameData, Ships, etc)
+        /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         internal static List<InstallableFile> FindInstallableFiles(InstallableDescriptor stanza, ZipFile zipfile, KSP ksp)
         {
@@ -621,6 +631,13 @@ namespace CKAN
                 files.Add(file_info);
             }
 
+            // If we have no files, then something is wrong! (KSP-CKAN/CKAN#93)
+            if (files.Count == 0)
+            {
+                // We have null as the first argument here, because we don't know which module we're installing
+                throw new BadMetadataKraken(null, String.Format("No files found in {0} to install!", stanza.file));
+            }
+
             return files;
         }
 
@@ -629,23 +646,35 @@ namespace CKAN
         /// for this module.
         /// 
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
+        /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         internal static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
         {
             var files = new List<InstallableFile> ();
 
-            // Use the provided stanzas, or use the default install stanza if they're absent.
-            if (module.install != null && module.install.Length != 0)
+            try
             {
-                foreach (ModuleInstallDescriptor stanza in module.install)
+                // Use the provided stanzas, or use the default install stanza if they're absent.
+                if (module.install != null && module.install.Length != 0)
                 {
-                    files.AddRange(FindInstallableFiles(stanza, zipfile, ksp));
+                    foreach (ModuleInstallDescriptor stanza in module.install)
+                    {
+                        files.AddRange(FindInstallableFiles(stanza, zipfile, ksp));
+                    }
+                }
+                else
+                {
+                    ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                    files.AddRange(FindInstallableFiles(default_stanza, zipfile, ksp));
                 }
             }
-            else
+            catch (BadMetadataKraken kraken)
             {
-                ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
-                files.AddRange(FindInstallableFiles(default_stanza, zipfile, ksp));
+                // Decorate our kraken with the current module, as the lower-level
+                // methods won't know it.
+                kraken.module = module;
+                throw;
             }
 
             return files;
@@ -657,6 +686,8 @@ namespace CKAN
         /// 
         /// This *will* throw an exception if the file does not exist.
         /// 
+        /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
+        ///
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
         /// </summary>
         // TODO: Document which exception!
