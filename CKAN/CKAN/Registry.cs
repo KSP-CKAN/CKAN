@@ -5,6 +5,13 @@ using log4net;
 
 namespace CKAN
 {
+    /// <summary>
+    /// This is the CKAN registry. All the modules that we know about or have installed
+    /// are contained in here.
+    /// 
+    /// Please try to avoid accessing the attributes directly. Right now they're public
+    /// so our JSON layer can access them, but in the future they will become private.
+    /// </summary>
     public class Registry
     {
         private const int LATEST_REGISTRY_VERSION = 0;
