@@ -14,31 +14,33 @@ namespace CKANTests
         public void GenerateDefaultInstall()
         {
             string filename = Tests.TestData.DogeCoinFlagZip();
-            var zipfile = new ZipFile(File.OpenRead(filename));
-
-            ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
-
-            TestDogeCoinStanza(stanza);
-
-            // Same again, but screwing up the case (we see this *all the time*)
-            ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
-
-            TestDogeCoinStanza(stanza2);
-
-            // Now what happens if we can't find what to install?
-
-            Assert.Throws<FileNotFoundKraken>(delegate {
-                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
-            });
-
-            // Make sure the FNFKraken looks like what we expect.
-            try
+            using (var zipfile = new ZipFile(filename))
             {
-                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy",zipfile);
-            }
-            catch (FileNotFoundKraken kraken)
-            {
-                Assert.AreEqual("Xyzzy", kraken.file);
+                ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+
+                TestDogeCoinStanza(stanza);
+
+                // Same again, but screwing up the case (we see this *all the time*)
+                ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+
+                TestDogeCoinStanza(stanza2);
+
+                // Now what happens if we can't find what to install?
+
+                Assert.Throws<FileNotFoundKraken>(delegate
+                {
+                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                });
+
+                // Make sure the FNFKraken looks like what we expect.
+                try
+                {
+                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                }
+                catch (FileNotFoundKraken kraken)
+                {
+                    Assert.AreEqual("Xyzzy", kraken.file);
+                }
             }
         }
 

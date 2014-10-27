@@ -426,7 +426,12 @@ namespace CKAN
 
             try
             {
-                return BitConverter.ToString(hasher.ComputeHash(File.OpenRead(path)));
+                using (var fh = File.OpenRead(path))
+                {
+                    string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
+                    fh.Close();
+                    return sha1;
+                }
             }
             catch
             {
@@ -497,7 +502,7 @@ namespace CKAN
             // TODO: Can we deprecate this code now please?
             log.Warn("Soon to be deprecated method InstallComponent called");
 
-            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 List<InstallableFile> files = FindInstallableFiles(stanza, zipfile, ksp);
 
@@ -524,7 +529,7 @@ namespace CKAN
         /// </summary>
         internal void InstallModule(CkanModule module, string zip_filename, Dictionary<string, InstalledModuleFile> installed_files)
         {
-            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 List<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
 
@@ -694,7 +699,7 @@ namespace CKAN
         internal static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, KSP ksp)
         {
             // `using` makes sure our zipfile gets closed when we exit this block.
-            using (ZipFile zipfile = new ZipFile(File.OpenRead(zip_filename)))
+            using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 log.DebugFormat("Searching {0} using {1} as module", zip_filename, module);
                 return FindInstallableFiles(module, zipfile, ksp);
@@ -728,16 +733,17 @@ namespace CKAN
                 }
 
                 // It's a file! Prepare the streams
-                Stream zipStream = zipfile.GetInputStream(entry);
+                using (Stream zipStream = zipfile.GetInputStream(entry))
+                using (FileStream output = currentTransaction.OpenFileWrite(fullPath))
+                {
+                    // Copy
+                    zipStream.CopyTo(output);
 
-                FileStream output = currentTransaction.OpenFileWrite(fullPath);
-
-                // Copy
-                zipStream.CopyTo(output);
-
-                // Tidy up.
-                zipStream.Close();
-                output.Close();
+                    // Tidy up. Possibly not needed inside a `using` block, but almost certainly
+                    // doesn't hurt.
+                    zipStream.Close();
+                    output.Close();
+                }
             }
 
             return;
