@@ -10,6 +10,7 @@ using CommandLine;
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using System.Transactions;
 
 namespace CKAN
 {
@@ -261,31 +262,37 @@ namespace CKAN
                     return EXIT_BADOPT;
                 }
 
-                var installer = ModuleInstaller.Instance;
-
-                foreach (string module in options.modules)
+                // Do our un-installs and re-installs in a transaction. If something goes wrong,
+                // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
+                using (var transaction = new TransactionScope ())
                 {
-                    installer.Uninstall(module, false);
-                }
+                    var installer = ModuleInstaller.Instance;
 
-                // Prepare options. Can these all be done in the new() somehow?
-                var install_ops = new RelationshipResolverOptions();
-                install_ops.with_all_suggests = options.with_all_suggests;
-                install_ops.with_suggests = options.with_suggests;
-                install_ops.with_recommends = !options.no_recommends;
+                    foreach (string module in options.modules)
+                    {
+                        installer.Uninstall(module, false);
+                    }
 
-                // Install everything requested. :)
-                try
-                {
-                    installer.InstallList(options.modules, install_ops);
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    User.WriteLine("Module {0} required, but not listed in index.", ex.module);
-                    User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                    return EXIT_ERROR;
-                }
+                    // Prepare options. Can these all be done in the new() somehow?
+                    var install_ops = new RelationshipResolverOptions();
+                    install_ops.with_all_suggests = options.with_all_suggests;
+                    install_ops.with_suggests = options.with_suggests;
+                    install_ops.with_recommends = !options.no_recommends;
 
+                    // Install everything requested. :)
+                    try
+                    {
+                        installer.InstallList(options.modules, install_ops);
+                    }
+                    catch (ModuleNotFoundKraken ex)
+                    {
+                        User.WriteLine("Module {0} required, but not listed in index.", ex.module);
+                        User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                        return EXIT_ERROR;
+                    }
+
+                    transaction.Complete();
+                }
                 User.WriteLine("\nDone!\n");
 
                 return EXIT_OK;
