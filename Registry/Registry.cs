@@ -275,10 +275,23 @@ namespace CKAN
         /// <summary>
         /// Registers the given DLL as having been installed. This provides some support
         /// for pre-CKAN modules.
+        /// 
+        /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
-        /// <param name="path">Path.</param>
         public void RegisterDll(string path)
         {
+            // TODO: This is awful, as it's O(N^2), but it means we never index things which are
+            // part of another mod.
+
+            foreach (var mod in installed_modules.Values)
+            {
+                if (mod.installed_files.ContainsKey(path))
+                {
+                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.source_module);
+                    return;
+                }
+            }
+
             // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
             Match match = Regex.Match(path, @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)");
 
@@ -287,10 +300,11 @@ namespace CKAN
 
             if (modName.Length == 0 || relPath.Length == 0)
             {
+                log.WarnFormat("Attempted to index {0} which is not a DLL", path);
                 return;
             }
 
-            User.WriteLine("Registering {0} -> {1}", modName, relPath);
+            log.InfoFormat("Registering {0} -> {1}", modName, path);
 
             // We're fine if we overwrite an existing key.
             installed_dlls[modName] = relPath;
