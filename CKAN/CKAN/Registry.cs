@@ -5,17 +5,6 @@ using log4net;
 
 namespace CKAN
 {
-
-    internal class RegistryVersionNotSupportedException : Exception
-    {
-        public int requested_version;
-
-        public RegistryVersionNotSupportedException(int v)
-        {
-            requested_version = v;
-        }
-    }
-
     public class Registry
     {
         private const int LATEST_REGISTRY_VERSION = 0;
@@ -40,7 +29,7 @@ namespace CKAN
             /* TODO: support more than just the latest version */
             if (version != LATEST_REGISTRY_VERSION)
             {
-                throw new RegistryVersionNotSupportedException(version);
+                throw new RegistryVersionNotSupportedKraken(version);
             }
 
             installed_modules = mods;
