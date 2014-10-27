@@ -272,6 +272,11 @@ namespace CKAN
             installed_modules.Remove(module);
         }
 
+        /// <summary>
+        /// Registers the given DLL as having been installed. This provides some support
+        /// for pre-CKAN modules.
+        /// </summary>
+        /// <param name="path">Path.</param>
         public void RegisterDll(string path)
         {
             // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
@@ -291,6 +296,9 @@ namespace CKAN
             installed_dlls[modName] = relPath;
         }
 
+        /// <summary>
+        /// Clears knowledge of all DLLs from the registry.
+        /// </summary>
         public void ClearDlls()
         {
             installed_dlls = new Dictionary<string, string>();
@@ -298,18 +306,16 @@ namespace CKAN
 
         /// <summary>
         ///     Returns the installed version of a given mod.
-        ///     If the mod was autodetected (but present), a "0" is returned.
+        ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
-        /// <returns>The version.</returns>
-        /// <param name="modName">Mod name.</param>
         public Version InstalledVersion(string modName)
         {
             if (installed_modules.ContainsKey(modName))
             {
                 return installed_modules[modName].source_module.version;
             }
-            if (installed_dlls.ContainsKey(modName))
+            else if (installed_dlls.ContainsKey(modName))
             {
                 return new DllVersion();
             }
