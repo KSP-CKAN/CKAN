@@ -1,0 +1,6 @@
+# Project config for ack text search tool
+# http://beyondgrep.com/
+
+--ignore-dir=build
+--ignore-dir=CKAN/Tests/test-results
+--ignore-dir=CKAN/packages
