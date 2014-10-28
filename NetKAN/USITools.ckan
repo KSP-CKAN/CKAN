@@ -1,0 +1,17 @@
+{
+    "spec_version"   : 1,
+    "$kref"          : "#/ckan/github/BobPalmer/UmbraSpaceIndustries",
+    "name"           : "Umbra Space Industries Tools",
+    "author"         : "RoverDude",
+    "identifier"     : "USITools",
+    "abstract"       : "Common libraries for USI mods",
+    "license"        : "CC-BY-NC-SA-4.0",
+    "release_status" : "stable",
+    "ksp_version"    : "0.25",
+    "install" : [
+        {
+            "file"       : "GameData/UmbraSpaceIndustries",
+            "install_to" : "GameData"
+        }
+    ]
+}
