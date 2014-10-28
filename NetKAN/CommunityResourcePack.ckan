@@ -1,6 +1,6 @@
 {
     "spec_version"   : 1,
-    "$kref"          : "#/ckan/github",
+    "$kref"          : "#/ckan/github/BobPalmer/CommunityResourcePack",
     "name"           : "Community Resource Pack",
     "author"         : "RoverDude",
     "identifier"     : "CommunityResourcePack",

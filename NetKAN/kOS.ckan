@@ -1,14 +1,13 @@
 {
     "spec_version"   : 1,
     "identifier"     : "kOS",
-    "$kref"          : "#/ckan/kerbalstuff",
+    "$kref"          : "#/ckan/kerbalstuff/86",
     "license"        : "GPL-3.0",
     "release_status" : "stable",
     "resources"      : {
         "manual"       : "http://ksp-kos.github.io/KOS_DOC/",
         "github"       : {
             "url"      : "https://github.com/KSP-KOS/KOS",
-            "releases" : true
         }
     },
     "install" : [

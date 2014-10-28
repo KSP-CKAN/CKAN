@@ -9,6 +9,7 @@ using log4net.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CommandLine;
 
 namespace CKAN.NetKAN
 {
@@ -20,62 +21,52 @@ namespace CKAN.NetKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
         private static readonly string expand_token = "$kref"; // See #70 for naming reasons
-        private static readonly string ks_expand_path = "#/ckan/kerbalstuff";
-        private static readonly string gh_expand_path = "#/ckan/github";
 
         public static int Main(string[] args)
         {
             BasicConfigurator.Configure();
+            LogManager.GetRepository().Threshold = Level.Error;
 
-            if (args.Length < 4)
+            var options = new CmdLineOptions();
+            Parser.Default.ParseArgumentsStrict(args, options);
+
+            if (options.Verbose)
             {
-                User.WriteLine("Usage: netkan ks identifier ksid outputdir [--verbose|--debug] ## KerbalStuff");
-                User.WriteLine("Usage: netkan gh identifier repo outputdir [--verbose|--debug] ## GitHub");
+                LogManager.GetRepository().Threshold = Level.Info;
+            }
+            else if (options.Debug)
+            {
+                LogManager.GetRepository().Threshold = Level.Debug;
+            }
+
+            if (options.File == null)
+            {
+                log.Fatal("Usage: netkan [--verbose|--debug] [--outputdir=...] <filename>");
                 return EXIT_BADOPT;
             }
 
-            string source = args[0];
-            string identifier = args[1];
-            string remote_id = args[2];
-            string output_path = args[3];
+            log.InfoFormat("Processing {0}", options.File);
 
-            // Process logging options.
-
-            if (args.Length >= 5)
-            {
-                if (args[4] == "--verbose")
-                {
-                    LogManager.GetRepository().Threshold = Level.Info;
-                }
-                else if (args[4] == "--debug")
-                {
-                    LogManager.GetRepository().Threshold = Level.Debug;
-                }
-                else
-                {
-                    Console.WriteLine("Unknown option {0}, did you mean --verbose or --debug?",args[4]);
-                    return EXIT_BADOPT;
-                }
-            }
-            else
-            {
-                LogManager.GetRepository().Threshold = Level.Error;
-            }
-
-            log.InfoFormat("Processing {0} {1} {2}", source, identifier, remote_id);
+            JObject json = JsonFromFile(options.File);
+            NetKanRemote remote = FindRemote(json);
 
             // We need to find where KSP lives because we use its cache directory
             // TODO: This really should be configurable.
             KSP ksp = KSPManager.GetPreferredInstance();
 
-            JObject metadata = null;
-            if (source == "ks")
+            JObject metadata;
+            if (remote.source == "kerbalstuff")
             {
-                metadata = KerbalStuff(identifier, remote_id);
+                metadata = KerbalStuff(json, remote.id);
             }
-            else if (source == "gh")
+            else if (remote.source == "github")
             {
-                metadata = GitHub(identifier, remote_id);
+                metadata = GitHub(json, remote.id);
+            }
+            else
+            {
+                log.FatalFormat("Unknown remote source: {0}", remote.source);
+                return EXIT_ERROR;
             }
 
             // Make sure that at the very least this validates against our own
@@ -84,10 +75,9 @@ namespace CKAN.NetKAN
             CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             // Make sure our identifiers match.
-
-            if (mod.identifier != identifier)
+            if (mod.identifier != (string)json["identifier"])
             {
-                log.FatalFormat("Error: Mod ident {0} does not match expected {1}", mod.identifier, identifier);
+                log.FatalFormat("Error: Have metadata for {0}, but wanted {1}", mod.identifier, json["identifier"]);
                 return EXIT_ERROR;
             }
 
@@ -99,12 +89,14 @@ namespace CKAN.NetKAN
             catch (BadMetadataKraken kraken)
             {
                 log.FatalFormat("Error: Bad metadata for {0}: {1}", kraken.module, kraken.Message);
+                return EXIT_ERROR;
             }
 
             // All done! Write it out!
 
-            string final_path = Path.Combine(output_path, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
+            string final_path = Path.Combine(options.OutputDir, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
 
+            log.InfoFormat("Writing final metadata to {0}", final_path);
             File.WriteAllText(final_path, metadata.ToString());
 
             return EXIT_OK;
@@ -114,68 +106,90 @@ namespace CKAN.NetKAN
         /// Fetch le things from le KerbalStuff.
         /// Returns a JObject that should be a fully formed CKAN file.
         /// </summary>
-        private static JObject KerbalStuff(string identifier, string remote_id)
+        private static JObject KerbalStuff(JObject orig_metadata, string remote_id)
         {
+            // Look up our mod on KS by its ID.
             KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
             Version version = ks.versions[0].friendly_version;
 
             log.DebugFormat("Mod: {0} {1}", ks.name, version);
 
+            // Find the latest download.
             KSVersion latest = ks.versions[0];
-            string filename = latest.Download(identifier);
+            string filename = latest.Download((string) orig_metadata["identifier"]);
 
-            JObject metadata = ExtractOrBootKAN(identifier, filename);
+            JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
-            // Check if we should auto-inflate!
-            if ((string) metadata[expand_token] == ks_expand_path)
+            // Check if we should auto-inflate.
+            string kref = (string)metadata[expand_token];
+
+            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
             {
-                log.InfoFormat("Inflating...");
+                log.InfoFormat("Inflating from KerbalStuff... {0}", metadata[expand_token]);
                 ks.InflateMetadata(metadata, filename, latest);
                 metadata.Remove(expand_token);
             }
+            else
+            {
+                log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
+            }
 
             return metadata;
         }
 
-        private static JObject GitHub(string identifier, string repo)
+        /// <summary>
+        /// Fetch things from Github, returning a complete CkanModule document.
+        /// </summary>
+        private static JObject GitHub(JObject orig_metadata, string repo)
         {
+            // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
-            string filename = release.Download(identifier);
+            string filename = release.Download((string) orig_metadata["identifier"]);
 
-            JObject metadata = ExtractOrBootKAN(identifier, filename);
+            // Extract embedded metadata, or use what we have.
+            JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
-            if ((string)metadata[expand_token] == gh_expand_path)
+            // Check if we should auto-inflate.
+
+            string kref = (string)metadata[expand_token];
+
+            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/github")
             {
-                log.InfoFormat("Inflating from github metadata...");
+                log.InfoFormat("Inflating from github metadata... {0}", metadata[expand_token]);
                 release.InflateMetadata(metadata, filename, repo);
                 metadata.Remove(expand_token);
             }
+            else
+            {
+                log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
+            }
 
             return metadata;
 
         }
 
-        internal static JObject ExtractOrBootKAN(string identifier, string filename)
+        /// <summary>
+        /// Returns the CKAN metadata found in the file provided, or returns the
+        /// second parameter (the default) if none found.
+        internal static JObject MetadataFromFileOrDefault(string filename, JObject default_json)
         {
-            JObject metadata = null;
             try
             {
-                metadata = ExtractCkanInfo(filename);
+                return ExtractCkanInfo(filename);
             }
             catch (MetadataNotFoundKraken)
             {
-                log.WarnFormat ("Reading BootKAN metadata for {0}", filename);
-                metadata = BootKAN (identifier);
+                return default_json;
             }
-            return metadata;
         }
 
+        /// <summary>
+        /// Return a parsed JObject from a stream.
+        /// </summary>
 
         // Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118 
         private static JObject DeserializeFromStream(Stream stream)
         {
-            // var serializer = new JsonSerializer();
-
             using (var sr = new StreamReader(stream))
             {
                 using (var jsonTextReader = new JsonTextReader(sr))
@@ -186,7 +200,8 @@ namespace CKAN.NetKAN
         }
 
         /// <summary>
-        ///     Given a zip filename, finds and returns the first embedded .ckan file it finds.
+        /// Given a zip filename, finds and returns the first embedded .ckan file it finds.
+        /// Throws a MetadataNotFoundKraken if there is none.
         /// </summary>
         private static JObject ExtractCkanInfo(string filename)
         {
@@ -217,13 +232,40 @@ namespace CKAN.NetKAN
         }
 
         /// <summary>
-        /// Returns the metadata fragment found in the BootKAN/ directory for
-        /// this identifier, if it exists.
+        /// Find a remote source and remote id from a JObject by parsing its expand_token
         /// </summary>
-        internal static JObject BootKAN(string identifier)
+        internal static NetKanRemote FindRemote(JObject json)
         {
-            string fragment = File.ReadAllText(Path.Combine ("BootKAN", identifier + ".ckan"));
-            return JObject.Parse(fragment);
+            string kref = (string) json[expand_token];
+            Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
+
+            if (! match.Success)
+            {
+                // TODO: Have a proper kraken class!
+                throw new Kraken("Cannot find remote and ID in kref: " + kref);
+            }
+
+            return new NetKanRemote(source: match.Groups[1].ToString(), id: match.Groups[2].ToString());
+        }
+
+        /// <summary>
+        /// Reads JSON from a file and returns a JObject representation.
+        /// </summary>
+        internal static JObject JsonFromFile(string filename)
+        {
+            return JObject.Parse(File.ReadAllText(filename));
+        }
+    }
+
+    internal class NetKanRemote
+    {
+        public string source; // EG: "kerbalstuff" or "github"
+        public string id;     // EG: "269" or "pjf/DogeCoinFlag"
+
+        internal NetKanRemote(string source, string id)
+        {
+            this.source = source;
+            this.id = id;
         }
     }
 

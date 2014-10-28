@@ -1,7 +1,7 @@
 {
     "spec_version" : 1,
     "identifier"   : "Kerb-fu",
-    "$kref"        : "#/ckan/kerbalstuff",
+    "$kref"        : "#/ckan/kerbalstuff/275",
     "license"      : "CC-BY-NC-SA-4.0",
     "recommends"   : [ { "name" : "MechJeb2" } ],
     "resources"    : {
