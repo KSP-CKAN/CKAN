@@ -15,7 +15,7 @@ namespace CKAN
 
     public delegate void ModuleInstallerReportModInstalled(CkanModule module);
 
-    internal struct InstallableFile 
+    public struct InstallableFile 
     {
         public ZipEntry source;
         public string destination;
@@ -654,7 +654,7 @@ namespace CKAN
         /// 
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
-        internal static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
+        public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
         {
             var files = new List<InstallableFile> ();
 
@@ -696,7 +696,7 @@ namespace CKAN
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
         /// </summary>
         // TODO: Document which exception!
-        internal static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, KSP ksp)
+        public static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, KSP ksp)
         {
             // `using` makes sure our zipfile gets closed when we exit this block.
             using (ZipFile zipfile = new ZipFile(zip_filename))
