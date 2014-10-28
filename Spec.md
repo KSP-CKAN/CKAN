@@ -505,10 +505,11 @@ For example:
 The following `$kref` values are understood. Only *one* `$kref`
 field may be present in a document.
 
-###### #/ckan/kerbalstuff
+###### #/ckan/kerbalstuff/:ksid
 
-Indicates that data should be fetched from KerbalStuff. When used,
-the following fields will be auto-filled if not already present:
+Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
+
+When used, the following fields will be auto-filled if not already present:
 
 - name
 - license
@@ -521,10 +522,11 @@ the following fields will be auto-filled if not already present:
 - resources/kerbalstuff
 - ksp_version
 
-###### #/ckan/github
+###### #/ckan/github/:user/:repo
 
-Indicates data should be fetched from Github. When used, the following
-fields will be auto-filled if not already present:
+Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
+
+When used, the following fields will be auto-filled if not already present:
 
 - author
 - version
