@@ -29,8 +29,8 @@ namespace CKAN.KerbalStuff
 
             if (args.Length < 4)
             {
-                User.WriteLine("Usage: ext2ckan ks identifier ksid outputdir [--verbose|--debug] ## KerbalStuff");
-                User.WriteLine("Usage: ext2ckan gh identifier repo outputdir [--verbose|--debug]  ## GitHub");
+                User.WriteLine("Usage: netkan ks identifier ksid outputdir [--verbose|--debug] ## KerbalStuff");
+                User.WriteLine("Usage: netkan gh identifier repo outputdir [--verbose|--debug] ## GitHub");
                 return EXIT_BADOPT;
             }
 
