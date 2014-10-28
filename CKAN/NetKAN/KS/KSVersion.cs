@@ -2,7 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using log4net;
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     public class KSVersion
     {

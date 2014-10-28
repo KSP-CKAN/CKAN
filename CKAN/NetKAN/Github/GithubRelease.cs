@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using log4net;
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     /// <summary>
     /// A simple class to pull the relevant details out of a Github release.

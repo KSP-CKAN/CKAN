@@ -3,7 +3,7 @@ using System.IO;
 using log4net;
 using Newtonsoft.Json.Linq;
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     public class KSMod : CkanInflator
     {

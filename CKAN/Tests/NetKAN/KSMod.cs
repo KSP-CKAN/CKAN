@@ -16,21 +16,21 @@ namespace NetKAN.KerbalStuffTests
             Assert.AreEqual((string) meta["foo"], "bar");
 
             // This should do nothing.
-            CKAN.KerbalStuff.KSMod.Inflate(meta, "foo", "baz");
+            CKAN.NetKAN.KSMod.Inflate(meta, "foo", "baz");
             Assert.AreEqual((string) meta["foo"], "bar");
 
             // We shouldn't have an author field.
             Assert.IsNull(meta["author"]);
 
             // This should add a key.
-            CKAN.KerbalStuff.KSMod.Inflate(meta, "author", "Jeb");
+            CKAN.NetKAN.KSMod.Inflate(meta, "author", "Jeb");
             Assert.AreEqual((string) meta["author"], "Jeb");
         }
 
         [Test]
         public void KSHome()
         {
-            var ks = new CKAN.KerbalStuff.KSMod();
+            var ks = new CKAN.NetKAN.KSMod();
             ks.name = "foo bar";
             ks.id = 123;
 

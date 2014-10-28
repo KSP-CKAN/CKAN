@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>CKAN.NetKAN</RootNamespace>
     <AssemblyName>netkan</AssemblyName>
-    <StartupObject>CKAN.KerbalStuff.MainClass</StartupObject>
+    <StartupObject>CKAN.NetKAN.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
