@@ -1,7 +1,7 @@
 {
     "spec_version"   : 1,
     "identifier"     : "InfernalRobotics",
-    "$kref"          : "#/ckan/kerbalstuff",
+    "$kref"          : "#/ckan/kerbalstuff/8",
     "license"        : "GPL-3.0",
     "release_status" : "stable",
     "resources"      : {

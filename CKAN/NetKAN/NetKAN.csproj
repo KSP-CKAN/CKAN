@@ -7,9 +7,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CKAN.KerbalStuff</RootNamespace>
-    <AssemblyName>ks2ckan</AssemblyName>
-    <StartupObject>CKAN.KerbalStuff.MainClass</StartupObject>
+    <RootNamespace>CKAN.NetKAN</RootNamespace>
+    <AssemblyName>netkan</AssemblyName>
+    <StartupObject>CKAN.NetKAN.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +43,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,6 +56,7 @@
     <Compile Include="Github\GithubAPI.cs" />
     <Compile Include="Github\GithubRelease.cs" />
     <Compile Include="CkanInflator.cs" />
+    <Compile Include="CmdLineOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,6 +1,6 @@
 {
     "spec_version"   : 1,
-    "$kref"          : "#/ckan/github",
+    "$kref"          : "#/ckan/github/Biotronic/TweakScale",
     "name"           : "TweakScale",
     "abstract"       : "Rescale everything!",
     "identifier"     : "TweakScale",

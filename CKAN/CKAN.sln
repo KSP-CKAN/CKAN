@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdLine", "CmdLine\CmdLine.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-GUI", "GUI\CKAN-GUI.csproj", "{A79F9D54-315C-472B-928F-713A5860B2BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalStuff", "KerbalStuff\KerbalStuff.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetKAN", "NetKAN\NetKAN.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

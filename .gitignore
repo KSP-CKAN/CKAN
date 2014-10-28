@@ -8,6 +8,8 @@ TestResult.xml
 StyleCop.Cache
 ckan.exe
 ks2ckan.exe
+netkan.exe
+*.exe.mdb
 .*.swp
 .fatten.out
 *.resources

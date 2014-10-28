@@ -2,7 +2,7 @@
     "spec_version"   : 1,
     "identifier"     : "RealChute",
     "license"        : "restricted",
-    "$kref"          : "#/ckan/kerbalstuff",
+    "$kref"          : "#/ckan/kerbalstuff/71",
     "resources"      : {
         "github" : {
             "url" : "https://github.com/StupidChris/RealChute"
