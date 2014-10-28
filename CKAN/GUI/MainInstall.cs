@@ -192,6 +192,10 @@ namespace CKAN
             Util.Invoke(this, () => Enabled = true);
         }
 
+        /// <summary>
+        /// Returns mods that we require to install the selected module.
+        /// This returns null if we can't compute these without user input (eg: to select a provider)
+        /// </summary>
         private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)
         {
             var tmp = new List<string>();
@@ -205,6 +209,12 @@ namespace CKAN
             }
             catch (ModuleNotFoundKraken)
             {
+                // TODO: This may be an error now, as it genuinely means we can't find a mod.
+                return null;
+            }
+            catch (TooManyModsProvideKraken)
+            {
+                // We'll need to ask the user for a choice later.
                 return null;
             }
 
