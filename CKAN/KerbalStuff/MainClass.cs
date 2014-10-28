@@ -66,7 +66,7 @@ namespace CKAN.KerbalStuff
 
             // We need to find where KSP lives because we use its cache directory
             // TODO: This really should be configurable.
-            KSPManager.GetPreferredInstance();
+            KSP ksp = KSPManager.GetPreferredInstance();
 
             JObject metadata = null;
             if (source == "ks")
@@ -89,6 +89,16 @@ namespace CKAN.KerbalStuff
             {
                 log.FatalFormat("Error: Mod ident {0} does not match expected {1}", mod.identifier, identifier);
                 return EXIT_ERROR;
+            }
+
+            // Make sure this would actually generate an install
+            try
+            {
+                ModuleInstaller.FindInstallableFiles(mod, ksp.Cache.CachedFile(mod), null);
+            }
+            catch (BadMetadataKraken kraken)
+            {
+                log.FatalFormat("Error: Bad metadata for {0}: {1}", kraken.module, kraken.Message);
             }
 
             // All done! Write it out!
