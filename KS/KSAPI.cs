@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     // KerbalStuff API
     public class KSAPI

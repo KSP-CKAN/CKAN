@@ -10,7 +10,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     internal class MainClass
     {

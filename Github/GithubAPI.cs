@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
 
-namespace CKAN.KerbalStuff
+namespace CKAN.NetKAN
 {
     public static class GithubAPI
     {
