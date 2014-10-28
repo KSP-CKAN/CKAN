@@ -2,5 +2,6 @@
 # http://beyondgrep.com/
 
 --ignore-dir=build
---ignore-dir=CKAN/Tests/test-results
---ignore-dir=CKAN/packages
+--ignore-dir=test-results
+--ignore-dir=packages
+--ignore-dir=obj
