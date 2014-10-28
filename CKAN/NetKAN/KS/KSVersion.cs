@@ -24,13 +24,11 @@ namespace CKAN.NetKAN
             log.DebugFormat("Download path is {0}", download_path);
         }
 
-        public string Download(string identifier)
+        public string Download(string identifier, Cache cache)
         {
             log.DebugFormat("Downloading {0}", download_path);
 
-            var installer = ModuleInstaller.Instance;
-
-            string filename = installer.CachedOrDownload(identifier, friendly_version, new Uri(download_path));
+            string filename = ModuleInstaller.CachedOrDownload(identifier, friendly_version, new Uri(download_path), cache);
 
             log.Debug("Downloaded.");
 

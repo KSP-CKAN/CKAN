@@ -13,8 +13,11 @@ namespace CKAN.NetKAN
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
-        [Option("outputdir", DefaultValue = ".", HelpText = "Output directory (defaults to '.')")]
+        [Option("outputdir", DefaultValue = ".", HelpText = "Output directory")]
         public string OutputDir { get; set; }
+
+        [Option("cachedir", HelpText = "Cache directory for downloaded mods")]
+        public string CacheDir { get; set; }
 
         // TODO: How do we mark this as required?
         [ValueOption(0)]

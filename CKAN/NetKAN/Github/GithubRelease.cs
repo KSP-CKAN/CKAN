@@ -54,14 +54,12 @@ namespace CKAN.NetKAN
 
         }
 
-        public string Download(string identifier)
+        public string Download(string identifier, Cache cache)
         {
 
             log.DebugFormat("Downloading {0}", download);
 
-            var installer = ModuleInstaller.Instance;
-
-            string filename = installer.CachedOrDownload(identifier, version, download);
+            string filename = ModuleInstaller.CachedOrDownload(identifier, version, download, cache);
 
             log.Debug("Downloaded.");
 
