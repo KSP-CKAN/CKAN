@@ -54,6 +54,7 @@ namespace CKAN
         {
             this.ksp = ksp;
             this.registry_manager = RegistryManager.Instance(ksp.CkanDir());
+            log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
         }
 
         // TODO: It'd be really lovely if this wasn't a singleton. It prevents code that
@@ -74,20 +75,26 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Download the given mod. Returns the filename it was saved to.
-        ///     If no filename is provided, the standard_name() will be used.
+        /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
-        /// <param name="filename">Filename.</param>
         public string Download(Uri url, string filename)
         {
-            User.WriteLine("    * Downloading " + filename + "...");
-
-            string full_path = Path.Combine(ksp.DownloadCacheDir(), filename);
-
             if (onReportProgress != null)
             {
                 onReportProgress(String.Format("Downloading \"{0}\"", url), 0);
             }
+
+            return Download(url, filename, this.Cache);
+        }
+
+        /// <summary>
+        /// Downloads the given mod to the cache. Returns the filename it was saved to.
+        /// </summary>
+        public static string Download(Uri url, string filename, Cache cache)
+        {
+            log.Info("Downloading " + filename);
+
+            string full_path = cache.CachePath(filename);
 
             return Net.Download(url, full_path);
         }
@@ -97,21 +104,40 @@ namespace CKAN
         /// and returns the downloaded copy otherwise.
         ///
         /// If no filename is provided, the module's standard name will be used.
-        /// In all caches, the CachePath() location is checked for the filename before downloading.
+        /// Chcecks the CKAN cache first.
         /// </summary>
         public string CachedOrDownload(CkanModule module, string filename = null)
         {
-            return CachedOrDownload(module.identifier, module.version, module.download, filename);
+            return CachedOrDownload(module.identifier, module.version, module.download, this.Cache, filename);
         }
 
+        /// <summary>
+        /// Returns the path to a cached copy of a module if it exists, or downloads
+        /// and returns the downloaded copy otherwise.
+        ///
+        /// If no filename is provided, the module's standard name will be used.
+        /// Chcecks the CKAN cache first.
+        /// </summary>
         public string CachedOrDownload(string identifier, Version version, Uri url, string filename = null)
+        {
+            return CachedOrDownload(identifier, version, url, this.Cache, filename);
+        }
+
+        /// <summary>
+        /// Returns the path to a cached copy of a module if it exists, or downloads
+        /// and returns the downloaded copy otherwise.
+        ///
+        /// If no filename is provided, the module's standard name will be used.
+        /// Chcecks provided cache first.
+        /// </summary>
+        public static string CachedOrDownload(string identifier, Version version, Uri url, Cache cache, string filename = null)
         {
             if (filename == null)
             {
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string full_path = Cache.CachedFile(filename);
+            string full_path = cache.CachedFile(filename);
 
             if (full_path != null)
             {
@@ -119,7 +145,7 @@ namespace CKAN
                 return full_path;
             }
 
-            return Download(url, filename);
+            return Download(url, filename, cache);
         }
 
         /// <summary>
