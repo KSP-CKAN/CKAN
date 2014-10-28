@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+
+# Firespitter download and repackager for the CKAN.
+# This unapologetically uses half of the CPAN.
+
+use 5.010;
+use strict;
+use warnings;
+use Net::Amazon::S3;
+use autodie qw(:all);
+use Method::Signatures;
+use Archive::Zip qw(AZ_OK);
+use File::Temp qw(tempfile);
+use Image::ExifTool qw(ImageInfo);
+use Net::Amazon::S3::Client;
+use Fcntl qw(SEEK_SET);
+use FindBin qw($Bin);
+use LWP::UserAgent;
+use Config::Tiny;
+use File::XDG;
+use JSON;
+
+my $README          = "https://raw.githubusercontent.com/snjo/Firespitter/master/README.md";
+my $FIRESPITTER_DLL = "https://github.com/snjo/Firespitter/blob/master/For%20release/Firespitter/Plugins/Firespitter.dll?raw=true";
+my $CKAN_META       = "$Bin/../../CKAN-meta";
+my $VALIDATOR       = "$Bin/ckan-validate";
+
+-d $CKAN_META or die "Uh oh, can't find CKAN-meta at $CKAN_META";
+-f $VALIDATOR or die "Uh oh, can't find my validator at $VALIDATOR";
+
+my $s3_config_dir = File::XDG ->new( name => "firespitter-downloader" )->config_home;
+my $config        = Config::Tiny->read("$s3_config_dir/config.ini");
+
+my $s3 = Net::Amazon::S3::Client->new(
+    s3 => Net::Amazon::S3->new(
+        aws_access_key_id     => $config->{s3}{id},
+        aws_secret_access_key => $config->{s3}{secret}
+    )
+);
+
+my $firespitter_fh = tempfile();
+
+my $agent = LWP::UserAgent->new;
+
+# Grab our dll
+print {$firespitter_fh} $agent->get($FIRESPITTER_DLL)->content;
+
+$firespitter_fh->flush; # Probably not needed, definitely doesn't hurt.
+
+# Seek to the start of the file.
+seek($firespitter_fh,0,SEEK_SET);
+
+# Analyse for version
+my $version = ImageInfo($firespitter_fh)->{AssemblyVersion};
+$version or die "Oh noes! Can't detect FireSpitter.dll assembly version!\n";
+
+say "Downloaded FireSpitter $version";
+
+# Reset our filehandle again
+seek($firespitter_fh,0,SEEK_SET);
+
+# Make our zipfile
+
+my $zip = Archive::Zip->new();
+$zip->addDirectory("Firespitter");
+$zip->addDirectory("Firespitter/Plugins");
+
+$zip->addString( $agent->get($README)->content, "Firespitter/README.md" );
+$zip->addString( slurp($firespitter_fh), "Firespitter/Plugins/Firespitter.dll" );
+
+# We no longer need the firespitter tmpfile.
+close($firespitter_fh);
+
+# Send to S3
+
+my $filename = "FirespitterCore-$version.zip";
+my $zip_data = zip2scalar($zip);
+
+$s3->bucket( name => "firespitter")
+   ->object(
+        key => $filename,
+        acl_short => "public-read",
+        content_type => "application/zip")
+   ->put($zip_data)
+;
+
+my $metadata_file = "$CKAN_META/FirespitterCore-$version.ckan";
+say "Uploaded to S3, now writing $metadata_file";
+
+open(my $fh, ">", $metadata_file);
+
+$fh->print(JSON->new->pretty->encode({
+    spec_version => 1,
+    name => "Firespitter Core",
+    identifier => "FirespitterCore",
+    author => "snjo",
+    download => "http://firespitter.s3.amazonaws.com/$filename",
+    license => "restricted",
+    version => $version,
+    release_status => "stable",
+    abstract => "Core Firespitter.dll. Install `Firespitter` for the whole shebang",
+    resources => {
+        "homepage" => "http://forum.kerbalspaceprogram.com/threads/24551-Firespitter-propeller-plane-and-helicopter-parts",
+        github => {
+            url => "https://github.com/snjo/Firespitter/"
+        }
+    },
+    install => [
+        {
+            file => "Firespitter",
+            install_to => "GameData",
+        }
+    ],
+}));
+
+close($fh);
+
+say "Validating...";
+
+system($VALIDATOR, $metadata_file);
+
+say "Done!";
+
+# Uses Perl magic to read an entire file and return it.
+func slurp($fh) {
+    local $/;
+    return readline($fh);
+}
+
+func zip2scalar($zip) {
+    
+    # Write our zip to a temporary file
+    my $zip_fh = tempfile();
+
+    $zip->writeToFileHandle($zip_fh) == AZ_OK
+        or die "Can't write zipfile";
+
+    # Flush the contents, re-seek to start
+    $zip_fh->flush;
+    seek($zip_fh, 0, SEEK_SET);
+
+    # And slurp back in
+    return slurp($zip_fh);
+}
