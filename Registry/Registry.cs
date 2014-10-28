@@ -189,6 +189,9 @@ namespace CKAN
         ///     Throws a ModuleNotFoundException if asked for a non-existant module.
         ///     Returns null if there's simply no compatible version for this system.
         /// </summary>
+         
+        // TODO: Consider making this internal, because practically everything should
+        // be calling LatestAvailableWithProvides()
         public CkanModule LatestAvailable(string module, KSPVersion ksp_version = null)
         {
             log.DebugFormat("Finding latest available for {0}", module);
@@ -207,13 +210,13 @@ namespace CKAN
 
         /// <summary>
         ///     Returns the latest available version of a module that
-        ///     satisifes the specified version. Takes into account module 'provides'
-        ///     Throws a ModuleNotFoundException if asked for a non-existant module.
-        ///     Returns null if there's simply no compatible version for this system.
+        ///     satisifes the specified version. Takes into account module 'provides',
+        ///     which may result in a list of alternatives being provided.
+        ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version = null)
         {
-            log.DebugFormat("Finding latest available for {0}", module);
+            log.DebugFormat("Finding latest available with provides for {0}", module);
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
 
@@ -221,6 +224,7 @@ namespace CKAN
 
             try
             {
+                // If we can find the module requested for our KSP, use that.
                 CkanModule mod = LatestAvailable(module, ksp_version);
                 if (mod != null)
                 {
@@ -229,22 +233,27 @@ namespace CKAN
             }
             catch (ModuleNotFoundKraken)
             {
-                foreach (var pair in available_modules)
-                {
-                    if (pair.Value.Latest(ksp_version) == null)
-                    {
-                        continue;
-                    }
+                // It's cool if we can't find it, though.
+            }
 
-                    string[] provides = pair.Value.Latest(ksp_version).provides;
-                    if (provides != null)
+            // Walk through all our available modules, and see if anything
+            // provides what we need.
+            foreach (var pair in available_modules)
+            {
+                // Skip this module if not available for our system.
+                if (pair.Value.Latest(ksp_version) == null)
+                {
+                    continue;
+                }
+
+                string[] provides = pair.Value.Latest(ksp_version).provides;
+                if (provides != null)
+                {
+                    foreach (string provided in provides)
                     {
-                        foreach (string provided in provides)
+                        if (provided == module)
                         {
-                            if (provided == module)
-                            {
-                                modules.Add(pair.Value.Latest(ksp_version));
-                            }
+                            modules.Add(pair.Value.Latest(ksp_version));
                         }
                     }
                 }
@@ -407,7 +416,7 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Check if a mod is installed (either via CKAN, or a DLL detected)
+        ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
         /// </summary>
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
         public bool IsInstalled(string modName)
