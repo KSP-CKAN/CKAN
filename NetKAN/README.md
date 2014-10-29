@@ -1,6 +1,3 @@
-The BootKAN are CKAN fragments that exist for mods that will support
-the CKAN, but haven't yet released fragments in their own distributions
-yet.
+The NetKAN consists of CKAN fragments that exist for mods that will support the CKAN, but for which we should check for new releases and other meta-data from existing websites.
 
-It allows us to boot up the CKAN, using bots to generate metadata, but
-without requiring everyone make a new release of their mods.
+This is the preferred way to index CKAN mods.

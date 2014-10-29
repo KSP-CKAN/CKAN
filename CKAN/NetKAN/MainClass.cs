@@ -45,23 +45,21 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
+            Cache cache = FindCache(options);
+
             log.InfoFormat("Processing {0}", options.File);
 
             JObject json = JsonFromFile(options.File);
             NetKanRemote remote = FindRemote(json);
 
-            // We need to find where KSP lives because we use its cache directory
-            // TODO: This really should be configurable.
-            KSP ksp = KSPManager.GetPreferredInstance();
-
             JObject metadata;
             if (remote.source == "kerbalstuff")
             {
-                metadata = KerbalStuff(json, remote.id);
+                metadata = KerbalStuff(json, remote.id, cache);
             }
             else if (remote.source == "github")
             {
-                metadata = GitHub(json, remote.id);
+                metadata = GitHub(json, remote.id, cache);
             }
             else
             {
@@ -84,7 +82,7 @@ namespace CKAN.NetKAN
             // Make sure this would actually generate an install
             try
             {
-                ModuleInstaller.FindInstallableFiles(mod, ksp.Cache.CachedFile(mod), null);
+                ModuleInstaller.FindInstallableFiles(mod, cache.CachedFile(mod), null);
             }
             catch (BadMetadataKraken kraken)
             {
@@ -106,7 +104,7 @@ namespace CKAN.NetKAN
         /// Fetch le things from le KerbalStuff.
         /// Returns a JObject that should be a fully formed CKAN file.
         /// </summary>
-        private static JObject KerbalStuff(JObject orig_metadata, string remote_id)
+        private static JObject KerbalStuff(JObject orig_metadata, string remote_id, Cache cache)
         {
             // Look up our mod on KS by its ID.
             KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
@@ -116,7 +114,7 @@ namespace CKAN.NetKAN
 
             // Find the latest download.
             KSVersion latest = ks.versions[0];
-            string filename = latest.Download((string) orig_metadata["identifier"]);
+            string filename = latest.Download((string) orig_metadata["identifier"], cache);
 
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
@@ -140,11 +138,11 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Fetch things from Github, returning a complete CkanModule document.
         /// </summary>
-        private static JObject GitHub(JObject orig_metadata, string repo)
+        private static JObject GitHub(JObject orig_metadata, string repo, Cache cache)
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
-            string filename = release.Download((string) orig_metadata["identifier"]);
+            string filename = release.Download((string) orig_metadata["identifier"], cache);
 
             // Extract embedded metadata, or use what we have.
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
@@ -254,6 +252,31 @@ namespace CKAN.NetKAN
         internal static JObject JsonFromFile(string filename)
         {
             return JObject.Parse(File.ReadAllText(filename));
+        }
+
+        internal static Cache FindCache(CmdLineOptions options)
+        {
+            if (options.CacheDir != null)
+            {
+                log.InfoFormat("Using user-supplied cache at {0}", options.CacheDir);
+                return new Cache(options.CacheDir);
+            }
+
+            try
+            {
+                KSP ksp = KSPManager.GetPreferredInstance();
+                log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.CachePath());
+                return ksp.Cache;
+            }
+            catch
+            {
+                // Meh, can't find KSP. 'Scool, bro.
+            }
+
+            string tempdir = Path.GetTempPath();
+            log.InfoFormat("Using tempdir for cache: {0}", tempdir);
+
+            return new Cache(tempdir);
         }
     }
 
