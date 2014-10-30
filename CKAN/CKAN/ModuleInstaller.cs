@@ -610,7 +610,7 @@ namespace CKAN
             }
 
             // Is there a better way to extract a tree?
-            string filter = "^" + stanza.file + "(/|$)";
+            string wanted_filter = "^" + stanza.file + "(/|$)";
 
             // O(N^2) solution, as we're walking the zipfile for each stanza.
             // Surely there's a better way, although this is fast enough we may not care.
@@ -618,7 +618,7 @@ namespace CKAN
             foreach (ZipEntry entry in zipfile)
             {
                 // Skip things we don't want.
-                if (!Regex.IsMatch(entry.Name, filter))
+                if (!Regex.IsMatch(entry.Name, wanted_filter))
                 {
                     continue;
                 }
