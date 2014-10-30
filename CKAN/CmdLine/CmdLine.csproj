@@ -48,6 +48,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="Action\KSP.cs" />
+    <Compile Include="Exit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -59,5 +61,8 @@
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Action\" />
   </ItemGroup>
 </Project>
