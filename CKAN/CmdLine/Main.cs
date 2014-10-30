@@ -53,10 +53,12 @@ namespace CKAN.CmdLine
             if (options.Debug)
             {
                 LogManager.GetRepository().Threshold = Level.Debug;
+                log.Info("Debug logging enabled");
             }
             else if (options.Verbose)
             {
                 LogManager.GetRepository().Threshold = Level.Info;
+                log.Info("Verbose logging enabled");
             }
 
             // TODO: Allow the user to specify just a directory.
@@ -88,10 +90,10 @@ namespace CKAN.CmdLine
 
                 KSPManager.SetCurrentInstanceByPath(options.KSPdir);
             }
-            else if (cmdline.action != "ksp")
+            else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
             {
-                // Use whtever our preferred instance is.
-                // We don't do this on `ksp` commands, as they can change instances.
+                // Find whatever our preferred instance is.
+                // We don't do this on `ksp/version` commands, they don't need it.
                 CKAN.KSP ksp = KSPManager.GetPreferredInstance();
 
                 if (ksp == null)
@@ -105,7 +107,6 @@ namespace CKAN.CmdLine
                     log.InfoFormat("Using KSP install at {0}",ksp.GameDir());
                 }
             }
-
 
             switch (cmdline.action)
             {
