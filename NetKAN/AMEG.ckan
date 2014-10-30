@@ -1,0 +1,15 @@
+{
+    "spec_version"    : 1,
+    "identifier"      : "AMEG",
+    "author"          : "Justin Kerbice",
+    "$kref"           : "#/ckan/kerbalstuff/279",
+    "license"         : "restricted",
+    "release_status"  : "stable",
+    "ksp_version_min" : "0.23",
+    "install" : [
+        {
+            "file"       : "GameData/Kerbice Group",
+            "install_to" : "GameData"
+        }
+    ]
+}
