@@ -726,7 +726,10 @@ namespace CKAN
             }
         }
 
-        private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        /// <summary>
+        /// Copy the entry from the opened zipfile to the path specified.
+        /// </summary>
+        internal static void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             if (entry.IsDirectory)
             {

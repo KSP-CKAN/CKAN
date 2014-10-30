@@ -96,6 +96,32 @@ namespace CKANTests
             }
         }
 
+        [Test()]
+        // GH #205, make sure we write in *binary*, not text.
+        public void BinaryNotText_205()
+        {
+            string dogezip = Tests.TestData.DogeCoinFlagZip();
+            ZipFile zipfile = new ZipFile(dogezip);
+
+            ZipEntry entry = zipfile.GetEntry("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png");
+            string tmpfile = Path.GetTempFileName();
+
+            CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+
+            long size = new System.IO.FileInfo(tmpfile).Length;
+
+            try
+            {
+                // Compare recorded length against what we expect.
+                Assert.AreEqual(52043, size);
+            }
+            finally
+            {
+                // Tidy up.
+                File.Delete(tmpfile);
+            }
+        }
+
         private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
