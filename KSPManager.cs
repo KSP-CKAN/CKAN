@@ -148,7 +148,7 @@ namespace CKAN
                     return null;
                 }
                  
-                return AddInstance ("Auto-detected instance", gamedir);
+                return AddInstance ("auto", gamedir);
             }
 
             throw new KSPManagerKraken("Attempted to scan for defaults with instances in registry");
