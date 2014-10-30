@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Transactions;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
@@ -100,14 +101,9 @@ namespace CKANTests
         // GH #205, make sure we write in *binary*, not text.
         public void BinaryNotText_205()
         {
-            string dogezip = Tests.TestData.DogeCoinFlagZip();
-            ZipFile zipfile = new ZipFile(dogezip);
-
-            ZipEntry entry = zipfile.GetEntry("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png");
-            string tmpfile = Path.GetTempFileName();
-
-            CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
-
+            // Use CopyZipEntry (via CopyDogeFromZip) and make sure it
+            // comes out the right size.
+            string tmpfile = CopyDogeFromZip();
             long size = new System.IO.FileInfo(tmpfile).Length;
 
             try
@@ -120,6 +116,38 @@ namespace CKANTests
                 // Tidy up.
                 File.Delete(tmpfile);
             }
+        }
+
+        [Test()]
+        // Make sure when we roll-back a transaction, files written with CopyZipEntry go
+        // back to their pre-transaction state.
+        public void FileSysRollBack()
+        {
+            string file;
+
+            using (var scope = new TransactionScope())
+            {
+                file = CopyDogeFromZip();
+                Assert.IsTrue(new System.IO.FileInfo(file).Length > 0);
+                scope.Dispose(); // Rollback
+            }
+
+            // CopyDogeFromZip creates a tempfile, so we check to make sure it's empty
+            // again on transaction rollback.
+            Assert.AreEqual(0, new System.IO.FileInfo(file).Length);
+        }
+
+        private static string CopyDogeFromZip()
+        {
+            string dogezip = Tests.TestData.DogeCoinFlagZip();
+            ZipFile zipfile = new ZipFile(dogezip);
+
+            ZipEntry entry = zipfile.GetEntry("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png");
+            string tmpfile = Path.GetTempFileName();
+
+            CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+
+            return tmpfile;
         }
 
         private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
