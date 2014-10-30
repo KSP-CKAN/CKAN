@@ -2,7 +2,6 @@
     "spec_version"   : 1,
     "identifier"     : "DarkMultiPlayer",
     "$kref"          : "#/ckan/kerbalstuff/4",
-    "license"        : "GPL-3.0",
     "release_status" : "alpha",
     "resources"      : {
         "manual"       : "https://github.com/godarklight/DarkMultiPlayer/blob/master/README.md",
