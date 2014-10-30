@@ -64,23 +64,8 @@ namespace CKAN.CmdLine
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
-        [VerbOption("list-installs", HelpText = "List all known KSP installations")]
-        public ListInstallsOptions ListInstalls { get; set; }
-
-        [VerbOption("add-install", HelpText = "Add a new KSP installation")]
-        public AddInstallOptions AddInstall { get; set; }
-
-        [VerbOption("rename-install", HelpText = "Rename a known KSP installation")]
-        public RenameInstallOptions RenameInstall { get; set; }
-
-        [VerbOption("remove-install", HelpText = "Remove a known KSP installation")]
-        public RemoveInstallOptions RemoveInstall { get; set; }
-
-        [VerbOption("set-default-install", HelpText = "Sets a known KSP installation as default")]
-        public SetDefaultInstallOptions SetDefaultInstall { get; set; }
-
-        [VerbOption("clear-cache", HelpText = "Clears the download cache")]
-        public ClearCacheOptions ClearCache { get; set; }
+        [VerbOption("ksp", HelpText = "Manage KSP insatlls")]
+        public KSPOptions KSP { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -105,6 +90,12 @@ namespace CKAN.CmdLine
 
     // Each action defines its own options that it supports.
     // Don't forget to cast to this type when you're processing them later on.
+
+    internal class KSPOptions : CommonOptions
+    {
+        [ValueList(typeof(List<string>))]
+        public List<string> options { get; set; }
+    }
 
     internal class InstallOptions : CommonOptions
     {
@@ -185,40 +176,6 @@ namespace CKAN.CmdLine
     {
         [ValueOption(0)]
         public string Modname { get; set; }
-    }
-
-    internal class ListInstallsOptions : CommonOptions
-    {
-    }
-
-    internal class AddInstallOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string name { get; set; }
-
-        [ValueOption(1)]
-        public string path { get; set; }
-    }
-
-    internal class RenameInstallOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string old_name { get; set; }
-
-        [ValueOption(1)]
-        public string new_name { get; set; }
-    }
-
-    internal class RemoveInstallOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string name { get; set; }
-    }
-
-    internal class SetDefaultInstallOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string name { get; set; }
     }
 
     internal class ClearCacheOptions : CommonOptions

@@ -16,10 +16,6 @@ namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        public const int EXIT_OK = 0;
-        public const int EXIT_ERROR = 1;
-        public const int EXIT_BADOPT = 2;
-
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
         public static int Main(string[] args)
@@ -47,7 +43,7 @@ namespace CKAN.CmdLine
 
                 string[] help = {"--help"}; // Is there a nicer way than a temp var?
                 new Options(help);
-                return EXIT_BADOPT;
+                return Exit.BADOPT;
             }
 
             // Process commandline options.
@@ -57,10 +53,12 @@ namespace CKAN.CmdLine
             if (options.Debug)
             {
                 LogManager.GetRepository().Threshold = Level.Debug;
+                log.Info("Debug logging enabled");
             }
             else if (options.Verbose)
             {
                 LogManager.GetRepository().Threshold = Level.Info;
+                log.Info("Verbose logging enabled");
             }
 
             // TODO: Allow the user to specify just a directory.
@@ -69,7 +67,7 @@ namespace CKAN.CmdLine
             if (options.KSPdir != null && options.KSP != null)
             {
                 User.WriteLine("--ksp and --kspdir can't be specified at the same time");
-                return EXIT_BADOPT;
+                return Exit.BADOPT;
             }
 
             if (options.KSP != null)
@@ -83,7 +81,7 @@ namespace CKAN.CmdLine
                 catch (InvalidKSPInstanceKraken)
                 {
                     User.WriteLine("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
-                    return EXIT_BADOPT;
+                    return Exit.BADOPT;
                 }
             }
             else if (options.KSPdir != null)
@@ -91,16 +89,24 @@ namespace CKAN.CmdLine
                 // Set a KSP directory by its path
 
                 KSPManager.SetCurrentInstanceByPath(options.KSPdir);
-
             }
-
-            else
+            else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
             {
-                // auto-start instance
-                KSPManager.GetPreferredInstance();
-            }
+                // Find whatever our preferred instance is.
+                // We don't do this on `ksp/version` commands, they don't need it.
+                CKAN.KSP ksp = KSPManager.GetPreferredInstance();
 
-            User.WriteLine("Using KSP installation at \"{0}\"", KSPManager.CurrentInstance.GameDir());
+                if (ksp == null)
+                {
+                    User.WriteLine("I don't know where KSP is installed.");
+                    User.WriteLine("Use 'ckan ksp help' for assistance on setting this.");
+                    return Exit.ERROR;
+                }
+                else
+                {
+                    log.InfoFormat("Using KSP install at {0}",ksp.GameDir());
+                }
+            }
 
             switch (cmdline.action)
             {
@@ -137,30 +143,12 @@ namespace CKAN.CmdLine
                 case "clean":
                     return Clean();
 
-                // TODO: Combine all of these into `ckan kspdir ...` or something similar
-                // Eg: `ckan kspdir add` `ckan kspdir list` etc
-
-                case "list-installs":
-                    return ListInstalls();
-
-                case "add-install":
-                    return AddInstall((AddInstallOptions) cmdline.options);
-
-                case "rename-install":
-                    return RenameInstall((RenameInstallOptions)cmdline.options);
-
-                case "remove-install":
-                    return RemoveInstall((RemoveInstallOptions)cmdline.options);
-
-                case "set-default-install":
-                    return SetDefaultInstall((SetDefaultInstallOptions)cmdline.options);
-
-                case "clear-cache":
-                    return ClearCache((ClearCacheOptions)cmdline.options);
+                case "ksp":
+                    return KSP((KSPOptions) cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
-                    return EXIT_BADOPT;
+                    return Exit.BADOPT;
             }
         }
 
@@ -171,14 +159,14 @@ namespace CKAN.CmdLine
 
             GUI.Main();
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int Version()
         {
             User.WriteLine(Meta.Version());
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int Update(UpdateOptions options)
@@ -189,7 +177,7 @@ namespace CKAN.CmdLine
 
             User.WriteLine("Updated information on {0} available modules", updated);
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int Available()
@@ -204,19 +192,19 @@ namespace CKAN.CmdLine
                 User.WriteLine("* {0}", module);
             }
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int Scan()
         {
             KSPManager.CurrentInstance.ScanGameData();
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int List()
         {
-            KSP ksp = KSPManager.CurrentInstance;
+            CKAN.KSP ksp = KSPManager.CurrentInstance;
 
             User.WriteLine("\nKSP found at {0}\n", ksp.GameDir());
             User.WriteLine("KSP Version: {0}\n",ksp.Version());
@@ -235,7 +223,7 @@ namespace CKAN.CmdLine
             // Blank line at the end makes for nicer looking output.
             User.WriteLine("");
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         // Uninstalls a module, if it exists.
@@ -244,7 +232,7 @@ namespace CKAN.CmdLine
             var installer = ModuleInstaller.Instance;
             installer.Uninstall(options.Modname, true);
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         // TODO: This needs work! See GH #160.
@@ -259,7 +247,7 @@ namespace CKAN.CmdLine
                     // What? No files specified?
                     User.WriteLine(
                         "Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
-                    return EXIT_BADOPT;
+                    return Exit.BADOPT;
                 }
 
                 // Do our un-installs and re-installs in a transaction. If something goes wrong,
@@ -288,25 +276,25 @@ namespace CKAN.CmdLine
                     {
                         User.WriteLine("Module {0} required, but not listed in index.", ex.module);
                         User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                        return EXIT_ERROR;
+                        return Exit.ERROR;
                     }
 
                     transaction.Complete();
                 }
                 User.WriteLine("\nDone!\n");
 
-                return EXIT_OK;
+                return Exit.OK;
             }
 
             User.WriteLine("\nUnsupported option at this time.");
 
-            return EXIT_BADOPT;
+            return Exit.BADOPT;
         }
 
         private static int Clean()
         {
             KSPManager.CurrentInstance.CleanCache();
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         private static int Install(InstallOptions options)
@@ -338,7 +326,7 @@ namespace CKAN.CmdLine
                 // What? No files specified?
                 User.WriteLine(
                     "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
-                return EXIT_BADOPT;
+                return Exit.BADOPT;
             }
 
             // Prepare options. Can these all be done in the new() somehow?
@@ -358,13 +346,13 @@ namespace CKAN.CmdLine
                 User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
                 User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
                 User.WriteLine("Try `ckan install --no-recommends` to skip installation of recommended modules");
-                return EXIT_ERROR;
+                return Exit.ERROR;
             }
             catch (BadMetadataKraken ex)
             {
                 User.WriteLine("Bad metadata detected for module {0}", ex.module);
                 User.WriteLine(ex.Message);
-                return EXIT_ERROR;
+                return Exit.ERROR;
             }
             catch (TooManyModsProvideKraken ex)
             {
@@ -375,12 +363,12 @@ namespace CKAN.CmdLine
                     User.WriteLine("* {0}", mod.identifier);
                 }
 
-                return EXIT_ERROR;
+                return Exit.ERROR;
             }
 
             User.WriteLine("\nDone!\n");
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
         // TODO: We should have a command (probably this one) that shows
@@ -391,7 +379,7 @@ namespace CKAN.CmdLine
             {
                 // empty argument
                 User.WriteLine("show <module> - module name argument missing, perhaps you forgot it?");
-                return EXIT_BADOPT;
+                return Exit.BADOPT;
             }
 
             RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
@@ -405,7 +393,7 @@ namespace CKAN.CmdLine
             {
                 User.WriteLine("{0} not installed.", options.Modname);
                 User.WriteLine("Try `ckan list` to show installed modules");
-                return EXIT_BADOPT;
+                return Exit.BADOPT;
             }
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
@@ -421,133 +409,19 @@ namespace CKAN.CmdLine
                 User.WriteLine(file);
             }
 
-            return EXIT_OK;
+            return Exit.OK;
         }
 
-        private static int ListInstalls()
+        internal static int KSP(KSPOptions options)
         {
-            User.WriteLine("Listing all known KSP installations:");
-            User.WriteLine("");
+            string[] options_array = options.options.ToArray();
 
-            int count = 1;
-            foreach (var instance in KSPManager.Instances)
-            {
-                User.WriteLine("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
-                count++;
-            }
+            var subopt = new CmdLine.KSP(options_array);
 
-            return EXIT_OK;
-        }
-
-        private static int AddInstall(AddInstallOptions options)
-        {
-            if (options.name == null || options.path == null)
-            {
-                User.WriteLine("add-install <name> <path> - argument missing, perhaps you forgot it?");
-                return EXIT_BADOPT;
-            }
-
-            if (KSPManager.Instances.ContainsKey(options.name))
-            {
-                User.WriteLine("Install with name \"{0}\" already exists, aborting..", options.name);
-                return EXIT_BADOPT;
-            }
-
-            try
-            {
-
-                KSPManager.AddInstance(options.name, options.path);
-                User.WriteLine("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
-                return EXIT_OK;
-            }
-            catch (NotKSPDirKraken ex)
-            {
-                User.WriteLine("Sorry, {0} does not appear to be a KSP directory", ex.path);
-                return EXIT_BADOPT;
-            }
-        }
-
-        private static int RenameInstall(RenameInstallOptions options)
-        {
-            if (options.old_name == null || options.new_name == null)
-            {
-                User.WriteLine("rename-install <old_name> <new_name> - argument missing, perhaps you forgot it?");
-                return EXIT_BADOPT;
-            }
-
-            if (!KSPManager.Instances.ContainsKey(options.old_name))
-            {
-                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.old_name);
-                return EXIT_BADOPT;
-            }
-
-            KSPManager.RenameInstance(options.old_name, options.new_name);
-
-            User.WriteLine("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
-            return EXIT_OK;
-        }
-
-        private static int RemoveInstall(RemoveInstallOptions options)
-        {
-            if (options.name == null)
-            {
-                User.WriteLine("remove-install <name> - argument missing, perhaps you forgot it?");
-                return EXIT_BADOPT;
-            }
-
-            if (!KSPManager.Instances.ContainsKey(options.name))
-            {
-                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
-                return EXIT_BADOPT;
-            }
-
-            KSPManager.RemoveInstance(options.name);
-
-            User.WriteLine("Successfully removed \"{0}\"", options.name);
-            return EXIT_OK;
-        }
-
-        private static int SetDefaultInstall(SetDefaultInstallOptions options)
-        {
-            if (options.name == null)
-            {
-                User.WriteLine("set-default-install <name> - argument missing, perhaps you forgot it?");
-                return EXIT_BADOPT;
-            }
-
-            if (!KSPManager.Instances.ContainsKey(options.name))
-            {
-                User.WriteLine("Couldn't find install with name \"{0}\", aborting..", options.name);
-                return EXIT_BADOPT;
-            }
-
-            KSPManager.SetAutoStart(options.name);
-
-            User.WriteLine("Successfully set \"{0}\" as the default KSP installation", options.name);
-            return EXIT_OK;
-        }
-
-        private static int ClearCache(ClearCacheOptions options)
-        {
-            User.WriteLine("Clearing download cache..");
-
-            var cachePath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "downloads");
-            foreach (var file in Directory.GetFiles(cachePath))
-            {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            return EXIT_OK;
+            return subopt.RunSubCommand();
         }
 
     }
-
 
     // Exception class, so we can signal errors in command options.
 
