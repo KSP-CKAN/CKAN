@@ -61,12 +61,8 @@ namespace CKAN.CmdLine
         [VerbOption("show", HelpText = "Show information about a mod")]
         public ShowOptions Show { get; set; }
 
-        // TODO: Why do we have two cleans?
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
-
-        [VerbOption("clear-cache", HelpText = "Clears the download cache")]
-        public ClearCacheOptions ClearCache { get; set; }
 
         [VerbOption("ksp", HelpText = "Manage KSP insatlls")]
         public KSPOptions KSP { get; set; }
