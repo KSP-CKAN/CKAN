@@ -146,9 +146,6 @@ namespace CKAN.CmdLine
                 case "ksp":
                     return KSP((KSPOptions) cmdline.options);
 
-                case "clear-cache":
-                    return ClearCache((ClearCacheOptions)cmdline.options);
-
                 default:
                     User.WriteLine("Unknown command, try --help");
                     return Exit.BADOPT;
@@ -410,25 +407,6 @@ namespace CKAN.CmdLine
             foreach (string file in files.Keys)
             {
                 User.WriteLine(file);
-            }
-
-            return Exit.OK;
-        }
-
-        private static int ClearCache(ClearCacheOptions options)
-        {
-            User.WriteLine("Clearing download cache..");
-
-            var cachePath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "downloads");
-            foreach (var file in Directory.GetFiles(cachePath))
-            {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (Exception)
-                {
-                }
             }
 
             return Exit.OK;
