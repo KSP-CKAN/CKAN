@@ -36,5 +36,47 @@ namespace NetKAN.KerbalStuffTests
 
             Assert.AreEqual("https://kerbalstuff.com/mod/123/foo%20bar", ks.KSHome());
         }
+
+        [Test]
+        // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
+        public void KSP_Version_Inflate_199()
+        {
+            JObject metadata = JObject.Parse(Tests.TestData.DogeCoinFlag_101());
+
+            // Add our own field, and remove existing ones.
+            metadata["ksp_version_min"] = "0.23.5";
+            metadata["ksp_version"] = null;
+            metadata["ksp_version_max"] = null;
+
+            // Sanity check: make sure we don't have a ksp_version field to begin with.
+            Assert.AreEqual(null, (string) metadata["ksp_version"]);
+
+            CKAN.NetKAN.KSMod ksmod = test_ksmod();
+
+            ksmod.InflateMetadata(metadata, Tests.TestData.DogeCoinFlagZip(), ksmod.versions[0]);
+
+            // Make sure min is still there, and the rest unharmed.
+            Assert.AreEqual(null, (string) metadata["ksp_version"]);
+            Assert.AreEqual(null, (string) metadata["ksp_version_max"]);
+            Assert.AreEqual("0.23.5", (string) metadata["ksp_version_min"]);
+
+        }
+
+        public CKAN.NetKAN.KSMod test_ksmod()
+        {
+            var ksmod = new CKAN.NetKAN.KSMod();
+            ksmod.license = "CC-BY";
+            ksmod.name = "Dogecoin Flag";
+            ksmod.short_description = "Such test. Very unit. Wow.";
+            ksmod.author = "pjf";
+
+            ksmod.versions = new CKAN.NetKAN.KSVersion[1];
+            ksmod.versions[0] = new CKAN.NetKAN.KSVersion();
+            ksmod.versions[0].friendly_version = new CKAN.Version("0.25");
+            ksmod.versions[0].download_path = "http://example.com/";
+
+            return ksmod;
+        }
+
     }
 }
