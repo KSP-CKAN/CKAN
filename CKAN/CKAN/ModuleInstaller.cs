@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Transactions;
 using ChinhDo.Transactions;
@@ -726,7 +727,10 @@ namespace CKAN
             }
         }
 
-        private void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
+        /// <summary>
+        /// Copy the entry from the opened zipfile to the path specified.
+        /// </summary>
+        internal static void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
             if (entry.IsDirectory)
             {
@@ -752,11 +756,17 @@ namespace CKAN
                     file_transaction.CreateDirectory(directory);
                 }
 
+                // Snapshot whatever was there before. If there's nothing, this will just
+                // remove our file on rollback.
+                file_transaction.Snapshot(fullPath);
+
                 // It's a file! Prepare the streams
                 using (Stream zipStream = zipfile.GetInputStream(entry))
-                using (StreamReader reader = new StreamReader(zipStream))
+                using (FileStream writer = File.Create(fullPath))
                 {
-                    file_transaction.WriteAllText(fullPath, reader.ReadToEnd());
+                    // 4k is the block size on practically every disk and OS.
+                    byte[] buffer = new byte[4096];
+                    StreamUtils.Copy(zipStream, writer, buffer);
                 }
             }
 
