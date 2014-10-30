@@ -9,7 +9,7 @@ namespace CKAN.CmdLine
         public string option;
         public object suboptions;
 
-        internal class KSPSubOptions
+        internal class KSPSubOptions : CommonOptions
         {
             [VerbOption("list", HelpText="List KSP installs")]
             public CommonOptions ListOptions { get; set; }
