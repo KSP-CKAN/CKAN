@@ -7,7 +7,7 @@ namespace CKAN.NetKAN
 {
     public class KSMod : CkanInflator
     {
-        // private static readonly ILog log = LogManager.GetLogger(typeof (KSMod));
+        private static readonly ILog log = LogManager.GetLogger(typeof (KSMod));
         public int id; // KSID
 
         // These get filled in from JSON deserialisation.
@@ -31,6 +31,8 @@ namespace CKAN.NetKAN
         {
             var version = (KSVersion)context;
 
+            log.DebugFormat("Inflating {0}", metadata["identifier"]);
+
             // Check how big our file is
             long download_size = (new FileInfo (filename)).Length;
 
@@ -45,6 +47,15 @@ namespace CKAN.NetKAN
                 metadata["resources"]["kerbalstuff"] = new JObject();
             }
 
+            // Only pre-fill version info if there's none already. GH #199
+            if ((string) metadata["ksp_version_min"] == null && (string) metadata["ksp_version_max"] == null)
+            {
+                // Inflate won't overwrite an existing key, so we don't need to check
+                // for ksp_version itself. :)
+                log.Debug("Pre-filling KSP version field");
+                Inflate(metadata, "ksp_version", version.KSP_version.ToString());
+            }
+
             Inflate(metadata, "name", name);
             Inflate(metadata, "license", license);
             Inflate(metadata, "abstract", short_description);
@@ -55,7 +66,6 @@ namespace CKAN.NetKAN
             Inflate(metadata, "download_size", download_size);
             Inflate((JObject) metadata["resources"], "homepage", website);
             Inflate((JObject) metadata["resources"]["kerbalstuff"], "url", KSHome());
-            Inflate(metadata, "ksp_version", version.KSP_version.ToString());
         }
 
         internal string KSHome()
