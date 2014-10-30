@@ -239,7 +239,20 @@ mandatory directives:
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
 
-An install directive may also include the following optional fields:
+Optionally, an install directive may filter the files to install using:
+
+- `filter` : A string, or list of strings, of file parts that should not
+  be installed. These are treated as literal things which must match a
+  file name or directory. Examples of filters may be `Thumbs.db`,
+  or `Source`. Filters are considered case-insensitive.
+- `filter_regexp` : A string, or list of strings, which are treated as
+  case-sensitive C# regular expressions whch are matched against the
+  full paths from the installing zip-file. If a file matches the regular
+  expression, it is not installed.
+
+An install directive may also include the following optional fields.
+Use of these fields are *discouraged*, and they may become deprecated
+in the future.
 
 - `depends`: Indicates this install directive should only be triggered
   if the required mod has already been installed.

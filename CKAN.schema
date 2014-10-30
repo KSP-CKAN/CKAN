@@ -152,6 +152,14 @@
                         "description" : "Where file should be installed to",
                         "$ref" : "#/definitions/install_to"
                     },
+                    "filter" : {
+                        "description" : "List of files and directories that should be filtered from the install",
+                        "$ref" : "#/definitions/one_or_more_strings"
+                    },
+                    "filter_regexp" : {
+                        "description" : "List of regexps that should filter files from this install",
+                        "$ref" : "#/definitions/one_or_more_strings"
+                    },
                     "requires" : {
                         "description" : "A required mod for this install part",
                         "$ref" : "#/definitions/identifier"
@@ -300,6 +308,17 @@
                 {
                     "type"  : "array",
                     "items" : { "$ref" : "#/definitions/license" },
+                    "uniqueItems" : true
+                }
+            ]
+        },
+        "one_or_more_strings" : {
+            "description" : "One or more strings",
+            "oneOf"       : [
+                { "type" : "string" },
+                {
+                    "type"        : "array",
+                    "items"       : { "type" : "string" },
                     "uniqueItems" : true
                 }
             ]

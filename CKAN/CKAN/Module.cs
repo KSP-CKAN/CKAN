@@ -51,12 +51,19 @@ namespace CKAN
         public KerbalStuffResourceDescriptor kerbalstuff;
     }
 
+    // [JsonObject(MemberSerialization.OptIn)]
     public class ModuleInstallDescriptor : InstallableDescriptor
     {
-        public string description;
-        public bool optional;
-        public bool overwrite;
-        public string requires;
+        public string description; // Discouraged, maybe...
+        public bool optional;      // Discouraged GH #113
+        public bool overwrite;     // Discouraged GH #113
+        public string requires;    // Discouraged GH #113
+
+        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
+        public List<string> filter;
+
+        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
+        public List<string> filter_regexp;
     }
 
     public enum License
