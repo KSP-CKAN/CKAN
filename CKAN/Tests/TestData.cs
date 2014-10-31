@@ -161,6 +161,11 @@ namespace Tests
             return CKAN.CkanModule.FromJson(kOS_014());
         }
 
+        public static string KS_CustomAsteroids_string()
+        {
+            return File.ReadAllText(Path.Combine(DataDir(),"KS/CustomAsteroids.json"));
+        }
+
     }
 }
 
