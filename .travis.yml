@@ -8,6 +8,7 @@ script:
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
+    - ../bin/validate-netkan
 
 before_deploy:
     - cd ..
