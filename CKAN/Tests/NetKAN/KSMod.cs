@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Tests;
 
 namespace NetKAN.KerbalStuffTests
 {
@@ -60,6 +61,14 @@ namespace NetKAN.KerbalStuffTests
             Assert.AreEqual(null, (string) metadata["ksp_version_max"]);
             Assert.AreEqual("0.23.5", (string) metadata["ksp_version_min"]);
 
+        }
+
+        [Test]
+        // GH #214: Make sure we pick up the right version
+        public void KS_Version_Select_214()
+        {
+            CKAN.NetKAN.KSMod mod = CKAN.NetKAN.KSAPI.Mod(TestData.KS_CustomAsteroids_string());
+            Assert.AreEqual(711, mod.Latest().id, "GH #214 - Select default_version_id");
         }
 
         public CKAN.NetKAN.KSMod test_ksmod()

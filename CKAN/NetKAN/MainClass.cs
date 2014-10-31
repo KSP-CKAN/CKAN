@@ -104,16 +104,18 @@ namespace CKAN.NetKAN
         /// Fetch le things from le KerbalStuff.
         /// Returns a JObject that should be a fully formed CKAN file.
         /// </summary>
-        private static JObject KerbalStuff(JObject orig_metadata, string remote_id, Cache cache)
+        internal static JObject KerbalStuff(JObject orig_metadata, string remote_id, Cache cache)
         {
             // Look up our mod on KS by its ID.
             KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
-            Version version = ks.versions[0].friendly_version;
+
+            KSVersion latest = ks.Latest();
+
+            Version version = latest.friendly_version;
 
             log.DebugFormat("Mod: {0} {1}", ks.name, version);
 
             // Find the latest download.
-            KSVersion latest = ks.versions[0];
             string filename = latest.Download((string) orig_metadata["identifier"], cache);
 
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
