@@ -24,6 +24,13 @@ namespace CKAN
             {
                 return token.ToObject<List<T>>();
             }
+
+            // If the object is null, we'll return null. Otherwise end up with a list of null.
+            if (token.ToObject<T>() == null)
+            {
+                return null;
+            }
+
             return new List<T> { token.ToObject<T>() };
         }
 

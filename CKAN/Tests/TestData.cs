@@ -177,6 +177,10 @@ namespace Tests
             return File.ReadAllText(Path.Combine(DataDir(),"KS/CustomAsteroids.json"));
         }
 
+        public static CKAN.CkanModule FireSpitterModule()
+        {
+            return CKAN.CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
+        }
     }
 }
 

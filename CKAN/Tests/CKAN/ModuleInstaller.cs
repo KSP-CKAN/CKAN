@@ -18,12 +18,12 @@ namespace CKANTests
             string filename = Tests.TestData.DogeCoinFlagZip();
             using (var zipfile = new ZipFile(filename))
             {
-                ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza);
 
                 // Same again, but screwing up the case (we see this *all the time*)
-                ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza2);
 
@@ -173,7 +173,7 @@ namespace CKANTests
             return tmpfile;
         }
 
-        private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
+        private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
             Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag",stanza.file);
