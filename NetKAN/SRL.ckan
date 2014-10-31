@@ -1,0 +1,9 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "SRL",
+    "$kref"          : "#/ckan/kerbalstuff/145",
+    "license"        : "GPL-3.0",
+    "conflicts"      : [
+        { "name" : "QuickRevert" }
+    ]
+}
