@@ -18,6 +18,6 @@
         {
             "file"       : "RetroFuture",
             "install_to" : "GameData"
-        },
+        }
     ]
 }

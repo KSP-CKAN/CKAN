@@ -6,7 +6,7 @@
     "release_status" : "stable",
     "resources" : {
         "github"   : {
-            "url"      : "https://github.com/ferram4/Ferram-Aerospace-Research",
+            "url"      : "https://github.com/ferram4/Ferram-Aerospace-Research"
         }
     },
     "depends" : [ { "name" : "ModuleManager" } ],
@@ -21,6 +21,5 @@
             "optional"    : true,
             "description" : "FAR example craft"
         }
-
     ]
 }
