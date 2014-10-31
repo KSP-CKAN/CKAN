@@ -88,7 +88,7 @@ namespace Tests
                         {
                         ""file"": ""DogeCoinFlag-1.01/GameData/DogeCoinFlag"",
                         ""install_to"": ""GameData"",
-                        ""filter"" : [ ""Thumbs.db"", ""INSTALL.md"" ],
+                        ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
                         ""filter_regexp"" : ""\\.bak$""
                         }
                     ],

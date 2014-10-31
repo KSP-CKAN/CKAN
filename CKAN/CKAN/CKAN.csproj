@@ -74,6 +74,7 @@
     <Compile Include="Registry\InstalledModule.cs" />
     <Compile Include="Registry\Registry.cs" />
     <Compile Include="Registry\RegistryManager.cs" />
+    <Compile Include="Types\ModuleInstallDescriptor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
