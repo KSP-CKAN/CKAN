@@ -8,9 +8,7 @@
         "github"       : {
             "url"      : "https://github.com/RemoteTechnologiesGroup/RemoteTech"
         },
-        "bugtracker"   : {
-            "url"      : "https://github.com/RemoteTechnologiesGroup/RemoteTech/issues"
-        }
+        "bugtracker"   : "https://github.com/RemoteTechnologiesGroup/RemoteTech/issues"
     },
     "depends": [
         {
