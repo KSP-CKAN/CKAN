@@ -179,40 +179,6 @@
                 },
                 "required" : [ "file", "install_to" ]
             }
-        },
-        "bundles" : {
-            "description" : "Modules bundled with this mod",
-            "type" : "array",
-            "items" : {
-                "type" : "object",
-                "properties" : {
-                    "file" : {
-                        "description" : "Path to the bundled module",
-                        "type" : "string"
-                    },
-                    "identifier" : {
-                        "description" : "Identifier of the bundled mod",
-                        "$ref" : "#/definitions/identifier"
-                    },
-                    "version" : {
-                        "description" : "Version of bundled module",
-                        "$ref" : "#/definitions/version"
-                    },
-                    "install_to" : {
-                        "description" : "Where bundle should be installed to",
-                        "$ref" : "#/definitions/install_to"
-                    },
-                    "license" : {
-                        "description" : "The license(s) the bundled mod is used under",
-                        "$ref" : "#/definitions/licenses"
-                    },
-                    "required" : {
-                        "description" : "Is this module required for installation?",
-                        "type" : "boolean"
-                    }
-                },
-                "required" : [ "file", "identifier", "version", "install_to", "required", "license" ]
-            }
         }
     },
     "required" : [

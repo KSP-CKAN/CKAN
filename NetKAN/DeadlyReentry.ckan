@@ -1,0 +1,13 @@
+{
+    "spec_version"   : 1,
+    "name"           : "Deadly Reentry Continued",
+    "abstract"       : "Makes re-entry much more dangerous",
+    "identifier"     : "DeadlyReentry",
+    "$kref"          : "#/ckan/github/NathanKell/DeadlyReentry",
+    "license"        : "CC-BY-SA",
+    "release_status" : "stable",
+    "ksp_version"    : "0.25",
+    "resources"      : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/54954",
+    }
+}
