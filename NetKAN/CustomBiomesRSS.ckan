@@ -14,7 +14,7 @@
     "provides"  : [ "CustomBiomesData" ],
     "conflicts" : [ { "name" : "CustomBiomesData" } ],
     "resources" : {
-        "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145",
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145"
     },
     "install" : [
         {
