@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -17,6 +18,7 @@ namespace CKAN.NetKAN
         public string author;
         public KSVersion[] versions;
         public string website;
+        public int default_version_id;
 
         public override string ToString()
         {
@@ -66,6 +68,21 @@ namespace CKAN.NetKAN
             Inflate(metadata, "download_size", download_size);
             Inflate((JObject) metadata["resources"], "homepage", website);
             Inflate((JObject) metadata["resources"]["kerbalstuff"], "url", KSHome());
+        }
+
+        internal KSVersion Latest()
+        {
+            // The version we want is specified by `default_version_id`, it's not just
+            // the latest. See GH #214. Thanks to @Starstrider42 for spotting this.
+
+            var latest =
+                from release in this.versions
+                where release.id == this.default_version_id
+                select release
+            ;
+
+            // There should only ever be one.
+            return latest.First();
         }
 
         internal string KSHome()

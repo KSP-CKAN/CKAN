@@ -30,9 +30,20 @@ namespace CKAN.NetKAN
             return web.DownloadString(url);
         }
 
+        /// <summary>
+        /// Given a mod id, returns a KSMod with its metadata from the network.
+        /// </summary>
         public static KSMod Mod(int mod_id)
         {
             string json = Call("/mod/" + mod_id);
+            return Mod(json);
+        }
+
+        /// <summary>
+        /// Given a JSON string, inflates and returns a KSMod.
+        /// </summary>
+        public static KSMod Mod(string json)
+        {
             return JsonConvert.DeserializeObject<KSMod>(json);
         }
 
