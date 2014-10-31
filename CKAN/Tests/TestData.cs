@@ -26,6 +26,15 @@ namespace Tests
             return such_zip_very_currency_wow;
         }
 
+        /// <summary>
+        /// Returns DogeCoinFlag.zip, with extra files inside.
+        /// Great for testing filters.
+        /// </summary>
+        public static string DogeCoinFlagZipWithExtras()
+        {
+            return Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
+        }
+
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
         /// install stanza doesn't actually refer to any files.
