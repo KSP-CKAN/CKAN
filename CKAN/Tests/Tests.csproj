@@ -55,6 +55,7 @@
     <Compile Include="CKAN\KSPManager.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\GitHubTests.cs" />
+    <Compile Include="CKAN\ModuleInstallDescriptor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

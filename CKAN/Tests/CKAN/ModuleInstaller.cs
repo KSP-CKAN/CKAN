@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
+using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
 
@@ -17,12 +18,12 @@ namespace CKANTests
             string filename = Tests.TestData.DogeCoinFlagZip();
             using (var zipfile = new ZipFile(filename))
             {
-                ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza);
 
                 // Same again, but screwing up the case (we see this *all the time*)
-                ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza2);
 
@@ -52,6 +53,7 @@ namespace CKANTests
             CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
 
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
+            List<string> filenames = new List<string>();
 
             Assert.IsNotNull(contents);
 
@@ -68,9 +70,30 @@ namespace CKANTests
 
                 // And make sure our makeDir info is filled in.
                 Assert.IsNotNull(file.makedir);
+
+                filenames.Add(file.source.Name);
             }
 
-            // TODO: Ensure it's got a file we expect.
+            // Ensure we've got an expected file
+            Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
+
+        }
+
+        [Test()]
+        // Make sure all our filters work.
+        public void FindInstallableFIilesWithFilter()
+        {
+            string extra_doge = Tests.TestData.DogeCoinFlagZipWithExtras();
+            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, extra_doge, null);
+
+            var files = contents.Select(x => x.source.Name);
+
+            Assert.IsTrue(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png"), "dogecoin.png");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/README.md"), "Filtered README 1");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/README.md"), "Filtered README 2");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/notes.txt.bak"), "Filtered .bak file");
         }
 
         [Test()]
@@ -150,7 +173,7 @@ namespace CKANTests
             return tmpfile;
         }
 
-        private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
+        private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
             Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag",stanza.file);

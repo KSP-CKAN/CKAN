@@ -152,6 +152,14 @@
                         "description" : "Where file should be installed to",
                         "$ref" : "#/definitions/install_to"
                     },
+                    "filter" : {
+                        "description" : "List of files and directories that should be filtered from the install",
+                        "$ref" : "#/definitions/one_or_more_strings"
+                    },
+                    "filter_regexp" : {
+                        "description" : "List of regexps that should filter files from this install",
+                        "$ref" : "#/definitions/one_or_more_strings"
+                    },
                     "requires" : {
                         "description" : "A required mod for this install part",
                         "$ref" : "#/definitions/identifier"
@@ -170,40 +178,6 @@
                     }
                 },
                 "required" : [ "file", "install_to" ]
-            }
-        },
-        "bundles" : {
-            "description" : "Modules bundled with this mod",
-            "type" : "array",
-            "items" : {
-                "type" : "object",
-                "properties" : {
-                    "file" : {
-                        "description" : "Path to the bundled module",
-                        "type" : "string"
-                    },
-                    "identifier" : {
-                        "description" : "Identifier of the bundled mod",
-                        "$ref" : "#/definitions/identifier"
-                    },
-                    "version" : {
-                        "description" : "Version of bundled module",
-                        "$ref" : "#/definitions/version"
-                    },
-                    "install_to" : {
-                        "description" : "Where bundle should be installed to",
-                        "$ref" : "#/definitions/install_to"
-                    },
-                    "license" : {
-                        "description" : "The license(s) the bundled mod is used under",
-                        "$ref" : "#/definitions/licenses"
-                    },
-                    "required" : {
-                        "description" : "Is this module required for installation?",
-                        "type" : "boolean"
-                    }
-                },
-                "required" : [ "file", "identifier", "version", "install_to", "required", "license" ]
             }
         }
     },
@@ -300,6 +274,17 @@
                 {
                     "type"  : "array",
                     "items" : { "$ref" : "#/definitions/license" },
+                    "uniqueItems" : true
+                }
+            ]
+        },
+        "one_or_more_strings" : {
+            "description" : "One or more strings",
+            "oneOf"       : [
+                { "type" : "string" },
+                {
+                    "type"        : "array",
+                    "items"       : { "type" : "string" },
                     "uniqueItems" : true
                 }
             ]

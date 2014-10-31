@@ -33,6 +33,18 @@ namespace CKANTests
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
         }
 
+        [Test]
+        public void FilterRead()
+        {
+            CkanModule module = CkanModule.FromJson(TestData.DogeCoinFlag_101());
+
+            // Assert known things about this mod.
+            Assert.IsNotNull(module.install[0].filter);
+            Assert.IsNotNull(module.install[0].filter_regexp);
+
+            Assert.AreEqual(2, module.install[0].filter.Count);
+        }
+
     }
 }
 
