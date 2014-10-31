@@ -14,8 +14,8 @@
     },
     "depends": [
         {
-            "name": "ModuleManager"
-            "min_version": "2.3.1"
+            "name": "ModuleManager",
+            "min_version": "2.3.1",
             "comment": "Earlier versions of MM have forward compatibility problems, according to the MM release notes."
         }
     ],
