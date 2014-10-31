@@ -7,9 +7,7 @@
 		"github" : {
 			"url" : "https://github.com/Starstrider42/Custom-Asteroids"
 		},
-		"bugtracker" : {
-			"url" : "https://github.com/Starstrider42/Custom-Asteroids/issues"
-		}
+		"bugtracker" : "https://github.com/Starstrider42/Custom-Asteroids/issues"
 	},
 	"install" : [
 		{
