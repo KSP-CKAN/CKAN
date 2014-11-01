@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -82,5 +83,56 @@ namespace CKAN
         }
     }
 
-}
+    /// <summary>
+    /// We had bad metadata that resulted in an invalid operation occuring.
+    /// For example: a file install stanza that produces no files.
+    /// </summary>
+    public class BadMetadataKraken : Kraken
+    {
+        public CkanModule module;
 
+        public BadMetadataKraken(CkanModule module, string reason = null, Exception inner_exception = null)
+            :base(reason,inner_exception)
+        {
+            this.module = module;
+        }
+    }
+
+    /// <summary>
+    /// Thrown if we try to load an incompatible CKAN registry.
+    /// </summary>
+    public class RegistryVersionNotSupportedKraken : Kraken
+    {
+        public int requested_version;
+
+        public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            requested_version = v;
+        }
+    }
+
+    public class TooManyModsProvideKraken : Kraken
+    {
+        public List<CkanModule> modules;
+        public string requested;
+
+        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception inner_exception = null)
+            :base(FormatMessage(requested, modules), inner_exception)
+        {
+            this.modules = modules;
+            this.requested = requested;
+        }
+
+        internal static string FormatMessage(string requested, List<CkanModule> modules)
+        {
+            string oops = string.Format("Too many mods provide {0}:\n\n", requested);
+            foreach (var mod in modules)
+            {
+                oops += "* " + mod + "\n";
+            }
+            return oops;
+        }
+    }
+
+}

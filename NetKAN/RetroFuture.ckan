@@ -1,0 +1,23 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "RetroFuture",
+    "$kref"          : "#/ckan/kerbalstuff/111",
+    "license"        : "CC-BY-NC-SA-4.0",
+    "depends" : [
+        { "name" : "FirespitterCore" },
+        { "name" : "ModuleManager", "min_version" : "2.5.1" }
+    ],
+    "recommends" : [
+        { "name" : "FerramAerospaceResearch" },
+        { "name" : "RasterPropMonitor" },
+        { "name" : "BDArmory"},
+        { "name" : "ProceduralDynamics"},
+        { "name" : "SmokeScreen"}
+    ],
+    "install" : [
+        {
+            "file"       : "RetroFuture",
+            "install_to" : "GameData"
+        }
+    ]
+}

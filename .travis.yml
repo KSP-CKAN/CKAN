@@ -8,6 +8,7 @@ script:
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
+    - ../bin/validate-netkan
 
 before_deploy:
     - cd ..
@@ -19,7 +20,9 @@ deploy:
     provider: releases
     api_key:
         secure: AjwbRLStNJZb9hAOLfRLK85KlFo2q2Dr1NKCoDS4elek1nqSiOjL1hH0kDgUMx/PJqQVnFU8tbJPL30t9Pj7jcJhp0LhbbPipQE3TCSpafTneSEbdz5HT+OdghWCZhUhfs07wGNTFUwcAO4WBZ7wv1AnfdfogHdA5RMdykiIl38=
-    file: ckan.exe
+    file:
+        - ckan.exe
+        - netkan.exe
     on:
         repo: KSP-CKAN/CKAN
         tags: true

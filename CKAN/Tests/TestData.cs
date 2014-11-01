@@ -26,6 +26,15 @@ namespace Tests
             return such_zip_very_currency_wow;
         }
 
+        /// <summary>
+        /// Returns DogeCoinFlag.zip, with extra files inside.
+        /// Great for testing filters.
+        /// </summary>
+        public static string DogeCoinFlagZipWithExtras()
+        {
+            return Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
+        }
+
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
         /// install stanza doesn't actually refer to any files.
@@ -78,7 +87,9 @@ namespace Tests
                     ""install"": [
                         {
                         ""file"": ""DogeCoinFlag-1.01/GameData/DogeCoinFlag"",
-                        ""install_to"": ""GameData""
+                        ""install_to"": ""GameData"",
+                        ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
+                        ""filter_regexp"" : ""\\.bak$""
                         }
                     ],
                     ""resources"": {
@@ -161,6 +172,15 @@ namespace Tests
             return CKAN.CkanModule.FromJson(kOS_014());
         }
 
+        public static string KS_CustomAsteroids_string()
+        {
+            return File.ReadAllText(Path.Combine(DataDir(),"KS/CustomAsteroids.json"));
+        }
+
+        public static CKAN.CkanModule FireSpitterModule()
+        {
+            return CKAN.CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
+        }
     }
 }
 

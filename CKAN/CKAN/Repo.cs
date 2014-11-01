@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -12,6 +13,7 @@ namespace CKAN
     public static class Repo
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static TxFileManager file_transaction = new TxFileManager();
 
         // Right now we only use the default repo, but in the future we'll
         // want to let users add their own.
@@ -62,45 +64,51 @@ namespace CKAN
 
             string repo_file = Net.Download(repo);
 
-            // Open our zip file for processing
-            var zipfile = new ZipFile(File.OpenRead(repo_file));
-
-            // Clear our list of known modules.
-            registry.ClearAvailable();
-
-            // Walk the archive, looking for .ckan files.
-            string filter = @"\.ckan$";
-
-            foreach (ZipEntry entry in zipfile)
+            using (var zipfile = new ZipFile(repo_file))
             {
-                string filename = entry.Name;
+                // Clear our list of known modules.
+                registry.ClearAvailable();
 
-                // Skip things we don't want.
-                if (! Regex.IsMatch(filename, filter))
+                // Walk the archive, looking for .ckan files.
+                string filter = @"\.ckan$";
+
+                foreach (ZipEntry entry in zipfile)
                 {
-                    log.DebugFormat("Skipping archive entry {0}", filename);
-                    continue;
+                    string filename = entry.Name;
+
+                    // Skip things we don't want.
+                    if (! Regex.IsMatch(filename, filter))
+                    {
+                        log.DebugFormat("Skipping archive entry {0}", filename);
+                        continue;
+                    }
+
+                    log.DebugFormat("Reading CKAN data from {0}", filename);
+
+                    // Read each file into a string.
+                    string metadata_json;
+                    using (var stream = new StreamReader(zipfile.GetInputStream(entry)))
+                    {
+                        metadata_json = stream.ReadToEnd();
+                        stream.Close();
+                    }
+
+                    log.Debug("Converting from JSON...");
+
+                    CkanModule module = CkanModule.FromJson(metadata_json);
+
+                    log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
+
+                    // Hooray! Now save it in our registry.
+                    registry.AddAvailable(module);
                 }
 
-                log.DebugFormat("Reading CKAN data from {0}", filename);
-
-                // Read each file into a string.
-                string metadata_json = new StreamReader(zipfile.GetInputStream(entry)).ReadToEnd();
-
-                log.Debug("Converting from JSON...");
-
-                CkanModule module = CkanModule.FromJson(metadata_json);
-
-                log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
-
-                // Hooray! Now save it in our registry.
-                registry.AddAvailable(module);
+                zipfile.Close();
             }
 
-            // Clean up!
-            zipfile.Close();
-            File.Delete(repo_file);
-
+            // Remove our downloaded meta-data now we've processed it.
+            // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
+            file_transaction.Delete(repo_file);
         }
     }
 }

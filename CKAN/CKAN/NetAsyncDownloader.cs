@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Net;
+using ChinhDo.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -15,7 +17,6 @@ namespace CKAN
         public long bytesLeft;
         public int bytesPerSecond;
         public Exception error;
-        public FileStream fileStream;
         public int lastProgressUpdateSize;
         public DateTime lastProgressUpdateTime;
         public string path;
@@ -23,18 +24,25 @@ namespace CKAN
         public Uri url;
     }
 
+    /// <summary>
+    /// Download lots of files at once!
+    /// </summary>
     public class NetAsyncDownloader
     {
-        //        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         private readonly NetAsyncDownloaderDownloadPart[] downloads;
         public NetAsyncCompleted onCompleted = null;
         public NetAsyncProgressReport onProgressReport = null;
         private int queuePointer;
 
-        private FilesystemTransaction transaction;
         private bool downloadCanceled = false;
 
+        /// <summary>
+        /// Prepares to download the list of URLs to the file paths specified.
+        /// Any URLs missing file paths will be written to temporary files.
+        /// Use .StartDownload() to actually start the download.
+        /// </summary>
         public NetAsyncDownloader(Uri[] urls, string[] filenames = null)
         {
             downloads = new NetAsyncDownloaderDownloadPart[urls.Length];
@@ -53,11 +61,15 @@ namespace CKAN
             }
         }
 
-        // starts the download and return the destination filename
+        /// <summary>
+        /// Downloads our files, returning an array of filenames upon completion.
+        /// </summary>
         public string[] StartDownload()
         {
             var filePaths = new string[downloads.Length];
-            transaction = new FilesystemTransaction();
+            var file_transaction = new TxFileManager ();
+
+            log.Debug("Starting download");
 
             for (int i = 0; i < downloads.Length; i++)
             {
@@ -66,7 +78,7 @@ namespace CKAN
                 // Generate a temporary file if none is provided.
                 if (downloads[i].path == null)
                 {
-                    downloads[i].path = Path.GetTempFileName();
+                    downloads[i].path = file_transaction.GetTempFileName();
                 }
 
                 filePaths[i] = downloads[i].path;
@@ -87,15 +99,23 @@ namespace CKAN
 
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
 
-                transaction.Snapshot(downloads[i].path);
+                // Snapshot whatever was in that location, in case we need to roll-back.
+                file_transaction.Snapshot(downloads[i].path);
+
+                // Bytes ahoy!
                 downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
 
             return filePaths;
         }
 
+        /// <summary>
+        /// Cancel any running downloads.
+        /// </summary>
         public void CancelDownload()
         {
+            log.Debug("Cancelling download");
+
             foreach (var download in downloads)
             {
                 download.agent.CancelAsync();
@@ -111,6 +131,8 @@ namespace CKAN
 
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
+            log.Debug("Reporting file progress");
+
             if (downloadCanceled)
             {
                 return;
@@ -160,11 +182,14 @@ namespace CKAN
 
         private void FileDownloadComplete(int index, Exception error)
         {
+            log.DebugFormat("File {0} finished downloading", index);
             queuePointer++;
             downloads[index].error = error;
 
             if (queuePointer == downloads.Length)
             {
+                log.Debug("All files finished downloading");
+
                 // verify no errors before commit
 
                 bool err = false;
@@ -173,12 +198,9 @@ namespace CKAN
                     if (downloads[i].error != null)
                     {
                         err = true;
+                        // TODO: XXX: Shouldn't we throw a kraken here?
+                        log.Error("Something went wrong but I don't know what!");
                     }
-                }
-
-                if (!err)
-                {
-                    transaction.Commit();
                 }
 
                 if (onCompleted != null)
@@ -194,6 +216,7 @@ namespace CKAN
                         errors[i] = downloads[i].error;
                     }
 
+                    log.Debug("Signalling completion via callback");
                     onCompleted(fileUrls, filePaths, errors);
                 }
             }
@@ -201,6 +224,8 @@ namespace CKAN
 
         public void WaitForAllDownloads()
         {
+            log.Debug("Waiting for downloads to finish");
+            // TODO: Isn't this going to busy-wait?
             while (queuePointer < downloads.Length)
             {
             }

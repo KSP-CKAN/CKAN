@@ -1903,22 +1903,23 @@ my @cmd = (
 
 system(@cmd);
 
-# Repack ks2ckan
+# Repack netkan
 
 @cmd = (
     $REPACK,
-    "--out:ks2ckan.exe",
-    "--lib:build/KerbalStuff/bin/$TARGET",
-    "build/KerbalStuff/bin/$TARGET/ks2ckan.exe",
-    glob("build/KerbalStuff/bin/$TARGET/*.dll"),
+    "--out:netkan.exe",
+    "--lib:build/NetKAN/bin/$TARGET",
+    "build/NetKAN/bin/$TARGET/netkan.exe",
+    glob("build/NetKAN/bin/$TARGET/*.dll"),
 );
 
 system(@cmd);
 
 say "\n\n=== Tidying up===\n\n";
 
-unlink("$OUTNAME.mdb");
-unlink("ks2ckan.exe.mdb");
+# We don't tidy up any more, these provide useful debugging.
+# unlink("$OUTNAME.mdb");
+# unlink("netkan.exe.mdb");
 
 say "Done!";
 

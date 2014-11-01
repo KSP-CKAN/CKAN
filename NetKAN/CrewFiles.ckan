@@ -1,0 +1,11 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "CrewFiles",
+    "$kref"          : "#/ckan/kerbalstuff/39",
+    "install" : [
+        {
+            "file"       : "GameData/CrewFiles",
+            "install_to" : "GameData"
+        }
+    ]
+}

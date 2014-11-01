@@ -31,6 +31,9 @@ namespace CKAN
             return IsCached(module.StandardName());
         }
 
+        /// <summary>
+        /// Returns true if the given file is in our cache.
+        /// </summary>
         public bool IsCached(string filename)
         {
             // It's cached if we can find it on a cache lookup.
@@ -38,7 +41,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the path to the cached copy of the file or module, or null if it's not cached.
+        /// Returns the path to the cached copy of the file, or null if it's not cached.
         /// </summary>
         public string CachedFile(string file)
         {
@@ -50,6 +53,9 @@ namespace CKAN
             return null;
         }
 
+        /// <summary>
+        /// Returns the path to the cached copy of the module, or null if it's not cached.
+        /// </summary>
         public string CachedFile(CkanModule module)
         {
             return CachedFile(module.StandardName());
@@ -61,6 +67,11 @@ namespace CKAN
         public string CachePath(string file)
         {
             return Path.Combine(cache_path, file);
+        }
+
+        public string CachePath(CkanModule module)
+        {
+            return CachePath(module.StandardName());
         }
 
         /// <summary>

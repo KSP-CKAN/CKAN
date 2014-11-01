@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Transactions;
 using System.Collections.Generic;
+using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
 
@@ -14,31 +16,33 @@ namespace CKANTests
         public void GenerateDefaultInstall()
         {
             string filename = Tests.TestData.DogeCoinFlagZip();
-            var zipfile = new ZipFile(File.OpenRead(filename));
-
-            ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
-
-            TestDogeCoinStanza(stanza);
-
-            // Same again, but screwing up the case (we see this *all the time*)
-            ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
-
-            TestDogeCoinStanza(stanza2);
-
-            // Now what happens if we can't find what to install?
-
-            Assert.Throws<FileNotFoundKraken>(delegate {
-                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
-            });
-
-            // Make sure the FNFKraken looks like what we expect.
-            try
+            using (var zipfile = new ZipFile(filename))
             {
-                CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy",zipfile);
-            }
-            catch (FileNotFoundKraken kraken)
-            {
-                Assert.AreEqual("Xyzzy", kraken.file);
+                CKAN.ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+
+                TestDogeCoinStanza(stanza);
+
+                // Same again, but screwing up the case (we see this *all the time*)
+                CKAN.ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+
+                TestDogeCoinStanza(stanza2);
+
+                // Now what happens if we can't find what to install?
+
+                Assert.Throws<FileNotFoundKraken>(delegate
+                {
+                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                });
+
+                // Make sure the FNFKraken looks like what we expect.
+                try
+                {
+                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                }
+                catch (FileNotFoundKraken kraken)
+                {
+                    Assert.AreEqual("Xyzzy", kraken.file);
+                }
             }
         }
 
@@ -48,9 +52,8 @@ namespace CKANTests
             string dogezip = Tests.TestData.DogeCoinFlagZip();
             CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
 
-            Console.WriteLine("{0}", dogezip);
-
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
+            List<string> filenames = new List<string>();
 
             Assert.IsNotNull(contents);
 
@@ -67,12 +70,110 @@ namespace CKANTests
 
                 // And make sure our makeDir info is filled in.
                 Assert.IsNotNull(file.makedir);
+
+                filenames.Add(file.source.Name);
             }
 
-            // TODO: Ensure it's got a file we expect.
+            // Ensure we've got an expected file
+            Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
+
         }
 
-        private void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
+        [Test()]
+        // Make sure all our filters work.
+        public void FindInstallableFIilesWithFilter()
+        {
+            string extra_doge = Tests.TestData.DogeCoinFlagZipWithExtras();
+            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, extra_doge, null);
+
+            var files = contents.Select(x => x.source.Name);
+
+            Assert.IsTrue(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png"), "dogecoin.png");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/README.md"), "Filtered README 1");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/README.md"), "Filtered README 2");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/notes.txt.bak"), "Filtered .bak file");
+        }
+
+        [Test()]
+        public void No_Installable_Files()
+        {
+            // This tests GH #93
+
+            string dogezip = Tests.TestData.DogeCoinFlagZip();
+            CkanModule bugged_mod = Tests.TestData.DogeCoinFlag_101_bugged_module();
+
+            Assert.Throws<BadMetadataKraken>(delegate {
+                CKAN.ModuleInstaller.FindInstallableFiles(bugged_mod, dogezip, null);
+            });
+
+            try
+            {
+                CKAN.ModuleInstaller.FindInstallableFiles(bugged_mod, dogezip, null);
+            }
+            catch (BadMetadataKraken ex)
+            {
+                // Make sure our module information is attached.
+                Assert.IsNotNull(ex.module);
+                Assert.AreEqual(bugged_mod.identifier, ex.module.identifier);
+            }
+        }
+
+        [Test()]
+        // GH #205, make sure we write in *binary*, not text.
+        public void BinaryNotText_205()
+        {
+            // Use CopyZipEntry (via CopyDogeFromZip) and make sure it
+            // comes out the right size.
+            string tmpfile = CopyDogeFromZip();
+            long size = new System.IO.FileInfo(tmpfile).Length;
+
+            try
+            {
+                // Compare recorded length against what we expect.
+                Assert.AreEqual(52043, size);
+            }
+            finally
+            {
+                // Tidy up.
+                File.Delete(tmpfile);
+            }
+        }
+
+        [Test()]
+        // Make sure when we roll-back a transaction, files written with CopyZipEntry go
+        // back to their pre-transaction state.
+        public void FileSysRollBack()
+        {
+            string file;
+
+            using (var scope = new TransactionScope())
+            {
+                file = CopyDogeFromZip();
+                Assert.IsTrue(new System.IO.FileInfo(file).Length > 0);
+                scope.Dispose(); // Rollback
+            }
+
+            // CopyDogeFromZip creates a tempfile, so we check to make sure it's empty
+            // again on transaction rollback.
+            Assert.AreEqual(0, new System.IO.FileInfo(file).Length);
+        }
+
+        private static string CopyDogeFromZip()
+        {
+            string dogezip = Tests.TestData.DogeCoinFlagZip();
+            ZipFile zipfile = new ZipFile(dogezip);
+
+            ZipEntry entry = zipfile.GetEntry("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png");
+            string tmpfile = Path.GetTempFileName();
+
+            CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+
+            return tmpfile;
+        }
+
+        private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
             Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag",stanza.file);

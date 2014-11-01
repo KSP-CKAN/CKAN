@@ -224,6 +224,8 @@ scheme changes. It is not intended to cope with version numbers containing
 strings of letters which the package management system cannot interpret (such as
 ALPHA or pre-), or with silly orderings.
 
+#### Optional fields
+
 ##### install
 
 A list of install directives for this mod, each must contain the two
@@ -239,35 +241,29 @@ mandatory directives:
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
 
-An install directive may also include the following optional fields:
+Optionally, an install directive may filter the files to install using:
 
-- `depends`: Indicates this install directive should only be triggered
-  if the required mod has already been installed.
-- `overwrite`: A boolean value, if set to true, then this allows files
-  to be overwritten during install, even if those files are from another
-  mod.
-- `optional`: A boolean value. If set to true, this component is considered
-  optional. Defaults to false.
-- `description`: A human readable description of this component.
-  Recommeded for any optional sections.
+- `filter` : A string, or list of strings, of file parts that should not
+  be installed. These are treated as literal things which must match a
+  file name or directory. Examples of filters may be `Thumbs.db`,
+  or `Source`. Filters are considered case-insensitive.
+- `filter_regexp` : A string, or list of strings, which are treated as
+  case-sensitive C# regular expressions whch are matched against the
+  full paths from the installing zip-file. If a file matches the regular
+  expression, it is not installed.
 
-An example set of install directives, including one that overwrites
-parts of `OtherMod` (if installed) is shown below:
+If no install sections are provided, a CKAN client *must* find the
+top-most directory in the archive that matches the module identifier,
+and install that with a target of `GameData`.
+
+A typical install directive only has `file` and `install_to` sections:
 
     "install" : [
         {
             "file"       : "GameData/ExampleMod",
             "install_to" : "GameData"
         },
-        {
-            "file"       : "GameData/OtherMod",
-            "install_to" : "GameData",
-            "depends"    : "OtherMod",
-            "overwrite"  : true
-        }
     ]
-
-#### Optional fields
 
 ##### comment
 
@@ -398,66 +394,14 @@ Example resources:
 These fields are optional, and should only be used with good reason.
 Typical mods *should not* include these special use fields.
 
-##### bundles
-
-Where possible, it is recommended to use relationships (
-eg: *depends*, *recommended*, and *suggests*) rather than bundles. This ensures
-that mods are installed from their authoritative source, and means that
-related mods are installed in a known, reproduceable state. It
-also allows the most recent version of a related mod to be installed,
-which is important in ensuring bugfixes and features can be deployed
-in a timely fashion.
-
-Even if your distribution does bundle an additional mod, it is still
-recommended that you use relationships, rather than require the CKAN
-to install the bundle.
-
-However if required, a list of bundles definitions may be provided,
-which describe mods which are included with this distribution. In
-this case, the following fields are mandatory:
-
-- `file`: A path to the bundled mod.
-- `identifier`: The identifier of the bundled mod.
-- `version`: The version of the bundled mod.
-- `install_to` Where the bundled mod should be installed to.
-  (Currently `GameData` is the only valid value.)
-- `license`: The license or list of licenses which allowed this mod to be
-  bundled.
-- `required`: Whether this mod is required for operation.
-
-Bundled mods *will not* be installed if the same or later version of the
-mod is already installed.
-
-As an example, here is a `bundles` section which includes both
-ModuleMunger and CustomBiomes
-
-    "bundles" : [
-        {
-            "file"       : "ModuleMunger.2.3.3.dll",
-            "identifier" : "ModuleMunger",
-            "version"    : "2.3.3",
-            "install_to" : "GameData",
-            "license"    : "CC-BY-SA",
-            "required"   : true
-        },
-        {
-            "file"       : "CustomBiomes",
-            "identifier" : "CustomBiomes",
-            "version"    : "1.6.6",
-            "install_to" : "GameData",
-            "license"    : "CC-BY-NC-SA",
-            "required"   : false
-        }
-    ]
-
 ##### provides
 
-An identifier, or list of identifiers, that this module *provides*. This field
+A list of identifiers, that this module *provides*. This field
 is intended for use in modules which require one of a selection of texture
 downloads, or one of a selection of mods which provide equivalent
 functionality.  For example:
 
-    "provides"  : "RealSolarSystemTextures"
+    "provides"  : [ "RealSolarSystemTextures" ]
 
 It is recommended that this field be used *sparingly*, as all mods with
 the same `provides` string are essentially declaring they can be used
@@ -467,6 +411,12 @@ It *is* considered acceptable to use this field if a mod is renamed,
 and the old name of the mod is listed in the `provides` field. This
 allows for mods to be renamed without updating all other mods which
 depend upon it.
+
+A module may both provide functionality, and `conflict` with the same
+functionality. This allows relationships that ensure only one set
+of assets are installed. (Eg: `CustomBiomesRSS` and `CustomBiomesKerbal`
+both provide and conflict with `CustomBiomesData`, ensuring that both
+cannot be installed at the same time.)
 
 ##### download_size
 
@@ -505,10 +455,11 @@ For example:
 The following `$kref` values are understood. Only *one* `$kref`
 field may be present in a document.
 
-###### #/ckan/kerbalstuff
+###### #/ckan/kerbalstuff/:ksid
 
-Indicates that data should be fetched from KerbalStuff. When used,
-the following fields will be auto-filled if not already present:
+Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
+
+When used, the following fields will be auto-filled if not already present:
 
 - name
 - license
@@ -521,10 +472,11 @@ the following fields will be auto-filled if not already present:
 - resources/kerbalstuff
 - ksp_version
 
-###### #/ckan/github
+###### #/ckan/github/:user/:repo
 
-Indicates data should be fetched from Github. When used, the following
-fields will be auto-filled if not already present:
+Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
+
+When used, the following fields will be auto-filled if not already present:
 
 - author
 - version

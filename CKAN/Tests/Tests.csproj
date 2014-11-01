@@ -37,12 +37,11 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\packages\SharpZipLib.0.86.0-pjf-ckan_gh221\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KerbalStuff\KSMod.cs" />
-    <Compile Include="KerbalStuff\GitHubTests.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="CKAN\KSPVersion.cs" />
     <Compile Include="CKAN\Net.cs" />
@@ -54,6 +53,10 @@
     <Compile Include="CKAN\KSP.cs" />
     <Compile Include="CKAN\ModuleInstaller.cs" />
     <Compile Include="CKAN\KSPManager.cs" />
+    <Compile Include="NetKAN\KSMod.cs" />
+    <Compile Include="NetKAN\GitHubTests.cs" />
+    <Compile Include="CKAN\ModuleInstallDescriptor.cs" />
+    <Compile Include="ZipLib.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,16 +64,16 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
     </ProjectReference>
-    <ProjectReference Include="..\KerbalStuff\KerbalStuff.csproj">
+    <ProjectReference Include="..\NetKAN\NetKAN.csproj">
       <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
-      <Name>KerbalStuff</Name>
+      <Name>NetKAN</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="KerbalStuff\" />
     <Folder Include="CKAN\" />
+    <Folder Include="NetKAN\" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,18 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "DangIt",
+    "release_status" : "stable",
+    "license"        : "GPL-3.0",
+    "$kref"          : "#/ckan/kerbalstuff/7",
+    "depends" : [
+        { "name" : "CrewFiles" },
+        { "name" : "ModuleManager" },
+        { "name" : "CommunityResourcePack" }
+    ],
+    "install" : [
+        {
+            "file"       : "GameData/DangIt",
+            "install_to" : "GameData"
+        }
+    ]
+}

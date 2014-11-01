@@ -70,6 +70,14 @@ namespace CKANTests
             Assert.IsTrue(cache.IsCached(module));
         }
 
+        [Test()]
+        public void CachePathModule()
+        {
+            CKAN.CkanModule module = Tests.TestData.DogeCoinFlag_101_module();
+
+            Assert.AreEqual(Path.Combine(cache_dir, module.StandardName()), cache.CachePath(module));
+        }
+
         // Stores the file in our cache.
         // This may be good to have in the actual Cache class itself.
         private void Store(string file)

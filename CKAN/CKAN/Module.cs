@@ -17,20 +17,6 @@ namespace CKAN
         public string version;
     }
 
-    public abstract class InstallableDescriptor
-    {
-        public /* required */ string file;
-        public /* required */ string install_to;
-    }
-
-    public class BundledModuleDescriptor : InstallableDescriptor
-    {
-        public /* required */ string identifier;
-        public /* required */ string license;
-        public /* required */ bool required;
-        public /* required */ string version;
-    }
-
     public class GitHubResourceDescriptor
     {
         public bool releases;
@@ -49,14 +35,6 @@ namespace CKAN
         public Uri bugtracker;
 
         public KerbalStuffResourceDescriptor kerbalstuff;
-    }
-
-    public class ModuleInstallDescriptor : InstallableDescriptor
-    {
-        public string description;
-        public bool optional;
-        public bool overwrite;
-        public string requires;
     }
 
     public enum License
@@ -175,6 +153,7 @@ namespace CKAN
         [JsonProperty("name")] public string name;
 
         [JsonProperty("pre_depends")] public RelationshipDescriptor[] pre_depends;
+
         [JsonProperty("provides")] public string[] provides;
 
         [JsonProperty("recommends")] public RelationshipDescriptor[] recommends;
@@ -265,17 +244,6 @@ namespace CKAN
         }
     }
 
-    public class BundledModule : Module
-    {
-        public BundledModule(BundledModuleDescriptor stanza)
-        {
-            // For now, we just copy across the fields from our stanza.
-            version = new Version(stanza.version);
-            identifier = stanza.identifier;
-            license = stanza.license;
-        }
-    }
-
     public class CkanInvalidMetadataJson : Exception
     {
     }
@@ -300,7 +268,6 @@ namespace CKAN
 //      private static JsonSchema metadata_schema;
 //      private static string metadata_schema_path = "CKAN.schema";
 //      private static bool metadata_schema_missing_warning_fired;
-        [JsonProperty("bundles")] public BundledModuleDescriptor[] bundles;
         [JsonProperty("install")] public ModuleInstallDescriptor[] install;
         [JsonProperty("spec_version")] public string spec_version;
 
