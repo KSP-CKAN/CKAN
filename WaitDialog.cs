@@ -22,6 +22,7 @@ namespace CKAN
         public void ShowWaitDialog(bool asDialog = true, bool cancelable = true)
         {
             Util.Invoke(CancelCurrentActionButton, () => CancelCurrentActionButton.Enabled = cancelable);
+            Util.Invoke(CloseWindowButton, () => CloseWindowButton.Enabled = false);
 
             if (asDialog)
             {
@@ -35,8 +36,10 @@ namespace CKAN
 
         public void HideWaitDialog()
         {
-            Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "Waiting for operation to complete");
-            Util.Invoke(this, Close);
+            Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "All done!");
+            Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 100);
+            Util.Invoke(CloseWindowButton, () => CloseWindowButton.Enabled = true);
+            Main.Instance.RecreateDialogs();
         }
 
         public void SetProgress(int progress)
@@ -82,6 +85,11 @@ namespace CKAN
                 CancelCurrentActionButton.Enabled = false;
                 HideWaitDialog();
             }
+        }
+
+        private void CloseWindowButton_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
     }
