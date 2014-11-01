@@ -1,0 +1,18 @@
+{
+    "spec_version"   : 1,
+    "identifier"     : "StageRecovery",
+    "$kref"          : "#/ckan/kerbalstuff/97",
+    "suggests" : [
+        { "name" : "KerbalConstructionTime" },
+        { "name" : "Toolbar" },
+    ],
+    "conflicts" : [
+        { "name" : "DebRefund" },
+    ],
+    "install" : [
+        {
+            "file"       : "GameData/StageRecovery",
+            "install_to" : "GameData"
+        },
+    ]
+}
