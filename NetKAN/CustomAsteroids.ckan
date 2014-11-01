@@ -17,5 +17,5 @@
 	],
 	"name": "Custom Asteroids",
 	"description": "Custom Asteroids is a mod for KSP that expands the stock asteroid functionality. Under Custom Asteroids most asteroids will not be on a flyby course for Kerbin. Instead, the mod places asteroids in specific populations throughout the stock kerbol system.",
-	"x_maintained_by field": "Starstrider42"
+	"x_maintained_by": "Starstrider42"
 }
