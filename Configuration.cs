@@ -33,7 +33,14 @@ namespace CKAN
         public static Configuration LoadConfiguration(string path)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
-            var configuration = (Configuration) serializer.Deserialize(new StreamReader(path));
+
+            Configuration configuration;
+            using (var stream = new StreamReader(path))
+            {
+                configuration = (Configuration) serializer.Deserialize(stream);
+                stream.Close();
+            }
+
             configuration.m_Path = path;
             return configuration;
         }
@@ -41,9 +48,12 @@ namespace CKAN
         public static void SaveConfiguration(Configuration configuration, string path)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
-            var writer = new StreamWriter(path);
-            serializer.Serialize(writer, configuration);
-            writer.Close();
+
+            using (var writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, configuration);
+                writer.Close();
+            }
         }
     }
 }
