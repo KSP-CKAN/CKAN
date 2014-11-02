@@ -230,7 +230,7 @@ namespace CKAN.CmdLine
         private static int Remove(RemoveOptions options)
         {
             var installer = ModuleInstaller.Instance;
-            installer.Uninstall(options.Modname, true);
+            installer.UninstallList(options.Modname);
 
             return Exit.OK;
         }
@@ -258,7 +258,7 @@ namespace CKAN.CmdLine
 
                     foreach (string module in options.modules)
                     {
-                        installer.Uninstall(module, false);
+                        installer.UninstallList(module);
                     }
 
                     // Prepare options. Can these all be done in the new() somehow?
