@@ -4,15 +4,15 @@
     "$kref"          : "#/ckan/kerbalstuff/97",
     "suggests" : [
         { "name" : "KerbalConstructionTime" },
-        { "name" : "Toolbar" },
+        { "name" : "Toolbar" }
     ],
     "conflicts" : [
-        { "name" : "DebRefund" },
+        { "name" : "DebRefund" }
     ],
     "install" : [
         {
             "file"       : "GameData/StageRecovery",
             "install_to" : "GameData"
-        },
+        }
     ]
 }
