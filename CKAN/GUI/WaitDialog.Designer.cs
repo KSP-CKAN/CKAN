@@ -31,7 +31,8 @@
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.LogTextBox = new System.Windows.Forms.TextBox();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelCurrentActionButton = new System.Windows.Forms.Button();
+            this.CloseWindowButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // MessageTextBox
@@ -62,18 +63,30 @@
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(459, 175);
             this.LogTextBox.TabIndex = 2;
             // 
-            // CancelButton
+            // CancelCurrentActionButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(397, 245);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 3;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelCurrentActionButton.Location = new System.Drawing.Point(316, 245);
+            this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
+            this.CancelCurrentActionButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelCurrentActionButton.TabIndex = 3;
+            this.CancelCurrentActionButton.Text = "Cancel";
+            this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
+            this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelButton_Click);
+            // 
+            // CloseWindowButton
+            // 
+            this.CloseWindowButton.Enabled = false;
+            this.CloseWindowButton.Location = new System.Drawing.Point(397, 245);
+            this.CloseWindowButton.Name = "CloseWindowButton";
+            this.CloseWindowButton.Size = new System.Drawing.Size(75, 23);
+            this.CloseWindowButton.TabIndex = 4;
+            this.CloseWindowButton.Text = "Close";
+            this.CloseWindowButton.UseVisualStyleBackColor = true;
+            this.CloseWindowButton.Click += new System.EventHandler(this.CloseWindowButton_Click);
             // 
             // WaitDialog
             // 
@@ -81,7 +94,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 280);
             this.ControlBox = false;
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CloseWindowButton);
+            this.Controls.Add(this.CancelCurrentActionButton);
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.DialogProgressBar);
             this.Controls.Add(this.MessageTextBox);
@@ -98,7 +112,8 @@
         private System.Windows.Forms.TextBox MessageTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox LogTextBox;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelCurrentActionButton;
+        private System.Windows.Forms.Button CloseWindowButton;
 
     }
 }

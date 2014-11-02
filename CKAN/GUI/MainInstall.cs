@@ -185,10 +185,9 @@ namespace CKAN
             if (m_WaitDialog != null)
             {
                 AddStatusMessage("");
-                m_WaitDialog.Close();    
+                m_WaitDialog.HideWaitDialog();    
             }
 
-            Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, () => Enabled = true);
         }
 
