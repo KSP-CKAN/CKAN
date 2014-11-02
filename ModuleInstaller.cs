@@ -189,11 +189,8 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Installs all modules given a list of identifiers. Resolves dependencies.
-        ///     The function initializes a filesystem transaction, then installs all cached mods
-        ///     this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives.
-        ///     After this we try to download the rest of the mods (asynchronously) and install them.
-        ///     Finally, only if everything is successful, we commit the transaction.
+        ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
+        ///     This *will* save the registry at the end of operation.
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
@@ -273,11 +270,12 @@ namespace CKAN
                         Install(modsToInstall[i]);
                     }
 
+                    registry_manager.Save();
                     transaction.Complete();
                     return;
                 }
              
-                transaction.Dispose(); // Rollback
+                transaction.Dispose(); // Rollback on unsuccessful download.
             }
         }
 
@@ -732,11 +730,57 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Uninstall the module provided.
+        /// Uninstalls all the mods provided, including things which depend upon them.
+        /// This *DOES* save the registry.
+        /// Preferred over Uninstall.
+        /// </summary>
+        public void UninstallList(IEnumerable<string> mods)
+        {
+            using (var transaction = new TransactionScope())
+            {
+                // Find all the things which need uninstalling.
+                IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
+
+                User.WriteLine("About to remove:\n");
+
+                foreach (string mod in goners)
+                {
+                    User.WriteLine(" * {0}", mod);
+                }
+
+                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+
+                if (!ok)
+                {
+                    User.WriteLine("Mod removal aborted at user request.");
+                    return;
+                }
+
+                foreach (string mod in goners)
+                {
+                    Uninstall(mod);
+                }
+
+                registry_manager.Save();
+
+                transaction.Complete();
+            }
+        }
+
+        public void UninstallList(string mod)
+        {
+            var list = new List<string>();
+            list.Add(mod);
+            UninstallList(list);
+        }
+
+        /// <summary>
+        /// Uninstall the module provided. For internal use only.
+        /// Use UninstallList for user queries, it also does dependency handling.
+        /// This does *NOT* save the registry.
         /// </summary>
          
-        // TODO: Remove second arg; shouldn't we *always* uninstall dependencies?
-        public void Uninstall(string modName, bool uninstallDependencies)
+        private void Uninstall(string modName)
         {
             using (var transaction = new TransactionScope())
             {
@@ -748,16 +792,6 @@ namespace CKAN
                     // if it expects that it may try to uninstall a module twice.
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
                     return;
-                }
-
-                // Find all mods that depend on this one
-                if (uninstallDependencies)
-                {
-                    HashSet<string> reverseDependencies = registry_manager.registry.FindReverseDependencies(modName);
-                    foreach (string reverseDependency in reverseDependencies)
-                    {
-                        Uninstall(reverseDependency, uninstallDependencies);
-                    }
                 }
 
                 // Walk our registry to find all files for this mod.
@@ -786,7 +820,7 @@ namespace CKAN
                     }
                     catch (Exception ex)
                     {
-                        // TODO: Report why.
+                        // XXX: This is terrible, we're catching all exceptions.
                         log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
                     }
                 }
@@ -794,21 +828,25 @@ namespace CKAN
                 // Remove from registry.
 
                 registry_manager.registry.DeregisterModule(modName);
-                registry_manager.Save();
 
+                // TODO: We need to remove from child to parent first.
                 foreach (string directory in directoriesToDelete)
                 {
                     if (!Directory.GetFiles(directory).Any())
                     {
                         try
                         {
-                            file_transaction.Delete(directory);
+                            file_transaction.DeleteDirectory(directory);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             // TODO: Report why.
-                            User.WriteLine("Couldn't delete directory {0}", directory);
+                            User.WriteLine("Couldn't delete directory {0} : {1}", directory, ex.Message);
                         }
+                    }
+                    else
+                    {
+                        User.WriteLine("Not removing directory {0}, it's not empty", directory);
                     }
                 }
                 transaction.Complete();
