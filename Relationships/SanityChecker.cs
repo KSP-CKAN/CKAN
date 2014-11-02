@@ -13,13 +13,16 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(SanityChecker));
 
         /// <summary>
-        /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
+        ///     Checks the list of modules for consistency errors, returning a list of
+        ///     errors found. The list will be empty if everything is fine.
         /// </summary>
-        public static bool IsConsistent(IEnumerable<Module> modules)
+        public static List<string> ConsistencyErrors(IEnumerable<Module> modules)
         {
+            var errors = new List<string>();
+
             if (modules == null)
             {
-                return true;
+                return errors; // The empty list of errors, of course.
             }
 
             // Build a data structure of which modules provide what
@@ -54,8 +57,7 @@ namespace CKAN
             {
                 if (! providers.ContainsKey(dep))
                 {
-                    log.DebugFormat ("Cannot find required dependency {0}", dep);
-                    return false;
+                    errors.Add(string.Format("Cannot find required dependency {0}", dep));
                 }
             }
 
@@ -86,15 +88,37 @@ namespace CKAN
                     {
                         if (provider != mod)
                         {
-                            return false;
+                            errors.Add(string.Format("{0} conflicts with {1}", mod.identifier, provider.identifier));
                         }
                     }
                 }
             }
 
-            // Looks like everything's good!
-            return true;
+            // Return whatever we've found, which could be empty.
+            return errors;
+        }
+
+        /// <summary>
+        /// Ensures all modules in the list provided can co-exist.
+        /// Throws a InconsistentKraken containing a list of inconsistences if they do not.
+        /// Does nothing if the modules can happily co-exist.
+        /// </summary>
+        public static void EnforceConsistency(IEnumerable<Module> modules)
+        {
+            List<string> errors = ConsistencyErrors(modules);
+
+            if (errors.Count != 0)
+            {
+                throw new InconsistentKraken(errors);
+            }
+        }
+    
+        /// <summary>
+        /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
+        /// </summary>
+        public static bool IsConsistent(IEnumerable<Module> modules)
+        {
+            return ConsistencyErrors(modules).Count == 0;
         }
     }
 }
-
