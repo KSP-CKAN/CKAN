@@ -24,10 +24,16 @@ namespace CKAN
             this.path = Path.Combine(path, "registry.json");
             LoadOrCreate();
 
-            // Checking the sanity on load is questionable, as it may stop users from
-            // using the CKAN at all if their registry becomes inconsistent. On the other
-            // hand, it means we spot problems right away.
-            registry.CheckSanity();
+            // We don't cause an inconsistency error to stop the registry from being loaded,
+            // because then the user can't do anything to correct it. However we're
+            // sure as hell going to complain if we spot one!
+            try {
+                registry.CheckSanity();
+            }
+            catch (InconsistentKraken kraken)
+            {
+                log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
+            }
         }
 
         /// <summary>

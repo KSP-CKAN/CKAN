@@ -143,6 +143,20 @@ namespace CKAN
     {
         public List<string> inconsistencies;
 
+        public string InconsistenciesPretty
+        {
+            get {
+                string message = "The following inconsistecies were found:\n\n";
+
+                foreach (string issue in inconsistencies)
+                {
+                    message += " * " + issue + "\n";
+                }
+
+                return message;
+            }
+        }
+
         public InconsistentKraken(List<string> inconsistencies, Exception inner_exception = null)
             :base(null, inner_exception)
         {
@@ -151,16 +165,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            string message = "The following inconsistecies were found:\n\n";
-
-            foreach (var issue in inconsistencies)
-            {
-                message += " * " + issue + "\n";
-            }
-
-            message += "\n" + this.StackTrace;
-
-            return message;
+            return this.InconsistenciesPretty + this.StackTrace;
         }
     }
 }
