@@ -75,9 +75,13 @@
     <Compile Include="Registry\Registry.cs" />
     <Compile Include="Registry\RegistryManager.cs" />
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
+    <Compile Include="Relationships\SanityChecker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Relationships\" />
   </ItemGroup>
 </Project>

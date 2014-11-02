@@ -120,7 +120,7 @@ namespace CKAN
         /// 
         /// Throws a TooManyModsProvideKraken if we have too many choices.
         /// </summary>
-        private void ResolveStanza(RelationshipDescriptor[] stanza, RelationshipResolverOptions options)
+        private void ResolveStanza(List<RelationshipDescriptor> stanza, RelationshipResolverOptions options)
         {
             if (stanza == null)
             {
