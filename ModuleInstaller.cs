@@ -731,37 +731,6 @@ namespace CKAN
             return;
         }
 
-        public List<string> FindReverseDependencies(string modName)
-        {
-            var reverseDependencies = new List<string>();
-
-            // loop through all installed modules
-            foreach (var keyValue in registry_manager.registry.installed_modules)
-            {
-                Module mod = keyValue.Value.source_module;
-                bool isDependency = false;
-
-                if (mod.depends != null)
-                {
-                    foreach (RelationshipDescriptor dependency in mod.depends)
-                    {
-                        if (dependency.name == modName)
-                        {
-                            isDependency = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (isDependency)
-                {
-                    reverseDependencies.Add(mod.identifier);
-                }
-            }
-
-            return reverseDependencies;
-        }
-
         /// <summary>
         /// Uninstall the module provided.
         /// </summary>
@@ -784,7 +753,7 @@ namespace CKAN
                 // Find all mods that depend on this one
                 if (uninstallDependencies)
                 {
-                    List<string> reverseDependencies = FindReverseDependencies(modName);
+                    HashSet<string> reverseDependencies = registry_manager.registry.FindReverseDependencies(modName);
                     foreach (string reverseDependency in reverseDependencies)
                     {
                         Uninstall(reverseDependency, uninstallDependencies);
@@ -847,5 +816,16 @@ namespace CKAN
 
             return;
         }
+
+        /// <summary>
+        /// Don't use this. Use Registry.FindReverseDependencies instead.
+        /// This method may be deprecated in the future.
+        /// </summary>
+        // Here for now to keep the GUI happy.
+        public HashSet<string> FindReverseDependencies(string module)
+        {
+            return registry_manager.registry.FindReverseDependencies(module);
+        }
+
     }
 }
