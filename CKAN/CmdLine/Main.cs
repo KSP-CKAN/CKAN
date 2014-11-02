@@ -96,8 +96,6 @@ namespace CKAN.CmdLine
                 // We don't do this on `ksp/version` commands, they don't need it.
                 CKAN.KSP ksp = KSPManager.GetPreferredInstance();
 
-                User.WriteLine("Using KSP installation at \"{0}\"", KSPManager.CurrentInstance.GameDir());
-
                 if (ksp == null)
                 {
                     User.WriteLine("I don't know where KSP is installed.");
