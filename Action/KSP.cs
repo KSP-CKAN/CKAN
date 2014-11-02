@@ -120,7 +120,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null || options.path == null)
             {
-                User.WriteLine("add-install <name> <path> - argument missing, perhaps you forgot it?");
+                User.WriteLine("add <name> <path> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -148,7 +148,7 @@ namespace CKAN.CmdLine
         {
             if (options.old_name == null || options.new_name == null)
             {
-                User.WriteLine("rename-install <old_name> <new_name> - argument missing, perhaps you forgot it?");
+                User.WriteLine("rename <old_name> <new_name> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -168,7 +168,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.WriteLine("remove-install <name> - argument missing, perhaps you forgot it?");
+                User.WriteLine("forget <name> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -188,7 +188,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.WriteLine("set-default-install <name> - argument missing, perhaps you forgot it?");
+                User.WriteLine("default <name> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
