@@ -37,11 +37,12 @@ namespace CKAN
                 if (change.Value == GUIModChangeType.Remove)
                 {
                     m_WaitDialog.SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
-                    installer.Uninstall(change.Key.identifier, true);
+                    installer.UninstallList(change.Key.identifier);
                 }
                 else if (change.Value == GUIModChangeType.Update)
                 {
-                    installer.Uninstall(change.Key.identifier, false);
+                    // TODO: Proper upgrades when ckan.dll supports them.
+                    installer.UninstallList(change.Key.identifier);
                 }
             }
 
