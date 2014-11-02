@@ -65,11 +65,9 @@ namespace CKAN
 
             ModuleInstaller installer = ModuleInstaller.Instance;
 
-            var reverseDependencies = new List<string>();
-
             foreach (string moduleName in modulesToRemove)
             {
-                reverseDependencies = installer.FindReverseDependencies(moduleName);
+                var reverseDependencies = installer.FindReverseDependencies(moduleName);
                 foreach (string reverseDependency in reverseDependencies)
                 {
                     CkanModule mod = registry.available_modules[reverseDependency].Latest();

@@ -251,7 +251,7 @@ namespace CKAN
                 else if ((bool) cell.Value && isInstalled)
                 {
                     var installer = ModuleInstaller.Instance;
-                    List<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
+                    HashSet<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
                     foreach (string dependency in reverseDependencies)
                     {
                         foreach (DataGridViewRow depRow in ModList.Rows)
