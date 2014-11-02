@@ -96,16 +96,16 @@ namespace CKAN
             switch (relationship)
             {
                 case RelationshipType.Depends:
-                    relationships = module.depends;
+                    relationships = module.depends.ToArray();
                     break;
                 case RelationshipType.PreDepends:
                     relationships = module.pre_depends;
                     break;
                 case RelationshipType.Recommends:
-                    relationships = module.recommends;
+                    relationships = module.recommends.ToArray();
                     break;
                 case RelationshipType.Suggests:
-                    relationships = module.suggests;
+                    relationships = module.suggests.ToArray();
                     break;
             }
 
