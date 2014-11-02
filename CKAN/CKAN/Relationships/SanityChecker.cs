@@ -16,26 +16,42 @@ namespace CKAN
         ///     Checks the list of modules for consistency errors, returning a list of
         ///     errors found. The list will be empty if everything is fine.
         /// </summary>
-        public static List<string> ConsistencyErrors(IEnumerable<Module> modules)
+        public static List<string> ConsistencyErrors(IEnumerable<Module> modules, IEnumerable<string> dlls)
         {
             var errors = new List<string>();
 
+            // If we have no modules, then everything is fine. DLLs can't depend or conflict on things.
             if (modules == null)
             {
-                return errors; // The empty list of errors, of course.
+                return errors;
+            }
+
+            if (dlls == null)
+            {
+                dlls = new List<string>();
             }
 
             // Build a data structure of which modules provide what
-            var providers = new Dictionary<string, List<Module>>();
+            var providers = new Dictionary<string, List<string>>();
 
             foreach (Module mod in modules)
             {
                 foreach (string provides in mod.ProvidesList)
                 {
                     log.DebugFormat("{0} provides {1}", mod, provides);
-                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<Module>();
-                    providers[provides].Add(mod);
+                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<string>();
+                    providers[provides].Add(mod.identifier);
                 }
+            }
+
+            // Add in our DLLs as things we know exist.
+            foreach (string dll in dlls)
+            {
+                if (! providers.ContainsKey(dll))
+                {
+                    providers[dll] = new List<string>();
+                }
+                providers[dll].Add(dll);
             }
 
             // Walk everything we depend upon, and make sure it's there.
@@ -80,11 +96,11 @@ namespace CKAN
                     }
 
                     // If something does conflict with us, and it's not ourselves, that's a fail.
-                    foreach (Module provider in providers[conflict.name])
+                    foreach (string provider in providers[conflict.name])
                     {
-                        if (provider != mod)
+                        if (provider != mod.identifier)
                         {
-                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, provider.identifier));
+                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, provider));
                         }
                     }
                 }
@@ -99,9 +115,9 @@ namespace CKAN
         /// Throws a InconsistentKraken containing a list of inconsistences if they do not.
         /// Does nothing if the modules can happily co-exist.
         /// </summary>
-        public static void EnforceConsistency(IEnumerable<Module> modules)
+        public static void EnforceConsistency(IEnumerable<Module> modules, IEnumerable<string> dlls = null)
         {
-            List<string> errors = ConsistencyErrors(modules);
+            List<string> errors = ConsistencyErrors(modules, dlls);
 
             if (errors.Count != 0)
             {
@@ -112,9 +128,9 @@ namespace CKAN
         /// <summary>
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
         /// </summary>
-        public static bool IsConsistent(IEnumerable<Module> modules)
+        public static bool IsConsistent(IEnumerable<Module> modules, IEnumerable<string> dlls = null)
         {
-            return ConsistencyErrors(modules).Count == 0;
+            return ConsistencyErrors(modules, dlls).Count == 0;
         }
     }
 }

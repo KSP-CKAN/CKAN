@@ -56,6 +56,23 @@ namespace CKANTests
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with conflicting data");
         }
 
+        [Test]
+        public void CustomBiomesWithDlls()
+        {
+            var mods = new List<CKAN.CkanModule>();
+            var dlls = new List<string>();
+
+            dlls.Add("CustomBiomes");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes dll by itself");
+
+            // This would actually be a terrible thing for users to have, but it tests the
+            // relationship we want.
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes DLL, with config added");
+
+            mods.Add(registry.LatestAvailable("CustomBiomesRSS"));
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes with conflicting data");
+        }
     }
 }
 

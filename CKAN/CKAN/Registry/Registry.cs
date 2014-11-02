@@ -23,7 +23,7 @@ namespace CKAN
         // Is that something you can do in C#? In Moose we'd use a role.
 
         public Dictionary<string, AvailableModule> available_modules;
-        public Dictionary<string, string> installed_dlls;
+        public Dictionary<string, string> installed_dlls; // name => path
         public Dictionary<string, InstalledModule> installed_modules;
         public int registry_version;
 
@@ -437,7 +437,7 @@ namespace CKAN
         public void CheckSanity()
         {
             IEnumerable<Module> installed = from pair in installed_modules select pair.Value.source_module;
-            SanityChecker.EnforceConsistency(installed);
+            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
         }
 
     }
