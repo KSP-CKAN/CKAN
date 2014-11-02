@@ -188,6 +188,7 @@ namespace CKAN
         ///     satisifes the specified version.
         ///     Throws a ModuleNotFoundException if asked for a non-existant module.
         ///     Returns null if there's simply no compatible version for this system.
+        ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
         /// </summary>
          
         // TODO: Consider making this internal, because practically everything should
@@ -246,7 +247,7 @@ namespace CKAN
                     continue;
                 }
 
-                string[] provides = pair.Value.Latest(ksp_version).provides;
+                List<string> provides = pair.Value.Latest(ksp_version).provides;
                 if (provides != null)
                 {
                     foreach (string provided in provides)

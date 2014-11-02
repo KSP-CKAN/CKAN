@@ -57,6 +57,7 @@
     <Compile Include="NetKAN\GitHubTests.cs" />
     <Compile Include="CKAN\ModuleInstallDescriptor.cs" />
     <Compile Include="ZipLib.cs" />
+    <Compile Include="CKAN\SanityChecker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
