@@ -136,14 +136,31 @@ namespace CKAN
     }
 
     /// <summary>
-    /// Thrown if our registry was going to contain conflicting modules or un-met depdendencies.
-    /// Our last defence against having a totally out-of-whack install.
+    /// Thrown if we find ourselves in an inconsistent state, such as when we have multiple modules
+    /// installed which conflict with each other.
     /// </summary>
-    public class RegistryInsaneKraken : Kraken
+    public class InconsistentKraken : Kraken
     {
-        public RegistryInsaneKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public List<string> inconsistencies;
+
+        public InconsistentKraken(List<string> inconsistencies, Exception inner_exception = null)
+            :base(null, inner_exception)
         {
+            this.inconsistencies = inconsistencies;
+        }
+
+        public override string ToString()
+        {
+            string message = "The following inconsistecies were found:\n\n";
+
+            foreach (var issue in inconsistencies)
+            {
+                message += " * " + issue + "\n";
+            }
+
+            message += "\n" + this.StackTrace;
+
+            return message;
         }
     }
 }
