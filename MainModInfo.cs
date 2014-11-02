@@ -92,20 +92,20 @@ namespace CKAN
                 node = parentNode.Nodes.Add(module.name);
             }
 
-            RelationshipDescriptor[] relationships = null;
+            IEnumerable<RelationshipDescriptor> relationships = null;
             switch (relationship)
             {
                 case RelationshipType.Depends:
-                    relationships = module.depends.ToArray();
+                    relationships = module.depends;
                     break;
                 case RelationshipType.PreDepends:
                     relationships = module.pre_depends;
                     break;
                 case RelationshipType.Recommends:
-                    relationships = module.recommends.ToArray();
+                    relationships = module.recommends;
                     break;
                 case RelationshipType.Suggests:
-                    relationships = module.suggests.ToArray();
+                    relationships = module.suggests;
                     break;
             }
 
