@@ -352,7 +352,8 @@ namespace CKAN
         ///     Install our mod from the filename supplied.
         ///     If no file is supplied, we will check the cache or download it.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
-        ///     Use InstallList() for requests from the user.
+        ///     Does *not* save the registry.
+        ///     Do *not* call this directly, use InstallList() instead.
         /// 
         /// </summary>
         // 
@@ -362,8 +363,6 @@ namespace CKAN
         {
             using (var transaction = new TransactionScope())
             {
-
-
                 User.WriteLine(module.identifier + ":\n");
 
                 Version version = registry_manager.registry.InstalledVersion(module.identifier);
@@ -393,11 +392,10 @@ namespace CKAN
                 // Register our files.
                 registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
 
-                // Done! Save our registry changes!
+                // Finish our transaction, but *don't* save the registry; we may be in an
+                // intermediate, inconsistent state.
                 // This is fine from a transaction standpoint, as we may not have an enclosing
                 // transaction, and if we do, they can always roll us back.
-                registry_manager.Save();
-
                 transaction.Complete();
             }
 
