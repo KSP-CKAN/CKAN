@@ -135,4 +135,15 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// Thrown if our registry was going to contain conflicting modules or un-met depdendencies.
+    /// Our last defence against having a totally out-of-whack install.
+    /// </summary>
+    public class RegistryInsaneKraken : Kraken
+    {
+        public RegistryInsaneKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
 }

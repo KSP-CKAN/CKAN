@@ -15,7 +15,7 @@ namespace CKAN
         /// <summary>
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
         /// </summary>
-        public static bool IsConsistent(List<CkanModule> modules)
+        public static bool IsConsistent(IEnumerable<Module> modules)
         {
             if (modules == null)
             {
@@ -23,14 +23,14 @@ namespace CKAN
             }
 
             // Build a data structure of which modules provide what
-            var providers = new Dictionary<string, List<CkanModule>>();
+            var providers = new Dictionary<string, List<Module>>();
 
-            foreach (CkanModule mod in modules)
+            foreach (Module mod in modules)
             {
                 foreach (string provides in mod.ProvidesList)
                 {
                     log.DebugFormat("{0} provides {1}", mod, provides);
-                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<CkanModule>();
+                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<Module>();
                     providers[provides].Add(mod);
                 }
             }
@@ -41,8 +41,9 @@ namespace CKAN
 
             var depends = new HashSet<string> (
                 modules
-                .Select(mod => mod.depends)
-                .SelectMany(x => x)
+                .Select(mod => mod.depends) // Get all our depends lists
+                .Where(x => x != null)      // Filter out nulls
+                .SelectMany(x => x)         // Flatten to one big list
                 .Select(dependency => dependency.name)
             );
 
@@ -64,7 +65,7 @@ namespace CKAN
 
             // TODO: This doesn't examine versions. We should!
 
-            foreach (var mod in modules)
+            foreach (Module mod in modules)
             {
                 // If our mod doesn't conflict with anything, skip it.
                 if (mod.conflicts == null)
@@ -81,7 +82,7 @@ namespace CKAN
                     }
 
                     // If something does conflict with us, and it's not ourselves, that's a fail.
-                    foreach (CkanModule provider in providers[conflict.name])
+                    foreach (Module provider in providers[conflict.name])
                     {
                         if (provider != mod)
                         {

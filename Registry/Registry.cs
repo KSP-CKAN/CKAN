@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 using log4net;
 
 namespace CKAN
@@ -428,5 +429,22 @@ namespace CKAN
             }
             return true;
         }
+
+        /// <summary>
+        ///     Checks the sanity of the registry, to ensure that all dependencies are met,
+        ///     and no mods conflict with each other. Throws a RegistryInsaneKraken on failure.
+        /// </summary>
+        public void CheckSanity()
+        {
+            // TODO: Update SanityChecker and friends to provide feedback as to what's wrong.
+
+            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.source_module;
+
+            if (! SanityChecker.IsConsistent(installed))
+            {
+                throw new RegistryInsaneKraken();
+            }
+        }
+
     }
 }
