@@ -10,7 +10,7 @@
     "ksp_version"    : "0.25",
     "install" : [
         {
-            "file"       : "GameData/UmbraSpaceIndustries",
+            "file"       : "GameData/000_USITools",
             "install_to" : "GameData"
         }
     ]
