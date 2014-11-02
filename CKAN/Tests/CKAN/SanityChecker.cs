@@ -32,6 +32,16 @@ namespace CKANTests
         }
 
         [Test]
+        public void DogeCoin()
+        {
+            // Test with a module that depends and conflicts with nothing.
+            var mods = new List<CKAN.CkanModule>();
+            mods.Add(registry.LatestAvailable("DogeCoinFlag"));
+
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
+        }
+
+        [Test]
         public void CustomBiomes()
         {
             var mods = new List<CKAN.CkanModule>();

@@ -23,6 +23,11 @@ namespace CKAN
         {
             this.path = Path.Combine(path, "registry.json");
             LoadOrCreate();
+
+            // Checking the sanity on load is questionable, as it may stop users from
+            // using the CKAN at all if their registry becomes inconsistent. On the other
+            // hand, it means we spot problems right away.
+            registry.CheckSanity();
         }
 
         /// <summary>
@@ -90,11 +95,16 @@ namespace CKAN
         public void Save()
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
+
+            // No saving the registry unless it's in a sane state.
+            registry.CheckSanity();
+
             string directoryPath = Path.GetDirectoryName(path);
 
             if (directoryPath == null)
             {
                 log.DebugFormat("Failed to save registry, invalid path: {0}", path);
+                // TODO: Throw a friggin exception!
             }
 
             if (!Directory.Exists(directoryPath))
