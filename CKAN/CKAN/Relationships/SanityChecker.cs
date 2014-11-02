@@ -38,26 +38,22 @@ namespace CKAN
                 }
             }
 
-            // These three bits of code walk all our modules, and extract flattened sets of
-            // dependencies, conflicts, and provides. It would be nice to have a way to combine
-            // them.
-
-            var depends = new HashSet<string> (
-                modules
-                .Select(mod => mod.depends) // Get all our depends lists
-                .Where(x => x != null)      // Filter out nulls
-                .SelectMany(x => x)         // Flatten to one big list
-                .Select(dependency => dependency.name)
-            );
-
             // Walk everything we depend upon, and make sure it's there.
 
             // TODO: This doesn't examine versions, it should!
-            foreach (string dep in depends)
+            foreach (Module mod in modules)
             {
-                if (! providers.ContainsKey(dep))
+                if (mod.depends == null)
                 {
-                    errors.Add(string.Format("Cannot find required dependency {0}", dep));
+                    continue;
+                }
+
+                foreach (RelationshipDescriptor dep in mod.depends)
+                {
+                    if (! providers.ContainsKey(dep.name))
+                    {
+                        errors.Add(string.Format("{1} requires {0}, but nothing provides it.", mod.identifier, dep.name));
+                    }
                 }
             }
 
@@ -88,7 +84,7 @@ namespace CKAN
                     {
                         if (provider != mod)
                         {
-                            errors.Add(string.Format("{0} conflicts with {1}", mod.identifier, provider.identifier));
+                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, provider.identifier));
                         }
                     }
                 }
