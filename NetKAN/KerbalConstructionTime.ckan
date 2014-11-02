@@ -3,18 +3,18 @@
     "identifier"     : "KerbalConstructionTime",
     "$kref"          : "#/ckan/kerbalstuff/125",
     "recommends" : [
-        { "name" : "StageRecovery" },
+        { "name" : "StageRecovery" }
     ],
     "suggests" : [
-        { "name" : "Toolbar" },
+        { "name" : "Toolbar" }
     ],
     "conflicts" : [
-        { "name" : "TarsierSpaceTech" },
+        { "name" : "TarsierSpaceTech" }
     ],
     "install" : [
         {
             "file"       : "GameData/KerbalConstructionTime",
             "install_to" : "GameData"
-        },
+        }
     ]
 }
