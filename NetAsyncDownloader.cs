@@ -222,14 +222,6 @@ namespace CKAN
             }
         }
 
-        public void WaitForAllDownloads()
-        {
-            log.Debug("Waiting for downloads to finish");
-            // TODO: Isn't this going to busy-wait?
-            while (queuePointer < downloads.Length)
-            {
-            }
-        }
     }
 }
 
