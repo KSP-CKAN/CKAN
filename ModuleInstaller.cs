@@ -449,20 +449,26 @@ namespace CKAN
             // don't include entries for directories, but still include entries
             // for the files they contain.
 
-            string ident_filter = @"(^|/|\\)" + Regex.Escape(identifier) + @"$";
+            string ident_filter = @"(?:^|/)" + Regex.Escape(identifier) + @"$";
 
             // Let's find that directory
             foreach (ZipEntry entry in zipfile)
             {
                 string directory = Path.GetDirectoryName(entry.Name);
 
+                // Normalise our path.
+                directory = directory.Replace('\\', '/');
+                directory = Regex.Replace(directory, "/$", "");
+
                 // If this looks like what we're after, remember it.
-                if (Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase ))
+                if (Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase))
                 {
                     candidate_set.Add(directory);
                 }
             }
 
+            // Sort to have shortest first. It's not *quite* top-level directory order,
+            // but it's good enough for now.
             var candidates = new List<string>(candidate_set);
             candidates.Sort((a,b) => a.Length.CompareTo(b.Length));
 
