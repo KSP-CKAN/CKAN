@@ -17,6 +17,7 @@ namespace CKAN
             StartPosition = FormStartPosition.CenterScreen;
             DialogProgressBar.Minimum = 0;
             DialogProgressBar.Maximum = 100;
+            AutoCloseCheckbox.Checked = Main.Instance.m_Configuration.AutoCloseWaitDialog;
         }
 
         public void ShowWaitDialog(bool asDialog = true, bool cancelable = true)
@@ -34,13 +35,19 @@ namespace CKAN
             }
         }
 
-        public void HideWaitDialog()
+        public void HideWaitDialog(bool success)
         {
             Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "All done!");
             Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 100);
             Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
             Util.Invoke(CloseWindowButton, () => CloseWindowButton.Enabled = true);
             Util.Invoke(CloseWindowButton, () => CancelCurrentActionButton.Enabled = false);
+
+            if (AutoCloseCheckbox.Checked && success)
+            {
+                Util.Invoke(this, Close);
+            }
+
             Main.Instance.RecreateDialogs();
         }
 
@@ -85,13 +92,19 @@ namespace CKAN
             {
                 cancelCallback();
                 CancelCurrentActionButton.Enabled = false;
-                HideWaitDialog();
+                HideWaitDialog(true);
             }
         }
 
         private void CloseWindowButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void AutoCloseCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.AutoCloseWaitDialog = AutoCloseCheckbox.Checked;
+            Main.Instance.m_Configuration.Save();
         }
 
     }
