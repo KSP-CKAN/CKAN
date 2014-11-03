@@ -2,7 +2,7 @@
     "spec_version"   : 1,
     "$kref"          : "#/ckan/github/NathanKell/RealSolarSystem",
     "name"           : "Custom Biomes (Real Solar System data)",
-    "identifier"     : "CustomBiomesRSS",
+    "identifier"     : "CustomBiomes-Data-RSS",
     "abstract"       : "Custom biomes for the Real Solar System",
     "license"        : "CC-BY-NC-SA",
     "release_status" : "stable",
@@ -11,8 +11,8 @@
         { "name" : "RealSolarSystem" },
         { "name" : "CustomBiomes" }
     ],
-    "provides"  : [ "CustomBiomesData" ],
-    "conflicts" : [ { "name" : "CustomBiomesData" } ],
+    "provides"  : [ "CustomBiomes-Data" ],
+    "conflicts" : [ { "name" : "CustomBiomes-Data" } ],
     "resources" : {
         "homepage" : "http://forum.kerbalspaceprogram.com/threads/55145"
     },
