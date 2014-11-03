@@ -1,0 +1,28 @@
+{
+    "spec_version"   : 1,
+    "$kref"          : "#/ckan/github/pjf/EngineIgnitor",
+    "$vref"          : "#/ckan/ksp-avc",
+    "identifier"     : "EngineIgnitor-Unofficial-Repack",
+    "name"           : "Engine Ignitor (repack)",
+    "author"         : "HoneyFox (repacked by pjf)",
+    "abstract"       : "Engine ignition and throttles now work like real engines.",
+    "license"        : "MIT",
+    "release_status" : "stable",
+    "depends" : [
+        { "name" : "RealFuels" },
+        { "name" : "ModuleManager" }
+    ],
+    "suggests" : [
+        { "name" : "RealismOverhaul" }
+    ],
+    "provides" : [ "EngineIgnitor" ],
+    "resources" : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/51880"
+    },
+    "install" : [
+        {
+            "file" : "EngineIgnitor-3.4.1.1/GameData/EngineIgnitor",
+            "install_to" : "GameData"
+        }
+    ]
+}

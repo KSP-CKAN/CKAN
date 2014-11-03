@@ -11,6 +11,8 @@
         { "name" : "RealismOverhaul" },
         { "name" : "TACLS" }
     ],
+    "provides"       : [ "TACLS-Config" ],
+    "conflicts"      : [ { "name" : "TACLS-Config" } ],
     "install" : [
         {
             "file"       : "ThunderAerospace",

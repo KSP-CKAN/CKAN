@@ -14,7 +14,7 @@
         { "name" : "FerramAerospaceResearch" },
         { "name" : "ModuleManager" },
         { "name" : "ModuleRCSFX" },
-        { "name" : "RealChutes" },
+        { "name" : "RealChute" },
         { "name" : "RealFuels" },
         { "name" : "RealSolarSystem" },
         { "name" : "TACLS-Config-RealismOverhaul" }
@@ -32,6 +32,7 @@
         { "name" : "Toolbar" },
         { "name" : "TweakScale" }
     ],
+    "provides" : [ "RealFuels-Engine-Configs" ],
     "resources" : {
         "homepage" : "http://forum.kerbalspaceprogram.com/threads/84689"
     },
