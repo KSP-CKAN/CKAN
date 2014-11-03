@@ -21,6 +21,7 @@ namespace CKAN.NetKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
         private static readonly string expand_token = "$kref"; // See #70 for naming reasons
+        private static readonly string version_token = "$vref"; // It'd be nice if we could have repeated $krefs.
 
         public static int Main(string[] args)
         {
@@ -79,15 +80,41 @@ namespace CKAN.NetKAN
                 return EXIT_ERROR;
             }
 
+            // Find our cached file, we'll need it later.
+            string file = cache.CachedFile(mod);
+
             // Make sure this would actually generate an install
             try
             {
-                ModuleInstaller.FindInstallableFiles(mod, cache.CachedFile(mod), null);
+                ModuleInstaller.FindInstallableFiles(mod, file, null);
             }
             catch (BadMetadataKraken kraken)
             {
                 log.FatalFormat("Error: Bad metadata for {0}: {1}", kraken.module, kraken.Message);
                 return EXIT_ERROR;
+            }
+
+            // Now inflate our original metadata from AVC, if we have it.
+            // The reason we inflate our metadata and not the module is that in the module we can't
+            // tell if there's been an override of the version fields or not.
+
+            // TODO: Remove magic string "#/ckan/ksp-avc"
+            if (metadata[version_token] != null && (string) metadata[version_token] == "#/ckan/ksp-avc")
+            {
+                metadata.Remove(version_token);
+
+                try {
+                    AVC avc = AVC.FromZipFile(mod, file);
+                    avc.InflateMetadata(metadata, null, null);
+                }
+                catch (Newtonsoft.Json.JsonReaderException)
+                {
+                    User.WriteLine("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                    return EXIT_ERROR;
+                }
+
+                // If we've done this, we need to re-inflate our mod, too.
+                mod = CkanModule.FromJson(metadata.ToString());
             }
 
             // All done! Write it out!

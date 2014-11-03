@@ -2,6 +2,7 @@
     "spec_version"   : 1,
     "identifier"     : "RemoteTech",
     "$kref"          : "#/ckan/kerbalstuff/134",
+    "$vref"          : "#/ckan/ksp-avc",
     "license"        : "restricted",
     "release_status" : "stable",
     "resources"      : {

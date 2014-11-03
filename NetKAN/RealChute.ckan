@@ -3,6 +3,7 @@
     "identifier"     : "RealChute",
     "license"        : "restricted",
     "$kref"          : "#/ckan/kerbalstuff/71",
+    "$vref"          : "#/ckan/ksp-avc",
     "resources"      : {
         "github" : {
             "url" : "https://github.com/StupidChris/RealChute"

@@ -2,6 +2,7 @@
     "spec_version"   : 1,
     "identifier"     : "StageRecovery",
     "$kref"          : "#/ckan/kerbalstuff/97",
+    "$vref"          : "#/ckan/ksp-avc",
     "suggests" : [
         { "name" : "KerbalConstructionTime" },
         { "name" : "Toolbar" }
