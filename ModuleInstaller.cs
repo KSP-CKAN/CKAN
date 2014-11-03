@@ -359,31 +359,31 @@ namespace CKAN
 
         internal void Install(CkanModule module, string filename = null)
         {
+            User.WriteLine(module.identifier + ":\n");
+
+            Version version = registry_manager.registry.InstalledVersion(module.identifier);
+
+            // TODO: This really should be handled by higher-up code.
+            if (version != null)
+            {
+                User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+                return;
+            }
+
+            // Fetch our file if we don't already have it.
+            if (filename == null)
+            {
+                filename = CachedOrDownload(module);
+            }
+
+            // We'll need our registry to record which files we've installed.
+            Registry registry = registry_manager.registry;
+
+            // And a list of files to record them to.
+            var module_files = new Dictionary<string, InstalledModuleFile>();
+
             using (var transaction = new TransactionScope())
             {
-                User.WriteLine(module.identifier + ":\n");
-
-                Version version = registry_manager.registry.InstalledVersion(module.identifier);
-
-                // TODO: This really should be handled by higher-up code.
-                if (version != null)
-                {
-                    User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
-                    return;
-                }
-
-                // Fetch our file if we don't already have it.
-                if (filename == null)
-                {
-                    filename = CachedOrDownload(module);
-                }
-
-                // We'll need our registry to record which files we've installed.
-                Registry registry = registry_manager.registry;
-
-                // And a list of files to record them to.
-                var module_files = new Dictionary<string, InstalledModuleFile>();
-
                 // Install all the things!
                 InstallModule(module, filename, module_files);
 

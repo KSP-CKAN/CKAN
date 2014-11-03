@@ -25,8 +25,6 @@ namespace CKAN
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        //
-        // TODO: This should be able to handle un-installs as well.
         public RelationshipResolver(List<string> modules, RelationshipResolverOptions options, Registry registry)
         {
 
@@ -103,13 +101,13 @@ namespace CKAN
             if (options.with_recommends)
             {
                 log.DebugFormat("Resolving recommends for {0}", module.identifier);
-                ResolveStanza(module.recommends, sub_options);
+                ResolveStanza(module.recommends, sub_options, true);
             }
 
             if (options.with_suggests || options.with_all_suggests)
             {
                 log.DebugFormat("Resolving suggests for {0}", module.identifier);
-                ResolveStanza(module.suggests, sub_options);
+                ResolveStanza(module.suggests, sub_options, true);
             }
         }
 
@@ -118,9 +116,12 @@ namespace CKAN
         /// This will add modules to be installed, if required.
         /// May recurse back to Resolve for those new modules.
         /// 
+        /// If `soft_resolve` is true, we warn rather than throw exceptions on mods we cannot find.
+        /// If `soft_resolve` is false (default), we throw a ModuleNotFoundKraken if we can't find a dependency.
+        /// 
         /// Throws a TooManyModsProvideKraken if we have too many choices.
         /// </summary>
-        private void ResolveStanza(List<RelationshipDescriptor> stanza, RelationshipResolverOptions options)
+        private void ResolveStanza(List<RelationshipDescriptor> stanza, RelationshipResolverOptions options, bool soft_resolve = false)
         {
             if (stanza == null)
             {
@@ -149,8 +150,16 @@ namespace CKAN
 
                 if (candidates.Count == 0)
                 {
-                    log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
-                    throw new ModuleNotFoundKraken(dep_name);
+                    if (! soft_resolve)
+                    {
+                        log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
+                        throw new ModuleNotFoundKraken(dep_name);
+                    }
+                    else
+                    {
+                        log.WarnFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                        continue;
+                    }
                 }
                 else if (candidates.Count > 1)
                 {
