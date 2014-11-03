@@ -93,7 +93,7 @@ $fh->print(JSON->new->pretty->encode({
     spec_version => 1,
     name => "Firespitter Core",
     identifier => "FirespitterCore",
-    author => "snjo",
+    author => "Snjo",
     download => "http://firespitter.s3.amazonaws.com/$filename",
     license => "restricted",
     version => $version,
