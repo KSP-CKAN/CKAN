@@ -722,9 +722,9 @@ namespace CKAN
             // 
             // Update
             // 
-            this.Update.HeaderText = "Do update";
+            this.Update.HeaderText = "Update";
             this.Update.Name = "Update";
-            this.Update.Width = 61;
+            this.Update.Width = 46;
             // 
             // ModName
             // 
@@ -835,7 +835,6 @@ namespace CKAN
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
         private Label StatusLabel;
-        private DataGridViewCheckBoxColumn DoUpdate;
         private ToolStripMenuItem FilterToolButton;
         private ToolStripMenuItem FilterAllButton;
         private ToolStripMenuItem FilterInstalledButton;
@@ -873,6 +872,7 @@ namespace CKAN
         private ToolStripMenuItem exportInstalledModsToolStripMenuItem;
         private ToolStripMenuItem launchKSPToolStripMenuItem;
         private ToolStripMenuItem setCommandlineOptionsToolStripMenuItem;
+        private DataGridViewCheckBoxColumn DoUpdate;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
