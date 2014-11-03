@@ -33,6 +33,7 @@
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.CloseWindowButton = new System.Windows.Forms.Button();
+            this.AutoCloseCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // MessageTextBox
@@ -88,12 +89,24 @@
             this.CloseWindowButton.UseVisualStyleBackColor = true;
             this.CloseWindowButton.Click += new System.EventHandler(this.CloseWindowButton_Click);
             // 
+            // AutoCloseCheckbox
+            // 
+            this.AutoCloseCheckbox.AutoSize = true;
+            this.AutoCloseCheckbox.Location = new System.Drawing.Point(13, 249);
+            this.AutoCloseCheckbox.Name = "AutoCloseCheckbox";
+            this.AutoCloseCheckbox.Size = new System.Drawing.Size(133, 17);
+            this.AutoCloseCheckbox.TabIndex = 5;
+            this.AutoCloseCheckbox.Text = "Auto-close on success";
+            this.AutoCloseCheckbox.UseVisualStyleBackColor = true;
+            this.AutoCloseCheckbox.CheckedChanged += new System.EventHandler(this.AutoCloseCheckbox_CheckedChanged);
+            // 
             // WaitDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 280);
             this.ControlBox = false;
+            this.Controls.Add(this.AutoCloseCheckbox);
             this.Controls.Add(this.CloseWindowButton);
             this.Controls.Add(this.CancelCurrentActionButton);
             this.Controls.Add(this.LogTextBox);
@@ -114,6 +127,7 @@
         private System.Windows.Forms.TextBox LogTextBox;
         private System.Windows.Forms.Button CancelCurrentActionButton;
         private System.Windows.Forms.Button CloseWindowButton;
+        private System.Windows.Forms.CheckBox AutoCloseCheckbox;
 
     }
 }

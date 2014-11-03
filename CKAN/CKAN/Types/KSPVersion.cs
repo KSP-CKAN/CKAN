@@ -6,7 +6,7 @@ namespace CKAN {
 
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class KSPVersion : IComparable<KSPVersion> {
-        private string version;
+        private string version; 
 
         public KSPVersion (string v) {
             version = AnyToNull(v);

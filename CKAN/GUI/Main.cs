@@ -350,7 +350,7 @@ namespace CKAN
             m_WaitDialog.ResetProgress();
             m_WaitDialog.ShowWaitDialog(false, false);
             ModuleInstaller.Instance.CachedOrDownload(module);
-            m_WaitDialog.HideWaitDialog();
+            m_WaitDialog.HideWaitDialog(true);
 
             UpdateModContentsTree(module);
             RecreateDialogs();
