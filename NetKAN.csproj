@@ -57,6 +57,8 @@
     <Compile Include="Github\GithubRelease.cs" />
     <Compile Include="CkanInflator.cs" />
     <Compile Include="CmdLineOptions.cs" />
+    <Compile Include="AVC\AVC.cs" />
+    <Compile Include="AVC\JsonAvcToKspVersion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,5 +70,6 @@
   <ItemGroup>
     <Folder Include="Github\" />
     <Folder Include="KS\" />
+    <Folder Include="AVC\" />
   </ItemGroup>
 </Project>
