@@ -457,7 +457,7 @@ namespace CKAN
                 string directory = Path.GetDirectoryName(entry.Name);
 
                 // Normalise our path.
-                directory.Replace('\\', '/');
+                directory = directory.Replace('\\', '/');
                 directory = Regex.Replace(directory, "/$", "");
 
                 // If this looks like what we're after, remember it.
