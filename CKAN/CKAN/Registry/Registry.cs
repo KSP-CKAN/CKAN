@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 using log4net;
 
 namespace CKAN
@@ -22,7 +23,7 @@ namespace CKAN
         // Is that something you can do in C#? In Moose we'd use a role.
 
         public Dictionary<string, AvailableModule> available_modules;
-        public Dictionary<string, string> installed_dlls;
+        public Dictionary<string, string> installed_dlls; // name => path
         public Dictionary<string, InstalledModule> installed_modules;
         public int registry_version;
 
@@ -188,6 +189,7 @@ namespace CKAN
         ///     satisifes the specified version.
         ///     Throws a ModuleNotFoundException if asked for a non-existant module.
         ///     Returns null if there's simply no compatible version for this system.
+        ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
         /// </summary>
          
         // TODO: Consider making this internal, because practically everything should
@@ -246,7 +248,7 @@ namespace CKAN
                     continue;
                 }
 
-                string[] provides = pair.Value.Latest(ksp_version).provides;
+                List<string> provides = pair.Value.Latest(ksp_version).provides;
                 if (provides != null)
                 {
                     foreach (string provided in provides)
@@ -427,5 +429,73 @@ namespace CKAN
             }
             return true;
         }
+
+        /// <summary>
+        ///     Checks the sanity of the registry, to ensure that all dependencies are met,
+        ///     and no mods conflict with each other. Throws an InconsistentKraken on failure.
+        /// </summary>
+        public void CheckSanity()
+        {
+            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.source_module;
+            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
+        }
+
+        /// <summary>
+        /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
+        /// Acts recursively.
+        /// </summary>
+
+        public static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
+        {
+            // Make our hypothetical install, and remove the listed modules from it.
+            HashSet<Module> hypothetical = new HashSet<Module> (orig_installed); // Clone because we alter hypothetical.
+            hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
+
+            log.DebugFormat( "Started with {0}, removing {1}, and keeping {2}; our dlls are {3}",
+                              string.Join(", ", orig_installed),
+                              string.Join(", ", modules_to_remove),
+                              string.Join(", ", hypothetical),
+                              string.Join(", ", dlls)
+                              );
+
+            // Find what would break with this configuration.
+            // The Values.SelectMany() flattens our list of broken mods.
+            var broken = new HashSet<string> (
+                SanityChecker
+                .FindUnmetDependencies(hypothetical, dlls)
+                .Values
+                .SelectMany(x => x)
+                .Select(x => x.identifier)
+                );
+
+            // If nothing else would break, it's just the list of modules we're removing.
+            HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
+            if (to_remove.IsSupersetOf(broken))
+            {
+                log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
+                return to_remove;
+            }
+
+            // Otherwise, remove our broken modules as well, and recurse.
+            broken.UnionWith(to_remove);
+            return FindReverseDependencies(broken, orig_installed, dlls);
+        }
+
+        public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
+        {
+            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.source_module));
+            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
+        }
+
+        /// <summary>
+        /// Finds and returns all modules that could not exist without the given module installed
+        /// </summary>
+        public HashSet<string> FindReverseDependencies(string module)
+        {
+            var set = new HashSet<string>();
+            set.Add(module);
+            return FindReverseDependencies(set);
+        }
+
     }
 }

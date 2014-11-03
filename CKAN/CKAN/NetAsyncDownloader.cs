@@ -190,14 +190,10 @@ namespace CKAN
             {
                 log.Debug("All files finished downloading");
 
-                // verify no errors before commit
-
-                bool err = false;
                 for (int i = 0; i < downloads.Length; i++)
                 {
                     if (downloads[i].error != null)
                     {
-                        err = true;
                         // TODO: XXX: Shouldn't we throw a kraken here?
                         log.Error("Something went wrong but I don't know what!");
                     }

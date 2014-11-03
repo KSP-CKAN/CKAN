@@ -137,8 +137,9 @@ namespace CKAN
         [JsonProperty("author")] [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public List<string> author;
 
         [JsonProperty("comment")] public string comment;
-        [JsonProperty("conflicts")] public RelationshipDescriptor[] conflicts;
-        [JsonProperty("depends")] public RelationshipDescriptor[] depends;
+
+        [JsonProperty("conflicts")] public List<RelationshipDescriptor> conflicts;
+        [JsonProperty("depends")] public List<RelationshipDescriptor> depends;
 
         [JsonProperty("download")] public Uri download;
         [JsonProperty("download_size")] public long download_size;
@@ -152,16 +153,36 @@ namespace CKAN
 
         [JsonProperty("name")] public string name;
 
+        // TODO: Deprecate?
         [JsonProperty("pre_depends")] public RelationshipDescriptor[] pre_depends;
 
-        [JsonProperty("provides")] public string[] provides;
+        [JsonProperty("provides")] public List<string> provides;
 
-        [JsonProperty("recommends")] public RelationshipDescriptor[] recommends;
+        [JsonProperty("recommends")] public List<RelationshipDescriptor> recommends;
         [JsonProperty("release_status")] public string release_status; // TODO: Strong type
 
         [JsonProperty("resources")] public ResourcesDescriptor resources;
-        [JsonProperty("suggests")] public RelationshipDescriptor[] suggests;
+        [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;
         [JsonProperty("version", Required = Required.Always)] public Version version;
+
+        // A list of eveything this mod provides.
+        public List<string> ProvidesList
+        {
+            // TODO: Consider caching this, but not in a way that the serialiser will try and
+            // serialise it.
+            get
+            {
+                var provides = new List<string>();
+                provides.Add(this.identifier);
+
+                if (this.provides != null)
+                {
+                    provides.AddRange(this.provides);
+                }
+
+                return provides;
+            }
+        }
 
         public string serialise()
         {
@@ -241,6 +262,14 @@ namespace CKAN
             // fields and we passed them successfully.
 
             return ksp_version.Targets(version);
+        }
+
+        /// <summary>
+        /// Returns true if this module provides the functionality requested.
+        /// </summary>
+        public bool DoesProvide(string identifier)
+        {
+            return this.identifier == identifier || this.provides.Contains(identifier);
         }
     }
 

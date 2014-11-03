@@ -135,4 +135,37 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// Thrown if we find ourselves in an inconsistent state, such as when we have multiple modules
+    /// installed which conflict with each other.
+    /// </summary>
+    public class InconsistentKraken : Kraken
+    {
+        public List<string> inconsistencies;
+
+        public string InconsistenciesPretty
+        {
+            get {
+                string message = "The following inconsistecies were found:\n\n";
+
+                foreach (string issue in inconsistencies)
+                {
+                    message += " * " + issue + "\n";
+                }
+
+                return message;
+            }
+        }
+
+        public InconsistentKraken(List<string> inconsistencies, Exception inner_exception = null)
+            :base(null, inner_exception)
+        {
+            this.inconsistencies = inconsistencies;
+        }
+
+        public override string ToString()
+        {
+            return this.InconsistenciesPretty + this.StackTrace;
+        }
+    }
 }

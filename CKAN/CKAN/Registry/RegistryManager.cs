@@ -23,6 +23,17 @@ namespace CKAN
         {
             this.path = Path.Combine(path, "registry.json");
             LoadOrCreate();
+
+            // We don't cause an inconsistency error to stop the registry from being loaded,
+            // because then the user can't do anything to correct it. However we're
+            // sure as hell going to complain if we spot one!
+            try {
+                registry.CheckSanity();
+            }
+            catch (InconsistentKraken kraken)
+            {
+                log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
+            }
         }
 
         /// <summary>
@@ -90,11 +101,16 @@ namespace CKAN
         public void Save()
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
+
+            // No saving the registry unless it's in a sane state.
+            registry.CheckSanity();
+
             string directoryPath = Path.GetDirectoryName(path);
 
             if (directoryPath == null)
             {
                 log.DebugFormat("Failed to save registry, invalid path: {0}", path);
+                // TODO: Throw a friggin exception!
             }
 
             if (!Directory.Exists(directoryPath))

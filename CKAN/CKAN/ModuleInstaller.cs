@@ -189,11 +189,8 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Installs all modules given a list of identifiers. Resolves dependencies.
-        ///     The function initializes a filesystem transaction, then installs all cached mods
-        ///     this ensures we don't waste time and bandwidth if there is an issue with any of the cached archives.
-        ///     After this we try to download the rest of the mods (asynchronously) and install them.
-        ///     Finally, only if everything is successful, we commit the transaction.
+        ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
+        ///     This *will* save the registry at the end of operation.
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
@@ -273,11 +270,12 @@ namespace CKAN
                         Install(modsToInstall[i]);
                     }
 
+                    registry_manager.Save();
                     transaction.Complete();
                     return;
                 }
              
-                transaction.Dispose(); // Rollback
+                transaction.Dispose(); // Rollback on unsuccessful download.
             }
         }
 
@@ -352,7 +350,8 @@ namespace CKAN
         ///     Install our mod from the filename supplied.
         ///     If no file is supplied, we will check the cache or download it.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
-        ///     Use InstallList() for requests from the user.
+        ///     Does *not* save the registry.
+        ///     Do *not* call this directly, use InstallList() instead.
         /// 
         /// </summary>
         // 
@@ -362,8 +361,6 @@ namespace CKAN
         {
             using (var transaction = new TransactionScope())
             {
-
-
                 User.WriteLine(module.identifier + ":\n");
 
                 Version version = registry_manager.registry.InstalledVersion(module.identifier);
@@ -393,11 +390,10 @@ namespace CKAN
                 // Register our files.
                 registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
 
-                // Done! Save our registry changes!
+                // Finish our transaction, but *don't* save the registry; we may be in an
+                // intermediate, inconsistent state.
                 // This is fine from a transaction standpoint, as we may not have an enclosing
                 // transaction, and if we do, they can always roll us back.
-                registry_manager.Save();
-
                 transaction.Complete();
             }
 
@@ -733,43 +729,58 @@ namespace CKAN
             return;
         }
 
-        public List<string> FindReverseDependencies(string modName)
+        /// <summary>
+        /// Uninstalls all the mods provided, including things which depend upon them.
+        /// This *DOES* save the registry.
+        /// Preferred over Uninstall.
+        /// </summary>
+        public void UninstallList(IEnumerable<string> mods)
         {
-            var reverseDependencies = new List<string>();
-
-            // loop through all installed modules
-            foreach (var keyValue in registry_manager.registry.installed_modules)
+            using (var transaction = new TransactionScope())
             {
-                Module mod = keyValue.Value.source_module;
-                bool isDependency = false;
+                // Find all the things which need uninstalling.
+                IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
 
-                if (mod.depends != null)
+                User.WriteLine("About to remove:\n");
+
+                foreach (string mod in goners)
                 {
-                    foreach (RelationshipDescriptor dependency in mod.depends)
-                    {
-                        if (dependency.name == modName)
-                        {
-                            isDependency = true;
-                            break;
-                        }
-                    }
+                    User.WriteLine(" * {0}", mod);
                 }
 
-                if (isDependency)
+                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+
+                if (!ok)
                 {
-                    reverseDependencies.Add(mod.identifier);
+                    User.WriteLine("Mod removal aborted at user request.");
+                    return;
                 }
+
+                foreach (string mod in goners)
+                {
+                    Uninstall(mod);
+                }
+
+                registry_manager.Save();
+
+                transaction.Complete();
             }
+        }
 
-            return reverseDependencies;
+        public void UninstallList(string mod)
+        {
+            var list = new List<string>();
+            list.Add(mod);
+            UninstallList(list);
         }
 
         /// <summary>
-        /// Uninstall the module provided.
+        /// Uninstall the module provided. For internal use only.
+        /// Use UninstallList for user queries, it also does dependency handling.
+        /// This does *NOT* save the registry.
         /// </summary>
          
-        // TODO: Remove second arg; shouldn't we *always* uninstall dependencies?
-        public void Uninstall(string modName, bool uninstallDependencies)
+        private void Uninstall(string modName)
         {
             using (var transaction = new TransactionScope())
             {
@@ -781,16 +792,6 @@ namespace CKAN
                     // if it expects that it may try to uninstall a module twice.
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
                     return;
-                }
-
-                // Find all mods that depend on this one
-                if (uninstallDependencies)
-                {
-                    List<string> reverseDependencies = FindReverseDependencies(modName);
-                    foreach (string reverseDependency in reverseDependencies)
-                    {
-                        Uninstall(reverseDependency, uninstallDependencies);
-                    }
                 }
 
                 // Walk our registry to find all files for this mod.
@@ -819,7 +820,7 @@ namespace CKAN
                     }
                     catch (Exception ex)
                     {
-                        // TODO: Report why.
+                        // XXX: This is terrible, we're catching all exceptions.
                         log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
                     }
                 }
@@ -827,21 +828,25 @@ namespace CKAN
                 // Remove from registry.
 
                 registry_manager.registry.DeregisterModule(modName);
-                registry_manager.Save();
 
+                // TODO: We need to remove from child to parent first.
                 foreach (string directory in directoriesToDelete)
                 {
                     if (!Directory.GetFiles(directory).Any())
                     {
                         try
                         {
-                            file_transaction.Delete(directory);
+                            file_transaction.DeleteDirectory(directory);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             // TODO: Report why.
-                            User.WriteLine("Couldn't delete directory {0}", directory);
+                            User.WriteLine("Couldn't delete directory {0} : {1}", directory, ex.Message);
                         }
+                    }
+                    else
+                    {
+                        User.WriteLine("Not removing directory {0}, it's not empty", directory);
                     }
                 }
                 transaction.Complete();
@@ -849,5 +854,16 @@ namespace CKAN
 
             return;
         }
+
+        /// <summary>
+        /// Don't use this. Use Registry.FindReverseDependencies instead.
+        /// This method may be deprecated in the future.
+        /// </summary>
+        // Here for now to keep the GUI happy.
+        public HashSet<string> FindReverseDependencies(string module)
+        {
+            return registry_manager.registry.FindReverseDependencies(module);
+        }
+
     }
 }
