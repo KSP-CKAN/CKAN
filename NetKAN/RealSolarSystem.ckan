@@ -1,18 +1,18 @@
 {
     "spec_version"   : 1,
     "$kref"          : "#/ckan/github/NathanKell/RealSolarSystem",
+    "$vref"          : "#/ckan/ksp-avc",
     "name"           : "Real Solar System",
     "identifier"     : "RealSolarSystem",
     "abstract"       : "Resizes and rearranges the Kerbal system to more closely resemble the Solar System",
     "license"        : "CC-BY-NC-SA",
     "release_status" : "stable",
-    "ksp_version"    : "0.25",
     "depends" : [
         { "name" : "RSSTextures" },
         { "name" : "ModuleManager", "min_version" : "2.5.0" }
     ],
     "recommends" : [
-        { "name" : "CustomBiomesRSS" },
+        { "name" : "CustomBiomes-Data-RSS" },
         { "name" : "RealismOverhaul" },
         { "name" : "Toolbar" }
     ],

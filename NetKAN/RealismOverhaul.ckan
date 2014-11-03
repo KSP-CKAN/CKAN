@@ -1,0 +1,50 @@
+{
+    "spec_version"   : 1,
+    "$kref"          : "#/ckan/github/NathanKell/RealismOverhaul",
+    "$vref"          : "#/ckan/ksp-avc",
+    "name"           : "Realism Overhaul",
+    "identifier"     : "RealismOverhaul",
+    "abstract"       : "Multipatch to KSP to give things realistic stats and sizes",
+    "license"        : "CC-BY-SA",
+    "release_status" : "stable",
+    "depends" : [
+        { "name" : "AJE" },
+        { "name" : "DeadlyReentry" },
+        { "name" : "EngineIgnitor" },
+        { "name" : "FerramAerospaceResearch" },
+        { "name" : "ModuleManager" },
+        { "name" : "ModuleRCSFX" },
+        { "name" : "RealChute" },
+        { "name" : "RealFuels" },
+        { "name" : "RealSolarSystem" },
+        { "name" : "TACLS-Config-RealismOverhaul" }
+    ],
+    "recommends" : [
+        { "name" : "ActiveTextureManagement" },
+        { "name" : "CrossFeedEnabler" },
+        { "name" : "KerbalJointReinforcement" },
+        { "name" : "MechJeb" },
+        { "name" : "ModuleFixer" },
+        { "name" : "PartCatalog" },
+        { "name" : "RemoteTech2" },
+        { "name" : "TACLS" },
+        { "name" : "TextureReplacer" },
+        { "name" : "Toolbar" },
+        { "name" : "TweakScale" }
+    ],
+    "provides" : [ "RealFuels-Engine-Configs" ],
+    "resources" : {
+        "homepage" : "http://forum.kerbalspaceprogram.com/threads/84689"
+    },
+    "install" : [
+        {
+            "file"       : "RealismOverhaul",
+            "install_to" : "GameData"
+        },
+        {
+            "file"       : "KAS",
+            "install_to" : "GameData",
+            "comment"    : "KAS config, does not overwrite"
+        }
+    ]
+}

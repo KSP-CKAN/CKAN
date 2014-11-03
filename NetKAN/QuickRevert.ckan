@@ -2,6 +2,7 @@
     "spec_version"   : 1,
     "identifier"     : "QuickRevert",
     "$kref"          : "#/ckan/kerbalstuff/237",
+    "$vref"          : "#/ckan/ksp-avc",
     "license"        : "GPL-3.0",
     "conflicts"      : [
         { "name" : "SRL" }
