@@ -38,7 +38,9 @@ namespace CKAN
         {
             Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "All done!");
             Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 100);
+            Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
             Util.Invoke(CloseWindowButton, () => CloseWindowButton.Enabled = true);
+            Util.Invoke(CloseWindowButton, () => CancelCurrentActionButton.Enabled = false);
             Main.Instance.RecreateDialogs();
         }
 
