@@ -1,0 +1,20 @@
+{
+    "spec_version"   : 1,
+    "$kref"          : "#/ckan/github/NathanKell/RealismOverhaul",
+    "ksp_version"    : "any",
+    "name"           : "TAC Life Support (TACLS) - Realism Overhaul Config",
+    "identifier"     : "TACLS-Config-RealismOverhaul",
+    "abstract"       : "Realism Overhaul config for TACLS",
+    "license"        : "CC-BY-SA",
+    "release_status" : "stable",
+    "depends" : [
+        { "name" : "RealismOverhaul" },
+        { "name" : "TACLS" }
+    ],
+    "install" : [
+        {
+            "file"       : "ThunderAerospace",
+            "install_to" : "GameData"
+        }
+    ]
+}
