@@ -39,7 +39,7 @@ namespace CKAN
             m_WaitDialog.SetDescription("Scanning for manually installed mods");
             KSPManager.CurrentInstance.ScanGameData();
 
-            m_WaitDialog.HideWaitDialog();
+            m_WaitDialog.HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
 
             Util.Invoke(this, () => Enabled = true);

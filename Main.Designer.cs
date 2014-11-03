@@ -86,7 +86,7 @@ namespace CKAN
             this.StatusLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.DoUpdate = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -321,7 +321,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.DoUpdate,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -722,9 +722,9 @@ namespace CKAN
             // 
             // Update
             // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.Width = 46;
+            this.DoUpdate.HeaderText = "Update";
+            this.DoUpdate.Name = "Update";
+            this.DoUpdate.Width = 46;
             // 
             // ModName
             // 
@@ -874,7 +874,6 @@ namespace CKAN
         private ToolStripMenuItem setCommandlineOptionsToolStripMenuItem;
         private DataGridViewCheckBoxColumn DoUpdate;
         private DataGridViewCheckBoxColumn Installed;
-        private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;
