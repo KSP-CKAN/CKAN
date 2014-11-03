@@ -181,6 +181,11 @@ namespace Tests
         {
             return CKAN.CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
         }
+
+        public static string KspAvcJson()
+        {
+            return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
+        }
     }
 }
 
