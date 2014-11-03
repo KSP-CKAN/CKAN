@@ -449,12 +449,13 @@ namespace CKAN
             // don't include entries for directories, but still include entries
             // for the files they contain.
 
-            string ident_filter = @"(^|/|\\)" + Regex.Escape(identifier) + @"$";
+            string ident_filter = @"(^|/)" + Regex.Escape(identifier) + @"$";
 
             // Let's find that directory
             foreach (ZipEntry entry in zipfile)
             {
                 string directory = Path.GetDirectoryName(entry.Name);
+                directory.Replace('\\', '/'); // Normalise path.
 
                 // If this looks like what we're after, remember it.
                 if (Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase ))
