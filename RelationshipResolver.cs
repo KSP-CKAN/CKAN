@@ -87,14 +87,6 @@ namespace CKAN
             RelationshipResolverOptions sub_options = options;
             sub_options.with_suggests = false;
 
-            // Resolve all the things!
-
-            if (module.pre_depends != null)
-            {
-                log.FatalFormat("pre-depends not yet implemented while processing {0}", module.identifier);
-                throw new NotSupportedException("Pre-depends not implemented");
-            }
-
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
             ResolveStanza(module.depends, sub_options);
 
