@@ -835,20 +835,24 @@ namespace CKAN
 
                 registry_manager.registry.DeregisterModule(modName);
 
-                // TODO: We need to remove from child to parent first.
-                foreach (string directory in directoriesToDelete)
+                // Sort our directories from longest to shortest, to make sure we remove child directories
+                // before parents. GH #78.
+                foreach (string directory in directoriesToDelete.OrderBy(dir => dir.Length).Reverse())
                 {
                     if (!Directory.GetFiles(directory).Any())
                     {
-                        try
-                        {
-                            file_transaction.DeleteDirectory(directory);
-                        }
-                        catch (Exception ex)
-                        {
-                            // TODO: Report why.
-                            User.WriteLine("Couldn't delete directory {0} : {1}", directory, ex.Message);
-                        }
+
+                        // We *don't* use our file_transaction to delete files here, because
+                        // it fails if the system's temp directory is on a different device
+                        // to KSP. However we *can* safely delete it now we know it's empty,
+                        // because the TxFileMgr *will* put it back if there's a file inside that
+                        // needs it.
+                        //
+                        // This works around GH #251.
+                        // The filesystem boundry bug is described in https://transactionalfilemgr.codeplex.com/workitem/20
+
+                        log.InfoFormat("Removing {0}", directory);
+                        Directory.Delete(directory);
                     }
                     else
                     {
