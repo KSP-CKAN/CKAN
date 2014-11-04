@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace CKAN
 {
@@ -28,7 +24,6 @@ namespace CKAN
                 return (p == 4) || (p == 6) || (p == 128);
             }
         }
-
 
         // utility helper to deal with multi-threading and UI
         public static void Invoke<T>(T obj, Action action) where T : System.Windows.Forms.Control
@@ -59,6 +54,22 @@ namespace CKAN
             {
                 // we're on the UI thread, execute directly
                 action();
+            }
+        }
+
+        // hides the console window on windows
+        // useful when running the GUI
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static void HideConsoleWindow()
+        {
+            if (!IsLinux)
+            {
+                ShowWindow(GetConsoleWindow(), 0);
             }
         }
 
