@@ -18,6 +18,7 @@ namespace CKAN.CmdLine
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
+        [STAThread]
         public static int Main(string[] args)
         {
             BasicConfigurator.Configure();
