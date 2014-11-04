@@ -71,11 +71,13 @@ namespace CKAN
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
+            ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
             RecreateDialogs();
 
             // We should run application only when we really sure.
-            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+           // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            Util.HideConsoleWindow();
             Application.Run(this);
         }
 
@@ -360,11 +362,21 @@ namespace CKAN
 
         private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (MetadataModuleHomePageLinkLabel.Text == "N/A")
+            {
+                return;
+            }
+
             Process.Start(MetadataModuleHomePageLinkLabel.Text);
         }
 
         private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (MetadataModuleGitHubLinkLabel.Text == "N/A")
+            {
+                return;
+            }
+
             Process.Start(MetadataModuleGitHubLinkLabel.Text);
         }
 
@@ -420,6 +432,12 @@ namespace CKAN
                 m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
                 m_Configuration.Save();
             }
+        }
+
+        private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateModsList();
+            UpdateModFilterList();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -29,11 +30,21 @@ namespace CKAN
                 Util.Invoke(MetadataModuleHomePageLinkLabel,
                     () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
             }
+            else
+            {
+                Util.Invoke(MetadataModuleHomePageLinkLabel,
+                    () => MetadataModuleHomePageLinkLabel.Text = "N/A");
+            }
 
             if (module.resources != null && module.resources.repository != null)
             {
                 Util.Invoke(MetadataModuleGitHubLinkLabel,
                     () => MetadataModuleGitHubLinkLabel.Text = module.resources.repository.ToString());
+            }
+            else
+            {
+                Util.Invoke(MetadataModuleGitHubLinkLabel,
+                   () => MetadataModuleGitHubLinkLabel.Text = "N/A");
             }
 
             Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status);
@@ -61,7 +72,7 @@ namespace CKAN
 
         private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
        
-        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth)
+        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
             TreeNode node = null;
             
@@ -135,11 +146,12 @@ namespace CKAN
                             continue;
                         }
 
-                        var newNode = node.Nodes.Add(dependency.name + " (provided by)");
+                        var newNode = node.Nodes.Add(dependency.name + " (virtual)");
+                        newNode.ForeColor = Color.Gray;
 
                         foreach (var dep in dependencyModules)
                         {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1);
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
                             i++;
                         }
                     }
