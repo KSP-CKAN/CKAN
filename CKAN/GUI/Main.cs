@@ -360,11 +360,21 @@ namespace CKAN
 
         private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (MetadataModuleHomePageLinkLabel.Text == "N/A")
+            {
+                return;
+            }
+
             Process.Start(MetadataModuleHomePageLinkLabel.Text);
         }
 
         private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (MetadataModuleGitHubLinkLabel.Text == "N/A")
+            {
+                return;
+            }
+
             Process.Start(MetadataModuleGitHubLinkLabel.Text);
         }
 
