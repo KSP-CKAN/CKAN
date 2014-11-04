@@ -348,6 +348,10 @@ namespace CKAN.CmdLine
             try
             {
                 var installer = ModuleInstaller.Instance;
+                if (options.Verbose)
+                {
+                    installer.onReportProgress = (message, progress) => User.WriteLine(String.Format("{0} - {1}%", message, progress));
+                }
                 installer.InstallList(options.modules, install_ops);
             }
             catch (ModuleNotFoundKraken ex)
