@@ -75,7 +75,7 @@ namespace CKAN
             RecreateDialogs();
 
             // We should run application only when we really sure.
-            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+           // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Util.HideConsoleWindow();
             Application.Run(this);
         }
