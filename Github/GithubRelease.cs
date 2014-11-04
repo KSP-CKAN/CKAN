@@ -40,17 +40,12 @@ namespace CKAN.NetKAN
                 metadata["resources"] = new JObject();
             }
 
-            if (metadata["resources"]["github"] == null)
-            {
-                metadata["resources"]["github"] = new JObject();
-            }
-
             Inflate(metadata, "author", author);
             Inflate(metadata, "version", version.ToString());
             Inflate(metadata, "download", Uri.EscapeUriString(download.ToString()));
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
-            Inflate((JObject) metadata["resources"]["github"], "url", GithubPage(repo));
+            Inflate((JObject) metadata["resources"], "repository", GithubPage(repo));
 
         }
 
