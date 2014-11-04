@@ -74,8 +74,14 @@ namespace CKAN
 
             RecreateDialogs();
 
-            // We should run application only when we really sure.
-            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            // If we're running under Windows, we need to adjust our apartment state so we can talk to COM components.
+            // Failure to do this results in lock-ups on things like file-select boxes.
+            // If we're not running under Windows, setting our apartment state causes a crash, and file-select
+            // boxes work fine without this.
+            if (! (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX))
+            {
+                System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            }
             Application.Run(this);
         }
 
