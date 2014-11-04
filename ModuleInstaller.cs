@@ -270,8 +270,24 @@ namespace CKAN
                         Install(modsToInstall[i]);
                     }
 
+                    if (onReportProgress != null)
+                    {
+                        onReportProgress("Updating registry", 80);
+                    }
+
                     registry_manager.Save();
+
+                    if (onReportProgress != null)
+                    {
+                        onReportProgress("Commiting filesystem changes", 90);
+                    }
+
                     transaction.Complete();
+
+                    if (onReportProgress != null)
+                    {
+                        onReportProgress("Done!", 100);
+                    }
                     return;
                 }
              
