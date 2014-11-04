@@ -44,11 +44,6 @@ namespace CKAN.NetKAN
                 metadata["resources"] = new JObject();
             }
 
-            if (metadata["resources"]["kerbalstuff"] == null)
-            {
-                metadata["resources"]["kerbalstuff"] = new JObject();
-            }
-
             // Only pre-fill version info if there's none already. GH #199
             if ((string) metadata["ksp_version_min"] == null && (string) metadata["ksp_version_max"] == null)
             {
@@ -67,7 +62,7 @@ namespace CKAN.NetKAN
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
             Inflate((JObject) metadata["resources"], "homepage", website);
-            Inflate((JObject) metadata["resources"]["kerbalstuff"], "url", KSHome());
+            Inflate((JObject) metadata["resources"], "kerbalstuff", KSHome());
         }
 
         internal KSVersion Latest()

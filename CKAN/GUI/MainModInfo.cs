@@ -9,9 +9,8 @@ namespace CKAN
     public enum RelationshipType
     {
         Depends = 0,
-        PreDepends = 1,
-        Recommends = 2,
-        Suggests = 3
+        Recommends = 1,
+        Suggests = 2
     }
 
     public partial class Main : Form
@@ -31,10 +30,10 @@ namespace CKAN
                     () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
             }
 
-            if (module.resources != null && module.resources.github != null && module.resources.github.url != null)
+            if (module.resources != null && module.resources.repository != null)
             {
                 Util.Invoke(MetadataModuleGitHubLinkLabel,
-                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.github.url.ToString());
+                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.repository.ToString());
             }
 
             Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status);
@@ -97,9 +96,6 @@ namespace CKAN
             {
                 case RelationshipType.Depends:
                     relationships = module.depends;
-                    break;
-                case RelationshipType.PreDepends:
-                    relationships = module.pre_depends;
                     break;
                 case RelationshipType.Recommends:
                     relationships = module.recommends;

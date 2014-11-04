@@ -6,9 +6,8 @@ This is a Request For Comments on the Comprehensive Kerbal Archive
 Network (CKAN). Please open discussions in the issues list, and
 send pull requests to patch this document and associated files.
 
-This document, and all associated files, are licensed under your
-choice of the Creative Commons Attribution license 4.0 (CC-BY 4.0),
-Lesser GNU Public License (LGPL), or the MIT license (MIT).
+This document, and all associated files, are licensed under the MIT/Expat
+license.
 
 ## Introduction
 
@@ -35,7 +34,7 @@ The fundamental design of the CKAN is as follows:
   can be created independently of the distribution itself, easing
   adoption by authors.
 - The meta-data file *may* be included in the distribution, to facilitate
-- easier indexing. CKAN files may be placed anywhere inside a distribution.
+  easier indexing. CKAN files may be placed anywhere inside a distribution.
 - It is an error for a distribution (zipfile) to contain more than one
   CKAN file.
 
@@ -77,11 +76,8 @@ and the
         "release_status" : "stable",
         "ksp_version"    : "0.25",
         "resources" : {
-            "homepage" : "http://forum.kerbalspaceprogram.com/threads/70008",
-            "github"   : {
-                "url"      : "https://github.com/camlost2/AJE",
-                "releases" : true
-            }
+            "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
+            "repository"   : "https://github.com/camlost2/AJE",
         },
         "install" : [
             {
@@ -108,9 +104,8 @@ distribution.
 
 ##### spec_version
 
-The version number of the CKAN specification used to create this .ckan file. The
-value of this field is an unsigned integer. The currently latest version of the
-spec is `1`.
+The version number of the CKAN specification used to create this .ckan file.
+value of this field is an unsigned integer. The current version of the spec is `1`.
 
 ##### name
 
@@ -120,7 +115,7 @@ printable characters. Eg: "Ferram Aërospace Research (FAR)",
 
 ##### abstract
 
-A human readable description of the mod and what it does.
+A short, one line description of the mod and what it does.
 
 ##### identifer
 
@@ -131,7 +126,10 @@ letters, numbers, underscores, and minus signs. Eg: "FAR" or
 the mod is referenced (by `depends`, `conflicts`, or elsewhere).
 
 If the mod would generate a `FOR` pass in ModuleManager, then the
-identifier *must* be same as the ModuleManager name.
+identifier *should* be same as the ModuleManager name. For most mods,
+this means the identifier *should* be the name of the directory in
+`GameData` in which the mod would be installed, or the name of the `.dll`
+with any version and the `.dll` suffix removed.
 
 ##### download
 
@@ -159,11 +157,16 @@ described above:
 
 A single license, or list of licenses may be provided. The following
 are both valid, the first describing a mod released under the BSD license,
-the second under the user's choice of BSD-2-clause or GPL-2.0 licenses.
+the second under the *user's choice* of BSD-2-clause or GPL-2.0 licenses.
 
     "license" : "BSD-2-clause"
 
     "license" : [ "BSD-2-clause", "GPL-2.0" ]
+
+If different assets in the mod have different licenses, the *most restrictive*
+license should be specified, which may be `restricted`.
+
+A future version of the spec may provide for per-file licensing declarations.
 
 ##### version
 
@@ -276,10 +279,15 @@ examining the CKAN file manually
 The author, or list of authors, for this mod. No restrictions are
 placed upon this field.
 
+##### description
+
+A free form, long text description of the mod, suitable for displaying detailed information about the mod.
+
 ##### release_status
 
-The release status of the mod, one of `alpha`, `beta`, `stable`,
-or `development`. If not specified, a value of `stable` is assumed.
+The release status of the mod, one of `stable`, `testing` or or `development`,
+in order of increasing instability.  If not specified, a value of `stable` is
+assumed.
 
 ##### ksp_version
 
@@ -334,13 +342,7 @@ either `min_version` or `max_version` in the same object.
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.
-This mods *must* be installed along with the urrent mod being installed.
-
-##### pre_depends
-
-A list of mods which *must* be installed *before* the current mod is
-installed. This should be very *sparingly*, but is sometimes required
-when one mod overwrites part of another mod.
+This mods *must* be installed along with the current mod being installed.
 
 ##### recommends
 
@@ -364,30 +366,30 @@ A list of mods which *conflict* with this mod. The current mod
 The `resources` field describes additional information that a user or
 program may wish to know about the mod, but which are not required
 for its installation or indexing. Presently the following fields
-are described:
+are described. Unless specified otherwise, these are URLs:
 
-- `homepage` is a URL that goes to the preferred landing page for the mod.
-- `bugtracker` is a URL that goes to the mod's bugtracker if it exists.
-- `github` is an object which *must* contain a `url` pointing to the
-  github page for the project. It *may* include a `releases` key
-  with a boolean value (which defaults to false) indicating if github releases
-  should be used when searching for updates.
-- `kerbalstuff` is an object which *must* contain a `url` pointing to the
-  mod hosted on KerbalStuff.
+- `homepage` : The preferred landing page for the mod.
+- `bugtracker` : The mod's bugtracker if it exists.
+- `license` : The mod's license.
+- `repository` : The repository where the module source can be found.
+- `kerbalstuff` : The mod on KerbalStuff.
+- `manual` : The mod's manual, if it exists.
 
 Example resources:
 
     "resources" : {
-        "homepage"   : "http://tinyurl.com/DogeCoinFlag",
-        "bugtracker" : "https://github.com/pjf/DogeCoinFlag/issues",
-        "github"   : {
-            "url"      : "http://github.com/pjf/DogeCoinFlag",
-            "releases" : "true"
-        },
-        "kerbalstuff"  : {
-            "url"      : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
-        }
+        "homepage"     : "http://tinyurl.com/DogeCoinFlag",
+        "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
+        "repository"   : "http://github.com/pjf/DogeCoinFlag",
+        "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
     }
+
+While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
+
+It is permissible to have fields prefixed with an `x_`. These are considered
+custom use fields, and will be ignored. For example:
+
+    "x_twitter" : "https://twitter.com/pjf"
 
 #### Special use fields
 
@@ -482,4 +484,38 @@ When used, the following fields will be auto-filled if not already present:
 - version
 - download
 - download_size
-- resources/github
+- resources/repository
+
+##### $vref
+
+The `$vref` field is a special use field that indicates that version
+data should be filled in from an external service provider.  Documents
+containing the `$vref` field are *not* valid CKAN files, but they
+may be used by external tools to *generate* valid CKAN files.
+
+If provided, the data fetched from `$vref` field will overwrite that
+povided by a `$kref` expansion.
+
+Only *one* `$vref` field may be present in a document.
+
+###### #/ckan/ksp-avc
+
+If present, a `$vref` symbol of `#/ckan/ksp-avc` states that version
+information should be retrieved from an embedded KSP-AVC `.version` file in the
+file downloaded by the `download` field. The following conditions apply:
+
+* Only `.version` files that would be *installed* for this mod are considered.
+* It is an error if more than one `.version` file would be considered.
+* It is an error if the `.version` file does not validate according to
+  [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm).
+* The `KSP_VERSION` field for the `.version` file will be ignored if the
+  `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
+
+When used, the folowing fields are auto-generated, overwriting those
+from `$kref`, but not those specified in the CKAN document itself (if present):
+
+- `ksp_version`
+- `ksp_version_min`
+- `ksp_version_max`
+
+Future releases of the spec may allow for additional fields to generated.
