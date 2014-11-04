@@ -17,24 +17,14 @@ namespace CKAN
         public string version;
     }
 
-    public class GitHubResourceDescriptor
-    {
-        public bool releases;
-        public Uri url;
-    }
-
-    public class KerbalStuffResourceDescriptor
-    {
-        public /* optional */ string url;
-    }
-
     public class ResourcesDescriptor
     {
-        public GitHubResourceDescriptor github;
+        public Uri repository;
         public Uri homepage;
         public Uri bugtracker;
 
-        public KerbalStuffResourceDescriptor kerbalstuff;
+        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        public Uri kerbalstuff;
     }
 
     public enum License
@@ -133,6 +123,7 @@ namespace CKAN
         // what we've got.
 
         [JsonProperty("abstract")] public string @abstract;
+        [JsonProperty("description")] public string description;
 
         [JsonProperty("author")] [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public List<string> author;
 
@@ -152,9 +143,6 @@ namespace CKAN
         [JsonProperty("license", Required = Required.Always)] public string license; // TODO: Strong type
 
         [JsonProperty("name")] public string name;
-
-        // TODO: Deprecate?
-        [JsonProperty("pre_depends")] public RelationshipDescriptor[] pre_depends;
 
         [JsonProperty("provides")] public List<string> provides;
 
