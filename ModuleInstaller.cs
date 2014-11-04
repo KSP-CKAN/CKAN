@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -196,6 +195,8 @@ namespace CKAN
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
+            onReportProgress = onReportProgress ?? ((message, progress) => { });
+
             using (TransactionScope transaction = new TransactionScope())
             {
 
@@ -261,17 +262,22 @@ namespace CKAN
                     for (int i = 0; i < modsToInstall.Count; i++)
                     {
                         int percentComplete = (i * 100) / modsToInstall.Count;
-                        if (onReportProgress != null)
-                        {
-                            onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
+                        
+                        onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                              percentComplete);
-                        }
 
                         Install(modsToInstall[i]);
                     }
 
+                    onReportProgress("Updating registry", 80);
+
                     registry_manager.Save();
+
+                    onReportProgress("Commiting filesystem changes", 90);
+
                     transaction.Complete();
+
+                    onReportProgress("Done!", 100);
                     return;
                 }
              
