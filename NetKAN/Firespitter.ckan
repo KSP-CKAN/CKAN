@@ -6,9 +6,7 @@
     "comment"         : "Our version really depends on FirespitterCore",
     "ksp_version_min" : "0.24.2",
     "resources" : {
-        "github" : {
-            "url" : "https://github.com/snjo/Firespitter"
-        }
+        "repository"  : "https://github.com/snjo/Firespitter"
     },
     "depends" : [ {
         "name"        : "FirespitterCore",

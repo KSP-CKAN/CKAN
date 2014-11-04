@@ -6,10 +6,8 @@
     "license"        : "restricted",
     "release_status" : "stable",
     "resources"      : {
-        "github"       : {
-            "url"      : "https://github.com/RemoteTechnologiesGroup/RemoteTech"
-        },
-        "bugtracker"   : "https://github.com/RemoteTechnologiesGroup/RemoteTech/issues"
+        "repository" : "https://github.com/RemoteTechnologiesGroup/RemoteTech",
+        "bugtracker" : "https://github.com/RemoteTechnologiesGroup/RemoteTech/issues"
     },
     "depends": [
         {

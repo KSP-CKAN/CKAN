@@ -5,9 +5,7 @@
     "license"        : "GPL-3.0",
     "release_status" : "stable",
     "resources"      : {
-        "github"       : {
-            "url"      : "https://github.com/sirkut/InfernalRobotics"
-        }
+        "repository" : "https://github.com/sirkut/InfernalRobotics"
     },
     "recommends" : [
         { "name" : "TweakScale" }

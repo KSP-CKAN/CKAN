@@ -6,9 +6,7 @@
     "release_status" : "stable",
     "resources"      : {
         "manual"       : "http://ksp-kos.github.io/KOS_DOC/",
-        "github"       : {
-            "url"      : "https://github.com/KSP-KOS/KOS"
-        }
+        "repository"   : "https://github.com/KSP-KOS/KOS"
     },
     "install" : [
         {

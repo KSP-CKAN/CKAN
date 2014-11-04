@@ -4,9 +4,7 @@
 	"$kref" : "#/ckan/kerbalstuff/251",
 	"release_status" : "stable",
 	"resources" : {
-		"github" : {
-			"url" : "https://github.com/Starstrider42/Custom-Asteroids"
-		},
+		"repository" : "https://github.com/Starstrider42/Custom-Asteroids",
 		"bugtracker" : "https://github.com/Starstrider42/Custom-Asteroids/issues"
 	},
 	"install" : [

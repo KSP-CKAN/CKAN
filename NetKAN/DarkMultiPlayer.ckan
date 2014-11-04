@@ -5,10 +5,7 @@
     "release_status" : "alpha",
     "resources"      : {
         "manual"       : "https://github.com/godarklight/DarkMultiPlayer/blob/master/README.md",
-        "github"       : {
-            "url"      : "https://github.com/godarklght/DarkMultiPlayer",
-            "releases" : false
-        }
+        "repository"   : "https://github.com/godarklght/DarkMultiPlayer"
     },
     "install" : [
         {
