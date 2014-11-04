@@ -71,6 +71,7 @@ namespace CKAN
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
+            ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
             RecreateDialogs();
 
@@ -431,6 +432,12 @@ namespace CKAN
                 m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
                 m_Configuration.Save();
             }
+        }
+
+        private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateModsList();
+            UpdateModFilterList();
         }
     }
 }

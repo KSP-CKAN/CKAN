@@ -55,6 +55,15 @@ namespace CKAN
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
+            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KSPVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -85,15 +94,7 @@ namespace CKAN
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
-            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.DoUpdate = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KSPVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.clearChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -237,6 +238,8 @@ namespace CKAN
             // 
             // ApplyToolButton
             // 
+            this.ApplyToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearChangesToolStripMenuItem});
             this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
@@ -321,7 +324,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.DoUpdate,
+            this.Update,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -339,6 +342,68 @@ namespace CKAN
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            // 
+            // Installed
+            // 
+            this.Installed.HeaderText = "Installed";
+            this.Installed.Name = "Installed";
+            this.Installed.Width = 50;
+            // 
+            // Update
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.Width = 46;
+            // 
+            // ModName
+            // 
+            this.ModName.HeaderText = "Name";
+            this.ModName.Name = "ModName";
+            this.ModName.ReadOnly = true;
+            this.ModName.Width = 58;
+            // 
+            // Author
+            // 
+            this.Author.HeaderText = "Author";
+            this.Author.Name = "Author";
+            this.Author.ReadOnly = true;
+            this.Author.Width = 61;
+            // 
+            // InstalledVersion
+            // 
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.Width = 97;
+            // 
+            // LatestVersion
+            // 
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.Width = 88;
+            // 
+            // KSPVersion
+            // 
+            this.KSPVersion.HeaderText = "KSP version";
+            this.KSPVersion.Name = "KSPVersion";
+            this.KSPVersion.Width = 81;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.Width = 83;
+            // 
+            // Homepage
+            // 
+            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Homepage.HeaderText = "Homepage";
+            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Homepage.Name = "Homepage";
+            this.Homepage.ReadOnly = true;
+            this.Homepage.Width = 63;
             // 
             // FilterByNameTextBox
             // 
@@ -714,67 +779,12 @@ namespace CKAN
             this.KSPVersionLabel.TabIndex = 1;
             this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
             // 
-            // Installed
+            // clearChangesToolStripMenuItem
             // 
-            this.Installed.HeaderText = "Installed";
-            this.Installed.Name = "Installed";
-            this.Installed.Width = 50;
-            // 
-            // Update
-            // 
-            this.DoUpdate.HeaderText = "Update";
-            this.DoUpdate.Name = "Update";
-            this.DoUpdate.Width = 46;
-            // 
-            // ModName
-            // 
-            this.ModName.HeaderText = "Name";
-            this.ModName.Name = "ModName";
-            this.ModName.ReadOnly = true;
-            this.ModName.Width = 58;
-            // 
-            // Author
-            // 
-            this.Author.HeaderText = "Author";
-            this.Author.Name = "Author";
-            this.Author.ReadOnly = true;
-            this.Author.Width = 61;
-            // 
-            // InstalledVersion
-            // 
-            this.InstalledVersion.HeaderText = "Installed version";
-            this.InstalledVersion.Name = "InstalledVersion";
-            this.InstalledVersion.ReadOnly = true;
-            this.InstalledVersion.Width = 97;
-            // 
-            // LatestVersion
-            // 
-            this.LatestVersion.HeaderText = "Latest version";
-            this.LatestVersion.Name = "LatestVersion";
-            this.LatestVersion.ReadOnly = true;
-            this.LatestVersion.Width = 88;
-            // 
-            // KSPVersion
-            // 
-            this.KSPVersion.HeaderText = "KSP version";
-            this.KSPVersion.Name = "KSPVersion";
-            this.KSPVersion.Width = 81;
-            // 
-            // Description
-            // 
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.Width = 83;
-            // 
-            // Homepage
-            // 
-            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Homepage.HeaderText = "Homepage";
-            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.Homepage.Name = "Homepage";
-            this.Homepage.ReadOnly = true;
-            this.Homepage.Width = 63;
+            this.clearChangesToolStripMenuItem.Name = "clearChangesToolStripMenuItem";
+            this.clearChangesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearChangesToolStripMenuItem.Text = "Clear changes";
+            this.clearChangesToolStripMenuItem.Click += new System.EventHandler(this.clearChangesToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -881,6 +891,8 @@ namespace CKAN
         private DataGridViewTextBoxColumn KSPVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
+        private ToolStripMenuItem clearChangesToolStripMenuItem;
+        private DataGridViewCheckBoxColumn Update;
     }
 }
 
