@@ -197,66 +197,69 @@ namespace CKAN
         {
             onReportProgress = onReportProgress ?? ((message, progress) => { });
 
-            using (TransactionScope transaction = new TransactionScope())
+            installCanceled = false; // Can be set by another thread
+
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
+            List<CkanModule> modsToInstall = resolver.ModList();
+            List<CkanModule> downloads = new List<CkanModule> (); 
+
+            User.WriteLine("About to install...\n");
+
+            foreach (CkanModule module in modsToInstall)
             {
-
-                installCanceled = false; // Can be set by another thread
-
-                var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
-                List<CkanModule> modsToInstall = resolver.ModList();
-                List<CkanModule> downloads = new List<CkanModule> (); 
-
-                User.WriteLine("About to install...\n");
-
-                foreach (CkanModule module in modsToInstall)
+                if (Cache.IsCached(module))
                 {
-                    if (Cache.IsCached(module))
-                    {
-                        User.WriteLine(" * {0} (cached)", module);
-                    }
-                    else
-                    {
-                        User.WriteLine(" * {0}", module);
-                        downloads.Add(module);
-                    }
+                    User.WriteLine(" * {0} (cached)", module);
                 }
-
-                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
-
-                if (!ok)
+                else
                 {
-                    log.Debug("Halting install at user request");
-                    return;
+                    User.WriteLine(" * {0}", module);
+                    downloads.Add(module);
                 }
+            }
 
-                User.WriteLine(""); // Just to look tidy.
+            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
 
-                // TODO: Is this really where we want to be setting this?
-                lastDownloadSuccessful = true;
+            if (!ok)
+            {
+                log.Debug("Halting install at user request");
+                return;
+            }
 
-                if (installCanceled)
+            User.WriteLine(""); // Just to look tidy.
+
+            // TODO: Is this really where we want to be setting this?
+            lastDownloadSuccessful = true;
+
+            if (installCanceled)
+            {
+                log.Warn("Pre-download halted at user request");
+                return;
+            }
+
+            if (downloads.Count > 0)
+            {
+                downloader = DownloadAsync(downloads);
+                downloader.StartDownload();
+
+                lock (downloader)
                 {
-                    log.Warn("Pre-download halted at user request");
-                    return;
+                    Monitor.Wait(downloader);
                 }
+            }
 
-                if (downloads.Count > 0)
-                {
-                    downloader = DownloadAsync(downloads);
-                    downloader.StartDownload();
+            if (installCanceled)
+            {
+                log.Warn("Download halted at user request");
+                return;
+            }
 
-                    lock (downloader)
-                    {
-                        Monitor.Wait(downloader);
-                    }
-                }
+            // We're about to install all our mods; so begin our transaction.
+            var txoptions = new TransactionOptions();
+            txoptions.Timeout = TransactionManager.MaximumTimeout;
 
-                if (installCanceled)
-                {
-                    log.Warn("Download halted at user request");
-                    return;
-                }
-
+            using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, txoptions))
+            {
                 if (lastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
                 {
                     for (int i = 0; i < modsToInstall.Count; i++)
@@ -845,7 +848,7 @@ namespace CKAN
                 // before parents. GH #78.
                 foreach (string directory in directoriesToDelete.OrderBy(dir => dir.Length).Reverse())
                 {
-                    if (!Directory.GetFiles(directory).Any())
+                    if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
 
                         // We *don't* use our file_transaction to delete files here, because
