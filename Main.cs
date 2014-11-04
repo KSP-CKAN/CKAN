@@ -18,6 +18,14 @@ namespace CKAN.CmdLine
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
+        /*
+         * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
+         * Without getting into a huge discussion about COM and threading,
+         * this attribute ensures the communication mechanism between the current thread an
+         * other threads that may want to talk to it via COM.  When you're using Windows Forms,
+         * depending on the feature you're using, it may be using COM interop in order to communicate with
+         * operating system components.  Good examples of this are the Clipboard and the File Dialogs. 
+         */
         [STAThread]
         public static int Main(string[] args)
         {
