@@ -73,17 +73,23 @@ namespace CKAN
                         {
                             foreach (RelationshipDescriptor mod in change.Key.recommends)
                             {
-                                // if the mod is available for the current KSP version _and_
-                                // the mod is not installed _and_
-                                // the mod is not already in the install list
-                                if (
-                                    RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
-                                    !toInstall.Contains(mod.name.ToString()))
+                                try
                                 {
-                                    // add it to the list of recommended mods we display to the user
-                                    recommended.Add(mod.name.ToString());
+                                    // if the mod is available for the current KSP version _and_
+                                    // the mod is not installed _and_
+                                    // the mod is not already in the install list
+                                    if (
+                                        RegistryManager.Instance(KSPManager.CurrentInstance)
+                                            .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
+                                        !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
+                                        !toInstall.Contains(mod.name.ToString()))
+                                    {
+                                        // add it to the list of recommended mods we display to the user
+                                        recommended.Add(mod.name.ToString());
+                                    }
+                                }
+                                catch (Kraken)
+                                {
                                 }
                             }
                         }
@@ -115,13 +121,19 @@ namespace CKAN
                         {
                             foreach (RelationshipDescriptor mod in change.Key.suggests)
                             {
-                                if (
+                                try
+                                {
+                                    if (
                                     RegistryManager.Instance(KSPManager.CurrentInstance)
                                         .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
+                                    {
+                                        suggested.Add(mod.name);
+                                    }
+                                }
+                                catch (Kraken)
                                 {
-                                    suggested.Add(mod.name);
                                 }
                             }
                         }
@@ -175,7 +187,6 @@ namespace CKAN
         private void OnModInstalled(CkanModule mod)
         {
             AddStatusMessage("Module \"{0}\" successfully installed", mod.name);
-            UpdateModsList();
         }
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
