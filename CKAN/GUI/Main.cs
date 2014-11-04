@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -74,6 +75,7 @@ namespace CKAN
             RecreateDialogs();
 
             // We should run application only when we really sure.
+            System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Application.Run(this);
         }
 
