@@ -845,7 +845,7 @@ namespace CKAN
                 // before parents. GH #78.
                 foreach (string directory in directoriesToDelete.OrderBy(dir => dir.Length).Reverse())
                 {
-                    if (!Directory.GetFiles(directory).Any())
+                    if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
 
                         // We *don't* use our file_transaction to delete files here, because
