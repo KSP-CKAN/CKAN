@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -196,6 +197,8 @@ namespace CKAN
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
         {
+            onReportProgress = onReportProgress ?? ((message, progress) => { });
+
             using (TransactionScope transaction = new TransactionScope())
             {
 
@@ -261,33 +264,22 @@ namespace CKAN
                     for (int i = 0; i < modsToInstall.Count; i++)
                     {
                         int percentComplete = (i * 100) / modsToInstall.Count;
-                        if (onReportProgress != null)
-                        {
-                            onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
+                        
+                        onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                              percentComplete);
-                        }
 
                         Install(modsToInstall[i]);
                     }
 
-                    if (onReportProgress != null)
-                    {
-                        onReportProgress("Updating registry", 80);
-                    }
+                    onReportProgress("Updating registry", 80);
 
                     registry_manager.Save();
 
-                    if (onReportProgress != null)
-                    {
-                        onReportProgress("Commiting filesystem changes", 90);
-                    }
+                    onReportProgress("Commiting filesystem changes", 90);
 
                     transaction.Complete();
 
-                    if (onReportProgress != null)
-                    {
-                        onReportProgress("Done!", 100);
-                    }
+                    onReportProgress("Done!", 100);
                     return;
                 }
              
