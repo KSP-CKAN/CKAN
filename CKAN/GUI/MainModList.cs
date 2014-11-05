@@ -70,7 +70,7 @@ namespace CKAN
                 var reverseDependencies = installer.FindReverseDependencies(moduleName);
                 foreach (string reverseDependency in reverseDependencies)
                 {
-                    CkanModule mod = registry.available_modules[reverseDependency].Latest();
+                    CkanModule mod = registry.LatestAvailable(reverseDependency);
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
                 }
             }

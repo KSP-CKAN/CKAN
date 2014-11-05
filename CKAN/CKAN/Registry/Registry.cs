@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
@@ -13,19 +14,16 @@ namespace CKAN
     /// Please try to avoid accessing the attributes directly. Right now they're public
     /// so our JSON layer can access them, but in the future they will become private.
     /// </summary>
+
     public class Registry
     {
         private const int LATEST_REGISTRY_VERSION = 0;
         private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
-        // TODO: Perhaps flip these from public to protected somehow, and
-        // declare allegiance to the JSON class that serialises them.
-        // Is that something you can do in C#? In Moose we'd use a role.
-
-        public Dictionary<string, AvailableModule> available_modules;
-        public Dictionary<string, string> installed_dlls; // name => path
-        public Dictionary<string, InstalledModule> installed_modules;
-        public int registry_version;
+        [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
+        [JsonProperty] internal Dictionary<string, string> installed_dlls; // name => path
+        [JsonProperty] internal Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty] internal int registry_version;
 
         public Registry(
             int version,
@@ -358,6 +356,20 @@ namespace CKAN
             }
 
             return installed;
+        }
+
+        /// <summary>
+        /// Returns the InstalledModule, or null if it is not installed.
+        /// Does *not* look up virtual modules.
+        /// </summary>
+        public InstalledModule InstalledModule(string module)
+        {
+            if (this.installed_modules.ContainsKey(module))
+            {
+                return this.installed_modules[module];
+            }
+
+            return null;
         }
 
         /// <summary>
