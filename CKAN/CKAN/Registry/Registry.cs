@@ -533,6 +533,18 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the module which owns this file, or null if not known.
+        /// </summary>
+        public string FileOwner(string file)
+        {
+            if (this.installed_files.ContainsKey(file))
+            {
+                return this.installed_files[file];
+            }
+            return null;
+        }
+
+        /// <summary>
         ///     Checks the sanity of the registry, to ensure that all dependencies are met,
         ///     and no mods conflict with each other. Throws an InconsistentKraken on failure.
         /// </summary>

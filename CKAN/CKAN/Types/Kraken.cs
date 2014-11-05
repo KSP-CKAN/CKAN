@@ -180,6 +180,7 @@ namespace CKAN
         // These aren't set at construction time, but exist so that we can decorate the
         // kraken as appropriate.
         public CkanModule installing_module;
+        public string owning_module;
 
         public FileExistsKraken(string filename, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)

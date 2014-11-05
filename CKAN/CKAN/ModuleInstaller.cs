@@ -529,6 +529,7 @@ namespace CKAN
                 {
                     // Decorate the kraken with our module and re-throw
                     kraken.installing_module = module;
+                    kraken.owning_module = registry_manager.registry.FileOwner(kraken.filename);
                     throw;
                 }
             }
