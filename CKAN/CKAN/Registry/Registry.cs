@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Linq;
 using log4net;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace CKAN
 {
@@ -14,7 +15,11 @@ namespace CKAN
     /// are contained in here.
     /// </summary>
 
-    public class Registry
+    // TODO: It would be *great* for the registry to have a 'dirty' bit, that records if
+    // anything has changed. But that would involve catching access to a lot of the data
+    // structures we pass back, and we're not doing that yet.
+
+    public class Registry :IEnlistmentNotification
     {
         private const int LATEST_REGISTRY_VERSION = 0;
         private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
@@ -24,6 +29,8 @@ namespace CKAN
         [JsonProperty] internal Dictionary<string, InstalledModule> installed_modules;
         [JsonProperty] internal Dictionary<string, string> installed_files; // filename => module
         [JsonProperty] internal int registry_version;
+
+        [JsonIgnore] internal string transaction_backup;
 
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -79,6 +86,84 @@ namespace CKAN
                 new Dictionary<string, string>()
                 );
         }
+
+        #region Transaction Handling
+
+        // Keep track of our current transaction. Right now we only support a single
+        // (ie, not nested) transaction.
+        private string transaction = null;
+
+        public void Prepare(PreparingEnlistment preparingEnlistment)
+        {
+
+            if (transaction != null)
+            {
+                throw new TransactionalKraken("Registry cannot participated in nested transactions.");
+            }
+
+            log.Debug("Registry enlisting in transaction");
+
+            // Hey, you know what's a great way to back-up your own object?
+            // JSON. ;)
+            this.transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
+
+            // Record our transaction and give the thumbs up.
+            transaction = Transaction.Current.TransactionInformation.LocalIdentifier;
+            preparingEnlistment.Prepared();
+        }
+
+        public void InDoubt(Enlistment enlistment)
+        {
+            // In doubt apparently means we don't know if we've committed or not.
+            // Since our TxFileMgr treats this as a rollback, so do we.
+            log.Warn("Transaction involving registry in doubt.");
+            Rollback(enlistment);
+        }
+
+        public void Commit(Enlistment enlistment)
+        {
+            // Commit is essentially a no-op.
+            transaction = null;
+            enlistment.Done();
+            log.Debug("Transaction registry was enlisted in has been committed");
+            // TODO: Should we save at the end of a Tx?
+            // TODO: If so, we should abort if we find a save that's while a Tx is in progress?
+            //
+            // In either case, do we want the registry_manager to be Tx aware? 
+        }
+
+        public void Rollback(Enlistment enlistment)
+        {
+            log.Info("Aborted transaction, rolling back in-memory registry changes.");
+
+            // In theory, this should put everything back the way it was, overwriting whatever
+            // we had previously.
+
+            var options = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
+
+            JsonConvert.PopulateObject(this.transaction_backup, this, options);
+
+            transaction = null;
+            enlistment.Done();
+        }
+
+        /// <summary>
+        /// "Pardon me, but I couldn't help but overhear you're in a Transaction..."
+        /// 
+        /// Adds our registry to the current transaction. This should be called whenever we
+        /// do anything which may dirty the registry.
+        /// </summary>
+        // 
+        // http://wondermark.com/1k62/
+        private void SealionTransaction()
+        {
+            if (Transaction.Current != null)
+            {
+                Transaction.Current.EnlistVolatile(this, EnlistmentOptions.None);
+            }
+        }
+
+        #endregion
 
         public void ClearAvailable()
         {
