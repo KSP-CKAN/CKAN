@@ -12,6 +12,8 @@ namespace CKANTests
     [TestFixture()]
     public class ModuleInstaller
     {
+        private static readonly string flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
+
         [Test()]
         public void GenerateDefaultInstall()
         {
@@ -155,9 +157,27 @@ namespace CKANTests
                 scope.Dispose(); // Rollback
             }
 
-            // CopyDogeFromZip creates a tempfile, so we check to make sure it's empty
-            // again on transaction rollback.
-            Assert.AreEqual(0, new System.IO.FileInfo(file).Length);
+            // And now, our file should be gone!
+            Assert.IsFalse(File.Exists (file));
+        }
+
+        [Test]
+        // We don't allow overwriting of files when doing installs. Hooray!
+        public void DontOverWrite_208()
+        {
+            using (ZipFile zipfile = new ZipFile(Tests.TestData.DogeCoinFlagZip()))
+            {
+                ZipEntry entry = zipfile.GetEntry(flag_path);
+                string tmpfile = Path.GetTempFileName();
+
+                Assert.Throws<FileExistsKraken>(delegate
+                {
+                    CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+                });
+
+                // Cleanup
+                File.Delete(tmpfile);
+            }
         }
 
         private static string CopyDogeFromZip()
@@ -165,9 +185,11 @@ namespace CKANTests
             string dogezip = Tests.TestData.DogeCoinFlagZip();
             ZipFile zipfile = new ZipFile(dogezip);
 
-            ZipEntry entry = zipfile.GetEntry("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png");
+            ZipEntry entry = zipfile.GetEntry(flag_path);
             string tmpfile = Path.GetTempFileName();
 
+            // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
+            File.Delete (tmpfile);
             CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
 
             return tmpfile;
