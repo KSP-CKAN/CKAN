@@ -1,15 +1,13 @@
 language: c
 
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console python-demjson
+    - sudo apt-get install mono-devel mono-gmcs nunit-console
     - mozroots --import --ask-remove
 
 script:
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
-    - cd ../NetKAN
-    - jsonlint -s -v *.ckan
 
 before_deploy:
     - cd ..
