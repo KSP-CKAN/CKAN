@@ -7,6 +7,7 @@ using System.Linq;
 using log4net;
 using Newtonsoft.Json;
 using System.Transactions;
+using System.Threading;
 
 namespace CKAN
 {
@@ -55,6 +56,8 @@ namespace CKAN
             }
         }
 
+        #region Constructors
+
         public Registry(
             int version,
             Dictionary<string, InstalledModule> installed_modules,
@@ -87,28 +90,21 @@ namespace CKAN
                 );
         }
 
+        #endregion
+
         #region Transaction Handling
 
-        // Keep track of our current transaction. Right now we only support a single
-        // (ie, not nested) transaction.
-        private string transaction = null;
+        // We use this to record which transaction we're in.
+        private string enlisted_tx;
 
+        // This *doesn't* get called when we get enlisted in a Tx, it gets
+        // called when we're about to commit a transaction. We can *probably*
+        // get away with calling .Done() here and skipping the commit phase,
+        // but I'm not sure if we'd get InDoubt signalling if we did that.
         public void Prepare(PreparingEnlistment preparingEnlistment)
         {
+            log.Debug("Registry prepared to commit transaction");
 
-            if (transaction != null)
-            {
-                throw new TransactionalKraken("Registry cannot participated in nested transactions.");
-            }
-
-            log.Debug("Registry enlisting in transaction");
-
-            // Hey, you know what's a great way to back-up your own object?
-            // JSON. ;)
-            this.transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
-
-            // Record our transaction and give the thumbs up.
-            transaction = Transaction.Current.TransactionInformation.LocalIdentifier;
             preparingEnlistment.Prepared();
         }
 
@@ -122,11 +118,16 @@ namespace CKAN
 
         public void Commit(Enlistment enlistment)
         {
-            // Commit is essentially a no-op.
-            transaction = null;
+            // Hooray! All Tx participants have signalled they're ready.
+            // So we're done, and can clear our resources.
+
+            enlisted_tx = null;
+            transaction_backup = null;
+
             enlistment.Done();
-            log.Debug("Transaction registry was enlisted in has been committed");
-            // TODO: Should we save at the end of a Tx?
+            log.Debug("Registry transaction committed");
+
+            // TODO: Should we save to disk at the end of a Tx?
             // TODO: If so, we should abort if we find a save that's while a Tx is in progress?
             //
             // In either case, do we want the registry_manager to be Tx aware? 
@@ -141,10 +142,20 @@ namespace CKAN
 
             var options = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
 
-            JsonConvert.PopulateObject(this.transaction_backup, this, options);
+            JsonConvert.PopulateObject(transaction_backup, this, options);
 
-            transaction = null;
+            enlisted_tx = null;
+            transaction_backup = null;
+
             enlistment.Done();
+        }
+
+        private void SaveState()
+        {
+            // Hey, you know what's a great way to back-up your own object?
+            // JSON. ;)
+            this.transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
+            log.Debug("State saved");
         }
 
         /// <summary>
@@ -159,19 +170,44 @@ namespace CKAN
         {
             if (Transaction.Current != null)
             {
-                Transaction.Current.EnlistVolatile(this, EnlistmentOptions.None);
+                string current_tx = Transaction.Current.TransactionInformation.LocalIdentifier;
+
+                if (enlisted_tx == null)
+                {
+                    log.Debug("Pardon me, but I couldn't help overhear you're in a transaction...");
+                    Transaction.Current.EnlistVolatile(this, EnlistmentOptions.None);
+                    SaveState();
+                    enlisted_tx = current_tx;
+                }
+                else if (enlisted_tx != current_tx)
+                {
+                    log.Error("CKAN registry does not support nested transactions.");
+                    throw new TransactionalKraken("CKAN registry does not support nested transactions.");
+                }
+
+                // If we're here, it's a transaction we're already participating in,
+                // so do nothing.
             }
         }
 
         #endregion
 
+        /// <summary>
+        /// Clears all available modules from the registry.
+        /// </summary>
         public void ClearAvailable()
         {
+            SealionTransaction();
             available_modules = new Dictionary<string, AvailableModule>();
         }
 
+        /// <summary>
+        /// Mark a given module as available.
+        /// </summary>
         public void AddAvailable(CkanModule module)
         {
+            SealionTransaction();
+
             // If we've never seen this module before, create an entry for it.
 
             if (! available_modules.ContainsKey(module.identifier))
@@ -189,16 +225,20 @@ namespace CKAN
 
         /// <summary>
         /// Remove the given module from the registry of available modules.
-        /// Does *nothing* if the module is not present to begin with.
+        /// Does *nothing* if the module was not present to begin with.
         /// </summary>
         public void RemoveAvailable(string identifier, Version version)
         {
             if (available_modules.ContainsKey(identifier))
             {
+                SealionTransaction();
                 available_modules[identifier].Remove(version);
             }
         }
 
+        /// <summary>
+        /// Removes the given module from the registry of available modules.
+        /// Does *nothing* if the module was not present to begin with.
         public void RemoveAvailable(Module module)
         {
             RemoveAvailable(module.identifier, module.version);
@@ -386,6 +426,8 @@ namespace CKAN
          
         public void RegisterModule(InstalledModule mod)
         {
+            SealionTransaction();
+
             // But we also want to keep track of all its files.
             // We start by checking to see if any files are owned by another mod,
             // if so, we abort with a list of errors.
@@ -438,6 +480,8 @@ namespace CKAN
         /// </summary>
         public void DeregisterModule(string module)
         {
+            SealionTransaction();
+
             var inconsistencies = new List<string>();
 
             foreach (string filename in this.installed_modules[module].installed_files.Keys)
@@ -475,6 +519,8 @@ namespace CKAN
         /// </summary>
         public void RegisterDll(string path)
         {
+            SealionTransaction();
+
             // TODO: This is awful, as it's O(N^2), but it means we never index things which are
             // part of another mod.
 
@@ -510,6 +556,7 @@ namespace CKAN
         /// </summary>
         public void ClearDlls()
         {
+            SealionTransaction();
             installed_dlls = new Dictionary<string, string>();
         }
 
@@ -550,6 +597,11 @@ namespace CKAN
         /// </summary>
         public InstalledModule InstalledModule(string module)
         {
+            // In theory, someone could then modify the data they get back from
+            // this, so we sea-lion just in case.
+
+            SealionTransaction();
+
             if (this.installed_modules.ContainsKey(module))
             {
                 return this.installed_modules[module];
