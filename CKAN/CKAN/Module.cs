@@ -6,6 +6,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using System.Linq;
 
 namespace CKAN
 {
@@ -217,6 +218,35 @@ namespace CKAN
                 // KSP version mixed with min/max.
                 throw new InvalidModuleAttributesException("ksp_version mixed wtih ksp_version_(min|max)", this);
             }
+        }
+
+        /// <summary>
+        /// Returns true if we conflict with the given module.
+        /// </summary>
+        public bool ConflictsWith(Module module)
+        {
+            return UniConflicts(this, module) || UniConflicts(module, this);
+        }
+
+        /// <summary>
+        /// Checks if A conflicts with B, but not if B conflicts with A.
+        /// Used by ConflictsWith.
+        /// </summary>
+        internal static bool UniConflicts(Module mod1, Module mod2)
+        {
+            if (mod1.conflicts == null)
+            {
+                return false;
+            }
+
+            foreach (RelationshipDescriptor conflict in mod1.conflicts)
+            {
+                if (mod2.ProvidesList.Contains(conflict.name))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
