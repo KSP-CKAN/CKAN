@@ -311,6 +311,12 @@ namespace CKAN
             {
                 if (this.installed_files.ContainsKey(filename))
                 {
+                    // For now, it's cool if a module wants to register a directory.
+                    if (Directory.Exists(filename))
+                    {
+                        continue;
+                    }
+
                     string owner = this.installed_files[filename];
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
@@ -327,6 +333,11 @@ namespace CKAN
             // If everything is fine, then we copy our files across. By not doing this
             // in the loop above, we make sure we don't have a half-registered module
             // when we throw our exceptinon.
+
+            // This *will* result in us overwriting who owns a directory, and that's cool,
+            // directories aren't really owned like files are. However because each mod maintains
+            // its own list of files, we'll remove directories when the last mod using them
+            // is uninstalled.
             foreach (string filename in mod.installed_files.Keys)
             {
                 this.installed_files[filename] = mod.source_module.identifier;
