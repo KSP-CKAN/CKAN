@@ -402,13 +402,9 @@ namespace CKAN.CmdLine
             }
 
             RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
-            InstalledModule module;
+            InstalledModule module = registry_manager.registry.InstalledModule(options.Modname);
 
-            try
-            {
-                module = registry_manager.registry.installed_modules[options.Modname];
-            }
-            catch (KeyNotFoundException)
+            if (module == null)
             {
                 User.WriteLine("{0} not installed.", options.Modname);
                 User.WriteLine("Try `ckan list` to show installed modules");
