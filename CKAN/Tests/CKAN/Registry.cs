@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using CKAN;
 using Tests;
+using System.Transactions;
 
 namespace CKANTests
 {
@@ -87,6 +88,101 @@ namespace CKANTests
             {
                 registry.LatestAvailable("ToTheMun", v0_24_2);
             });
+        }
+
+        [Test]
+        public void TxEmbeddedCommit()
+        {
+            // Our registry should work when we initialise it inside our Tx and commit.
+
+            CKAN.Registry reg;
+
+            using (var scope = new TransactionScope())
+            {
+                reg = CKAN.Registry.Empty();
+                reg.AddAvailable(module);
+                Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
+                scope.Complete();
+            }
+            Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
+        }
+
+        [Test]
+        public void TxCommit()
+        {
+            // Our registry should work fine on committed transactions.
+
+            using (var scope = new TransactionScope())
+            {
+                registry.AddAvailable(module);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+
+                scope.Complete();
+            }
+            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+        }
+
+        [Test]
+        public void TxRollback()
+        {
+            // Our registry should roll-back any changes it made during a transaction.
+
+            using (var scope = new TransactionScope())
+            {
+                registry.AddAvailable(module);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+
+                scope.Dispose(); // Rollback, our module should no longer be available.
+            }
+
+            Assert.Throws<ModuleNotFoundKraken>(delegate
+            {
+                registry.LatestAvailable(identifier);
+            });
+        }
+
+        [Test]
+        public void TxNested()
+        {
+            // Our registry doesn't understand how to do nested transactions,
+            // make sure it throws on these.
+
+            using (var scope = new TransactionScope())
+            {
+                registry.AddAvailable(module);
+
+                using (var scope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    Assert.Throws<CKAN.TransactionalKraken>(delegate
+                    {
+                        registry.AddAvailable(TestData.DogeCoinFlag_101_module());
+                    });
+                    scope2.Complete();
+                }
+                scope.Complete();
+            }
+        }
+
+        [Test]
+        public void TxAmbient()
+        {
+            // Our registry should be fine with ambient transactions, which join together.
+            // Note the absence of TransactionScopeOption.RequiresNew
+
+            using (var scope = new TransactionScope())
+            {
+                registry.AddAvailable(module);
+
+                using (var scope2 = new TransactionScope())
+                {
+                    Assert.DoesNotThrow(delegate
+                    {
+                        registry.AddAvailable(TestData.DogeCoinFlag_101_module());
+                    });
+                    scope2.Complete();
+                }
+                scope.Complete();
+            }
         }
     }
 }
