@@ -380,7 +380,8 @@ namespace CKAN.CmdLine
             }
             catch (FileExistsKraken ex)
             {
-                User.WriteLine("Tried to write to {0} for {1}, but that file already exists!\n", ex.filename, ex.installing_module);
+                User.WriteLine("Tried to write to {0} for {1}, but that file is owned by {2}!\n",
+                               ex.filename, ex.installing_module, ex.owning_module);
                 User.WriteLine("Your GameData has been returned to its original state.");
                 return Exit.ERROR;
             }
