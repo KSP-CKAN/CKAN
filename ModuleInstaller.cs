@@ -495,37 +495,6 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Install the component described in the stanza.
-        /// Modifies the supplied module_files to contain the files installed.
-        /// This method should be avoided, as it may be removed in the future.
-        /// </summary>
-        internal void InstallComponent(ModuleInstallDescriptor stanza, string zip_filename,
-            Dictionary<string, InstalledModuleFile> module_files)
-        {
-
-            // TODO: Can we deprecate this code now please?
-            log.Warn("Soon to be deprecated method InstallComponent called");
-
-            using (ZipFile zipfile = new ZipFile(zip_filename))
-            {
-                List<InstallableFile> files = FindInstallableFiles(stanza, zipfile, ksp);
-
-                foreach (var file in files) {
-
-                    // TODO: I'd like to replace this with a log.Info
-                    User.WriteLine("    * Copying " + file.source.Name);
-
-                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
-
-                    module_files.Add(file.destination, new InstalledModuleFile
-                    {
-                        sha1_sum = Sha1Sum(file.destination)
-                    });
-                }
-            }
-        }
-
-        /// <summary>
         /// Installs the module from the zipfile provided, updating the supplied list of installed files provided.
         /// 
         /// Propagates up a BadMetadataKraken if our install metadata is bad.
