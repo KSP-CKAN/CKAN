@@ -708,6 +708,7 @@ namespace CKAN
                 // Skip if we're not making directories for this install.
                 if (!makeDirs)
                 {
+                    log.DebugFormat ("Skipping {0}, we don't make directories for this path", fullPath);
                     return;
                 }
 
@@ -727,8 +728,15 @@ namespace CKAN
                     file_transaction.CreateDirectory(directory);
                 }
 
+                // We don't allow for the overwriting of files. See #208.
+                if (File.Exists (fullPath))
+                {
+                    throw new FileExistsKraken(fullPath, string.Format("Trying to write {0} but it already exists.", fullPath));
+                }
+
                 // Snapshot whatever was there before. If there's nothing, this will just
-                // remove our file on rollback.
+                // remove our file on rollback. We still need this even thought we won't
+                // overwite files, as it ensures deletiion on rollback.
                 file_transaction.Snapshot(fullPath);
 
                 // It's a file! Prepare the streams

@@ -168,4 +168,19 @@ namespace CKAN
             return this.InconsistenciesPretty + this.StackTrace;
         }
     }
+
+    /// <summary>
+    /// The terrible state when a file exists when we expect it not to be there.
+    /// For example, when we install a mod, and it tries to overwrite a file from another mod.
+    /// </summary>
+    public class FileExistsKraken : Kraken
+    {
+        public string filename;
+
+        public FileExistsKraken(string filename, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.filename = filename;
+        }
+    }
 }
