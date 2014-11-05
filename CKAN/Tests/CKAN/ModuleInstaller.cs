@@ -78,7 +78,6 @@ namespace CKANTests
 
             // Ensure we've got an expected file
             Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
-
         }
 
         [Test()]
@@ -179,6 +178,24 @@ namespace CKANTests
                 File.Delete(tmpfile);
             }
         }
+
+		[Test()]
+		// Test how we handle corrupt data
+		public void CorruptZip_242()
+		{
+			string corrupt_dogezip = Tests.TestData.DogeCoinFlagZipCorrupt();
+
+			// GenerateDefault Install
+			using (var zipfile = new ZipFile(corrupt_dogezip))
+			{
+				CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+			}
+
+			// FindInstallableFiles
+			CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+			CKAN.ModuleInstaller.FindInstallableFiles(dogemod, corrupt_dogezip, null);
+
+		}
 
         private static string CopyDogeFromZip()
         {
