@@ -190,6 +190,10 @@ namespace CKAN
         /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
+        /// 
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// 
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
@@ -362,6 +366,9 @@ namespace CKAN
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
         /// 
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// 
         /// </summary>
         // 
         // TODO: The name of this and InstallModule() need to be made more distinctive.
@@ -419,7 +426,7 @@ namespace CKAN
         /// Returns null if passed a directory.
         /// Throws an exception on failure to access the file.
         /// </summary>
-        internal string Sha1Sum(string path)
+        internal static string Sha1Sum(string path)
         {
             if (Directory.Exists(path))
             {
@@ -497,7 +504,8 @@ namespace CKAN
         /// <summary>
         /// Installs the module from the zipfile provided, updating the supplied list of installed files provided.
         /// 
-        /// Propagates up a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
         internal void InstallModule(CkanModule module, string zip_filename, Dictionary<string, InstalledModuleFile> installed_files)
         {
@@ -505,14 +513,23 @@ namespace CKAN
             {
                 List<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
 
-                foreach (var file in files)
+                try
                 {
-                    log.InfoFormat("Copying {0}", file.source.Name);
-                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
-                    installed_files.Add(file.destination, new InstalledModuleFile
+                    foreach (var file in files)
                     {
-                        sha1_sum = Sha1Sum(file.destination)
-                    });
+                        log.InfoFormat("Copying {0}", file.source.Name);
+                        CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+                        installed_files.Add(file.destination, new InstalledModuleFile
+                        {
+                            sha1_sum = Sha1Sum(file.destination)
+                        });
+                    }
+                }
+                catch (FileExistsKraken kraken)
+                {
+                    // Decorate the kraken with our module and re-throw
+                    kraken.installing_module = module;
+                    throw;
                 }
             }
         }
