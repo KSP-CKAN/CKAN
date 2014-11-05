@@ -163,6 +163,12 @@ namespace CKAN
             this.inconsistencies = inconsistencies;
         }
 
+        public InconsistentKraken(string inconsistency, Exception inner_exception = null)
+            :base(null, inner_exception)
+        {
+            this.inconsistencies = new List<string> { inconsistency };
+        }
+
         public override string ToString()
         {
             return this.InconsistenciesPretty + this.StackTrace;

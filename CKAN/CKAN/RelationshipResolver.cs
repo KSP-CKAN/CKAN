@@ -15,6 +15,14 @@ namespace CKAN
     // Alas, it appears that structs cannot have defaults. Try
     // DefaultOpts() to get friendly defaults.
 
+    // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
+    // right thing in processing all depdenencies first, then recommends, and then suggests,
+    // we could find that a recommendation many layers deep prevents a recommendation in the
+    // original mod's recommends list.
+    //
+    // If we resolved in things breadth-first order, we're less likely to encounter surprises
+    // where a nth-deep recommend blocks a top-level recommend.
+
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
@@ -48,6 +56,15 @@ namespace CKAN
                 }
                  
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
+
+                foreach (CkanModule listed_mod in this.modlist.Values)
+                {
+                    if (listed_mod.ConflictsWith(mod))
+                    {
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.",mod, listed_mod));
+                    }
+                }
+
                 user_requested_mods.Add(mod);
                 this.Add(mod);
             }
@@ -159,8 +176,42 @@ namespace CKAN
                     throw new TooManyModsProvideKraken(dep_name, candidates);
                 }
 
-                Add(candidates[0]);
-                Resolve(candidates[0], options);
+                CkanModule candidate = candidates[0];
+
+                foreach (CkanModule mod in this.modlist.Values)
+                {
+                    if (mod.ConflictsWith(candidate))
+                    {
+                        if (soft_resolve)
+                        {
+                            log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
+
+                            // I want labeled loops please, so I don't have to set this to null,
+                            // break, and then look at it at the end. o_O
+                            candidate = null;
+                            break;
+                        }
+                        else
+                        {
+                            var this_is_why_we_cant_have_nice_things = new List<string> {
+                                string.Format(
+                                "{0} and {1} conflict with each other, yet we require them both!",
+                                candidate, mod)
+                            };
+
+                            throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
+                        }
+                    }
+                }
+
+                // Our candidate may have been set to null if it was vetoed by our
+                // sanity check above.
+                if (candidate != null)
+                {
+                    // Okay, looks like we want this one. Adding.
+                    Add(candidate);
+                    Resolve(candidate, options);
+                }
             }
         }
 

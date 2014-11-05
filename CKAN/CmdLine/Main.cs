@@ -385,6 +385,12 @@ namespace CKAN.CmdLine
                 User.WriteLine("Your GameData has been returned to its original state.");
                 return Exit.ERROR;
             }
+            catch (InconsistentKraken ex)
+            {
+                // The prettiest Kraken formats itself for us.
+                User.WriteLine(ex.InconsistenciesPretty);
+                return Exit.ERROR;
+            }
 
             User.WriteLine("\nDone!\n");
 
