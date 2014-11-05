@@ -17,7 +17,7 @@ namespace CKAN
     public class InstalledModule
     {
         public DateTime install_time;
-        public Dictionary<string, InstalledModuleFile> installed_files;
+        public Dictionary<string, InstalledModuleFile> installed_files; // file => metadata
         public Module source_module;
 
         public InstalledModule(Dictionary<string, InstalledModuleFile> installed_files, Module source_module,

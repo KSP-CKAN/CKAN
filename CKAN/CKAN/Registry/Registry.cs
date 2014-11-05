@@ -1,37 +1,59 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Linq;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
     /// <summary>
     /// This is the CKAN registry. All the modules that we know about or have installed
     /// are contained in here.
-    /// 
-    /// Please try to avoid accessing the attributes directly. Right now they're public
-    /// so our JSON layer can access them, but in the future they will become private.
     /// </summary>
+
     public class Registry
     {
         private const int LATEST_REGISTRY_VERSION = 0;
         private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
-        // TODO: Perhaps flip these from public to protected somehow, and
-        // declare allegiance to the JSON class that serialises them.
-        // Is that something you can do in C#? In Moose we'd use a role.
+        [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
+        [JsonProperty] internal Dictionary<string, string> installed_dlls; // name => path
+        [JsonProperty] internal Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty] internal Dictionary<string, string> installed_files; // filename => module
+        [JsonProperty] internal int registry_version;
 
-        public Dictionary<string, AvailableModule> available_modules;
-        public Dictionary<string, string> installed_dlls; // name => path
-        public Dictionary<string, InstalledModule> installed_modules;
-        public int registry_version;
+        [OnDeserialized]
+        private void DeSerialisationFixes(StreamingContext like_i_could_care)
+        {
+            // Older registries didn't have the installed_files list, so we create one
+            // if absent.
+
+            if (installed_files == null)
+            {
+                log.Warn("Older registry format detected, upgrading...");
+
+                installed_files = new Dictionary<string, string>();
+
+                foreach (var module in installed_modules.Values)
+                {
+                    foreach (string file in module.installed_files.Keys)
+                    {
+                        // Register each file we know about as belonging to the given module.
+                        installed_files[file] = module.source_module.identifier;
+                    }
+                }
+            }
+        }
 
         public Registry(
             int version,
-            Dictionary<string, InstalledModule> mods,
-            Dictionary<string, string> dlls,
-            Dictionary<string, AvailableModule> available
+            Dictionary<string, InstalledModule> installed_modules,
+            Dictionary<string, string> installed_dlls,
+            Dictionary<string, AvailableModule> available_modules,
+            Dictionary<string, string> installed_files
             )
         {
             /* TODO: support more than just the latest version */
@@ -40,9 +62,11 @@ namespace CKAN
                 throw new RegistryVersionNotSupportedKraken(version);
             }
 
-            installed_modules = mods;
-            installed_dlls = dlls;
-            available_modules = available;
+            // Is there a better way of writing constructors than this? Srsly?
+            this.installed_modules = installed_modules;
+            this.installed_dlls = installed_dlls;
+            this.available_modules = available_modules;
+            this.installed_files = installed_files;
         }
 
         public static Registry Empty()
@@ -51,7 +75,8 @@ namespace CKAN
                 LATEST_REGISTRY_VERSION,
                 new Dictionary<string, InstalledModule>(),
                 new Dictionary<string, string>(),
-                new Dictionary<string, AvailableModule>()
+                new Dictionary<string, AvailableModule>(),
+                new Dictionary<string, string>()
                 );
         }
 
@@ -268,9 +293,57 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-        /// <param name="mod">Mod.</param>
+
+        // TODO: It might be better to provide split functionality, one method
+        // to register a mod (which we do at the start of an install, and which
+        // can check consistency), and another to register each file with that mod
+        // (which can check file consistency at the same time).
+         
         public void RegisterModule(InstalledModule mod)
         {
+            // But we also want to keep track of all its files.
+            // We start by checking to see if any files are owned by another mod,
+            // if so, we abort with a list of errors.
+
+            var inconsistencies = new List<string>();
+
+            foreach (string filename in mod.installed_files.Keys)
+            {
+                if (this.installed_files.ContainsKey(filename))
+                {
+                    // For now, it's cool if a module wants to register a directory.
+                    if (Directory.Exists(filename))
+                    {
+                        continue;
+                    }
+
+                    string owner = this.installed_files[filename];
+                    inconsistencies.Add(
+                        string.Format("{0} wishes to install {1}, but this file is registered to {2}",
+                                      mod.source_module.identifier, filename, owner
+                    ));
+                }
+            }
+
+            if (inconsistencies.Count > 0)
+            {
+                throw new InconsistentKraken(inconsistencies);
+            }
+
+            // If everything is fine, then we copy our files across. By not doing this
+            // in the loop above, we make sure we don't have a half-registered module
+            // when we throw our exceptinon.
+
+            // This *will* result in us overwriting who owns a directory, and that's cool,
+            // directories aren't really owned like files are. However because each mod maintains
+            // its own list of files, we'll remove directories when the last mod using them
+            // is uninstalled.
+            foreach (string filename in mod.installed_files.Keys)
+            {
+                this.installed_files[filename] = mod.source_module.identifier;
+            }
+
+            // Finally, register our module proper.
             installed_modules.Add(mod.source_module.identifier, mod);
         }
 
@@ -280,7 +353,33 @@ namespace CKAN
         /// </summary>
         public void DeregisterModule(string module)
         {
-            installed_modules.Remove(module);
+            var inconsistencies = new List<string>();
+
+            foreach (string filename in this.installed_modules[module].installed_files.Keys)
+            {
+                if (File.Exists(filename))
+                {
+                    inconsistencies.Add(string.Format(
+                        "{0} is registered to {1} but has not been removed!",
+                        filename, module
+                    ));
+                }
+
+                // We should probably be marking removal of an unregistred file
+                // as inconsistent, but older registries didn't have a file list,
+                // so we're cool for now.
+                this.installed_files.Remove(filename);
+            }
+
+            // De-register our module, even if there were inconsistencies.
+            // If nothing catches our exception, our transaction layer will roll us back.
+            this.installed_modules.Remove(module);
+
+            if (inconsistencies.Count > 0)
+            {
+                // Uh oh, what mess have we got ourselves into now, Inconsistency Kraken?
+                throw new InconsistentKraken(inconsistencies);
+            }
         }
 
         /// <summary>
@@ -361,6 +460,20 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the InstalledModule, or null if it is not installed.
+        /// Does *not* look up virtual modules.
+        /// </summary>
+        public InstalledModule InstalledModule(string module)
+        {
+            if (this.installed_modules.ContainsKey(module))
+            {
+                return this.installed_modules[module];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Returns a dictionary of provided (virtual) modules, and a
         /// ProvidesVersion indicating what provides them.
         /// </summary>
@@ -428,6 +541,18 @@ namespace CKAN
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Returns the module which owns this file, or null if not known.
+        /// </summary>
+        public string FileOwner(string file)
+        {
+            if (this.installed_files.ContainsKey(file))
+            {
+                return this.installed_files[file];
+            }
+            return null;
         }
 
         /// <summary>

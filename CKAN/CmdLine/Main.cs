@@ -378,6 +378,13 @@ namespace CKAN.CmdLine
 
                 return Exit.ERROR;
             }
+            catch (FileExistsKraken ex)
+            {
+                User.WriteLine("Tried to write to {0} for {1}, but that file is owned by {2}!\n",
+                               ex.filename, ex.installing_module, ex.owning_module);
+                User.WriteLine("Your GameData has been returned to its original state.");
+                return Exit.ERROR;
+            }
 
             User.WriteLine("\nDone!\n");
 
@@ -396,13 +403,9 @@ namespace CKAN.CmdLine
             }
 
             RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
-            InstalledModule module;
+            InstalledModule module = registry_manager.registry.InstalledModule(options.Modname);
 
-            try
-            {
-                module = registry_manager.registry.installed_modules[options.Modname];
-            }
-            catch (KeyNotFoundException)
+            if (module == null)
             {
                 User.WriteLine("{0} not installed.", options.Modname);
                 User.WriteLine("Try `ckan list` to show installed modules");

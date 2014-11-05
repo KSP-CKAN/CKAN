@@ -190,6 +190,10 @@ namespace CKAN
         /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
+        /// 
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// 
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
@@ -362,6 +366,9 @@ namespace CKAN
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
         /// 
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// 
         /// </summary>
         // 
         // TODO: The name of this and InstallModule() need to be made more distinctive.
@@ -419,7 +426,7 @@ namespace CKAN
         /// Returns null if passed a directory.
         /// Throws an exception on failure to access the file.
         /// </summary>
-        internal string Sha1Sum(string path)
+        internal static string Sha1Sum(string path)
         {
             if (Directory.Exists(path))
             {
@@ -495,40 +502,10 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Install the component described in the stanza.
-        /// Modifies the supplied module_files to contain the files installed.
-        /// This method should be avoided, as it may be removed in the future.
-        /// </summary>
-        internal void InstallComponent(ModuleInstallDescriptor stanza, string zip_filename,
-            Dictionary<string, InstalledModuleFile> module_files)
-        {
-
-            // TODO: Can we deprecate this code now please?
-            log.Warn("Soon to be deprecated method InstallComponent called");
-
-            using (ZipFile zipfile = new ZipFile(zip_filename))
-            {
-                List<InstallableFile> files = FindInstallableFiles(stanza, zipfile, ksp);
-
-                foreach (var file in files) {
-
-                    // TODO: I'd like to replace this with a log.Info
-                    User.WriteLine("    * Copying " + file.source.Name);
-
-                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
-
-                    module_files.Add(file.destination, new InstalledModuleFile
-                    {
-                        sha1_sum = Sha1Sum(file.destination)
-                    });
-                }
-            }
-        }
-
-        /// <summary>
         /// Installs the module from the zipfile provided, updating the supplied list of installed files provided.
         /// 
-        /// Propagates up a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a BadMetadataKraken if our install metadata is bad.
+        /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
         internal void InstallModule(CkanModule module, string zip_filename, Dictionary<string, InstalledModuleFile> installed_files)
         {
@@ -536,14 +513,24 @@ namespace CKAN
             {
                 List<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
 
-                foreach (var file in files)
+                try
                 {
-                    log.InfoFormat("Copying {0}", file.source.Name);
-                    CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
-                    installed_files.Add(file.destination, new InstalledModuleFile
+                    foreach (var file in files)
                     {
-                        sha1_sum = Sha1Sum(file.destination)
-                    });
+                        log.InfoFormat("Copying {0}", file.source.Name);
+                        CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
+                        installed_files.Add(file.destination, new InstalledModuleFile
+                        {
+                            sha1_sum = Sha1Sum(file.destination)
+                        });
+                    }
+                }
+                catch (FileExistsKraken kraken)
+                {
+                    // Decorate the kraken with our module and re-throw
+                    kraken.installing_module = module;
+                    kraken.owning_module = registry_manager.registry.FileOwner(kraken.filename);
+                    throw;
                 }
             }
         }
@@ -708,6 +695,7 @@ namespace CKAN
                 // Skip if we're not making directories for this install.
                 if (!makeDirs)
                 {
+                    log.DebugFormat ("Skipping {0}, we don't make directories for this path", fullPath);
                     return;
                 }
 
@@ -727,8 +715,15 @@ namespace CKAN
                     file_transaction.CreateDirectory(directory);
                 }
 
+                // We don't allow for the overwriting of files. See #208.
+                if (File.Exists (fullPath))
+                {
+                    throw new FileExistsKraken(fullPath, string.Format("Trying to write {0} but it already exists.", fullPath));
+                }
+
                 // Snapshot whatever was there before. If there's nothing, this will just
-                // remove our file on rollback.
+                // remove our file on rollback. We still need this even thought we won't
+                // overwite files, as it ensures deletiion on rollback.
                 file_transaction.Snapshot(fullPath);
 
                 // It's a file! Prepare the streams
