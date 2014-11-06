@@ -178,24 +178,23 @@ namespace CKANTests
                 File.Delete(tmpfile);
             }
         }
+        
+        [Test()][Category("TODO")][Explicit]
+	//Test how we handle corrupt data
+	public void CorruptZip_242()
+        {
+	    string corrupt_dogezip = Tests.TestData.DogeCoinFlagZipCorrupt();
 
-		[Test()]
-		// Test how we handle corrupt data
-		public void CorruptZip_242()
-		{
-			string corrupt_dogezip = Tests.TestData.DogeCoinFlagZipCorrupt();
+            using (var zipfile = new ZipFile(corrupt_dogezip))
+            {
+                // GenerateDefault Install
+                CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
 
-			// GenerateDefault Install
-			using (var zipfile = new ZipFile(corrupt_dogezip))
-			{
-				CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
-			}
-
-			// FindInstallableFiles
-			CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
-			CKAN.ModuleInstaller.FindInstallableFiles(dogemod, corrupt_dogezip, null);
-
-		}
+                // FindInstallableFiles
+                CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+                CKAN.ModuleInstaller.FindInstallableFiles(dogemod, corrupt_dogezip, null);
+            }
+	}
 
         private static string CopyDogeFromZip()
         {
