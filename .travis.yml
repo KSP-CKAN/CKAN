@@ -5,6 +5,7 @@ install:
     - mozroots --import --ask-remove
 
 script:
+    - ./t/test-sln.sh # Avoid VS Accidentally changing the project formatting
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
