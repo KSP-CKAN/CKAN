@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN", "CKAN\CKAN.csproj", "{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{92442BD6-F533-4BB8-8E04-9D93A038035E}"
@@ -28,27 +26,6 @@ Global
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Any CPU.ActiveCfg = Release|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|Any CPU.Build.0 = Release|x86
 		{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}.Release|x86.ActiveCfg = Release|x86
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.ActiveCfg = Release|Any CPU
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.Build.0 = Debug|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.ActiveCfg = Debug|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.Build.0 = Debug|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.ActiveCfg = Release|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.Build.0 = Release|x86
-		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|x86.ActiveCfg = Release|x86
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|x86.Build.0 = Debug|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|x86.ActiveCfg = Release|Any CPU
-		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|x86.Build.0 = Release|Any CPU
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Debug|Any CPU.Build.0 = Debug|x86
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Debug|x86.ActiveCfg = Debug|x86
@@ -57,14 +34,32 @@ Global
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Release|Any CPU.Build.0 = Release|x86
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Release|x86.ActiveCfg = Release|x86
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Release|x86.Build.0 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Debug|x86.Build.0 = Debug|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{A79F9D54-315C-472B-928F-713A5860B2BE}.Release|x86.Build.0 = Release|Any CPU
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|Any CPU.Build.0 = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.ActiveCfg = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Debug|x86.Build.0 = Debug|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.ActiveCfg = Release|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|Any CPU.Build.0 = Release|x86
+		{E97D81F6-85E2-4F1F-906D-BE21766602E5}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = CKAN\CKAN.csproj
 		Policies = $0
-		$0.TextStylePolicy = $3
+		$0.TextStylePolicy = $1
 		$1.FileWidth = 120
 		$1.TabsToSpaces = False
 		$1.inheritsSet = VisualStudio
@@ -72,6 +67,7 @@ Global
 		$0.DotNetNamingPolicy = $2
 		$2.DirectoryNamespaceAssociation = None
 		$2.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $3
 		$3.inheritsSet = VisualStudio
 		$3.inheritsScope = text/plain
 		$3.scope = text/x-csharp
@@ -100,5 +96,36 @@ Global
 		$4.inheritsSet = Mono
 		$4.inheritsScope = text/x-csharp
 		$4.scope = text/x-csharp
+		$0.TextStylePolicy = $5
+		$5.inheritsSet = VisualStudio
+		$5.inheritsScope = text/plain
+		$5.scope = text/plain
+		$0.TextStylePolicy = $6
+		$6.inheritsSet = Mono
+		$6.inheritsScope = text/plain
+		$6.scope = application/config+xml
+		$0.XmlFormattingPolicy = $7
+		$7.inheritsSet = Mono
+		$7.inheritsScope = application/xml
+		$7.scope = application/config+xml
+		$0.TextStylePolicy = $8
+		$8.inheritsSet = Mono
+		$8.inheritsScope = text/plain
+		$8.scope = application/xml
+		$0.XmlFormattingPolicy = $9
+		$9.inheritsSet = Mono
+		$9.inheritsScope = application/xml
+		$9.scope = application/xml
+		$0.TextStylePolicy = $10
+		$10.inheritsSet = Mono
+		$10.inheritsScope = text/plain
+		$10.scope = text/microsoft-resx
+		$0.XmlFormattingPolicy = $11
+		$11.inheritsSet = Mono
+		$11.inheritsScope = application/xml
+		$11.scope = text/microsoft-resx
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
