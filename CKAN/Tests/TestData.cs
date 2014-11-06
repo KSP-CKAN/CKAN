@@ -35,6 +35,17 @@ namespace Tests
             return Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
         }
 
+        /// <summary>
+        /// Returns the full path to DogeCoinFlag-1.01-corrupt.zip
+        /// </summary>
+        public static string DogeCoinFlagZipCorrupt()
+        {
+            string such_zip_very_corrupt_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
+        
+            return such_zip_very_corrupt_wow;
+        }
+
+
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
         /// install stanza doesn't actually refer to any files.
