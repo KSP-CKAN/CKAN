@@ -94,7 +94,7 @@ namespace CKAN
         {
             log.Info("Downloading " + filename);
 
-            string full_path = cache.CachePath(filename);
+            string full_path = cache.CachePath(url);
 
             return Net.Download(url, full_path);
         }
@@ -137,7 +137,7 @@ namespace CKAN
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string full_path = cache.CachedFile(filename);
+            string full_path = cache.CachedFile(url);
 
             if (full_path != null)
             {
@@ -158,7 +158,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = ksp.Cache.CachePath(modules[i]);
+                fullPaths[i] = NetFileCache.Instance.CreateTemporaryPathForURL(modules[i].download);
                 urls[i] = modules[i].download;
             }
 
@@ -322,6 +322,14 @@ namespace CKAN
             }
 
             lastDownloadSuccessful = noErrors;
+
+            if (lastDownloadSuccessful)
+            {
+                for (int i = 0; i < urls.Length; i++)
+                {
+                    NetFileCache.Instance.CommitDownload(urls[i], modules[i].StandardName());
+                }
+            }
 
             lock (downloader)
             {
