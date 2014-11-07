@@ -293,7 +293,7 @@ namespace CKAN.NetKAN
             if (options.CacheDir != null)
             {
                 log.InfoFormat("Using user-supplied cache at {0}", options.CacheDir);
-                return new NetFileCache(options.CacheDir, Path.GetTempPath());
+                return new NetFileCache(options.CacheDir);
             }
 
             try
@@ -310,7 +310,7 @@ namespace CKAN.NetKAN
             string tempdir = Path.GetTempPath();
             log.InfoFormat("Using tempdir for cache: {0}", tempdir);
 
-            return new NetFileCache(tempdir, Path.GetTempPath());
+            return new NetFileCache(tempdir);
         }
     }
 

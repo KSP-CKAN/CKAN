@@ -16,7 +16,7 @@ namespace CKANTests
         public void MakeCache()
         {
             Directory.CreateDirectory(cache_dir);
-            cache = new CKAN.NetFileCache(cache_dir, Path.GetTempPath());
+            cache = new CKAN.NetFileCache(cache_dir);
         }
 
         [TearDown()]

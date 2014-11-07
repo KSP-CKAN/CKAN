@@ -10,30 +10,52 @@ namespace CKAN
     {
 
         private string tempPath = "";
-        private string downloadsPath = "";
-        public NetFileCache(string _downloadsPath, string _tempPath)
+        private string cachePath = "";
+    
+        public NetFileCache(string _cachePath, string _tempPath = null)
         {
-            tempPath = _tempPath;
-            downloadsPath = _downloadsPath;
+            if (_tempPath == null)
+            {
+                tempPath = Path.Combine(Path.GetTempPath(), "ckan_temp");
+            }
+            else
+            {
+                tempPath = _tempPath;
+            }
+
+            cachePath = _cachePath;
+
+            if (!Directory.Exists(cachePath))
+            {
+                Directory.CreateDirectory(cachePath);
+            }
 
             if (!Directory.Exists(tempPath))
             {
                 Directory.CreateDirectory(tempPath);
             }
+
+            // clean temp
+            foreach (var file in Directory.GetFiles(tempPath))
+            {
+                try { File.Delete(file); }
+                catch (Exception) {}
+            }
         }
 
         public string GetCachePath()
         {
-            return downloadsPath;
+            return cachePath;
         }
 
         public bool IsCached(Uri url, out string outFilename)
         {
             var hash = CreateURLHash(url);
 
-            foreach (var file in Directory.GetFiles(downloadsPath))
+            foreach (var file in Directory.GetFiles(cachePath))
             {
-                if (file.StartsWith(hash))
+                var filename = Path.GetFileName(file);
+                if (filename.StartsWith(hash))
                 {
                     outFilename = file;
                     return true;
@@ -44,7 +66,7 @@ namespace CKAN
             return false;
         }
 
-        public string CreateTemporaryPathForURL(Uri url)
+        public string GetTemporaryPathForURL(Uri url)
         {
             var hash = CreateURLHash(url);
             return Path.Combine(tempPath, hash);
@@ -52,10 +74,12 @@ namespace CKAN
 
         public string CommitDownload(Uri url, string filename)
         {
+            var sourcePath = GetTemporaryPathForURL(url);
+
             var hash = CreateURLHash(url);
             var fullName = String.Format("{0}-{1}", hash, Path.GetFileName(filename));
-            var targetPath = Path.Combine(downloadsPath, fullName);
-            var sourcePath = CreateTemporaryPathForURL(url);
+            var targetPath = Path.Combine(cachePath, fullName);
+
             File.Move(sourcePath, targetPath);
             return targetPath;
         }
