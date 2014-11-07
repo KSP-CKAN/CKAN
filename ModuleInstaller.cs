@@ -95,7 +95,7 @@ namespace CKAN
         {
             log.Info("Downloading " + filename);
 
-            string full_path = cache.CreateTemporaryPathForURL(url);
+            string full_path = cache.GetTemporaryPathForURL(url);
             full_path = Net.Download(url, full_path);
             return cache.CommitDownload(url, filename);
         }
@@ -158,7 +158,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = KSPManager.CurrentInstance.Cache.CreateTemporaryPathForURL(modules[i].download);
+                fullPaths[i] = KSPManager.CurrentInstance.Cache.GetTemporaryPathForURL(modules[i].download);
                 urls[i] = modules[i].download;
             }
 
