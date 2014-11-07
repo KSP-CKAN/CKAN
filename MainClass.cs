@@ -46,7 +46,7 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
-            Cache cache = FindCache(options);
+            NetFileCache cache = FindCache(options);
 
             log.InfoFormat("Processing {0}", options.File);
 
@@ -81,7 +81,12 @@ namespace CKAN.NetKAN
             }
 
             // Find our cached file, we'll need it later.
-            string file = cache.CachedFile(mod);
+            string file;
+            if (!cache.IsCached(mod.download, out file))
+            {
+                log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
+                return EXIT_ERROR;
+            }
 
             // Make sure this would actually generate an install
             try
@@ -131,7 +136,7 @@ namespace CKAN.NetKAN
         /// Fetch le things from le KerbalStuff.
         /// Returns a JObject that should be a fully formed CKAN file.
         /// </summary>
-        internal static JObject KerbalStuff(JObject orig_metadata, string remote_id, Cache cache)
+        internal static JObject KerbalStuff(JObject orig_metadata, string remote_id, NetFileCache cache)
         {
             // Look up our mod on KS by its ID.
             KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
@@ -167,7 +172,7 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Fetch things from Github, returning a complete CkanModule document.
         /// </summary>
-        private static JObject GitHub(JObject orig_metadata, string repo, Cache cache)
+        private static JObject GitHub(JObject orig_metadata, string repo, NetFileCache cache)
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
@@ -283,18 +288,18 @@ namespace CKAN.NetKAN
             return JObject.Parse(File.ReadAllText(filename));
         }
 
-        internal static Cache FindCache(CmdLineOptions options)
+        internal static NetFileCache FindCache(CmdLineOptions options)
         {
             if (options.CacheDir != null)
             {
                 log.InfoFormat("Using user-supplied cache at {0}", options.CacheDir);
-                return new Cache(options.CacheDir);
+                return new NetFileCache(options.CacheDir, Path.GetTempPath());
             }
 
             try
             {
                 KSP ksp = KSPManager.GetPreferredInstance();
-                log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.CachePath());
+                log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.GetCachePath());
                 return ksp.Cache;
             }
             catch
@@ -305,7 +310,7 @@ namespace CKAN.NetKAN
             string tempdir = Path.GetTempPath();
             log.InfoFormat("Using tempdir for cache: {0}", tempdir);
 
-            return new Cache(tempdir);
+            return new NetFileCache(tempdir, Path.GetTempPath());
         }
     }
 
