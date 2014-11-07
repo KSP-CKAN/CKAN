@@ -80,6 +80,16 @@ namespace CKANTests
         }
 
         [Test]
+        public void ConflictWithDll()
+        {
+            var mods = new List<CKAN.Module> { registry.LatestAvailable("SRL") };
+            var dlls = new List<string> { "QuickRevert" };
+
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, null), "SRL can be installed by itself");
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "SRL conflicts with QuickRevert DLL");
+        }
+
+        [Test]
         public void ModulesToProvides()
         {
             var mods = new List<CKAN.Module>();
