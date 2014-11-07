@@ -6,32 +6,25 @@ using System.Text;
 namespace CKAN
 {
 
-    class NetFileCache
+    public class NetFileCache
     {
-
-        public static NetFileCache _Instance = null;
-
-        public static NetFileCache Instance
-        {
-            get
-            {
-                _Instance = _Instance ?? new NetFileCache();
-                return _Instance;
-            }
-        }
 
         private string tempPath = "";
         private string downloadsPath = "";
-
-        private NetFileCache()
+        public NetFileCache(string _downloadsPath, string _tempPath)
         {
-            tempPath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "temp");
+            tempPath = _tempPath;
+            downloadsPath = _downloadsPath;
+
             if (!Directory.Exists(tempPath))
             {
                 Directory.CreateDirectory(tempPath);
             }
-            
-            downloadsPath = KSPManager.CurrentInstance.DownloadCacheDir();
+        }
+
+        public string GetCachePath()
+        {
+            return downloadsPath;
         }
 
         public bool IsCached(Uri url, out string outFilename)
@@ -72,7 +65,7 @@ namespace CKAN
             using (var sha1 = new SHA1Managed())
             {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
-                return Convert.ToBase64String(hash).Substring(0, 6);
+                return Convert.ToBase64String(hash).Substring(0, 8);
             }
         }
 

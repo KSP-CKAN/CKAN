@@ -24,7 +24,7 @@ namespace CKAN.NetKAN
             log.DebugFormat("Download path is {0}", download_path);
         }
 
-        public string Download(string identifier, Cache cache)
+        public string Download(string identifier, NetFileCache cache)
         {
             log.DebugFormat("Downloading {0}", download_path);
 

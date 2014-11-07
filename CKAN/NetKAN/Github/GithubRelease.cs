@@ -49,7 +49,7 @@ namespace CKAN.NetKAN
 
         }
 
-        public string Download(string identifier, Cache cache)
+        public string Download(string identifier, NetFileCache cache)
         {
 
             log.DebugFormat("Downloading {0}", download);
