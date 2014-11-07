@@ -36,8 +36,8 @@ namespace LocalRepo
                 return;
             }
 
-            Console.WriteLine(String.Format("Running async server on port {0}", port));
-            Console.WriteLine(String.Format("Serving metadata from {0}", repoPath));
+            Console.WriteLine("Running async server on port {0}", port);
+            Console.WriteLine("Serving metadata from {0}", repoPath);
             new AsyncServer(port);
         }
 
@@ -74,7 +74,6 @@ namespace LocalRepo
         public AsyncServer(uint port)
         {
             var listener = new HttpListener();
-            listener.Prefixes.Add(String.Format("http://localhost:{0}/", port));
             listener.Prefixes.Add(String.Format("http://127.0.0.1:{0}/", port));
 
             listener.Start();
