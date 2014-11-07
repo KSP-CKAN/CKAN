@@ -26,6 +26,11 @@ namespace CKAN
         private NetFileCache()
         {
             tempPath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "temp");
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+            
             downloadsPath = KSPManager.CurrentInstance.DownloadCacheDir();
         }
 
@@ -52,16 +57,17 @@ namespace CKAN
             return Path.Combine(tempPath, hash);
         }
 
-        public void CommitDownload(Uri url, string filename)
+        public string CommitDownload(Uri url, string filename)
         {
             var hash = CreateURLHash(url);
-            var fullName = String.Format("{0}-{1}", hash, filename);
+            var fullName = String.Format("{0}-{1}", hash, Path.GetFileName(filename));
             var targetPath = Path.Combine(downloadsPath, fullName);
             var sourcePath = CreateTemporaryPathForURL(url);
             File.Move(sourcePath, targetPath);
+            return targetPath;
         }
 
-        private static string CreateURLHash(Uri url)
+        public static string CreateURLHash(Uri url)
         {
             using (var sha1 = new SHA1Managed())
             {

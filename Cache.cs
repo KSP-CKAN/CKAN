@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace CKAN
@@ -18,6 +19,7 @@ namespace CKAN
             {
                 throw new DirectoryNotFoundKraken(cache_path);
             }
+
             this.cache_path = cache_path;
         }
 
@@ -28,29 +30,31 @@ namespace CKAN
         // TODO: Update this if we start caching by URL (GH #111)
         public bool IsCached(CkanModule module)
         {
-            return IsCached(module.StandardName());
+            string filename;
+            return NetFileCache.Instance.IsCached(module.download, out filename);
         }
 
         /// <summary>
         /// Returns true if the given file is in our cache.
         /// </summary>
-        public bool IsCached(string filename)
+        public bool IsCached(Uri url)
         {
-            // It's cached if we can find it on a cache lookup.
-            return CachedFile(filename) != null;
+            string filename;
+            return NetFileCache.Instance.IsCached(url, out filename);
         }
 
         /// <summary>
-        /// Returns the path to the cached copy of the file, or null if it's not cached.
+        /// Returns the path to the cached copy of the url, or null if it's not cached.
         /// </summary>
-        public string CachedFile(string file)
+        public string CachedFile(Uri url)
         {
-            string full_path = CachePath(file);
-            if (File.Exists(full_path))
+            string full_path;
+            if (!NetFileCache.Instance.IsCached(url, out full_path))
             {
-                return full_path;
+                return null;
             }
-            return null;
+
+            return full_path;
         }
 
         /// <summary>
@@ -58,20 +62,26 @@ namespace CKAN
         /// </summary>
         public string CachedFile(CkanModule module)
         {
-            return CachedFile(module.StandardName());
+            return CachedFile(module.download);
         }
 
         /// <summary>
         /// Returns where the given file is cached, or would be cached if it we had it.
         /// </summary>
-        public string CachePath(string file)
+        public string CachePath(Uri url)
         {
-            return Path.Combine(cache_path, file);
+            string full_path;
+            if (!NetFileCache.Instance.IsCached(url, out full_path))
+            {
+                return null;
+            }
+
+            return full_path;
         }
 
         public string CachePath(CkanModule module)
         {
-            return CachePath(module.StandardName());
+            return CachePath(module.download);
         }
 
         /// <summary>
