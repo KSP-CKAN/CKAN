@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetFileCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="KSP.cs" />
