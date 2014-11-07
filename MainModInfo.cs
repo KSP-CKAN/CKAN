@@ -200,19 +200,20 @@ namespace CKAN
 
         private void _UpdateModContentsTree(CkanModule module)
         {
-            if (ModuleInstaller.Instance.Cache.IsCached(module))
-            {
-                NotCachedLabel.Text = "Module is cached, preview available";
-                ContentsDownloadButton.Enabled = false;
-                ContentsPreviewTree.Enabled = true;
-            }
-            else
+            string filename;
+            if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
                 ContentsPreviewTree.Enabled = false; 
             }
-
+            else
+            {
+                NotCachedLabel.Text = "Module is cached, preview available";
+                ContentsDownloadButton.Enabled = false;
+                ContentsPreviewTree.Enabled = true;
+            }
+          
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
