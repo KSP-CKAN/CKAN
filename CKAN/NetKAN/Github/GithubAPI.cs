@@ -3,6 +3,7 @@ using System.Net;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
@@ -48,8 +49,14 @@ namespace CKAN.NetKAN
             string json = Call ("repos/" + repository + "/releases");
             log.Debug("Parsing JSON...");
             JArray releases = JArray.Parse(json);
-            log.Debug("Parsed, finding most recent release");
-            return new GithubRelease( (JObject) releases[0] );
+            log.Debug("Parsed, finding most recent stable release");
+
+            // Finding the most recent *stable* release means filtering
+            // out on pre-releases.
+
+            JObject release = (JObject) releases.Where(x => (bool) x["prerelease"] == false).First();
+
+            return new GithubRelease(release);
         }
 
     }
