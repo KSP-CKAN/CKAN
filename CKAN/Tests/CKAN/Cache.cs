@@ -24,7 +24,7 @@ namespace CKANTests
         {
             Directory.Delete(cache_dir, true);
         }
-
+/*
         [Test()]
         public void CacheKraken()
         {
@@ -39,7 +39,7 @@ namespace CKANTests
                 Assert.AreSame(dir,kraken.directory);
             }
         }
-
+        */
         [Test()]
         public void New()
         {

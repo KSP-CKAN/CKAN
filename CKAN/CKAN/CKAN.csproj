@@ -70,7 +70,6 @@
     <Compile Include="KSPPathUtils.cs" />
     <Compile Include="KSPPathConstants.cs" />
     <Compile Include="NetAsyncDownloader.cs" />
-    <Compile Include="Cache.cs" />
     <Compile Include="Registry\AvailableModule.cs" />
     <Compile Include="Registry\InstalledModule.cs" />
     <Compile Include="Registry\Registry.cs" />
