@@ -180,10 +180,10 @@ namespace CKANTests
         }
         
         [Test()][Category("TODO")][Explicit]
-	//Test how we handle corrupt data
-	public void CorruptZip_242()
+        //Test how we handle corrupt data
+        public void CorruptZip_242()
         {
-	    string corrupt_dogezip = Tests.TestData.DogeCoinFlagZipCorrupt();
+            string corrupt_dogezip = Tests.TestData.DogeCoinFlagZipCorrupt();
 
             using (var zipfile = new ZipFile(corrupt_dogezip))
             {
@@ -194,7 +194,7 @@ namespace CKANTests
                 CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
                 CKAN.ModuleInstaller.FindInstallableFiles(dogemod, corrupt_dogezip, null);
             }
-	}
+        }
 
         private static string CopyDogeFromZip()
         {
