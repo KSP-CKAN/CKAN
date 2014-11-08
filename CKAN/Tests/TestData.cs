@@ -197,6 +197,34 @@ namespace Tests
         {
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
+
+        // Where's my mkdtemp? Instead we'll make a random file, delete it, and
+        // fill its place with a directory.
+        // Taken from https://stackoverflow.com/a/20445952
+        public static string NewTempDir()
+        {
+            string tempFolder = Path.GetTempFileName();
+            File.Delete(tempFolder);
+            Directory.CreateDirectory(tempFolder);
+
+            return tempFolder;
+        }
+
+        // Ugh, this is awful.
+        public static void CopyDirectory(string src, string dst)
+        {
+            // Create directory structure
+            foreach (string path in Directory.GetDirectories(src, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(path.Replace(src, dst));
+            }
+
+            // Copy files.
+            foreach (string file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
+            {
+                File.Copy(file, file.Replace(src, dst));
+            }
+        }
     }
 }
 

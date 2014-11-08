@@ -14,8 +14,8 @@ namespace CKANTests
         [SetUp()]
         public void Setup()
         {
-            ksp_dir = NewTempDir();
-            CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
+            ksp_dir = Tests.TestData.NewTempDir();
+            Tests.TestData.CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
             ksp = new CKAN.KSP(ksp_dir);
         }
 
@@ -48,34 +48,6 @@ namespace CKANTests
         public void Training()
         {
             Assert.AreEqual(Path.Combine(ksp_dir, "saves", "training"), ksp.Tutorial());
-        }
-
-        // Ugh, this is awful.
-        private void CopyDirectory(string src, string dst)
-        {
-            // Create directory structure
-            foreach (string path in Directory.GetDirectories(src, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(path.Replace(src, dst));
-            }
-
-            // Copy files.
-            foreach (string file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
-            {
-                File.Copy(file, file.Replace(src, dst));
-            }
-        }
-
-        // Where's my mkdtemp? Instead we'll make a random file, delete it, and
-        // fill its place with a directory.
-        // Taken from https://stackoverflow.com/a/20445952
-        private string NewTempDir()
-        {
-            string tempFolder = Path.GetTempFileName();
-            File.Delete(tempFolder);
-            Directory.CreateDirectory(tempFolder);
-
-            return tempFolder;
         }
     }
 }
