@@ -30,7 +30,11 @@ namespace CKAN
         {
             if (_tempPath == null)
             {
-                tempPath = Path.Combine(Path.GetTempPath(), "ckan_temp");
+                // to ensure a temp dir just for us we get a temp file, delete it and create a directory in its place
+                var tempFile = Path.GetTempFileName();
+                File.Delete(tempFile);
+                Directory.CreateDirectory(tempFile);
+                tempPath = Path.Combine(Path.GetTempPath(), tempFile);
             }
             else
             {
