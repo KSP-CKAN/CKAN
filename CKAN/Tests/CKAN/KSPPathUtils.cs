@@ -15,6 +15,7 @@ namespace Tests
             Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("\\a/b\\c"), "Mixed slashes");
             Assert.AreEqual("a/b/c", CKAN.KSPPathUtils.NormalizePath("a/b\\c"), "No starting slash");
             Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("\\a/b\\c\\"), "Trailing slash");
+            Assert.AreEqual("SPACE", CKAN.KSPPathUtils.NormalizePath("SPACE"), "All upper-case, no slashes");
         }
 
         [Test()]
@@ -25,6 +26,7 @@ namespace Tests
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c"), "With mixed slashes");
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("a/b\\c"), "No starting slash");
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c\\"), "Trailing slash");
+            Assert.AreEqual("buckethead", CKAN.KSPPathUtils.GetLastPathElement("buckethead"), "No slashes at all");
         }
 
     }
