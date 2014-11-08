@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using ChinhDo.Transactions;
 using log4net;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CKAN
 {
@@ -34,7 +36,7 @@ namespace CKAN
         private readonly NetAsyncDownloaderDownloadPart[] downloads;
         public NetAsyncCompleted onCompleted = null;
         public NetAsyncProgressReport onProgressReport = null;
-        private int queuePointer;
+        private int completed_downloads;
 
         private bool downloadCanceled = false;
 
@@ -91,12 +93,16 @@ namespace CKAN
                 downloads[i].bytesPerSecond = 0;
                 downloads[i].bytesLeft = 0;
 
+                // We need a new variable for our closure/lambda, hence index = i.
                 int index = i;
+
+                // Schedule for us to get back progress reports.
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
                         FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
                                            args.TotalBytesToReceive - args.BytesReceived);
 
+                // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
 
                 // Snapshot whatever was in that location, in case we need to roll-back.
@@ -180,25 +186,31 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// This method gets called back by `WebClient` when a download is completed.
+        /// Throws a DownloadErrorsKraken if anything went wrong.
+        /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {
             log.DebugFormat("File {0} finished downloading", index);
-            queuePointer++;
+            completed_downloads++;
+
+            // If there was an error, remember it, but we won't raise it until
+            // all downloads are finished or cancelled.
             downloads[index].error = error;
 
-            if (queuePointer == downloads.Length)
+            if (completed_downloads == downloads.Length)
             {
                 log.Debug("All files finished downloading");
 
-                for (int i = 0; i < downloads.Length; i++)
+                List<Exception> exceptions = downloads.Select(x => x.error).Where(ex => ex != null).ToList();
+
+                if (exceptions.Count > 0)
                 {
-                    if (downloads[i].error != null)
-                    {
-                        // TODO: XXX: Shouldn't we throw a kraken here?
-                        log.Error("Something went wrong but I don't know what!");
-                    }
+                    throw new DownloadErrorsKraken(exceptions);
                 }
 
+                // If we have a callback, then signal that we're done.
                 if (onCompleted != null)
                 {
                     var fileUrls = new Uri[downloads.Length];
@@ -217,7 +229,6 @@ namespace CKAN
                 }
             }
         }
-
     }
 }
 
