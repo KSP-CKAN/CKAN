@@ -24,6 +24,29 @@ namespace CKANTests
         {
             Directory.Delete(cache_dir, true);
         }
+
+        [Test]
+        public void StoreRetrieve()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = Tests.TestData.DogeCoinFlagZip();
+
+            // Sanity check, our cache dir is there, right?
+            Assert.IsTrue(Directory.Exists(cache.GetCachePath()));
+
+            // Our URL shouldn't be cached to begin with.
+            Assert.IsFalse(cache.IsCached(url));
+
+            // Store our file.
+            cache.Store(url, file, true);
+
+            // Now it should be cached.
+            Assert.IsTrue(cache.IsCached(url));
+
+            // Check contents match.
+            string cached_file = cache.GetCachedFilename(url);
+            FileAssert.AreEqual(file, cached_file);
+        }
 /*
         [Test()]
         public void CacheKraken()
