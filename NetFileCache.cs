@@ -136,6 +136,25 @@ namespace CKAN
             return targetPath;
         }
 
+        // stores an already existing file in the cache
+        public string Store(Uri url, string path, bool copy = false)
+        {
+            var hash = CreateURLHash(url);
+            var fullName = String.Format("{0}-{1}", hash, Path.GetFileName(path));
+            var targetPath = Path.Combine(cachePath, fullName);
+
+            if (copy)
+            {
+                File.Copy(path, targetPath);
+            }
+            else
+            {
+                File.Move(path, targetPath);
+            }
+
+            return targetPath;
+        }
+
         // returns the 8-byte hash for a given url
         public static string CreateURLHash(Uri url)
         {
