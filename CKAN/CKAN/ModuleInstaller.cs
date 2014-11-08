@@ -599,14 +599,13 @@ namespace CKAN
                     // Get the full name of the file.
                     string outputName = entry.Name;
 
-                    // Strip off everything up to GameData/Ships
-                    // TODO: There's got to be a nicer way of doing path resolution.
-                    outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
+                    // Strip off everything up to the last path element
+                    outputName = KSPPathUtils.GetLastPathElement(outputName);
 
                     string full_path = Path.Combine(installDir, outputName);
 
                     // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
-                    full_path = full_path.Replace('\\', '/');
+                    full_path = KSPPathUtils.NormalizePath(full_path);
 
                     // Update our file info with the install location
                     file_info.destination = full_path;

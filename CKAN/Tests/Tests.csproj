@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{92442BD6-F533-4BB8-8E04-9D93A038035E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Tests</RootNamespace>
@@ -59,6 +57,7 @@
     <Compile Include="ZipLib.cs" />
     <Compile Include="CKAN\SanityChecker.cs" />
     <Compile Include="NetKAN\AVC.cs" />
+    <Compile Include="CKAN\KSPPathUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
