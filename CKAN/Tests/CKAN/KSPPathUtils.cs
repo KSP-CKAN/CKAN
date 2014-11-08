@@ -25,6 +25,18 @@ namespace Tests
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c"), "With mixed slashes");
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("a/b\\c"), "No starting slash");
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("\\a/b\\c\\"), "Trailing slash");
+
+            Assert.AreEqual("kOS", CKAN.KSPPathUtils.GetLastPathElement("GameData/kOS"), "Real world test");
+        }
+
+        [Test()]
+        public void GetLeadingPathElements()
+        {
+            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("/a/b/c"), "Simple case");
+            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a\\b\\c"), "With other slashes");
+            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c"), "With mixed slashes");
+            Assert.AreEqual("a/b", CKAN.KSPPathUtils.GetLeadingPathElements("a/b\\c"), "No starting slash");
+            Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
         }
 
     }
