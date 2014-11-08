@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using log4net;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -64,6 +65,17 @@ namespace CKAN
 
             log.Info("Steam not found on this system.");
             return null;
+        }
+
+        public static string NormalizePath(string path)
+        {
+            return path.Replace('\\', '/').TrimEnd('/');
+        }
+
+        public static string GetLastPathElement(string path)
+        {
+            // TODO should we really use ignore case? 
+            return Regex.Replace(NormalizePath(path), @"^.*/", "", RegexOptions.IgnoreCase);
         }
     }
 }
