@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using log4net;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -64,6 +65,36 @@ namespace CKAN
 
             log.Info("Steam not found on this system.");
             return null;
+        }
+
+        /// <summary>
+        /// Normalizes the path by replace any \ with / and removing any trailing slash.
+        /// </summary>
+        /// <returns>The normalized path.</returns>
+        /// <param name="path">The path to normalize.</param>
+        public static string NormalizePath(string path)
+        {
+            return path.Replace('\\', '/').TrimEnd('/');
+        }
+
+        /// <summary>
+        /// Gets the last path element. Ex: /a/b/c returns c
+        /// </summary>
+        /// <returns>The last path element.</returns>
+        /// <param name="path">The path to process.</param>
+        public static string GetLastPathElement(string path)
+        {
+            return Regex.Replace(NormalizePath(path), @"^.*/", "");
+        }
+
+        /// <summary>
+        /// Gets the leading path elements. Ex: /a/b/c returns /a/b
+        /// </summary>
+        /// <returns>The leading path elements.</returns>
+        /// <param name="path">The path to process.</param>
+        public static string GetLeadingPathElements(string path)
+        {
+            return Regex.Replace(NormalizePath(path), @"(^.*)/.+", "$1");
         }
     }
 }

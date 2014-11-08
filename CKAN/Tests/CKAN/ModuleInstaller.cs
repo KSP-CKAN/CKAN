@@ -222,6 +222,13 @@ namespace CKANTests
             }
         }
 
+        [Test()]
+        public void TransformOutputName()
+        {
+            Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData"));
+            Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData"));
+        }
+
         private static string CopyDogeFromZip()
         {
             string dogezip = Tests.TestData.DogeCoinFlagZip();

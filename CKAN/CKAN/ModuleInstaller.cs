@@ -599,17 +599,8 @@ namespace CKAN
                     // Get the full name of the file.
                     string outputName = entry.Name;
 
-                    // Strip off everything up to GameData/Ships
-                    // TODO: There's got to be a nicer way of doing path resolution.
-                    outputName = Regex.Replace(outputName, @"^/?(.*(GameData|Ships)/)?", "", RegexOptions.IgnoreCase);
-
-                    string full_path = Path.Combine(installDir, outputName);
-
-                    // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
-                    full_path = full_path.Replace('\\', '/');
-
                     // Update our file info with the install location
-                    file_info.destination = full_path;
+                    file_info.destination = TransformOutputName(stanza.file, outputName, installDir);
                 }
 
                 files.Add(file_info);
@@ -623,6 +614,33 @@ namespace CKAN
             }
 
             return files;
+        }
+
+        /// <summary>
+        /// Transforms the name of the output. This will strip the leading directories from the stanza file from
+        /// output name and then combine it with the installDir.
+        /// EX: "kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData" will be transformed 
+        /// to "GameData/kOS/Plugins/kOS.dll"
+        /// </summary>
+        /// <returns>The output name.</returns>
+        /// <param name="file">The file directive of the stanza.</param>
+        /// <param name="outputName">The name of the file to transform.</param>
+        /// <param name="installDir">The installation dir where the file should end up with.</param>
+        internal static string TransformOutputName(string file, string outputName, string installDir)
+        {
+            string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
+            string leadingRegEx = "^" + Regex.Escape(leadingPathToRemove) + "/";
+            if (!Regex.IsMatch(outputName, leadingRegEx))
+            {
+                throw new BadMetadataKraken(null, "output file name not matching leading path of stanza.file");
+            }
+            // Strip off leading path name
+            outputName = Regex.Replace(outputName, leadingRegEx, "");
+            string full_path = Path.Combine(installDir, outputName);
+            // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
+            full_path = KSPPathUtils.NormalizePath(full_path);
+
+            return full_path;
         }
 
         /// <summary>
