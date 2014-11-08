@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
+using System.Text.RegularExpressions;
 
 namespace CKANTests
 {
@@ -13,6 +14,8 @@ namespace CKANTests
     public class ModuleInstaller
     {
         private static readonly string flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
+        private static readonly string dogezip = Tests.TestData.DogeCoinFlagZip();
+        private static readonly CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
 
         [Test()]
         public void GenerateDefaultInstall()
@@ -51,9 +54,6 @@ namespace CKANTests
         [Test()]
         public void FindInstallableFiles()
         {
-            string dogezip = Tests.TestData.DogeCoinFlagZip();
-            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
-
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
             List<string> filenames = new List<string>();
 
@@ -81,8 +81,34 @@ namespace CKANTests
         }
 
         [Test()]
+        public void FindInstallableFilesWithKSP()
+        {
+            // TODO: Have our set-up in some sort of IDisposable object everything can use.
+            string ksp_dir = Tests.TestData.NewTempDir();
+            Tests.TestData.CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
+            CKAN.KSP ksp = new CKAN.KSP(ksp_dir);
+
+            try
+            {
+                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, ksp);
+
+                // See if we can find an expected estination path in the right place.
+                string file = contents
+                    .Select(x => x.destination)
+                    .Where(x => Regex.IsMatch(x, "GameData/DogeCoinFlag/Flags/dogecoin\\.png$"))
+                    .FirstOrDefault();
+
+                Assert.IsNotNull(file);
+            }
+            finally
+            {
+                Directory.Delete(ksp_dir, true);
+            }
+        }
+
+        [Test()]
         // Make sure all our filters work.
-        public void FindInstallableFIilesWithFilter()
+        public void FindInstallableFilesWithFilter()
         {
             string extra_doge = Tests.TestData.DogeCoinFlagZipWithExtras();
             CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
@@ -218,7 +244,5 @@ namespace CKANTests
         }
 
     }
-
-
 }
 
