@@ -77,20 +77,9 @@ namespace CKAN
         // returns the filename in the outFilename parameter
         public bool IsCached(Uri url, out string outFilename)
         {
-            var hash = CreateURLHash(url);
+            outFilename = GetCachedFilename(url);
 
-            foreach (var file in Directory.GetFiles(cachePath))
-            {
-                var filename = Path.GetFileName(file);
-                if (filename.StartsWith(hash))
-                {
-                    outFilename = file;
-                    return true;
-                }
-            }
-
-            outFilename = "";
-            return false;
+            return outFilename != null;
         }
 
         // returns the filename of an already cached url or null otherwise
