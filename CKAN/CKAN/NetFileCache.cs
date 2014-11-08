@@ -43,16 +43,6 @@ namespace CKAN
 
             cachePath = _cachePath;
 
-            if (!Directory.Exists(cachePath))
-            {
-                Directory.CreateDirectory(cachePath);
-            }
-
-            if (!Directory.Exists(tempPath))
-            {
-                Directory.CreateDirectory(tempPath);
-            }
-
             // clean temp
             foreach (var file in Directory.GetFiles(tempPath))
             {
