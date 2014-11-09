@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using ChinhDo.Transactions;
 using log4net;
 using System.Collections.Generic;
@@ -8,32 +9,35 @@ using System.Linq;
 
 namespace CKAN
 {
+    // Called with status updates on how we'r progressing.
     public delegate void NetAsyncProgressReport(int percent, int bytesPerSecond, long bytesLeft);
 
+    // Called on completion (including on error)
     public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
-
-    public struct NetAsyncDownloaderDownloadPart
-    {
-        public WebClient agent;
-        public long bytesDownloaded;
-        public long bytesLeft;
-        public int bytesPerSecond;
-        public Exception error;
-        public int lastProgressUpdateSize;
-        public DateTime lastProgressUpdateTime;
-        public string path;
-        public int percentComplete;
-        public Uri url;
-    }
 
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
     public class NetAsyncDownloader
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private class NetAsyncDownloaderDownloadPart
+        {
+            public WebClient agent;
+            public long bytesDownloaded;
+            public long bytesLeft;
+            public int bytesPerSecond;
+            public Exception error;
+            public int lastProgressUpdateSize;
+            public DateTime lastProgressUpdateTime;
+            public string path;
+            public int percentComplete;
+            public Uri url;
+        }
 
-        private readonly NetAsyncDownloaderDownloadPart[] downloads;
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly TxFileManager file_transaction = new TxFileManager ();
+
+        private List<NetAsyncDownloaderDownloadPart> downloads;
         public NetAsyncCompleted onCompleted = null;
         public NetAsyncProgressReport onProgressReport = null;
         private int completed_downloads;
@@ -41,57 +45,41 @@ namespace CKAN
         private bool downloadCanceled = false;
 
         /// <summary>
-        /// Prepares to download the list of URLs to the file paths specified.
-        /// Any URLs missing file paths will be written to temporary files.
-        /// Use .StartDownload() to actually start the download.
+        /// Returns a perfectly boring NetAsyncDownloader.
         /// </summary>
-        public NetAsyncDownloader(Uri[] urls, string[] filenames = null)
+        public NetAsyncDownloader()
         {
-            downloads = new NetAsyncDownloaderDownloadPart[urls.Length];
-
-            for (int i = 0; i < downloads.Length; i++)
-            {
-                downloads[i].url = urls[i];
-                if (filenames != null)
-                {
-                    downloads[i].path = filenames[i];
-                }
-                else
-                {
-                    downloads[i].path = null;
-                }
-            }
+            downloads = new List<NetAsyncDownloaderDownloadPart>();
         }
 
         /// <summary>
-        /// Downloads our files, returning an array of filenames upon completion.
+        /// Downloads our files, returning an array of filenames that we're writing to.
+        /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        public string[] StartDownload()
+        public string[] Download(ICollection<Uri> urls)
         {
-            var filePaths = new string[downloads.Length];
-            var file_transaction = new TxFileManager ();
+            foreach (Uri url in urls)
+            {
+                var download = new NetAsyncDownloaderDownloadPart();
 
-            log.Debug("Starting download");
+                download.url = url;
+                download.path = file_transaction.GetTempFileName();
+                download.agent = new WebClient();
+                download.error = null;
+                download.percentComplete = 0;
+                download.lastProgressUpdateTime = DateTime.Now;
+                download.lastProgressUpdateSize = 0;
+                download.bytesPerSecond = 0;
+                download.bytesLeft = 0;
 
-            for (int i = 0; i < downloads.Length; i++)
+                this.downloads.Add(download);
+            }
+
+            var filePaths = new string[downloads.Count];
+
+            for (int i = 0; i < downloads.Count; i++)
             {
                 User.WriteLine("Downloading \"{0}\"", downloads[i].url);
-
-                // Generate a temporary file if none is provided.
-                if (downloads[i].path == null)
-                {
-                    downloads[i].path = file_transaction.GetTempFileName();
-                }
-
-                filePaths[i] = downloads[i].path;
-
-                downloads[i].agent = new WebClient();
-                downloads[i].error = null;
-                downloads[i].percentComplete = 0;
-                downloads[i].lastProgressUpdateTime = DateTime.Now;
-                downloads[i].lastProgressUpdateSize = 0;
-                downloads[i].bytesPerSecond = 0;
-                downloads[i].bytesLeft = 0;
 
                 // We need a new variable for our closure/lambda, hence index = i.
                 int index = i;
@@ -112,11 +100,118 @@ namespace CKAN
                 downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
 
+            // The user hasn't cancelled us yet. :)
+            downloadCanceled = false;
+
             return filePaths;
         }
 
         /// <summary>
-        /// Cancel any running downloads.
+        /// Downloads all the modules specified to the cache.
+        /// Even if modules share download URLs, they will only be downloaded once.
+        /// Blocks until the download is complete, cancelled, or errored.
+        /// </summary>
+        public void DownloadModules(
+            NetFileCache cache,
+            IEnumerable<CkanModule> modules,
+            ModuleInstallerReportProgress progress = null
+        )
+        {
+            var unique_downloads = new Dictionary<Uri, CkanModule>();
+
+            // Walk through all our modules, but only keep the first of each
+            // one that has a unique download path.
+            foreach (CkanModule module in modules)
+            {
+                if (!unique_downloads.ContainsKey(module.download))
+                {
+                    unique_downloads[module.download] = module;
+                }
+            }
+                
+            // Attach our progress report, if requested.
+            if (progress != null)
+            {
+                this.onProgressReport += (percent, bytesPerSecond, bytesLeft) =>
+                    (
+                        progress(
+                            String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond/1024, bytesLeft/1024/1024),
+                            percent
+                        )
+                    );
+            }
+
+            this.onCompleted = (_uris, paths, errors) => ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
+
+            // Start the download!
+            this.Download(unique_downloads.Keys);
+
+            // XXX - Locking 'this' seems like a terrible idea.
+            lock (this)
+            {
+                // Wait for our download to finish.
+                log.Debug("Waiting for downloads to finish...");
+                Monitor.Wait(this);
+            }
+
+            // Check to see if we've had any errors. If so, then release the kraken!
+            List<Exception> exceptions = downloads
+                .Select(x => x.error)
+                .Where(ex => ex != null)
+                .ToList();
+
+            if (exceptions.Count > 0)
+            {
+                throw new DownloadErrorsKraken(exceptions);
+            }
+
+            // Yay! Everything worked!
+        }
+
+        /// <summary>
+        /// Stores all of our files in the cache once done.
+        /// Called by NetAsyncDownloader on completion.
+        /// </summary>
+        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
+        {
+            if (urls != null)
+            {
+                for (int i = 0; i < errors.Length; i++)
+                {
+                    if (errors[i] != null)
+                    {
+                        User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                    }
+                    else
+                    {
+                        // Even if some of our downloads failed, we want to cache the
+                        // ones which succeeded.
+                        cache.Store(urls[i], filenames[i], modules[i].StandardName());
+
+                    }
+                }
+            }
+
+            // Finally, remove all our temp files.
+            // We probably *could* have used Store's integrated move function above, but if we managed
+            // to somehow get two URLs the same in our download set, that could cause right troubles!
+
+            foreach (string tmpfile in filenames)
+            {
+                log.DebugFormat("Cleaing up {0}", tmpfile);
+                file_transaction.Delete(tmpfile);
+            }
+
+            // Signal that we're done.
+            lock (this)
+            {
+                Monitor.Pulse(this);
+            }
+        }
+
+        /// <summary>
+        /// Cancel any running downloads. This will also call onCompleted with
+        /// all null arguments.
         /// </summary>
         public void CancelDownload()
         {
@@ -137,8 +232,6 @@ namespace CKAN
 
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
-            log.Debug("Reporting file progress");
-
             if (downloadCanceled)
             {
                 return;
@@ -169,7 +262,7 @@ namespace CKAN
                 long totalBytesLeft = 0;
                 long totalBytesDownloaded = 0;
 
-                for (int i = 0; i < downloads.Length; i++)
+                for (int i = 0; i < downloads.Count; i++)
                 {
                     totalBytesPerSecond += downloads[i].bytesPerSecond;
                     totalBytesLeft += downloads[i].bytesLeft;
@@ -192,32 +285,32 @@ namespace CKAN
         /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {
-            log.DebugFormat("File {0} finished downloading", index);
+            if (error != null)
+            {
+                log.InfoFormat("Error downloading {0}: {1}", downloads[index].url, error);
+            }
+            else
+            {
+                log.InfoFormat("Finished downloading {0}", downloads[index].url);
+            }
             completed_downloads++;
 
             // If there was an error, remember it, but we won't raise it until
             // all downloads are finished or cancelled.
             downloads[index].error = error;
 
-            if (completed_downloads == downloads.Length)
+            if (completed_downloads == downloads.Count)
             {
-                log.Debug("All files finished downloading");
-
-                List<Exception> exceptions = downloads.Select(x => x.error).Where(ex => ex != null).ToList();
-
-                if (exceptions.Count > 0)
-                {
-                    throw new DownloadErrorsKraken(exceptions);
-                }
+                log.Info("All files finished downloading");
 
                 // If we have a callback, then signal that we're done.
                 if (onCompleted != null)
                 {
-                    var fileUrls = new Uri[downloads.Length];
-                    var filePaths = new string[downloads.Length];
-                    var errors = new Exception[downloads.Length];
+                    var fileUrls = new Uri[downloads.Count];
+                    var filePaths = new string[downloads.Count];
+                    var errors = new Exception[downloads.Count];
 
-                    for (int i = 0; i < downloads.Length; i++)
+                    for (int i = 0; i < downloads.Count; i++)
                     {
                         fileUrls[i] = downloads[i].url;
                         filePaths[i] = downloads[i].path;
