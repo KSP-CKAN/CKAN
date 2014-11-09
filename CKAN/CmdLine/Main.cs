@@ -238,10 +238,17 @@ namespace CKAN.CmdLine
         // Uninstalls a module, if it exists.
         private static int Remove(RemoveOptions options)
         {
-            var installer = ModuleInstaller.Instance;
-            installer.UninstallList(options.Modname);
-
-            return Exit.OK;
+            if (options.Modname != null && options.Modname.Length > 0)
+            {
+                var installer = ModuleInstaller.Instance;
+                installer.UninstallList(options.Modname);
+                return Exit.OK;
+            }
+            else
+            {
+                User.WriteLine("No mod selected, nothing to do");
+                return Exit.BADOPT;
+            }
         }
 
         // TODO: This needs work! See GH #160.
