@@ -26,6 +26,13 @@ namespace CKANTests
         }
 
         [Test]
+        public void Sanity()
+        {
+            Assert.IsInstanceOf<CKAN.NetFileCache>(cache);
+            Assert.IsTrue(Directory.Exists(cache.GetCachePath()));
+        }
+
+        [Test]
         public void StoreRetrieve()
         {
             Uri url = new Uri("http://example.com/");
@@ -38,7 +45,7 @@ namespace CKANTests
             Assert.IsFalse(cache.IsCached(url));
 
             // Store our file.
-            cache.Store(url, file, true);
+            cache.Store(url, file);
 
             // Now it should be cached.
             Assert.IsTrue(cache.IsCached(url));

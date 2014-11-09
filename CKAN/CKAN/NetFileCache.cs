@@ -2,6 +2,8 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ChinhDo.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -22,33 +24,20 @@ namespace CKAN
      */
     public class NetFileCache
     {
-
-        private string tempPath = "";
-        private string cachePath = "";
+        private string cachePath;
+        private static readonly TxFileManager tx_file = new TxFileManager();
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
    
-        public NetFileCache(string _cachePath, string _tempPath = null)
+        public NetFileCache(string _cachePath)
         {
-            if (_tempPath == null)
+            // Basic validation, our cache has to exist.
+
+            if (!Directory.Exists(_cachePath))
             {
-                // to ensure a temp dir just for us we get a temp file, delete it and create a directory in its place
-                var tempFile = Path.GetTempFileName();
-                File.Delete(tempFile);
-                Directory.CreateDirectory(tempFile);
-                tempPath = Path.Combine(Path.GetTempPath(), tempFile);
-            }
-            else
-            {
-                tempPath = _tempPath;
+                throw new DirectoryNotFoundKraken(_cachePath, "Cannot find cache directory");
             }
 
             cachePath = _cachePath;
-
-            // clean temp
-            foreach (var file in Directory.GetFiles(tempPath))
-            {
-                try { File.Delete(file); }
-                catch (Exception) {}
-            }
         }
 
         public string GetCachePath()
@@ -59,18 +48,7 @@ namespace CKAN
         // returns true if a url is already in the cache
         public bool IsCached(Uri url)
         {
-            var hash = CreateURLHash(url);
-
-            foreach (var file in Directory.GetFiles(cachePath))
-            {
-                var filename = Path.GetFileName(file);
-                if (filename.StartsWith(hash))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return GetCachedFilename(url) != null;
         }
 
         // returns true if a url is already in the cache
@@ -82,14 +60,18 @@ namespace CKAN
             return outFilename != null;
         }
 
-        // returns the filename of an already cached url or null otherwise
+        /// <summary>>
+        /// Returns the filename of an already cached url or null otherwise
+        /// </summary>
         public string GetCachedFilename(Uri url)
         {
-            var hash = CreateURLHash(url);
+            log.DebugFormat("Checking cache for {0}", url);
 
-            foreach (var file in Directory.GetFiles(cachePath))
+            string hash = CreateURLHash(url);
+
+            foreach (string file in Directory.GetFiles(cachePath))
             {
-                var filename = Path.GetFileName(file);
+                string filename = Path.GetFileName(file);
                 if (filename.StartsWith(hash))
                 {
                     return file;
@@ -99,55 +81,49 @@ namespace CKAN
             return null;
         }
 
-        // returns a temporary file for a url to which the user can download
-        public string GetTemporaryPathForURL(Uri url)
+        /// <summary>
+        /// Stores the results of a given URL in the cache.
+        /// Description is appended to the file hash when saving. If not present, the filename will be used.
+        /// If `move` is true, then the file will be moved; otherwise, it will be copied.
+        /// 
+        /// Returns a path to the newly cached file.
+        /// 
+        /// This method is filesystem transaction aware.
+        /// </summary>
+        public string Store(Uri url, string path, string description = null, bool move = false)
         {
-            var hash = CreateURLHash(url);
-            return Path.Combine(tempPath, hash);
-        }
+            log.DebugFormat("Storing {0}", url);
 
-        // moves a finished download to the complete downloads directory with a desired filename
-        public string CommitDownload(Uri url, string filename)
-        {
-            var sourcePath = GetTemporaryPathForURL(url);
+            string hash = CreateURLHash(url);
 
-            var hash = CreateURLHash(url);
-            var fullName = String.Format("{0}-{1}", hash, Path.GetFileName(filename));
-            var targetPath = Path.Combine(cachePath, fullName);
+            description = description ?? Path.GetFileName(path);
 
-            File.Move(sourcePath, targetPath);
-            return targetPath;
-        }
+            string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(path));
+            string targetPath = Path.Combine(cachePath, fullName);
 
-        // stores an already existing file in the cache
-        public string Store(Uri url, string path, bool copy = false)
-        {
-            var hash = CreateURLHash(url);
-            var fullName = String.Format("{0}-{1}", hash, Path.GetFileName(path));
-            var targetPath = Path.Combine(cachePath, fullName);
+            log.DebugFormat("Storing {0} in {1}", path, targetPath);
 
-            if (copy)
+            if (move)
             {
-                File.Copy(path, targetPath);
+                tx_file.Move(path, targetPath);
             }
             else
             {
-                File.Move(path, targetPath);
+                tx_file.Copy(path, targetPath, overwrite: true);
             }
 
             return targetPath;
         }
 
         // returns the 8-byte hash for a given url
-        public static string CreateURLHash(Uri url)
+        private static string CreateURLHash(Uri url)
         {
             using (var sha1 = new SHA1Managed())
             {
-                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
-                return Convert.ToBase64String(hash).Substring(0, 8);
+                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
+
+                return BitConverter.ToString(hash).Replace("-", "").Substring(0, 8);
             }
         }
-
     }
-
 }

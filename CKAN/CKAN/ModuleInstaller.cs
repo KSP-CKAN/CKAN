@@ -95,9 +95,9 @@ namespace CKAN
         {
             log.Info("Downloading " + filename);
 
-            string full_path = cache.GetTemporaryPathForURL(url);
-            full_path = Net.Download(url, full_path);
-            return cache.CommitDownload(url, filename);
+            string tmp_file = Net.Download(url);
+
+            return cache.Store(url, tmp_file, move: true);
         }
 
         /// <summary>
@@ -154,15 +154,13 @@ namespace CKAN
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
         {
             var urls = new Uri[modules.Length];
-            var fullPaths = new string[modules.Length];
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = KSPManager.CurrentInstance.Cache.GetTemporaryPathForURL(modules[i].download);
                 urls[i] = modules[i].download;
             }
 
-            downloader = new NetAsyncDownloader(urls, fullPaths);
+            downloader = new NetAsyncDownloader(urls);
 
             if (onReportProgress != null)
             {
@@ -172,7 +170,7 @@ namespace CKAN
                         percent);
             }
 
-            downloader.onCompleted = (_uris, strings, errors) => OnDownloadsComplete(_uris, fullPaths, modules, errors);
+            downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, modules, errors);
 
             return downloader;
         }
@@ -328,7 +326,7 @@ namespace CKAN
             {
                 for (int i = 0; i < urls.Length; i++)
                 {
-                    KSPManager.CurrentInstance.Cache.CommitDownload(urls[i], modules[i].StandardName());
+                    ksp.Cache.Store(urls[i], filenames[i], modules[i].StandardName());
                 }
             }
 
