@@ -36,7 +36,7 @@ namespace CKAN
             
             gamedir = directory;
             Init();
-            _Cache = new NetFileCache(DownloadCacheDir(), Path.Combine(CkanDir(), "temp"));
+            _Cache = new NetFileCache(DownloadCacheDir());
         }
 
         public string GameDir()
