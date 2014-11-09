@@ -632,7 +632,11 @@ namespace CKAN
             string leadingRegEx = "^" + Regex.Escape(leadingPathToRemove) + "/";
             if (!Regex.IsMatch(outputName, leadingRegEx))
             {
-                throw new BadMetadataKraken(null, "output file name not matching leading path of stanza.file");
+                throw new BadMetadataKraken(null,
+                    String.Format("Output file name ({0}) not matching leading path of stanza.file ({1})",
+                        outputName, leadingRegEx
+                    )
+                );
             }
             // Strip off leading path name
             outputName = Regex.Replace(outputName, leadingRegEx, "");
