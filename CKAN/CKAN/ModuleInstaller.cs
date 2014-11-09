@@ -154,9 +154,19 @@ namespace CKAN
         /// </summary>
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
         {
-            Uri[] urls = new HashSet<Uri> (modules.Select(mod => mod.download)).ToArray();
+            var unique_downloads = new Dictionary<Uri, CkanModule>();
 
-            downloader = new NetAsyncDownloader(urls);
+            // Walk through all our modules, but only keep the first of each
+            // one that has a unique download path.
+            foreach (var module in modules)
+            {
+                if (!unique_downloads.ContainsKey(module.download))
+                {
+                    unique_downloads[module.download] = module;
+                }
+            }
+
+            downloader = new NetAsyncDownloader(unique_downloads.Keys.ToArray());
 
             if (onReportProgress != null)
             {
@@ -166,7 +176,7 @@ namespace CKAN
                         percent);
             }
 
-            downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, modules, errors);
+            downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, unique_downloads.Values.ToArray(), errors);
 
             return downloader;
         }
