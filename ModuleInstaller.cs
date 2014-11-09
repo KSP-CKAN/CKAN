@@ -630,6 +630,16 @@ namespace CKAN
         {
             string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
 
+            // Special-casing, if stanza.file is just "GameData" or "Ships", strip it.
+            // TODO: Do we need to do anything special for tutorials or GameRoot?
+            if (
+                leadingPathToRemove == string.Empty &&
+                (file == "GameData" || file == "Ships")
+            )
+            {
+                leadingPathToRemove = file;
+            }
+
             // If there's a leading path to remove, then we have some extra work that
             // needs doing...
             if (leadingPathToRemove != string.Empty)
@@ -646,7 +656,7 @@ namespace CKAN
                 // Strip off leading path name
                 outputName = Regex.Replace(outputName, leadingRegEx, "");
             }
-
+ 
             // Return our snipped, normalised, and ready to go output filename!
             return KSPPathUtils.NormalizePath(
                 Path.Combine(installDir, outputName)
