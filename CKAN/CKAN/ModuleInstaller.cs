@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -41,7 +42,7 @@ namespace CKAN
         private bool installCanceled = false; // Used for inter-thread communication.
 
         // Our own cache is that of the KSP instance we're using.
-        public Cache Cache
+        public NetFileCache Cache
         {
             get
             {
@@ -90,13 +91,13 @@ namespace CKAN
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
-        public static string Download(Uri url, string filename, Cache cache)
+        public static string Download(Uri url, string filename, NetFileCache cache)
         {
             log.Info("Downloading " + filename);
 
-            string full_path = cache.CachePath(filename);
-
-            return Net.Download(url, full_path);
+            string full_path = cache.GetTemporaryPathForURL(url);
+            full_path = Net.Download(url, full_path);
+            return cache.CommitDownload(url, filename);
         }
 
         /// <summary>
@@ -130,22 +131,21 @@ namespace CKAN
         /// If no filename is provided, the module's standard name will be used.
         /// Chcecks provided cache first.
         /// </summary>
-        public static string CachedOrDownload(string identifier, Version version, Uri url, Cache cache, string filename = null)
+        public static string CachedOrDownload(string identifier, Version version, Uri url, NetFileCache cache, string filename = null)
         {
             if (filename == null)
             {
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string full_path = cache.CachedFile(filename);
-
-            if (full_path != null)
+            string full_path;
+            if (!cache.IsCached(url, out full_path))
             {
-                log.DebugFormat("Using {0} (cached)", filename);
-                return full_path;
+                return Download(url, filename, cache);
             }
 
-            return Download(url, filename, cache);
+            log.DebugFormat("Using {0} (cached)", filename);
+            return full_path;
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace CKAN
 
             for (int i = 0; i < modules.Length; i++)
             {
-                fullPaths[i] = ksp.Cache.CachePath(modules[i]);
+                fullPaths[i] = KSPManager.CurrentInstance.Cache.GetTemporaryPathForURL(modules[i].download);
                 urls[i] = modules[i].download;
             }
 
@@ -211,14 +211,15 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                if (Cache.IsCached(module))
-                {
-                    User.WriteLine(" * {0} (cached)", module);
-                }
-                else
+                string filename;
+                if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
                 {
                     User.WriteLine(" * {0}", module);
                     downloads.Add(module);
+                }
+                else
+                {
+                    User.WriteLine(" * {0} (cached)", module);
                 }
             }
 
@@ -323,6 +324,14 @@ namespace CKAN
 
             lastDownloadSuccessful = noErrors;
 
+            if (lastDownloadSuccessful)
+            {
+                for (int i = 0; i < urls.Length; i++)
+                {
+                    KSPManager.CurrentInstance.Cache.CommitDownload(urls[i], modules[i].StandardName());
+                }
+            }
+
             lock (downloader)
             {
                 Monitor.Pulse(downloader);
@@ -338,9 +347,8 @@ namespace CKAN
 
         public List<string> GetModuleContentsList(CkanModule module)
         {
-            string filename = Cache.CachedFile(module);
-
-            if (filename == null)
+            string filename;
+            if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
             {
                 return null;
             }
