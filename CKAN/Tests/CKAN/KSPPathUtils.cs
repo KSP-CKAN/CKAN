@@ -38,6 +38,8 @@ namespace Tests
             Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c"), "With mixed slashes");
             Assert.AreEqual("a/b", CKAN.KSPPathUtils.GetLeadingPathElements("a/b\\c"), "No starting slash");
             Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
+
+            Assert.IsEmpty(CKAN.KSPPathUtils.GetLeadingPathElements("ModuleManager.2.5.1.dll"));
         }
 
     }

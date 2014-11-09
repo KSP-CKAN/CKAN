@@ -58,6 +58,7 @@
     <Compile Include="CKAN\SanityChecker.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="CKAN\KSPPathUtils.cs" />
+    <Compile Include="DisposableKSP.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
