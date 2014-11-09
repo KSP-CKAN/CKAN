@@ -55,6 +55,18 @@ namespace CKANTests
         }
 
         [Test]
+        public void NamingHints()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = Tests.TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url));
+            cache.Store(url, file, "cheesy.zip");
+
+            StringAssert.EndsWith("cheesy.zip", cache.GetCachedFilename(url));
+        }
+
+        [Test]
         public void StoreRemove()
         {
             Uri url = new Uri("http://example.com/");

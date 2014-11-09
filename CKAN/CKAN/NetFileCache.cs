@@ -101,7 +101,7 @@ namespace CKAN
 
             description = description ?? Path.GetFileName(path);
 
-            string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(path));
+            string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
 
             log.DebugFormat("Storing {0} in {1}", path, targetPath);
