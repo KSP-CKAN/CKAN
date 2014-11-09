@@ -172,11 +172,13 @@ namespace CKAN
         {
             if (toInstall.Any())
             {
+                var downloader = new NetAsyncDownloader();
+
                 // actual magic happens here, we run the installer with our mod list
                 ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
                 m_WaitDialog.cancelCallback = () =>
                 {
-                    ModuleInstaller.Instance.CancelInstall();
+                    downloader.CancelDownload();
                     m_WaitDialog = null;
                 };
 
