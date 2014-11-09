@@ -83,13 +83,10 @@ namespace CKANTests
         [Test()]
         public void FindInstallableFilesWithKSP()
         {
-            // TODO: Have our set-up in some sort of IDisposable object everything can use.
-            string ksp_dir = Tests.TestData.NewTempDir();
-            Tests.TestData.CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
-            CKAN.KSP ksp = new CKAN.KSP(ksp_dir);
-
-            try
+            using (var tidy = new Tests.DisposableKSP())
             {
+                CKAN.KSP ksp = tidy.KSP;
+
                 List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, ksp);
 
                 // See if we can find an expected estination path in the right place.
@@ -99,10 +96,6 @@ namespace CKANTests
                     .FirstOrDefault();
 
                 Assert.IsNotNull(file);
-            }
-            finally
-            {
-                Directory.Delete(ksp_dir, true);
             }
         }
 
