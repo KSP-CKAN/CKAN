@@ -94,6 +94,9 @@ namespace CKAN
         {
             log.DebugFormat("Storing {0}", url);
 
+            // Make sure we clear our cache entry first.
+            this.Remove(url);
+
             string hash = CreateURLHash(url);
 
             description = description ?? Path.GetFileName(path);
@@ -113,6 +116,24 @@ namespace CKAN
             }
 
             return targetPath;
+        }
+
+        /// <summary>
+        /// Removes the given URL from the cache.
+        /// Returns true if any work was done, false otherwise.
+        /// This method is filesystem transaction aware.
+        /// </summary>
+        public bool Remove(Uri url)
+        {
+            string file = this.GetCachedFilename(url);
+
+            if (file != null)
+            {
+                tx_file.Delete(file);
+                return true;
+            }
+
+            return false;
         }
 
         // returns the 8-byte hash for a given url

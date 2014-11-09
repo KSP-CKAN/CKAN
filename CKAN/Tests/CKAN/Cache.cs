@@ -54,6 +54,21 @@ namespace CKANTests
             FileAssert.AreEqual(file, cached_file);
         }
 
+        [Test]
+        public void StoreRemove()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = Tests.TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url));
+            cache.Store(url, file);
+            Assert.IsTrue(cache.IsCached(url));
+
+            cache.Remove(url);
+
+            Assert.IsFalse(cache.IsCached(url));
+        }
+
         [Test()]
         public void CacheKraken()
         {
