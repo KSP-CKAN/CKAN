@@ -150,15 +150,11 @@ namespace CKAN
 
         /// <summary>
         /// Downloads all the modules specified to the cache.
+        /// Even if modules share download URLs, they will only be downloaded once.
         /// </summary>
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
         {
-            var urls = new Uri[modules.Length];
-
-            for (int i = 0; i < modules.Length; i++)
-            {
-                urls[i] = modules[i].download;
-            }
+            Uri[] urls = new HashSet<Uri> (modules.Select(mod => mod.download)).ToArray();
 
             downloader = new NetAsyncDownloader(urls);
 
@@ -173,16 +169,6 @@ namespace CKAN
             downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, modules, errors);
 
             return downloader;
-        }
-
-        /// <summary>
-        /// Downloads all the modules specified to the cache.
-        /// </summary>
-        public NetAsyncDownloader DownloadAsync(List<CkanModule> modules)
-        {
-            var mod_array = new CkanModule[modules.Count];
-            modules.CopyTo(mod_array);
-            return DownloadAsync(mod_array);
         }
 
         /// <summary>
@@ -242,9 +228,10 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                downloader = DownloadAsync(downloads);
+                downloader = DownloadAsync(downloads.ToArray());
                 downloader.StartDownload();
 
+                // Wait for our downloads to finish.
                 lock (downloader)
                 {
                     Monitor.Wait(downloader);
@@ -302,6 +289,10 @@ namespace CKAN
             installCanceled = true;
         }
 
+        /// <summary>
+        /// Stores all of our files in the cache once done.
+        /// Called by NetAsyncDownloader.
+        /// </summary>
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
             bool noErrors = false;
@@ -330,6 +321,7 @@ namespace CKAN
                 }
             }
 
+            // Signal that we're done.
             lock (downloader)
             {
                 Monitor.Pulse(downloader);
