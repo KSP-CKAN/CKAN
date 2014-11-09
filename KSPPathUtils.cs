@@ -89,12 +89,20 @@ namespace CKAN
 
         /// <summary>
         /// Gets the leading path elements. Ex: /a/b/c returns /a/b
+        /// 
+        /// Returns empty string if there is no leading path. (Eg: "Example.dll" -> "");
         /// </summary>
         /// <returns>The leading path elements.</returns>
         /// <param name="path">The path to process.</param>
         public static string GetLeadingPathElements(string path)
         {
-            return Regex.Replace(NormalizePath(path), @"(^.*)/.+", "$1");
+            path = NormalizePath(path);
+
+            if (Regex.IsMatch(path, "/"))
+            {
+                return Regex.Replace(path, @"(^.*)/.+", "$1");
+            }
+            return String.Empty;
         }
     }
 }

@@ -629,22 +629,28 @@ namespace CKAN
         internal static string TransformOutputName(string file, string outputName, string installDir)
         {
             string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
-            string leadingRegEx = "^" + Regex.Escape(leadingPathToRemove) + "/";
-            if (!Regex.IsMatch(outputName, leadingRegEx))
-            {
-                throw new BadMetadataKraken(null,
-                    String.Format("Output file name ({0}) not matching leading path of stanza.file ({1})",
-                        outputName, leadingRegEx
-                    )
-                );
-            }
-            // Strip off leading path name
-            outputName = Regex.Replace(outputName, leadingRegEx, "");
-            string full_path = Path.Combine(installDir, outputName);
-            // Make the path pretty, and of course the prettiest paths use Unix separators. ;)
-            full_path = KSPPathUtils.NormalizePath(full_path);
 
-            return full_path;
+            // If there's a leading path to remove, then we have some extra work that
+            // needs doing...
+            if (leadingPathToRemove != string.Empty)
+            {
+                string leadingRegEx = "^" + Regex.Escape(leadingPathToRemove) + "/";
+                if (!Regex.IsMatch(outputName, leadingRegEx))
+                {
+                    throw new BadMetadataKraken(null,
+                        String.Format("Output file name ({0}) not matching leading path of stanza.file ({1})",
+                            outputName, leadingRegEx
+                        )
+                    );
+                }
+                // Strip off leading path name
+                outputName = Regex.Replace(outputName, leadingRegEx, "");
+            }
+
+            // Return our snipped, normalised, and ready to go output filename!
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(installDir, outputName)
+            );
         }
 
         /// <summary>
