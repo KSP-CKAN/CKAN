@@ -237,6 +237,8 @@ namespace CKANTests
         {
             Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData"));
             Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData"));
+            Assert.AreEqual("GameData/ModuleManager.2.5.1.dll", CKAN.ModuleInstaller.TransformOutputName("ModuleManager.2.5.1.dll", "ModuleManager.2.5.1.dll", "GameData"));
+            Assert.AreEqual("SomeDir/Ships/SPH/FAR Firehound.craft", CKAN.ModuleInstaller.TransformOutputName("Ships", "Ships/SPH/FAR Firehound.craft", "SomeDir/Ships"));
         }
 
         private static string CopyDogeFromZip()

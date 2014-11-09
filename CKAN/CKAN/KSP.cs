@@ -18,8 +18,8 @@ namespace CKAN
 
         private string gamedir;
         private KSPVersion version;
-        private Cache _Cache;
-        public Cache Cache
+        private NetFileCache _Cache;
+        public NetFileCache Cache
         {
             get
             {
@@ -36,7 +36,7 @@ namespace CKAN
             
             gamedir = directory;
             Init();
-            _Cache = new Cache(DownloadCacheDir());
+            _Cache = new NetFileCache(DownloadCacheDir());
         }
 
         public string GameDir()

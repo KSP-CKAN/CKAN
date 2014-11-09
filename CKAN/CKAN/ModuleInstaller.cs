@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -41,7 +42,7 @@ namespace CKAN
         private bool installCanceled = false; // Used for inter-thread communication.
 
         // Our own cache is that of the KSP instance we're using.
-        public Cache Cache
+        public NetFileCache Cache
         {
             get
             {
@@ -90,13 +91,13 @@ namespace CKAN
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
-        public static string Download(Uri url, string filename, Cache cache)
+        public static string Download(Uri url, string filename, NetFileCache cache)
         {
             log.Info("Downloading " + filename);
 
-            string full_path = cache.CachePath(filename);
+            string tmp_file = Net.Download(url);
 
-            return Net.Download(url, full_path);
+            return cache.Store(url, tmp_file, move: true);
         }
 
         /// <summary>
@@ -130,39 +131,42 @@ namespace CKAN
         /// If no filename is provided, the module's standard name will be used.
         /// Chcecks provided cache first.
         /// </summary>
-        public static string CachedOrDownload(string identifier, Version version, Uri url, Cache cache, string filename = null)
+        public static string CachedOrDownload(string identifier, Version version, Uri url, NetFileCache cache, string filename = null)
         {
             if (filename == null)
             {
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string full_path = cache.CachedFile(filename);
-
-            if (full_path != null)
+            string full_path;
+            if (!cache.IsCached(url, out full_path))
             {
-                log.DebugFormat("Using {0} (cached)", filename);
-                return full_path;
+                return Download(url, filename, cache);
             }
 
-            return Download(url, filename, cache);
+            log.DebugFormat("Using {0} (cached)", filename);
+            return full_path;
         }
 
         /// <summary>
         /// Downloads all the modules specified to the cache.
+        /// Even if modules share download URLs, they will only be downloaded once.
         /// </summary>
         public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
         {
-            var urls = new Uri[modules.Length];
-            var fullPaths = new string[modules.Length];
+            var unique_downloads = new Dictionary<Uri, CkanModule>();
 
-            for (int i = 0; i < modules.Length; i++)
+            // Walk through all our modules, but only keep the first of each
+            // one that has a unique download path.
+            foreach (var module in modules)
             {
-                fullPaths[i] = ksp.Cache.CachePath(modules[i]);
-                urls[i] = modules[i].download;
+                if (!unique_downloads.ContainsKey(module.download))
+                {
+                    unique_downloads[module.download] = module;
+                }
             }
 
-            downloader = new NetAsyncDownloader(urls, fullPaths);
+            downloader = new NetAsyncDownloader(unique_downloads.Keys.ToArray());
 
             if (onReportProgress != null)
             {
@@ -172,19 +176,9 @@ namespace CKAN
                         percent);
             }
 
-            downloader.onCompleted = (_uris, strings, errors) => OnDownloadsComplete(_uris, fullPaths, modules, errors);
+            downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, unique_downloads.Values.ToArray(), errors);
 
             return downloader;
-        }
-
-        /// <summary>
-        /// Downloads all the modules specified to the cache.
-        /// </summary>
-        public NetAsyncDownloader DownloadAsync(List<CkanModule> modules)
-        {
-            var mod_array = new CkanModule[modules.Count];
-            modules.CopyTo(mod_array);
-            return DownloadAsync(mod_array);
         }
 
         /// <summary>
@@ -211,14 +205,15 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                if (Cache.IsCached(module))
-                {
-                    User.WriteLine(" * {0} (cached)", module);
-                }
-                else
+                string filename;
+                if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
                 {
                     User.WriteLine(" * {0}", module);
                     downloads.Add(module);
+                }
+                else
+                {
+                    User.WriteLine(" * {0} (cached)", module);
                 }
             }
 
@@ -243,9 +238,10 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                downloader = DownloadAsync(downloads);
+                downloader = DownloadAsync(downloads.ToArray());
                 downloader.StartDownload();
 
+                // Wait for our downloads to finish.
                 lock (downloader)
                 {
                     Monitor.Wait(downloader);
@@ -303,26 +299,44 @@ namespace CKAN
             installCanceled = true;
         }
 
+        /// <summary>
+        /// Stores all of our files in the cache once done.
+        /// Called by NetAsyncDownloader.
+        /// </summary>
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
-            bool noErrors = false;
+            // XXX: What the hell should we be doing if we are called with nulls?
 
             if (urls != null)
             {
-                noErrors = true;
-                
                 for (int i = 0; i < errors.Length; i++)
                 {
                     if (errors[i] != null)
                     {
-                        noErrors = false;
                         User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                        // XXX: Shouldn't be be throwing an exception about now?
+                    }
+                    else
+                    {
+                        // Even if some of our downloads failed, we want to cache the
+                        // ones which succeeded.
+                        ksp.Cache.Store(urls[i], filenames[i], modules[i].StandardName());
+
                     }
                 }
             }
 
-            lastDownloadSuccessful = noErrors;
+            // Finally, remove all our temp files.
+            // We probably *could* have used Store's integrated move function above, but if we managed
+            // to somehow get two URLs the same in our download set, that could cause right troubles!
 
+            foreach (string tmpfile in filenames)
+            {
+                log.DebugFormat("Cleaing up {0}", tmpfile);
+                file_transaction.Delete(tmpfile);
+            }
+
+            // Signal that we're done.
             lock (downloader)
             {
                 Monitor.Pulse(downloader);
@@ -338,9 +352,8 @@ namespace CKAN
 
         public List<string> GetModuleContentsList(CkanModule module)
         {
-            string filename = Cache.CachedFile(module);
-
-            if (filename == null)
+            string filename;
+            if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
             {
                 return null;
             }
@@ -630,6 +643,16 @@ namespace CKAN
         {
             string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
 
+            // Special-casing, if stanza.file is just "GameData" or "Ships", strip it.
+            // TODO: Do we need to do anything special for tutorials or GameRoot?
+            if (
+                leadingPathToRemove == string.Empty &&
+                (file == "GameData" || file == "Ships")
+            )
+            {
+                leadingPathToRemove = file;
+            }
+
             // If there's a leading path to remove, then we have some extra work that
             // needs doing...
             if (leadingPathToRemove != string.Empty)
@@ -646,7 +669,7 @@ namespace CKAN
                 // Strip off leading path name
                 outputName = Regex.Replace(outputName, leadingRegEx, "");
             }
-
+ 
             // Return our snipped, normalised, and ready to go output filename!
             return KSPPathUtils.NormalizePath(
                 Path.Combine(installDir, outputName)
