@@ -30,7 +30,11 @@ namespace CKAN.NetKAN
 
             JToken asset = parsed_json["assets"]
                 .Children()
-                .Where(asset_info => asset_info["content_type"].ToString() == "application/x-zip-compressed")
+                .Where(asset_info => 
+                    asset_info["content_type"].ToString() == "application/x-zip-compressed" ||
+                    asset_info["content_type"].ToString() == "application/zip" ||
+                    asset_info["name"].ToString().EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                )
                 .FirstOrDefault();
 
             if (asset == null)
