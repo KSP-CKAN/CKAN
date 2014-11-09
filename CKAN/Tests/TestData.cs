@@ -16,6 +16,11 @@ namespace Tests
             return Path.Combine(current, "../../../../t/data");
         }
 
+        public static string DataDir(string file)
+        {
+            return Path.Combine(DataDir(), file);
+        }
+
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01.zip
         /// </summary>
@@ -196,6 +201,44 @@ namespace Tests
         public static string KspAvcJson()
         {
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
+        }
+
+        public static CKAN.CkanModule ModuleManagerModule()
+        {
+            return CKAN.CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
+        }
+
+        public static string ModuleManagerZip()
+        {
+            return DataDir("ModuleManager-2.5.1.zip");
+        }
+
+        // Where's my mkdtemp? Instead we'll make a random file, delete it, and
+        // fill its place with a directory.
+        // Taken from https://stackoverflow.com/a/20445952
+        public static string NewTempDir()
+        {
+            string tempFolder = Path.GetTempFileName();
+            File.Delete(tempFolder);
+            Directory.CreateDirectory(tempFolder);
+
+            return tempFolder;
+        }
+
+        // Ugh, this is awful.
+        public static void CopyDirectory(string src, string dst)
+        {
+            // Create directory structure
+            foreach (string path in Directory.GetDirectories(src, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(path.Replace(src, dst));
+            }
+
+            // Copy files.
+            foreach (string file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
+            {
+                File.Copy(file, file.Replace(src, dst));
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using CKAN;
+using System.Text.RegularExpressions;
 
 namespace CKANTests
 {
@@ -13,6 +14,11 @@ namespace CKANTests
     public class ModuleInstaller
     {
         private static readonly string flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
+        private static readonly string dogezip = Tests.TestData.DogeCoinFlagZip();
+        private static readonly CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+
+        private static readonly string mm_zip = Tests.TestData.ModuleManagerZip();
+        private static readonly CkanModule mm_mod = Tests.TestData.ModuleManagerModule();
 
         [Test()]
         public void GenerateDefaultInstall()
@@ -51,9 +57,6 @@ namespace CKANTests
         [Test()]
         public void FindInstallableFiles()
         {
-            string dogezip = Tests.TestData.DogeCoinFlagZip();
-            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
-
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
             List<string> filenames = new List<string>();
 
@@ -81,8 +84,41 @@ namespace CKANTests
         }
 
         [Test()]
+        public void FindInstallableFilesWithKSP()
+        {
+            using (var tidy = new Tests.DisposableKSP())
+            {
+                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, tidy.KSP);
+
+                // See if we can find an expected estination path in the right place.
+                string file = contents
+                    .Select(x => x.destination)
+                    .Where(x => Regex.IsMatch(x, "GameData/DogeCoinFlag/Flags/dogecoin\\.png$"))
+                    .FirstOrDefault();
+
+                Assert.IsNotNull(file);
+            }
+        }
+
+        [Test]
+        public void ModuleManagerInstall()
+        {
+            using (var tidy = new Tests.DisposableKSP())
+            {
+                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mm_mod, mm_zip, tidy.KSP);
+
+                string file = contents
+                    .Select(x => x.destination)
+                    .Where(x => Regex.IsMatch(x, @"ModuleManager\.2\.5\.1\.dll$"))
+                    .FirstOrDefault();
+
+                Assert.IsNotNull(file, "ModuleManager install");
+            }
+        }
+
+        [Test()]
         // Make sure all our filters work.
-        public void FindInstallableFIilesWithFilter()
+        public void FindInstallableFilesWithFilter()
         {
             string extra_doge = Tests.TestData.DogeCoinFlagZipWithExtras();
             CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
@@ -196,6 +232,13 @@ namespace CKANTests
             }
         }
 
+        [Test()]
+        public void TransformOutputName()
+        {
+            Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData"));
+            Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData"));
+        }
+
         private static string CopyDogeFromZip()
         {
             string dogezip = Tests.TestData.DogeCoinFlagZip();
@@ -218,7 +261,5 @@ namespace CKANTests
         }
 
     }
-
-
 }
 

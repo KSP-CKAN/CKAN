@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using log4net;
@@ -23,8 +24,25 @@ namespace CKAN.NetKAN
         {
             version  = new Version( parsed_json["tag_name"].ToString() );
             author   = parsed_json["author"]["login"].ToString();
-            size     = (long) parsed_json["assets"][0]["size"];
-            download = new Uri( parsed_json["assets"][0]["browser_download_url"].ToString() ); 
+
+            // GH #290, we need to look for the first asset which is a zip, otherwise we
+            // end up picking up manuals, pictures of cats, and all sorts of other things.
+
+            JToken asset = parsed_json["assets"]
+                .Children()
+                .Where(asset_info => asset_info["content_type"].ToString() == "application/x-zip-compressed")
+                .FirstOrDefault();
+
+            if (asset == null)
+            {
+                // TODO: A proper kraken, please!
+                throw new Kraken("Cannot find download");
+            }
+
+            size     = (long) asset["size"];
+            download = new Uri( asset["browser_download_url"].ToString() );
+
+            log.DebugFormat("Download {0} is {1} bytes", download, size);
         }
 
         override public void InflateMetadata(JObject metadata, string filename, object context)
