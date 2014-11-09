@@ -295,30 +295,35 @@ namespace CKAN
         /// </summary>
         private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
-            bool noErrors = false;
+            // XXX: What the hell should we be doing if we are called with nulls?
 
             if (urls != null)
             {
-                noErrors = true;
-                
                 for (int i = 0; i < errors.Length; i++)
                 {
                     if (errors[i] != null)
                     {
-                        noErrors = false;
                         User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                        // XXX: Shouldn't be be throwing an exception about now?
+                    }
+                    else
+                    {
+                        // Even if some of our downloads failed, we want to cache the
+                        // ones which succeeded.
+                        ksp.Cache.Store(urls[i], filenames[i], modules[i].StandardName());
+
                     }
                 }
             }
 
-            lastDownloadSuccessful = noErrors;
+            // Finally, remove all our temp files.
+            // We probably *could* have used Store's integrated move function above, but if we managed
+            // to somehow get two URLs the same in our download set, that could cause right troubles!
 
-            if (lastDownloadSuccessful)
+            foreach (string tmpfile in filenames)
             {
-                for (int i = 0; i < urls.Length; i++)
-                {
-                    ksp.Cache.Store(urls[i], filenames[i], modules[i].StandardName());
-                }
+                log.DebugFormat("Cleaing up {0}", tmpfile);
+                file_transaction.Delete(tmpfile);
             }
 
             // Signal that we're done.
