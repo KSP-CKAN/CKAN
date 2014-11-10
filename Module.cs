@@ -292,10 +292,6 @@ namespace CKAN
         }
     }
 
-    public class CkanInvalidMetadataJson : Exception
-    {
-    }
-
     public class CkanModule : Module
     {
         private static readonly string[] required_fields =
@@ -375,13 +371,34 @@ namespace CKAN
         {
             if (!validate_json_against_schema(json))
             {
-                throw new CkanInvalidMetadataJson();
+                throw new BadMetadataKraken(null, "Validation against spec failed");
             }
 
-            var newModule = JsonConvert.DeserializeObject<CkanModule>(json);
+            CkanModule newModule = null;
+
+            try
+            {
+                newModule = JsonConvert.DeserializeObject<CkanModule>(json);
+            }
+            catch (JsonException ex)
+            {
+                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
+            }
+
+            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            if (! newModule.IsSpecSupported())
+            {
+                throw new UnsupportedKraken(
+                    String.Format(
+                        "{1} requires CKAN {2}, we can't read it.",
+                        newModule,
+                        newModule.spec_version
+                    )
+                );
+            }
 
             // Check everything in the spec if defined.
-            // TODO: It would be great if this could be done with attributes.
+            // TODO: This *can* and *should* be done with JSON attributes!
 
             foreach (string field in required_fields)
             {
@@ -394,13 +411,6 @@ namespace CKAN
                     log.Error(error);
                     throw new BadMetadataKraken(null, error);
                 }
-            }
-
-            if (! newModule.IsSpecSupported())
-            {
-                throw new UnsupportedKraken(
-                    String.Format("Spec {0} is not supported", newModule.spec_version)
-                );
             }
 
             // All good! Return module
