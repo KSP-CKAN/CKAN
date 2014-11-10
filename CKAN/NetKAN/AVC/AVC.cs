@@ -39,7 +39,8 @@ namespace CKAN.NetKAN
 
         /// <summary>
         /// Locates a version file in the zipfile specified, and returns an AVC object.
-        /// This requires a module object as we *only* search files we might install.
+        /// This requires a module object as we *first* search files we might install,
+        /// falling back to a search of all files in the archive.
         /// 
         /// Returns null if no version is found.
         /// Throws a Kraken if too many versions are found.
@@ -48,26 +49,43 @@ namespace CKAN.NetKAN
         {
             log.DebugFormat("Finding AVC .version file for {0}", module);
 
+            string version_ext = ".version";
+
             // Get all our version files.
-            List<InstallableFile> files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)
-                .Where(x => x.source.Name.EndsWith(".version")).ToList();
+            List<ZipEntry> files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)
+                .Select(x => x.source)
+                .Where(source => source.Name.EndsWith(version_ext))
+                .ToList();
 
             if (files.Count == 0)
             {
-                return null;
+                // Oh dear, no version file at all? Let's see if we can find *any* to use.
+                foreach (ZipEntry file in zipfile)
+                {
+                    if (file.Name.EndsWith(version_ext))
+                    {
+                        files.Add(file);
+                    }
+                }
+
+                // Okay, there's *really* nothing there.
+                if (files.Count == 0)
+                {
+                    return null;
+                }
             }
 
             if (files.Count > 1)
             {
                 throw new Kraken(
                     string.Format("Too may .version files located: {0}",
-                              string.Join(", ",files.Select(x => x.source.Name))));
+                              string.Join(", ",files.Select(x => x.Name))));
             }
 
-            log.DebugFormat("Using AVC data from {0}", files[0].source.Name);
+            log.DebugFormat("Using AVC data from {0}", files[0].Name);
 
             // Hooray, found our entry. Extract and return it.
-            using (var zipstream = zipfile.GetInputStream(files[0].source))
+            using (var zipstream = zipfile.GetInputStream(files[0]))
             using (StreamReader stream = new StreamReader(zipstream))
             {
                 string json = stream.ReadToEnd();
