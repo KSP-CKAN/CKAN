@@ -234,7 +234,7 @@ namespace CKAN
     /// </summary>
     public class UnsupportedKraken : Kraken
     {
-        public UnsupportedKraken(string reason = null, Exception inner_exception = null)
+        public UnsupportedKraken(string reason, Exception inner_exception = null)
             :base(reason, inner_exception)
         {
         }

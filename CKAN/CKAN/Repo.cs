@@ -95,12 +95,26 @@ namespace CKAN
 
                     log.Debug("Converting from JSON...");
 
-                    CkanModule module = CkanModule.FromJson(metadata_json);
+                    try 
+                    {
+                        CkanModule module = CkanModule.FromJson(metadata_json);
+                        log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
+                        registry.AddAvailable(module);
+                    }
+                    catch (Kraken kraken)
+                    {
+                        if (kraken is UnsupportedKraken || kraken is BadMetadataKraken)
+                        {
+                            // Either of these can be caused by data meant for future
+                            // clients, so they're not really warnings, they're just
+                            // informational.
 
-                    log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
+                            log.InfoFormat("Skipping {0} : {1}", filename, kraken.Message);
+                        }
 
-                    // Hooray! Now save it in our registry.
-                    registry.AddAvailable(module);
+                        // This is not the kraken we're looking for.
+                        throw;
+                    }
                 }
 
                 zipfile.Close();
