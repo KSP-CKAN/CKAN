@@ -397,6 +397,11 @@ namespace CKAN.CmdLine
                 User.WriteLine(ex.InconsistenciesPretty);
                 return Exit.ERROR;
             }
+            catch (CancelledActionKraken)
+            {
+                User.WriteLine("Installation cancelled at user request.");
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
