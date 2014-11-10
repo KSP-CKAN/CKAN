@@ -151,17 +151,13 @@ namespace CKAN
         /// 
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
-        /// 
-        /// If provided a NetAsyncDownloader, it will be used, and we will recognise
-        /// when another thread has cancelled the download.
-        /// 
+        /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(
             List<string> modules,
-            RelationshipResolverOptions options,
-            NetAsyncDownloader downloader = null
+            RelationshipResolverOptions options
         )
         {
             onReportProgress = onReportProgress ?? ((message, progress) => { });
@@ -169,6 +165,9 @@ namespace CKAN
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
             List<CkanModule> modsToInstall = resolver.ModList();
             List<CkanModule> downloads = new List<CkanModule> (); 
+
+            // TODO: All this user-stuff should be happening in another method!
+            // We should just be installing mods as a transaction.
 
             User.WriteLine("About to install...\n");
 
@@ -190,16 +189,15 @@ namespace CKAN
 
             if (!ok)
             {
-                log.Debug("Halting install at user request");
-                return;
+                throw new CancelledActionKraken("User declined install list");
             }
 
             User.WriteLine(""); // Just to look tidy.
 
             if (downloads.Count > 0)
             {
-                downloader = downloader ?? new NetAsyncDownloader();
-                downloader.DownloadModules(ksp.Cache, downloads);
+                var downloader = new NetAsyncDownloader();
+                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
             }
 
             // We're about to install all our mods; so begin our transaction.

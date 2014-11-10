@@ -14,6 +14,7 @@ namespace CKAN
 
     // Called on completion (including on error)
     // Called with ALL NULLS on error.
+    // Can be set by ourself in the DownloadModules method.
     public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
 
     /// <summary>
@@ -26,7 +27,7 @@ namespace CKAN
         private class NetAsyncDownloaderDownloadPart
         {
             public Uri url;
-            public WebClient agent;
+            public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
             public long bytesDownloaded = 0;
@@ -40,7 +41,6 @@ namespace CKAN
             {
                 this.url = url;
                 this.path = path ?? file_transaction.GetTempFileName();
-                this.agent = new WebClient();
                 this.lastProgressUpdateTime = DateTime.Now;
             }
         }
@@ -52,6 +52,8 @@ namespace CKAN
         public NetAsyncCompleted onCompleted = null;
         public NetAsyncProgressReport onProgressReport = null;
         private int completed_downloads;
+
+        private Object download_complete_lock = new Object();
 
         private bool downloadCanceled = false;
 
@@ -146,12 +148,19 @@ namespace CKAN
             // Start the download!
             this.Download(unique_downloads.Keys);
 
-            // XXX - Locking 'this' seems like a terrible idea.
-            lock (this)
+            // The Monitor.Wait function releases a lock, and then waits until it can re-acquire it.
+            // Elsewhere, our downloading callback pulses the lock, which causes us to wake up and
+            // continue.
+            lock (download_complete_lock)
             {
-                // Wait for our download to finish.
                 log.Debug("Waiting for downloads to finish...");
-                Monitor.Wait(this);
+                Monitor.Wait(download_complete_lock);
+            }
+
+            // If the user cancelled our progress, then signal that.
+            if (downloadCanceled)
+            {
+                throw new CancelledActionKraken("Download cancelled by user");
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
@@ -171,6 +180,7 @@ namespace CKAN
         /// <summary>
         /// Stores all of our files in the cache once done.
         /// Called by NetAsyncDownloader on completion.
+        /// Called with all nulls on download cancellation.
         /// </summary>
         private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
         {
@@ -192,20 +202,25 @@ namespace CKAN
                 }
             }
 
-            // Finally, remove all our temp files.
-            // We probably *could* have used Store's integrated move function above, but if we managed
-            // to somehow get two URLs the same in our download set, that could cause right troubles!
+            // TODO: If we've had our download cancelled, how do we clean our tmpfiles?
 
-            foreach (string tmpfile in filenames)
+            if (filenames != null)
             {
-                log.DebugFormat("Cleaing up {0}", tmpfile);
-                file_transaction.Delete(tmpfile);
+                // Finally, remove all our temp files.
+                // We probably *could* have used Store's integrated move function above, but if we managed
+                // to somehow get two URLs the same in our download set, that could cause right troubles!
+
+                foreach (string tmpfile in filenames)
+                {
+                    log.DebugFormat("Cleaing up {0}", tmpfile);
+                    file_transaction.Delete(tmpfile);
+                }
             }
 
             // Signal that we're done.
-            lock (this)
+            lock (download_complete_lock)
             {
-                Monitor.Pulse(this);
+                Monitor.Pulse(download_complete_lock);
             }
         }
 
@@ -230,6 +245,10 @@ namespace CKAN
             downloadCanceled = true;
         }
 
+        /// <summary>
+        /// Generates a download progress reports, and sends it to
+        /// onProgressReport if it's set.
+        /// </summary>
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
         {
             if (downloadCanceled)
