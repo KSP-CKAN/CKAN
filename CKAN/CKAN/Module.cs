@@ -28,6 +28,7 @@ namespace CKAN
         public Uri kerbalstuff;
     }
 
+    // Alas, we have these, but we're not *using* them.
     public enum License
     {
         public_domain,
@@ -291,10 +292,6 @@ namespace CKAN
         }
     }
 
-    public class CkanInvalidMetadataJson : Exception
-    {
-    }
-
     public class CkanModule : Module
     {
         private static readonly string[] required_fields =
@@ -316,7 +313,7 @@ namespace CKAN
 //      private static string metadata_schema_path = "CKAN.schema";
 //      private static bool metadata_schema_missing_warning_fired;
         [JsonProperty("install")] public ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version")] public string spec_version;
+        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
@@ -366,20 +363,42 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Generates a CKAN.META object from a string.
-        ///     Also validates that all required fields are present.
+        /// Generates a CKAN.META object from a string.
+        /// Also validates that all required fields are present.
+        /// Throws a BadMetaDataKraken if any fields are missing.
         /// </summary>
         public static CkanModule FromJson(string json)
         {
             if (!validate_json_against_schema(json))
             {
-                throw new CkanInvalidMetadataJson();
+                throw new BadMetadataKraken(null, "Validation against spec failed");
             }
 
-            var newModule = JsonConvert.DeserializeObject<CkanModule>(json);
+            CkanModule newModule = null;
+
+            try
+            {
+                newModule = JsonConvert.DeserializeObject<CkanModule>(json);
+            }
+            catch (JsonException ex)
+            {
+                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
+            }
+
+            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            if (! newModule.IsSpecSupported())
+            {
+                throw new UnsupportedKraken(
+                    String.Format(
+                        "{1} requires CKAN {2}, we can't read it.",
+                        newModule,
+                        newModule.spec_version
+                    )
+                );
+            }
 
             // Check everything in the spec if defined.
-            // TODO: It would be great if this could be done with attributes.
+            // TODO: This *can* and *should* be done with JSON attributes!
 
             foreach (string field in required_fields)
             {
@@ -387,8 +406,10 @@ namespace CKAN
 
                 if (value == null)
                 {
-                    log.ErrorFormat("Module {0} missing required field: {1}", newModule.identifier, field);
-                    throw new MissingFieldException(); // Is there a better exception choice?
+                    string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
+
+                    log.Error(error);
+                    throw new BadMetadataKraken(null, error);
                 }
             }
 
@@ -399,6 +420,30 @@ namespace CKAN
         public static string ToJson(CkanModule module)
         {
             return JsonConvert.SerializeObject(module);
+        }
+
+        /// <summary>
+        /// Returns true if we support at least spec_version of the CKAN spec.
+        /// </summary>
+        internal static bool IsSpecSupported(Version spec_vesion)
+        {
+            // This could be a read-only state variable; do we have those in C#?
+            Version release = Meta.ReleaseNumber();
+
+            if (release == null)
+            {
+                return true; // Dev builds will read anything
+            }
+
+            return release.IsGreaterThan(spec_vesion);
+        }
+
+        /// <summary>
+        /// Returns true if we support the CKAN spec used by this module.
+        /// </summary>
+        private bool IsSpecSupported()
+        {
+            return IsSpecSupported(this.spec_version);
         }
 
         /// <summary>
