@@ -28,6 +28,7 @@ namespace CKAN
         public Uri kerbalstuff;
     }
 
+    // Alas, we have these, but we're not *using* them.
     public enum License
     {
         public_domain,
@@ -316,7 +317,7 @@ namespace CKAN
 //      private static string metadata_schema_path = "CKAN.schema";
 //      private static bool metadata_schema_missing_warning_fired;
         [JsonProperty("install")] public ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version")] public string spec_version;
+        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
@@ -366,8 +367,9 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Generates a CKAN.META object from a string.
-        ///     Also validates that all required fields are present.
+        /// Generates a CKAN.META object from a string.
+        /// Also validates that all required fields are present.
+        /// Throws a BadMetaDataKraken if any fields are missing.
         /// </summary>
         public static CkanModule FromJson(string json)
         {
@@ -387,8 +389,10 @@ namespace CKAN
 
                 if (value == null)
                 {
-                    log.ErrorFormat("Module {0} missing required field: {1}", newModule.identifier, field);
-                    throw new MissingFieldException(); // Is there a better exception choice?
+                    string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
+
+                    log.Error(error);
+                    throw new BadMetadataKraken(null, error);
                 }
             }
 
@@ -399,6 +403,30 @@ namespace CKAN
         public static string ToJson(CkanModule module)
         {
             return JsonConvert.SerializeObject(module);
+        }
+
+        /// <summary>
+        /// Returns true if we support at least spec_version of the CKAN spec.
+        /// </summary>
+        internal static bool IsSpecSupported(Version spec_vesion)
+        {
+            // This could be a read-only state variable; do we have those in C#?
+            Version release = Meta.ReleaseNumber();
+
+            if (release == null)
+            {
+                return true; // Dev builds will read anything
+            }
+
+            return release.IsGreaterThan(spec_vesion);
+        }
+
+        /// <summary>
+        /// Returns true if we support the CKAN spec used by this module.
+        /// </summary>
+        private bool IsSpecSupported()
+        {
+            return IsSpecSupported(this.spec_version);
         }
 
         /// <summary>
