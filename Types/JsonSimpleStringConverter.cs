@@ -14,7 +14,10 @@ namespace CKAN {
         }
     
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            string value = (string) reader.Value;
+
+            // If we find a null, then that might be okay, so we pass it down to our
+            // activator. Otherwise we convert to string, since that's our job.
+            string value = reader.Value == null ? null : reader.Value.ToString();
             return Activator.CreateInstance (objectType, value);
         }
 
