@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
+using log4net;
 
 namespace CKAN
 {
     public partial class ErrorDialog : Form
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(ErrorDialog));
+
         public ErrorDialog()
         {
             InitializeComponent();
@@ -13,6 +16,7 @@ namespace CKAN
 
         public void ShowErrorDialog(string text, params object[] args)
         {
+            log.ErrorFormat(text, args);
             Util.Invoke(ErrorMessage, () => ErrorMessage.Text = String.Format(text, args));
             Util.Invoke(this, () => ShowDialog());
         }

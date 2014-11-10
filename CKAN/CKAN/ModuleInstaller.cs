@@ -35,11 +35,8 @@ namespace CKAN
         private RegistryManager registry_manager;
         private KSP ksp;
 
-        private NetAsyncDownloader downloader;
-        private bool lastDownloadSuccessful;
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
         public ModuleInstallerReportProgress onReportProgress = null;
-        private bool installCanceled = false; // Used for inter-thread communication.
 
         // Our own cache is that of the KSP instance we're using.
         public NetFileCache Cache
@@ -149,64 +146,35 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Downloads all the modules specified to the cache.
-        /// Even if modules share download URLs, they will only be downloaded once.
-        /// </summary>
-        public NetAsyncDownloader DownloadAsync(CkanModule[] modules)
-        {
-            var unique_downloads = new Dictionary<Uri, CkanModule>();
-
-            // Walk through all our modules, but only keep the first of each
-            // one that has a unique download path.
-            foreach (var module in modules)
-            {
-                if (!unique_downloads.ContainsKey(module.download))
-                {
-                    unique_downloads[module.download] = module;
-                }
-            }
-
-            downloader = new NetAsyncDownloader(unique_downloads.Keys.ToArray());
-
-            if (onReportProgress != null)
-            {
-                downloader.onProgressReport = (percent, bytesPerSecond, bytesLeft) =>
-                    onReportProgress(
-                        String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond/1024, bytesLeft/1024/1024),
-                        percent);
-            }
-
-            downloader.onCompleted = (_uris, paths, errors) => OnDownloadsComplete(_uris, paths, unique_downloads.Values.ToArray(), errors);
-
-            return downloader;
-        }
-
-        /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
         /// 
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
-        /// 
+        /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
         //
         // TODO: Break this up into smaller pieces! It's huge!
-        public void InstallList(List<string> modules, RelationshipResolverOptions options, bool downloadOnly = false)
+        public void InstallList(
+            List<string> modules,
+            RelationshipResolverOptions options
+        )
         {
             onReportProgress = onReportProgress ?? ((message, progress) => { });
-
-            installCanceled = false; // Can be set by another thread
 
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
             List<CkanModule> modsToInstall = resolver.ModList();
             List<CkanModule> downloads = new List<CkanModule> (); 
+
+            // TODO: All this user-stuff should be happening in another method!
+            // We should just be installing mods as a transaction.
 
             User.WriteLine("About to install...\n");
 
             foreach (CkanModule module in modsToInstall)
             {
                 string filename;
-                if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
+                if (!ksp.Cache.IsCached(module.download, out filename))
                 {
                     User.WriteLine(" * {0}", module);
                     downloads.Add(module);
@@ -221,37 +189,15 @@ namespace CKAN
 
             if (!ok)
             {
-                log.Debug("Halting install at user request");
-                return;
+                throw new CancelledActionKraken("User declined install list");
             }
 
             User.WriteLine(""); // Just to look tidy.
 
-            // TODO: Is this really where we want to be setting this?
-            lastDownloadSuccessful = true;
-
-            if (installCanceled)
-            {
-                log.Warn("Pre-download halted at user request");
-                return;
-            }
-
             if (downloads.Count > 0)
             {
-                downloader = DownloadAsync(downloads.ToArray());
-                downloader.StartDownload();
-
-                // Wait for our downloads to finish.
-                lock (downloader)
-                {
-                    Monitor.Wait(downloader);
-                }
-            }
-
-            if (installCanceled)
-            {
-                log.Warn("Download halted at user request");
-                return;
+                var downloader = new NetAsyncDownloader();
+                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
             }
 
             // We're about to install all our mods; so begin our transaction.
@@ -260,86 +206,26 @@ namespace CKAN
 
             using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, txoptions))
             {
-                if (lastDownloadSuccessful && !downloadOnly && modsToInstall.Count > 0)
+                for (int i = 0; i < modsToInstall.Count; i++)
                 {
-                    for (int i = 0; i < modsToInstall.Count; i++)
-                    {
-                        int percentComplete = (i * 100) / modsToInstall.Count;
-                        
-                        onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
-                                             percentComplete);
+                    int percentComplete = (i * 100) / modsToInstall.Count;
+                    
+                    onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
+                                         percentComplete);
 
-                        Install(modsToInstall[i]);
-                    }
-
-                    onReportProgress("Updating registry", 80);
-
-                    registry_manager.Save();
-
-                    onReportProgress("Commiting filesystem changes", 90);
-
-                    transaction.Complete();
-
-                    onReportProgress("Done!", 100);
-                    return;
+                    Install(modsToInstall[i]);
                 }
-             
-                transaction.Dispose(); // Rollback on unsuccessful download.
-            }
-        }
 
-        /// <summary>Call this to cancel the installs being performed by other threads</summary>
-        public void CancelInstall()
-        {
-            if (downloader != null)
-            {
-                downloader.CancelDownload();
-            }
+                onReportProgress("Updating registry", 80);
 
-            installCanceled = true;
-        }
+                registry_manager.Save();
 
-        /// <summary>
-        /// Stores all of our files in the cache once done.
-        /// Called by NetAsyncDownloader.
-        /// </summary>
-        private void OnDownloadsComplete(Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
-        {
-            // XXX: What the hell should we be doing if we are called with nulls?
+                onReportProgress("Commiting filesystem changes", 90);
 
-            if (urls != null)
-            {
-                for (int i = 0; i < errors.Length; i++)
-                {
-                    if (errors[i] != null)
-                    {
-                        User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
-                        // XXX: Shouldn't be be throwing an exception about now?
-                    }
-                    else
-                    {
-                        // Even if some of our downloads failed, we want to cache the
-                        // ones which succeeded.
-                        ksp.Cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                transaction.Complete();
 
-                    }
-                }
-            }
-
-            // Finally, remove all our temp files.
-            // We probably *could* have used Store's integrated move function above, but if we managed
-            // to somehow get two URLs the same in our download set, that could cause right troubles!
-
-            foreach (string tmpfile in filenames)
-            {
-                log.DebugFormat("Cleaing up {0}", tmpfile);
-                file_transaction.Delete(tmpfile);
-            }
-
-            // Signal that we're done.
-            lock (downloader)
-            {
-                Monitor.Pulse(downloader);
+                onReportProgress("Done!", 100);
+                return;
             }
         }
 
@@ -388,8 +274,6 @@ namespace CKAN
 
         internal void Install(CkanModule module, string filename = null)
         {
-            User.WriteLine(module.identifier + ":\n");
-
             Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.

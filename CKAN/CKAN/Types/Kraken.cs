@@ -194,4 +194,38 @@ namespace CKAN
             this.filename = filename;
         }
     }
+
+    /// <summary>
+    /// The terrible state when errors occurred during downloading.
+    /// Requires an IEnumerable list of exceptions on construction.
+    /// Has a specialised ToString() that shows everything that went wrong.
+    /// </summary>
+    public class DownloadErrorsKraken : Kraken
+    {
+        public List<Exception> exceptions;
+
+        public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.exceptions = new List<Exception> (errors);
+        }
+
+        public override string ToString()
+        {
+            return "Uh oh, the following things went wrong when downloading...\n\n" + String.Join("\n", exceptions);
+        }
+    }
+
+    /// <summary>
+    /// The terrible kraken summoned forth to indicate a user cancelled whatever
+    /// we were doing.
+    /// </summary>
+    public class CancelledActionKraken : Kraken
+    {
+        public CancelledActionKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
+
 }

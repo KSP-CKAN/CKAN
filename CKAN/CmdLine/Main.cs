@@ -355,10 +355,9 @@ namespace CKAN.CmdLine
             try
             {
                 var installer = ModuleInstaller.Instance;
-                if (options.Verbose)
-                {
-                    installer.onReportProgress = (message, progress) => User.WriteLine(String.Format("{0} - {1}%", message, progress));
-                }
+
+                installer.onReportProgress = ProgressReporter.FormattedDownloads;
+
                 installer.InstallList(options.modules, install_ops);
             }
             catch (ModuleNotFoundKraken ex)
@@ -398,8 +397,11 @@ namespace CKAN.CmdLine
                 User.WriteLine(ex.InconsistenciesPretty);
                 return Exit.ERROR;
             }
-
-            User.WriteLine("\nDone!\n");
+            catch (CancelledActionKraken)
+            {
+                User.WriteLine("Installation cancelled at user request.");
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }

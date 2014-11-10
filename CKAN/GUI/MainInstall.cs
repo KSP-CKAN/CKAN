@@ -172,15 +172,27 @@ namespace CKAN
         {
             if (toInstall.Any())
             {
+                var downloader = new NetAsyncDownloader();
+
                 // actual magic happens here, we run the installer with our mod list
                 ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
                 m_WaitDialog.cancelCallback = () =>
                 {
-                    ModuleInstaller.Instance.CancelInstall();
+                    downloader.CancelDownload();
                     m_WaitDialog = null;
                 };
 
-                ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
+                try
+                {
+                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
+                }
+                catch (CancelledActionKraken)
+                {
+                    // User cancelled, no action needed.
+                }
+                // TODO: Handle our other krakens here, we want the user to know
+                // when things have gone wrong!
+
             }
         }
 
