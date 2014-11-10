@@ -9,10 +9,11 @@ using System.Linq;
 
 namespace CKAN
 {
-    // Called with status updates on how we'r progressing.
+    // Called with status updates on how we're progressing.
     public delegate void NetAsyncProgressReport(int percent, int bytesPerSecond, long bytesLeft);
 
     // Called on completion (including on error)
+    // Called with ALL NULLS on error.
     public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
 
     /// <summary>
@@ -20,18 +21,28 @@ namespace CKAN
     /// </summary>
     public class NetAsyncDownloader
     {
+
+        // Private utility class for tracking downloads
         private class NetAsyncDownloaderDownloadPart
         {
+            public Uri url;
             public WebClient agent;
-            public long bytesDownloaded;
-            public long bytesLeft;
-            public int bytesPerSecond;
-            public Exception error;
-            public int lastProgressUpdateSize;
             public DateTime lastProgressUpdateTime;
             public string path;
-            public int percentComplete;
-            public Uri url;
+            public long bytesDownloaded = 0;
+            public long bytesLeft = 0;
+            public int bytesPerSecond = 0;
+            public Exception error = null;
+            public int lastProgressUpdateSize = 0;
+            public int percentComplete = 0;
+
+            public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
+            {
+                this.url = url;
+                this.path = path ?? file_transaction.GetTempFileName();
+                this.agent = new WebClient();
+                this.lastProgressUpdateTime = DateTime.Now;
+            }
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
@@ -60,18 +71,7 @@ namespace CKAN
         {
             foreach (Uri url in urls)
             {
-                var download = new NetAsyncDownloaderDownloadPart();
-
-                download.url = url;
-                download.path = file_transaction.GetTempFileName();
-                download.agent = new WebClient();
-                download.error = null;
-                download.percentComplete = 0;
-                download.lastProgressUpdateTime = DateTime.Now;
-                download.lastProgressUpdateSize = 0;
-                download.bytesPerSecond = 0;
-                download.bytesLeft = 0;
-
+                var download = new NetAsyncDownloaderDownloadPart(url);
                 this.downloads.Add(download);
             }
 
