@@ -50,6 +50,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="Action\KSP.cs" />
     <Compile Include="Exit.cs" />
+    <Compile Include="ProgressReporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
