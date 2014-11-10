@@ -1,7 +1,7 @@
 language: c
 
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl
+    - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
 
 script:
