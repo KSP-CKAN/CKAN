@@ -274,8 +274,6 @@ namespace CKAN
 
         internal void Install(CkanModule module, string filename = null)
         {
-            User.WriteLine(module.identifier + ":\n");
-
             Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
