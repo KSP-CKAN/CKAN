@@ -25,7 +25,10 @@ namespace CKAN
             }
         }
 
-        // utility helper to deal with multi-threading and UI
+        /// <summary>
+        /// Invokes an actin on the UI thread, or directly if we're
+        /// on the UI thread.
+        /// </summary>
         public static void Invoke<T>(T obj, Action action) where T : System.Windows.Forms.Control
         {
             if (obj.InvokeRequired) // if we're not in the UI thread

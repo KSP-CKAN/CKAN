@@ -182,7 +182,17 @@ namespace CKAN
                     m_WaitDialog = null;
                 };
 
-                ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
+                try
+                {
+                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
+                }
+                catch (CancelledActionKraken)
+                {
+                    // User cancelled, no action needed.
+                }
+                // TODO: Handle our other krakens here, we want the user to know
+                // when things have gone wrong!
+
             }
         }
 
