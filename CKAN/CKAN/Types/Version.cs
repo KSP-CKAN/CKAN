@@ -21,18 +21,23 @@ namespace CKAN {
             public string remainder2;
         }
 
-        public Version (string version_string) {
-            orig_string = version_string;
+        /// <summary>
+        /// Creates a new version object from the `ToString()` representation of anything!
+        /// </summary>
+        public Version (string version) {
+            this.orig_string = version;
 
-            // TODO: Can we get rid of $1 here? Does C# support (?:syntax)?
-            Match match = Regex.Match (version_string, "^(([0-9]+):)?(.*)$");
+            Match match = Regex.Match (
+                version,
+                @"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$"
+            );
 
             // If we have an epoch, then record it.
-            if (match.Groups [2].Value.Length > 0) {
-                epoch = Convert.ToInt32( match.Groups [2].Value );
+            if (match.Groups["epoch"].Value.Length > 0) {
+                this.epoch = Convert.ToInt32( match.Groups["epoch"].Value );
             }
 
-            version = match.Groups [3].Value;
+            this.version = match.Groups["version"].Value;
         }
 
         override public string ToString() {
