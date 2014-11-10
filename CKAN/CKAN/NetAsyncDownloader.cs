@@ -243,7 +243,7 @@ namespace CKAN
 
             DateTime now = DateTime.Now;
             TimeSpan timeSpan = now - download.lastProgressUpdateTime;
-            if (timeSpan.Seconds >= 1.0)
+            if (timeSpan.Seconds >= 3.0)
             {
                 long bytesChange = bytesDownloaded - download.lastProgressUpdateSize;
                 download.lastProgressUpdateSize = (int) bytesDownloaded;
