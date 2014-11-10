@@ -6,8 +6,19 @@
     "properties": {
         "spec_version": {
             "description" : "Version of the CKAN spec this document uses",
-            "type"        : "integer",
-            "minimum"     : 0
+            "oneOf"       : [
+                {
+                    "type"    : "integer",
+                    "comment" : "The integer '1' is special cased",
+                    "minimum" : 1,
+                    "maximum" : 1
+                },
+                {
+                    "type"        : "string",
+                    "comment"     : "A vx.x string",
+                    "pattern"     : "^v[0-9]+\\.[0-9]+$"
+                }
+            ]
         },
         "name" : {
             "description" : "Human readable name of the mod",

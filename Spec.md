@@ -105,7 +105,14 @@ distribution.
 ##### spec_version
 
 The version number of the CKAN specification used to create this .ckan file.
-value of this field is an unsigned integer. The current version of the spec is `1`.
+
+A `vx.x` string (eg: `"v1.2"`), being the minimum version of the
+reference CKAN client that will read this file.
+
+For compatibility with pre-release clients, and the v1.0 client, the special
+*integer* '1' should be used.
+
+This document describes the CKAN specification '1'.
 
 ##### name
 
