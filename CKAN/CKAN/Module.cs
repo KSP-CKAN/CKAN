@@ -396,6 +396,13 @@ namespace CKAN
                 }
             }
 
+            if (! newModule.IsSpecSupported())
+            {
+                throw new UnsupportedKraken(
+                    String.Format("Spec {0} is not supported", newModule.spec_version)
+                );
+            }
+
             // All good! Return module
             return newModule;
         }

@@ -86,5 +86,22 @@ namespace CKANTests
             // NB: V2K bug!!!
             Assert.IsFalse(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v2000.99.99")));
         }
+
+        [Test]
+        public void FutureModule()
+        {
+            if (CKAN.Meta.ReleaseNumber() == null)
+            {
+                Assert.Inconclusive("Dev build");
+            }
+
+            // Modules form the future are unsupported.
+
+            Assert.Throws<CKAN.UnsupportedKraken>(delegate
+            {
+                CkanModule.FromJson(TestData.FutureMetaData());
+            });
+
+        }
     }
 }

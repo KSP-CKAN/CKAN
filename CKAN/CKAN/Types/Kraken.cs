@@ -228,4 +228,16 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// The terrible kraken that awakens from the deep when we don't support something,
+    /// like a metadata spec from the future.
+    /// </summary>
+    public class UnsupportedKraken : Kraken
+    {
+        public UnsupportedKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
+
 }
