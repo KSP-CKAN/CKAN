@@ -1,7 +1,7 @@
 language: c
 
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console
+    - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl
     - mozroots --import --ask-remove
 
 script:
@@ -9,9 +9,10 @@ script:
     - cd CKAN
     - xbuild CKAN.sln
     - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
+    - cd ..  # Back to our project root
+    - prove  # Run all the tests in t/
 
 before_deploy:
-    - cd ..
     - mkdir uploads
     - bin/build
     - cp ckan.exe uploads/ckan-`git describe --long`.exe
