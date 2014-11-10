@@ -300,7 +300,6 @@ namespace CKAN
 
         /// <summary>
         /// This method gets called back by `WebClient` when a download is completed.
-        /// Throws a DownloadErrorsKraken if anything went wrong.
         /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {
