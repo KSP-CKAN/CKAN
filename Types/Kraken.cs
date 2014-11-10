@@ -216,4 +216,16 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// The terrible kraken summoned forth to indicate a user cancelled whatever
+    /// we were doing.
+    /// </summary>
+    public class CancelledActionKraken : Kraken
+    {
+        public CancelledActionKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
+
 }
