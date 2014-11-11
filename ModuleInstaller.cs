@@ -135,8 +135,8 @@ namespace CKAN
                 filename = CkanModule.StandardName(identifier, version);
             }
 
-            string full_path;
-            if (!cache.IsCached(url, out full_path))
+            string full_path = cache.GetCachedZip(url);
+            if (full_path == null)
             {
                 return Download(url, filename, cache);
             }
@@ -173,8 +173,7 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                string filename;
-                if (!ksp.Cache.IsCached(module.download, out filename))
+                if (!ksp.Cache.IsCachedZip(module.download))
                 {
                     User.WriteLine(" * {0}", module);
                     downloads.Add(module);
@@ -238,8 +237,9 @@ namespace CKAN
 
         public List<string> GetModuleContentsList(CkanModule module)
         {
-            string filename;
-            if (!KSPManager.CurrentInstance.Cache.IsCached(module.download, out filename))
+            string filename = ksp.Cache.GetCachedZip(module.download);
+
+            if (filename == null)
             {
                 return null;
             }
