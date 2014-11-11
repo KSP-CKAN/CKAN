@@ -13,14 +13,30 @@ namespace CKAN
 
         /// <summary>
         /// Returns the version of the CKAN.dll used, complete with git info
-        /// filled in by our build system. Eg: v1.3.5-12-g055d7c3
+        /// and other decorations as filled in by our build system.
+        /// Eg: v1.3.5-12-g055d7c3 (unstable) or "development (unstable)"
         /// </summary>
         public static string Version()
         {
+            string version = BuildVersion();
 
+            #if (STABLE)
+            version += " (stable)";
+            #else
+            version += " (unstable)";
+            #endif
+
+            return version;
+        }
+
+        /// <summary>
+        /// Returns only the build info, with no decorations, or "development" if
+        /// unknown.
+        /// </summary>
+        public static string BuildVersion()
+        {
             if (BUILD_VERSION == null)
             {
-                // Dunno the version. Some dev probably built it. 
                 return Development;
             }
 
@@ -32,14 +48,14 @@ namespace CKAN
         /// </summary>
         public static Version ReleaseNumber()
         {
-            string long_version = Version();
+            string build_version = BuildVersion();
 
-            if (long_version == Development)
+            if (build_version == Development)
             {
                 return null;
             }
 
-            string short_version = Regex.Match(long_version, @"^(.*)-\d+-.*$").Result("$1");
+            string short_version = Regex.Match(build_version, @"^(.*)-\d+-.*$").Result("$1");
 
             return new CKAN.Version(short_version);
         }
