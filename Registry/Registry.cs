@@ -44,12 +44,12 @@ namespace CKAN
 
                 installed_files = new Dictionary<string, string>();
 
-                foreach (var module in installed_modules.Values)
+                foreach (InstalledModule module in installed_modules.Values)
                 {
-                    foreach (string file in module.installed_files.Keys)
+                    foreach (string file in module.Files)
                     {
                         // Register each file we know about as belonging to the given module.
-                        installed_files[file] = module.source_module.identifier;
+                        installed_files[file] = module.identifier;
                     }
                 }
             }
@@ -417,13 +417,7 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-
-        // TODO: It might be better to provide split functionality, one method
-        // to register a mod (which we do at the start of an install, and which
-        // can check consistency), and another to register each file with that mod
-        // (which can check file consistency at the same time).
-         
-        public void RegisterModule(InstalledModule mod)
+        public void RegisterModule(Module mod, IEnumerable<string> files, KSP ksp)
         {
             SealionTransaction();
 
@@ -433,7 +427,7 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in mod.installed_files.Keys)
+            foreach (string filename in files)
             {
                 if (this.installed_files.ContainsKey(filename))
                 {
@@ -443,10 +437,12 @@ namespace CKAN
                         continue;
                     }
 
+                    // But it's not cool if they wish to register an already owned file.
+                    // (Although if it existed, we should have thrown a kraken well before this.)
                     string owner = this.installed_files[filename];
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                                      mod.source_module.identifier, filename, owner
+                                      mod.identifier, filename, owner
                     ));
                 }
             }
@@ -464,13 +460,14 @@ namespace CKAN
             // directories aren't really owned like files are. However because each mod maintains
             // its own list of files, we'll remove directories when the last mod using them
             // is uninstalled.
-            foreach (string filename in mod.installed_files.Keys)
+            foreach (string filename in files)
             {
-                this.installed_files[filename] = mod.source_module.identifier;
+                this.installed_files[filename] = mod.identifier;
             }
 
             // Finally, register our module proper.
-            installed_modules.Add(mod.source_module.identifier, mod);
+            var installed = new InstalledModule(ksp, mod, files);
+            installed_modules.Add(mod.identifier, installed);
         }
 
         /// <summary>
@@ -483,7 +480,7 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in this.installed_modules[module].installed_files.Keys)
+            foreach (string filename in this.installed_modules[module].Files)
             {
                 if (File.Exists(filename))
                 {
@@ -523,11 +520,11 @@ namespace CKAN
             // TODO: This is awful, as it's O(N^2), but it means we never index things which are
             // part of another mod.
 
-            foreach (var mod in installed_modules.Values)
+            foreach (InstalledModule mod in installed_modules.Values)
             {
-                if (mod.installed_files.ContainsKey(path))
+                if (mod.Files.Contains(path))
                 {
-                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.source_module);
+                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.identifier);
                     return;
                 }
             }
@@ -588,7 +585,7 @@ namespace CKAN
             // Index our installed modules (which may overwrite the installed DLLs and provides)
             foreach (var modinfo in installed_modules)
             {
-                installed[modinfo.Key] = modinfo.Value.source_module.version;
+                installed[modinfo.Key] = modinfo.Value.Module.version;
             }
 
             return installed;
@@ -626,7 +623,7 @@ namespace CKAN
 
             foreach (var modinfo in installed_modules)
             {
-                Module module = modinfo.Value.source_module;
+                Module module = modinfo.Value.Module;
 
                 // Skip if this module provides nothing.
                 if (module.provides == null)
@@ -653,7 +650,7 @@ namespace CKAN
         {
             if (installed_modules.ContainsKey(modName))
             {
-                return installed_modules[modName].source_module.version;
+                return installed_modules[modName].Module.version;
             }
             else if (installed_dlls.ContainsKey(modName))
             {
@@ -701,7 +698,7 @@ namespace CKAN
         /// </summary>
         public void CheckSanity()
         {
-            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.source_module;
+            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.Module;
             SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
         }
 
@@ -748,7 +745,7 @@ namespace CKAN
 
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
-            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.source_module));
+            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
 

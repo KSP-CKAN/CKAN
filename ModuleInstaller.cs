@@ -234,8 +234,8 @@ namespace CKAN
         ///
         /// Intended for previews.
         /// </summary>
-
-        public List<string> GetModuleContentsList(CkanModule module)
+        // TODO: Return files relative to GameRoot
+        public IEnumerable<string> GetModuleContentsList(CkanModule module)
         {
             string filename = ksp.Cache.GetCachedZip(module.download);
 
@@ -244,18 +244,8 @@ namespace CKAN
                 return null;
             }
 
-            List<InstallableFile> contents = FindInstallableFiles(module, filename, ksp);
-
-            var pretty_filenames = new List<string> ();
-
-            foreach (var entry in contents)
-            {
-                string path = entry.destination;
-
-                pretty_filenames.Add(path);
-            }
-
-            return pretty_filenames;
+            return FindInstallableFiles(module, filename, ksp)
+                .Select(x => x.destination);
         }
 
         /// <summary>
@@ -292,16 +282,13 @@ namespace CKAN
             // We'll need our registry to record which files we've installed.
             Registry registry = registry_manager.registry;
 
-            // And a list of files to record them to.
-            var module_files = new Dictionary<string, InstalledModuleFile>();
-
             using (var transaction = new TransactionScope())
             {
                 // Install all the things!
-                InstallModule(module, filename, module_files);
+                IEnumerable<string> files = InstallModule(module, filename);
 
-                // Register our files.
-                registry.RegisterModule(new InstalledModule(module_files, module, DateTime.Now));
+                // Register our module and its files.
+                registry.RegisterModule(module, files, ksp);
 
                 // Finish our transaction, but *don't* save the registry; we may be in an
                 // intermediate, inconsistent state.
@@ -317,31 +304,7 @@ namespace CKAN
             }
 
         }
-
-        /// <summary>
-        /// Returns the sha1 sum of the given filename.
-        /// Returns null if passed a directory.
-        /// Throws an exception on failure to access the file.
-        /// </summary>
-        internal static string Sha1Sum(string path)
-        {
-            if (Directory.Exists(path))
-            {
-                return null;
-            }
-
-            SHA1 hasher = new SHA1CryptoServiceProvider();
-
-            // Even if we throw an exception, the using block here makes sure
-            // we close our file.
-            using (var fh = File.OpenRead(path))
-            {
-                string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
-                fh.Close();
-                return sha1;
-            }
-        }
-
+            
         /// <summary>
         /// Returns a default install stanza for the module provided. This finds the topmost
         /// directory which matches the module identifier, and generates a stanza that
@@ -399,27 +362,23 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Installs the module from the zipfile provided, updating the supplied list of installed files provided.
-        /// 
+        /// Installs the module from the zipfile provided.
+        /// Returns a list of files installed.
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        internal void InstallModule(CkanModule module, string zip_filename, Dictionary<string, InstalledModuleFile> installed_files)
+        private IEnumerable<string> InstallModule(CkanModule module, string zip_filename)
         {
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
-                List<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
+                IEnumerable<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);
 
                 try
                 {
-                    foreach (var file in files)
+                    foreach (InstallableFile file in files)
                     {
                         log.InfoFormat("Copying {0}", file.source.Name);
                         CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
-                        installed_files.Add(file.destination, new InstalledModuleFile
-                        {
-                            sha1_sum = Sha1Sum(file.destination)
-                        });
                     }
                 }
                 catch (FileExistsKraken kraken)
@@ -429,6 +388,8 @@ namespace CKAN
                     kraken.owning_module = registry_manager.registry.FileOwner(kraken.filename);
                     throw;
                 }
+
+                return files.Select(x => x.destination);
             }
         }
 
@@ -740,12 +701,12 @@ namespace CKAN
                 }
 
                 // Walk our registry to find all files for this mod.
-                Dictionary<string, InstalledModuleFile> files =
-                    registry_manager.registry.InstalledModule(modName).installed_files;
+                IEnumerable<string> files =
+                    registry_manager.registry.InstalledModule(modName).Files;
 
                 var directoriesToDelete = new HashSet<string>();
 
-                foreach (string file in files.Keys)
+                foreach (string file in files)
                 {
                     string path = Path.Combine(ksp.GameDir(), file);
 
