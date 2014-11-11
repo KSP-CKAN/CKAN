@@ -7,7 +7,7 @@ install:
 script:
     - ./t/test-sln.sh # Avoid VS Accidentally changing the project formatting
     - bin/build
-    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Release/Tests.dll
+    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/Tests.dll
     - prove  # Run all the tests in t/
 
 deploy:

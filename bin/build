@@ -2127,7 +2127,7 @@ use Fcntl qw(SEEK_SET);
 # Simple script to build and repack
 
 my $REPACK  = "CKAN/packages/ILRepack.1.25.0/tools/ILRepack.exe";
-my $TARGET  = "Release";     # 'Debug' is okay too.
+my $TARGET  = "Debug";      # Even our releases contain debugging info
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
@@ -2191,7 +2191,7 @@ system(@cmd);
     $REPACK,
     "--out:netkan.exe",
     "--lib:build/NetKAN/bin/$TARGET",
-    "build/NetKAN/bin/$TARGET/netkan.exe",
+    "build/NetKAN/bin/$TARGET/NetKAN.exe",
     glob("build/NetKAN/bin/$TARGET/*.dll"),
 );
 
