@@ -1,20 +1,14 @@
 language: c
 
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console
+    - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
 
 script:
     - ./t/test-sln.sh # Avoid VS Accidentally changing the project formatting
-    - cd CKAN
-    - xbuild CKAN.sln
-    - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
-
-before_deploy:
-    - cd ..
-    - mkdir uploads
     - bin/build
-    - cp ckan.exe uploads/ckan-`git describe --long`.exe
+    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Release/Tests.dll
+    - prove  # Run all the tests in t/
 
 deploy:
     provider: releases

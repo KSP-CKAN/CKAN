@@ -2122,6 +2122,7 @@ use IPC::System::Simple qw(systemx capturex);
 use File::Spec;
 use File::Copy::Recursive qw(rcopy);
 use autodie qw(rcopy);
+use Fcntl qw(SEEK_SET);
 
 # Simple script to build and repack
 
@@ -2130,15 +2131,9 @@ my $TARGET  = "Release";     # 'Debug' is okay too.
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
-my $VERSION = capturex(qw(git describe --tags --long));
-my @ASSEMBLY_INFO = (
-    File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs"),
-    File::Spec->catdir($BUILD,"CmdLine/Properties/AssemblyInfo.cs"),
-    File::Spec->catdir($BUILD,"GUI/Properties/AssemblyInfo.cs"),
-);
+my $METACLASS = "build/CKAN/Meta.cs";
 
-# Remove newline
-chomp($VERSION);
+my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
 
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
@@ -2147,15 +2142,24 @@ remove_tree($BUILD);
 copy($SOURCE, $BUILD);
 
 # Remove any old build artifacts
-remove_tree(File::Spec->catdir($BUILD, "CKAN/bin"));
-remove_tree(File::Spec->catdir($BUILD, "CKAN/obj"));
+foreach my $project (@PROJECTS) {
+    remove_tree(File::Spec->catdir($BUILD, "$project/bin"));
+    remove_tree(File::Spec->catdir($BUILD, "$project/obj"));
+}
 
-# Before we build, add our version number in.
+# Before we build, see if we can locate a version and add it in.
+# Because travis does a shallow clone, we might fail at this in
+# dev releases, in which case our build will remain as "development"
+# and extra version tests won't run.
 
-foreach my $assembly (@ASSEMBLY_INFO) {
-    open(my $assembly_fh, ">>", $assembly);
-    say {$assembly_fh} qq{[assembly: AssemblyInformationalVersion ("$VERSION")]};
-    close($assembly_fh);
+my $VERSION = eval { capturex(qw(git describe --tags --long)) };
+
+if ($VERSION) {
+    chomp $VERSION;
+    set_build($METACLASS, $VERSION);
+}
+else {
+    warn "No recent tag found, making development build.\n";
 }
 
 # Change to our build directory
@@ -2216,4 +2220,23 @@ sub copy {
         system(@CP,$src,$dst);
     }
     return;
+}
+
+sub set_build {
+    my ($file, $build) = @_;
+
+    local $/;   # Slurp entire files on read
+
+    open(my $fh, '+<', $file);
+    my $contents = <$fh>;
+
+    $contents =~ s{(BUILD_VERSION\s*=\s*)null}{$1"$build"}
+        or die "Could not find BUILD_VERSION string";
+
+    # Truncate our file and overwrite with new info
+    truncate($fh,0);
+    seek($fh,SEEK_SET,0);
+
+    print {$fh} $contents;
+    close($fh);
 }

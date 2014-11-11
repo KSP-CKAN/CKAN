@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace CKAN
@@ -7,25 +6,25 @@ namespace CKAN
     {
         public readonly static string Development = "development";
 
+        // Do *not* change the following line, BUILD_VERSION is
+        // replaced by our build system with our actual version.
+
+        private readonly static string BUILD_VERSION = null;
+
         /// <summary>
         /// Returns the version of the CKAN.dll used, complete with git info
         /// filled in by our build system. Eg: v1.3.5-12-g055d7c3
         /// </summary>
         public static string Version()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
 
-            // SeriouslyLongestClassNamesEverThanksMicrosoft
-            var attr =
-                (AssemblyInformationalVersionAttribute[])
-                    assembly.GetCustomAttributes(typeof (AssemblyInformationalVersionAttribute), false);
-
-            if (attr.Length == 0 || attr[0].InformationalVersion == null)
+            if (BUILD_VERSION == null)
             {
                 // Dunno the version. Some dev probably built it. 
                 return Development;
             }
-            return attr[0].InformationalVersion;
+
+            return BUILD_VERSION;
         }
 
         /// <summary>
