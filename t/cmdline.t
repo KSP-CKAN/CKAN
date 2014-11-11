@@ -22,7 +22,9 @@ lives_ok { $version = capturex($CMDLINE, "version") } "ckan version execute";
 
 SKIP: {
     unless ($GIT_TAG) { skip "Development build", 1; }
-    is($version, $GIT_TAG, "Version should match git tag");
+
+    chomp $GIT_TAG;
+    like($version, qr/^\Q$GIT_TAG\E/, "Version should start with git tag");
 }
 
 done_testing;

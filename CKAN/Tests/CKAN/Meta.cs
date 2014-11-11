@@ -9,7 +9,7 @@ namespace CKANTests
         [Test]
         public void Version()
         {
-            string version = CKAN.Meta.Version();
+            string version = CKAN.Meta.BuildVersion();
 
             if (version == CKAN.Meta.Development)
             {
