@@ -429,13 +429,13 @@ namespace CKAN.CmdLine
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine("{0} version {1}", module.Module.name, module.Module.version);
 
             User.WriteLine("\n== Files ==\n");
 
-            Dictionary<string, InstalledModuleFile> files = module.installed_files;
+            IEnumerable<string> files = module.Files;
 
-            foreach (string file in files.Keys)
+            foreach (string file in files)
             {
                 User.WriteLine(file);
             }
