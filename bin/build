@@ -2131,13 +2131,9 @@ my $TARGET  = "Release";     # 'Debug' is okay too.
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
-my $VERSION = capturex(qw(git describe --tags --long));
 my $METACLASS = "build/CKAN/Meta.cs";
 
 my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
-
-# Remove newline
-chomp($VERSION);
 
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
@@ -2151,9 +2147,20 @@ foreach my $project (@PROJECTS) {
     remove_tree(File::Spec->catdir($BUILD, "$project/obj"));
 }
 
-# Before we build, add our version number in.
+# Before we build, see if we can locate a version and add it in.
+# Because travis does a shallow clone, we might fail at this in
+# dev releases, in which case our build will remain as "development"
+# and extra version tests won't run.
 
-set_build($METACLASS, $VERSION);
+my $VERSION = eval { capturex(qw(git describe --tags --long)) };
+
+if ($VERSION) {
+    chomp $VERSION;
+    set_build($METACLASS, $VERSION);
+}
+else {
+    warn "No recent tag found, making development build.\n";
+}
 
 # Change to our build directory
 chdir($BUILD);

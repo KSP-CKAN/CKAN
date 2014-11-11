@@ -12,13 +12,17 @@ use IPC::System::Simple qw(capturex capture);
 
 my $CMDLINE = CkanTests->cmdline;
 
-# Without any config, we should be able to get a version.
+# If we're making a dev build, we may not have a tag to describe from.
+diag "Any `No names found` messages are harmless, it just means a dev build.";
+my $GIT_TAG = eval { capture("git describe --long --tags") };
 
-my ($version, $git_tag);
+my $version;
 
 lives_ok { $version = capturex($CMDLINE, "version") } "ckan version execute";
-lives_ok { $git_tag = capture("git describe --long --tags") } "git version";
 
-is($version, $git_tag, "Version should match git tag");
+SKIP: {
+    unless ($GIT_TAG) { skip "Development build", 1; }
+    is($version, $GIT_TAG, "Version should match git tag");
+}
 
 done_testing;
