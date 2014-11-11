@@ -9,6 +9,7 @@ use IPC::System::Simple qw(systemx capturex);
 use File::Spec;
 use File::Copy::Recursive qw(rcopy);
 use autodie qw(rcopy);
+use Fcntl qw(SEEK_SET);
 
 # Simple script to build and repack
 
@@ -18,11 +19,9 @@ my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
 my $SOURCE  = "$Bin/../CKAN";
 my $VERSION = capturex(qw(git describe --tags --long));
-my @ASSEMBLY_INFO = (
-    File::Spec->catdir($BUILD,"CKAN/Properties/AssemblyInfo.cs"),
-    File::Spec->catdir($BUILD,"CmdLine/Properties/AssemblyInfo.cs"),
-    File::Spec->catdir($BUILD,"GUI/Properties/AssemblyInfo.cs"),
-);
+my $METACLASS = "build/CKAN/Meta.cs";
+
+my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
 
 # Remove newline
 chomp($VERSION);
@@ -34,16 +33,14 @@ remove_tree($BUILD);
 copy($SOURCE, $BUILD);
 
 # Remove any old build artifacts
-remove_tree(File::Spec->catdir($BUILD, "CKAN/bin"));
-remove_tree(File::Spec->catdir($BUILD, "CKAN/obj"));
+foreach my $project (@PROJECTS) {
+    remove_tree(File::Spec->catdir($BUILD, "$project/bin"));
+    remove_tree(File::Spec->catdir($BUILD, "$project/obj"));
+}
 
 # Before we build, add our version number in.
 
-foreach my $assembly (@ASSEMBLY_INFO) {
-    open(my $assembly_fh, ">>", $assembly);
-    say {$assembly_fh} qq{[assembly: AssemblyInformationalVersion ("$VERSION")]};
-    close($assembly_fh);
-}
+set_build($METACLASS, $VERSION);
 
 # Change to our build directory
 chdir($BUILD);
@@ -103,4 +100,23 @@ sub copy {
         system(@CP,$src,$dst);
     }
     return;
+}
+
+sub set_build {
+    my ($file, $build) = @_;
+
+    local $/;   # Slurp entire files on read
+
+    open(my $fh, '+<', $file);
+    my $contents = <$fh>;
+
+    $contents =~ s{(BUILD_VERSION\s*=\s*)null}{$1"$build"}
+        or die "Could not find BUILD_VERSION string";
+
+    # Truncate our file and overwrite with new info
+    truncate($fh,0);
+    seek($fh,SEEK_SET,0);
+
+    print {$fh} $contents;
+    close($fh);
 }

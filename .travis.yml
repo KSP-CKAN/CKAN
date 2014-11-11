@@ -6,16 +6,9 @@ install:
 
 script:
     - ./t/test-sln.sh # Avoid VS Accidentally changing the project formatting
-    - cd CKAN
-    - xbuild CKAN.sln
-    - nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
-    - cd ..  # Back to our project root
-    - prove  # Run all the tests in t/
-
-before_deploy:
-    - mkdir uploads
     - bin/build
-    - cp ckan.exe uploads/ckan-`git describe --long`.exe
+    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Release/Tests.dll
+    - prove  # Run all the tests in t/
 
 deploy:
     provider: releases

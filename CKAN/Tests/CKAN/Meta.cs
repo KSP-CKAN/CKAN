@@ -28,7 +28,7 @@ namespace CKANTests
 
             if (version == null)
             {
-                Assert.Inconclusive("No version detected - developmet build");
+                Assert.Inconclusive("No version detected - development build");
             }
 
             // We should always be in the form v0.xx (pre-release series),
