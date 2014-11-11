@@ -390,7 +390,7 @@ namespace CKAN
             {
                 throw new UnsupportedKraken(
                     String.Format(
-                        "{1} requires CKAN {2}, we can't read it.",
+                        "{0} requires CKAN {1}, we can't read it.",
                         newModule,
                         newModule.spec_version
                     )
