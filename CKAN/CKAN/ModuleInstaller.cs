@@ -741,7 +741,7 @@ namespace CKAN
 
                 // Walk our registry to find all files for this mod.
                 Dictionary<string, InstalledModuleFile> files =
-                    registry_manager.registry.installed_modules[modName].installed_files;
+                    registry_manager.registry.InstalledModule(modName).installed_files;
 
                 var directoriesToDelete = new HashSet<string>();
 
