@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
+using System.Transactions;
 
 namespace CKAN
 {
@@ -24,6 +25,22 @@ namespace CKAN
             get
             {
                 return _Cache;
+            }
+        }
+
+        public RegistryManager RegistryManager
+        {
+            get
+            {
+                return RegistryManager.Instance(this);
+            }
+        }
+
+        public Registry Registry
+        {
+            get
+            {
+                return this.RegistryManager.registry;
             }
         }
 
@@ -210,27 +227,32 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Clears the registry of DLL data, and refreshes it by scanning GameData.
+        /// This operates as a transaction.
+        /// This *saves* the registry upon completion.
+        /// </summary>
+        // TODO: This would likely be better in the Registry class itself.
         public void ScanGameData()
         {
-            RegistryManager registry_manager = RegistryManager.Instance(CkanDir());
-            Registry registry = registry_manager.registry;
-
-            // Forget that we've seen any DLLs, as we're going to refresh them all.
-            registry.ClearDlls();
-
-            // TODO: It would be great to optimise this to skip .git directories and the like.
-            // Yes, I keep my GameData in git.
-
-            string[] dllFiles = Directory.GetFiles(GameData(), "*.dll", SearchOption.AllDirectories);
-
-            foreach (string file in dllFiles)
+            using (TransactionScope tx = new TransactionScope())
             {
-                var fixedPath = file.Replace('\\', '/');
-                // register_dll does the heavy lifting of turning it into a modname
-                registry.RegisterDll(fixedPath);
-            }
+                this.Registry.ClearDlls();
 
-            registry_manager.Save();
+                // TODO: It would be great to optimise this to skip .git directories and the like.
+                // Yes, I keep my GameData in git.
+
+                string[] dllFiles = Directory.GetFiles(GameData(), "*.dll", SearchOption.AllDirectories);
+
+                foreach (string file in dllFiles)
+                {
+                    string dll = KSPPathUtils.NormalizePath(file);
+                    this.Registry.RegisterDll(dll);
+                }
+                    
+                tx.Complete();
+            }
+            this.RegistryManager.Save();
         }
 
         public KSPVersion Version()
