@@ -1800,6 +1800,284 @@ $fatpacked{"IPC/System/Simple.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".
   =cut
 IPC_SYSTEM_SIMPLE
 
+$fatpacked{"autodie/Scope/Guard.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'AUTODIE_SCOPE_GUARD';
+  package autodie::Scope::Guard;
+  
+  use strict;
+  use warnings;
+  
+  # ABSTRACT: Wrapper class for calling subs at end of scope
+  our $VERSION = '2.25'; # VERSION
+  
+  # This code schedules the cleanup of subroutines at the end of
+  # scope.  It's directly inspired by chocolateboy's excellent
+  # Scope::Guard module.
+  
+  sub new {
+      my ($class, $handler) = @_;
+      return bless($handler, $class);
+  }
+  
+  sub DESTROY {
+      my ($self) = @_;
+  
+      $self->();
+  }
+  
+  1;
+  
+  __END__
+  
+  =head1 NAME
+  
+  autodie::Scope::Guard - Wrapper class for calling subs at end of scope
+  
+  =head1 SYNOPSIS
+  
+      use autodie::Scope::Guard;
+      $^H{'my-key'} = autodie::Scope::Guard->new(sub {
+          print "Hallo world\n";
+      });
+  
+  =head1 DESCRIPTION
+  
+  This class is used to bless perl subs so that they are invoked when
+  they are destroyed.  This is mostly useful for ensuring the code is
+  invoked at end of scope.  This module is not a part of autodie's
+  public API.
+  
+  This module is directly inspired by chocolateboy's excellent
+  Scope::Guard module.
+  
+  =head2 Methods
+  
+  =head3 new
+  
+    my $hook = autodie::Scope::Guard->new(sub {});
+  
+  Creates a new C<autodie::Scope::Guard>, which will invoke the given
+  sub once it goes out of scope (i.e. its DESTROY handler is called).
+  
+  =head1 AUTHOR
+  
+  Copyright 2008-2009, Paul Fenwick E<lt>pjf@perltraining.com.auE<gt>
+  
+  =head1 LICENSE
+  
+  This module is free software.  You may distribute it under the
+  same terms as Perl itself.
+AUTODIE_SCOPE_GUARD
+
+$fatpacked{"autodie/Scope/GuardStack.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'AUTODIE_SCOPE_GUARDSTACK';
+  package autodie::Scope::GuardStack;
+  
+  use strict;
+  use warnings;
+  
+  use autodie::Scope::Guard;
+  
+  # ABSTRACT: Hook stack for managing scopes via %^H
+  our $VERSION = '2.25'; # VERSION
+  
+  my $H_KEY_STEM = __PACKAGE__ . '/guard';
+  my $COUNTER = 0;
+  
+  # This code schedules the cleanup of subroutines at the end of
+  # scope.  It's directly inspired by chocolateboy's excellent
+  # Scope::Guard module.
+  
+  sub new {
+      my ($class) = @_;
+  
+      return bless([], $class);
+  }
+  
+  sub push_hook {
+      my ($self, $hook) = @_;
+      my $h_key = $H_KEY_STEM . ($COUNTER++);
+      my $size = @{$self};
+      $^H{$h_key} = autodie::Scope::Guard->new(sub {
+          # Pop the stack until we reach the right size
+          # - this may seem weird, but it is to avoid relying
+          #   on "destruction order" of keys in %^H.
+          #
+          # Example:
+          #  {
+          #     use autodie;  # hook 1
+          #     no autodie;   # hook 2
+          #     use autodie;  # hook 3
+          #  }
+          #
+          #  Here we want call hook 3, then hook 2 and finally hook 1.
+          #  Any other order could have undesired consequences.
+          #
+          #  Suppose hook 2 is destroyed first, it will pop hook 3 and
+          #  then hook 2.  hook 3 will then be destroyed, but do nothing
+          #  since its "frame" was already popped and finally hook 1
+          #  will be popped and take its own frame with it.
+          $self->_pop_hook while @{$self} > $size;
+      });
+      push(@{$self}, [$hook, $h_key]);
+      return;
+  }
+  
+  sub _pop_hook {
+      my ($self) = @_;
+      my ($hook, $key) = @{ pop(@{$self}) };
+      my $ref = delete($^H{$key});
+      $hook->();
+      return;
+  }
+  
+  sub DESTROY {
+      my ($self) = @_;
+  
+      # To be honest, I suspect @{$self} will always be empty here due
+      # to the subs in %^H having references to the stack (which would
+      # keep the stack alive until those have been destroyed).  Anyhow,
+      # it never hurt to be careful.
+      $self->_pop_hook while @{$self};
+      return;
+  }
+  
+  1;
+  
+  __END__
+  
+  =head1 NAME
+  
+  autodie::Scope::GuardStack -  Hook stack for managing scopes via %^H
+  
+  =head1 SYNOPSIS
+  
+      use autodie::Scope::GuardStack;
+      my $stack = autodie::Scope::GuardStack->new
+      $^H{'my-key'} = $stack;
+  
+      $stack->push_hook(sub {});
+  
+  =head1 DESCRIPTION
+  
+  This class is a stack of hooks to be called in the right order as
+  scopes go away.  The stack is only useful when inserted into C<%^H>
+  and will pop hooks as their "scope" is popped.  This is useful for
+  uninstalling or reinstalling subs in a namespace as a pragma goes
+  out of scope.
+  
+  Due to how C<%^H> works, this class is only useful during the
+  compilation phase of a perl module and relies on the internals of how
+  perl handles references in C<%^H>.  This module is not a part of
+  autodie's public API.
+  
+  =head2 Methods
+  
+  =head3 new
+  
+    my $stack = autodie::Scope::GuardStack->new;
+  
+  Creates a new C<autodie::Scope::GuardStack>.  The stack is initially
+  empty and must be inserted into C<%^H> by the creator.
+  
+  =head3 push_hook
+  
+    $stack->push_hook(sub {});
+  
+  Add a sub to the stack.  The sub will be called once the current
+  compile-time "scope" is left.  Multiple hooks can be added per scope
+  
+  =head1 AUTHOR
+  
+  Copyright 2013, Niels Thykier E<lt>niels@thykier.netE<gt>
+  
+  =head1 LICENSE
+  
+  This module is free software.  You may distribute it under the
+  same terms as Perl itself.
+AUTODIE_SCOPE_GUARDSTACK
+
+$fatpacked{"autodie/ScopeUtil.pm"} = '#line '.(1+__LINE__).' "'.__FILE__."\"\n".<<'AUTODIE_SCOPEUTIL';
+  package autodie::ScopeUtil;
+  
+  use strict;
+  use warnings;
+  
+  # Docs say that perl 5.8.3 has Exporter 5.57 and autodie requires
+  # 5.8.4, so this should "just work".
+  use Exporter 5.57 qw(import);
+  
+  use autodie::Scope::GuardStack;
+  
+  our @EXPORT_OK = qw(on_end_of_compile_scope);
+  
+  # ABSTRACT: Utilities for managing %^H scopes
+  our $VERSION = '2.25'; # VERSION
+  
+  # docs says we should pick __PACKAGE__ /<whatever>
+  my $H_STACK_KEY = __PACKAGE__ . '/stack';
+  
+  sub on_end_of_compile_scope {
+      my ($hook) = @_;
+  
+      # Dark magic to have autodie work under 5.8
+      # Copied from namespace::clean, that copied it from
+      # autobox, that found it on an ancient scroll written
+      # in blood.
+  
+      # This magic bit causes %^H to be lexically scoped.
+      $^H |= 0x020000;
+  
+      my $stack = $^H{$H_STACK_KEY};
+      if (not defined($stack)) {
+          $stack = autodie::Scope::GuardStack->new;
+          $^H{$H_STACK_KEY} = $stack;
+      }
+  
+      $stack->push_hook($hook);
+      return;
+  }
+  
+  1;
+  
+  =head1 NAME
+  
+  autodie::ScopeUtil - Utilities for managing %^H scopes
+  
+  =head1 SYNOPSIS
+  
+      use autodie::ScopeUtil qw(on_end_of_compile_scope);
+      on_end_of_compile_scope(sub { print "Hallo world\n"; });
+  
+  =head1 DESCRIPTION
+  
+  Utilities for abstracting away the underlying magic of (ab)using
+  C<%^H> to call subs at the end of a (compile-time) scopes.
+  
+  Due to how C<%^H> works, these utilities are only useful during the
+  compilation phase of a perl module and relies on the internals of how
+  perl handles references in C<%^H>.  This module is not a part of
+  autodie's public API.
+  
+  =head2 Methods
+  
+  =head3 on_end_of_compile_scope
+  
+    on_end_of_compile_scope(sub { print "Hallo world\n"; });
+  
+  Will invoke a sub at the end of a (compile-time) scope.  The sub is
+  called once with no arguments.  Can be called multiple times (even in
+  the same "compile-time" scope) to install multiple subs.  Subs are
+  called in a "first-in-last-out"-order (FILO or "stack"-order).
+  
+  =head1 AUTHOR
+  
+  Copyright 2013, Niels Thykier E<lt>niels@thykier.netE<gt>
+  
+  =head1 LICENSE
+  
+  This module is free software.  You may distribute it under the
+  same terms as Perl itself.
+AUTODIE_SCOPEUTIL
+
 s/^  //mg for values %fatpacked;
 
 my $class = 'FatPacked::'.(0+\%fatpacked);

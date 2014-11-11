@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace CKANTests
 {
     [TestFixture()]
     public class KSPManager

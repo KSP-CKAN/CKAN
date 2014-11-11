@@ -29,6 +29,10 @@ namespace CKAN
 
         public KSP(string directory)
         {
+
+            // Make sure our path is absolute and has normalised slashes.
+            directory = KSPPathUtils.NormalizePath(Path.GetFullPath(directory));
+
             if (! IsKspDir(directory))
             {
                 throw new NotKSPDirKraken(directory);
