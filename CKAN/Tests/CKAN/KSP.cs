@@ -49,6 +49,33 @@ namespace CKANTests
         {
             Assert.AreEqual(Path.Combine(ksp_dir, "saves", "training"), ksp.Tutorial());
         }
+
+        [Test]
+        public void ScanDlls()
+        {
+            string path = Path.Combine(ksp.GameData(), "Example.dll");
+
+            Assert.IsFalse(ksp.Registry.IsInstalled("Example"), "Example should start uninstalled");
+
+            File.WriteAllText(path, "Not really a DLL, are we?");
+
+            ksp.ScanGameData();
+
+            Assert.IsTrue(ksp.Registry.IsInstalled("Example"), "Example installed");
+
+            CKAN.Version version = ksp.Registry.InstalledVersion("Example");
+            Assert.IsInstanceOf<CKAN.DllVersion>(version, "DLL detected as a DLL, not full mod");
+
+            // Now let's do the same with different case.
+
+            string path2 = Path.Combine(ksp.GameData(), "NewMod.DLL");
+
+            Assert.IsFalse(ksp.Registry.IsInstalled("NewMod"));
+            File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
+
+            ksp.ScanGameData();
+
+            Assert.IsTrue(ksp.Registry.IsInstalled("NewMod"));
+        }
     }
 }
-
