@@ -117,6 +117,29 @@ namespace CKANTests
             cache.Store(url, file1);
             FileAssert.AreEqual(file1, cache.GetCachedFilename(url));
         }
+
+        [Test]
+        public void ZipValidation()
+        {
+            // We could use any URL, but this one is awesome. <3
+            Uri url = new Uri("http://kitte.nz/");
+
+            Assert.IsFalse(cache.IsCachedZip(url));
+
+            // Store a bad zip.
+            cache.Store(url, Tests.TestData.DogeCoinFlagZipCorrupt());
+
+            // Make sure it's stored, but not valid as a zip
+            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsFalse(cache.IsCachedZip(url));
+
+            // Store a good zip.
+            cache.Store(url, Tests.TestData.DogeCoinFlagZip());
+
+            // Make sure it's stored, and valid.
+            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsTrue(cache.IsCachedZip(url));
+        }
     }
 }
 

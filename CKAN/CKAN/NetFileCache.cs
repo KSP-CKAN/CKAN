@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ChinhDo.Transactions;
 using log4net;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace CKAN
 {
@@ -60,6 +61,16 @@ namespace CKAN
             return outFilename != null;
         }
 
+        /// <summary>
+        /// Returns true if our given URL is cached, *and* it passes zip
+        /// validation tests. Prefer this over IsCached when working with
+        /// zip files.
+        /// </summary>
+        public bool IsCachedZip(Uri url)
+        {
+            return GetCachedZip(url) != null;
+        }
+
         /// <summary>>
         /// Returns the filename of an already cached url or null otherwise
         /// </summary>
@@ -76,6 +87,41 @@ namespace CKAN
                 {
                     return file;
                 }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the filename for a cached URL, if and only if it
+        /// passes zipfile validation tests. Prefer this to GetCachedFilename
+        /// when working with zip files. Returns null if not available, or
+        /// validation failed.
+        /// </summary>
+        public string GetCachedZip(Uri url)
+        {
+            string filename = GetCachedFilename(url);
+
+            if (filename == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                using (ZipFile zip = new ZipFile (filename))
+                {
+                    // Perform CRC check.
+                    if (zip.TestArchive(true))
+                    {
+                        return filename;
+                    }
+                }
+            }
+            catch (ZipException)
+            {
+                // We ignore these; it just means the file is borked,
+                // same as failing validation.
             }
 
             return null;

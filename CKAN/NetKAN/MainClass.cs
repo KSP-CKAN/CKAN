@@ -81,8 +81,8 @@ namespace CKAN.NetKAN
             }
 
             // Find our cached file, we'll need it later.
-            string file;
-            if (!cache.IsCached(mod.download, out file))
+            string file = cache.GetCachedZip(mod.download);
+            if (file == null)
             {
                 log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
                 return EXIT_ERROR;
