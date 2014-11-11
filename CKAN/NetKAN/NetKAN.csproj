@@ -8,6 +8,7 @@
     <RootNamespace>CKAN.NetKAN</RootNamespace>
     <AssemblyName>NetKAN</AssemblyName>
     <StartupObject>CKAN.NetKAN.MainClass</StartupObject>
+    <DefineConstants>$(DefineConstants);STABLE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
