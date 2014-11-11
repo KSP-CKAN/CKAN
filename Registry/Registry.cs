@@ -26,12 +26,11 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
-        [JsonProperty] internal Dictionary<string, string> installed_dlls; // name => path
-        [JsonProperty] internal Dictionary<string, InstalledModule> installed_modules;
-        [JsonProperty] internal Dictionary<string, string> installed_files; // filename => module
-        [JsonProperty] internal int registry_version;
+        [JsonProperty] private Dictionary<string, string> installed_dlls; // name => path
+        [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
-        [JsonIgnore] internal string transaction_backup;
+        [JsonIgnore] private string transaction_backup;
 
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
