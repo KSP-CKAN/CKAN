@@ -534,7 +534,11 @@ namespace CKAN
             }
 
             // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
-            Match match = Regex.Match(path, @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)");
+            Match match = Regex.Match(
+                path,
+                @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)",
+                RegexOptions.IgnoreCase
+            );
 
             string relPath = match.Groups[1].Value;
             string modName = match.Groups[2].Value;
