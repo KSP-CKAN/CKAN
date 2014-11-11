@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 using System.Transactions;
+using System.Linq;
 
 namespace CKAN
 {
@@ -242,9 +243,20 @@ namespace CKAN
                 // TODO: It would be great to optimise this to skip .git directories and the like.
                 // Yes, I keep my GameData in git.
 
-                string[] dllFiles = Directory.GetFiles(GameData(), "*.dll", SearchOption.AllDirectories);
+                // Alas, EnumerateFiles is *case-sensitive* in its pattern, which causes
+                // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
+                // GameData *twice*.
+                //
+                // The least evil is to walk it once, and filter it ourselves.
+                IEnumerable<string> files = Directory.EnumerateFiles(
+                                        GameData(),
+                                        "*",
+                                        SearchOption.AllDirectories
+                                    );
 
-                foreach (string file in dllFiles)
+                files = files.Where(file => Regex.IsMatch(file, @"\.dll$", RegexOptions.IgnoreCase));
+
+                foreach (string file in files)
                 {
                     string dll = KSPPathUtils.NormalizePath(file);
                     this.Registry.RegisterDll(dll);
