@@ -40,9 +40,9 @@ You will also find the [CKAN spec](Spec.md) and
 ## Helping the development
 
 The CKAN client is written in C#, targets Mono 4.0, and lives in
-the `CKAN` directory of this repository. Contributions are welcome.
+the `CKAN` directory of this repository.
 
-## How I find out or help more?
+Contributions are welcome:
 
 * We have [a wiki](https://github.com/KSP-CKAN/CKAN/wiki) that you are
 encouraged to use and contribute to.
@@ -54,3 +54,5 @@ add to this!
 * Hop onto the [#ckan](http://webchat.esper.net/?channels=ckan) IRC
 channel (irc.esper.net) to chat with the team, lend a hand, or
 ask questions.
+
+* Ask the authors of your favourite mods to join the CKAN: [adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN) is very easy and will only take a few minutes.
