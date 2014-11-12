@@ -4,29 +4,18 @@
 
 ## What's the CKAN?
 
-The CKAN is a metadata respository and associated tools to allow
-you to find, install, and manage mods for Kerbal Space Program.
-It provides strong assurances that mods are installed in the way
-prescribed by their metadata files, for the correct version of Kerbal
-Space Program, alongside their dependencies, and without any
-conflicting mods.
+The CKAN is a metadata respository and associated tools to allow you to find, install, and manage mods for Kerbal Space Program. It provides strong assurances that mods are installed in the way prescribed by their metadata files, for the correct version of Kerbal Space Program, alongside their dependencies, and without any conflicting mods.
 
-By providing a standardised way to release and install modules, it is
-hoped that many of the misinstall problems will be eliminated
-(reducing the workload on authors), and a more straightforward path of
-installing mods is provided (making it easier for users).
+CKAN is great for players _and_ for authors:
+- players can find new content and install it with just a few clicks;
+- modders don't have to worry about misinstall problems or outdated versions;
 
-The CKAN has been inspired by the solid and proven metadata formats
-from both the Debian project and the CPAN, each of which manages
-tens of thousands of packages.
+The CKAN has been inspired by the solid and proven metadata formats from both the Debian project and the CPAN, each of which manages tens of thousands of packages.
 
 ## What's the status of the CKAN?
 
-The CKAN is currently under
-[active development](https://github.com/KSP-CKAN/CKAN/commits/master).
-It is not yet suitable for regular use, but testing by authors
-and experienced users is strongly encouraged. We very much welcome
-contributions, discussions, and especially pull-requests.
+The CKAN is currently under [active development](https://github.com/KSP-CKAN/CKAN/commits/master).
+It is not yet suitable for regular use, but testing by authors and experienced users is strongly encouraged. We very much welcome contributions, discussions, and especially pull-requests.
 
 ## The CKAN spec
 
@@ -35,57 +24,23 @@ which comes with a corresponding [JSON Schema](CKAN.schema). This
 repository includes a JSON schema validator in the
 [`bin`](https://github.com/KSP-CKAN/CKAN/tree/master/bin) directory.
 
-## Using the CKAN as a user
+## CKAN for players
 
-```
-$ ckan help
+CKAN is designed to be as user-friendly as possible. See the [User guide](https://github.com/KSP-CKAN/CKAN/wiki/User-guide) to get started with CKAN.
 
-CKAN v0.04-17-gd42c8d6
-Copyright CKAN Team, https://github.com/KSP-CKAN/CKAN
-CC-BY 4.0, LGPL, or MIT; you choose!
+## CKAN for modders
 
-  update       Update list of available mods
+If you are an author, you might want to provide metadata to ensure that your mod installs correctly. While CKAN can usually figure out most of the metadata by itself, you can add your own file to provide dependencies, recommendations and installation instructions.
 
-  available    List available mods
-
-  install      Install a KSP mod
-
-  remove       Remove an installed mod
-
-  scan         Scan for manually installed KSP mods
-
-  list         List installed modules
-
-  show         Show information about a mod
-
-  clean        Clean away downloaded files from the cache
-
-  config       Configure CKAN
-
-  version      Show the version of the CKAN client being used.
-
-```
-
-You can download one of our [releases](https://github.com/KSP-CKAN/CKAN/releases),
-but be aware that anything marked 'pre-release' is considered unstable.
-
-When reporting bugs, please run the client with the `--debug` switch
-(eg: `ckan install --debug SomeMod`), and provide the output of
-`ckan version`.
-
-## Using the CKAN as a developer
-
-The CKAN client is written in C#, targets Mono 4.0, and lives in
-the `CKAN` directory of this repository. Contributions are welcome.
-
-## Adding a mod to the CKAN
-
-We have a wiki guide for
-[adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN).
-Please **be bold** and improve that guide however you see fit.
+Check out the page about[adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN) on the wiki.
 
 You will also find the [CKAN spec](Spec.md) and
 [CKAN schema](CKAN.schema) useful when writing CKAN files.
+
+## Helping the development
+
+The CKAN client is written in C#, targets Mono 4.0, and lives in
+the `CKAN` directory of this repository. Contributions are welcome.
 
 ## How I find out or help more?
 
