@@ -104,6 +104,48 @@ namespace CKAN
             }
             return String.Empty;
         }
+
+        /// <summary>
+        /// Converts a path to one relative to the root provided.
+        /// Please use KSP.ToRelative when working with gamedirs.
+        /// Throws a PathErrorKraken if the path is not absolute, not inside the root,
+        /// or either argument is null.
+        /// </summary>
+        public static string ToRelative(string path, string root)
+        {
+            if (path == null || root == null)
+            {
+                throw new PathErrorKraken(null, "Null path provided");
+            }
+
+            // We have to normalise before we check for rootedness,
+            // otherwise backslash separators fail on Linux.
+
+            path = NormalizePath(path);
+            root = NormalizePath(root);
+
+            if (!Path.IsPathRooted(path))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format("{0} is not an absolute path", path)
+                );
+            }
+
+            if (! path.StartsWith(root))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format(
+                        "Oh snap. {0} isn't inside {1}",
+                        path, root
+                    )
+                );
+            }
+        
+            // The +1 here is because root will never have
+            // a trailing slash.
+            return path.Remove(0, root.Length + 1);
+        }
     }
 }
-

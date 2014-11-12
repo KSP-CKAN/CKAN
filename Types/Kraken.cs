@@ -240,4 +240,19 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// The mighty kraken that emerges from the depth when we have a problem with a path,
+    /// such as when it cannot be converted from absolute to relative, or vice-versa.
+    /// </summary>
+    public class PathErrorKraken : Kraken
+    {
+        public string path;
+
+        public PathErrorKraken(string path, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.path = path;
+        }
+    }
+
 }
