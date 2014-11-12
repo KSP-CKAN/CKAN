@@ -74,10 +74,18 @@ namespace CKAN
     [JsonObject(MemberSerialization.OptIn)]
     public class InstalledModule
     {
+        #region Fields and Properties
+
+        // This rather awful looking code is because while we write to install_time,
+        // we never read from it. That's cool, C#, because it *does* get serialised,
+        // and in the future we will read from it.
+        #pragma warning disable 0414
         [JsonProperty] private DateTime install_time;
+        #pragma warning restore 0414
+
         [JsonProperty] private Module source_module;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
+//        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
 
         // TODO: Our InstalledModuleFile already knows its path, so this could just
         // be a list. However we've left it as a dictionary for now to maintain
@@ -86,27 +94,22 @@ namespace CKAN
 
         public IEnumerable<string> Files 
         {
-            get
-            {
-                return installed_files.Keys;
-            }
+            get { return installed_files.Keys; }
         }
 
         public string identifier
         {
-            get
-            {
-                return source_module.identifier;
-            }
+            get { return source_module.identifier; }
         }
 
         public Module Module
         {
-            get
-            {
-                return source_module;
-            }
+            get { return source_module; }
         }
+
+        #endregion
+
+        #region Constructors
 
         public InstalledModule(KSP ksp, Module module, IEnumerable<string> relative_files)
         {
@@ -133,6 +136,10 @@ namespace CKAN
         {
         }
 
+        #endregion
+
+        #region Serialisation Fixes
+
         /// <summary>
         /// Ensures all files for this module have relative paths.
         /// Not intneded to be called except when upgrading registry versions.
@@ -154,5 +161,7 @@ namespace CKAN
 
             this.installed_files = normalised_installed_files;
         }
+
+        #endregion
     }
 }
