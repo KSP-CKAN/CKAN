@@ -51,7 +51,7 @@ namespace CKAN
         private ModuleInstaller(KSP ksp)
         {
             this.ksp = ksp;
-            this.registry_manager = RegistryManager.Instance(ksp.CkanDir());
+            this.registry_manager = RegistryManager.Instance(ksp);
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
         }
 

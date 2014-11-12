@@ -22,8 +22,10 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        private const int LATEST_REGISTRY_VERSION = 0;
-        private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 1;
+        [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
+
+        [JsonProperty] private int registry_version;
 
         // TODO: These may be good as custom types, especially those which process
         // paths (and flip from absolute to relative, and vice-versa).
@@ -34,15 +36,17 @@ namespace CKAN
 
         [JsonIgnore] private string transaction_backup;
 
+        #region Registry Upgrades
+
         [OnDeserialized]
-        private void DeSerialisationFixes(StreamingContext like_i_could_care)
+        private void DeSerialisationFixes(StreamingContext context)
         {
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
 
             if (installed_files == null)
             {
-                log.Warn("Older registry format detected, upgrading...");
+                log.Warn("Older registry format detected, adding installed files manifest...");
 
                 installed_files = new Dictionary<string, string>();
 
@@ -55,35 +59,87 @@ namespace CKAN
                     }
                 }
             }
+
+            // If we have no registry version at all, then we're from the pre-release period.
+            // We would check for a null here, but ints *can't* be null.
+            if (registry_version == 0)
+            {
+                KSP ksp = (KSP)context.Context;
+
+                if (ksp == null)
+                {
+                    throw new Kraken("Internal bug: No KSP instance provided on registry deserialisation");
+                }
+
+                log.Warn("Older registry format detected, normalising paths...");
+
+                var normalised_installed_files = new Dictionary<string,string>();
+
+                foreach (KeyValuePair<string,string> tuple in installed_files)
+                {
+                    string path = KSPPathUtils.NormalizePath(tuple.Key);
+
+                    if (Path.IsPathRooted(path))
+                    {
+                        path = ksp.ToRelative(path);
+                        normalised_installed_files[path] = tuple.Value;
+                    }
+                    else
+                    {
+                        // Already relative.
+                        normalised_installed_files[path] = tuple.Value;
+                    }
+                }
+
+                this.installed_files = normalised_installed_files;
+
+                // Now update all our module file manifests.
+
+                foreach (InstalledModule module in installed_modules.Values)
+                {
+                    module.Renormalise(ksp);
+                }
+
+                // Our installed dlls have contained relative paths since forever,
+                // and the next `ckan scan` will fix them anyway. (We can't scan here,
+                // because that needs a registry, and we chicken-egg.)
+
+                log.Warn("Registry upgrade complete");
+            }
+
+            registry_version = LATEST_REGISTRY_VERSION;
         }
+
+        #endregion
 
         #region Constructors
 
         public Registry(
-            int version,
             Dictionary<string, InstalledModule> installed_modules,
             Dictionary<string, string> installed_dlls,
             Dictionary<string, AvailableModule> available_modules,
             Dictionary<string, string> installed_files
             )
         {
-            /* TODO: support more than just the latest version */
-            if (version != LATEST_REGISTRY_VERSION)
-            {
-                throw new RegistryVersionNotSupportedKraken(version);
-            }
-
             // Is there a better way of writing constructors than this? Srsly?
             this.installed_modules = installed_modules;
             this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
             this.installed_files = installed_files;
+            this.registry_version = LATEST_REGISTRY_VERSION;
+        }
+
+        // If deserialsing, we don't want everything put back directly,
+        // thus making sure our version number is preserved, letting us
+        // detect registry version upgrades.
+        [JsonConstructor]
+        private Registry()
+        {
         }
 
         public static Registry Empty()
         {
             return new Registry(
-                LATEST_REGISTRY_VERSION,
                 new Dictionary<string, InstalledModule>(),
                 new Dictionary<string, string>(),
                 new Dictionary<string, AvailableModule>(),

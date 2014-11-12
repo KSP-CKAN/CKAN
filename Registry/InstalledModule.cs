@@ -132,5 +132,27 @@ namespace CKAN
         private InstalledModule()
         {
         }
+
+        /// <summary>
+        /// Ensures all files for this module have relative paths.
+        /// Not intneded to be called except when upgrading registry versions.
+        public void Renormalise(KSP ksp)
+        {
+            var normalised_installed_files = new Dictionary<string, InstalledModuleFile>();
+
+            foreach (KeyValuePair<string, InstalledModuleFile> tuple in installed_files)
+            {
+                string path = KSPPathUtils.NormalizePath(tuple.Key);
+
+                if (Path.IsPathRooted(path))
+                {
+                    path = ksp.ToRelative(path);
+                }
+
+                normalised_installed_files[path] = tuple.Value;
+            }
+
+            this.installed_files = normalised_installed_files;
+        }
     }
 }
