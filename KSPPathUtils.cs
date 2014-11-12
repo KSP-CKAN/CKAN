@@ -147,5 +147,42 @@ namespace CKAN
             // a trailing slash.
             return path.Remove(0, root.Length + 1);
         }
+
+        /// <summary>
+        /// Returns root/path, but checks that root is absolute,
+        /// path is relative, and normalises everything for great justice.
+        /// Please use KSP.ToAbsolute if converting from a KSP gamedir.
+        /// Throws a PathErrorKraken if anything goes wrong.
+        /// </summary>
+        public static string ToAbsolute(string path, string root)
+        {
+            if (path == null || root == null)
+            {
+                throw new PathErrorKraken(null, "Null path provided");
+            }
+
+            path = NormalizePath(path);
+            root = NormalizePath(root);
+
+            if (Path.IsPathRooted(path))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format("{0} is already absolute", path)
+                );
+            }
+
+            if (!Path.IsPathRooted(root))
+            {
+                throw new PathErrorKraken(
+                    root,
+                    String.Format("{0} isn't an absolute root", root)
+                );
+            }
+
+            // Why normalise it AGAIN? Because Path.Combine can insert
+            // the un-prettiest slashes.
+            return NormalizePath(Path.Combine(root, path));
+        }
     }
 }
