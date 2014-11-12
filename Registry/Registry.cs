@@ -477,40 +477,47 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Register the supplied module as having been uninstalled, thereby
+        /// Deregister a module, which must already have its files removed, thereby
         /// forgetting abouts its metadata and files.
+        /// 
+        /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
-        public void DeregisterModule(string module)
+        public void DeregisterModule(KSP ksp, string module)
         {
             SealionTransaction();
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in this.installed_modules[module].Files)
+            foreach (string rel_file in this.installed_modules[module].Files)
             {
-                if (File.Exists(filename))
+                string absolute_file = ksp.ToAbsolute(rel_file);
+
+                // Note, this checks to see if a *file* exists; it doesn't
+                // trigger on directories, which we allow to still be present
+                // (they may be shared by multiple mods.
+                if (File.Exists(absolute_file))
                 {
                     inconsistencies.Add(string.Format(
                         "{0} is registered to {1} but has not been removed!",
-                        filename, module
+                        absolute_file, module
                     ));
                 }
-
-                // We should probably be marking removal of an unregistred file
-                // as inconsistent, but older registries didn't have a file list,
-                // so we're cool for now.
-                this.installed_files.Remove(filename);
             }
-
-            // De-register our module, even if there were inconsistencies.
-            // If nothing catches our exception, our transaction layer will roll us back.
-            this.installed_modules.Remove(module);
 
             if (inconsistencies.Count > 0)
             {
                 // Uh oh, what mess have we got ourselves into now, Inconsistency Kraken?
                 throw new InconsistentKraken(inconsistencies);
             }
+
+            // Okay, all the files are gone. Let's clear our metadata.
+            foreach (string rel_file in this.installed_modules[module].Files)
+            {
+                this.installed_files.Remove(rel_file);
+            }
+
+            // Bye bye, module, it's been nice having you visit.
+            this.installed_modules.Remove(module);
         }
 
         /// <summary>
