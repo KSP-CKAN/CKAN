@@ -307,6 +307,24 @@ namespace CKAN
             log.Error("Could not find KSP version in readme.txt");
             throw new BadVersionException();
         }
+
+        /// <summary>
+        /// Returns path relative to this KSP's GameDir.
+        /// </summary>
+        public string ToRelative(string path)
+        {
+            return KSPPathUtils.ToRelative(path, this.GameDir());
+        }
+
+        /// <summary>
+        /// Given a path relative to this KSP's GameDir, returns the
+        /// absolute path on the system. 
+        /// </summary>
+        public string ToAbsolute(string path)
+        {
+            return KSPPathUtils.ToAbsolute(path, this.GameDir());
+        }
+
     }
 
     public class BadVersionException : Exception

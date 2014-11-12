@@ -77,5 +77,28 @@ namespace CKANTests
 
             Assert.IsTrue(ksp.Registry.IsInstalled("NewMod"));
         }
+
+        [Test]
+        public void ToAbsolute()
+        {
+            Assert.AreEqual(
+                CKAN.KSPPathUtils.NormalizePath(
+                    Path.Combine(ksp_dir, "GameData/HydrazinePrincess")
+                ),
+                ksp.ToAbsolute("GameData/HydrazinePrincess")
+            );
+        }
+
+        [Test]
+        public void ToRelative()
+        {
+            string absolute = Path.Combine(ksp_dir, "GameData/HydrazinePrincess");
+
+            Assert.AreEqual(
+                "GameData/HydrazinePrincess",
+                ksp.ToRelative(absolute)
+            );
+        }
+
     }
 }
