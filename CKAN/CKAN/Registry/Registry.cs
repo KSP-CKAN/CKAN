@@ -519,42 +519,46 @@ namespace CKAN
         /// 
         /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
-        public void RegisterDll(string path)
+        public void RegisterDll(KSP ksp, string absolute_path)
         {
             SealionTransaction();
 
-            // TODO: This is awful, as it's O(N^2), but it means we never index things which are
-            // part of another mod.
+            string relative_path = ksp.ToRelative(absolute_path);
 
-            foreach (InstalledModule mod in installed_modules.Values)
+            if (installed_files.ContainsKey(relative_path))
             {
-                if (mod.Files.Contains(path))
-                {
-                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.identifier);
-                    return;
-                }
+                log.InfoFormat(
+                    "Not registering {0}, it belongs to {1}",
+                    relative_path,
+                    installed_files[relative_path]
+                );
+                return;
             }
-
-            // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
+                
+            // http://xkcd.com/208/
+            // This regex works great for things like GameData/Foo/Foo-1.2.dll
             Match match = Regex.Match(
-                path,
-                @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)",
-                RegexOptions.IgnoreCase
+                relative_path, @"
+                    ^GameData/            # DLLs only live in GameData
+                    (?:.*/)?              # Intermediate paths (ending with /)
+                    (?<modname>[^.]+)     # Our DLL name, up until the first dot.
+                    .*\.dll               # Everything else, ending in dll
+                ",
+                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
             );
 
-            string relPath = match.Groups[1].Value;
-            string modName = match.Groups[2].Value;
+            string modName = match.Groups["modname"].Value;
 
-            if (modName.Length == 0 || relPath.Length == 0)
+            if (modName.Length == 0)
             {
-                log.WarnFormat("Attempted to index {0} which is not a DLL", path);
+                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
                 return;
             }
 
-            log.InfoFormat("Registering {0} -> {1}", modName, path);
+            log.InfoFormat("Registering {0} from {1}", modName, relative_path);
 
             // We're fine if we overwrite an existing key.
-            installed_dlls[modName] = relPath;
+            installed_dlls[modName] = relative_path;
         }
 
         /// <summary>

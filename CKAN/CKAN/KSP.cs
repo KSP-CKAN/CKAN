@@ -259,7 +259,7 @@ namespace CKAN
                 foreach (string file in files)
                 {
                     string dll = KSPPathUtils.NormalizePath(file);
-                    this.Registry.RegisterDll(dll);
+                    this.Registry.RegisterDll(this, dll);
                 }
                     
                 tx.Complete();
