@@ -733,7 +733,7 @@ namespace CKAN
 
                 // Remove from registry.
 
-                registry_manager.registry.DeregisterModule(modName);
+                registry_manager.registry.DeregisterModule(ksp, modName);
 
                 // Sort our directories from longest to shortest, to make sure we remove child directories
                 // before parents. GH #78.
