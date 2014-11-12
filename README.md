@@ -20,27 +20,23 @@ It is not yet suitable for regular use, but testing by authors and experienced u
 ## The CKAN spec
 
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
-which comes with a corresponding [JSON Schema](CKAN.schema). This
-repository includes a JSON schema validator in the
-[`bin`](https://github.com/KSP-CKAN/CKAN/tree/master/bin) directory.
+which comes with a corresponding [JSON Schema](CKAN.schema).
+
+This repository includes a JSON schema validator that you can use to [validate your files](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#testing-your-file).
 
 ## CKAN for players
 
-CKAN is designed to be as user-friendly as possible. See the [User guide](https://github.com/KSP-CKAN/CKAN/wiki/User-guide) to get started with CKAN.
+CKAN can download, install and update mods in just a few clicks. See the [User guide](https://github.com/KSP-CKAN/CKAN/wiki/User-guide) to get started with CKAN.
 
 ## CKAN for modders
 
 If you are an author, you might want to provide metadata to ensure that your mod installs correctly. While CKAN can usually figure out most of the metadata by itself, you can add your own file to provide dependencies, recommendations and installation instructions.
 
-Check out the page about[adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN) on the wiki.
-
-You will also find the [CKAN spec](Spec.md) and
-[CKAN schema](CKAN.schema) useful when writing CKAN files.
+Check out the page about [adding a mod to the CKAN](https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN) on the wiki; you might also want to take a look at the [CKAN spec](Spec.md) and [CKAN schema](CKAN.schema), they can useful when writing your custom CKAN files.
 
 ## Helping the development
 
-The CKAN client is written in C#, targets Mono 4.0, and lives in
-the `CKAN` directory of this repository.
+The CKAN client is a C# application that targets Mono 4.0, and therefore it runs natively on all the major platforms. It lives in the `CKAN` directory of this repository.
 
 Contributions are welcome:
 
