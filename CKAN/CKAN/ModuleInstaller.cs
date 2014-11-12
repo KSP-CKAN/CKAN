@@ -708,7 +708,7 @@ namespace CKAN
 
                 foreach (string file in files)
                 {
-                    string path = Path.Combine(ksp.GameDir(), file);
+                    string path = ksp.ToAbsolute(file);
 
                     try
                     {
