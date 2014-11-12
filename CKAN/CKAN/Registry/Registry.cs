@@ -25,6 +25,8 @@ namespace CKAN
         private const int LATEST_REGISTRY_VERSION = 0;
         private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
+        // TODO: These may be good as custom types, especially those which process
+        // paths (and flip from absolute to relative, and vice-versa).
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
         [JsonProperty] private Dictionary<string, string> installed_dlls; // name => path
         [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
