@@ -26,10 +26,10 @@ namespace CKAN
             }
         }
 
-        // TODO: Record our path (relative to KSP install)
-        public InstalledModuleFile(string path)
+        public InstalledModuleFile(string path, KSP ksp)
         {
-            this.sha1_sum = Sha1Sum(path);
+            string absolute_path = ksp.ToAbsolute(path);
+            this.sha1_sum = Sha1Sum(absolute_path);
         }
 
         // We need this because otherwise JSON.net tries to pass in
@@ -108,54 +108,29 @@ namespace CKAN
             }
         }
 
-        public InstalledModule(KSP ksp, Module module, IEnumerable<string> files)
+        public InstalledModule(KSP ksp, Module module, IEnumerable<string> relative_files)
         {
             this.install_time = DateTime.Now;
             this.source_module = module;
             this.installed_files = new Dictionary<string, InstalledModuleFile>();
 
-            foreach (string full_path in files)
+            foreach (string file in relative_files)
             {
-                string rel_path = MakeRelativeToKsp(full_path, ksp);
+                if (Path.IsPathRooted(file))
+                {
+                    throw new PathErrorKraken(file, "InstalledModule *must* have relative paths");
+                }
 
-                // IMF stil needs the full path for now so it can compute the SHA1
-                installed_files[rel_path] = new InstalledModuleFile(full_path);
+                // IMF needs a KSP object so it can compute the SHA1.
+                installed_files[file] = new InstalledModuleFile(file, ksp);
             }
         }
 
+        // If we're being deserialised from our JSON file, we don't need to
+        // do any special construction.
         [JsonConstructor]
         private InstalledModule()
         {
-        }
-
-        /// <summary>
-        /// If the given file has an absolute path, make it relative to KSP.GameDir
-        /// Does nothing if the file is already relative.
-        /// Throws a kraken if it's relative, but not in the KSP dir.
-        /// </summary>
-        private static string MakeRelativeToKsp(string file, KSP ksp)
-        {
-            // If we've got an absolute path, convert it to a relative one
-            // from the GameRoot.
-            if (Path.IsPathRooted(file))
-            {
-                if (file.StartsWith(ksp.GameDir()))
-                {
-                    // The +1 here is because GameDir will never have
-                    // a trailing slash, but our path will.
-                    file = file.Remove(0, ksp.GameDir().Length + 1);
-                }
-                else
-                {
-                    throw new Kraken(
-                        String.Format(
-                            "Oh snap. {0} isn't inside my KSP dir ({1})",
-                            file, ksp.GameDir()
-                        )
-                    );
-                }
-            }
-            return file;
         }
     }
 }

@@ -419,7 +419,7 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-        public void RegisterModule(Module mod, IEnumerable<string> files, KSP ksp)
+        public void RegisterModule(Module mod, IEnumerable<string> absolute_files, KSP ksp)
         {
             SealionTransaction();
 
@@ -429,22 +429,26 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in files)
-            {
-                if (this.installed_files.ContainsKey(filename))
-                {
-                    // For now, it's cool if a module wants to register a directory.
-                    if (Directory.Exists(filename))
-                    {
-                        continue;
-                    }
+            // We always work with relative files, so let's get some!
+            IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelative(x));
 
-                    // But it's not cool if they wish to register an already owned file.
+            foreach (string file in relative_files)
+            {
+                // For now, it's always cool if a module wants to register a directory.
+                // We have to flip back to absolute paths to actually test this.
+                if (Directory.Exists(ksp.ToAbsolute(file)))
+                {
+                    continue;
+                }
+
+                if (this.installed_files.ContainsKey(file))
+                {
+                    // Woah! Registering an already owned file? Not cool!
                     // (Although if it existed, we should have thrown a kraken well before this.)
-                    string owner = this.installed_files[filename];
+                    string owner = this.installed_files[file];
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                                      mod.identifier, filename, owner
+                                      mod.identifier, file, owner
                     ));
                 }
             }
@@ -462,13 +466,13 @@ namespace CKAN
             // directories aren't really owned like files are. However because each mod maintains
             // its own list of files, we'll remove directories when the last mod using them
             // is uninstalled.
-            foreach (string filename in files)
+            foreach (string file in relative_files)
             {
-                this.installed_files[filename] = mod.identifier;
+                this.installed_files[file] = mod.identifier;
             }
 
             // Finally, register our module proper.
-            var installed = new InstalledModule(ksp, mod, files);
+            var installed = new InstalledModule(ksp, mod, relative_files);
             installed_modules.Add(mod.identifier, installed);
         }
 
