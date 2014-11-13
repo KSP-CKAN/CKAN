@@ -64,13 +64,7 @@ namespace CKAN
 
                 if (ex is WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed"))
                 {
-                    User.WriteLine("\nOh no! Our download failed!\n");
-                    User.WriteLine("\t{0}\n", ex.Message);
-                    User.WriteLine("If you're on Linux, try running:\n");
-                    User.WriteLine("\tmozroots --import --ask-remove\n");
-                    User.WriteLine("on the command-line to update your certificate store, and try again.\n");
-
-                    throw new MissingCertificateException();
+                    throw new MissingCertificateKraken("Failed downloading "+url, ex);
                 }
 
                 // Not the exception we were looking for! Throw it further upwards!
@@ -79,9 +73,5 @@ namespace CKAN
 
             return filename;
         }
-    }
-
-    internal class MissingCertificateException : Exception
-    {
     }
 }
