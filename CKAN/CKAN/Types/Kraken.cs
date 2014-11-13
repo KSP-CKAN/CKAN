@@ -240,4 +240,72 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// The mighty kraken that emerges from the depth when we have a problem with a path,
+    /// such as when it cannot be converted from absolute to relative, or vice-versa.
+    /// </summary>
+    public class PathErrorKraken : Kraken
+    {
+        public string path;
+
+        public PathErrorKraken(string path, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.path = path;
+        }
+    }
+
+    /// <summary>
+    /// Tremble, mortal, for ye has summoned the kraken of mods which are not installed.
+    /// Thou hast tried to remove or perform actions upon a mod that is not there!
+    /// This kraken provides a custom Message
+    /// </summary>
+    public class ModNotInstalledKraken : Kraken
+    {
+        public string mod;
+
+        public override string Message
+        {
+            get { return string.Format("Module {0} is not installed!", mod); }
+        }
+
+        // TODO: Since we override message, should we really allow users to pass in a reason
+        // here? Is there a way we can check if that was set, and then access it directly from
+        // our base class?
+
+        public ModNotInstalledKraken(string mod, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.mod = mod;
+        }
+    }
+
+    /// <summary>
+    /// A bad command; useful for things like command-line handling, or REST servers.
+    /// </summary>
+    public class BadCommandKraken : Kraken
+    {
+        public BadCommandKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
+
+    public class MissingCertificateKraken : Kraken
+    {
+        public MissingCertificateKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+
+        public override string ToString()
+        {
+            return
+                "\nOh no! Our download failed with a certificate error!\n\n" +
+                "If you're on Linux, try running:\n" +
+                "\tmozroots --import --ask-remove\n" +
+                "on the command-line to update your certificate store, and try again.\n\n"
+            ;
+        }
+    }
 }

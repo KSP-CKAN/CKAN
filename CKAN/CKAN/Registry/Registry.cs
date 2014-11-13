@@ -22,67 +22,124 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        private const int LATEST_REGISTRY_VERSION = 0;
-        private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 1;
+        [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
+        [JsonProperty] private int registry_version;
+
+        // TODO: These may be good as custom types, especially those which process
+        // paths (and flip from absolute to relative, and vice-versa).
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
-        [JsonProperty] internal Dictionary<string, string> installed_dlls; // name => path
-        [JsonProperty] internal Dictionary<string, InstalledModule> installed_modules;
-        [JsonProperty] internal Dictionary<string, string> installed_files; // filename => module
-        [JsonProperty] internal int registry_version;
+        [JsonProperty] private Dictionary<string, string> installed_dlls; // name => path
+        [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
+        [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
-        [JsonIgnore] internal string transaction_backup;
+        [JsonIgnore] private string transaction_backup;
+
+        #region Registry Upgrades
 
         [OnDeserialized]
-        private void DeSerialisationFixes(StreamingContext like_i_could_care)
+        private void DeSerialisationFixes(StreamingContext context)
         {
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
 
             if (installed_files == null)
             {
-                log.Warn("Older registry format detected, upgrading...");
+                log.Warn("Older registry format detected, adding installed files manifest...");
 
                 installed_files = new Dictionary<string, string>();
 
-                foreach (var module in installed_modules.Values)
+                foreach (InstalledModule module in installed_modules.Values)
                 {
-                    foreach (string file in module.installed_files.Keys)
+                    foreach (string file in module.Files)
                     {
                         // Register each file we know about as belonging to the given module.
-                        installed_files[file] = module.source_module.identifier;
+                        installed_files[file] = module.identifier;
                     }
                 }
             }
+
+            // If we have no registry version at all, then we're from the pre-release period.
+            // We would check for a null here, but ints *can't* be null.
+            if (registry_version == 0)
+            {
+                KSP ksp = (KSP)context.Context;
+
+                if (ksp == null)
+                {
+                    throw new Kraken("Internal bug: No KSP instance provided on registry deserialisation");
+                }
+
+                log.Warn("Older registry format detected, normalising paths...");
+
+                var normalised_installed_files = new Dictionary<string,string>();
+
+                foreach (KeyValuePair<string,string> tuple in installed_files)
+                {
+                    string path = KSPPathUtils.NormalizePath(tuple.Key);
+
+                    if (Path.IsPathRooted(path))
+                    {
+                        path = ksp.ToRelativeGameDir(path);
+                        normalised_installed_files[path] = tuple.Value;
+                    }
+                    else
+                    {
+                        // Already relative.
+                        normalised_installed_files[path] = tuple.Value;
+                    }
+                }
+
+                this.installed_files = normalised_installed_files;
+
+                // Now update all our module file manifests.
+
+                foreach (InstalledModule module in installed_modules.Values)
+                {
+                    module.Renormalise(ksp);
+                }
+
+                // Our installed dlls have contained relative paths since forever,
+                // and the next `ckan scan` will fix them anyway. (We can't scan here,
+                // because that needs a registry, and we chicken-egg.)
+
+                log.Warn("Registry upgrade complete");
+            }
+
+            registry_version = LATEST_REGISTRY_VERSION;
         }
+
+        #endregion
 
         #region Constructors
 
         public Registry(
-            int version,
             Dictionary<string, InstalledModule> installed_modules,
             Dictionary<string, string> installed_dlls,
             Dictionary<string, AvailableModule> available_modules,
             Dictionary<string, string> installed_files
             )
         {
-            /* TODO: support more than just the latest version */
-            if (version != LATEST_REGISTRY_VERSION)
-            {
-                throw new RegistryVersionNotSupportedKraken(version);
-            }
-
             // Is there a better way of writing constructors than this? Srsly?
             this.installed_modules = installed_modules;
             this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
             this.installed_files = installed_files;
+            this.registry_version = LATEST_REGISTRY_VERSION;
+        }
+
+        // If deserialsing, we don't want everything put back directly,
+        // thus making sure our version number is preserved, letting us
+        // detect registry version upgrades.
+        [JsonConstructor]
+        private Registry()
+        {
         }
 
         public static Registry Empty()
         {
             return new Registry(
-                LATEST_REGISTRY_VERSION,
                 new Dictionary<string, InstalledModule>(),
                 new Dictionary<string, string>(),
                 new Dictionary<string, AvailableModule>(),
@@ -418,13 +475,7 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-
-        // TODO: It might be better to provide split functionality, one method
-        // to register a mod (which we do at the start of an install, and which
-        // can check consistency), and another to register each file with that mod
-        // (which can check file consistency at the same time).
-         
-        public void RegisterModule(InstalledModule mod)
+        public void RegisterModule(Module mod, IEnumerable<string> absolute_files, KSP ksp)
         {
             SealionTransaction();
 
@@ -434,20 +485,26 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in mod.installed_files.Keys)
-            {
-                if (this.installed_files.ContainsKey(filename))
-                {
-                    // For now, it's cool if a module wants to register a directory.
-                    if (Directory.Exists(filename))
-                    {
-                        continue;
-                    }
+            // We always work with relative files, so let's get some!
+            IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelativeGameDir(x));
 
-                    string owner = this.installed_files[filename];
+            foreach (string file in relative_files)
+            {
+                // For now, it's always cool if a module wants to register a directory.
+                // We have to flip back to absolute paths to actually test this.
+                if (Directory.Exists(ksp.ToAbsoluteGameDir(file)))
+                {
+                    continue;
+                }
+
+                if (this.installed_files.ContainsKey(file))
+                {
+                    // Woah! Registering an already owned file? Not cool!
+                    // (Although if it existed, we should have thrown a kraken well before this.)
+                    string owner = this.installed_files[file];
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                                      mod.source_module.identifier, filename, owner
+                                      mod.identifier, file, owner
                     ));
                 }
             }
@@ -465,50 +522,58 @@ namespace CKAN
             // directories aren't really owned like files are. However because each mod maintains
             // its own list of files, we'll remove directories when the last mod using them
             // is uninstalled.
-            foreach (string filename in mod.installed_files.Keys)
+            foreach (string file in relative_files)
             {
-                this.installed_files[filename] = mod.source_module.identifier;
+                this.installed_files[file] = mod.identifier;
             }
 
             // Finally, register our module proper.
-            installed_modules.Add(mod.source_module.identifier, mod);
+            var installed = new InstalledModule(ksp, mod, relative_files);
+            installed_modules.Add(mod.identifier, installed);
         }
 
         /// <summary>
-        /// Register the supplied module as having been uninstalled, thereby
+        /// Deregister a module, which must already have its files removed, thereby
         /// forgetting abouts its metadata and files.
+        /// 
+        /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
-        public void DeregisterModule(string module)
+        public void DeregisterModule(KSP ksp, string module)
         {
             SealionTransaction();
 
             var inconsistencies = new List<string>();
 
-            foreach (string filename in this.installed_modules[module].installed_files.Keys)
+            foreach (string rel_file in this.installed_modules[module].Files)
             {
-                if (File.Exists(filename))
+                string absolute_file = ksp.ToAbsoluteGameDir(rel_file);
+
+                // Note, this checks to see if a *file* exists; it doesn't
+                // trigger on directories, which we allow to still be present
+                // (they may be shared by multiple mods.
+                if (File.Exists(absolute_file))
                 {
                     inconsistencies.Add(string.Format(
                         "{0} is registered to {1} but has not been removed!",
-                        filename, module
+                        absolute_file, module
                     ));
                 }
-
-                // We should probably be marking removal of an unregistred file
-                // as inconsistent, but older registries didn't have a file list,
-                // so we're cool for now.
-                this.installed_files.Remove(filename);
             }
-
-            // De-register our module, even if there were inconsistencies.
-            // If nothing catches our exception, our transaction layer will roll us back.
-            this.installed_modules.Remove(module);
 
             if (inconsistencies.Count > 0)
             {
                 // Uh oh, what mess have we got ourselves into now, Inconsistency Kraken?
                 throw new InconsistentKraken(inconsistencies);
             }
+
+            // Okay, all the files are gone. Let's clear our metadata.
+            foreach (string rel_file in this.installed_modules[module].Files)
+            {
+                this.installed_files.Remove(rel_file);
+            }
+
+            // Bye bye, module, it's been nice having you visit.
+            this.installed_modules.Remove(module);
         }
 
         /// <summary>
@@ -517,42 +582,46 @@ namespace CKAN
         /// 
         /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
-        public void RegisterDll(string path)
+        public void RegisterDll(KSP ksp, string absolute_path)
         {
             SealionTransaction();
 
-            // TODO: This is awful, as it's O(N^2), but it means we never index things which are
-            // part of another mod.
+            string relative_path = ksp.ToRelativeGameDir(absolute_path);
 
-            foreach (var mod in installed_modules.Values)
+            if (installed_files.ContainsKey(relative_path))
             {
-                if (mod.installed_files.ContainsKey(path))
-                {
-                    log.DebugFormat("Not registering {0}, it's part of {1}", path, mod.source_module);
-                    return;
-                }
+                log.InfoFormat(
+                    "Not registering {0}, it belongs to {1}",
+                    relative_path,
+                    installed_files[relative_path]
+                );
+                return;
             }
-
-            // Oh my, does .NET support extended regexps (like Perl?), we could use them right now.
+                
+            // http://xkcd.com/208/
+            // This regex works great for things like GameData/Foo/Foo-1.2.dll
             Match match = Regex.Match(
-                path,
-                @".*?(?:^|/)GameData/((?:.*/|)([^.]+).*dll)",
-                RegexOptions.IgnoreCase
+                relative_path, @"
+                    ^GameData/            # DLLs only live in GameData
+                    (?:.*/)?              # Intermediate paths (ending with /)
+                    (?<modname>[^.]+)     # Our DLL name, up until the first dot.
+                    .*\.dll$              # Everything else, ending in dll
+                ",
+                RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
             );
 
-            string relPath = match.Groups[1].Value;
-            string modName = match.Groups[2].Value;
+            string modName = match.Groups["modname"].Value;
 
-            if (modName.Length == 0 || relPath.Length == 0)
+            if (modName.Length == 0)
             {
-                log.WarnFormat("Attempted to index {0} which is not a DLL", path);
+                log.WarnFormat("Attempted to index {0} which is not a DLL", relative_path);
                 return;
             }
 
-            log.InfoFormat("Registering {0} -> {1}", modName, path);
+            log.InfoFormat("Registering {0} from {1}", modName, relative_path);
 
             // We're fine if we overwrite an existing key.
-            installed_dlls[modName] = relPath;
+            installed_dlls[modName] = relative_path;
         }
 
         /// <summary>
@@ -589,7 +658,7 @@ namespace CKAN
             // Index our installed modules (which may overwrite the installed DLLs and provides)
             foreach (var modinfo in installed_modules)
             {
-                installed[modinfo.Key] = modinfo.Value.source_module.version;
+                installed[modinfo.Key] = modinfo.Value.Module.version;
             }
 
             return installed;
@@ -627,7 +696,7 @@ namespace CKAN
 
             foreach (var modinfo in installed_modules)
             {
-                Module module = modinfo.Value.source_module;
+                Module module = modinfo.Value.Module;
 
                 // Skip if this module provides nothing.
                 if (module.provides == null)
@@ -654,7 +723,7 @@ namespace CKAN
         {
             if (installed_modules.ContainsKey(modName))
             {
-                return installed_modules[modName].source_module.version;
+                return installed_modules[modName].Module.version;
             }
             else if (installed_dlls.ContainsKey(modName))
             {
@@ -702,7 +771,7 @@ namespace CKAN
         /// </summary>
         public void CheckSanity()
         {
-            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.source_module;
+            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.Module;
             SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
         }
 
@@ -749,7 +818,7 @@ namespace CKAN
 
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
-            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.source_module));
+            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
 

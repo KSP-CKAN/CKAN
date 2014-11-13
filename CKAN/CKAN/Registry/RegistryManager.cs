@@ -15,12 +15,20 @@ namespace CKAN
         private readonly string path;
         private readonly TxFileManager file_transaction = new TxFileManager();
 
+        // The only reason we have a KSP field is so we can pass it to the registry
+        // when deserialising, and *it* only needs it to do registry upgrades.
+        // We could get rid of all of this if we declare we no longer wish to support
+        // older registry formats.
+        private KSP ksp;
+
         public Registry registry;
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path)
+        private RegistryManager(string path, KSP ksp)
         {
+            this.ksp = ksp;
+
             this.path = Path.Combine(path, "registry.json");
             LoadOrCreate();
 
@@ -37,38 +45,41 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns an instance of the registry manager for the given path.
+        /// Returns an instance of the registry manager for the KSP install.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(string directory)
+        public static RegistryManager Instance(KSP ksp)
         {
-            log.DebugFormat("Using suppied CKAN registry at {0}", directory);
-
+            string directory = ksp.CkanDir();
             if (!singleton.ContainsKey(directory))
             {
-                log.Debug("RegistryManager not yet active, loading...");
-                singleton[directory] = new RegistryManager(directory);
+                log.DebugFormat("Preparing to load registry at {0}", directory);
+                singleton[directory] = new RegistryManager(directory, ksp);
             }
 
             return singleton[directory];
         }
 
-        /// <summary>
-        /// Returns the registry manager for the supplied KSP instance.
-        /// </summary>
-        public static RegistryManager Instance(KSP ksp)
+        private void Load()
         {
-            return Instance(ksp.CkanDir());
-        }
 
-        public void Load()
-        {
+            // Our registry needs to know our KSP install when upgrading from older
+            // registry formats. This lets us encapsulate that to make it available
+            // after deserialisation.
+            var settings = new JsonSerializerSettings
+            {
+                Context = new System.Runtime.Serialization.StreamingContext(
+                    System.Runtime.Serialization.StreamingContextStates.Other,
+                    ksp
+                )
+            };
+
             string json = File.ReadAllText(path);
-            registry = JsonConvert.DeserializeObject<Registry>(json);
+            registry = JsonConvert.DeserializeObject<Registry>(json, settings);
             log.DebugFormat("Loaded CKAN registry at {0}", path);
         }
 
-        public void LoadOrCreate()
+        private void LoadOrCreate()
         {
             try
             {
@@ -93,7 +104,7 @@ namespace CKAN
             Save();
         }
 
-        public string Serialize()
+        private string Serialize()
         {
             return JsonConvert.SerializeObject(registry);
         }
@@ -109,8 +120,8 @@ namespace CKAN
 
             if (directoryPath == null)
             {
-                log.DebugFormat("Failed to save registry, invalid path: {0}", path);
-                // TODO: Throw a friggin exception!
+                log.ErrorFormat("Failed to save registry, invalid path: {0}", path);
+                throw new DirectoryNotFoundKraken(path, "Can't find a directory in " + path);
             }
 
             if (!Directory.Exists(directoryPath))
