@@ -240,4 +240,21 @@ namespace CKAN
         }
     }
 
+    public class MissingCertificateKraken : Kraken
+    {
+        public MissingCertificateKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+
+        public override string ToString()
+        {
+            return
+                "\nOh no! Our download failed with a certificate error!\n\n" +
+                "If you're on Linux, try running:\n" +
+                "\tmozroots --import --ask-remove\n" +
+                "on the command-line to update your certificate store, and try again.\n\n"
+            ;
+        }
+    }
 }
