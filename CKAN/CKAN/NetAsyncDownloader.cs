@@ -6,6 +6,7 @@ using ChinhDo.Transactions;
 using log4net;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -168,6 +169,17 @@ namespace CKAN
                 .Select(x => x.error)
                 .Where(ex => ex != null)
                 .ToList();
+
+            // Let's check if any of these are certificate errors. If so,
+            // we'll report that instead, as this is common (and user-fixable)
+            // under Linux.
+            foreach (Exception ex in exceptions)
+            {
+                if (ex is WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed"))
+                {
+                    throw new MissingCertificateKraken();
+                }
+            }
 
             if (exceptions.Count > 0)
             {

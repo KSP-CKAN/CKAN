@@ -76,7 +76,7 @@ namespace CKAN.CmdLine
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
-        [VerbOption("ksp", HelpText = "Manage KSP insatlls")]
+        [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public KSPOptions KSP { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
