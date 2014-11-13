@@ -325,7 +325,7 @@ namespace CKAN
                 foreach (string file in files)
                 {
                     string dll = KSPPathUtils.NormalizePath(file);
-                    this.Registry.RegisterDll(dll);
+                    this.Registry.RegisterDll(this, dll);
                 }
                     
                 tx.Complete();
@@ -334,6 +334,23 @@ namespace CKAN
         }
 
         #endregion
+
+        /// <summary>
+        /// Returns path relative to this KSP's GameDir.
+        /// </summary>
+        public string ToRelativeGameDir(string path)
+        {
+            return KSPPathUtils.ToRelative(path, this.GameDir());
+        }
+
+        /// <summary>
+        /// Given a path relative to this KSP's GameDir, returns the
+        /// absolute path on the system. 
+        /// </summary>
+        public string ToAbsoluteGameDir(string path)
+        {
+            return KSPPathUtils.ToAbsolute(path, this.GameDir());
+        }
 
     }
 
