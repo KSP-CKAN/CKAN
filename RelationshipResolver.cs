@@ -182,14 +182,23 @@ namespace CKAN
                 else if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
+                    // TODO: It would be great if instead we picked the one with the
+                    // most recommendations.
                     throw new TooManyModsProvideKraken(dep_name, candidates);
                 }
 
                 CkanModule candidate = candidates[0];
 
-                // XXX TODO: This should go through not just everything in the modlist,
-                // but also what's installed, as well.
-                foreach (CkanModule mod in this.modlist.Values)
+                // Finally, check our candidate against everything which might object
+                // to it being installed; that's all the mods which are fixed in our
+                // list thus far, as well as everything on the system.
+
+                var fixed_mods =
+                    new HashSet<Module>(this.modlist.Values);
+
+                fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.source_module));
+
+                foreach (Module mod in fixed_mods)
                 {
                     if (mod.ConflictsWith(candidate))
                     {
