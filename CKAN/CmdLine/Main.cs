@@ -277,13 +277,17 @@ namespace CKAN.CmdLine
 
                 // Do our un-installs and re-installs in a transaction. If something goes wrong,
                 // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ())
-                {
+                using (var transaction = new TransactionScope ()) {
                     var installer = ModuleInstaller.Instance;
 
-                    foreach (string module in options.modules)
+                    try
                     {
-                        installer.UninstallList(module);
+                        installer.UninstallList(options.modules);
+                    }
+                    catch (ModNotInstalledKraken kraken)
+                    {
+                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
+                        return Exit.BADOPT;
                     }
 
                     // Prepare options. Can these all be done in the new() somehow?
@@ -306,6 +310,7 @@ namespace CKAN.CmdLine
 
                     transaction.Complete();
                 }
+
                 User.WriteLine("\nDone!\n");
 
                 return Exit.OK;
