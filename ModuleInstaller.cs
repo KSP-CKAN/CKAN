@@ -215,17 +215,25 @@ namespace CKAN
                     Install(modsToInstall[i]);
                 }
 
-                onReportProgress("Updating registry", 80);
+                onReportProgress("Updating registry", 70);
 
                 registry_manager.Save();
 
-                onReportProgress("Commiting filesystem changes", 90);
+                onReportProgress("Commiting filesystem changes", 80);
 
                 transaction.Complete();
 
-                onReportProgress("Done!", 100);
-                return;
             }
+
+            // We can scan GameData as a separate transaction. Installing the mods
+            // leaves everything consistent, and this is just gravy. (And ScanGameData
+            // acts as a Tx, anyway, so we don't need to provide our own.)
+
+            onReportProgress("Rescanning GameData", 90);
+
+            ksp.ScanGameData();
+
+            onReportProgress("Done!", 100);
         }
 
         /// <summary>
