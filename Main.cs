@@ -33,11 +33,19 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            // If we're starting with no options, invoke the GUI instead.
+            // If we're starting with no options, and this isn't
+            // a stable build, then invoke the GUI instead.
 
             if (args.Length == 0)
             {
-                return Gui();
+                if (Meta.IsStable())
+                {
+                    args = new string[] { "--help" };
+                }
+                else
+                {
+                    return Gui();
+                }
             }
 
             Options cmdline;
@@ -46,12 +54,11 @@ namespace CKAN.CmdLine
             {
                 cmdline = new Options(args);
             }
-            catch (NullReferenceException)
+            catch (BadCommandKraken)
             {
-                // Oops, something went wrong. Generate the help screen instead!
+                // Our help screen will already be shown. Let's add some extra data.
+                User.WriteLine("You are using CKAN version {0}", Meta.Version());
 
-                string[] help = {"--help"}; // Is there a nicer way than a temp var?
-                new Options(help);
                 return Exit.BADOPT;
             }
 
@@ -182,9 +189,17 @@ namespace CKAN.CmdLine
         {
             User.WriteLine("Downloading updates...");
 
-            int updated = Repo.Update(options.repo);
-
-            User.WriteLine("Updated information on {0} available modules", updated);
+            try
+            {
+                int updated = Repo.Update(options.repo);
+                User.WriteLine("Updated information on {0} available modules", updated);
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Handling the kraken means we have prettier output.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -416,6 +431,12 @@ namespace CKAN.CmdLine
                 User.WriteLine("Installation cancelled at user request.");
                 return Exit.ERROR;
             }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Another very pretty kraken.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -466,14 +487,5 @@ namespace CKAN.CmdLine
             return subopt.RunSubCommand();
         }
 
-    }
-
-    // Exception class, so we can signal errors in command options.
-
-    internal class BadCommandException : Exception
-    {
-        public BadCommandException(string message) : base(message)
-        {
-        }
     }
 }
