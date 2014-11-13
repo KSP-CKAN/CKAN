@@ -215,17 +215,25 @@ namespace CKAN
                     Install(modsToInstall[i]);
                 }
 
-                onReportProgress("Updating registry", 80);
+                onReportProgress("Updating registry", 70);
 
                 registry_manager.Save();
 
-                onReportProgress("Commiting filesystem changes", 90);
+                onReportProgress("Commiting filesystem changes", 80);
 
                 transaction.Complete();
 
-                onReportProgress("Done!", 100);
-                return;
             }
+
+            // We can scan GameData as a separate transaction. Installing the mods
+            // leaves everything consistent, and this is just gravy. (And ScanGameData
+            // acts as a Tx, anyway, so we don't need to provide our own.)
+
+            onReportProgress("Rescanning GameData", 90);
+
+            ksp.ScanGameData();
+
+            onReportProgress("Done!", 100);
         }
 
         /// <summary>
@@ -652,28 +660,29 @@ namespace CKAN
                 }
             }
 
+            // Find all the things which need uninstalling.
+            IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
+
+            User.WriteLine("About to remove:\n");
+
+            foreach (string mod in goners)
+            {
+                User.WriteLine(" * {0}", mod);
+            }
+
+            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+
+            if (!ok)
+            {
+                User.WriteLine("Mod removal aborted at user request.");
+                return;
+            }
+
             using (var transaction = new TransactionScope())
             {
-                // Find all the things which need uninstalling.
-                IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
-
-                User.WriteLine("About to remove:\n");
-
                 foreach (string mod in goners)
                 {
-                    User.WriteLine(" * {0}", mod);
-                }
-
-                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
-
-                if (!ok)
-                {
-                    User.WriteLine("Mod removal aborted at user request.");
-                    return;
-                }
-
-                foreach (string mod in goners)
-                {
+                    User.WriteLine("Removing {0}...", mod);
                     Uninstall(mod);
                 }
 
@@ -681,6 +690,8 @@ namespace CKAN
 
                 transaction.Complete();
             }
+
+            User.WriteLine("Done!");
         }
 
         public void UninstallList(string mod)
@@ -727,7 +738,7 @@ namespace CKAN
                         }
                         else
                         {
-                            User.WriteLine("Removing {0}", file);
+                            log.InfoFormat("Removing {0}", file);
                             file_transaction.Delete(path);
                         }
                     }
