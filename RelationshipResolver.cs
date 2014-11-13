@@ -175,7 +175,7 @@ namespace CKAN
                     }
                     else
                     {
-                        log.WarnFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                        log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
                         continue;
                     }
                 }
