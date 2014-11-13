@@ -262,7 +262,7 @@ namespace CKAN
         // 
         // TODO: The name of this and InstallModule() need to be made more distinctive.
 
-        internal void Install(CkanModule module, string filename = null)
+        private void Install(CkanModule module, string filename = null)
         {
             Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
@@ -642,6 +642,16 @@ namespace CKAN
         /// </summary>
         public void UninstallList(IEnumerable<string> mods)
         {
+            // Pre-check, have they even asked for things which are installed?
+
+            foreach (string mod in mods)
+            {
+                if (registry_manager.registry.InstalledModule(mod) == null)
+                {
+                    throw new ModNotInstalledKraken(mod);
+                }
+            }
+
             using (var transaction = new TransactionScope())
             {
                 // Find all the things which need uninstalling.
@@ -690,19 +700,16 @@ namespace CKAN
         {
             using (var transaction = new TransactionScope())
             {
+                InstalledModule mod = registry_manager.registry.InstalledModule(modName);
 
-                if (!registry_manager.registry.IsInstalled(modName))
+                if (mod == null)
                 {
-                    // TODO: This could indicates a logic error somewhere;
-                    // change to a kraken, the calling code can always catch it
-                    // if it expects that it may try to uninstall a module twice.
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", modName);
-                    return;
+                    throw new ModNotInstalledKraken(modName);
                 }
 
                 // Walk our registry to find all files for this mod.
-                IEnumerable<string> files =
-                    registry_manager.registry.InstalledModule(modName).Files;
+                IEnumerable<string> files = mod.Files;
 
                 var directoriesToDelete = new HashSet<string>();
 

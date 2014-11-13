@@ -255,4 +255,28 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// Tremble, mortal, for ye has summoned the kraken of mods which are not installed.
+    /// Thou hast tried to remove or perform actions upon a mod that is not there!
+    /// This kraken provides a custom Message
+    /// </summary>
+    public class ModNotInstalledKraken : Kraken
+    {
+        public string mod;
+
+        public override string Message
+        {
+            get { return string.Format("Module {0} is not installed!", mod); }
+        }
+
+        // TODO: Since we override message, should we really allow users to pass in a reason
+        // here? Is there a way we can check if that was set, and then access it directly from
+        // our base class?
+
+        public ModNotInstalledKraken(string mod, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.mod = mod;
+        }            
+    }
 }
