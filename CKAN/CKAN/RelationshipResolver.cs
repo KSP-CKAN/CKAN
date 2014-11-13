@@ -77,6 +77,15 @@ namespace CKAN
                 log.InfoFormat("Resolving relationships for {0}", module.identifier);
                 Resolve(module, options);
             }
+
+            var final_modules = new List<Module>(modlist.Values);
+            final_modules.AddRange(registry.InstalledModules.Select(x => x.source_module));
+
+            // Finally, let's do a sanity check that our solution is actually sane.
+            SanityChecker.EnforceConsistency(
+                final_modules,
+                registry.InstalledDlls
+            );
         }
 
         /// <summary>
@@ -178,6 +187,8 @@ namespace CKAN
 
                 CkanModule candidate = candidates[0];
 
+                // XXX TODO: This should go through not just everything in the modlist,
+                // but also what's installed, as well.
                 foreach (CkanModule mod in this.modlist.Values)
                 {
                     if (mod.ConflictsWith(candidate))

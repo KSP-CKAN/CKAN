@@ -33,6 +33,22 @@ namespace CKAN
 
         [JsonIgnore] internal string transaction_backup;
 
+        /// <summary>
+        /// Returns all the installed modules
+        /// </summary>
+        [JsonIgnore] public ICollection<InstalledModule> InstalledModules
+        {
+            get { return this.installed_modules.Values; }
+        }
+
+        /// <summary>
+        /// Returns the names of installed DLLs.
+        /// </summary>
+        [JsonIgnore] public ICollection<string> InstalledDlls
+        {
+            get { return this.installed_dlls.Keys; }
+        }
+
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
         {
@@ -613,7 +629,7 @@ namespace CKAN
 
             return null;
         }
-
+            
         /// <summary>
         /// Returns a dictionary of provided (virtual) modules, and a
         /// ProvidesVersion indicating what provides them.
