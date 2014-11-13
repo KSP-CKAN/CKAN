@@ -59,5 +59,17 @@ namespace CKAN
 
             return new CKAN.Version(short_version);
         }
+
+        /// <summary>
+        /// Returns true if this is a 'stable' build, false otherwise.
+        /// </summary>
+        public static bool IsStable()
+        {
+            #if (STABLE)
+            return true;
+            #else
+            return false;
+            #endif
+        }
     }
 }
