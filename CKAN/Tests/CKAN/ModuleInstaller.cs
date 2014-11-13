@@ -256,6 +256,27 @@ namespace CKANTests
             return tmpfile;
         }
 
+        [Test]
+        public void UninstallModNotFound()
+        {
+            using (var tidy = new Tests.DisposableKSP())
+            {
+                CKAN.KSP ksp = tidy.KSP;
+
+                // The fact that we *have* to break encapsulation here makes me cry.
+                // ModuleInstaller *should not* be a singleton. GH #333.
+                CKAN.KSPManager._CurrentInstance = ksp;
+
+                Assert.Throws<ModNotInstalledKraken>(delegate
+                {
+                    // This should throw, as our tidy KSP has no mods installed.
+                    CKAN.ModuleInstaller.Instance.UninstallList("Foo");
+                });
+
+                CKAN.KSPManager._CurrentInstance = null; // I weep even more.
+            }
+        }
+
         private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
