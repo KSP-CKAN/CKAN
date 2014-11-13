@@ -703,6 +703,7 @@ namespace CKAN
 
                 foreach (string mod in goners)
                 {
+                    User.WriteLine("Removing {0}...", mod);
                     Uninstall(mod);
                 }
 
@@ -710,6 +711,8 @@ namespace CKAN
 
                 transaction.Complete();
             }
+
+            User.WriteLine("Done!");
         }
 
         public void UninstallList(string mod)
@@ -759,7 +762,7 @@ namespace CKAN
                         }
                         else
                         {
-                            User.WriteLine("Removing {0}", file);
+                            log.InfoFormat("Removing {0}", file);
                             file_transaction.Delete(path);
                         }
                     }
