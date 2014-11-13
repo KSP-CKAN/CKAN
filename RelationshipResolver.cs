@@ -79,7 +79,7 @@ namespace CKAN
             }
 
             var final_modules = new List<Module>(modlist.Values);
-            final_modules.AddRange(registry.InstalledModules.Select(x => x.source_module));
+            final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
 
             // Finally, let's do a sanity check that our solution is actually sane.
             SanityChecker.EnforceConsistency(
@@ -196,7 +196,7 @@ namespace CKAN
                 var fixed_mods =
                     new HashSet<Module>(this.modlist.Values);
 
-                fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.source_module));
+                fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
                 foreach (Module mod in fixed_mods)
                 {
