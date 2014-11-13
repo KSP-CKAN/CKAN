@@ -189,9 +189,17 @@ namespace CKAN.CmdLine
         {
             User.WriteLine("Downloading updates...");
 
-            int updated = Repo.Update(options.repo);
-
-            User.WriteLine("Updated information on {0} available modules", updated);
+            try
+            {
+                int updated = Repo.Update(options.repo);
+                User.WriteLine("Updated information on {0} available modules", updated);
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Handling the kraken means we have prettier output.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -407,6 +415,12 @@ namespace CKAN.CmdLine
             catch (CancelledActionKraken)
             {
                 User.WriteLine("Installation cancelled at user request.");
+                return Exit.ERROR;
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Another very pretty kraken.
+                Console.WriteLine(kraken);
                 return Exit.ERROR;
             }
 
