@@ -2,6 +2,8 @@
 // This class will proxy to either the GUI or cmdline functionality.
 
 using System;
+using System.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -25,6 +27,8 @@ namespace CKAN
         public static DisplayMessage displayMessage = WriteLineConsole;
         public static DisplayError displayError = WriteLineConsole;
 
+        private static readonly ILog log = LogManager.GetLogger(typeof (User));
+
         // Send a line to the user. On a console, this does what you expect.
         // In the GUI, this should update the status bar.
         // This is also an obvious place to do logging as well.
@@ -42,6 +46,11 @@ namespace CKAN
             if (_frontEnd != FrontEndType.All && _frontEnd != frontEnd)
             {
                 return true;
+            }
+
+            if (Transaction.Current != null)
+            {
+                log.Warn("Asking the user a question during a transaction! What are we thinking?");
             }
 
             return yesNoDialog(text);
