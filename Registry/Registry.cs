@@ -81,7 +81,7 @@ namespace CKAN
 
                     if (Path.IsPathRooted(path))
                     {
-                        path = ksp.ToRelative(path);
+                        path = ksp.ToRelativeGameDir(path);
                         normalised_installed_files[path] = tuple.Value;
                     }
                     else
@@ -486,13 +486,13 @@ namespace CKAN
             var inconsistencies = new List<string>();
 
             // We always work with relative files, so let's get some!
-            IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelative(x));
+            IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelativeGameDir(x));
 
             foreach (string file in relative_files)
             {
                 // For now, it's always cool if a module wants to register a directory.
                 // We have to flip back to absolute paths to actually test this.
-                if (Directory.Exists(ksp.ToAbsolute(file)))
+                if (Directory.Exists(ksp.ToAbsoluteGameDir(file)))
                 {
                     continue;
                 }
@@ -546,7 +546,7 @@ namespace CKAN
 
             foreach (string rel_file in this.installed_modules[module].Files)
             {
-                string absolute_file = ksp.ToAbsolute(rel_file);
+                string absolute_file = ksp.ToAbsoluteGameDir(rel_file);
 
                 // Note, this checks to see if a *file* exists; it doesn't
                 // trigger on directories, which we allow to still be present
@@ -586,7 +586,7 @@ namespace CKAN
         {
             SealionTransaction();
 
-            string relative_path = ksp.ToRelative(absolute_path);
+            string relative_path = ksp.ToRelativeGameDir(absolute_path);
 
             if (installed_files.ContainsKey(relative_path))
             {
@@ -605,7 +605,7 @@ namespace CKAN
                     ^GameData/            # DLLs only live in GameData
                     (?:.*/)?              # Intermediate paths (ending with /)
                     (?<modname>[^.]+)     # Our DLL name, up until the first dot.
-                    .*\.dll               # Everything else, ending in dll
+                    .*\.dll$              # Everything else, ending in dll
                 ",
                 RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace
             );

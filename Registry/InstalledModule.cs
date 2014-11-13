@@ -28,7 +28,7 @@ namespace CKAN
 
         public InstalledModuleFile(string path, KSP ksp)
         {
-            string absolute_path = ksp.ToAbsolute(path);
+            string absolute_path = ksp.ToAbsoluteGameDir(path);
             this.sha1_sum = Sha1Sum(absolute_path);
         }
 
@@ -153,7 +153,7 @@ namespace CKAN
 
                 if (Path.IsPathRooted(path))
                 {
-                    path = ksp.ToRelative(path);
+                    path = ksp.ToRelativeGameDir(path);
                 }
 
                 normalised_installed_files[path] = tuple.Value;

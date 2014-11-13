@@ -311,7 +311,7 @@ namespace CKAN
         /// <summary>
         /// Returns path relative to this KSP's GameDir.
         /// </summary>
-        public string ToRelative(string path)
+        public string ToRelativeGameDir(string path)
         {
             return KSPPathUtils.ToRelative(path, this.GameDir());
         }
@@ -320,7 +320,7 @@ namespace CKAN
         /// Given a path relative to this KSP's GameDir, returns the
         /// absolute path on the system. 
         /// </summary>
-        public string ToAbsolute(string path)
+        public string ToAbsoluteGameDir(string path)
         {
             return KSPPathUtils.ToAbsolute(path, this.GameDir());
         }
