@@ -33,11 +33,19 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            // If we're starting with no options, invoke the GUI instead.
+            // If we're starting with no options, and this isn't
+            // a stable build, then invoke the GUI instead.
 
             if (args.Length == 0)
             {
-                return Gui();
+                if (Meta.IsStable())
+                {
+                    args = new string[] { "--help" };
+                }
+                else
+                {
+                    return Gui();
+                }
             }
 
             Options cmdline;
@@ -46,12 +54,11 @@ namespace CKAN.CmdLine
             {
                 cmdline = new Options(args);
             }
-            catch (NullReferenceException)
+            catch (BadCommandKraken)
             {
-                // Oops, something went wrong. Generate the help screen instead!
+                // Our help screen will already be shown. Let's add some extra data.
+                User.WriteLine("You are using CKAN version {0}", Meta.Version());
 
-                string[] help = {"--help"}; // Is there a nicer way than a temp var?
-                new Options(help);
                 return Exit.BADOPT;
             }
 
@@ -466,14 +473,5 @@ namespace CKAN.CmdLine
             return subopt.RunSubCommand();
         }
 
-    }
-
-    // Exception class, so we can signal errors in command options.
-
-    internal class BadCommandException : Exception
-    {
-        public BadCommandException(string message) : base(message)
-        {
-        }
     }
 }

@@ -240,6 +240,17 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// A bad command; useful for things like command-line handling, or REST servers.
+    /// </summary>
+    public class BadCommandKraken : Kraken
+    {
+        public BadCommandKraken(string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+        }
+    }
+
     public class MissingCertificateKraken : Kraken
     {
         public MissingCertificateKraken(string reason = null, Exception inner_exception = null)
