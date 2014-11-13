@@ -216,22 +216,13 @@ namespace CKAN
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
-            var contents = ModuleInstaller.Instance.GetModuleContentsList(module);
+            IEnumerable<string> contents = ModuleInstaller.Instance.GetModuleContentsList(module);
             if (contents == null)
             {
                 return;
             }
 
-            for (int i = 0; i < contents.Count; i++)
-            {
-                contents[i] = contents[i].Replace("\\", "/");
-                if (contents[i][contents[i].Length - 1] == '/')
-                {
-                    contents[i] = contents[i].Substring(0, contents[i].Length - 1);
-                }
-            }
-
-            foreach (var item in contents)
+            foreach (string item in contents)
             {
                 ContentsPreviewTree.Nodes[0].Nodes.Add(item);
             }

@@ -2,7 +2,7 @@
 using System;
 using CKAN;
 
-namespace Tests
+namespace CKANTests
 {
     [TestFixture()]
     public class KSPPathUtils
@@ -40,6 +40,121 @@ namespace Tests
             Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
 
             Assert.IsEmpty(CKAN.KSPPathUtils.GetLeadingPathElements("ModuleManager.2.5.1.dll"));
+        }
+
+        [Test]
+        public void ToRelative()
+        {
+            Assert.AreEqual(
+                "GameData/Cake",
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP"),
+                "Basic operation"
+            );
+
+            Assert.AreEqual(
+                "GameData/Cake",
+                CKAN.KSPPathUtils.ToRelative(@"\home\fionna\KSP\GameData\Cake", "/home/fionna/KSP"),
+                "Swapped slashes"
+            );
+
+            Assert.AreEqual(
+                "GameData/Cake",
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP"),
+                "Trailing slash in path"
+            );
+
+            Assert.AreEqual(
+                "GameData/Cake",
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/fionna/KSP/"),
+                "Trailing slash in root"
+            );
+
+            Assert.AreEqual(
+                "GameData/Cake",
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake/", "/home/fionna/KSP/"),
+                "Trailing slashes for everyone!"
+            );
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "/home/finn/KSP");
+            }, "Not a sub-path");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToRelative("KSP/GameData/Cake", "/KSP/GameData");
+            }, "Path not absolute");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "home/fionna/KSP");
+            }, "Root not absolute");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToRelative(null, "/home/fionna/KSP");
+            }, "null path");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", null);
+            }, "null root");
+
+        }
+
+        [Test]
+        public void ToAbsolute()
+        {
+            Assert.AreEqual(
+                "/home/fionna/KSP/GameData/Cake",
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP"),
+                "Basic functionality"
+            );
+
+            Assert.AreEqual(
+                "/home/fionna/KSP/GameData/Cake",
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP"),
+                "Trailing slashes path"
+            );
+
+            Assert.AreEqual(
+                "/home/fionna/KSP/GameData/Cake",
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP/"),
+                "Trailing slashes root"
+            );
+
+            Assert.AreEqual(
+                "/home/fionna/KSP/GameData/Cake",
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP/"),
+                "Trailing slashes for all"
+            );
+
+            Assert.AreEqual(
+                "/home/fionna/KSP/GameData/Cake",
+                CKAN.KSPPathUtils.ToAbsolute(@"GameData\Cake\","/home/fionna/KSP"),
+                "Swapped slashes"
+            );
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToAbsolute("/GameData/Cake", "/home/fionna/KSP");
+            }, "Rooted path");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake", "home/fionna/KSP");
+            }, "Unrooted root");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToAbsolute(null, "/home/fionna/KSP");
+            }, "null path");
+
+            Assert.Throws<PathErrorKraken>(delegate
+            {
+                CKAN.KSPPathUtils.ToAbsolute("/home/fionna/KSP/GameData/Cake", null);
+            }, "null root");
+
         }
 
     }

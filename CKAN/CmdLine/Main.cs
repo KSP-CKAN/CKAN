@@ -255,9 +255,18 @@ namespace CKAN.CmdLine
         {
             if (options.Modname != null && options.Modname.Length > 0)
             {
-                var installer = ModuleInstaller.Instance;
-                installer.UninstallList(options.Modname);
-                return Exit.OK;
+                try
+                {
+                    var installer = ModuleInstaller.Instance;
+                    installer.UninstallList(options.Modname);
+                    return Exit.OK;
+                }
+                catch (ModNotInstalledKraken kraken)
+                {
+                    User.WriteLine("I can't do that, {0} isn't installed.", kraken.mod);
+                    User.WriteLine("Try `ckan list` for a list of installed mods.");
+                    return Exit.BADOPT;
+                }
             }
             else
             {
@@ -283,13 +292,17 @@ namespace CKAN.CmdLine
 
                 // Do our un-installs and re-installs in a transaction. If something goes wrong,
                 // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ())
-                {
+                using (var transaction = new TransactionScope ()) {
                     var installer = ModuleInstaller.Instance;
 
-                    foreach (string module in options.modules)
+                    try
                     {
-                        installer.UninstallList(module);
+                        installer.UninstallList(options.modules);
+                    }
+                    catch (ModNotInstalledKraken kraken)
+                    {
+                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
+                        return Exit.BADOPT;
                     }
 
                     // Prepare options. Can these all be done in the new() somehow?
@@ -312,6 +325,7 @@ namespace CKAN.CmdLine
 
                     transaction.Complete();
                 }
+
                 User.WriteLine("\nDone!\n");
 
                 return Exit.OK;
@@ -450,13 +464,13 @@ namespace CKAN.CmdLine
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine("{0} version {1}", module.Module.name, module.Module.version);
 
             User.WriteLine("\n== Files ==\n");
 
-            Dictionary<string, InstalledModuleFile> files = module.installed_files;
+            IEnumerable<string> files = module.Files;
 
-            foreach (string file in files.Keys)
+            foreach (string file in files)
             {
                 User.WriteLine(file);
             }
