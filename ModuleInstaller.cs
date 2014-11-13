@@ -681,26 +681,26 @@ namespace CKAN
         /// </summary>
         public void UninstallList(IEnumerable<string> mods)
         {
+            // Find all the things which need uninstalling.
+            IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
+
+            User.WriteLine("About to remove:\n");
+
+            foreach (string mod in goners)
+            {
+                User.WriteLine(" * {0}", mod);
+            }
+
+            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+
+            if (!ok)
+            {
+                User.WriteLine("Mod removal aborted at user request.");
+                return;
+            }
+
             using (var transaction = new TransactionScope())
             {
-                // Find all the things which need uninstalling.
-                IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
-
-                User.WriteLine("About to remove:\n");
-
-                foreach (string mod in goners)
-                {
-                    User.WriteLine(" * {0}", mod);
-                }
-
-                bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
-
-                if (!ok)
-                {
-                    User.WriteLine("Mod removal aborted at user request.");
-                    return;
-                }
-
                 foreach (string mod in goners)
                 {
                     Uninstall(mod);
