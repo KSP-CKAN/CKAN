@@ -33,11 +33,19 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            // If we're starting with no options, invoke the GUI instead.
+            // If we're starting with no options, and this isn't
+            // a stable build, then invoke the GUI instead.
 
             if (args.Length == 0)
             {
-                return Gui();
+                if (Meta.IsStable())
+                {
+                    args = new string[] { "--help" };
+                }
+                else
+                {
+                    return Gui();
+                }
             }
 
             Options cmdline;
@@ -46,12 +54,11 @@ namespace CKAN.CmdLine
             {
                 cmdline = new Options(args);
             }
-            catch (NullReferenceException)
+            catch (BadCommandKraken)
             {
-                // Oops, something went wrong. Generate the help screen instead!
+                // Our help screen will already be shown. Let's add some extra data.
+                User.WriteLine("You are using CKAN version {0}", Meta.Version());
 
-                string[] help = {"--help"}; // Is there a nicer way than a temp var?
-                new Options(help);
                 return Exit.BADOPT;
             }
 
@@ -182,9 +189,17 @@ namespace CKAN.CmdLine
         {
             User.WriteLine("Downloading updates...");
 
-            int updated = Repo.Update(options.repo);
-
-            User.WriteLine("Updated information on {0} available modules", updated);
+            try
+            {
+                int updated = Repo.Update(options.repo);
+                User.WriteLine("Updated information on {0} available modules", updated);
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Handling the kraken means we have prettier output.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -240,9 +255,18 @@ namespace CKAN.CmdLine
         {
             if (options.Modname != null && options.Modname.Length > 0)
             {
-                var installer = ModuleInstaller.Instance;
-                installer.UninstallList(options.Modname);
-                return Exit.OK;
+                try
+                {
+                    var installer = ModuleInstaller.Instance;
+                    installer.UninstallList(options.Modname);
+                    return Exit.OK;
+                }
+                catch (ModNotInstalledKraken kraken)
+                {
+                    User.WriteLine("I can't do that, {0} isn't installed.", kraken.mod);
+                    User.WriteLine("Try `ckan list` for a list of installed mods.");
+                    return Exit.BADOPT;
+                }
             }
             else
             {
@@ -268,13 +292,17 @@ namespace CKAN.CmdLine
 
                 // Do our un-installs and re-installs in a transaction. If something goes wrong,
                 // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ())
-                {
+                using (var transaction = new TransactionScope ()) {
                     var installer = ModuleInstaller.Instance;
 
-                    foreach (string module in options.modules)
+                    try
                     {
-                        installer.UninstallList(module);
+                        installer.UninstallList(options.modules);
+                    }
+                    catch (ModNotInstalledKraken kraken)
+                    {
+                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
+                        return Exit.BADOPT;
                     }
 
                     // Prepare options. Can these all be done in the new() somehow?
@@ -297,6 +325,7 @@ namespace CKAN.CmdLine
 
                     transaction.Complete();
                 }
+
                 User.WriteLine("\nDone!\n");
 
                 return Exit.OK;
@@ -402,6 +431,12 @@ namespace CKAN.CmdLine
                 User.WriteLine("Installation cancelled at user request.");
                 return Exit.ERROR;
             }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Another very pretty kraken.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -429,13 +464,13 @@ namespace CKAN.CmdLine
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine("{0} version {1}", module.Module.name, module.Module.version);
 
             User.WriteLine("\n== Files ==\n");
 
-            Dictionary<string, InstalledModuleFile> files = module.installed_files;
+            IEnumerable<string> files = module.Files;
 
-            foreach (string file in files.Keys)
+            foreach (string file in files)
             {
                 User.WriteLine(file);
             }
@@ -452,14 +487,5 @@ namespace CKAN.CmdLine
             return subopt.RunSubCommand();
         }
 
-    }
-
-    // Exception class, so we can signal errors in command options.
-
-    internal class BadCommandException : Exception
-    {
-        public BadCommandException(string message) : base(message)
-        {
-        }
     }
 }
