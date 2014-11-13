@@ -85,7 +85,7 @@ namespace CKANTests
                 CKAN.KSPPathUtils.NormalizePath(
                     Path.Combine(ksp_dir, "GameData/HydrazinePrincess")
                 ),
-                ksp.ToAbsolute("GameData/HydrazinePrincess")
+                ksp.ToAbsoluteGameDir("GameData/HydrazinePrincess")
             );
         }
 
@@ -96,7 +96,7 @@ namespace CKANTests
 
             Assert.AreEqual(
                 "GameData/HydrazinePrincess",
-                ksp.ToRelative(absolute)
+                ksp.ToRelativeGameDir(absolute)
             );
         }
 
