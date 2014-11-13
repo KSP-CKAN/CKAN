@@ -240,9 +240,18 @@ namespace CKAN.CmdLine
         {
             if (options.Modname != null && options.Modname.Length > 0)
             {
-                var installer = ModuleInstaller.Instance;
-                installer.UninstallList(options.Modname);
-                return Exit.OK;
+                try
+                {
+                    var installer = ModuleInstaller.Instance;
+                    installer.UninstallList(options.Modname);
+                    return Exit.OK;
+                }
+                catch (ModNotInstalledKraken kraken)
+                {
+                    User.WriteLine("I can't do that, {0} isn't installed.", kraken.mod);
+                    User.WriteLine("Try `ckan list` for a list of installed mods.");
+                    return Exit.BADOPT;
+                }
             }
             else
             {
