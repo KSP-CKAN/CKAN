@@ -36,7 +36,7 @@ namespace CKANTests
             // release candidates.
 
             Assert.IsTrue(
-                Regex.IsMatch(version.ToString(), @"^v(?:0.\d+|\d+\.\d+\.\d+(?:-RC\d+))$"),
+                Regex.IsMatch(version.ToString(), @"^v(?:0.\d+|\d+\.\d+\.\d+(?:-RC\d+)?)$"),
                 version.ToString());
         }
     }
