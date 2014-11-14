@@ -32,10 +32,11 @@ namespace CKANTests
             }
 
             // We should always be in the form v0.xx (pre-release series),
-            // or vx.x.x (released)
+            // or vx.x.x (released). We also permit a (-RC\d) extension for
+            // release candidates.
 
             Assert.IsTrue(
-                Regex.IsMatch(version.ToString(), @"^v(?:0.\d+|\d+\.\d+\.\d+)$"),
+                Regex.IsMatch(version.ToString(), @"^v(?:0.\d+|\d+\.\d+\.\d+(?:-RC\d+))$"),
                 version.ToString());
         }
     }

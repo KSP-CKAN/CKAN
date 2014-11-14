@@ -141,7 +141,7 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public List<string> inconsistencies;
+        public ICollection<string> inconsistencies;
 
         public string InconsistenciesPretty
         {
@@ -157,7 +157,7 @@ namespace CKAN
             }
         }
 
-        public InconsistentKraken(List<string> inconsistencies, Exception inner_exception = null)
+        public InconsistentKraken(ICollection<string> inconsistencies, Exception inner_exception = null)
             :base(null, inner_exception)
         {
             this.inconsistencies = inconsistencies;

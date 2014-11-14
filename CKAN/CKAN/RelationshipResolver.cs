@@ -77,6 +77,15 @@ namespace CKAN
                 log.InfoFormat("Resolving relationships for {0}", module.identifier);
                 Resolve(module, options);
             }
+
+            var final_modules = new List<Module>(modlist.Values);
+            final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
+
+            // Finally, let's do a sanity check that our solution is actually sane.
+            SanityChecker.EnforceConsistency(
+                final_modules,
+                registry.InstalledDlls
+            );
         }
 
         /// <summary>
@@ -166,19 +175,30 @@ namespace CKAN
                     }
                     else
                     {
-                        log.WarnFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                        log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
                         continue;
                     }
                 }
                 else if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
+                    // TODO: It would be great if instead we picked the one with the
+                    // most recommendations.
                     throw new TooManyModsProvideKraken(dep_name, candidates);
                 }
 
                 CkanModule candidate = candidates[0];
 
-                foreach (CkanModule mod in this.modlist.Values)
+                // Finally, check our candidate against everything which might object
+                // to it being installed; that's all the mods which are fixed in our
+                // list thus far, as well as everything on the system.
+
+                var fixed_mods =
+                    new HashSet<Module>(this.modlist.Values);
+
+                fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
+
+                foreach (Module mod in fixed_mods)
                 {
                     if (mod.ConflictsWith(candidate))
                     {
