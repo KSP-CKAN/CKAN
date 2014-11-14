@@ -409,8 +409,10 @@ namespace CKAN.CmdLine
 
                 foreach (CkanModule mod in ex.modules)
                 {
-                    User.WriteLine("* {0}", mod.identifier);
+                    User.WriteLine("* {0} ({1})", mod.identifier, mod.name);
                 }
+
+                User.WriteLine(""); // Looks tidier.
 
                 return Exit.ERROR;
             }
