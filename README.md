@@ -15,7 +15,7 @@ The CKAN has been inspired by the solid and proven metadata formats from both th
 ## What's the status of the CKAN?
 
 The CKAN is currently under [active development](https://github.com/KSP-CKAN/CKAN/commits/master).
-It is not yet suitable for regular use, but testing by authors and experienced users is strongly encouraged. We very much welcome contributions, discussions, and especially pull-requests.
+We very much welcome contributions, discussions, and especially pull-requests.
 
 ## The CKAN spec
 
