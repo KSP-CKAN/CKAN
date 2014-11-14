@@ -213,7 +213,8 @@ namespace CKAN.CmdLine
 
             foreach (CkanModule module in available)
             {
-                User.WriteLine("* {0}", module);
+                string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
+                User.WriteLine(entry.PadRight(Console.WindowWidth).Substring(0,Console.WindowWidth));
             }
 
             return Exit.OK;
