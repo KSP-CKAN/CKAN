@@ -771,9 +771,20 @@ namespace CKAN
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.
+        /// Throws a PathErrorKraken if an absolute path is provided.
         /// </summary>
         public string FileOwner(string file)
         {
+            file = KSPPathUtils.NormalizePath(file);
+
+            if (Path.IsPathRooted(file))
+            {
+                throw new PathErrorKraken(
+                    file,
+                    "KSPUtils.FileOwner can only work with relative paths."
+                );
+            }
+
             if (this.installed_files.ContainsKey(file))
             {
                 return this.installed_files[file];
