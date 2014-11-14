@@ -415,9 +415,39 @@ namespace CKAN.CmdLine
             }
             catch (FileExistsKraken ex)
             {
-                User.WriteLine("Tried to write to {0} for {1}, but that file is owned by {2}!\n",
-                               ex.filename, ex.installing_module, ex.owning_module);
-                User.WriteLine("Your GameData has been returned to its original state.");
+                if (ex.owning_module != null)
+                {
+                    User.WriteLine(
+                        "\nOh no! We tried to overwrite a file owned by another mod!\n"+
+                        "Please try a `ckan update` and try again.\n\n"+
+                        "If this problem re-occurs, then it maybe a packaging bug.\n"+
+                        "Please report it at:\n\n" +
+                        "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n"+
+                        "Please including the following information in your report:\n\n" +
+                        "File           : {0}\n" +
+                        "Installing Mod : {1}\n" +
+                        "Owning Mod     : {2}\n" +
+                        "CKAN Version   : {3}\n",
+                        ex.filename, ex.installing_module, ex.owning_module,
+                        Meta.Version()
+                    );
+                }
+                else
+                {
+                    User.WriteLine(
+                        "\n\nOh no!\n\n"+
+                        "It looks like you're trying to install a mod which is already installed,\n"+
+                        "or which conflicts with another mod which is already installed.\n\n"+
+                        "As a safety feature, the CKAN will *never* overwrite or alter a file\n"+
+                        "that it did not install itself.\n\n"+
+                        "If you wish to install {0} via the CKAN,\n"+
+                        "then please manually uninstall the mod which owns:\n\n"+
+                        "{1}\n\n"+"and try again.\n",
+                        ex.installing_module, ex.filename
+                    );
+                }
+
+                User.WriteLine("Your GameData has been returned to its original state.\n");
                 return Exit.ERROR;
             }
             catch (InconsistentKraken ex)
