@@ -16,9 +16,9 @@ namespace CKAN
         ///     Checks the list of modules for consistency errors, returning a list of
         ///     errors found. The list will be empty if everything is fine.
         /// </summary>
-        public static List<string> ConsistencyErrors(IEnumerable<Module> modules, IEnumerable<string> dlls)
+        public static ICollection<string> ConsistencyErrors(IEnumerable<Module> modules, IEnumerable<string> dlls)
         {
-            var errors = new List<string>();
+            var errors = new HashSet<string>();
 
             // If we have no modules, then everything is fine. DLLs can't depend or conflict on things.
             if (modules == null)
@@ -81,7 +81,7 @@ namespace CKAN
         /// </summary>
         public static void EnforceConsistency(IEnumerable<Module> modules, IEnumerable<string> dlls = null)
         {
-            List<string> errors = ConsistencyErrors(modules, dlls);
+            ICollection<string> errors = ConsistencyErrors(modules, dlls);
 
             if (errors.Count != 0)
             {
