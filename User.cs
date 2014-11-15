@@ -69,7 +69,7 @@ namespace CKAN
                 {
                     WriteLine("{0} [Y/N]", text);
                     
-                    string input = Console.In.ReadLine();
+                    string input = Console.In.ReadLine().ToLower();
     
                     if (input.Equals("y") || input.Equals("yes"))
                     {
