@@ -75,7 +75,7 @@ namespace CKAN
                     {
                         continue;
                     }
-                    input = input.ToLower;
+                    input = input.ToLower();
     
                     if (input.Equals("y") || input.Equals("yes"))
                     {
