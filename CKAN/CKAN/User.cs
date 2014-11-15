@@ -63,26 +63,24 @@ namespace CKAN
 
         public static bool YesNoDialogConsole(string text = null)
         {
-            if (text != null)
+            while(true)
             {
-                WriteLine("{0} [Y/N]", text);
-            }
-
-            while (true)
-            {
-                ConsoleKeyInfo keypress = Console.ReadKey(true);
-
-                if (keypress.Key == ConsoleKey.Y)
+                if (text != null)
                 {
-                    return true;
+                    WriteLine("{0} [Y/N]", text);
+                    
+                    string input = Console.In.ReadLine();
+    
+                    if (input.Equals("y") || input.Equals("yes"))
+                    {
+                        return true;
+                    }
+                    if (input.Equals("n") || input.Equals("no"))
+                    {
+                        return false;
+                    }
+                    
                 }
-                if (keypress.Key == ConsoleKey.N)
-                {
-                    return false;
-                }
-
-                // TODO: Can we end up in an infinite loop here?
-                // What if the console disappears or something?
             }
         }
 
