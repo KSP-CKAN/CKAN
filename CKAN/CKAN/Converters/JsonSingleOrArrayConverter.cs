@@ -14,7 +14,11 @@ namespace CKAN
     {
         public override bool CanConvert(Type object_type)
         {
-            return(object_type == typeof(List<T>));
+            // We *only* want to be triggered for types that have explicitly
+            // set an attribute in their class saying they can be converted.
+            // By returning false here, we declare we're not interested in participating
+            // in any other conversions.
+            return false;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
