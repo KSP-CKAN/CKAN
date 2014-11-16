@@ -292,7 +292,7 @@ A free form, long text description of the mod, suitable for displaying detailed 
 
 ##### release_status
 
-The release status of the mod, one of `stable`, `testing` or or `development`,
+The release status of the mod, one of `stable`, `testing` or `development`,
 in order of increasing instability.  If not specified, a value of `stable` is
 assumed.
 
