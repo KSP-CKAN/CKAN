@@ -70,7 +70,7 @@
         },
         "release_status" : {
             "description" : "Optional release status",
-            "enum" : [ "alpha", "beta", "stable", "development" ]
+            "enum" : [ "stable", "testing", "development" ]
         },
         "ksp_version" : {
             "description" : "Optional target KSP version",
