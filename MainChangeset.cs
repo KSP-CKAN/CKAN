@@ -43,6 +43,7 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateChangesDialog(null, m_InstallWorker);
+            m_TabController.ShowTab("ManageModsTabPage");
         }
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)

@@ -9,18 +9,11 @@ namespace CKAN
     public partial class Main : Form
     {
 
-        private TabPage waitTabPage = null;
         private MainCancelCallback cancelCallback = null;
 
         public void ShowWaitDialog(bool cancelable = true)
         {
-            if (waitTabPage != null)
-            {
-                MainTabControl.TabPages.Add(waitTabPage);
-                waitTabPage = null;
-            }
-
-            MainTabControl.SelectTab(2);
+            m_TabController.ShowTab("WaitTabPage", 2);
 
             ManageModsTabPage.Enabled = false;
             CancelCurrentActionButton.Enabled = cancelable;
@@ -41,8 +34,8 @@ namespace CKAN
 
             ManageModsTabPage.Enabled = true;
 
-            MainTabControl.SelectTab(0);
-            MainTabControl.TabPages[2].Text = "Log";
+            m_TabController.SetActiveTab("ManageModsTabPage");
+
             CancelCurrentActionButton.Enabled = false;
             DialogProgressBar.Value = 0;
             DialogProgressBar.Style = ProgressBarStyle.Continuous;
