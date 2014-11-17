@@ -157,7 +157,8 @@ namespace CKAN
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(
             List<string> modules,
-            RelationshipResolverOptions options
+            RelationshipResolverOptions options,
+            NetAsyncDownloader downloader = null
         )
         {
             onReportProgress = onReportProgress ?? ((message, progress) => { });
@@ -195,7 +196,11 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                var downloader = new NetAsyncDownloader();
+                if (downloader == null)
+                {
+                    downloader = new NetAsyncDownloader();
+                }
+                
                 downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
             }
 
