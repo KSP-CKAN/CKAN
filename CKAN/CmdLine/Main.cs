@@ -33,11 +33,19 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            // If we're starting with no options, invoke the GUI instead.
+            // If we're starting with no options, and this isn't
+            // a stable build, then invoke the GUI instead.
 
             if (args.Length == 0)
             {
-                return Gui();
+                if (Meta.IsStable())
+                {
+                    args = new string[] { "--help" };
+                }
+                else
+                {
+                    return Gui();
+                }
             }
 
             Options cmdline;
@@ -46,12 +54,11 @@ namespace CKAN.CmdLine
             {
                 cmdline = new Options(args);
             }
-            catch (NullReferenceException)
+            catch (BadCommandKraken)
             {
-                // Oops, something went wrong. Generate the help screen instead!
+                // Our help screen will already be shown. Let's add some extra data.
+                User.WriteLine("You are using CKAN version {0}", Meta.Version());
 
-                string[] help = {"--help"}; // Is there a nicer way than a temp var?
-                new Options(help);
                 return Exit.BADOPT;
             }
 
@@ -182,9 +189,17 @@ namespace CKAN.CmdLine
         {
             User.WriteLine("Downloading updates...");
 
-            int updated = Repo.Update(options.repo);
-
-            User.WriteLine("Updated information on {0} available modules", updated);
+            try
+            {
+                int updated = Repo.Update(options.repo);
+                User.WriteLine("Updated information on {0} available modules", updated);
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Handling the kraken means we have prettier output.
+                Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
@@ -198,7 +213,8 @@ namespace CKAN.CmdLine
 
             foreach (CkanModule module in available)
             {
-                User.WriteLine("* {0}", module);
+                string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
+                User.WriteLine(entry.PadRight(Console.WindowWidth).Substring(0,Console.WindowWidth));
             }
 
             return Exit.OK;
@@ -240,9 +256,18 @@ namespace CKAN.CmdLine
         {
             if (options.Modname != null && options.Modname.Length > 0)
             {
-                var installer = ModuleInstaller.Instance;
-                installer.UninstallList(options.Modname);
-                return Exit.OK;
+                try
+                {
+                    var installer = ModuleInstaller.Instance;
+                    installer.UninstallList(options.Modname);
+                    return Exit.OK;
+                }
+                catch (ModNotInstalledKraken kraken)
+                {
+                    User.WriteLine("I can't do that, {0} isn't installed.", kraken.mod);
+                    User.WriteLine("Try `ckan list` for a list of installed mods.");
+                    return Exit.BADOPT;
+                }
             }
             else
             {
@@ -268,13 +293,17 @@ namespace CKAN.CmdLine
 
                 // Do our un-installs and re-installs in a transaction. If something goes wrong,
                 // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ())
-                {
+                using (var transaction = new TransactionScope ()) {
                     var installer = ModuleInstaller.Instance;
 
-                    foreach (string module in options.modules)
+                    try
                     {
-                        installer.UninstallList(module);
+                        installer.UninstallList(options.modules);
+                    }
+                    catch (ModNotInstalledKraken kraken)
+                    {
+                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
+                        return Exit.BADOPT;
                     }
 
                     // Prepare options. Can these all be done in the new() somehow?
@@ -297,6 +326,7 @@ namespace CKAN.CmdLine
 
                     transaction.Complete();
                 }
+
                 User.WriteLine("\nDone!\n");
 
                 return Exit.OK;
@@ -379,16 +409,48 @@ namespace CKAN.CmdLine
 
                 foreach (CkanModule mod in ex.modules)
                 {
-                    User.WriteLine("* {0}", mod.identifier);
+                    User.WriteLine("* {0} ({1})", mod.identifier, mod.name);
                 }
+
+                User.WriteLine(""); // Looks tidier.
 
                 return Exit.ERROR;
             }
             catch (FileExistsKraken ex)
             {
-                User.WriteLine("Tried to write to {0} for {1}, but that file is owned by {2}!\n",
-                               ex.filename, ex.installing_module, ex.owning_module);
-                User.WriteLine("Your GameData has been returned to its original state.");
+                if (ex.owning_module != null)
+                {
+                    User.WriteLine(
+                        "\nOh no! We tried to overwrite a file owned by another mod!\n"+
+                        "Please try a `ckan update` and try again.\n\n"+
+                        "If this problem re-occurs, then it maybe a packaging bug.\n"+
+                        "Please report it at:\n\n" +
+                        "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n"+
+                        "Please including the following information in your report:\n\n" +
+                        "File           : {0}\n" +
+                        "Installing Mod : {1}\n" +
+                        "Owning Mod     : {2}\n" +
+                        "CKAN Version   : {3}\n",
+                        ex.filename, ex.installing_module, ex.owning_module,
+                        Meta.Version()
+                    );
+                }
+                else
+                {
+                    User.WriteLine(
+                        "\n\nOh no!\n\n"+
+                        "It looks like you're trying to install a mod which is already installed,\n"+
+                        "or which conflicts with another mod which is already installed.\n\n"+
+                        "As a safety feature, the CKAN will *never* overwrite or alter a file\n"+
+                        "that it did not install itself.\n\n"+
+                        "If you wish to install {0} via the CKAN,\n"+
+                        "then please manually uninstall the mod which owns:\n\n"+
+                        "{1}\n\n"+"and try again.\n",
+                        ex.installing_module, ex.filename
+                    );
+                }
+
+                User.WriteLine("Your GameData has been returned to its original state.\n");
                 return Exit.ERROR;
             }
             catch (InconsistentKraken ex)
@@ -400,6 +462,12 @@ namespace CKAN.CmdLine
             catch (CancelledActionKraken)
             {
                 User.WriteLine("Installation cancelled at user request.");
+                return Exit.ERROR;
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Another very pretty kraken.
+                Console.WriteLine(kraken);
                 return Exit.ERROR;
             }
 
@@ -429,13 +497,13 @@ namespace CKAN.CmdLine
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine("{0} version {1}", module.source_module.name, module.source_module.version);
+            User.WriteLine("{0} version {1}", module.Module.name, module.Module.version);
 
             User.WriteLine("\n== Files ==\n");
 
-            Dictionary<string, InstalledModuleFile> files = module.installed_files;
+            IEnumerable<string> files = module.Files;
 
-            foreach (string file in files.Keys)
+            foreach (string file in files)
             {
                 User.WriteLine(file);
             }
@@ -452,14 +520,5 @@ namespace CKAN.CmdLine
             return subopt.RunSubCommand();
         }
 
-    }
-
-    // Exception class, so we can signal errors in command options.
-
-    internal class BadCommandException : Exception
-    {
-        public BadCommandException(string message) : base(message)
-        {
-        }
     }
 }

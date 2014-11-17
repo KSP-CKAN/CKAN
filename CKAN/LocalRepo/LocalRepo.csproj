@@ -11,7 +11,7 @@
     <AssemblyName>LocalRepo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <DefineConstants>$(DefineConstants);STABLE</DefineConstants>
+    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

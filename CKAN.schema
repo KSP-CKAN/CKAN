@@ -8,14 +8,14 @@
             "description" : "Version of the CKAN spec this document uses",
             "oneOf"       : [
                 {
-                    "type"    : "integer",
-                    "comment" : "The integer '1' is special cased",
-                    "minimum" : 1,
-                    "maximum" : 1
+                    "type"        : "integer",
+                    "description" : "The integer '1' is special cased",
+                    "minimum"     : 1,
+                    "maximum"     : 1
                 },
                 {
                     "type"        : "string",
-                    "comment"     : "A vx.x string",
+                    "description" : "A vx.x string",
                     "pattern"     : "^v[0-9]+\\.[0-9]+$"
                 }
             ]
@@ -70,7 +70,7 @@
         },
         "release_status" : {
             "description" : "Optional release status",
-            "enum" : [ "alpha", "beta", "stable", "development" ]
+            "enum" : [ "stable", "testing", "development" ]
         },
         "ksp_version" : {
             "description" : "Optional target KSP version",

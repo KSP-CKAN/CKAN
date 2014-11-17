@@ -104,6 +104,85 @@ namespace CKAN
             }
             return String.Empty;
         }
+
+        /// <summary>
+        /// Converts a path to one relative to the root provided.
+        /// Please use KSP.ToRelative when working with gamedirs.
+        /// Throws a PathErrorKraken if the path is not absolute, not inside the root,
+        /// or either argument is null.
+        /// </summary>
+        public static string ToRelative(string path, string root)
+        {
+            if (path == null || root == null)
+            {
+                throw new PathErrorKraken(null, "Null path provided");
+            }
+
+            // We have to normalise before we check for rootedness,
+            // otherwise backslash separators fail on Linux.
+
+            path = NormalizePath(path);
+            root = NormalizePath(root);
+
+            if (!Path.IsPathRooted(path))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format("{0} is not an absolute path", path)
+                );
+            }
+
+            if (! path.StartsWith(root))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format(
+                        "Oh snap. {0} isn't inside {1}",
+                        path, root
+                    )
+                );
+            }
+        
+            // The +1 here is because root will never have
+            // a trailing slash.
+            return path.Remove(0, root.Length + 1);
+        }
+
+        /// <summary>
+        /// Returns root/path, but checks that root is absolute,
+        /// path is relative, and normalises everything for great justice.
+        /// Please use KSP.ToAbsolute if converting from a KSP gamedir.
+        /// Throws a PathErrorKraken if anything goes wrong.
+        /// </summary>
+        public static string ToAbsolute(string path, string root)
+        {
+            if (path == null || root == null)
+            {
+                throw new PathErrorKraken(null, "Null path provided");
+            }
+
+            path = NormalizePath(path);
+            root = NormalizePath(root);
+
+            if (Path.IsPathRooted(path))
+            {
+                throw new PathErrorKraken(
+                    path,
+                    String.Format("{0} is already absolute", path)
+                );
+            }
+
+            if (!Path.IsPathRooted(root))
+            {
+                throw new PathErrorKraken(
+                    root,
+                    String.Format("{0} isn't an absolute root", root)
+                );
+            }
+
+            // Why normalise it AGAIN? Because Path.Combine can insert
+            // the un-prettiest slashes.
+            return NormalizePath(Path.Combine(root, path));
+        }
     }
 }
-

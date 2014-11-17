@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>CKAN</RootNamespace>
     <AssemblyName>CKAN</AssemblyName>
-    <DefineConstants>$(DefineConstants);STABLE</DefineConstants>
+    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -36,36 +36,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetFileCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Module.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
-    <Compile Include="Net.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="RelationshipResolver.cs" />
     <Compile Include="Types\Version.cs" />
     <Compile Include="Types\KSPVersion.cs" />
-    <Compile Include="Types\JsonSimpleStringConverter.cs" />
-    <Compile Include="Repo.cs" />
     <Compile Include="Meta.cs" />
-    <Compile Include="Types\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\Kraken.cs" />
     <Compile Include="KSPManager.cs" />
     <Compile Include="KSPPathUtils.cs" />
     <Compile Include="KSPPathConstants.cs" />
-    <Compile Include="NetAsyncDownloader.cs" />
     <Compile Include="Registry\AvailableModule.cs" />
     <Compile Include="Registry\InstalledModule.cs" />
     <Compile Include="Registry\Registry.cs" />
     <Compile Include="Registry\RegistryManager.cs" />
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
     <Compile Include="Relationships\SanityChecker.cs" />
-    <Compile Include="Types\JsonOldResourceUrlConverter.cs" />
+    <Compile Include="Net\Net.cs" />
+    <Compile Include="Net\NetAsyncDownloader.cs" />
+    <Compile Include="Relationships\RelationshipResolver.cs" />
+    <Compile Include="Net\Repo.cs" />
+    <Compile Include="Net\NetFileCache.cs" />
+    <Compile Include="Types\Module.cs" />
+    <Compile Include="Converters\JsonOldResourceUrlConverter.cs" />
+    <Compile Include="Converters\JsonSimpleStringConverter.cs" />
+    <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
+    <Compile Include="Types\License.cs" />
+    <Compile Include="Types\ReleaseStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Net\" />
+    <Folder Include="Converters\" />
+  </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Tests</RootNamespace>
     <AssemblyName>Tests</AssemblyName>
-    <DefineConstants>$(DefineConstants);STABLE</DefineConstants>
+    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -49,6 +49,8 @@
     <Compile Include="CKAN\KSPPathUtils.cs" />
     <Compile Include="DisposableKSP.cs" />
     <Compile Include="CKAN\Meta.cs" />
+    <Compile Include="CKAN\License.cs" />
+    <Compile Include="CKAN\ReleaseStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

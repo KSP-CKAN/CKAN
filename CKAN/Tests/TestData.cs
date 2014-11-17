@@ -194,7 +194,7 @@ namespace Tests
                     ""identifier"" : ""kOS"",
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
-                    ""license""  : ""GPLv3"",
+                    ""license""  : ""GPL-3.0"",
                     ""version""  : ""0.14"",
                     ""release_status"" : ""stable"",
                     ""ksp_version"" : ""0.24.2"",

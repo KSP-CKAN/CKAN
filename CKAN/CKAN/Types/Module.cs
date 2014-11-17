@@ -28,88 +28,6 @@ namespace CKAN
         public Uri kerbalstuff;
     }
 
-    // Alas, we have these, but we're not *using* them.
-    public enum License
-    {
-        public_domain,
-        Apache,
-        Apache_1_0,
-        Apache_2_0,
-        Artistic,
-        Artistic_1_0,
-        Artistic_2_0,
-        BSD_2_clause,
-        BSD_3_clause,
-        BSD_4_clause,
-        ISC,
-        CC_BY,
-        CC_BY_1_0,
-        CC_BY_2_0,
-        CC_BY_2_5,
-        CC_BY_3_0,
-        CC_BY_4_0,
-        CC_BY_SA,
-        CC_BY_SA_1_0,
-        CC_BY_SA_2_0,
-        CC_BY_SA_2_5,
-        CC_BY_SA_3_0,
-        CC_BY_SA_4_0,
-        CC_BY_NC,
-        CC_BY_NC_1_0,
-        CC_BY_NC_2_0,
-        CC_BY_NC_2_5,
-        CC_BY_NC_3_0,
-        CC_BY_NC_4_0,
-        CC_BY_NC_SA,
-        CC_BY_NC_SA_1_0,
-        CC_BY_NC_SA_2_0,
-        CC_BY_NC_SA_2_5,
-        CC_BY_NC_SA_3_0,
-        CC_BY_NC_SA_4_0,
-        CC_BY_NC_ND,
-        CC_BY_NC_ND_1_0,
-        CC_BY_NC_ND_2_0,
-        CC_BY_NC_ND_2_5,
-        CC_BY_NC_ND_3_0,
-        CC_BY_NC_ND_4_0,
-        CC0,
-        CDDL,
-        CPL,
-        EFL_1_0,
-        EFL_2_0,
-        Expat,
-        MIT,
-        GPL_1_0,
-        GPL_2_0,
-        GPL_3_0,
-        LGPL_2_0,
-        LGPL_2_1,
-        LGPL_3_0,
-        GFDL_1_0,
-        GFDL_1_1,
-        GFDL_1_2,
-        GFDL_1_3,
-        GFDL_NIV_1_0,
-        GFDL_NIV_1_1,
-        GFDL_NIV_1_2,
-        GFDL_NIV_1_3,
-        LPPL_1_0,
-        LPPL_1_1,
-        LPPL_1_2,
-        LPPL_1_3c,
-        MPL_1_1,
-        Perl,
-        Python_2_0,
-        QPL_1_0,
-        W3C,
-        Zlib,
-        Zope,
-        open_source,
-        restricted,
-        unrestricted,
-        unknown
-    }
-
     /// <summary>
     ///     Describes a CKAN module (ie, what's in the CKAN.schema file).
     /// </summary>
@@ -142,14 +60,15 @@ namespace CKAN
 
         [JsonProperty("ksp_version_max")] public KSPVersion ksp_version_max;
         [JsonProperty("ksp_version_min")] public KSPVersion ksp_version_min;
-        [JsonProperty("license", Required = Required.Always)] public string license; // TODO: Strong type
+
+        [JsonProperty("license", Required = Required.Always)] public License license;
 
         [JsonProperty("name")] public string name;
 
         [JsonProperty("provides")] public List<string> provides;
 
         [JsonProperty("recommends")] public List<RelationshipDescriptor> recommends;
-        [JsonProperty("release_status")] public string release_status; // TODO: Strong type
+        [JsonProperty("release_status")] public ReleaseStatus release_status;
 
         [JsonProperty("resources")] public ResourcesDescriptor resources;
         [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommandLine;
+using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
@@ -9,33 +10,47 @@ namespace CKAN.CmdLine
 
     internal class Options
     {
-        public Options(string[] args)
-        {
-            if (! Parser.Default.ParseArgumentsStrict(
-                args, new Actions(), (verb, suboptions) =>
-                {
-                action = verb;
-                options = suboptions;
-            }
-            ))
-            {
-                throw (new BadCommandException("Try ckan --help"));
-            }
-
-            // If we're here, success!
-        }
-
         public string action { get; set; }
         public object options { get; set; }
-    }
 
+        /// <summary>
+        /// Returns an options object on success. Prints a default help
+        /// screen and throws a BadCommandKraken on failure.
+        /// </summary>
+        public Options(string[] args)
+        {
+            Parser.Default.ParseArgumentsStrict
+            (
+                args, new Actions(), (verb, suboptions) =>
+                {
+                    action = verb;
+                    options = suboptions;
+                },
+                delegate
+                {
+                    throw (new BadCommandKraken());
+                }
+            );
+        }
+    }
+        
     // Actions supported by our client go here.
     // TODO: Figure out how to do per action help screens.
 
     internal class Actions
     {
+        #if (!STABLE)
+
+        // These features are still in development; disable them on stable
+        // builds.
+
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
+
+        [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
+        public UpgradeOptions Upgrade { get; set; }
+
+        #endif
 
         [VerbOption("update", HelpText = "Update list of available mods")]
         public UpdateOptions Update { get; set; }
@@ -49,9 +64,6 @@ namespace CKAN.CmdLine
         [VerbOption("remove", HelpText = "Remove an installed mod")]
         public RemoveOptions Remove { get; set; }
 
-        [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
-        public UpgradeOptions Upgrade { get; set; }
-
         [VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
         public ScanOptions Scan { get; set; }
 
@@ -64,7 +76,7 @@ namespace CKAN.CmdLine
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
-        [VerbOption("ksp", HelpText = "Manage KSP insatlls")]
+        [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public KSPOptions KSP { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
