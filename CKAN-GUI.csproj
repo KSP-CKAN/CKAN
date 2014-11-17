@@ -65,6 +65,9 @@
     <Compile Include="MainModInfo.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MainWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="RenameInstanceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,12 +106,6 @@
     </Compile>
     <Compile Include="SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WaitDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WaitDialog.Designer.cs">
-      <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="YesNoDialog.cs">
       <SubType>Form</SubType>
@@ -150,9 +147,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WaitDialog.resx">
-      <DependentUpon>WaitDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
