@@ -3,9 +3,6 @@
 # Is your name Travis?
 # Then rejoice! You can type 'make test' to build and test!
 
-# This makefile isn't a very good make-file; it only has one
-# real target, which is make test'.
-
 TARGET=Debug
 
 CKAN := ckan.exe
@@ -22,7 +19,7 @@ TESTS_SOURCE := $(shell find ./CKAN/Tests -name "*.cs")
 STATIC := $(CKAN) $(NETKAN) $(TESTS)
 DYNAMIC := $(CKAN_DYN) $(NETKAN_DYN)
 
-all: static test
+all: static
 
 build: static
 
@@ -34,19 +31,19 @@ test: static
 	nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/Tests.dll
 	prove
 
-ckan.exe: $(CKAN_DYN)
+$(CKAN): $(CKAN_DYN)
 	bin/build
 
 $(CKAN_DYN): $(CKAN_SOURCE)
 	bin/build
 
-netkan.exe: $(NETKAN_DYN)
+$(NETKAN): $(NETKAN_DYN)
 	bin/build
 
 $(NETKAN_DYN): $(NETKAN_SOURCE)
 	bin/build
 
-build/Tests/bin/Debug/Tests.dll: $(TESTS_SOURCE)
+$(TESTS): $(TESTS_SOURCE)
 	bin/build
 
 clean:
