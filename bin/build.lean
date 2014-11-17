@@ -62,6 +62,7 @@ chdir("$Bin/..");
 # Repack ckan.exe
 
 my @cmd = (
+    "mono",
     $REPACK,
     "--out:ckan.exe",
     "--lib:build/CmdLine/bin/$TARGET",
@@ -75,6 +76,7 @@ system(@cmd);
 # Repack netkan
 
 @cmd = (
+    "mono",
     $REPACK,
     "--out:netkan.exe",
     "--lib:build/NetKAN/bin/$TARGET",
