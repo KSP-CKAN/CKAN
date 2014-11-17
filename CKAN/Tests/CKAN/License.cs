@@ -13,6 +13,7 @@ namespace CKANTests
             Assert.AreEqual("GPL-3.0", license.ToString());
         }
 
+        [Test]
         public void LicenseBad()
         {
             Assert.Throws<CKAN.BadMetadataKraken>(delegate

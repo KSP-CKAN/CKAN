@@ -68,7 +68,7 @@ namespace CKAN
         [JsonProperty("provides")] public List<string> provides;
 
         [JsonProperty("recommends")] public List<RelationshipDescriptor> recommends;
-        [JsonProperty("release_status")] public string release_status; // TODO: Strong type
+        [JsonProperty("release_status")] public ReleaseStatus release_status;
 
         [JsonProperty("resources")] public ResourcesDescriptor resources;
         [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;

@@ -63,6 +63,7 @@
     <Compile Include="Converters\JsonSimpleStringConverter.cs" />
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\License.cs" />
+    <Compile Include="Types\ReleaseStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
