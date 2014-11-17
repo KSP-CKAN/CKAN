@@ -90,12 +90,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(475, 312);
+            this.ClientSize = new System.Drawing.Size(475, 328);
             this.ControlBox = false;
             this.Controls.Add(this.CancelChangesButton);
             this.Controls.Add(this.ConfirmButton);
             this.Controls.Add(this.ChangesListView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ApplyChangesDialog";
             this.Text = "Apply changes";
             this.ResumeLayout(false);
