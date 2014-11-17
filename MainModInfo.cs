@@ -47,7 +47,7 @@ namespace CKAN
                    () => MetadataModuleGitHubLinkLabel.Text = "N/A");
             }
 
-            Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status);
+            Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
         }
 
         private void UpdateModInfoAuthor(CkanModule module)
