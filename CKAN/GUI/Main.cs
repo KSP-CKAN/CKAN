@@ -76,6 +76,9 @@ namespace CKAN
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
+            waitTabPage = MainTabControl.TabPages[1];
+            MainTabControl.TabPages.RemoveAt(1);
+
             RecreateDialogs();
 
             // We should run application only when we really sure.
@@ -358,10 +361,10 @@ namespace CKAN
                 return;
             }
 
-            m_WaitDialog.ResetProgress();
-            m_WaitDialog.ShowWaitDialog(false, false);
+            ResetProgress();
+            ShowWaitDialog(false);
             ModuleInstaller.Instance.CachedOrDownload(module);
-            m_WaitDialog.HideWaitDialog(true);
+            HideWaitDialog(true);
 
             UpdateModContentsTree(module);
             RecreateDialogs();
@@ -446,5 +449,6 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
         }
+
     }
 }
