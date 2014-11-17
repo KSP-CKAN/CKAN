@@ -76,8 +76,8 @@ namespace CKAN
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
-            waitTabPage = MainTabControl.TabPages[1];
-            MainTabControl.TabPages.RemoveAt(1);
+            waitTabPage = MainTabControl.TabPages[2];
+            MainTabControl.TabPages.RemoveAt(2);
 
             RecreateDialogs();
 
@@ -192,9 +192,7 @@ namespace CKAN
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            List<KeyValuePair<CkanModule, GUIModChangeType>> changeset = ComputeChangeSetFromModList();
-            m_ApplyChangesDialog.ShowApplyChangesDialog(changeset, m_InstallWorker);
-            ApplyToolButton.Enabled = false;
+            MainTabControl.SelectTab(1);
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)
@@ -282,6 +280,8 @@ namespace CKAN
             ModList.EndEdit();
 
             var changeset = ComputeChangeSetFromModList();
+            UpdateChangesDialog(changeset, m_InstallWorker);
+
             if (changeset != null && changeset.Any())
             {
                 ApplyToolButton.Enabled = true;

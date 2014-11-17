@@ -6,7 +6,6 @@ namespace CKAN
     public partial class Main : Form
     {
 
-        private ApplyChangesDialog m_ApplyChangesDialog = null;
         private ErrorDialog m_ErrorDialog = null;
         private RecommendsDialog m_RecommendsDialog = null;
         private SettingsDialog m_SettingsDialog = null;
@@ -14,7 +13,6 @@ namespace CKAN
 
         public void RecreateDialogs()
         {
-            m_ApplyChangesDialog = controlFactory.CreateControl<ApplyChangesDialog>();
             m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
             m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
             m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();

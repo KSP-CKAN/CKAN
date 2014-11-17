@@ -46,7 +46,6 @@ namespace CKAN
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +56,7 @@ namespace CKAN
             this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.DoUpdate = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -97,11 +96,20 @@ namespace CKAN
             this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.ChangesetTabPage = new System.Windows.Forms.TabPage();
+            this.CancelChangesButton = new System.Windows.Forms.Button();
+            this.ConfirmChangesButton = new System.Windows.Forms.Button();
+            this.ChangesListView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.PleaseWaitTabPage = new System.Windows.Forms.TabPage();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.MessageTextBox = new System.Windows.Forms.TextBox();
+            this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
+            this.RecommendedModsTreeView = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -117,7 +125,9 @@ namespace CKAN
             this.StatusPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.ManageModsTabPage.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.ChangesetTabPage.SuspendLayout();
+            this.PleaseWaitTabPage.SuspendLayout();
+            this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -249,21 +259,12 @@ namespace CKAN
             // 
             // ApplyToolButton
             // 
-            this.ApplyToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearChangesToolStripMenuItem});
             this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
-            this.ApplyToolButton.Size = new System.Drawing.Size(129, 36);
-            this.ApplyToolButton.Text = "Apply changes";
+            this.ApplyToolButton.Size = new System.Drawing.Size(127, 36);
+            this.ApplyToolButton.Text = "Go to changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
-            // 
-            // clearChangesToolStripMenuItem
-            // 
-            this.clearChangesToolStripMenuItem.Name = "clearChangesToolStripMenuItem";
-            this.clearChangesToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.clearChangesToolStripMenuItem.Text = "Clear changes";
-            this.clearChangesToolStripMenuItem.Click += new System.EventHandler(this.clearChangesToolStripMenuItem_Click);
             // 
             // FilterToolButton
             // 
@@ -342,7 +343,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.DoUpdate,
+            this.Update,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -367,11 +368,11 @@ namespace CKAN
             this.Installed.Name = "Installed";
             this.Installed.Width = 52;
             // 
-            // DoUpdate
+            // Update
             // 
-            this.DoUpdate.HeaderText = "Update";
-            this.DoUpdate.Name = "Update";
-            this.DoUpdate.Width = 48;
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.Width = 48;
             // 
             // ModName
             // 
@@ -769,7 +770,9 @@ namespace CKAN
             // MainTabControl
             // 
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
-            this.MainTabControl.Controls.Add(this.tabPage3);
+            this.MainTabControl.Controls.Add(this.ChangesetTabPage);
+            this.MainTabControl.Controls.Add(this.PleaseWaitTabPage);
+            this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 24);
             this.MainTabControl.Name = "MainTabControl";
@@ -820,19 +823,88 @@ namespace CKAN
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 9;
             // 
-            // tabPage3
+            // ChangesetTabPage
             // 
-            this.tabPage3.Controls.Add(this.CancelCurrentActionButton);
-            this.tabPage3.Controls.Add(this.LogTextBox);
-            this.tabPage3.Controls.Add(this.DialogProgressBar);
-            this.tabPage3.Controls.Add(this.MessageTextBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1060, 645);
-            this.tabPage3.TabIndex = 1;
-            this.tabPage3.Text = "Please wait";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.ChangesetTabPage.Controls.Add(this.CancelChangesButton);
+            this.ChangesetTabPage.Controls.Add(this.ConfirmChangesButton);
+            this.ChangesetTabPage.Controls.Add(this.ChangesListView);
+            this.ChangesetTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ChangesetTabPage.Name = "ChangesetTabPage";
+            this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ChangesetTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.ChangesetTabPage.TabIndex = 2;
+            this.ChangesetTabPage.Text = "Changeset";
+            this.ChangesetTabPage.UseVisualStyleBackColor = true;
+            // 
+            // CancelChangesButton
+            // 
+            this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelChangesButton.Location = new System.Drawing.Point(898, 616);
+            this.CancelChangesButton.Name = "CancelChangesButton";
+            this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelChangesButton.TabIndex = 6;
+            this.CancelChangesButton.Text = "Clear";
+            this.CancelChangesButton.UseVisualStyleBackColor = true;
+            this.CancelChangesButton.Click += new System.EventHandler(this.CancelChangesButton_Click);
+            // 
+            // ConfirmChangesButton
+            // 
+            this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ConfirmChangesButton.Location = new System.Drawing.Point(979, 616);
+            this.ConfirmChangesButton.Name = "ConfirmChangesButton";
+            this.ConfirmChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.ConfirmChangesButton.TabIndex = 5;
+            this.ConfirmChangesButton.Text = "Apply";
+            this.ConfirmChangesButton.UseVisualStyleBackColor = true;
+            this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
+            // 
+            // ChangesListView
+            // 
+            this.ChangesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChangesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ChangesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.ChangeType,
+            this.columnHeader2});
+            this.ChangesListView.Location = new System.Drawing.Point(-1, 0);
+            this.ChangesListView.Name = "ChangesListView";
+            this.ChangesListView.Size = new System.Drawing.Size(1061, 610);
+            this.ChangesListView.TabIndex = 4;
+            this.ChangesListView.UseCompatibleStateImageBehavior = false;
+            this.ChangesListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Mod";
+            this.columnHeader1.Width = 332;
+            // 
+            // ChangeType
+            // 
+            this.ChangeType.Text = "Change";
+            this.ChangeType.Width = 111;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Description";
+            this.columnHeader2.Width = 606;
+            // 
+            // PleaseWaitTabPage
+            // 
+            this.PleaseWaitTabPage.Controls.Add(this.CancelCurrentActionButton);
+            this.PleaseWaitTabPage.Controls.Add(this.LogTextBox);
+            this.PleaseWaitTabPage.Controls.Add(this.DialogProgressBar);
+            this.PleaseWaitTabPage.Controls.Add(this.MessageTextBox);
+            this.PleaseWaitTabPage.Location = new System.Drawing.Point(4, 22);
+            this.PleaseWaitTabPage.Name = "PleaseWaitTabPage";
+            this.PleaseWaitTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.PleaseWaitTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.PleaseWaitTabPage.TabIndex = 1;
+            this.PleaseWaitTabPage.Text = "Please wait";
+            this.PleaseWaitTabPage.UseVisualStyleBackColor = true;
             // 
             // CancelCurrentActionButton
             // 
@@ -885,6 +957,26 @@ namespace CKAN
             this.MessageTextBox.Text = "Waiting for operation to complete";
             this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // ChooseRecommendedModsTabPage
+            // 
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsTreeView);
+            this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
+            this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.ChooseRecommendedModsTabPage.TabIndex = 3;
+            this.ChooseRecommendedModsTabPage.Text = "Choose recommended mods";
+            this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // RecommendedModsTreeView
+            // 
+            this.RecommendedModsTreeView.CheckBoxes = true;
+            this.RecommendedModsTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
+            this.RecommendedModsTreeView.Location = new System.Drawing.Point(6, 6);
+            this.RecommendedModsTreeView.Name = "RecommendedModsTreeView";
+            this.RecommendedModsTreeView.Size = new System.Drawing.Size(1048, 603);
+            this.RecommendedModsTreeView.TabIndex = 0;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -919,8 +1011,10 @@ namespace CKAN
             this.MainTabControl.ResumeLayout(false);
             this.ManageModsTabPage.ResumeLayout(false);
             this.ManageModsTabPage.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.ChangesetTabPage.ResumeLayout(false);
+            this.PleaseWaitTabPage.ResumeLayout(false);
+            this.PleaseWaitTabPage.PerformLayout();
+            this.ChooseRecommendedModsTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -987,18 +1081,27 @@ namespace CKAN
         private DataGridViewTextBoxColumn KSPVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
-        private ToolStripMenuItem clearChangesToolStripMenuItem;
         private DataGridViewCheckBoxColumn DoUpdate;
         private TabControl MainTabControl;
         private TabPage ManageModsTabPage;
         private Label KSPVersionLabel;
         private Label FilterByNameLabel;
         private TextBox FilterByNameTextBox;
-        private TabPage tabPage3;
+        private TabPage PleaseWaitTabPage;
         private Button CancelCurrentActionButton;
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
+        private DataGridViewCheckBoxColumn Update;
+        private TabPage ChangesetTabPage;
+        private Button CancelChangesButton;
+        private Button ConfirmChangesButton;
+        private ListView ChangesListView;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader ChangeType;
+        private ColumnHeader columnHeader2;
+        private TabPage ChooseRecommendedModsTabPage;
+        private TreeView RecommendedModsTreeView;
     }
 }
 

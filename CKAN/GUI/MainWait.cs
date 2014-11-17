@@ -20,7 +20,7 @@ namespace CKAN
                 waitTabPage = null;
             }
 
-            MainTabControl.SelectTab(1);
+            MainTabControl.SelectTab(2);
 
             ManageModsTabPage.Enabled = false;
             CancelCurrentActionButton.Enabled = cancelable;
@@ -42,7 +42,7 @@ namespace CKAN
             ManageModsTabPage.Enabled = true;
 
             MainTabControl.SelectTab(0);
-            MainTabControl.TabPages[1].Text = "Log";
+            MainTabControl.TabPages[2].Text = "Log";
             CancelCurrentActionButton.Enabled = false;
             DialogProgressBar.Value = 0;
             DialogProgressBar.Style = ProgressBarStyle.Continuous;
