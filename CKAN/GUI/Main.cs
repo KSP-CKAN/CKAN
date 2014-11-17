@@ -37,6 +37,8 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
+        private TabController m_TabController = null;
+
         public Main()
         {
             User.frontEnd = FrontEndType.UI;
@@ -76,8 +78,8 @@ namespace CKAN
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
-            waitTabPage = MainTabControl.TabPages[2];
-            MainTabControl.TabPages.RemoveAt(2);
+            m_TabController = new TabController(MainTabControl);
+            m_TabController.ShowTab("ManageModsTabPage");
 
             RecreateDialogs();
 
@@ -192,7 +194,7 @@ namespace CKAN
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            MainTabControl.SelectTab(1);
+            m_TabController.ShowTab("ChangesetTabPage", 1);
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)

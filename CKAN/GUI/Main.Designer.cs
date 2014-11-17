@@ -103,7 +103,7 @@ namespace CKAN
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChangeType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.PleaseWaitTabPage = new System.Windows.Forms.TabPage();
+            this.WaitTabPage = new System.Windows.Forms.TabPage();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
@@ -126,7 +126,7 @@ namespace CKAN
             this.MainTabControl.SuspendLayout();
             this.ManageModsTabPage.SuspendLayout();
             this.ChangesetTabPage.SuspendLayout();
-            this.PleaseWaitTabPage.SuspendLayout();
+            this.WaitTabPage.SuspendLayout();
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -138,7 +138,7 @@ namespace CKAN
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1068, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1029, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -196,9 +196,9 @@ namespace CKAN
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 695);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 696);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1068, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1029, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -217,7 +217,7 @@ namespace CKAN
             this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 3);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(3956, 40);
+            this.menuStrip2.Size = new System.Drawing.Size(3917, 40);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -357,7 +357,7 @@ namespace CKAN
             this.ModList.Name = "ModList";
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(766, 577);
+            this.ModList.Size = new System.Drawing.Size(658, 578);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
@@ -439,8 +439,8 @@ namespace CKAN
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1057, 577);
-            this.splitContainer1.SplitterDistance = 766;
+            this.splitContainer1.Size = new System.Drawing.Size(1025, 578);
+            this.splitContainer1.SplitterDistance = 658;
             this.splitContainer1.TabIndex = 7;
             // 
             // tabControl1
@@ -454,7 +454,7 @@ namespace CKAN
             this.tabControl1.MinimumSize = new System.Drawing.Size(233, 518);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(287, 577);
+            this.tabControl1.Size = new System.Drawing.Size(363, 578);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -463,7 +463,7 @@ namespace CKAN
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(279, 548);
+            this.tabPage1.Size = new System.Drawing.Size(355, 549);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Metadata";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -505,7 +505,7 @@ namespace CKAN
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(273, 542);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(349, 543);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -525,7 +525,7 @@ namespace CKAN
             this.MetadataModuleVersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(89, 111);
             this.MetadataModuleVersionLabel.Name = "MetadataModuleVersionLabel";
-            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(234, 33);
+            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(257, 33);
             this.MetadataModuleVersionLabel.TabIndex = 2;
             this.MetadataModuleVersionLabel.Text = "0.0.0";
             // 
@@ -546,7 +546,7 @@ namespace CKAN
             this.MetadataModuleLicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(89, 144);
             this.MetadataModuleLicenseLabel.Name = "MetadataModuleLicenseLabel";
-            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(234, 32);
+            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(257, 32);
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
             // 
@@ -567,7 +567,7 @@ namespace CKAN
             this.MetadataModuleAuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(89, 176);
             this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
-            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(234, 32);
+            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(257, 32);
             this.MetadataModuleAuthorLabel.TabIndex = 6;
             this.MetadataModuleAuthorLabel.Text = "Nobody";
             // 
@@ -599,7 +599,7 @@ namespace CKAN
             this.MetadataModuleReleaseStatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(89, 286);
             this.MetadataModuleReleaseStatusLabel.Name = "MetadataModuleReleaseStatusLabel";
-            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(234, 25);
+            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(257, 25);
             this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
             this.MetadataModuleReleaseStatusLabel.Text = "Stable";
             // 
@@ -620,7 +620,7 @@ namespace CKAN
             this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(89, 208);
             this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
-            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(234, 35);
+            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(257, 35);
             this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
@@ -632,7 +632,7 @@ namespace CKAN
             this.MetadataModuleGitHubLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(89, 243);
             this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
-            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(234, 43);
+            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(257, 43);
             this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
@@ -647,7 +647,7 @@ namespace CKAN
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
             this.tableLayoutPanel1.SetRowSpan(this.MetadataModuleNameLabel, 2);
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(320, 57);
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(343, 57);
             this.MetadataModuleNameLabel.TabIndex = 0;
             this.MetadataModuleNameLabel.Text = "Mod Name";
             this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -661,7 +661,7 @@ namespace CKAN
             this.MetadataModuleAbstractLabel.Multiline = true;
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
             this.MetadataModuleAbstractLabel.ReadOnly = true;
-            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(320, 48);
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(343, 48);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "Description";
             this.MetadataModuleAbstractLabel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -753,7 +753,7 @@ namespace CKAN
             // 
             this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.StatusPanel.Controls.Add(this.StatusLabel);
-            this.StatusPanel.Location = new System.Drawing.Point(0, 697);
+            this.StatusPanel.Location = new System.Drawing.Point(0, 698);
             this.StatusPanel.Name = "StatusPanel";
             this.StatusPanel.Size = new System.Drawing.Size(797, 19);
             this.StatusPanel.TabIndex = 8;
@@ -771,13 +771,13 @@ namespace CKAN
             // 
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
-            this.MainTabControl.Controls.Add(this.PleaseWaitTabPage);
+            this.MainTabControl.Controls.Add(this.WaitTabPage);
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 24);
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(1068, 671);
+            this.MainTabControl.Size = new System.Drawing.Size(1029, 672);
             this.MainTabControl.TabIndex = 9;
             // 
             // ManageModsTabPage
@@ -791,7 +791,7 @@ namespace CKAN
             this.ManageModsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ManageModsTabPage.Name = "ManageModsTabPage";
             this.ManageModsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ManageModsTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.ManageModsTabPage.Size = new System.Drawing.Size(1021, 646);
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             // 
@@ -799,7 +799,7 @@ namespace CKAN
             // 
             this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(906, 52);
+            this.KSPVersionLabel.Location = new System.Drawing.Point(867, 52);
             this.KSPVersionLabel.Name = "KSPVersionLabel";
             this.KSPVersionLabel.Size = new System.Drawing.Size(146, 13);
             this.KSPVersionLabel.TabIndex = 8;
@@ -831,7 +831,7 @@ namespace CKAN
             this.ChangesetTabPage.Location = new System.Drawing.Point(4, 22);
             this.ChangesetTabPage.Name = "ChangesetTabPage";
             this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ChangesetTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.ChangesetTabPage.Size = new System.Drawing.Size(1021, 646);
             this.ChangesetTabPage.TabIndex = 2;
             this.ChangesetTabPage.Text = "Changeset";
             this.ChangesetTabPage.UseVisualStyleBackColor = true;
@@ -840,7 +840,7 @@ namespace CKAN
             // 
             this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelChangesButton.Location = new System.Drawing.Point(898, 616);
+            this.CancelChangesButton.Location = new System.Drawing.Point(859, 617);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
             this.CancelChangesButton.TabIndex = 6;
@@ -852,7 +852,7 @@ namespace CKAN
             // 
             this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ConfirmChangesButton.Location = new System.Drawing.Point(979, 616);
+            this.ConfirmChangesButton.Location = new System.Drawing.Point(940, 617);
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(75, 23);
             this.ConfirmChangesButton.TabIndex = 5;
@@ -872,7 +872,7 @@ namespace CKAN
             this.columnHeader2});
             this.ChangesListView.Location = new System.Drawing.Point(-1, 0);
             this.ChangesListView.Name = "ChangesListView";
-            this.ChangesListView.Size = new System.Drawing.Size(1061, 610);
+            this.ChangesListView.Size = new System.Drawing.Size(1022, 611);
             this.ChangesListView.TabIndex = 4;
             this.ChangesListView.UseCompatibleStateImageBehavior = false;
             this.ChangesListView.View = System.Windows.Forms.View.Details;
@@ -892,19 +892,19 @@ namespace CKAN
             this.columnHeader2.Text = "Description";
             this.columnHeader2.Width = 606;
             // 
-            // PleaseWaitTabPage
+            // WaitTabPage
             // 
-            this.PleaseWaitTabPage.Controls.Add(this.CancelCurrentActionButton);
-            this.PleaseWaitTabPage.Controls.Add(this.LogTextBox);
-            this.PleaseWaitTabPage.Controls.Add(this.DialogProgressBar);
-            this.PleaseWaitTabPage.Controls.Add(this.MessageTextBox);
-            this.PleaseWaitTabPage.Location = new System.Drawing.Point(4, 22);
-            this.PleaseWaitTabPage.Name = "PleaseWaitTabPage";
-            this.PleaseWaitTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PleaseWaitTabPage.Size = new System.Drawing.Size(1060, 645);
-            this.PleaseWaitTabPage.TabIndex = 1;
-            this.PleaseWaitTabPage.Text = "Please wait";
-            this.PleaseWaitTabPage.UseVisualStyleBackColor = true;
+            this.WaitTabPage.Controls.Add(this.CancelCurrentActionButton);
+            this.WaitTabPage.Controls.Add(this.LogTextBox);
+            this.WaitTabPage.Controls.Add(this.DialogProgressBar);
+            this.WaitTabPage.Controls.Add(this.MessageTextBox);
+            this.WaitTabPage.Location = new System.Drawing.Point(4, 22);
+            this.WaitTabPage.Name = "WaitTabPage";
+            this.WaitTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.WaitTabPage.Size = new System.Drawing.Size(1060, 645);
+            this.WaitTabPage.TabIndex = 1;
+            this.WaitTabPage.Text = "Please wait";
+            this.WaitTabPage.UseVisualStyleBackColor = true;
             // 
             // CancelCurrentActionButton
             // 
@@ -970,6 +970,9 @@ namespace CKAN
             // 
             // RecommendedModsTreeView
             // 
+            this.RecommendedModsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsTreeView.CheckBoxes = true;
             this.RecommendedModsTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
             this.RecommendedModsTreeView.Location = new System.Drawing.Point(6, 6);
@@ -981,7 +984,7 @@ namespace CKAN
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1068, 717);
+            this.ClientSize = new System.Drawing.Size(1029, 718);
             this.Controls.Add(this.MainTabControl);
             this.Controls.Add(this.StatusPanel);
             this.Controls.Add(this.statusStrip1);
@@ -1012,8 +1015,8 @@ namespace CKAN
             this.ManageModsTabPage.ResumeLayout(false);
             this.ManageModsTabPage.PerformLayout();
             this.ChangesetTabPage.ResumeLayout(false);
-            this.PleaseWaitTabPage.ResumeLayout(false);
-            this.PleaseWaitTabPage.PerformLayout();
+            this.WaitTabPage.ResumeLayout(false);
+            this.WaitTabPage.PerformLayout();
             this.ChooseRecommendedModsTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1087,7 +1090,7 @@ namespace CKAN
         private Label KSPVersionLabel;
         private Label FilterByNameLabel;
         private TextBox FilterByNameTextBox;
-        private TabPage PleaseWaitTabPage;
+        private TabPage WaitTabPage;
         private Button CancelCurrentActionButton;
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;

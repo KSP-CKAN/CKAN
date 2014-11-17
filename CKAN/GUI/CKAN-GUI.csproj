@@ -71,6 +71,7 @@
     <Compile Include="RenameInstanceDialog.Designer.cs">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="TabController.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
