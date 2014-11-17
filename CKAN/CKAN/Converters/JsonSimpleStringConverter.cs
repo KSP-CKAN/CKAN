@@ -22,9 +22,11 @@ namespace CKAN {
         }
 
         public override bool CanConvert(Type objectType) {
-            // TODO XXX: Magic type names! Can we just return true here, since
-            // classes need to delcare their type-converters up-front anyway?
-            return (objectType == typeof(Version) || objectType == typeof(KSPVersion));
+            // We *only* want to be triggered for types that have explicitly
+            // set an attribute in their class saying they can be converted.
+            // By returning false here, we declare we're not interested in participating
+            // in any other conversions.
+            return false;
         }
     }
 }

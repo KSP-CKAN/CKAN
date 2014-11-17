@@ -49,6 +49,8 @@
     <Compile Include="CKAN\KSPPathUtils.cs" />
     <Compile Include="DisposableKSP.cs" />
     <Compile Include="CKAN\Meta.cs" />
+    <Compile Include="CKAN\License.cs" />
+    <Compile Include="CKAN\ReleaseStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
