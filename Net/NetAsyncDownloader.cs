@@ -136,12 +136,10 @@ namespace CKAN
             if (progress != null)
             {
                 this.onProgressReport += (percent, bytesPerSecond, bytesLeft) =>
-                    (
                         progress(
-                            String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond/1024, bytesLeft/1024/1024),
+                            String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond / 1024, bytesLeft / 1024 / 1024),
                             percent
-                        )
-                    );
+                        );
             }
 
             this.onCompleted = (_uris, paths, errors) => ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
