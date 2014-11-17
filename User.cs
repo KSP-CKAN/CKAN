@@ -70,7 +70,7 @@ namespace CKAN
             
             while(true)
             {
-                WriteLine("{0} [Y/N]", text);
+                WriteLine("{0} [y/N]", text);
                 
                 string input = Console.In.ReadLine();
                 
