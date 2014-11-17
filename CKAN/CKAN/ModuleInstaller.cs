@@ -419,9 +419,12 @@ namespace CKAN
             bool makeDirs;
             var files = new List<InstallableFile> ();
 
-            if (stanza.install_to == "GameData")
+            if (stanza.install_to.StartsWith("GameData"))
             {
-                installDir = ksp == null ? null : ksp.GameData();
+                string subDir = KSPPathUtils.NormalizePath(stanza.install_to.Substring(8)); // remove "GameData"
+                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;             // remove a "/" at the beginning, if present
+                
+                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
