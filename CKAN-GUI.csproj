@@ -36,12 +36,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplyChangesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ApplyChangesDialog.Designer.cs">
-      <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="ChooseKSPInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,6 +55,9 @@
     </Compile>
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainChangeset.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModInfo.cs">
       <SubType>Form</SubType>
@@ -113,9 +110,6 @@
     <Compile Include="YesNoDialog.Designer.cs">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ApplyChangesDialog.resx">
-      <DependentUpon>ApplyChangesDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </EmbeddedResource>
