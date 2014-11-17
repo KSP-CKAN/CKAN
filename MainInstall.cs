@@ -217,7 +217,8 @@ namespace CKAN
 
         /// <summary>
         /// Returns mods that we require to install the selected module.
-        /// This returns null if we can't compute these without user input (eg: to select a provider)
+        /// This returns null if we can't compute these without user input,
+        /// or if the mods conflict.
         /// </summary>
         private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)
         {
@@ -230,14 +231,27 @@ namespace CKAN
             {
                 resolver = new RelationshipResolver(tmp, options, RegistryManager.Instance(KSPManager.CurrentInstance).registry);
             }
-            catch (ModuleNotFoundKraken)
+            catch (Kraken kraken)
             {
-                // TODO: This may be an error now, as it genuinely means we can't find a mod.
-                return null;
-            }
-            catch (TooManyModsProvideKraken)
-            {
-                // We'll need to ask the user for a choice later.
+                // TODO: Both of these krakens contain extra information; either a list of
+                // mods the user can choose from, or a list of inconsistencies that are blocking
+                // this selection. We *should* display those to the user. See GH #345.
+                if (kraken is TooManyModsProvideKraken || kraken is InconsistentKraken)
+                {
+                    // Expected krakens.
+                    return null;
+                }
+                else if (kraken is ModuleNotFoundKraken)
+                {
+                    var not_found = (ModuleNotFoundKraken)kraken;
+                    log.ErrorFormat(
+                        "Can't find {0}, but {1} depends on it",
+                        not_found.module, module
+                    );
+                    return null;
+                }
+                 
+                log.ErrorFormat("Unexpected Kraken in GetInstallDeps: {0}", kraken.GetType());
                 return null;
             }
 

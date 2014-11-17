@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
+using log4net;
 
 namespace CKAN
 {
@@ -33,6 +34,8 @@ namespace CKAN
         public Configuration m_Configuration = null;
 
         public ControlFactory controlFactory = null;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
         public Main()
         {
@@ -202,6 +205,10 @@ namespace CKAN
             UpdateModsList();
         }
 
+        /// <summary>
+        /// I'm pretty sure this is what gets called when the user clicks on a ticky
+        /// in the mod list.
+        /// </summary>
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (m_ModFilter == GUIModFilter.Incompatible)
