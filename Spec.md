@@ -250,6 +250,7 @@ mandatory directives:
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
+  Additionally and **only** for `GameData` it's possible to specify the path to a specific subfolder: `GameData/path/to/mod`. The path can be any valid path for a folder, but the use of the `.` and `..` relative directories is _forbidden_ and will cause an error during installation.
 
 Optionally, an install directive may filter the files to install using:
 
