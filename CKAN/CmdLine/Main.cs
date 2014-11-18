@@ -211,10 +211,18 @@ namespace CKAN.CmdLine
             User.WriteLine("Mods available for KSP {0}", KSPManager.CurrentInstance.Version());
             User.WriteLine("");
 
+            var width = Console.WindowWidth;
+
             foreach (CkanModule module in available)
             {
                 string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
-                User.WriteLine(entry.PadRight(Console.WindowWidth).Substring(0,Console.WindowWidth));
+                if (width > 0) {
+                    User.WriteLine(entry.PadRight(Console.WindowWidth).Substring(0,Console.WindowWidth));
+                }
+                else
+                {
+                    User.WriteLine(entry);
+                }
             }
 
             return Exit.OK;
