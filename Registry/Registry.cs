@@ -36,8 +36,6 @@ namespace CKAN
 
         [JsonIgnore] private string transaction_backup;
 
-        #region Registry Upgrades
-
         /// <summary>
         /// Returns all the installed modules
         /// </summary>
@@ -54,6 +52,8 @@ namespace CKAN
             get { return this.installed_dlls.Keys; }
         }
 
+        #region Registry Upgrades
+
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
@@ -63,17 +63,7 @@ namespace CKAN
             if (installed_files == null)
             {
                 log.Warn("Older registry format detected, adding installed files manifest...");
-
-                installed_files = new Dictionary<string, string>();
-
-                foreach (InstalledModule module in installed_modules.Values)
-                {
-                    foreach (string file in module.Files)
-                    {
-                        // Register each file we know about as belonging to the given module.
-                        installed_files[file] = module.identifier;
-                    }
-                }
+                ReindexInstalled();
             }
 
             // If we have no registry version at all, then we're from the pre-release period.
@@ -124,6 +114,32 @@ namespace CKAN
             }
 
             registry_version = LATEST_REGISTRY_VERSION;
+        }
+
+        /// <summary>
+        /// Rebuilds our master index of installed_files.
+        /// Called on registry format updates, but safe to be triggered at any time.
+        /// </summary>
+        public void ReindexInstalled()
+        {
+            installed_files = new Dictionary<string, string>();
+
+            foreach (InstalledModule module in installed_modules.Values)
+            {
+                foreach (string file in module.Files)
+                {
+                    // Register each file we know about as belonging to the given module.
+                    installed_files[file] = module.identifier;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Do we what we can to repair/preen the registry.
+        /// </summary>
+        public void Repair()
+        {
+            ReindexInstalled();
         }
 
         #endregion
