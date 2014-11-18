@@ -114,6 +114,38 @@ namespace CKANTests
             }
         }
 
+        // GH #315, all of these should result in the same output.
+        // Even though they're not necessarily all spec-valid, we should accept them
+        // nonetheless.
+        private static readonly string[] SuchPaths =
+        {
+            "GameData/SuchTest",
+            "GameData/SuchTest/",
+            "GameData\\SuchTest",
+            "GameData\\SuchTest\\",
+            "GameData\\SuchTest/",
+            "GameData/SuchTest\\"
+        };
+
+        [Test][TestCaseSource("SuchPaths")]
+        public void FindInstallbleFilesWithBonusPath(string path)
+        {
+            dogemod.install[0].install_to = path;
+            using (var tidy = new Tests.DisposableKSP())
+            {
+                IEnumerable<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(
+                                                            dogemod, dogezip, tidy.KSP
+                                                        );
+
+                string file = contents
+                    .Select(x => x.destination)
+                    .Where(x => Regex.IsMatch(x, "GameData/SuchTest/Flags/dogecoin\\.png$"))
+                    .FirstOrDefault();
+
+                Assert.IsNotNull(file);
+            }
+        }
+
         [Test]
         public void ModuleManagerInstall()
         {
