@@ -426,10 +426,22 @@ namespace CKAN
 
             if (stanza.install_to.StartsWith("GameData"))
             {
-                string subDir = KSPPathUtils.NormalizePath(stanza.install_to.Substring(8)); // remove "GameData"
-                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;             // remove a "/" at the beginning, if present
+                stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+
+                // The installation path cannot contain updirs
+                if (stanza.install_to.Contains("/./") || stanza.install_to.Contains("/../"))
+                    throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
+
+                // The installation path can be either "GameData" or a sub-directory of "GameData"
+                // If there is anything after "GameData", make sure that the path is not something like "GameDataIsTheBestData"
+                if (stanza.install_to.Length > "GameData".Length && !stanza.install_to.StartsWith("GameData/"))
+                    throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
+
+                string sub_dir = KSPPathUtils.NormalizePath(stanza.install_to.Substring(8));    // remove "GameData"
+                sub_dir = sub_dir.StartsWith("/") ? sub_dir.Substring(1) : sub_dir;             // remove a "/" at the beginning, if present
                 
-                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
+                // Add the extracted subdirectory to the path of KSP's GameData
+                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + sub_dir));
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
