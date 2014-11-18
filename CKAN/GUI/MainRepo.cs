@@ -14,9 +14,9 @@ namespace CKAN
 
             Util.Invoke(this, () => Enabled = false);
 
-            m_WaitDialog.SetDescription("Contacting repository..");
-            m_WaitDialog.ClearLog();
-            m_WaitDialog.ShowWaitDialog();
+            SetDescription("Contacting repository..");
+            ClearLog();
+            ShowWaitDialog();
         }
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
@@ -36,10 +36,10 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
 
-            m_WaitDialog.SetDescription("Scanning for manually installed mods");
+            SetDescription("Scanning for manually installed mods");
             KSPManager.CurrentInstance.ScanGameData();
 
-            m_WaitDialog.HideWaitDialog(true);
+            HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
 
             Util.Invoke(this, () => Enabled = true);

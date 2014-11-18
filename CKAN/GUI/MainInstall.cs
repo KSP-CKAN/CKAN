@@ -12,17 +12,13 @@ namespace CKAN
 
         private void InstallModsReportProgress(string message, int percent)
         {
-            if (m_WaitDialog != null)
-            {
-                m_WaitDialog.SetDescription(message + " - " + percent + "%");
-                m_WaitDialog.SetProgress(percent);
-                //AddStatusMessage(message + " - " + percent.ToString() + "%");
-            }
+            SetDescription(message + " - " + percent + "%");
+            SetProgress(percent);
         }
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
-            m_WaitDialog.ClearLog();
+            ClearLog();
 
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
@@ -36,7 +32,7 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Remove)
                 {
-                    m_WaitDialog.SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
+                    SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
                     installer.UninstallList(change.Key.identifier);
                 }
                 else if (change.Value == GUIModChangeType.Update)
@@ -176,15 +172,11 @@ namespace CKAN
 
                 // actual magic happens here, we run the installer with our mod list
                 ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
-                m_WaitDialog.cancelCallback = () =>
-                {
-                    downloader.CancelDownload();
-                    m_WaitDialog = null;
-                };
+                cancelCallback = downloader.CancelDownload;
 
                 try
                 {
-                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options);
+                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options, downloader);
                 }
                 catch (CancelledActionKraken)
                 {
@@ -206,12 +198,8 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
 
-            if (m_WaitDialog != null)
-            {
-                AddStatusMessage("");
-                m_WaitDialog.HideWaitDialog(true);    
-            }
-
+           AddStatusMessage("");
+            HideWaitDialog(true);
             Util.Invoke(this, () => Enabled = true);
         }
 

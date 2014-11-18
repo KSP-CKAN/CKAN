@@ -37,6 +37,8 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
+        private TabController m_TabController = null;
+
         public Main()
         {
             User.frontEnd = FrontEndType.UI;
@@ -75,6 +77,9 @@ namespace CKAN
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
+
+            m_TabController = new TabController(MainTabControl);
+            m_TabController.ShowTab("ManageModsTabPage");
 
             RecreateDialogs();
 
@@ -189,9 +194,7 @@ namespace CKAN
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            List<KeyValuePair<CkanModule, GUIModChangeType>> changeset = ComputeChangeSetFromModList();
-            m_ApplyChangesDialog.ShowApplyChangesDialog(changeset, m_InstallWorker);
-            ApplyToolButton.Enabled = false;
+            m_TabController.ShowTab("ChangesetTabPage", 1);
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)
@@ -279,6 +282,8 @@ namespace CKAN
             ModList.EndEdit();
 
             var changeset = ComputeChangeSetFromModList();
+            UpdateChangesDialog(changeset, m_InstallWorker);
+
             if (changeset != null && changeset.Any())
             {
                 ApplyToolButton.Enabled = true;
@@ -358,10 +363,10 @@ namespace CKAN
                 return;
             }
 
-            m_WaitDialog.ResetProgress();
-            m_WaitDialog.ShowWaitDialog(false, false);
+            ResetProgress();
+            ShowWaitDialog(false);
             ModuleInstaller.Instance.CachedOrDownload(module);
-            m_WaitDialog.HideWaitDialog(true);
+            HideWaitDialog(true);
 
             UpdateModContentsTree(module);
             RecreateDialogs();
@@ -446,5 +451,6 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
         }
+
     }
 }

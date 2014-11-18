@@ -396,6 +396,7 @@ namespace CKAN
 
                 // sort by name
                 ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
+                ModList.Refresh();
             }
         }
     }
