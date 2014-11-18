@@ -159,6 +159,11 @@ namespace CKAN
             // If the user cancelled our progress, then signal that.
             if (downloadCanceled)
             {
+                foreach (var download in downloads)
+                {
+                    download.agent.CancelAsync();
+                }
+
                 throw new CancelledActionKraken("Download cancelled by user");
             }
 
@@ -242,17 +247,17 @@ namespace CKAN
         {
             log.Debug("Cancelling download");
 
-            foreach (var download in downloads)
+            downloadCanceled = true;
+
+            lock (download_complete_lock)
             {
-                download.agent.CancelAsync();
+               Monitor.Pulse(download_complete_lock);
             }
 
             if (onCompleted != null)
             {
                 onCompleted(null, null, null);
             }
-
-            downloadCanceled = true;
         }
 
         /// <summary>
