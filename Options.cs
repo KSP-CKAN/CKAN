@@ -76,8 +76,11 @@ namespace CKAN.CmdLine
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions Clean { get; set; }
 
+        [VerbOption("repair", HelpText = "Attempt various automatic repairs")]
+        public SubCommandOptions Repair { get; set; }
+
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
-        public KSPOptions KSP { get; set; }
+        public SubCommandOptions KSP { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
@@ -85,7 +88,7 @@ namespace CKAN.CmdLine
 
     // Options common to all classes.
 
-    internal class CommonOptions
+    public class CommonOptions
     {
         [Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
         public bool Verbose { get; set; }
@@ -100,14 +103,18 @@ namespace CKAN.CmdLine
         public string KSPdir { get; set; }
     }
 
-    // Each action defines its own options that it supports.
-    // Don't forget to cast to this type when you're processing them later on.
-
-    internal class KSPOptions : CommonOptions
+    /// <summary>
+    /// For things which are subcommands ('ksp', 'repair' etc), we just grab a list
+    /// we can pass on.
+    /// </summary>
+    public class SubCommandOptions : CommonOptions
     {
         [ValueList(typeof(List<string>))]
         public List<string> options { get; set; }
     }
+
+    // Each action defines its own options that it supports.
+    // Don't forget to cast to this type when you're processing them later on.
 
     internal class InstallOptions : CommonOptions
     {

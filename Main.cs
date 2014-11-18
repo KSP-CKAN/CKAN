@@ -159,8 +159,11 @@ namespace CKAN.CmdLine
                 case "clean":
                     return Clean();
 
+                case "repair":
+                    return RunSubCommand<Repair>((SubCommandOptions) cmdline.options);
+
                 case "ksp":
-                    return KSP((KSPOptions) cmdline.options);
+                    return RunSubCommand<KSP>((SubCommandOptions) cmdline.options);
 
                 default:
                     User.WriteLine("Unknown command, try --help");
@@ -511,14 +514,12 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        internal static int KSP(KSPOptions options)
+        private static int RunSubCommand<T>(SubCommandOptions options)
+            where T : ISubCommand, new()
         {
-            string[] options_array = options.options.ToArray();
+            ISubCommand subopt = new T ();
 
-            var subopt = new CmdLine.KSP(options_array);
-
-            return subopt.RunSubCommand();
+            return subopt.RunSubCommand(options);
         }
-
     }
 }
