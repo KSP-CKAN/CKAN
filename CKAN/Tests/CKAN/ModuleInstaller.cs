@@ -139,7 +139,7 @@ namespace CKANTests
 
                 string file = contents
                     .Select(x => x.destination)
-                    .Where(x => Regex.IsMatch(x, "GameData/SuchTest/Flags/dogecoin\\.png$"))
+                    .Where(x => Regex.IsMatch(x, "GameData/SuchTest/DogeCoinFlag/Flags/dogecoin\\.png$"))
                     .FirstOrDefault();
 
                 Assert.IsNotNull(file);
@@ -203,11 +203,17 @@ namespace CKANTests
             }
         }
 
-        [Test]
-        public void FindInstallableFilesWithBadTarget()
+        // All of these targets should fail.
+        private static readonly string[] BadTargets = {
+            "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
+            "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN"
+        };
+
+        [Test][TestCaseSource("BadTargets")]
+        public void FindInstallableFilesWithBadTarget(string location)
         {
             // This install location? It shouldn't be valid.
-            dogemod.install[0].install_to = "GameDataIsTheBestData";
+            dogemod.install[0].install_to = location;
 
             Assert.Throws<CKAN.BadInstallLocationKraken>(delegate
             {
