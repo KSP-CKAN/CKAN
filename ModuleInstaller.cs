@@ -263,13 +263,14 @@ namespace CKAN
 
         /// <summary>
         ///     Install our mod from the filename supplied.
-        ///     If no file is supplied, we will check the cache or download it.
+        ///     If no file is supplied, we will check the cache or throw FileNotFoundKraken.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
         /// 
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// Throws a FileNotFoundKraken if we can't find the downloaded module.
         /// 
         /// </summary>
         // 
@@ -286,10 +287,16 @@ namespace CKAN
                 return;
             }
 
-            // Fetch our file if we don't already have it.
+            // Find our in the cache if we don't already have it.
+            filename = filename ?? this.Cache.GetCachedZip(module.download);
+
+            // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
             {
-                filename = CachedOrDownload(module);
+                throw new FileNotFoundKraken(
+                    null, 
+                    String.Format("Trying to install {0}, but it's not downloaded", module)
+                );
             }
 
             // We'll need our registry to record which files we've installed.
