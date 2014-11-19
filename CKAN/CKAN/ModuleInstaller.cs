@@ -418,30 +418,28 @@ namespace CKAN
         /// 
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
+        /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
         internal static List<InstallableFile> FindInstallableFiles(ModuleInstallDescriptor stanza, ZipFile zipfile, KSP ksp)
         {
             string installDir;
             bool makeDirs;
             var files = new List<InstallableFile> ();
 
-            if (stanza.install_to.StartsWith("GameData"))
+            // Normalize the path before doing everything else
+            stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+  
+            if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
-                stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
-
-                // The installation path cannot contain updirs
+                // The installation path can be either "GameData" or a sub-directory of "GameData"
+                // but it cannot contain updirs
                 if (stanza.install_to.Contains("/./") || stanza.install_to.Contains("/../"))
                     throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
 
-                // The installation path can be either "GameData" or a sub-directory of "GameData"
-                // If there is anything after "GameData", make sure that the path is not something like "GameDataIsTheBestData"
-                if (stanza.install_to.Length > "GameData".Length && !stanza.install_to.StartsWith("GameData/"))
-                    throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
-
-                string sub_dir = KSPPathUtils.NormalizePath(stanza.install_to.Substring(8));    // remove "GameData"
-                sub_dir = sub_dir.StartsWith("/") ? sub_dir.Substring(1) : sub_dir;             // remove a "/" at the beginning, if present
+                string subDir = stanza.install_to.Substring("GameData".Length);    // remove "GameData"
+                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
                 
                 // Add the extracted subdirectory to the path of KSP's GameData
-                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + sub_dir));
+                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
