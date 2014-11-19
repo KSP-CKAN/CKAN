@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace CKAN
 {
@@ -16,8 +17,17 @@ namespace CKAN
             SetProgress(percent);
         }
 
+        // used to signal the install worker that the user canceled the install process
+        // this may happen on the recommended/suggested mods dialogs
+        private bool installCanceled = false;
+
+        // this will be the final list of mods we want to install 
+        private HashSet<string> toInstall = new HashSet<string>();
+
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
+            installCanceled = false;
+
             ClearLog();
 
             var opts =
@@ -42,12 +52,7 @@ namespace CKAN
                 }
             }
 
-            // these keep the history of dialogs asking the user which recommendations/suggestions to install
-            var recommendedDialogShown = new HashSet<string>();
-            var suggestedDialogShown = new HashSet<string>();
-
-            // this will be the final list of mods we want to install 
-            var toInstall = new HashSet<string>();
+            toInstall = new HashSet<string>();
 
             foreach (var change in opts.Key)
             {
@@ -57,100 +62,70 @@ namespace CKAN
                 }
             }
 
+            var recommended = new Dictionary<string, List<string>>();
+            var suggested = new Dictionary<string, List<string>>();
+
             foreach (var change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Install)
                 {
-                    // check if we haven't already displayed the recommended dialog for this mod
-                    if (!recommendedDialogShown.Contains(change.Key.identifier))
+                    if (change.Key.recommends != null)
                     {
-                        var recommended = new List<string>();
-                        if (change.Key.recommends != null)
+                        foreach (RelationshipDescriptor mod in change.Key.recommends)
                         {
-                            foreach (RelationshipDescriptor mod in change.Key.recommends)
+                            try
                             {
-                                try
-                                {
-                                    // if the mod is available for the current KSP version _and_
-                                    // the mod is not installed _and_
-                                    // the mod is not already in the install list
-                                    if (
-                                        RegistryManager.Instance(KSPManager.CurrentInstance)
-                                            .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
-                                        !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
-                                        !toInstall.Contains(mod.name.ToString()))
-                                    {
-                                        // add it to the list of recommended mods we display to the user
-                                        recommended.Add(mod.name.ToString());
-                                    }
-                                }
-                                catch (Kraken)
-                                {
-                                }
-                            }
-                        }
-
-                        if (recommended.Any())
-                        {
-                            List<string> recommendedToInstall = m_RecommendsDialog.ShowRecommendsDialog
-                                (
-                                    String.Format("{0} recommends the following mods:", change.Key.name),
-                                    recommended
-                                );
-
-                            if (recommendedToInstall != null)
-                            {
-                                foreach (string mod in recommendedToInstall)
-                                {
-                                    toInstall.Add(mod); 
-                                }
-                            }
-
-                            recommendedDialogShown.Add(change.Key.identifier);
-                        }
-                    }
-
-                    if (!suggestedDialogShown.Contains(change.Key.identifier))
-                    {
-                        var suggested = new List<string>();
-                        if (change.Key.suggests != null)
-                        {
-                            foreach (RelationshipDescriptor mod in change.Key.suggests)
-                            {
-                                try
-                                {
-                                    if (
+                                // if the mod is available for the current KSP version _and_
+                                // the mod is not installed _and_
+                                // the mod is not already in the install list
+                                if (
                                     RegistryManager.Instance(KSPManager.CurrentInstance)
                                         .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
+                                {
+                                    // add it to the list of recommended mods we display to the user
+                                    if (recommended.ContainsKey(mod.name))
                                     {
-                                        suggested.Add(mod.name);
+                                        recommended[mod.name].Add(change.Key.identifier);
+                                    }
+                                    else
+                                    {
+                                        recommended.Add(mod.name, new List<string> { change.Key.identifier });
                                     }
                                 }
-                                catch (Kraken)
-                                {
-                                }
+                            }
+                            catch (Kraken)
+                            {
                             }
                         }
+                    }
 
-                        if (suggested.Any())
+                    if (change.Key.suggests != null)
+                    {
+                        foreach (RelationshipDescriptor mod in change.Key.suggests)
                         {
-                            List<string> suggestedToInstall = m_RecommendsDialog.ShowRecommendsDialog
-                                (
-                                    String.Format("{0} suggests the following mods:", change.Key.name),
-                                    suggested
-                                );
-
-                            if (suggestedToInstall != null)
+                            try
                             {
-                                foreach (string mod in suggestedToInstall)
+                                if (
+                                RegistryManager.Instance(KSPManager.CurrentInstance)
+                                    .registry.LatestAvailable(mod.name.ToString(), KSPManager.CurrentInstance.Version()) != null &&
+                                !RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.name.ToString()) &&
+                                !toInstall.Contains(mod.name.ToString()))
                                 {
-                                    toInstall.Add(mod);
+                                    if (suggested.ContainsKey(mod.name))
+                                    {
+                                        suggested[mod.name].Add(change.Key.identifier);
+                                    }
+                                    else
+                                    {
+                                        suggested.Add(mod.name, new List<string> { change.Key.identifier });
+                                    }
                                 }
                             }
-
-                            suggestedDialogShown.Add(change.Key.identifier);
+                            catch (Kraken)
+                            {
+                            }
                         }
                     }
                 }
@@ -161,7 +136,67 @@ namespace CKAN
                 }
             }
 
-            InstallList(toInstall, opts.Value);
+            if(recommended.Any())
+            {
+                Util.Invoke(this, () => UpdateRecommendedDialog(recommended));
+
+                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                m_TabController.SetTabLock(true);
+
+                lock(this)
+                {
+                    Monitor.Wait(this);
+                }
+
+                m_TabController.SetTabLock(false);
+            }
+
+            m_TabController.HideTab("ChooseRecommendedModsTabPage");
+
+            if (installCanceled)
+            {
+                m_TabController.HideTab("WaitTabPage");
+                m_TabController.ShowTab("ManageModsTabPage");
+                return;
+            }
+
+            m_TabController.ShowTab("WaitTabPage");
+
+            bool resolvedAllProvidedMods = false;
+
+            while(!resolvedAllProvidedMods)
+            {
+                try
+                {
+                    InstallList(toInstall, opts.Value);
+                    resolvedAllProvidedMods = true;
+                }
+                catch (TooManyModsProvideKraken tooManyProvides)
+                {
+                    Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
+
+                    m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                    m_TabController.SetTabLock(true);
+
+                    lock (this)
+                    {
+                        Monitor.Wait(this);
+                    }
+
+                    m_TabController.SetTabLock(false);
+
+                    m_TabController.HideTab("ChooseProvidedModsTabPage");
+
+                    if (installCanceled)
+                    {
+                        m_TabController.HideTab("WaitTabPage");
+                        m_TabController.ShowTab("ManageModsTabPage");
+                        return;
+                    }
+
+                    m_TabController.ShowTab("WaitTabPage");
+                }
+            }
         }
 
         private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
@@ -198,9 +233,162 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
 
-           AddStatusMessage("");
+            AddStatusMessage("");
             HideWaitDialog(true);
             Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
+        }
+
+        private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides)
+        {
+            ChooseProvidedModsListView.Items.Clear();
+
+            ChooseProvidedModsListView.ItemChecked += ChooseProvidedModsListView_ItemChecked;
+
+            foreach(CkanModule module in tooManyProvides.modules)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Tag = module;
+                item.Checked = true;
+
+                item.Text = module.name;
+
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
+                description.Text = module.@abstract;
+
+                item.SubItems.Add(description);
+                ChooseProvidedModsListView.Items.Add(item);
+            }
+        }
+
+        void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if(!e.Item.Checked)
+            {
+                return;
+            }
+
+            foreach(ListViewItem item in ChooseProvidedModsListView.Items)
+            {
+                if(item != e.Item && item.Checked)
+                {
+                    item.Checked = false;
+                }
+            }
+        }
+
+        private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
+        {
+            installCanceled = true;
+
+            lock (this)
+            {
+                Monitor.Pulse(this);
+            }
+        }
+
+        private void ChooseProvidedModsContinueButton_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in ChooseProvidedModsListView.Items)
+            {
+                if (item.Checked)
+                {
+                    var identifier = ((CkanModule)item.Tag).identifier;
+                    toInstall.Add(identifier);
+                    break;
+                }
+            }
+
+            lock (this)
+            {
+                Monitor.Pulse(this);
+            }
+        }
+
+        private void UpdateRecommendedDialog(Dictionary<string, List<string>> mods)
+        {
+            RecommendedModsListView.Items.Clear();
+
+            foreach(var pair in mods)
+            {
+                CkanModule module = null;
+
+                try
+                {
+                    module = RegistryManager.Instance(KSPManager.CurrentInstance).registry.LatestAvailable(pair.Key);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if(module == null)
+                {
+                    continue;
+                }
+
+                ListViewItem item = new ListViewItem();
+                item.Tag = module;
+                item.Checked = true;
+
+                item.Text = pair.Key;
+
+                ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem();
+                string recommendedByString = "";
+
+                bool first = true;
+                foreach(string mod in pair.Value)
+                {
+                    if(!first)
+                    {
+                        recommendedByString += ", ";
+                    }
+                    else
+                    {
+                        first = true;
+                    }
+
+                    recommendedByString += mod;
+                }
+
+                recommendedBy.Text = recommendedByString;
+
+                item.SubItems.Add(recommendedBy);
+
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
+                description.Text = module.@abstract;
+
+                item.SubItems.Add(description);
+
+                RecommendedModsListView.Items.Add(item);
+            }
+        }
+
+        private void RecommendedModsContinueButton_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem item in RecommendedModsListView.Items)
+            {
+                if(item.Checked)
+                {
+                    var identifier = ((CkanModule)item.Tag).identifier;
+                    toInstall.Add(identifier);
+                }
+            }
+
+            lock(this)
+            {
+                Monitor.Pulse(this);
+            }
+        }
+
+        private void RecommendedModsCancelButton_Click(object sender, EventArgs e)
+        {
+            installCanceled = true;
+
+            lock(this)
+            {
+                Monitor.Pulse(this);
+            }
         }
 
         /// <summary>

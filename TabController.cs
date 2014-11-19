@@ -15,6 +15,7 @@ namespace CKAN
         {
             m_TabControl = control;
             m_TabControl.Deselecting += OnDeselect;
+            m_TabControl.Selecting += OnDeselect;
 
             foreach (TabPage page in m_TabControl.TabPages)
             {
@@ -25,6 +26,54 @@ namespace CKAN
         }
 
         public void ShowTab(string name, int index = 0, bool setActive = true)
+        {
+            if (m_TabControl.InvokeRequired)
+            {
+                m_TabControl.Invoke(new MethodInvoker(() => _ShowTab(name, index, setActive)));
+            }
+            else
+            {
+                _ShowTab(name, index, setActive);
+            }
+        }
+
+        public void HideTab(string name)
+        {
+            if (m_TabControl.InvokeRequired)
+            {
+                m_TabControl.Invoke(new MethodInvoker(() => _HideTab(name)));
+            }
+            else
+            {
+                _HideTab(name);
+            }
+        }
+
+        public void SetTabLock(bool state)
+        {
+            if (m_TabControl.InvokeRequired)
+            {
+                m_TabControl.Invoke(new MethodInvoker(() => _SetTabLock(state)));
+            }
+            else
+            {
+                _SetTabLock(state);
+            }
+        }
+
+        public void SetActiveTab(string name)
+        {
+            if(m_TabControl.InvokeRequired)
+            {
+                m_TabControl.Invoke(new MethodInvoker(() => _SetActiveTab(name)));
+            }
+            else
+            {
+                _SetActiveTab(name);
+            }
+        }
+
+        private void _ShowTab(string name, int index = 0, bool setActive = true)
         {
             if (m_TabControl.TabPages.Contains(m_TabPages[name]))
             {
@@ -49,17 +98,17 @@ namespace CKAN
             }
         }
 
-        public void HideTab(string name)
+        private void _HideTab(string name)
         {
             m_TabControl.TabPages.Remove(m_TabPages[name]);
         }
 
-        public void SetTabLock(bool state)
+        private void _SetTabLock(bool state)
         {
             m_TabLock = state;
         }
 
-        public void SetActiveTab(string name)
+        private void _SetActiveTab(string name)
         {
             m_TabControl.SelectTab(m_TabPages[name]);
         }

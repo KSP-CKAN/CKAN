@@ -7,13 +7,11 @@ namespace CKAN
     {
 
         private ErrorDialog m_ErrorDialog = null;
-        private RecommendsDialog m_RecommendsDialog = null;
         private SettingsDialog m_SettingsDialog = null;
         private YesNoDialog m_YesNoDialog = null;
 
         public void RecreateDialogs()
         {
-            m_RecommendsDialog = controlFactory.CreateControl<RecommendsDialog>();
             m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
             m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
         }
