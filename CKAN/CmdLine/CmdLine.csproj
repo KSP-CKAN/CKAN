@@ -36,6 +36,8 @@
     <Compile Include="Action\KSP.cs" />
     <Compile Include="Exit.cs" />
     <Compile Include="ProgressReporter.cs" />
+    <Compile Include="Action\Repair.cs" />
+    <Compile Include="Action\ISubCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
