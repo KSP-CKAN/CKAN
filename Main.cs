@@ -332,65 +332,28 @@ namespace CKAN.CmdLine
             }
         }
 
-        // TODO: This needs work! See GH #160.
         private static int Upgrade(UpgradeOptions options)
         {
-            if (options.ckan_file == null)
+            if (options.ckan_file != null)
             {
-                // Typical case, install from cached CKAN info.
-
-                if (options.modules.Count == 0)
-                {
-                    // What? No files specified?
-                    User.WriteLine(
-                        "Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
-                    return Exit.BADOPT;
-                }
-
-                // Do our un-installs and re-installs in a transaction. If something goes wrong,
-                // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ()) {
-                    var installer = ModuleInstaller.Instance;
-
-                    try
-                    {
-                        installer.UninstallList(options.modules);
-                    }
-                    catch (ModNotInstalledKraken kraken)
-                    {
-                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
-                        return Exit.BADOPT;
-                    }
-
-                    // Prepare options. Can these all be done in the new() somehow?
-                    var install_ops = new RelationshipResolverOptions();
-                    install_ops.with_all_suggests = options.with_all_suggests;
-                    install_ops.with_suggests = options.with_suggests;
-                    install_ops.with_recommends = !options.no_recommends;
-
-                    // Install everything requested. :)
-                    try
-                    {
-                        installer.InstallList(options.modules, install_ops);
-                    }
-                    catch (ModuleNotFoundKraken ex)
-                    {
-                        User.WriteLine("Module {0} required, but not listed in index.", ex.module);
-                        User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                        return Exit.ERROR;
-                    }
-
-                    transaction.Complete();
-                }
-
-                User.WriteLine("\nDone!\n");
-
-                return Exit.OK;
+                User.WriteLine("\nUnsupported option at this time.");
+                return Exit.BADOPT;
             }
 
-            User.WriteLine("\nUnsupported option at this time.");
+            if (options.modules.Count == 0)
+            {
+                // What? No files specified?
+                User.WriteLine("Usage: ckan upgrade Mod [Mod2, ...]");
+                return Exit.BADOPT;
+            }
 
-            return Exit.BADOPT;
+            User.WriteLine("\nUpgrading modules...\n");
+
+            ModuleInstaller.Instance.Upgrade(options.modules);
+
+            User.WriteLine("\nDone!\n");
+
+            return Exit.OK;
         }
 
         private static int Clean()
