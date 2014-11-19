@@ -108,8 +108,14 @@ namespace CKAN.NetKAN
             {
                 log.Debug("Inflating ksp min/max");
                 metadata.Remove("ksp_version"); // In case it's there from KS
-                Inflate(metadata, "ksp_version_min", ksp_version_min.ToString());
-                Inflate(metadata, "ksp_version_max", ksp_version_max.ToString());
+                if (ksp_version_min != null)
+                {
+                    Inflate(metadata, "ksp_version_min", ksp_version_min.ToString());
+                }
+                if (ksp_version_max != null)
+                {
+                    Inflate(metadata, "ksp_version_max", ksp_version_max.ToString());
+                }
             }
             else if (ksp_version != null)
             {
