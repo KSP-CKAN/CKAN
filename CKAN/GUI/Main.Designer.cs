@@ -686,9 +686,9 @@ namespace CKAN
             this.ModuleRelationshipType.FormattingEnabled = true;
             this.ModuleRelationshipType.Items.AddRange(new object[] {
             "Depends",
-            "Pre-depends",
             "Recommends",
-            "Suggests"});
+            "Suggests",
+            "Supports"});
             this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
             this.ModuleRelationshipType.Name = "ModuleRelationshipType";
             this.ModuleRelationshipType.Size = new System.Drawing.Size(343, 21);
