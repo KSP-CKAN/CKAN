@@ -11,7 +11,8 @@ namespace CKAN
     {
         Depends = 0,
         Recommends = 1,
-        Suggests = 2
+        Suggests = 2,
+        Supports = 3
     }
 
     public partial class Main : Form
@@ -116,6 +117,9 @@ namespace CKAN
                     break;
                 case RelationshipType.Suggests:
                     relationships = module.suggests;
+                    break;
+                case RelationshipType.Supports:
+                    relationships = module.supports;
                     break;
             }
 
