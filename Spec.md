@@ -363,6 +363,12 @@ A list of mods which are suggested for installation alongside this mod.
 This is a weak recommendation, and by default these mods *will not* be
 installed unless the user requests otherwise.
 
+#### supports
+
+A list of mods which are supported by this mod.  This is the weakest of
+recommendations, and by default these mods *will not* be installed
+unless the user requests otherwise.
+
 ##### conflicts
 
 A list of mods which *conflict* with this mod. The current mod
