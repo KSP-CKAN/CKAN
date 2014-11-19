@@ -241,6 +241,8 @@ namespace CKAN
 
         private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides)
         {
+            ChooseProvidedModsLabel.Text = String.Format("Module {0} is provided by more than one available module, please choose one of the following mods:", tooManyProvides.requested); ;
+
             ChooseProvidedModsListView.Items.Clear();
 
             ChooseProvidedModsListView.ItemChecked += ChooseProvidedModsListView_ItemChecked;
