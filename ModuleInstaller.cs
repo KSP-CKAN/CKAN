@@ -796,6 +796,92 @@ namespace CKAN
             return;
         }
 
+        #region AddRemove
+
+        /// <summary>
+        /// Adds and removes the listed modules as a single transaction.
+        /// No relationships will be processed.
+        /// This *will* save the registry.
+        /// </summary>
+        /// <param name="add">Add.</param>
+        /// <param name="remove">Remove.</param>
+        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null)
+        {
+
+            // TODO: We should do a consistency check up-front, rather than relying
+            // upon our registry catching inconsistencies at the end.
+
+            // TODO: Download our files.
+
+            using (var tx = new TransactionScope())
+            {
+
+                foreach (string identifier in remove)
+                {
+                    Uninstall(identifier);
+                }
+
+                foreach (CkanModule module in add)
+                {
+                    Install(module);
+                }
+
+                this.registry_manager.Save();
+
+                tx.Complete();
+            }
+        }
+
+        /// <summary>
+        /// Upgrades the modest listed to the latest versions for the user's KSP.
+        /// Will *re-install* with warning even if an upgrade is not available.
+        /// Throws ModuleNotFoundKraken if module is not installed, or not available.
+        /// </summary>
+        /// <param name="modules">Modules.</param>
+        public void Upgrade(IEnumerable<string> identifiers)
+        {
+            List<CkanModule> upgrades = new List<CkanModule>();
+
+            foreach (string ident in identifiers)
+            {
+                CkanModule latest = registry_manager.registry.LatestAvailable(
+                                        ident, this.ksp.Version()
+                                    );
+
+                if (latest == null)
+                {
+                    throw new ModuleNotFoundKraken(
+                        ident,
+                        "Can't upgrade {0}, no modules available", ident
+                    );
+                }
+
+                Module installed = registry_manager.registry.InstalledModule(ident).Module;
+
+                if (installed == null)
+                {
+                    throw new ModuleNotFoundKraken(
+                        ident,
+                        "Can't upgrade {0}, it is not installed", ident
+                    );
+                }
+
+                if (installed.version.IsEqualTo(latest.version))
+                {
+                    log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
+                }
+
+                upgrades.Add(latest);
+            }
+
+            AddRemove(
+                upgrades,
+                upgrades.Select(x => x.identifier)
+            );
+        }
+
+        #endregion
+
         /// <summary>
         /// Don't use this. Use Registry.FindReverseDependencies instead.
         /// This method may be deprecated in the future.
