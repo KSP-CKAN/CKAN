@@ -248,13 +248,61 @@ namespace CKAN.CmdLine
 
             var installed = new SortedDictionary<string, Version>(registry.Installed());
 
-            foreach (var mod in installed)
+            foreach (KeyValuePair<string, Version> mod in installed)
             {
-                User.WriteLine("* {0} {1}", mod.Key, mod.Value);
+                string identifier = mod.Key;
+                Version current_version = mod.Value;
+
+                string bullet = "*";
+
+                if (current_version is ProvidesVersion)
+                {
+                    // Skip virtuals for now.
+                    continue;
+                }
+                else if (current_version is DllVersion)
+                {
+                    // Autodetected dll
+                    bullet = "-";
+                }
+                else
+                {
+                    try
+                    {
+                        // Check if upgrades are available, and show appropriately.
+                        CkanModule latest = registry.LatestAvailable(mod.Key, ksp.Version());
+
+                        log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
+
+                        if (latest == null)
+                        {
+                            // Not compatible!
+                            bullet = "✗";
+                        }
+                        else if (latest.version.IsEqualTo(current_version))
+                        {
+                            // Up to date
+                            bullet = "✓";
+                        }
+                        else if (latest.version.IsGreaterThan(mod.Value))
+                        {
+                            // Upgradable
+                            bullet = "↑";
+                        }
+
+                    }
+                    catch (ModuleNotFoundKraken) {
+                        log.InfoFormat("{0} is installed, but no longer in the registry",
+                            mod.Key);
+
+                        bullet = "?";
+                    }
+                }
+
+                User.WriteLine("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            // Blank line at the end makes for nicer looking output.
-            User.WriteLine("");
+            User.WriteLine("\nLegend: ✓ - Up to date. ✗ - Incompatible. ↑ - Upgradable. ? - Unknown ");
 
             return Exit.OK;
         }
