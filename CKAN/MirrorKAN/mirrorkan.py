@@ -77,16 +77,18 @@ def update(master_repo, root_path, mirror_path):
 		
 	# generate index.html
 	if GENERATE_INDEX_HTML:
-		index = ''
-		index += 'CKAN-meta mirror - DigitalOcean - Amsterdam\n'
-		index += 'Last update: ' + str(datetime.datetime.now()) + '\n'
-		index += 'Indexing ' + str(len(ckan_files)) + ' modules\n'
-		index += 'Modules list:\n'
+		index = '<html><head></head><body>'
+		index += 'CKAN-meta mirror - DigitalOcean - Amsterdam<br/>'
+		index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>'
+		index += 'Indexing ' + str(len(ckan_files)) + ' modules<br/>'
+		index += 'Modules list:<br/>'
 		
 		for ckan_module in ckan_json:
 			identifier = ckan_module[0]['identifier']
 			version = ckan_module[0]['version']
-			index += '\t' + identifier + ' - ' + version + '\n'
+			index += '&nbsp;' + identifier + ' - ' + version + '<br/>'
+		
+		index += '</body></html>'
 			
 		print 'Writing index.html'
 		index_file = open(os.path.join(FILE_MIRROR_PATH, 'index.html'), 'w')
