@@ -47,14 +47,7 @@ def zipdir(path, zip):
 
 def dlfile(url, path, filename):
     # Open the url
-    try:
-        f = urlopen(url)
-    except HTTPError, e:
-        print 'HTTPError: ' + str(e)
-        return None
-    except URLError, e:
-        print 'URLError: ' + str(e)
-        return None
+    f = urlopen(url)
     
     shouldDownload = False
     
@@ -88,6 +81,20 @@ def parse_ckan_metadata(filename):
         
     return data
     
+def parse_ckan_metadata_directory(path):
+    print 'Looking for .ckan metadata files in ' + path
+    ckan_files = find_files_with_extension(os.path.join(root_path, path), '.ckan')
+    print 'Found %i metadata files' % len(ckan_files)
+    
+    ckan_json = []
+    
+    for ckan_file in ckan_files:
+        print 'Parsing "%s"' % ckan_file
+        ckan_module = parse_ckan_metadata(ckan_file)
+        ckan_json += [[ckan_module, ckan_file]]
+        
+    return (ckan_files, ckan_json)
+    
 def find_files_with_extension(directory, extension):
     result_list = []
     
@@ -113,20 +120,39 @@ def update(master_repo, root_path, mirror_path):
         print 'Extracting master.zip..',
         zip_file.extractall(root_path)
         print 'Done!'
+  
+    ckan_files, ckan_json = parse_ckan_metadata_directory('CKAN-meta-master')
+    ckan_file_availability = {}
+       
+    for ckan_module in ckan_json:
+        identifier = ckan_module[0]['identifier']
+        version = ckan_module[0]['version']
+        download_url = ckan_module[0]['download']
         
-    print 'Looking for .ckan metadata files'
-    ckan_files = find_files_with_extension(os.path.join(root_path, 'CKAN-meta-master'), '.ckan')
-    print 'Found %i metadata files' % len(ckan_files)
-    
-    ckan_json = []
-    
-    print 'Parsing ' + str(len(ckan_files)) + ' modules'
-    
-    for ckan_file in ckan_files:
-        print 'Parsing "%s"' % ckan_file
-        ckan_module = parse_ckan_metadata(ckan_file)
-        ckan_json += [[ckan_module, ckan_file]]
+        ckan_file_availability[identifier] = 'OK!'
         
+        filename = identifier + '-' + version + '.zip'
+        download_file_url = LOCAL_URL_PREFIX + filename
+        ckan_module[0]['download'] = download_file_url
+            
+        print 'Downloading "%s"' % download_url
+        
+        try:
+            download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
+        except HTTPError, e:
+			ckan_file_availability[identifier] = 'HTTP Error: ' + str(e)
+            print 'HTTPError: ' + str(e)
+            continue
+        except URLError, e:
+            ckan_file_availability[identifier] = 'URL Error: ' + str(e)
+            print 'URLError: ' + str(e)
+            continue
+
+		print 'Dumping json for ' + identifier
+
+        with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
+            json.dump(ckan_module[0], out_ckan)
+      
     # generate index.html
     if GENERATE_INDEX_HTML:
         index = '<html><head></head><body>'
@@ -138,38 +164,16 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
-            index += '&nbsp;' + identifier + ' - ' + version + '<br/>'
+            index += '&nbsp;' + identifier + ' - ' + version + ' - '
+            index += 'status: ' + ckan_file_availability[identifier] + '<br/>'
         
         index += '</body></html>'
-            
+
         print 'Writing index.html'
         index_file = open(os.path.join(FILE_MIRROR_PATH, 'index.html'), 'w')
         index_file.write(index)
         index_file.close()
-        
-    for ckan_module in ckan_json:
-        identifier = ckan_module[0]['identifier']
-        version = ckan_module[0]['version']
-        download_url = ckan_module[0]['download']
-        
-        filename = identifier + '-' + version + '.zip'
-        download_file_url = LOCAL_URL_PREFIX + filename
-        ckan_module[0]['download'] = download_file_url
-            
-        print 'Downloading "%s"' % download_url
-        
-        try:
-            download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
-        except:
-            download_file = None
-        
-        if download_file == None:
-            print 'Failed to download "%s", skipping..' % download_url
-            continue
-            
-        with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
-            json.dump(ckan_module[0], out_ckan)
-        
+    
     # zip up all generated files 
     print 'Creating new master.zip'
     zipf = zipfile.ZipFile(os.path.join(FILE_MIRROR_PATH, 'master.zip'), 'w')
