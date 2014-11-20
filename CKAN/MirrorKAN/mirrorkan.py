@@ -83,7 +83,7 @@ def parse_ckan_metadata(filename):
     
 def parse_ckan_metadata_directory(path):
     print 'Looking for .ckan metadata files in ' + path
-    ckan_files = find_files_with_extension(os.path.join(root_path, path), '.ckan')
+    ckan_files = find_files_with_extension(path, '.ckan')
     print 'Found %i metadata files' % len(ckan_files)
     
     ckan_json = []
@@ -121,7 +121,7 @@ def update(master_repo, root_path, mirror_path):
         zip_file.extractall(root_path)
         print 'Done!'
   
-    ckan_files, ckan_json = parse_ckan_metadata_directory('CKAN-meta-master')
+    ckan_files, ckan_json = parse_ckan_metadata_directory(os.path.join(root_path, 'CKAN-meta-master'))
     ckan_file_availability = {}
        
     for ckan_module in ckan_json:
