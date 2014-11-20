@@ -20,18 +20,15 @@ def dlfile(url, path, filename):
     # Open the url
     try:
         f = urlopen(url)
-
-        # Open our local file for writing
-        with open(os.path.join(path, filename), "wb") as local_file:
-            local_file.write(f.read())
-
-    #handle errors
     except HTTPError, e:
 		return None
     except URLError, e:
 		return None
         
-    return local_file.name
+    f.close()
+    path = os.path.join(path, filename)
+    os.system('wget -o ' + path + ' ' + url)
+    return path
    
 def parse_ckan_metadata(filename):
 	data = None
