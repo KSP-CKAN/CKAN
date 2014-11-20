@@ -10,7 +10,7 @@ namespace CKAN
         public bool with_all_suggests = false;
         public bool with_recommends = true;
         public bool with_suggests = false;
-        public bool without_provides = false;
+        public bool without_toomanyprovides_kraken = false;
         public bool without_enforce_consistency = false;
     }
 
@@ -189,7 +189,7 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     // TODO: It would be great if instead we picked the one with the
                     // most recommendations.
-                    if(options.without_provides)
+                    if(options.without_toomanyprovides_kraken)
                     {
                         continue;
                     }
