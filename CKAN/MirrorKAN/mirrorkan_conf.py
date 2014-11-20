@@ -10,8 +10,8 @@ LOCAL_CKAN_PATH = "ckan/"
 # folder to store downloads and master.zip
 FILE_MIRROR_PATH = "mirror/"
 
-# server url - must point to the same location as FILE_MIRROR_PATH
-LOCAL_URL_PREFIX = "http://example.com/ckan/"
+# server url - must point to the same location as FILE_MIRROR_PATH, trailing slash required!
+LOCAL_URL_PREFIX = "http://128.199.55.88/"
 
 # whether to generate an index.html in the mirror/ folder
 GENERATE_INDEX_HTML = True
