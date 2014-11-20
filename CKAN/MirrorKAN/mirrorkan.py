@@ -103,9 +103,6 @@ def update(master_repo, root_path, mirror_path):
 		filename = identifier + '-' + version + '.zip'
 		download_file_url = LOCAL_URL_PREFIX + filename
 		ckan_module[0]['download'] = download_file_url
-		
-		with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
-			json.dump(ckan_module[0], out_ckan)
 			
 		print 'Downloading "%s"' % download_url
 		
@@ -117,6 +114,9 @@ def update(master_repo, root_path, mirror_path):
 		if download_file == None:
 			print 'Failed to download "%s", skipping..' % download_url
 			continue
+			
+		with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
+			json.dump(ckan_module[0], out_ckan)
 		
 	# zip up all generated files 
 	print 'Creating new master.zip'
