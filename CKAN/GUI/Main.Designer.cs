@@ -109,7 +109,20 @@ namespace CKAN
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
-            this.RecommendedModsTreeView = new System.Windows.Forms.TreeView();
+            this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
+            this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.RecommendedModsListView = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
+            this.ChooseProvidedModsCancelButton = new System.Windows.Forms.Button();
+            this.ChooseProvidedModsContinueButton = new System.Windows.Forms.Button();
+            this.ChooseProvidedModsListView = new System.Windows.Forms.ListView();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -128,6 +141,7 @@ namespace CKAN
             this.ChangesetTabPage.SuspendLayout();
             this.WaitTabPage.SuspendLayout();
             this.ChooseRecommendedModsTabPage.SuspendLayout();
+            this.ChooseProvidedModsTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -334,9 +348,7 @@ namespace CKAN
             // 
             this.ModList.AllowUserToAddRows = false;
             this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeColumns = false;
             this.ModList.AllowUserToResizeRows = false;
-            this.ModList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -686,7 +698,6 @@ namespace CKAN
             this.ModuleRelationshipType.FormattingEnabled = true;
             this.ModuleRelationshipType.Items.AddRange(new object[] {
             "Depends",
-            "Pre-depends",
             "Recommends",
             "Suggests"});
             this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
@@ -773,6 +784,7 @@ namespace CKAN
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
             this.MainTabControl.Controls.Add(this.WaitTabPage);
             this.MainTabControl.Controls.Add(this.ChooseRecommendedModsTabPage);
+            this.MainTabControl.Controls.Add(this.ChooseProvidedModsTabPage);
             this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainTabControl.Location = new System.Drawing.Point(0, 24);
             this.MainTabControl.Name = "MainTabControl";
@@ -857,7 +869,7 @@ namespace CKAN
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(75, 23);
             this.ConfirmChangesButton.TabIndex = 5;
-            this.ConfirmChangesButton.Text = "Apply";
+            this.ConfirmChangesButton.Text = " Apply";
             this.ConfirmChangesButton.UseVisualStyleBackColor = true;
             this.ConfirmChangesButton.Click += new System.EventHandler(this.ConfirmChangesButton_Click);
             // 
@@ -895,6 +907,7 @@ namespace CKAN
             // 
             // WaitTabPage
             // 
+            this.WaitTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.WaitTabPage.Controls.Add(this.CancelCurrentActionButton);
             this.WaitTabPage.Controls.Add(this.LogTextBox);
             this.WaitTabPage.Controls.Add(this.DialogProgressBar);
@@ -905,11 +918,11 @@ namespace CKAN
             this.WaitTabPage.Size = new System.Drawing.Size(1021, 646);
             this.WaitTabPage.TabIndex = 1;
             this.WaitTabPage.Text = "Installing mods";
-            this.WaitTabPage.UseVisualStyleBackColor = true;
             // 
             // CancelCurrentActionButton
             // 
             this.CancelCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelCurrentActionButton.Location = new System.Drawing.Point(940, 618);
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(75, 23);
@@ -960,7 +973,10 @@ namespace CKAN
             // 
             // ChooseRecommendedModsTabPage
             // 
-            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsTreeView);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.label4);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsListView);
             this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
             this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -969,17 +985,146 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage.Text = "Choose recommended mods";
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
             // 
-            // RecommendedModsTreeView
+            // RecommendedModsCancelButton
             // 
-            this.RecommendedModsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.RecommendedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RecommendedModsCancelButton.Location = new System.Drawing.Point(859, 617);
+            this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
+            this.RecommendedModsCancelButton.Size = new System.Drawing.Size(75, 23);
+            this.RecommendedModsCancelButton.TabIndex = 8;
+            this.RecommendedModsCancelButton.Text = "Cancel";
+            this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
+            this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
+            // 
+            // RecommendedModsContinueButton
+            // 
+            this.RecommendedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RecommendedModsContinueButton.Location = new System.Drawing.Point(940, 617);
+            this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
+            this.RecommendedModsContinueButton.Size = new System.Drawing.Size(75, 23);
+            this.RecommendedModsContinueButton.TabIndex = 7;
+            this.RecommendedModsContinueButton.Text = "Continue";
+            this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
+            this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(422, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "The following modules have been recommended by one or more of the chosen modules:" +
+    "";
+            // 
+            // RecommendedModsListView
+            // 
+            this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RecommendedModsTreeView.CheckBoxes = true;
-            this.RecommendedModsTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
-            this.RecommendedModsTreeView.Location = new System.Drawing.Point(6, 6);
-            this.RecommendedModsTreeView.Name = "RecommendedModsTreeView";
-            this.RecommendedModsTreeView.Size = new System.Drawing.Size(1048, 603);
-            this.RecommendedModsTreeView.TabIndex = 0;
+            this.RecommendedModsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RecommendedModsListView.CheckBoxes = true;
+            this.RecommendedModsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5});
+            this.RecommendedModsListView.Location = new System.Drawing.Point(6, 29);
+            this.RecommendedModsListView.Name = "RecommendedModsListView";
+            this.RecommendedModsListView.Size = new System.Drawing.Size(1007, 582);
+            this.RecommendedModsListView.TabIndex = 5;
+            this.RecommendedModsListView.UseCompatibleStateImageBehavior = false;
+            this.RecommendedModsListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Mod";
+            this.columnHeader3.Width = 332;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Recommended by";
+            this.columnHeader4.Width = 180;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Mod description";
+            this.columnHeader5.Width = 606;
+            // 
+            // ChooseProvidedModsTabPage
+            // 
+            this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsCancelButton);
+            this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsContinueButton);
+            this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsListView);
+            this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedModsLabel);
+            this.ChooseProvidedModsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ChooseProvidedModsTabPage.Name = "ChooseProvidedModsTabPage";
+            this.ChooseProvidedModsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1021, 646);
+            this.ChooseProvidedModsTabPage.TabIndex = 4;
+            this.ChooseProvidedModsTabPage.Text = "Choose mods";
+            this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // ChooseProvidedModsCancelButton
+            // 
+            this.ChooseProvidedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(857, 616);
+            this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
+            this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(75, 23);
+            this.ChooseProvidedModsCancelButton.TabIndex = 10;
+            this.ChooseProvidedModsCancelButton.Text = "Cancel";
+            this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
+            this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
+            // 
+            // ChooseProvidedModsContinueButton
+            // 
+            this.ChooseProvidedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(938, 616);
+            this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
+            this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(75, 23);
+            this.ChooseProvidedModsContinueButton.TabIndex = 9;
+            this.ChooseProvidedModsContinueButton.Text = "Continue";
+            this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
+            this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
+            // 
+            // ChooseProvidedModsListView
+            // 
+            this.ChooseProvidedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ChooseProvidedModsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ChooseProvidedModsListView.CheckBoxes = true;
+            this.ChooseProvidedModsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6,
+            this.columnHeader8});
+            this.ChooseProvidedModsListView.Location = new System.Drawing.Point(6, 28);
+            this.ChooseProvidedModsListView.Name = "ChooseProvidedModsListView";
+            this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1007, 582);
+            this.ChooseProvidedModsListView.TabIndex = 8;
+            this.ChooseProvidedModsListView.UseCompatibleStateImageBehavior = false;
+            this.ChooseProvidedModsListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Mod";
+            this.columnHeader6.Width = 332;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Mod description";
+            this.columnHeader8.Width = 606;
+            // 
+            // ChooseProvidedModsLabel
+            // 
+            this.ChooseProvidedModsLabel.AutoSize = true;
+            this.ChooseProvidedModsLabel.Location = new System.Drawing.Point(6, 12);
+            this.ChooseProvidedModsLabel.Name = "ChooseProvidedModsLabel";
+            this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(383, 13);
+            this.ChooseProvidedModsLabel.TabIndex = 7;
+            this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
             // Main
             // 
@@ -1019,6 +1164,9 @@ namespace CKAN
             this.WaitTabPage.ResumeLayout(false);
             this.WaitTabPage.PerformLayout();
             this.ChooseRecommendedModsTabPage.ResumeLayout(false);
+            this.ChooseRecommendedModsTabPage.PerformLayout();
+            this.ChooseProvidedModsTabPage.ResumeLayout(false);
+            this.ChooseProvidedModsTabPage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1105,7 +1253,20 @@ namespace CKAN
         private ColumnHeader ChangeType;
         private ColumnHeader columnHeader2;
         private TabPage ChooseRecommendedModsTabPage;
-        private TreeView RecommendedModsTreeView;
+        private Label label4;
+        private ListView RecommendedModsListView;
+        private ColumnHeader columnHeader3;
+        private ColumnHeader columnHeader4;
+        private ColumnHeader columnHeader5;
+        private Button RecommendedModsCancelButton;
+        private Button RecommendedModsContinueButton;
+        private TabPage ChooseProvidedModsTabPage;
+        private Label ChooseProvidedModsLabel;
+        private ListView ChooseProvidedModsListView;
+        private ColumnHeader columnHeader6;
+        private ColumnHeader columnHeader8;
+        private Button ChooseProvidedModsCancelButton;
+        private Button ChooseProvidedModsContinueButton;
     }
 }
 
