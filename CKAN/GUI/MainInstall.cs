@@ -218,6 +218,27 @@ namespace CKAN
                 {
                     // User cancelled, no action needed.
                 }
+                catch (InconsistentKraken inconsistency)
+                {
+                    string message = "";
+                    bool first = true;
+                    foreach(var msg in inconsistency.inconsistencies)
+                    {
+                        if (!first)
+                        {
+                            message += ", ";
+                        }
+                        else
+                        {
+                            first = false;
+                        }
+
+                        message += msg;
+                    }
+
+                    User.Error("Inconsistency detected - {0}", message);
+                }
+
                 // TODO: Handle our other krakens here, we want the user to know
                 // when things have gone wrong!
 
