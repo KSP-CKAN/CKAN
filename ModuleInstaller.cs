@@ -94,7 +94,7 @@ namespace CKAN
 
             string tmp_file = Net.Download(url);
 
-            return cache.Store(url, tmp_file, move: true);
+            return cache.Store(url, tmp_file, filename, move: true);
         }
 
         /// <summary>
