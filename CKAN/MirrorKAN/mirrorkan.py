@@ -27,7 +27,7 @@ def dlfile(url, path, filename):
         
     f.close()
     path = os.path.join(path, filename)
-    os.system('wget -o ' + path + ' ' + url)
+    os.system('wget -O ' + path + ' ' + url)
     return path
    
 def parse_ckan_metadata(filename):
