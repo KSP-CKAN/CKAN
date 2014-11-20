@@ -425,5 +425,11 @@ namespace CKAN
             UpdateModFilterList();
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new AboutDialog();
+            dialog.ShowDialog();
+        }
+
     }
 }
