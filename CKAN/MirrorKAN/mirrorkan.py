@@ -40,12 +40,22 @@ def dldb_shoulddownload(filename, lastModified):
     
     return True
 
+def dldb_getlastmodified(filename):
+    with open('db.json', 'r') as db_file:
+        db = json.load(db_file)
+        if filename not in db:
+            return None
+            
+        return db[filename]
+
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for file in files:
             zip.write(os.path.join(root, file))
 
 def dlfile(url, path, filename):
+    print 'Downloading ' + url
+    
     # Open the url
     f = urlopen(url)
     
@@ -53,13 +63,15 @@ def dlfile(url, path, filename):
     
     if 'last-modified' in f.headers:
         last_modified = f.headers['last-modified']
-        shouldDownload = dldb_shoulddownload(filename, last_modified)
+        print 'last-modified header time: ' + last_modified
+        db_last_modified = dldb_getlastmodified(filename)
+        if db_last_modified != None:
+            print 'database last modified time: ' + db_last_modified
         
-        if shouldDownload:
-            dldb_write(filename, last_modified)
-        else:
-            pass
+        shouldDownload = dldb_shoulddownload(filename, last_modified)
+        dldb_write(filename, last_modified)
     else:
+        print 'last-modified header not found'
         shouldDownload = True
         
     f.close()
