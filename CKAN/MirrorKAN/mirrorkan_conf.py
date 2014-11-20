@@ -15,3 +15,6 @@ LOCAL_URL_PREFIX = "http://128.199.55.88/"
 
 # whether to generate an index.html in the mirror/ folder
 GENERATE_INDEX_HTML = True
+
+# the header text in index.html
+INDEX_HTML_HEADER = "CKAN-meta mirror - DigitalOcean - Amsterdam"

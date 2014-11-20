@@ -80,7 +80,7 @@ def update(master_repo, root_path, mirror_path):
 	# generate index.html
 	if GENERATE_INDEX_HTML:
 		index = '<html><head></head><body>'
-		index += 'CKAN-meta mirror - DigitalOcean - Amsterdam<br/>'
+		index += INDEX_HTML_HEADER + '<br/>'
 		index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>'
 		index += 'Indexing ' + str(len(ckan_files)) + ' modules<br/>'
 		index += 'Modules list:<br/>'
