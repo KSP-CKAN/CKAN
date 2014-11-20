@@ -140,7 +140,7 @@ def update(master_repo, root_path, mirror_path):
         try:
             download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
         except HTTPError, e:
-			ckan_file_availability[identifier] = 'HTTP Error: ' + str(e)
+            ckan_file_availability[identifier] = 'HTTP Error: ' + str(e)
             print 'HTTPError: ' + str(e)
             continue
         except URLError, e:
@@ -148,7 +148,7 @@ def update(master_repo, root_path, mirror_path):
             print 'URLError: ' + str(e)
             continue
 
-		print 'Dumping json for ' + identifier
+        print 'Dumping json for ' + identifier
 
         with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
             json.dump(ckan_module[0], out_ckan)
