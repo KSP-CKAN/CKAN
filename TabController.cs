@@ -49,6 +49,19 @@ namespace CKAN
             }
         }
 
+        public void RenameTab(string name, string newDisplayName)
+        {
+            if (m_TabControl.InvokeRequired)
+            {
+
+                m_TabControl.Invoke(new MethodInvoker(() => _RenameTab(name, newDisplayName)));
+            }
+            else
+            {
+                _RenameTab(name, newDisplayName);
+            }
+        }
+
         public void SetTabLock(bool state)
         {
             if (m_TabControl.InvokeRequired)
@@ -101,6 +114,11 @@ namespace CKAN
         private void _HideTab(string name)
         {
             m_TabControl.TabPages.Remove(m_TabPages[name]);
+        }
+
+        public void _RenameTab(string name, string newDisplayName)
+        {
+            m_TabPages[name].Text = newDisplayName;
         }
 
         private void _SetTabLock(bool state)
