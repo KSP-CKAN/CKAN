@@ -10,9 +10,8 @@ namespace CKAN
     public enum RelationshipType
     {
         Depends = 0,
-        PreDepends = 1,
-        Recommends = 2,
-        Suggests = 3
+        Recommends = 1,
+        Suggests = 2
     }
 
     public partial class Main : Form
