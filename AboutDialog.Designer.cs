@@ -61,6 +61,7 @@ namespace CKAN
             this.linkLabel1.TabIndex = 1;
             this.linkLabel1.Text = "License";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkLabel1.Links.Add(0, 8, "https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md");
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // linkLabel2
@@ -73,6 +74,7 @@ namespace CKAN
             this.linkLabel2.TabIndex = 2;
             this.linkLabel2.Text = "Authors";
             this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkLabel2.Links.Add(0, 7, "https://github.com/KSP-CKAN/CKAN/graphs/contributors");
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // linkLabel3
@@ -84,6 +86,7 @@ namespace CKAN
             this.linkLabel3.Size = new System.Drawing.Size(41, 13);
             this.linkLabel3.TabIndex = 3;
             this.linkLabel3.Text = "Source";
+            this.linkLabel3.Links.Add(0, 6, "https://github.com/KSP-CKAN/CKAN/");
             this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
             // 
             // linkLabel4
@@ -95,6 +98,7 @@ namespace CKAN
             this.linkLabel4.Size = new System.Drawing.Size(73, 13);
             this.linkLabel4.TabIndex = 4;
             this.linkLabel4.Text = "Forum Thread";
+            this.linkLabel4.Links.Add(0, 12, "http://forum.kerbalspaceprogram.com/threads/97434-The-Comprehensive-Kerbal-Archive-Network-Call-for-mod-participation");
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
             // 
             // label2
@@ -115,6 +119,7 @@ namespace CKAN
             this.linkLabel5.TabIndex = 6;
             this.linkLabel5.Text = "Homepage";
             this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkLabel5.Links.Add(0, 15, "http://ksp-ckan.org");
             this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
             // 
             // AboutDialog
