@@ -75,6 +75,24 @@ def update(master_repo, root_path, mirror_path):
 		ckan_module = parse_ckan_metadata(ckan_file)
 		ckan_json += [[ckan_module, ckan_file]]
 		
+	# generate index.html
+	if GENERATE_INDEX_HTML:
+		index = ''
+		index += 'CKAN-meta mirror - DigitalOcean - Amsterdam\n'
+		index += 'Last update: ' + str(datetime.datetime.now()) + '\n'
+		index += 'Indexing ' + str(len(ckan_files)) + ' modules\n'
+		index += 'Modules list:\n'
+		
+		for ckan_module in ckan_json:
+			identifier = ckan_module[0]['identifier']
+			version = ckan_module[0]['version']
+			index += '\t' + identifier + ' - ' + version + '\n'
+			
+		print 'Writing index.html'
+		index_file = open(os.path.join(FILE_MIRROR_PATH, 'index.html'), 'w')
+		index_file.write(index)
+		index_file.close()
+		
 	for ckan_module in ckan_json:
 		identifier = ckan_module[0]['identifier']
 		version = ckan_module[0]['version']
@@ -103,24 +121,6 @@ def update(master_repo, root_path, mirror_path):
 	zipf = zipfile.ZipFile(os.path.join(FILE_MIRROR_PATH, 'master.zip'), 'w')
 	zipdir(LOCAL_CKAN_PATH, zipf)
 	zipf.close()
-	
-	# generate index.html
-	if GENERATE_INDEX_HTML:
-		index = ''
-		index += 'CKAN-meta mirror - DigitalOcean - Amsterdam\n'
-		index += 'Last update: ' + str(datetime.datetime.now()) + '\n'
-		index += 'Indexing ' + str(len(ckan_files)) + ' modules\n'
-		index += 'Modules list:\n'
-		
-		for ckan_module in ckan_json:
-			identifier = ckan_module[0]['identifier']
-			version = ckan_module[0]['version']
-			index += '\t' + identifier + ' - ' + version + '\n'
-			
-		print 'Writing index.html'
-		index_file = open(os.path.join(FILE_MIRROR_PATH, 'index.html'), 'w')
-		index_file.write(index)
-		index_file.close()
 	
 	print 'Done!'
 
