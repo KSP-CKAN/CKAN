@@ -348,9 +348,7 @@ namespace CKAN
             // 
             this.ModList.AllowUserToAddRows = false;
             this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeColumns = false;
             this.ModList.AllowUserToResizeRows = false;
-            this.ModList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
