@@ -25,6 +25,9 @@ namespace CKAN.CmdLine
 
             [VerbOption("default", HelpText="Set a default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
+
+            [VerbOption("use", HelpText="Alternative for `default`")]
+            public UseOptions UseOptions { get; set; }
         }
 
         internal class AddOptions : CommonOptions
@@ -55,6 +58,10 @@ namespace CKAN.CmdLine
         {
             [ValueOption(0)]
             public string name { get; set; }
+        }
+
+        internal class UseOptions : DefaultOptions
+        {
         }
 
         public KSP()
@@ -98,6 +105,7 @@ namespace CKAN.CmdLine
                 case "forget":
                     return ForgetInstall((ForgetOptions)suboptions);
 
+                case "use":
                 case "default":
                     return SetDefaultInstall((DefaultOptions)suboptions);
 

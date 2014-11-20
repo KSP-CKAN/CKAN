@@ -64,6 +64,9 @@ namespace CKAN.CmdLine
         [VerbOption("remove", HelpText = "Remove an installed mod")]
         public RemoveOptions Remove { get; set; }
 
+        [VerbOption("uninstall", HelpText = "Alternative for `remove`")]
+        public UninstallOptions Uninstall { get; set; }
+
         [VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
         public ScanOptions Scan { get; set; }
 
@@ -189,6 +192,10 @@ namespace CKAN.CmdLine
     {
         [ValueOption(0)]
         public string Modname { get; set; }
+    }
+
+    internal class UninstallOptions : RemoveOptions
+    {
     }
 
     internal class ShowOptions : CommonOptions

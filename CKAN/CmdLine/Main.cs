@@ -150,6 +150,7 @@ namespace CKAN.CmdLine
                 case "show":
                     return Show((ShowOptions) cmdline.options);
 
+                case "uninstall":
                 case "remove":
                     return Remove((RemoveOptions) cmdline.options);
 
