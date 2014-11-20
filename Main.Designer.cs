@@ -163,34 +163,34 @@ namespace CKAN
             this.exportInstalledModsToolStripMenuItem,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // installFromckanToolStripMenuItem
             // 
             this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
-            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
             this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
             // 
             // exportInstalledModsToolStripMenuItem
             // 
             this.exportInstalledModsToolStripMenuItem.Name = "exportInstalledModsToolStripMenuItem";
-            this.exportInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.exportInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.exportInstalledModsToolStripMenuItem.Text = "Export installed mods";
             this.exportInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.exportInstalledModsToolStripMenuItem_Click);
             // 
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(176, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(187, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -199,14 +199,15 @@ namespace CKAN
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -242,14 +243,14 @@ namespace CKAN
             this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
             this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
-            this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(106, 36);
+            this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(113, 36);
             this.launchKSPToolStripMenuItem.Text = "Launch KSP";
             this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
             // 
             // setCommandlineOptionsToolStripMenuItem
             // 
             this.setCommandlineOptionsToolStripMenuItem.Name = "setCommandlineOptionsToolStripMenuItem";
-            this.setCommandlineOptionsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.setCommandlineOptionsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.setCommandlineOptionsToolStripMenuItem.Text = "Set command-line arguments";
             this.setCommandlineOptionsToolStripMenuItem.Click += new System.EventHandler(this.setCommandlineOptionsToolStripMenuItem_Click);
             // 
@@ -258,7 +259,7 @@ namespace CKAN
             this.RefreshToolButton.Image = global::CKAN.Properties.Resources.refresh;
             this.RefreshToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshToolButton.Name = "RefreshToolButton";
-            this.RefreshToolButton.Size = new System.Drawing.Size(89, 36);
+            this.RefreshToolButton.Size = new System.Drawing.Size(90, 36);
             this.RefreshToolButton.Text = "Refresh";
             this.RefreshToolButton.Click += new System.EventHandler(this.RefreshToolButton_Click);
             // 
@@ -267,7 +268,7 @@ namespace CKAN
             this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
-            this.UpdateAllToolButton.Size = new System.Drawing.Size(130, 36);
+            this.UpdateAllToolButton.Size = new System.Drawing.Size(140, 36);
             this.UpdateAllToolButton.Text = "Mark all updated";
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
             // 
@@ -276,7 +277,7 @@ namespace CKAN
             this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
-            this.ApplyToolButton.Size = new System.Drawing.Size(120, 36);
+            this.ApplyToolButton.Size = new System.Drawing.Size(127, 36);
             this.ApplyToolButton.Text = "Go to changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
             // 
@@ -293,55 +294,55 @@ namespace CKAN
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
-            this.FilterToolButton.Size = new System.Drawing.Size(97, 36);
+            this.FilterToolButton.Size = new System.Drawing.Size(102, 36);
             this.FilterToolButton.Text = "Filter (All)";
             // 
             // FilterAllButton
             // 
             this.FilterAllButton.Name = "FilterAllButton";
-            this.FilterAllButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
             // FilterInstalledButton
             // 
             this.FilterInstalledButton.Name = "FilterInstalledButton";
-            this.FilterInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledButton.Size = new System.Drawing.Size(215, 22);
             this.FilterInstalledButton.Text = "Installed";
             this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
             // 
             // FilterInstalledUpdateButton
             // 
             this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
-            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(215, 22);
             this.FilterInstalledUpdateButton.Text = "Installed (update available)";
             this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
             // 
             // FilterNewButton
             // 
             this.FilterNewButton.Name = "FilterNewButton";
-            this.FilterNewButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNewButton.Size = new System.Drawing.Size(215, 22);
             this.FilterNewButton.Text = "New in repository";
             this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
             // 
             // FilterNotInstalledButton
             // 
             this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
-            this.FilterNotInstalledButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterNotInstalledButton.Size = new System.Drawing.Size(215, 22);
             this.FilterNotInstalledButton.Text = "Not installed";
             this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
             // 
             // FilterIncompatibleButton
             // 
             this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
-            this.FilterIncompatibleButton.Size = new System.Drawing.Size(205, 22);
+            this.FilterIncompatibleButton.Size = new System.Drawing.Size(215, 22);
             this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
             // 
             // customToolStripMenuItem
             // 
             this.customToolStripMenuItem.Name = "customToolStripMenuItem";
-            this.customToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.customToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
             this.customToolStripMenuItem.Text = "Custom";
             // 
             // ModList
@@ -434,7 +435,7 @@ namespace CKAN
             this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.Homepage.Name = "Homepage";
             this.Homepage.ReadOnly = true;
-            this.Homepage.Width = 63;
+            this.Homepage.Width = 65;
             // 
             // splitContainer1
             // 

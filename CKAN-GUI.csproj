@@ -36,6 +36,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChooseKSPInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,6 +111,9 @@
     <Compile Include="YesNoDialog.Designer.cs">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </EmbeddedResource>
