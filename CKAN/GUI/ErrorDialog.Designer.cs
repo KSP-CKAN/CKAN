@@ -67,11 +67,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 171);
+            this.ClientSize = new System.Drawing.Size(292, 174);
             this.ControlBox = false;
             this.Controls.Add(this.DismissButton);
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "ErrorDialog";
             this.Text = "Error!";
             this.panel1.ResumeLayout(false);
