@@ -141,6 +141,8 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
+            ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
             Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
         }
