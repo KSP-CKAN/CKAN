@@ -51,7 +51,6 @@ def find_files_with_extension(directory, extension):
 	
 def update(master_repo, root_path, mirror_path):
 	print 'Cleaning up...',
-	os.system('rm -R ' + FILE_MIRROR_PATH + '/*')
 	os.system('rm -R ' + LOCAL_CKAN_PATH + '/*')
 	os.system('rm -R ' + MASTER_ROOT_PATH + '/*')
 	print 'Done!'
