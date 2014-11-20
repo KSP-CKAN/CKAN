@@ -12,3 +12,6 @@ FILE_MIRROR_PATH = "mirror/"
 
 # server url - must point to the same location as FILE_MIRROR_PATH
 LOCAL_URL_PREFIX = "http://example.com/ckan/"
+
+# whether to generate an index.html in the mirror/ folder
+GENERATE_INDEX_HTML = True
