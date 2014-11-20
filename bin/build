@@ -2218,7 +2218,12 @@ sub copy {
     else {
         # Use friggin' awesome btrfs magic under Linux.
         # This still works, even if not using btrfs (justh with less magic)
-        my @CP      = qw(cp -r --reflink=auto --sparse=always);
+        my @CP;
+        if ($^O eq "darwin") { # OSX fix for Mac
+                @CP = qw(cp -r);
+        } else {
+                @CP = qw(cp -r --reflink=auto --sparse=always);
+        }
         system(@CP,$src,$dst);
     }
     return;
