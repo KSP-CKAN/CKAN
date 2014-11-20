@@ -160,6 +160,7 @@ namespace CKAN
                 return;
             }
 
+            m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
 
             bool resolvedAllProvidedMods = false;
