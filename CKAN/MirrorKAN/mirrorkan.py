@@ -206,7 +206,7 @@ def update(master_repo, root_path, mirror_path):
             if ckan_file_availability[identifier] != 'OK!':
                 color = "#CC3300"
             
-            index += '<font style="color: ' + color + ';">'
+            index += '<font style="color: ' + color + '; font-weight: bold;">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
             index += 'Status: ' + ckan_file_availability[identifier] + ' - '
