@@ -165,10 +165,6 @@ def update(master_repo, root_path, mirror_path):
         else:
             ckan_last_updated[identifier] = 'last-modified header missing'
             
-        if mod_license == 'restricted' or mod_license == 'unknown':
-            ckan_file_availability[identifier] = 'Non-permissive license!'
-            continue
-       
         print 'Downloading "%s"' % download_url
         
         try:
@@ -181,6 +177,10 @@ def update(master_repo, root_path, mirror_path):
             ckan_file_availability[identifier] = 'URL Error: ' + str(e)
             print 'URLError: ' + str(e)
             continue
+            
+        if mod_license == 'restricted' or mod_license == 'unknown':
+            ckan_file_availability[identifier] = 'Non-permissive license!'
+			continue
 
         print 'Dumping json for ' + identifier
 
