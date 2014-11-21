@@ -13,11 +13,11 @@ from dateutil.parser import parse
 from mirrorkan_conf import *
 
 def dldb_create():
-	if os.path.exists('db.json'):
-		return
-	
-	with open('db.json', 'w') as db_file:
-		db_file.write('{}');
+    if os.path.exists('db.json'):
+        return
+    
+    with open('db.json', 'w') as db_file:
+        db_file.write('{}');
 
 def dldb_write(filename, lastModified):
     db = None
@@ -126,8 +126,8 @@ def find_files_with_extension(directory, extension):
     return result_list
     
 def update(master_repo, root_path, mirror_path):
-	dldb_create()
-	
+    dldb_create()
+    
     print 'Cleaning up...',
     os.system('rm -R ' + LOCAL_CKAN_PATH + '/*')
     os.system('rm -R ' + MASTER_ROOT_PATH + '/*')
