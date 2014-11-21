@@ -211,7 +211,7 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
-            if ckan_file_availability[identifier+version] == 'OK!':
+            if ckan_file_availability[filename] == 'OK!':
                 mods_ok += 1
             else:
                 mods_error += 1
@@ -237,14 +237,14 @@ def update(master_repo, root_path, mirror_path):
             version = ckan_module[0]['version']
             
             style = "color: #339900;"
-            if ckan_file_availability[identifier+version] != 'OK!':
+            if ckan_file_availability[filename] != 'OK!':
                 style = "color: #CC3300; font-weight: bold;"
             
             index += '<font style="' + style + '">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
-            index += 'Status: ' + ckan_file_availability[identifier+version] + ' - '
-            index += 'Last update: ' + ckan_last_updated[identifier+version]
+            index += 'Status: ' + ckan_file_availability[filename] + ' - '
+            index += 'Last update: ' + ckan_last_updated[filename]
             
             if ckan_extra_info[filename] != '':
                 index += ' (' + ckan_extra_info[filename] + ')'
