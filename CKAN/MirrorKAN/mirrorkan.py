@@ -9,6 +9,7 @@ import zipfile
 import json
 import datetime
 from dateutil.parser import parse
+from email.Utils import formatdate
 
 from mirrorkan_conf import *
 
@@ -214,8 +215,9 @@ def update(master_repo, root_path, mirror_path):
         rss += '<rss version="2.0">'
         rss += '<channel>'
         rss += '<title>' + INDEX_HTML_HEADER + '</title>'
+        rss += '<description>' + INDEX_HTML_HEADER + '</description>'
         rss += '<link>' + LOCAL_URL_PREFIX + 'index.html</link>'
-        rss += '<pubDate>' + str(datetime.datetime.now()) + '</pubDate>'
+        rss += '<pubDate>' + str(formatdate()) + '</pubDate>'
         rss += '<ttl>3600</ttl>'
         
         for ckan_module in ckan_json:
@@ -225,7 +227,7 @@ def update(master_repo, root_path, mirror_path):
             rss += '<item>'
             rss += '<title>' + identifier + '</title>'
             rss += '<description>' + version + '</description>'
-            rss += '<pubDate>' + ckan_last_updated[identifier] + '</pubDate>'
+            rss += '<pubDate>' + formatdate(parse(ckan_last_updated[identifier])) + '</pubDate>'
             rss += '</item>'
             
         rss += '</channel></rss>'
