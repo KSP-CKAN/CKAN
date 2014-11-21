@@ -18,3 +18,6 @@ GENERATE_INDEX_HTML = True
 
 # the header text in index.html
 INDEX_HTML_HEADER = "CKAN-meta mirror - Digital Ocean - Amsterdam"
+
+# whether to generate an rss.xml in the mirror/ folder
+GENERATE_RSS_XML = True
