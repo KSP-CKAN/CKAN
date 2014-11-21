@@ -178,9 +178,8 @@ def update(master_repo, root_path, mirror_path):
             print 'URLError: ' + str(e)
             continue
             
-        if mod_license == 'restricted' or mod_license == 'unknown':
-            ckan_file_availability[identifier+version] = 'Non-permissive license!'
-            continue
+        if mod_license != 'restricted' and mod_license != 'unknown':
+            ckan_module[0]['download'] = download_file_url
 
         print 'Dumping json for ' + identifier
 
