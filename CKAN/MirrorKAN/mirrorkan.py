@@ -135,6 +135,7 @@ def update(master_repo, root_path, mirror_path):
   
     ckan_files, ckan_json = parse_ckan_metadata_directory(os.path.join(root_path, 'CKAN-meta-master'))
     ckan_file_availability = {}
+    ckan_last_updated = {}
        
     for ckan_module in ckan_json:
         identifier = ckan_module[0]['identifier']
@@ -145,12 +146,18 @@ def update(master_repo, root_path, mirror_path):
         ckan_file_availability[identifier] = 'OK!'
         
         if mod_license == 'restricted' or mod_license == 'unknown':
-			ckan_file_availability[identifier] = 'Non-permissive license!'
-			continue
+            ckan_file_availability[identifier] = 'Non-permissive license!'
+            continue
         
         filename = identifier + '-' + version + '.zip'
         download_file_url = LOCAL_URL_PREFIX + filename
         ckan_module[0]['download'] = download_file_url
+        
+        last_updated = dldb_getlastmodified(filename)
+        if last_updated != None:
+            ckan_last_updated[identifier] = last_updated
+        else:
+            ckan_last_updated[identifier] = 'last-modified header missing'
             
         print 'Downloading "%s"' % download_url
         
@@ -182,7 +189,8 @@ def update(master_repo, root_path, mirror_path):
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
-            index += 'status: ' + ckan_file_availability[identifier] + '<br/>'
+            index += 'Status: ' + ckan_file_availability[identifier] + ' - '
+            index += 'Last update: ' + ckan_last_updated[identifier] + '<br/>'
         
         index += '</body></html>'
 
