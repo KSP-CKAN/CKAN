@@ -140,8 +140,13 @@ def update(master_repo, root_path, mirror_path):
         identifier = ckan_module[0]['identifier']
         version = ckan_module[0]['version']
         download_url = ckan_module[0]['download']
+        mod_license = ckan_module[0]['license'] 
         
         ckan_file_availability[identifier] = 'OK!'
+        
+        if mod_license == 'restricted' or mod_license == 'unknown':
+			ckan_file_availability[identifier] = 'Non-permissive license!'
+			continue
         
         filename = identifier + '-' + version + '.zip'
         download_file_url = LOCAL_URL_PREFIX + filename
