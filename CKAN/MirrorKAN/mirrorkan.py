@@ -180,7 +180,7 @@ def update(master_repo, root_path, mirror_path):
             
         if mod_license == 'restricted' or mod_license == 'unknown':
             ckan_file_availability[identifier] = 'Non-permissive license!'
-			continue
+            continue
 
         print 'Dumping json for ' + identifier
 
@@ -202,11 +202,11 @@ def update(master_repo, root_path, mirror_path):
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
             
-            color = "#339900"
+            style = "color: #339900;"
             if ckan_file_availability[identifier] != 'OK!':
-                color = "#CC3300"
+                style = "color: #CC3300; font-weight: bold;"
             
-            index += '<font style="color: ' + color + '; font-weight: bold;">'
+            index += '<font style="' + style + '">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
             index += 'Status: ' + ckan_file_availability[identifier] + ' - '
