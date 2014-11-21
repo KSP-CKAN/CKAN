@@ -191,8 +191,9 @@ def update(master_repo, root_path, mirror_path):
     if GENERATE_INDEX_HTML:
         index = '<html><head></head><body>'
         index += INDEX_HTML_HEADER + '<br/>&nbsp;<br/>'
-        index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>'
+        index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>&nbsp;<br/>'
         index += '<a href="' + LOCAL_URL_PREFIX + 'master.zip">master.zip</a><br/>'
+        index += '<a href="' + LOCAL_URL_PREFIX + 'log.txt">MirrorKAN log</a><br/>&nbsp;<br/>'
         
         index += 'Indexing ' + str(len(ckan_files)) + ' modules<br/>'
         index += 'Modules list:<br/>'
