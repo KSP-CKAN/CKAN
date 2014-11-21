@@ -12,94 +12,69 @@ from dateutil.parser import parse
 from email.Utils import formatdate
 
 from mirrorkan_conf import *
+from mirrorkan_db import *
 
-def dldb_create():
-    if os.path.exists('db.json'):
-        return
-    
-    with open('db.json', 'w') as db_file:
-        db_file.write('{}');
-
-def dldb_write(filename, lastModified):
-    db = None
-    
-    with open('db.json', 'r') as db_file:
-        db = json.load(db_file)
-        db[filename] = lastModified
-    
-    if db is not None:
-        with open('db.json', 'w') as db_file:
-            json.dump(db, db_file)
-    
-def dldb_shoulddownload(filename, lastModified):
-    with open('db.json', 'r') as db_file:
-        db = json.load(db_file)
-        if filename not in db:
-            return True
-            
-        lastModifiedCached = db[filename]
-        dateCached = parse(lastModifiedCached)
-        dateIncoming = parse(lastModified)
-        
-        if dateIncoming > dateCached:
-            return True
-        
-        return False
-    
-    return True
-
-def dldb_getlastmodified(filename):
-    with open('db.json', 'r') as db_file:
-        db = json.load(db_file)
-        if filename not in db:
-            return None
-            
-        return db[filename]
-
-def dldb_iscached(filename):
-    with open('db.json', 'r') as db_file:
-        db = json.load(db_file)
-        if filename not in db:
-            return False
-            
-        return True
+db = Database('db.json')
 
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for file in files:
             zip.write(os.path.join(root, file))
 
-def dlfile(url, path, filename):
+def download_file(url, path, filename):
+    os.system('wget -O "' + os.path.join(path, filename) + '" "' + url + '"')
+    
+DLRESULT_SUCCESS = 1
+DLRESULT_CACHED = 2
+DLRESULT_HTTP_ERROR_CACHED = 3
+DLRESULT_HTTP_ERROR_NOT_CACHED = 4
+
+def download_mod(url, path, filename):
     print 'Downloading ' + url
     
-    # Open the url
-    f = urlopen(url)
+    f = None
     
-    shouldDownload = False
+    error = None
+    
+    is_cached = db.is_cached(filename)
+    
+    # Open the url
+    try:
+        f = urlopen(url)
+    except HTTPError, e:
+        error = e
+        print str(e) + ': ' + url
+    except URLError, e:
+        error = e
+        print str(e) + ': ' + url
+    
+    if error is not None:
+        if is_cached:
+            return DLRESULT_HTTP_ERROR_CACHED
+        else:
+            return DLRESULT_HTTP_ERROR_NOT_CACHED
+    
+    should_download = False
     
     if 'last-modified' in f.headers:
         last_modified = f.headers['last-modified']
         print 'last-modified header time: ' + last_modified
-        db_last_modified = dldb_getlastmodified(filename)
+        
+        db_last_modified = db.get_lastmodified(filename)
         if db_last_modified != None:
             print 'database last modified time: ' + db_last_modified
         
-        shouldDownload = dldb_shoulddownload(filename, last_modified)
-        dldb_write(filename, last_modified)
-    else:
-        print 'last-modified header not found'
-        shouldDownload = True
+        if not db.is_newer(filename, last_modified):
+            return DLRESULT_CACHED
         
-    f.close()
+        db.add_mod(filename, last_modified)
+    elif is_cached:
+        print 'last-modified header not found'
+        return DLRESULT_CACHED
+     
+    download_file(url, path, filename)
     
-    path = os.path.join(path, filename)
-    
-    if shouldDownload:
-        os.system('wget -O ' + path + ' ' + url)
-    else:
-        print 'Latest version already in cache, skipping..'
-    
-    return path
+    return DLRESULT_SUCCESS
    
 def parse_ckan_metadata(filename):
     data = None
@@ -136,28 +111,27 @@ def find_files_with_extension(directory, extension):
     
     return result_list
     
-def update(master_repo, root_path, mirror_path):
-    dldb_create()
-    
+def clean_up():
     print 'Cleaning up...',
     os.system('rm -R ' + LOCAL_CKAN_PATH + '/*')
     os.system('rm -R ' + MASTER_ROOT_PATH + '/*')
     print 'Done!'
     
+def fetch_and_extract_master(master_repo, root_path):
     print 'Fetching remote master..',
-    master_zip = dlfile(master_repo, '', 'master.zip')
+    download_file(master_repo, '', 'master.zip')
     print 'Done!'
     
-    with zipfile.ZipFile(master_zip, 'r') as zip_file:
+    with zipfile.ZipFile('master.zip', 'r') as zip_file:
         print 'Extracting master.zip..',
         zip_file.extractall(root_path)
         print 'Done!'
-  
-    ckan_files, ckan_json = parse_ckan_metadata_directory(os.path.join(root_path, 'CKAN-meta-master'))
-    ckan_file_availability = {}
+
+def dump_all_modules(ckan_files, ckan_json):
+    ckan_mod_file_status = {}
+    ckan_mod_status = {}
     ckan_last_updated = {}
-    ckan_extra_info = {}
-       
+    
     for ckan_module in ckan_json:
         identifier = ckan_module[0]['identifier']
         version = ckan_module[0]['version']
@@ -166,41 +140,48 @@ def update(master_repo, root_path, mirror_path):
         
         filename = identifier + '-' + version + '.zip'
         
-        ckan_file_availability[filename] = 'OK!'
-        ckan_extra_info[filename] = ''
+        ckan_mod_status[filename] = ''
        
         download_file_url = LOCAL_URL_PREFIX + filename
         
-        last_updated = dldb_getlastmodified(filename)
-        if last_updated != None:
+        last_updated = db.get_lastmodified(filename)
+        if last_updated is not None:
             ckan_last_updated[filename] = last_updated
         else:
             ckan_last_updated[filename] = 'last-modified header missing'
             
-        try:
-            download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
-        except HTTPError, e:
-            ckan_file_availability[filename] = 'Error:' + str(e)
-            print str(e)
-        except URLError, e:
-            ckan_file_availability[filename] = 'Error: ' + str(e)
-            print str(e)
-             
-        if mod_license != 'restricted' and mod_license != 'unknown':
+        if mod_license is 'restricted' or mod_license is 'unknown':
             ckan_module[0]['download'] = download_file_url
+        else:
+            file_status = download_mod(download_url, FILE_MIRROR_PATH, filename)
+            ckan_mod_file_status[filename] = file_status
             
-            if not dldb_iscached(filename):
-                ckan_extra_info[filename] = ''
-                print 'Mod not in cache, skipping..'
-                continue
-            else:
-                ckan_extra_info[filename] = 'cached, last retry: ' + ckan_file_availability[filename]
-                ckan_file_availability[filename] = 'OK!'
-
+            if file_status is DLRESULT_SUCCESS:
+                print 'Success!'
+                ckan_mod_status[filename] = 'Just updated'
+            elif file_status is DLRESULT_CACHED:
+                ckan_mod_status[filename] = 'Cached, no updates'
+                print 'Cached'
+            elif file_status is DLRESULT_HTTP_ERROR_CACHED:
+                ckan_mod_status[filename] = 'Cached, http error'
+                print 'HTTP Error (Cached)'
+            elif file_status is DLRESULT_HTTP_ERROR_NOT_CACHED:
+                print 'HTTP Error (Not cached)'
+                ckan_mod_status[filename] = 'Not cached, http error'
+        
         print 'Dumping json for ' + identifier
 
         with open(os.path.join(LOCAL_CKAN_PATH, os.path.basename(ckan_module[1])), 'w') as out_ckan:
             json.dump(ckan_module[0], out_ckan)
+
+    return (ckan_mod_file_status, ckan_mod_status, ckan_last_updated)
+
+def update(master_repo, root_path, mirror_path):    
+    clean_up()
+    fetch_and_extract_master(master_repo, root_path)
+  
+    ckan_files, ckan_json = parse_ckan_metadata_directory(os.path.join(root_path, 'CKAN-meta-master'))
+    ckan_mod_file_status, ckan_mod_status, ckan_last_updated = dump_all_modules(ckan_files, ckan_json)
       
     # generate index.html
     if GENERATE_INDEX_HTML:
@@ -210,7 +191,9 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
-            if ckan_file_availability[filename] == 'OK!':
+            filename = identifier + '-' + version + '.zip'
+            
+            if ckan_mod_file_status[filename] is not DLRESULT_HTTP_ERROR_NOT_CACHED:
                 mods_ok += 1
             else:
                 mods_error += 1
@@ -234,22 +217,20 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
+            filename = identifier + '-' + version + '.zip'
             
             style = "color: #339900;"
-            if ckan_file_availability[filename] != 'OK!':
+            if ckan_mod_file_status[filename] is DLRESULT_HTTP_ERROR_NOT_CACHED:
                 style = "color: #CC3300; font-weight: bold;"
+            elif ckan_mod_file_status[filename] is DLRESULT_HTTP_ERROR_CACHED:
+                style = "color: #FFD700; font-weight: bold;"
             
             index += '<font style="' + style + '">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
-            index += 'Status: ' + ckan_file_availability[filename] + ' - '
-            index += 'Last update: ' + ckan_last_updated[filename]
+            index += 'Status: ' + ckan_mod_status[filename] + '(' + ckan_mod_file_status[filename] + ') - '
+            index += 'Last update: ' + ckan_last_updated[filename] + '<br/>'
             
-            if ckan_extra_info[filename] != '':
-                index += ' (' + ckan_extra_info[filename] + ')'
-            
-            index += '<br/>'
-   
             index += '</font>'
         
         index += '</body></html>'
