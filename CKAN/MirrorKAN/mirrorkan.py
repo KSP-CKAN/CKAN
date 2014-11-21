@@ -180,23 +180,22 @@ def update(master_repo, root_path, mirror_path):
         try:
             download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
         except HTTPError, e:
-            ckan_file_availability[filename] = str(e)
-            print 'HTTPError: ' + str(e)
-            download_file = None
+            ckan_file_availability[filename] = 'Error:' + str(e)
+            print str(e)
         except URLError, e:
-            ckan_file_availability[filename] = str(e)
-            print 'URLError: ' + str(e)
-            download_file = None
+            ckan_file_availability[filename] = 'Error: ' + str(e)
+            print str(e)
              
         if mod_license != 'restricted' and mod_license != 'unknown':
             ckan_module[0]['download'] = download_file_url
-
-        if not dldb_iscached(filename):
-            print 'Download failed and mod not found in cache, skipping..'
-            continue
-        else:
-            ckan_extra_info[filename] = 'cached, last retry: ' + ckan_file_availability[filename]
-            ckan_file_availability[filename] = 'OK!'
+            
+			if not dldb_iscached(filename):
+				ckan_extra_info[filename] = ''
+				print 'Mod not in cache, skipping..'
+				continue
+			else:
+				ckan_extra_info[filename] = 'cached, last retry: ' + ckan_file_availability[filename]
+				ckan_file_availability[filename] = 'OK!'
 
         print 'Dumping json for ' + identifier
 
