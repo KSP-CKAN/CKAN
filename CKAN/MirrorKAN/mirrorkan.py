@@ -191,11 +191,11 @@ def update(master_repo, root_path, mirror_path):
         if mod_license != 'restricted' and mod_license != 'unknown':
             ckan_module[0]['download'] = download_file_url
 
-        if download_file is None and not dldb_iscached(filename):
+        if not dldb_iscached(filename):
             print 'Download failed and mod not found in cache, skipping..'
             continue
         else:
-            ckan_extra_info[filename] = '(cached, last retry: ' + ckan_file_availability[filename] + ')'
+            ckan_extra_info[filename] = 'cached, last retry: ' + ckan_file_availability[filename]
             ckan_file_availability[filename] = 'OK!'
 
         print 'Dumping json for ' + identifier
