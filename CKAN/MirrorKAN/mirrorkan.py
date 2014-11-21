@@ -119,6 +119,8 @@ def find_files_with_extension(directory, extension):
     result_list = []
     
     file_list = [ f for f in listdir(directory) if isfile(join(directory, f)) ]
+    file_list.sort()
+    
     for f in file_list:
         fileName, fileExtension = os.path.splitext(f)
         if fileExtension == extension:
@@ -168,11 +170,11 @@ def update(master_repo, root_path, mirror_path):
         try:
             download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
         except HTTPError, e:
-            ckan_file_availability[identifier+version] = 'HTTP Error: ' + str(e)
+            ckan_file_availability[identifier+version] = str(e)
             print 'HTTPError: ' + str(e)
             continue
         except URLError, e:
-            ckan_file_availability[identifier+version] = 'URL Error: ' + str(e)
+            ckan_file_availability[identifier+version] = str(e)
             print 'URLError: ' + str(e)
             continue
             
