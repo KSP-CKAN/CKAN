@@ -200,9 +200,18 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
+            
+            color = "#339900"
+            if ckan_file_availability[identifier] != 'OK!':
+                color = "#CC3300"
+            
+            index += '<font style="color: ' + color + ';">'
+            
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
             index += 'Status: ' + ckan_file_availability[identifier] + ' - '
             index += 'Last update: ' + ckan_last_updated[identifier] + '<br/>'
+   
+            index += '</font>'
         
         index += '</body></html>'
 
