@@ -205,10 +205,10 @@ def update(master_repo, root_path, mirror_path):
         index += '<a href="' + LOCAL_URL_PREFIX + 'log.txt">MirrorKAN log</a><br/>&nbsp;<br/>'
         
         index += 'Indexing ' + str(len(ckan_files)) + ' modules - '
-        index += '<font style="color: #339900; font-weight: bold;>'
+        index += '<font style="color: #339900; font-weight: bold;">'
         index += str(mods_ok) + ' ok'
         index += '</font>'
-        index += ', <font style="color: #CC3300; font-weight: bold;>'
+        index += ', <font style="color: #CC3300; font-weight: bold;">'
         index += str(mods_error) + ' failed'
         index += '</font>'
         index += '<br/>&nbsp;<br/>'
