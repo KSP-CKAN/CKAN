@@ -153,7 +153,7 @@ def update(master_repo, root_path, mirror_path):
         download_url = ckan_module[0]['download']
         mod_license = ckan_module[0]['license'] 
         
-        ckan_file_availability[identifier] = 'OK!'
+        ckan_file_availability[identifier+version] = 'OK!'
        
         filename = identifier + '-' + version + '.zip'
         download_file_url = LOCAL_URL_PREFIX + filename
@@ -161,25 +161,23 @@ def update(master_repo, root_path, mirror_path):
         
         last_updated = dldb_getlastmodified(filename)
         if last_updated != None:
-            ckan_last_updated[identifier] = last_updated
+            ckan_last_updated[identifier+version] = last_updated
         else:
-            ckan_last_updated[identifier] = 'last-modified header missing'
+            ckan_last_updated[identifier+version] = 'last-modified header missing'
             
-        print 'Downloading "%s"' % download_url
-        
         try:
             download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
         except HTTPError, e:
-            ckan_file_availability[identifier] = 'HTTP Error: ' + str(e)
+            ckan_file_availability[identifier+version] = 'HTTP Error: ' + str(e)
             print 'HTTPError: ' + str(e)
             continue
         except URLError, e:
-            ckan_file_availability[identifier] = 'URL Error: ' + str(e)
+            ckan_file_availability[identifier+version] = 'URL Error: ' + str(e)
             print 'URLError: ' + str(e)
             continue
             
         if mod_license == 'restricted' or mod_license == 'unknown':
-            ckan_file_availability[identifier] = 'Non-permissive license!'
+            ckan_file_availability[identifier+version] = 'Non-permissive license!'
             continue
 
         print 'Dumping json for ' + identifier
@@ -203,14 +201,14 @@ def update(master_repo, root_path, mirror_path):
             version = ckan_module[0]['version']
             
             style = "color: #339900;"
-            if ckan_file_availability[identifier] != 'OK!':
+            if ckan_file_availability[identifier+version] != 'OK!':
                 style = "color: #CC3300; font-weight: bold;"
             
             index += '<font style="' + style + '">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
-            index += 'Status: ' + ckan_file_availability[identifier] + ' - '
-            index += 'Last update: ' + ckan_last_updated[identifier] + '<br/>'
+            index += 'Status: ' + ckan_file_availability[identifier+version] + ' - '
+            index += 'Last update: ' + ckan_last_updated[identifier+version] + '<br/>'
    
             index += '</font>'
         
