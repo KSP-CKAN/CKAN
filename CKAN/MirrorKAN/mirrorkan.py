@@ -159,7 +159,6 @@ def update(master_repo, root_path, mirror_path):
        
         filename = identifier + '-' + version + '.zip'
         download_file_url = LOCAL_URL_PREFIX + filename
-        ckan_module[0]['download'] = download_file_url
         
         last_updated = dldb_getlastmodified(filename)
         if last_updated != None:
