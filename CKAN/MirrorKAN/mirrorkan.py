@@ -56,6 +56,14 @@ def dldb_getlastmodified(filename):
             
         return db[filename]
 
+def dldb_iscached(filename):
+    with open('db.json', 'r') as db_file:
+        db = json.load(db_file)
+        if filename not in db:
+            return False
+            
+        return True
+
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for file in files:
@@ -148,6 +156,7 @@ def update(master_repo, root_path, mirror_path):
     ckan_files, ckan_json = parse_ckan_metadata_directory(os.path.join(root_path, 'CKAN-meta-master'))
     ckan_file_availability = {}
     ckan_last_updated = {}
+    ckan_extra_info = {}
        
     for ckan_module in ckan_json:
         identifier = ckan_module[0]['identifier']
@@ -155,30 +164,39 @@ def update(master_repo, root_path, mirror_path):
         download_url = ckan_module[0]['download']
         mod_license = ckan_module[0]['license'] 
         
-        ckan_file_availability[identifier+version] = 'OK!'
-       
         filename = identifier + '-' + version + '.zip'
+        
+        ckan_file_availability[filename] = 'OK!'
+        ckan_extra_info[filename] = ''
+       
         download_file_url = LOCAL_URL_PREFIX + filename
         
         last_updated = dldb_getlastmodified(filename)
         if last_updated != None:
-            ckan_last_updated[identifier+version] = last_updated
+            ckan_last_updated[filename] = last_updated
         else:
-            ckan_last_updated[identifier+version] = 'last-modified header missing'
+            ckan_last_updated[filename] = 'last-modified header missing'
             
         try:
             download_file = dlfile(download_url, FILE_MIRROR_PATH, filename)
         except HTTPError, e:
-            ckan_file_availability[identifier+version] = str(e)
+            ckan_file_availability[filename] = str(e)
             print 'HTTPError: ' + str(e)
-            continue
+            download_file = None
         except URLError, e:
-            ckan_file_availability[identifier+version] = str(e)
+            ckan_file_availability[filename] = str(e)
             print 'URLError: ' + str(e)
-            continue
-            
+            download_file = None
+             
         if mod_license != 'restricted' and mod_license != 'unknown':
             ckan_module[0]['download'] = download_file_url
+
+        if download_file is None and not dldb_iscached(filename):
+            print 'Download failed and mod not found in cache, skipping..'
+            continue
+        else:
+            ckan_extra_info[filename] = '(cached, last retry: ' + ckan_file_availability[filename] + ')'
+            ckan_file_availability[filename] = 'OK!'
 
         print 'Dumping json for ' + identifier
 
@@ -226,7 +244,12 @@ def update(master_repo, root_path, mirror_path):
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
             index += 'Status: ' + ckan_file_availability[identifier+version] + ' - '
-            index += 'Last update: ' + ckan_last_updated[identifier+version] + '<br/>'
+            index += 'Last update: ' + ckan_last_updated[identifier+version]
+            
+            if ckan_extra_info[filename] != '':
+                index += ' (' + ckan_extra_info[filename] + ')'
+            
+            index += '<br/>'
    
             index += '</font>'
         
