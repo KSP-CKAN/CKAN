@@ -192,6 +192,8 @@ def update(master_repo, root_path, mirror_path):
         index = '<html><head></head><body>'
         index += INDEX_HTML_HEADER + '<br/>&nbsp;<br/>'
         index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>'
+        index += '<a href="' + LOCAL_URL_PREFIX + 'master.zip">master.zip</a><br/>'
+        
         index += 'Indexing ' + str(len(ckan_files)) + ' modules<br/>'
         index += 'Modules list:<br/>'
         
