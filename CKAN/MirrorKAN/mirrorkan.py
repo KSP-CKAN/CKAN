@@ -187,13 +187,31 @@ def update(master_repo, root_path, mirror_path):
       
     # generate index.html
     if GENERATE_INDEX_HTML:
+        mods_ok = 0
+        mods_error = 0
+        
+        for ckan_module in ckan_json:
+            identifier = ckan_module[0]['identifier']
+            version = ckan_module[0]['version']
+            if ckan_file_availability[identifier+version] != 'OK!':
+                mods_ok += 1
+            else:
+                mods_error += 1
+        
         index = '<html><head></head><body>'
         index += INDEX_HTML_HEADER + '<br/>&nbsp;<br/>'
         index += 'Last update: ' + str(datetime.datetime.now()) + '<br/>&nbsp;<br/>'
         index += '<a href="' + LOCAL_URL_PREFIX + 'master.zip">master.zip</a><br/>'
         index += '<a href="' + LOCAL_URL_PREFIX + 'log.txt">MirrorKAN log</a><br/>&nbsp;<br/>'
         
-        index += 'Indexing ' + str(len(ckan_files)) + ' modules<br/>'
+        index += 'Indexing ' + str(len(ckan_files)) + ' modules - '
+        index += '<font style="color: #339900; font-weight: bold;>'
+        index += str(mods_ok) + ' ok'
+        index += '</font>'
+        index += ', <font style="color: #CC3300; font-weight: bold;>'
+        index += str(mods_error) + ' failed'
+        index += '</font>'
+        index += '<br/>&nbsp;<br/>'
         index += 'Modules list:<br/>'
         
         for ckan_module in ckan_json:
