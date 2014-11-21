@@ -221,34 +221,6 @@ def update(master_repo, root_path, mirror_path):
         index_file.write(index)
         index_file.close()
     
-    if GENERATE_RSS_XML:
-        rss = ''
-        rss += '<?xml version="1.0" encoding="UTF-8" ?>'
-        rss += '<rss version="2.0">'
-        rss += '<channel>'
-        rss += '<title>' + INDEX_HTML_HEADER + '</title>'
-        rss += '<description>' + INDEX_HTML_HEADER + '</description>'
-        rss += '<link>' + LOCAL_URL_PREFIX + 'index.html</link>'
-        rss += '<pubDate>' + str(formatdate()) + '</pubDate>'
-        rss += '<ttl>3600</ttl>'
-        
-        for ckan_module in ckan_json:
-            identifier = ckan_module[0]['identifier']
-            version = ckan_module[0]['version']
-            
-            rss += '<item>'
-            rss += '<title>' + identifier + '</title>'
-            rss += '<description>' + version + '</description>'
-            rss += '<pubDate>' + formatdate(parse(ckan_last_updated[identifier])) + '</pubDate>'
-            rss += '</item>'
-            
-        rss += '</channel></rss>'
-        
-        print 'Writing rss.xml'
-        rss_file = open(os.path.join(FILE_MIRROR_PATH, 'rss.xml'), 'w')
-        rss_file.write(rss)
-        rss_file.close()
-    
     # zip up all generated files 
     print 'Creating new master.zip'
     zipf = zipfile.ZipFile(os.path.join(FILE_MIRROR_PATH, 'master.zip'), 'w')
