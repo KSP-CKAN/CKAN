@@ -193,7 +193,7 @@ def update(master_repo, root_path, mirror_path):
         for ckan_module in ckan_json:
             identifier = ckan_module[0]['identifier']
             version = ckan_module[0]['version']
-            if ckan_file_availability[identifier+version] != 'OK!':
+            if ckan_file_availability[identifier+version] == 'OK!':
                 mods_ok += 1
             else:
                 mods_error += 1
