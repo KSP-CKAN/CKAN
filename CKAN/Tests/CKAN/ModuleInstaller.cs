@@ -206,7 +206,8 @@ namespace CKANTests
         // All of these targets should fail.
         private static readonly string[] BadTargets = {
             "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
-            "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/.."
+            "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/..",
+            @"GameData\..\..\etc\pwned", @"GameData\.."
         };
 
         [Test][TestCaseSource("BadTargets")]

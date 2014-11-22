@@ -432,7 +432,7 @@ namespace CKAN
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
                 // but it cannot contain updirs
-                if (stanza.install_to.Contains("/./") || stanza.install_to.Contains("/../"))
+                if (stanza.install_to.Contains("/../") || stanza.install_to.EndsWith("/.."))
                     throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
 
                 string subDir = stanza.install_to.Substring("GameData".Length);    // remove "GameData"
