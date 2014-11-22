@@ -868,6 +868,9 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<CkanModule> modules)
         {
+            // Start by making sure we've downloaded everything.
+            DownloadModules(modules);
+
             foreach (CkanModule module in modules)
             {
                 string ident = module.identifier;
@@ -902,6 +905,29 @@ namespace CKAN
         }
 
         #endregion
+
+        /// <summary>
+        /// Makes sure all the specified mods are downloaded.
+        /// </summary>
+        private void DownloadModules(IEnumerable<CkanModule> mods)
+        {
+            List<CkanModule> downloads = new List<CkanModule> ();
+
+            foreach (CkanModule module in mods)
+            {
+                if (!ksp.Cache.IsCachedZip(module.download))
+                {
+                    downloads.Add(module);
+                }
+            }
+
+            if (downloads.Count > 0)
+            {
+                var downloader = new NetAsyncDownloader();
+
+                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+            }
+        }
 
         /// <summary>
         /// Don't use this. Use Registry.FindReverseDependencies instead.
