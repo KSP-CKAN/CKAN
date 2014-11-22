@@ -87,6 +87,10 @@ namespace CKANTests
 
             var v0_23_5 = new CKAN.KSPVersion("0.23.5");
             Assert.IsTrue(v1.Targets(v0_23_5));
+
+            // For when Squad makes what they think is a full release. ;)
+            var v1_0_0 = new CKAN.KSPVersion("1.0.0");
+            Assert.IsTrue(v1_0_0 > v0_23_5);
         }
     }
 }
