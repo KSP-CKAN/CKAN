@@ -5,11 +5,13 @@ using log4net;
 
 namespace CKAN
 {
-    public struct RelationshipResolverOptions
+    public class RelationshipResolverOptions
     {
-        public bool with_all_suggests;
-        public bool with_recommends;
-        public bool with_suggests;
+        public bool with_all_suggests = false;
+        public bool with_recommends = true;
+        public bool with_suggests = false;
+        public bool without_toomanyprovides_kraken = false;
+        public bool without_enforce_consistency = false;
     }
 
     // Alas, it appears that structs cannot have defaults. Try
@@ -81,11 +83,14 @@ namespace CKAN
             var final_modules = new List<Module>(modlist.Values);
             final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
 
-            // Finally, let's do a sanity check that our solution is actually sane.
-            SanityChecker.EnforceConsistency(
-                final_modules,
-                registry.InstalledDlls
-            );
+            if(!options.without_enforce_consistency)
+            {
+                // Finally, let's do a sanity check that our solution is actually sane.
+                SanityChecker.EnforceConsistency(
+                    final_modules,
+                    registry.InstalledDlls
+                );
+            }
         }
 
         /// <summary>
@@ -184,6 +189,11 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     // TODO: It would be great if instead we picked the one with the
                     // most recommendations.
+                    if(options.without_toomanyprovides_kraken)
+                    {
+                        continue;
+                    }
+
                     throw new TooManyModsProvideKraken(dep_name, candidates);
                 }
 
