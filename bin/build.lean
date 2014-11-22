@@ -103,9 +103,16 @@ sub copy {
         rcopy($src, $dst);
     }
     else {
-        # Use friggin' awesome btrfs magic under Linux.
-        # This still works, even if not using btrfs (justh with less magic)
-        my @CP      = qw(cp -r --reflink=auto --sparse=always);
+        my @CP;
+        if ($^O eq "darwin") {
+            # Simple copy for Macs
+            @CP = qw(cp -r);
+        } else {
+            # Use friggin' awesome btrfs magic under Linux.
+            # This still works, even without btrfs. :)
+            @CP = qw(cp -r --reflink=auto --sparse=always);
+        }
+
         system(@CP,$src,$dst);
     }
     return;
