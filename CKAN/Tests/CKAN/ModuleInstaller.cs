@@ -114,6 +114,8 @@ namespace CKANTests
             }
         }
 
+        #pragma warning disable 0414
+
         // GH #315, all of these should result in the same output.
         // Even though they're not necessarily all spec-valid, we should accept them
         // nonetheless.
@@ -126,6 +128,8 @@ namespace CKANTests
             "GameData\\SuchTest/",
             "GameData/SuchTest\\"
         };
+
+        #pragma warning restore 0414
 
         [Test][TestCaseSource("SuchPaths")]
         public void FindInstallbleFilesWithBonusPath(string path)
@@ -203,12 +207,16 @@ namespace CKANTests
             }
         }
 
+        #pragma warning disable 0414
+
         // All of these targets should fail.
         private static readonly string[] BadTargets = {
             "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
             "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/..",
             @"GameData\..\..\etc\pwned", @"GameData\.."
         };
+
+        #pragma warning restore 0414
 
         [Test][TestCaseSource("BadTargets")]
         public void FindInstallableFilesWithBadTarget(string location)
