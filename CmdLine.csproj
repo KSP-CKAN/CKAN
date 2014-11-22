@@ -38,6 +38,8 @@
     <Compile Include="ProgressReporter.cs" />
     <Compile Include="Action\Repair.cs" />
     <Compile Include="Action\ISubCommand.cs" />
+    <Compile Include="Action\Upgrade.cs" />
+    <Compile Include="Action\ICommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
