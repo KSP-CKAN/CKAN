@@ -228,7 +228,7 @@ def update(master_repo, root_path, mirror_path):
             index += '<font style="' + style + '">'
             
             index += '&nbsp;' + identifier + ' - ' + version + ' - '
-            index += 'Status: ' + ckan_mod_status[filename] + '(' + ckan_mod_file_status[filename] + ') - '
+            index += 'Status: ' + ckan_mod_status[filename] + '(' + str(ckan_mod_file_status[filename]) + ') - '
             index += 'Last update: ' + ckan_last_updated[filename] + '<br/>'
             
             index += '</font>'
