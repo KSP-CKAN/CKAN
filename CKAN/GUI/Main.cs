@@ -78,15 +78,23 @@ namespace CKAN
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
 
+            ModList.CurrentCellDirtyStateChanged += ModList_CurrentCellDirtyStateChanged;
+            ModList.CellValueChanged += ModList_CellValueChanged;
+
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
 
             RecreateDialogs();
 
             // We should run application only when we really sure.
-           // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Util.HideConsoleWindow();
             Application.Run(this);
+        }
+
+        void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {   
+            ModList_CellContentClick(sender, null);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -133,7 +141,9 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            Text = String.Format("CKAN ({0}) - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
+            ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+            Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
         }
 
@@ -214,7 +224,31 @@ namespace CKAN
         /// </summary>
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
             if (m_ModFilter == GUIModFilter.Incompatible)
+            {
+                return;
+            }
+
+            var changeset = ComputeChangeSetFromModList();
+
+            if (changeset != null && changeset.Any())
+            {
+                UpdateChangesDialog(changeset, m_InstallWorker);
+                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                ApplyToolButton.Enabled = true;
+            }
+            else
+            {
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
+
+            if (e == null)
             {
                 return;
             }
@@ -230,68 +264,7 @@ namespace CKAN
                 Process.Start(cell.Value.ToString());
             }
 
-            if (e.ColumnIndex == 0 && ModList.Rows.Count > e.RowIndex) // if user clicked install
-            {
-                DataGridViewRow row = ModList.Rows[e.RowIndex];
-                var cell = row.Cells[0] as DataGridViewCheckBoxCell;
-                var mod = (CkanModule) row.Tag;
-
-                bool isInstalled = RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier);
-                if ((bool) cell.Value == false && !isInstalled)
-                {
-                    var options = new RelationshipResolverOptions();
-                    options.with_all_suggests = false;
-                    options.with_recommends = false;
-                    options.with_suggests = false;
-
-                    List<CkanModule> dependencies = GetInstallDependencies(mod, options);
-
-                    if (dependencies == null)
-                    {
-                        return;
-                    }
-
-                    foreach (CkanModule dependency in dependencies)
-                    {
-                        foreach (DataGridViewRow depRow in ModList.Rows)
-                        {
-                            if (depRow.Tag == dependency)
-                            {
-                                (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = true;
-                            }
-                        }
-                    }
-                }
-                else if ((bool) cell.Value && isInstalled)
-                {
-                    var installer = ModuleInstaller.Instance;
-                    HashSet<string> reverseDependencies = installer.FindReverseDependencies(mod.identifier);
-                    foreach (string dependency in reverseDependencies)
-                    {
-                        foreach (DataGridViewRow depRow in ModList.Rows)
-                        {
-                            if (((CkanModule) depRow.Tag).identifier == dependency)
-                            {
-                                (depRow.Cells[0] as DataGridViewCheckBoxCell).Value = false;
-                            }
-                        }
-                    }
-                }
-            }
-
             ModList.EndEdit();
-
-            var changeset = ComputeChangeSetFromModList();
-            UpdateChangesDialog(changeset, m_InstallWorker);
-
-            if (changeset != null && changeset.Any())
-            {
-                ApplyToolButton.Enabled = true;
-            }
-            else
-            {
-                ApplyToolButton.Enabled = false;
-            }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -450,6 +423,12 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new AboutDialog();
+            dialog.ShowDialog();
         }
 
     }

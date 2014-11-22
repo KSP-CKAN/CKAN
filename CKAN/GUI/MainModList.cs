@@ -47,13 +47,15 @@ namespace CKAN
 
             RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
             options.with_recommends = false;
+            options.without_toomanyprovides_kraken = true;
+            options.without_enforce_consistency = true;
 
             RelationshipResolver resolver = null;
             try
             {
                 resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }

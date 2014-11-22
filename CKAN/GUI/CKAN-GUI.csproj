@@ -36,6 +36,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChooseKSPInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,12 +99,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecommendsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RecommendsDialog.Designer.cs">
-      <DependentUpon>RecommendsDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +111,9 @@
     <Compile Include="YesNoDialog.Designer.cs">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </EmbeddedResource>
@@ -134,9 +137,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="RecommendsDialog.resx">
-      <DependentUpon>RecommendsDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </EmbeddedResource>

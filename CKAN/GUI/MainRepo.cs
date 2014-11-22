@@ -10,6 +10,8 @@ namespace CKAN
 
         public void UpdateRepo()
         {
+            m_TabController.RenameTab("WaitTabPage", "Updating repository");
+
             m_UpdateRepoWorker.RunWorkerAsync();
 
             Util.Invoke(this, () => Enabled = false);

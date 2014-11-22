@@ -4,7 +4,7 @@ using CommandLine;
 
 namespace CKAN.CmdLine
 {
-    public class KSP
+    public class KSP : ISubCommand
     {
         public string option;
         public object suboptions;
@@ -57,8 +57,21 @@ namespace CKAN.CmdLine
             public string name { get; set; }
         }
 
-        public KSP(string[] args)
+        public KSP()
         {
+        }
+
+        internal void Parse(string option, object suboptions)
+        {
+            this.option = option;
+            this.suboptions = suboptions;
+        }
+
+        // This is required by ISubCommand
+        public int RunSubCommand(SubCommandOptions unparsed)
+        {
+            string[] args = unparsed.options.ToArray();
+
             if (args == null || args.Length == 0)
             {
                 // There's got to be a better way of showing help...
@@ -68,16 +81,9 @@ namespace CKAN.CmdLine
 
             // Parse and process our sub-verbs
             Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse, null);
-        }
 
-        public void Parse(string option, object suboptions)
-        {
-            this.option = option;
-            this.suboptions = suboptions;
-        }
+            // That line above will have set our 'option' and 'suboption' fields.
 
-        public int RunSubCommand()
-        {
             switch (option)
             {
                 case "list":
