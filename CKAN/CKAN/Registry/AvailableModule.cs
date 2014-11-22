@@ -84,5 +84,29 @@ namespace CKAN
             // Oh noes! Nothing available!
             return null;
         }
+
+        /// <summary>
+        /// Returns the module with the specified version, or null if that does not exist.
+        /// </summary>
+        public CkanModule ByVersion(Version v)
+        {
+            // A straight module_version[v] doesn't work, because it's a reference type,
+            // and of course we have references to different things that have the same
+            // data. Hence we have an awful O(N), even though we shouldn't. :(
+
+            // TODO: Change the guts of this or *something* so we don't need to do
+            // ridiculous things like this.
+
+            KeyValuePair<Version, CkanModule> entry = module_version
+                .Where(x => x.Key.IsEqualTo(v))
+                .FirstOrDefault();
+
+            if (entry.Equals(default(KeyValuePair<Version,CkanModule>)))
+            {
+                return null;
+            }
+
+            return entry.Value;
+        }
     }
 }

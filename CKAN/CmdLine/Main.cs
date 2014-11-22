@@ -124,6 +124,8 @@ namespace CKAN.CmdLine
                 }
             }
 
+            CKAN.KSP current_ksp = KSPManager.CurrentInstance;
+
             switch (cmdline.action)
             {
                 case "gui":
@@ -154,7 +156,8 @@ namespace CKAN.CmdLine
                     return Remove((RemoveOptions) cmdline.options);
 
                 case "upgrade":
-                    return Upgrade((UpgradeOptions) cmdline.options);
+                    var upgrade = new Upgrade();
+                    return upgrade.RunCommand(current_ksp, cmdline.options);
 
                 case "clean":
                     return Clean();
@@ -333,30 +336,6 @@ namespace CKAN.CmdLine
                 User.WriteLine("No mod selected, nothing to do");
                 return Exit.BADOPT;
             }
-        }
-
-        private static int Upgrade(UpgradeOptions options)
-        {
-            if (options.ckan_file != null)
-            {
-                User.WriteLine("\nUnsupported option at this time.");
-                return Exit.BADOPT;
-            }
-
-            if (options.modules.Count == 0)
-            {
-                // What? No files specified?
-                User.WriteLine("Usage: ckan upgrade Mod [Mod2, ...]");
-                return Exit.BADOPT;
-            }
-
-            User.WriteLine("\nUpgrading modules...\n");
-
-            ModuleInstaller.Instance.Upgrade(options.modules);
-
-            User.WriteLine("\nDone!\n");
-
-            return Exit.OK;
         }
 
         private static int Clean()

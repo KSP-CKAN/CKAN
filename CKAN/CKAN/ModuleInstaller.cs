@@ -833,11 +833,10 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Upgrades the modest listed to the latest versions for the user's KSP.
+        /// Upgrades the mods listed to the latest versions for the user's KSP.
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        /// <param name="modules">Modules.</param>
         public void Upgrade(IEnumerable<string> identifiers)
         {
             List<CkanModule> upgrades = new List<CkanModule>();
@@ -856,6 +855,22 @@ namespace CKAN
                     );
                 }
 
+                upgrades.Add(latest);
+            }
+
+            Upgrade(upgrades);
+        }
+
+        /// <summary>
+        /// Upgrades the mods listed to the specified versions for the user's KSP.
+        /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
+        /// Throws ModuleNotFoundKraken if a module is not installed.
+        /// </summary>
+        public void Upgrade(IEnumerable<CkanModule> modules)
+        {
+            foreach (CkanModule module in modules)
+            {
+                string ident = module.identifier;
                 Module installed = registry_manager.registry.InstalledModule(ident).Module;
 
                 if (installed == null)
@@ -866,17 +881,23 @@ namespace CKAN
                     );
                 }
 
-                if (installed.version.IsEqualTo(latest.version))
+                if (installed.version.IsEqualTo(module.version))
                 {
                     log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
                 }
-
-                upgrades.Add(latest);
+                else if (installed.version.IsGreaterThan(module.version))
+                {
+                    log.WarnFormat("Downgrading {0} from {1} to {2}", ident, installed.version, module.version);
+                }
+                else
+                {
+                    log.InfoFormat("Upgrading {0} to {1}", ident, module.version);
+                }
             }
 
             AddRemove(
-                upgrades,
-                upgrades.Select(x => x.identifier)
+                modules,
+                modules.Select(x => x.identifier)
             );
         }
 

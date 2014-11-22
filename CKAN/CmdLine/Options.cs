@@ -8,7 +8,7 @@ namespace CKAN.CmdLine
     // Look, parsing options is so easy and beautiful I made
     // it into a special class for you to admire!
 
-    internal class Options
+    public class Options
     {
         public string action { get; set; }
         public object options { get; set; }
