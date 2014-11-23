@@ -252,6 +252,7 @@
                 "W3C",
                 "Zlib",
                 "Zope",
+                "WTFPL",
                 "open-source", "restricted", "unrestricted", "unknown"
             ]
         },

@@ -153,6 +153,7 @@ The same rules as per the
 * The creative commons licenses are permitted without a version number, indicating the
   author did not specify which version applies.
 * Stripping of trailing zeros is not recognised.
+* (**v1.2**) `WTFPL` is recognised as a valid license.
 
 The following license strings are also valid and indicate other licensing not
 described above:
