@@ -9,13 +9,34 @@ namespace CKAN {
         private string version; 
 
         public KSPVersion (string v) {
-            version = AnyToNull(v);
+            version = Normalise(v);
+            version = AnyToNull(version);
             Validate (); // Throws on error.
         }
 
         // Casting function
         public static explicit operator KSPVersion(string v) {
             return new KSPVersion (v);
+        }
+
+        /// <summary>
+        /// Normalises a version number. Currently this adds
+        /// a leading zero if it's missing one.
+        /// </summary>
+        /// <param name="v">V.</param>
+        private static string Normalise(string v)
+        {
+            if (v == null)
+            {
+                return null;
+            }
+
+            if (Regex.IsMatch(v, @"^\."))
+            {
+                return "0" + v;
+            }
+
+            return v;
         }
 
         // 0.25 -> 0.25.0
