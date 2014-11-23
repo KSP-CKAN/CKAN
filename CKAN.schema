@@ -220,8 +220,18 @@
             }
         },
         "install_to" : {
-            "description" : "Where file should be installed to",
-            "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial" ]
+            "description" : "Where file should be installed to. As of v1.2, GameData may take a path",
+            "oneOf" : [
+                {
+                    "description" : "Spec version 1 targets",
+                    "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial" ]
+                },
+                {
+                    "description" : "Spec v1.2 GameData path",
+                    "type" : "string",
+                    "pattern" : "^GameData/"
+                }
+            ]
         },
         "license" : {
             "description" : "A license.",

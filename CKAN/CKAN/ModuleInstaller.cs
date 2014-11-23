@@ -418,15 +418,28 @@ namespace CKAN
         /// 
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
+        /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
         internal static List<InstallableFile> FindInstallableFiles(ModuleInstallDescriptor stanza, ZipFile zipfile, KSP ksp)
         {
             string installDir;
             bool makeDirs;
             var files = new List<InstallableFile> ();
 
-            if (stanza.install_to == "GameData")
+            // Normalize the path before doing everything else
+            stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+  
+            if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
-                installDir = ksp == null ? null : ksp.GameData();
+                // The installation path can be either "GameData" or a sub-directory of "GameData"
+                // but it cannot contain updirs
+                if (stanza.install_to.Contains("/../") || stanza.install_to.EndsWith("/.."))
+                    throw new BadInstallLocationKraken("Invalid installation path: " + stanza.install_to);
+
+                string subDir = stanza.install_to.Substring("GameData".Length);    // remove "GameData"
+                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
+                
+                // Add the extracted subdirectory to the path of KSP's GameData
+                installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
             else if (stanza.install_to == "Ships")
