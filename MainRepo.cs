@@ -12,6 +12,8 @@ namespace CKAN
         {
             m_TabController.RenameTab("WaitTabPage", "Updating repository");
 
+            KSPManager.CurrentInstance.ScanGameData();
+
             m_UpdateRepoWorker.RunWorkerAsync();
 
             Util.Invoke(this, () => Enabled = false);
