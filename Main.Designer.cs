@@ -110,7 +110,7 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
+            this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -966,7 +966,7 @@ namespace CKAN
             // 
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
-            this.ChooseRecommendedModsTabPage.Controls.Add(this.label4);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedDialogLabel);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsListView);
             this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
@@ -1000,14 +1000,14 @@ namespace CKAN
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             // 
-            // label4
+            // RecommendedDialogLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 13);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(422, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "The following modules have been recommended by one or more of the chosen modules:" +
+            this.RecommendedDialogLabel.AutoSize = true;
+            this.RecommendedDialogLabel.Location = new System.Drawing.Point(3, 13);
+            this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
+            this.RecommendedDialogLabel.Size = new System.Drawing.Size(422, 13);
+            this.RecommendedDialogLabel.TabIndex = 6;
+            this.RecommendedDialogLabel.Text = "The following modules have been recommended by one or more of the chosen modules:" +
     "";
             // 
             // RecommendedModsListView
@@ -1241,7 +1241,7 @@ namespace CKAN
         private ColumnHeader ChangeType;
         private ColumnHeader columnHeader2;
         private TabPage ChooseRecommendedModsTabPage;
-        private Label label4;
+        private Label RecommendedDialogLabel;
         private ListView RecommendedModsListView;
         private ColumnHeader columnHeader3;
         private ColumnHeader columnHeader4;
