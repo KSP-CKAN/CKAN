@@ -191,6 +191,7 @@ namespace CKAN
 
             m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
+            m_TabController.SetTabLock(true);
 
             bool resolvedAllProvidedMods = false;
 
@@ -283,6 +284,7 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
+            m_TabController.SetTabLock(false);
 
             AddStatusMessage("");
             HideWaitDialog(true);
