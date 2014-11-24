@@ -59,5 +59,14 @@ namespace CKANTests
             var v1 = new CKAN.ProvidesVersion("SomeModule");
             Assert.AreEqual("provided by SomeModule", v1.ToString());
         }
+
+        [Test]
+        public void AGExt()
+        {
+            var v1 = new CKAN.Version("1.20");
+            var v2 = new CKAN.Version("1.22a");
+
+            Assert.That(v2.IsGreaterThan(v1));
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace CKANTests
 
             Assert.AreEqual(2, module.install[0].filter.Count);
         }
+
         [Test]
         public void SpecCompareAssumptions()
         {
@@ -85,6 +86,16 @@ namespace CKANTests
             // We shouldn't support this far-in-the-future version.
             // NB: V2K bug!!!
             Assert.IsFalse(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v2000.99.99")));
+        }
+
+        [Test]
+        public void DottedSpecsSupported()
+        {
+            // We should support both two and three number dotted specs, on both
+            // tagged and dev releases.
+
+            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v1.1")));
+            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v1.0.2")));
         }
 
         [Test]

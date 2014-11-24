@@ -1,7 +1,5 @@
 # The Comprehensive Kerbal Archive Network (CKAN)
 
-**This document is a draft and may change. Contributions welcome.**
-
 This is a Request For Comments on the Comprehensive Kerbal Archive
 Network (CKAN). Please open discussions in the issues list, and
 send pull requests to patch this document and associated files.
@@ -71,7 +69,7 @@ and the
         "abstract"       : "Realistic jet engines for KSP",
         "identifier"     : "AJE",
         "download"       : "https://github.com/camlost2/AJE/archive/1.6.zip",
-        "license"        : "LGPLv2.1",
+        "license"        : "LGPL-2.1",
         "version"        : "1.6",
         "release_status" : "stable",
         "ksp_version"    : "0.25",
@@ -112,7 +110,9 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* '1' should be used.
 
-This document describes the CKAN specification '1'.
+This document describes the CKAN specification 'v1.2'. Changes since spec `1`
+are maked with (**v1.2**). For maximum compatibility, using older spec versions
+is preferred when newer features are not required.
 
 ##### name
 
@@ -251,6 +251,11 @@ mandatory directives:
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
+
+(**v1.2**) For `GameData` *only* one *may* specify the path to a specific
+subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this
+path and abort the install if any attempts to traverse up directories are found
+(eg: `GameData/../Example`).
 
 Optionally, an install directive may filter the files to install using:
 

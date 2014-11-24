@@ -13,12 +13,26 @@ namespace CKANTests
     [TestFixture()]
     public class ModuleInstaller
     {
-        private static readonly string flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
-        private static readonly string dogezip = Tests.TestData.DogeCoinFlagZip();
-        private static readonly CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
+        private string flag_path;
+        private string dogezip;
+        private CkanModule dogemod;
 
-        private static readonly string mm_zip = Tests.TestData.ModuleManagerZip();
-        private static readonly CkanModule mm_mod = Tests.TestData.ModuleManagerModule();
+        private string mm_zip;
+        private CkanModule mm_mod;
+
+        [SetUp]
+        public void Setup()
+        {
+            // By setting these for every test, we can make sure our tests can change
+            // them any way they like without harming other tests.
+
+            flag_path = "DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png";
+            dogezip = Tests.TestData.DogeCoinFlagZip();
+            dogemod = Tests.TestData.DogeCoinFlag_101_module();
+
+            mm_zip = Tests.TestData.ModuleManagerZip();
+            mm_mod = Tests.TestData.ModuleManagerModule();
+        }
 
         [Test()]
         public void GenerateDefaultInstall()
@@ -100,6 +114,42 @@ namespace CKANTests
             }
         }
 
+        #pragma warning disable 0414
+
+        // GH #315, all of these should result in the same output.
+        // Even though they're not necessarily all spec-valid, we should accept them
+        // nonetheless.
+        private static readonly string[] SuchPaths =
+        {
+            "GameData/SuchTest",
+            "GameData/SuchTest/",
+            "GameData\\SuchTest",
+            "GameData\\SuchTest\\",
+            "GameData\\SuchTest/",
+            "GameData/SuchTest\\"
+        };
+
+        #pragma warning restore 0414
+
+        [Test][TestCaseSource("SuchPaths")]
+        public void FindInstallbleFilesWithBonusPath(string path)
+        {
+            dogemod.install[0].install_to = path;
+            using (var tidy = new Tests.DisposableKSP())
+            {
+                IEnumerable<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(
+                                                            dogemod, dogezip, tidy.KSP
+                                                        );
+
+                string file = contents
+                    .Select(x => x.destination)
+                    .Where(x => Regex.IsMatch(x, "GameData/SuchTest/DogeCoinFlag/Flags/dogecoin\\.png$"))
+                    .FirstOrDefault();
+
+                Assert.IsNotNull(file);
+            }
+        }
+
         [Test]
         public void ModuleManagerInstall()
         {
@@ -155,6 +205,29 @@ namespace CKANTests
                 Assert.IsNotNull(ex.module);
                 Assert.AreEqual(bugged_mod.identifier, ex.module.identifier);
             }
+        }
+
+        #pragma warning disable 0414
+
+        // All of these targets should fail.
+        private static readonly string[] BadTargets = {
+            "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
+            "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/..",
+            @"GameData\..\..\etc\pwned", @"GameData\.."
+        };
+
+        #pragma warning restore 0414
+
+        [Test][TestCaseSource("BadTargets")]
+        public void FindInstallableFilesWithBadTarget(string location)
+        {
+            // This install location? It shouldn't be valid.
+            dogemod.install[0].install_to = location;
+
+            Assert.Throws<CKAN.BadInstallLocationKraken>(delegate
+            {
+                CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
+            });
         }
 
         [Test()]
@@ -241,7 +314,7 @@ namespace CKANTests
             Assert.AreEqual("SomeDir/Ships/SPH/FAR Firehound.craft", CKAN.ModuleInstaller.TransformOutputName("Ships", "Ships/SPH/FAR Firehound.craft", "SomeDir/Ships"));
         }
 
-        private static string CopyDogeFromZip()
+        private string CopyDogeFromZip()
         {
             string dogezip = Tests.TestData.DogeCoinFlagZip();
             ZipFile zipfile = new ZipFile(dogezip);
@@ -276,6 +349,9 @@ namespace CKANTests
                 CKAN.KSPManager._CurrentInstance = null; // I weep even more.
             }
         }
+
+
+
 
         private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {

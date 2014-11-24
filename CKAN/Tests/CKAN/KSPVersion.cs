@@ -77,5 +77,20 @@ namespace CKANTests
             Assert.IsFalse(vlong.IsShortVersion());
             Assert.IsFalse(vlong.IsAny());
         }
+
+        [Test]
+        public void MissingZeros()
+        {
+            var v1 = new CKAN.KSPVersion(".23.5");
+            Assert.IsInstanceOf<CKAN.KSPVersion>(v1);
+            Assert.AreEqual("0.23.5", v1.Version());
+
+            var v0_23_5 = new CKAN.KSPVersion("0.23.5");
+            Assert.IsTrue(v1.Targets(v0_23_5));
+
+            // For when Squad makes what they think is a full release. ;)
+            var v1_0_0 = new CKAN.KSPVersion("1.0.0");
+            Assert.IsTrue(v1_0_0 > v0_23_5);
+        }
     }
 }
