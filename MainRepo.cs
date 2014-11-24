@@ -38,6 +38,8 @@ namespace CKAN
             UpdateModsList();
             UpdateModFilterList();
 
+            Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
+
             SetDescription("Scanning for manually installed mods");
             KSPManager.CurrentInstance.ScanGameData();
 
