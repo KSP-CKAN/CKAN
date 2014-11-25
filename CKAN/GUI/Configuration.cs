@@ -25,6 +25,16 @@ namespace CKAN
                 var configuration = new Configuration();
                 configuration.Repository = defaultRepo;
                 configuration.m_Path = path;
+                
+                if(Util.IsLinux)
+                {
+                    configuration.CommandLineArguments = "./KSP.x86_64";
+                }
+                else
+                {
+                    configuration.CommandLineArguments = "KSP.exe -force-opengl";
+                }
+
                 SaveConfiguration(configuration, path);
             }
 

@@ -136,14 +136,43 @@ namespace CKAN
                 }
             }
 
+            foreach(var item in toInstall)
+            {
+                recommended.Remove(item);
+            }
+
             if(recommended.Any())
             {
                 Util.Invoke(this, () => UpdateRecommendedDialog(recommended));
 
                 m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
                 m_TabController.SetTabLock(true);
 
                 lock(this)
+                {
+                    Monitor.Wait(this);
+                }
+
+                m_TabController.SetTabLock(false);
+            }
+
+            m_TabController.HideTab("ChooseRecommendedModsTabPage");
+
+            foreach(var item in toInstall)
+            {
+                suggested.Remove(item);
+            }
+
+            if (suggested.Any())
+            {
+                Util.Invoke(this, () => UpdateRecommendedDialog(suggested, true));
+
+                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
+                m_TabController.SetTabLock(true);
+
+                lock (this)
                 {
                     Monitor.Wait(this);
                 }
@@ -162,6 +191,7 @@ namespace CKAN
 
             m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
+            m_TabController.SetTabLock(true);
 
             bool resolvedAllProvidedMods = false;
 
@@ -254,6 +284,7 @@ namespace CKAN
         {
             UpdateModsList();
             UpdateModFilterList();
+            m_TabController.SetTabLock(false);
 
             AddStatusMessage("");
             HideWaitDialog(true);
@@ -329,8 +360,20 @@ namespace CKAN
             }
         }
 
-        private void UpdateRecommendedDialog(Dictionary<string, List<string>> mods)
+        private void UpdateRecommendedDialog(Dictionary<string, List<string>> mods, bool suggested = false)
         {
+            if(!suggested)
+            {
+                RecommendedDialogLabel.Text = "The following modules have been recommended by one or more of the chosen modules:";
+                RecommendedModsListView.Columns[1].Text = "Recommended by:";
+            }
+            else
+            {
+                RecommendedDialogLabel.Text = "The following modules have been suggested by one or more of the chosen modules:";
+                RecommendedModsListView.Columns[1].Text = "Suggested by:";
+            }
+
+
             RecommendedModsListView.Items.Clear();
 
             foreach(var pair in mods)
@@ -353,7 +396,7 @@ namespace CKAN
 
                 ListViewItem item = new ListViewItem();
                 item.Tag = module;
-                item.Checked = true;
+                item.Checked = !suggested;
 
                 item.Text = pair.Key;
 
