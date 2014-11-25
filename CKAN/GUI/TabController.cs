@@ -128,7 +128,10 @@ namespace CKAN
 
         private void _SetActiveTab(string name)
         {
+            var tabLock = m_TabLock;
+            m_TabLock = false;
             m_TabControl.SelectTab(m_TabPages[name]);
+            m_TabLock = tabLock;
         }
 
         private void OnDeselect(object sender, TabControlCancelEventArgs args)

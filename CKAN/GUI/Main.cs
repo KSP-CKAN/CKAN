@@ -267,14 +267,6 @@ namespace CKAN
             ModList.EndEdit();
         }
 
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Flipping enabled here hides the main form itself.
-            Enabled = false;
-            m_SettingsDialog.ShowDialog();
-            Enabled = true;
-        }
-
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.All;
@@ -398,25 +390,33 @@ namespace CKAN
       
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Util.IsLinux)
+            var lst = m_Configuration.CommandLineArguments.Split(' ');
+            if (lst == null || lst.Length == 0)
             {
-                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.x86"), m_Configuration.CommandLineArguments);
+                return;
             }
-            else
+
+            string binary = lst[0];
+            string args = "";
+
+            for(int i = 1; i < lst.Length; i++)
             {
-                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), "KSP.exe"), m_Configuration.CommandLineArguments);
+                args += lst[i] + " ";
+            }
+
+            try
+            {
+                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), binary), args);
+            }
+            catch(Exception exception)
+            {
+                User.Error("Couldn't start KSP. {0}.", exception.Message);
             }
         }
 
         private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new KSPCommandLineOptionsDialog();
-            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
-                m_Configuration.Save();
-            }
+           
         }
 
         private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -429,6 +429,25 @@ namespace CKAN
         {
             var dialog = new AboutDialog();
             dialog.ShowDialog();
+        }
+
+        private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new KSPCommandLineOptionsDialog();
+            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
+                m_Configuration.Save();
+            }
+        }
+
+        private void CKANSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Flipping enabled here hides the main form itself.
+            Enabled = false;
+            m_SettingsDialog.ShowDialog();
+            Enabled = true;
         }
 
     }

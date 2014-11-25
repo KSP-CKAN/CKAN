@@ -298,7 +298,11 @@ namespace CKAN
 
                 for (int i = 0; i < downloads.Count; i++)
                 {
-                    totalBytesPerSecond += downloads[i].bytesPerSecond;
+                    if(downloads[i].bytesLeft > 0)
+                    {
+                        totalBytesPerSecond += downloads[i].bytesPerSecond;
+                    }
+
                     totalBytesLeft += downloads[i].bytesLeft;
                     totalBytesDownloaded += downloads[i].bytesDownloaded;
                     totalBytesLeft += downloads[i].bytesLeft;

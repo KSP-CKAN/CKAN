@@ -33,16 +33,15 @@ namespace CKAN
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kSPCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.launchKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setCommandlineOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,7 +110,7 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
+            this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -159,40 +158,40 @@ namespace CKAN
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.installFromckanToolStripMenuItem,
-            this.exportInstalledModsToolStripMenuItem,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // installFromckanToolStripMenuItem
-            // 
-            this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
-            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
-            this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
-            // 
-            // exportInstalledModsToolStripMenuItem
-            // 
-            this.exportInstalledModsToolStripMenuItem.Name = "exportInstalledModsToolStripMenuItem";
-            this.exportInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.exportInstalledModsToolStripMenuItem.Text = "Export installed mods";
-            this.exportInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.exportInstalledModsToolStripMenuItem_Click);
-            // 
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(187, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(92, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
             // settingsToolStripMenuItem
             // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cKANSettingsToolStripMenuItem,
+            this.kSPCommandlineToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
+            // cKANSettingsToolStripMenuItem
+            // 
+            this.cKANSettingsToolStripMenuItem.Name = "cKANSettingsToolStripMenuItem";
+            this.cKANSettingsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.cKANSettingsToolStripMenuItem.Text = "CKAN settings";
+            this.cKANSettingsToolStripMenuItem.Click += new System.EventHandler(this.CKANSettingsToolStripMenuItem_Click);
+            // 
+            // kSPCommandlineToolStripMenuItem
+            // 
+            this.kSPCommandlineToolStripMenuItem.Name = "kSPCommandlineToolStripMenuItem";
+            this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.kSPCommandlineToolStripMenuItem.Text = "KSP command-line";
+            this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -205,7 +204,7 @@ namespace CKAN
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -238,21 +237,12 @@ namespace CKAN
             // 
             // launchKSPToolStripMenuItem
             // 
-            this.launchKSPToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setCommandlineOptionsToolStripMenuItem});
             this.launchKSPToolStripMenuItem.Image = global::CKAN.Properties.Resources.ksp;
             this.launchKSPToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.launchKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
             this.launchKSPToolStripMenuItem.Size = new System.Drawing.Size(113, 36);
             this.launchKSPToolStripMenuItem.Text = "Launch KSP";
             this.launchKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
-            // 
-            // setCommandlineOptionsToolStripMenuItem
-            // 
-            this.setCommandlineOptionsToolStripMenuItem.Name = "setCommandlineOptionsToolStripMenuItem";
-            this.setCommandlineOptionsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.setCommandlineOptionsToolStripMenuItem.Text = "Set command-line arguments";
-            this.setCommandlineOptionsToolStripMenuItem.Click += new System.EventHandler(this.setCommandlineOptionsToolStripMenuItem_Click);
             // 
             // RefreshToolButton
             // 
@@ -976,7 +966,7 @@ namespace CKAN
             // 
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
-            this.ChooseRecommendedModsTabPage.Controls.Add(this.label4);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedDialogLabel);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsListView);
             this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
@@ -1010,14 +1000,14 @@ namespace CKAN
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
             // 
-            // label4
+            // RecommendedDialogLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 13);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(422, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "The following modules have been recommended by one or more of the chosen modules:" +
+            this.RecommendedDialogLabel.AutoSize = true;
+            this.RecommendedDialogLabel.Location = new System.Drawing.Point(3, 13);
+            this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
+            this.RecommendedDialogLabel.Size = new System.Drawing.Size(422, 13);
+            this.RecommendedDialogLabel.TabIndex = 6;
+            this.RecommendedDialogLabel.Text = "The following modules have been recommended by one or more of the chosen modules:" +
     "";
             // 
             // RecommendedModsListView
@@ -1222,10 +1212,7 @@ namespace CKAN
         private Label MetadataModuleNameLabel;
         private TextBox MetadataModuleAbstractLabel;
         private ComboBox ModuleRelationshipType;
-        private ToolStripMenuItem installFromckanToolStripMenuItem;
-        private ToolStripMenuItem exportInstalledModsToolStripMenuItem;
         private ToolStripMenuItem launchKSPToolStripMenuItem;
-        private ToolStripMenuItem setCommandlineOptionsToolStripMenuItem;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
@@ -1254,7 +1241,7 @@ namespace CKAN
         private ColumnHeader ChangeType;
         private ColumnHeader columnHeader2;
         private TabPage ChooseRecommendedModsTabPage;
-        private Label label4;
+        private Label RecommendedDialogLabel;
         private ListView RecommendedModsListView;
         private ColumnHeader columnHeader3;
         private ColumnHeader columnHeader4;
@@ -1268,6 +1255,8 @@ namespace CKAN
         private ColumnHeader columnHeader8;
         private Button ChooseProvidedModsCancelButton;
         private Button ChooseProvidedModsContinueButton;
+        private ToolStripMenuItem cKANSettingsToolStripMenuItem;
+        private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
     }
 }
 
