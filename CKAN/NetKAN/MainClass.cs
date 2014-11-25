@@ -46,7 +46,12 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
-            NetFileCache cache = FindCache(options);
+            NetFileCache cache = null;
+
+            if (options.CacheFile == null)
+            {
+                cache = FindCache(options);
+            }
 
             log.InfoFormat("Processing {0}", options.File);
 
@@ -56,11 +61,11 @@ namespace CKAN.NetKAN
             JObject metadata;
             if (remote.source == "kerbalstuff")
             {
-                metadata = KerbalStuff(json, remote.id, cache);
+                metadata = KerbalStuff(json, remote.id, cache, options.CacheFile);
             }
             else if (remote.source == "github")
             {
-                metadata = GitHub(json, remote.id, cache);
+                metadata = GitHub(json, remote.id, cache, options.CacheFile);
             }
             else
             {
@@ -81,11 +86,15 @@ namespace CKAN.NetKAN
             }
 
             // Find our cached file, we'll need it later.
-            string file = cache.GetCachedZip(mod.download);
-            if (file == null)
+            string file = options.CacheFile;
+            if(cache != null)
             {
-                log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
-                return EXIT_ERROR;
+                file = cache.GetCachedZip(mod.download);
+                if (file == null)
+                {
+                    log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
+                    return EXIT_ERROR;
+                }
             }
 
             // Make sure this would actually generate an install
@@ -136,7 +145,7 @@ namespace CKAN.NetKAN
         /// Fetch le things from le KerbalStuff.
         /// Returns a JObject that should be a fully formed CKAN file.
         /// </summary>
-        internal static JObject KerbalStuff(JObject orig_metadata, string remote_id, NetFileCache cache)
+        internal static JObject KerbalStuff(JObject orig_metadata, string remote_id, NetFileCache cache, string filename = null)
         {
             // Look up our mod on KS by its ID.
             KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
@@ -148,7 +157,11 @@ namespace CKAN.NetKAN
             log.DebugFormat("Mod: {0} {1}", ks.name, version);
 
             // Find the latest download.
-            string filename = latest.Download((string) orig_metadata["identifier"], cache);
+
+            if (filename == null)
+            {
+                filename = latest.Download((string)orig_metadata["identifier"], cache);
+            }
 
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
@@ -172,11 +185,15 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Fetch things from Github, returning a complete CkanModule document.
         /// </summary>
-        private static JObject GitHub(JObject orig_metadata, string repo, NetFileCache cache)
+        private static JObject GitHub(JObject orig_metadata, string repo, NetFileCache cache, string filename = null)
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
-            string filename = release.Download((string) orig_metadata["identifier"], cache);
+
+            if (filename == null)
+            {
+                filename = release.Download((string)orig_metadata["identifier"], cache);
+            }
 
             // Extract embedded metadata, or use what we have.
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
