@@ -80,7 +80,7 @@
             this.Controls.Add(this.AcceptChangesButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AdditionalArguments);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "KSPCommandLineOptionsDialog";
             this.Text = "KSP command-line arguments";
             this.ResumeLayout(false);

@@ -72,7 +72,7 @@
             this.Controls.Add(this.CancelRenameInstanceButton);
             this.Controls.Add(this.OKButton);
             this.Controls.Add(this.NameTextBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "RenameInstanceDialog";
             this.Text = "Rename installation";
             this.ResumeLayout(false);
