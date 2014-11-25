@@ -187,7 +187,7 @@ namespace CKAN
         {
             using (var sha1 = new SHA1Managed())
             {
-                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
+                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.OriginalString));
 
                 return BitConverter.ToString(hash).Replace("-", "").Substring(0, 8);
             }
