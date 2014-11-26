@@ -365,10 +365,10 @@ installed unless the user requests otherwise.
 
 #### supports
 
-A list of mods which are supported by this mod.  This means that these
-mods may not interact or enhance this mod, but they will work correctly
-with it. These mods *should not* be installed, this is an informational
-field only.
+(**v1.2**) A list of mods which are supported by this mod.  This means that
+these mods may not interact or enhance this mod, but they will work correctly
+with it. These mods *should not* be installed, this is an informational field
+only.
 
 ##### conflicts
 
