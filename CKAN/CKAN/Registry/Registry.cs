@@ -334,9 +334,10 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Returns a simple array of all available modules for
-        ///     the specified version of KSP (installed version by default)
+        /// Returns a simple array of all latest available modules for
+        /// the specified version of KSP (installed version by default)
         /// </summary>
+        // TODO: This name is misleading. It's more a LatestAvailable's'
         public List<CkanModule> Available(KSPVersion ksp_version = null)
         {
             // Default to the user's current KSP install for version.
@@ -501,6 +502,25 @@ namespace CKAN
             }
 
             return modules;
+        }
+
+        public CkanModule GetModuleByVersion(string ident, string version)
+        {
+            return GetModuleByVersion(ident, new Version(version));
+        }
+
+        public CkanModule GetModuleByVersion(string ident, Version version)
+        {
+            log.DebugFormat("Trying to find {0} version {1}", ident, version);
+
+            if (!available_modules.ContainsKey(ident))
+            {
+                return null;
+            }
+
+            AvailableModule available = available_modules[ident];
+
+            return available.ByVersion(version);
         }
 
         /// <summary>

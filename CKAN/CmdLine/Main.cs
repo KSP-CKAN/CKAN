@@ -124,6 +124,8 @@ namespace CKAN.CmdLine
                 }
             }
 
+            CKAN.KSP current_ksp = KSPManager.CurrentInstance;
+
             switch (cmdline.action)
             {
                 case "gui":
@@ -154,7 +156,8 @@ namespace CKAN.CmdLine
                     return Remove((RemoveOptions) cmdline.options);
 
                 case "upgrade":
-                    return Upgrade((UpgradeOptions) cmdline.options);
+                    var upgrade = new Upgrade();
+                    return upgrade.RunCommand(current_ksp, cmdline.options);
 
                 case "clean":
                     return Clean();
@@ -251,13 +254,61 @@ namespace CKAN.CmdLine
 
             var installed = new SortedDictionary<string, Version>(registry.Installed());
 
-            foreach (var mod in installed)
+            foreach (KeyValuePair<string, Version> mod in installed)
             {
-                User.WriteLine("* {0} {1}", mod.Key, mod.Value);
+                string identifier = mod.Key;
+                Version current_version = mod.Value;
+
+                string bullet = "*";
+
+                if (current_version is ProvidesVersion)
+                {
+                    // Skip virtuals for now.
+                    continue;
+                }
+                else if (current_version is DllVersion)
+                {
+                    // Autodetected dll
+                    bullet = "-";
+                }
+                else
+                {
+                    try
+                    {
+                        // Check if upgrades are available, and show appropriately.
+                        CkanModule latest = registry.LatestAvailable(mod.Key, ksp.Version());
+
+                        log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
+
+                        if (latest == null)
+                        {
+                            // Not compatible!
+                            bullet = "✗";
+                        }
+                        else if (latest.version.IsEqualTo(current_version))
+                        {
+                            // Up to date
+                            bullet = "✓";
+                        }
+                        else if (latest.version.IsGreaterThan(mod.Value))
+                        {
+                            // Upgradable
+                            bullet = "↑";
+                        }
+
+                    }
+                    catch (ModuleNotFoundKraken) {
+                        log.InfoFormat("{0} is installed, but no longer in the registry",
+                            mod.Key);
+
+                        bullet = "?";
+                    }
+                }
+
+                User.WriteLine("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            // Blank line at the end makes for nicer looking output.
-            User.WriteLine("");
+            User.WriteLine("\nLegend: ✓ - Up to date. ✗ - Incompatible. ↑ - Upgradable. ? - Unknown ");
 
             return Exit.OK;
         }
@@ -285,67 +336,6 @@ namespace CKAN.CmdLine
                 User.WriteLine("No mod selected, nothing to do");
                 return Exit.BADOPT;
             }
-        }
-
-        // TODO: This needs work! See GH #160.
-        private static int Upgrade(UpgradeOptions options)
-        {
-            if (options.ckan_file == null)
-            {
-                // Typical case, install from cached CKAN info.
-
-                if (options.modules.Count == 0)
-                {
-                    // What? No files specified?
-                    User.WriteLine(
-                        "Usage: ckan upgrade [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
-                    return Exit.BADOPT;
-                }
-
-                // Do our un-installs and re-installs in a transaction. If something goes wrong,
-                // we put the user's data back the way it was. (Both Install and Uninstall support transactions.)
-                using (var transaction = new TransactionScope ()) {
-                    var installer = ModuleInstaller.Instance;
-
-                    try
-                    {
-                        installer.UninstallList(options.modules);
-                    }
-                    catch (ModNotInstalledKraken kraken)
-                    {
-                        User.WriteLine("I can't do that, {0} is not installed.", kraken.mod);
-                        return Exit.BADOPT;
-                    }
-
-                    // Prepare options. Can these all be done in the new() somehow?
-                    var install_ops = new RelationshipResolverOptions();
-                    install_ops.with_all_suggests = options.with_all_suggests;
-                    install_ops.with_suggests = options.with_suggests;
-                    install_ops.with_recommends = !options.no_recommends;
-
-                    // Install everything requested. :)
-                    try
-                    {
-                        installer.InstallList(options.modules, install_ops);
-                    }
-                    catch (ModuleNotFoundKraken ex)
-                    {
-                        User.WriteLine("Module {0} required, but not listed in index.", ex.module);
-                        User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                        return Exit.ERROR;
-                    }
-
-                    transaction.Complete();
-                }
-
-                User.WriteLine("\nDone!\n");
-
-                return Exit.OK;
-            }
-
-            User.WriteLine("\nUnsupported option at this time.");
-
-            return Exit.BADOPT;
         }
 
         private static int Clean()

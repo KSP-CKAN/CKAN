@@ -263,13 +263,14 @@ namespace CKAN
 
         /// <summary>
         ///     Install our mod from the filename supplied.
-        ///     If no file is supplied, we will check the cache or download it.
+        ///     If no file is supplied, we will check the cache or throw FileNotFoundKraken.
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
         /// 
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
+        /// Throws a FileNotFoundKraken if we can't find the downloaded module.
         /// 
         /// </summary>
         // 
@@ -286,10 +287,16 @@ namespace CKAN
                 return;
             }
 
-            // Fetch our file if we don't already have it.
+            // Find our in the cache if we don't already have it.
+            filename = filename ?? this.Cache.GetCachedZip(module.download);
+
+            // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
             {
-                filename = CachedOrDownload(module);
+                throw new FileNotFoundKraken(
+                    null, 
+                    String.Format("Trying to install {0}, but it's not downloaded", module)
+                );
             }
 
             // We'll need our registry to record which files we've installed.
@@ -800,6 +807,139 @@ namespace CKAN
             }
 
             return;
+        }
+
+        #region AddRemove
+
+        /// <summary>
+        /// Adds and removes the listed modules as a single transaction.
+        /// No relationships will be processed.
+        /// This *will* save the registry.
+        /// </summary>
+        /// <param name="add">Add.</param>
+        /// <param name="remove">Remove.</param>
+        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null)
+        {
+
+            // TODO: We should do a consistency check up-front, rather than relying
+            // upon our registry catching inconsistencies at the end.
+
+            // TODO: Download our files.
+
+            using (var tx = new TransactionScope())
+            {
+
+                foreach (string identifier in remove)
+                {
+                    Uninstall(identifier);
+                }
+
+                foreach (CkanModule module in add)
+                {
+                    Install(module);
+                }
+
+                this.registry_manager.Save();
+
+                tx.Complete();
+            }
+        }
+
+        /// <summary>
+        /// Upgrades the mods listed to the latest versions for the user's KSP.
+        /// Will *re-install* with warning even if an upgrade is not available.
+        /// Throws ModuleNotFoundKraken if module is not installed, or not available.
+        /// </summary>
+        public void Upgrade(IEnumerable<string> identifiers)
+        {
+            List<CkanModule> upgrades = new List<CkanModule>();
+
+            foreach (string ident in identifiers)
+            {
+                CkanModule latest = registry_manager.registry.LatestAvailable(
+                                        ident, this.ksp.Version()
+                                    );
+
+                if (latest == null)
+                {
+                    throw new ModuleNotFoundKraken(
+                        ident,
+                        "Can't upgrade {0}, no modules available", ident
+                    );
+                }
+
+                upgrades.Add(latest);
+            }
+
+            Upgrade(upgrades);
+        }
+
+        /// <summary>
+        /// Upgrades the mods listed to the specified versions for the user's KSP.
+        /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
+        /// Throws ModuleNotFoundKraken if a module is not installed.
+        /// </summary>
+        public void Upgrade(IEnumerable<CkanModule> modules)
+        {
+            // Start by making sure we've downloaded everything.
+            DownloadModules(modules);
+
+            foreach (CkanModule module in modules)
+            {
+                string ident = module.identifier;
+                Module installed = registry_manager.registry.InstalledModule(ident).Module;
+
+                if (installed == null)
+                {
+                    throw new ModuleNotFoundKraken(
+                        ident,
+                        "Can't upgrade {0}, it is not installed", ident
+                    );
+                }
+
+                if (installed.version.IsEqualTo(module.version))
+                {
+                    log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
+                }
+                else if (installed.version.IsGreaterThan(module.version))
+                {
+                    log.WarnFormat("Downgrading {0} from {1} to {2}", ident, installed.version, module.version);
+                }
+                else
+                {
+                    log.InfoFormat("Upgrading {0} to {1}", ident, module.version);
+                }
+            }
+
+            AddRemove(
+                modules,
+                modules.Select(x => x.identifier)
+            );
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Makes sure all the specified mods are downloaded.
+        /// </summary>
+        private void DownloadModules(IEnumerable<CkanModule> mods)
+        {
+            List<CkanModule> downloads = new List<CkanModule> ();
+
+            foreach (CkanModule module in mods)
+            {
+                if (!ksp.Cache.IsCachedZip(module.download))
+                {
+                    downloads.Add(module);
+                }
+            }
+
+            if (downloads.Count > 0)
+            {
+                var downloader = new NetAsyncDownloader();
+
+                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+            }
         }
 
         /// <summary>
