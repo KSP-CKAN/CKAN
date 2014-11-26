@@ -19,9 +19,6 @@ namespace CKAN.NetKAN
         [Option("cachedir", HelpText = "Cache directory for downloaded mods")]
         public string CacheDir { get; set; }
 
-        [Option("cachefile", HelpText = "Use a specific downloaded mod archive")]
-        public string CacheFile { get; set; }
-
         // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }
