@@ -35,6 +35,10 @@ namespace CKAN
 
         private void UpdateInstancesList()
         {
+            SelectButton.Enabled = false;
+            RenameButton.Enabled = false;
+            SetAsDefaultCheckbox.Enabled = false;
+
             KSPInstancesListView.Items.Clear();
 
             foreach (var instance in KSPManager.Instances)
