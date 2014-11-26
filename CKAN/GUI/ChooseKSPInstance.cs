@@ -13,6 +13,7 @@ namespace CKAN
     {
         private FolderBrowserDialog m_BrowseKSPFolder = null;
         private RenameInstanceDialog m_RenameInstanceDialog = null;
+        private string m_LastSelectedInstance;
 
         public ChooseKSPInstance()
         {
@@ -69,7 +70,7 @@ namespace CKAN
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
-            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+            var instance = m_LastSelectedInstance;
 
             if (SetAsDefaultCheckbox.Checked)
             {
@@ -90,7 +91,7 @@ namespace CKAN
                 SetAsDefaultCheckbox.Enabled = false;
                 return;
             }
-
+            m_LastSelectedInstance = (string)KSPInstancesListView.SelectedItems[0].Tag;
             RenameButton.Enabled = true;
             SelectButton.Enabled = true;
             SetAsDefaultCheckbox.Enabled = true;
