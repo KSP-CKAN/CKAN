@@ -74,6 +74,8 @@ namespace CKAN
         [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;
         [JsonProperty("version", Required = Required.Always)] public Version version;
 
+        [JsonProperty("supports")] public List<RelationshipDescriptor> supports; 
+
         // A list of eveything this mod provides.
         public List<string> ProvidesList
         {

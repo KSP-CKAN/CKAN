@@ -96,6 +96,10 @@
             "description" : "Optional list of recommended, but not essential mods",
             "$ref"        : "#/definitions/relationship"
         },
+	"supports" : {
+            "description" : "Optional list of supported mods",
+            "$ref"        : "#/definitions/relationship"
+	},
         "conflicts" : {
             "description" : "Optional list of conflicting mods",
             "$ref"        : "#/definitions/relationship"
