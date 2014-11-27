@@ -19,11 +19,8 @@ namespace CKAN.NetKAN
         [Option("cachedir", HelpText = "Cache directory for downloaded mods")]
         public string CacheDir { get; set; }
 
-        [Option("github-user", HelpText = "GitHub username for API access")]
-        public string GitHubUser { get; set; }
-
-        [Option("github-password", HelpText = "GitHub password for API access")]
-        public string GitHubPassword { get; set; }
+        [Option("github-token", HelpText = "GitHub OAuth token for API access")]
+        public string GitHubToken { get; set; }
 
         // TODO: How do we mark this as required?
         [ValueOption(0)]
