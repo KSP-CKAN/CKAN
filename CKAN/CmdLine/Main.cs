@@ -223,7 +223,7 @@ namespace CKAN.CmdLine
             {
                 string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
                 if (width > 0) {
-                    User.WriteLine(entry.PadRight(Console.WindowWidth).Substring(0,Console.WindowWidth));
+                    User.WriteLine(entry.PadRight(width).Substring(0, width - 1));
                 }
                 else
                 {
