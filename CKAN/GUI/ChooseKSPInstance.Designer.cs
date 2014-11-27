@@ -83,6 +83,7 @@
             // 
             this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.SelectButton.Enabled = false;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SelectButton.Location = new System.Drawing.Point(287, 320);
             this.SelectButton.Name = "SelectButton";
