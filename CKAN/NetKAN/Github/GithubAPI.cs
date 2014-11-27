@@ -31,10 +31,9 @@ namespace CKAN.NetKAN
             return;
         }
 
-        public static void SetCredentials(string username, string password)
+        public static void SetCredentials(string oauth_token)
         {
-            web.UseDefaultCredentials = true;
-            web.Credentials = new NetworkCredential(username, password);
+            web.Headers.Add("Authorization", String.Format("token {0}", oauth_token));
         }
 
         public static string Call(string path)
