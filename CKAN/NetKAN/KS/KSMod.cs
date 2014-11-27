@@ -58,11 +58,11 @@ namespace CKAN.NetKAN
             Inflate(metadata, "abstract", short_description);
             Inflate(metadata, "author", author);
             Inflate(metadata, "version", version.friendly_version.ToString());
-            Inflate(metadata, "download", Uri.EscapeUriString(version.download_path));
+            Inflate(metadata, "download", Uri.EscapeUriString(version.download_path.ToString()));
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
-            Inflate((JObject) metadata["resources"], "homepage", website);
-            Inflate((JObject) metadata["resources"], "kerbalstuff", KSHome());
+            Inflate((JObject) metadata["resources"], "homepage", Uri.EscapeUriString(website));
+            Inflate((JObject) metadata["resources"], "kerbalstuff", Uri.EscapeUriString(KSHome()));
         }
 
         internal KSVersion Latest()
