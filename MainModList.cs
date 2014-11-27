@@ -260,13 +260,32 @@ namespace CKAN
                 item.Tag = mod;
 
                 bool isInstalled = registry.IsInstalled(mod.identifier);
+                bool isAutodetected = false;
+                if (isInstalled)
+                {
+                    isAutodetected = registry.InstalledVersion(mod.identifier).ToString() == "autodetected dll";
+                }
+
+                if(isAutodetected)
+                {
+                    item.DefaultCellStyle.BackColor = System.Drawing.SystemColors.InactiveCaption;
+                }
 
                 // installed
                 if (m_ModFilter != GUIModFilter.Incompatible)
                 {
-                    var installedCell = new DataGridViewCheckBoxCell();
-                    installedCell.Value = isInstalled;
-                    item.Cells.Add(installedCell);
+                    if(!isAutodetected)
+                    {
+                        var installedCell = new DataGridViewCheckBoxCell();
+                        installedCell.Value = isInstalled;
+                        item.Cells.Add(installedCell);
+                    }
+                    else
+                    {
+                        var installedCell = new DataGridViewTextBoxCell();
+                        installedCell.Value = "AD";
+                        item.Cells.Add(installedCell);
+                    }
                 }
                 else
                 {
@@ -276,7 +295,7 @@ namespace CKAN
                 }
 
                 // want update
-                if (!isInstalled)
+                if (!isInstalled || isAutodetected)
                 {
                     var updateCell = new DataGridViewTextBoxCell();
                     item.Cells.Add(updateCell);
