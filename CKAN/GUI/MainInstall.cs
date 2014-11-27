@@ -37,22 +37,28 @@ namespace CKAN
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
-            // first we uninstall whatever the user wanted to plus the mods we want to update
+            toInstall = new HashSet<string>();
+            var toUninstall = new HashSet<string>();
+            var toUpgrade = new HashSet<string>();
+
+            // first we uninstall whatever the user wanted
             foreach (var change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Remove)
                 {
-                    SetDescription(String.Format("Uninstalling mod \"{0}\"", change.Key.name));
-                    installer.UninstallList(change.Key.identifier);
+                    toUninstall.Add(change.Key.identifier);
                 }
                 else if (change.Value == GUIModChangeType.Update)
                 {
-                    // TODO: Proper upgrades when ckan.dll supports them.
-                    installer.UninstallList(change.Key.identifier);
+                    toUpgrade.Add(change.Key.identifier);
                 }
             }
 
-            toInstall = new HashSet<string>();
+            SetDescription("Uninstalling selected mods");
+            installer.UninstallList(toUninstall);
+            
+            SetDescription("Updating selected mods");
+            installer.Upgrade(toUpgrade);
 
             foreach (var change in opts.Key)
             {
@@ -244,34 +250,85 @@ namespace CKAN
                 {
                     ModuleInstaller.Instance.InstallList(toInstall.ToList(), options, downloader);
                 }
-                catch (CancelledActionKraken)
+                catch (ModuleNotFoundKraken ex)
                 {
-                    // User cancelled, no action needed.
+                    User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
+                    User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
+                    User.WriteLine("Try `ckan install --no-recommends` to skip installation of recommended modules");
+                    return;
                 }
-                catch (InconsistentKraken inconsistency)
+                catch (BadMetadataKraken ex)
                 {
-                    string message = "";
-                    bool first = true;
-                    foreach(var msg in inconsistency.inconsistencies)
-                    {
-                        if (!first)
-                        {
-                            message += ", ";
-                        }
-                        else
-                        {
-                            first = false;
-                        }
+                    User.WriteLine("Bad metadata detected for module {0}", ex.module);
+                    User.WriteLine(ex.Message);
+                    return;
+                }
+                catch (TooManyModsProvideKraken ex)
+                {
+                    User.WriteLine("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
-                        message += msg;
+                    foreach (CkanModule mod in ex.modules)
+                    {
+                        User.WriteLine("* {0} ({1})", mod.identifier, mod.name);
                     }
 
-                    User.Error("Inconsistency detected - {0}", message);
+                    User.WriteLine(""); // Looks tidier.
+
+                    return;
                 }
+                catch (FileExistsKraken ex)
+                {
+                    if (ex.owning_module != null)
+                    {
+                        User.WriteLine(
+                            "\nOh no! We tried to overwrite a file owned by another mod!\n" +
+                            "Please try a `ckan update` and try again.\n\n" +
+                            "If this problem re-occurs, then it maybe a packaging bug.\n" +
+                            "Please report it at:\n\n" +
+                            "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n" +
+                            "Please including the following information in your report:\n\n" +
+                            "File           : {0}\n" +
+                            "Installing Mod : {1}\n" +
+                            "Owning Mod     : {2}\n" +
+                            "CKAN Version   : {3}\n",
+                            ex.filename, ex.installing_module, ex.owning_module,
+                            Meta.Version()
+                        );
+                    }
+                    else
+                    {
+                        User.WriteLine(
+                            "\n\nOh no!\n\n" +
+                            "It looks like you're trying to install a mod which is already installed,\n" +
+                            "or which conflicts with another mod which is already installed.\n\n" +
+                            "As a safety feature, the CKAN will *never* overwrite or alter a file\n" +
+                            "that it did not install itself.\n\n" +
+                            "If you wish to install {0} via the CKAN,\n" +
+                            "then please manually uninstall the mod which owns:\n\n" +
+                            "{1}\n\n" + "and try again.\n",
+                            ex.installing_module, ex.filename
+                        );
+                    }
 
-                // TODO: Handle our other krakens here, we want the user to know
-                // when things have gone wrong!
-
+                    User.WriteLine("Your GameData has been returned to its original state.\n");
+                    return;
+                }
+                catch (InconsistentKraken ex)
+                {
+                    // The prettiest Kraken formats itself for us.
+                    User.WriteLine(ex.InconsistenciesPretty);
+                    return;
+                }
+                catch (CancelledActionKraken)
+                {
+                    return;
+                }
+                catch (MissingCertificateKraken kraken)
+                {
+                    // Another very pretty kraken.
+                    Console.WriteLine(kraken);
+                    return;
+                }
             }
         }
 
