@@ -67,11 +67,7 @@ namespace CKAN.NetKAN
                 Inflate((JObject)metadata["resources"], "homepage", Escape(website));
             }
 
-            var ksHome = KSHome();
-            if (ksHome != null)
-            {
-                Inflate((JObject)metadata["resources"], "kerbalstuff", Escape(ksHome));
-            }
+            Inflate((JObject) metadata["resources"], "kerbalstuff", Escape(KSHome()));
         }
 
         internal KSVersion Latest()
