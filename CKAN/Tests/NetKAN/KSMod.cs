@@ -35,7 +35,8 @@ namespace NetKAN.KerbalStuffTests
             ks.name = "foo bar";
             ks.id = 123;
 
-            Assert.AreEqual("https://kerbalstuff.com/mod/123/foo%20bar", ks.KSHome());
+            // KSHome no longer escapes URLs.
+            Assert.AreEqual("https://kerbalstuff.com/mod/123/foo bar", ks.KSHome().ToString());
         }
 
         [Test]
