@@ -60,6 +60,11 @@ namespace CKAN.NetKAN
             }
             else if (remote.source == "github")
             {
+                if (options.GitHubUser != null && options.GitHubPassword != null)
+                {
+                    GithubAPI.SetCredentials(options.GitHubUser, options.GitHubPassword);
+                }
+
                 metadata = GitHub(json, remote.id, cache);
             }
             else
