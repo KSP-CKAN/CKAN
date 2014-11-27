@@ -45,7 +45,7 @@ def main():
                 continue
             print 'Success!'
 
-	sys.exit(error)
+    sys.exit(error)
 
 if __name__ == "__main__":
     main()
