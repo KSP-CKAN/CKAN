@@ -31,6 +31,12 @@ namespace CKAN.NetKAN
             return;
         }
 
+        public static void SetCredentials(string username, string password)
+        {
+            web.UseDefaultCredentials = true;
+            web.Credentials = new NetworkCredential(username, password);
+        }
+
         public static string Call(string path)
         {
             Init();
