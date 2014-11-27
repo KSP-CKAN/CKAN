@@ -35,7 +35,8 @@ namespace NetKAN.KerbalStuffTests
             ks.name = "foo bar";
             ks.id = 123;
 
-            Assert.AreEqual("https://kerbalstuff.com/mod/123/foo%20bar", ks.KSHome());
+            // KSHome no longer escapes URLs.
+            Assert.AreEqual("https://kerbalstuff.com/mod/123/foo bar", ks.KSHome().ToString());
         }
 
         [Test]
@@ -82,7 +83,7 @@ namespace NetKAN.KerbalStuffTests
             ksmod.versions = new CKAN.NetKAN.KSVersion[1];
             ksmod.versions[0] = new CKAN.NetKAN.KSVersion();
             ksmod.versions[0].friendly_version = new CKAN.Version("0.25");
-            ksmod.versions[0].download_path = "http://example.com/";
+            ksmod.versions[0].download_path = new System.Uri("http://example.com/");
 
             return ksmod;
         }
