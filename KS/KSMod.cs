@@ -70,7 +70,7 @@ namespace CKAN.NetKAN
             var ksHome = KSHome();
             if (ksHome != null)
             {
-                Inflate((JObject)metadata["resources"], "kerbalstuff", Escape());
+                Inflate((JObject)metadata["resources"], "kerbalstuff", Escape(ksHome));
             }
         }
 
