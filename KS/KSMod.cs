@@ -88,7 +88,7 @@ namespace CKAN.NetKAN
         {
             if (url == null)
             {
-                return null;
+                return "";
             }
 
             string escaped = Uri.EscapeUriString(url.ToString());
