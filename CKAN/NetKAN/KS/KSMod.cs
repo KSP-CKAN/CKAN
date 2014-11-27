@@ -61,7 +61,12 @@ namespace CKAN.NetKAN
             Inflate(metadata, "download", Escape(version.download_path));
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
-            Inflate((JObject) metadata["resources"], "homepage", Escape(website));
+
+            if (website != null)
+            {
+                Inflate((JObject)metadata["resources"], "homepage", Escape(website));
+            }
+
             Inflate((JObject) metadata["resources"], "kerbalstuff", Escape(KSHome()));
         }
 
@@ -88,7 +93,7 @@ namespace CKAN.NetKAN
         {
             if (url == null)
             {
-                return "";
+                return null;
             }
 
             string escaped = Uri.EscapeUriString(url.ToString());
