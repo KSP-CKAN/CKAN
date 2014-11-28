@@ -176,6 +176,28 @@ namespace CKAN
             return modules;
         }
 
+        public void UpdateModNameFilter()
+        {
+            Util.Invoke(this, () => _UpdateModNameFilter());
+        }
+
+        private void _UpdateModNameFilter()
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var nameCell = (DataGridViewTextBoxCell) row.Cells[2];
+                var name = (string) nameCell.Value;
+                if (name.ToLowerInvariant().IndexOf(m_ModNameFilter.ToLowerInvariant()) != -1)
+                {
+                    row.Visible = true;
+                }
+                else
+                {
+                    row.Visible = false;
+                }
+            }
+        }
+
         public void UpdateModsList(bool markUpdates = false)
         {
             Util.Invoke(this, () => _UpdateModsList(markUpdates));
@@ -233,9 +255,6 @@ namespace CKAN
                 case GUIModFilter.Incompatible:
                     break;
             }
-
-            // filter by name
-            modules.RemoveAll(m => !m.name.ToLowerInvariant().Contains(m_ModNameFilter.ToLowerInvariant()));
 
             foreach (CkanModule mod in modules)
             {
