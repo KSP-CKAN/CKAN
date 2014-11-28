@@ -6,7 +6,8 @@ namespace CKAN {
 
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class KSPVersion : IComparable<KSPVersion> {
-        private string version; 
+        private string version;
+        private Version cachedVersionObject;
 
         public KSPVersion (string v) {
             version = Normalise(v);
@@ -86,6 +87,16 @@ namespace CKAN {
             return version;
         }
 
+        public Version VersionObject()
+        {
+            if (cachedVersionObject == null)
+            {
+                cachedVersionObject = new Version(version);
+            }
+
+            return cachedVersionObject;
+        }
+
         public int CompareTo(KSPVersion that) {
 
             // We need two long versions to be able to compare properly.
@@ -95,8 +106,8 @@ namespace CKAN {
 
             // Hooray, we can hook the regular Version code here.
 
-            Version v1 = new Version (this.Version ());
-            Version v2 = new Version (that.Version ());
+            Version v1 = this.VersionObject();
+            Version v2 = that.VersionObject();
 
             return v1.CompareTo (v2);
 
