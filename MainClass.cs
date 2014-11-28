@@ -73,6 +73,12 @@ namespace CKAN.NetKAN
                 return EXIT_ERROR;
             }
 
+            if (metadata == null)
+            {
+                log.Error("There was an error, aborting");
+                return EXIT_ERROR;
+            }
+
             // Make sure that at the very least this validates against our own
             // internal model.
 
@@ -181,6 +187,12 @@ namespace CKAN.NetKAN
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
+
+            if (release == null)
+            {
+                log.Error("Downloaded releases for " + repo + " but there were none");
+                return null;
+            }
             string filename = release.Download((string) orig_metadata["identifier"], cache);
 
             // Extract embedded metadata, or use what we have.
