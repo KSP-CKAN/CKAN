@@ -33,14 +33,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CkanInflator.cs" />
+    <Compile Include="Github\GithubInflator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="KS\KSAPI.cs" />
     <Compile Include="KS\KSVersion.cs" />
     <Compile Include="KS\KSMod.cs" />
-    <Compile Include="Github\GithubAPI.cs" />
-    <Compile Include="Github\GithubRelease.cs" />
-    <Compile Include="CkanInflator.cs" />
     <Compile Include="CmdLineOptions.cs" />
     <Compile Include="AVC\AVC.cs" />
     <Compile Include="AVC\JsonAvcToKspVersion.cs" />

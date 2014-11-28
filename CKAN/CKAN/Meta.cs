@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace CKAN
@@ -10,6 +11,37 @@ namespace CKAN
         // replaced by our build system with our actual version.
 
         private readonly static string BUILD_VERSION = null;
+
+        /// <summary>
+        /// Returns whether this version of CKAN is the most recently 
+        /// released version. (Fetches from Github)
+        /// Always returns true if this version is not stable.
+        /// </summary>
+        public static bool IsUpdated()
+        {
+            if (!IsStable())
+            {
+                return true;
+            }
+
+            Version version = ReleaseNumber();
+            
+            // TODO: Cache?
+            GithubRelease release = GithubAPI.GetLatestRelease("KSP-CKAN/CKAN");
+
+            if (release != null && release.version.IsGreaterThan(version))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static Version GetMostRecentVersion()
+        {
+            GithubRelease release = GithubAPI.GetLatestRelease("KSP-CKAN/CKAN");
+            return release.version;
+        }
 
         /// <summary>
         /// Returns the version of the CKAN.dll used, complete with git info

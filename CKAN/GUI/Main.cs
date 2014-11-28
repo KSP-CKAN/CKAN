@@ -145,6 +145,11 @@ namespace CKAN
 
             Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
+
+            if (!Meta.IsUpdated())
+            {
+                statusStrip1.Text = "CKAN is out of date! Download from: https://www.github.com/KSP-CKAN/CKAN/releases";
+            }
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)

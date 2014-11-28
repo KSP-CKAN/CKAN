@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using CKAN.NetKAN;
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -189,6 +190,7 @@ namespace CKAN.NetKAN
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
+            GithubInflator inflator = new GithubInflator(release);
 
             if (filename == null)
             {
@@ -205,7 +207,7 @@ namespace CKAN.NetKAN
             if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/github")
             {
                 log.InfoFormat("Inflating from github metadata... {0}", metadata[expand_token]);
-                release.InflateMetadata(metadata, filename, repo);
+                inflator.InflateMetadata(metadata, filename, repo);
                 metadata.Remove(expand_token);
             }
             else

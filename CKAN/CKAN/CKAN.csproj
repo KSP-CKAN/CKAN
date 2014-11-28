@@ -36,6 +36,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\Github\GithubAPI.cs" />
+    <Compile Include="Net\Github\GithubRelease.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
@@ -70,8 +72,5 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Net\" />
-    <Folder Include="Converters\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

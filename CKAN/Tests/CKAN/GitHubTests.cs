@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using CKAN.NetKAN;
 
-namespace NetKAN.GitHubTests
+namespace CKAN
 {
     [TestFixture()]
     public class GithubAPITests
@@ -16,7 +16,7 @@ namespace NetKAN.GitHubTests
         [Category("FlakyNetwork")]
         public void Release ()
         {
-            GithubRelease ckan = CKAN.NetKAN.GithubAPI.GetLatestRelease("KSP-CKAN/Test");
+            GithubRelease ckan = GithubAPI.GetLatestRelease("KSP-CKAN/Test");
             Assert.IsNotNull (ckan.author);
             Assert.IsNotNull (ckan.download);
             Assert.IsNotNull (ckan.size);

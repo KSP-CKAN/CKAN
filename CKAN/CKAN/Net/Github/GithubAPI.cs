@@ -1,20 +1,18 @@
-using System;
-using System.Net;
-using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Linq;
-
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
+using System;
+using System.Linq;
+using System.Net;
+using log4net;
+using Newtonsoft.Json.Linq;
 
-namespace CKAN.NetKAN
+namespace CKAN
 {
     public static class GithubAPI
     {
 
         private static readonly Uri api_base = new Uri("https://api.github.com/");
-        private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
+        private static readonly ILog log = LogManager.GetLogger(typeof (GithubAPI));
         private static readonly WebClient web = new WebClient();
         private static bool done_init = false;
 

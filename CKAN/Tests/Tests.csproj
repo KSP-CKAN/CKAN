@@ -41,7 +41,7 @@
     <Compile Include="CKAN\ModuleInstaller.cs" />
     <Compile Include="CKAN\KSPManager.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
-    <Compile Include="NetKAN\GitHubTests.cs" />
+    <Compile Include="CKAN\GitHubTests.cs" />
     <Compile Include="CKAN\ModuleInstallDescriptor.cs" />
     <Compile Include="ZipLib.cs" />
     <Compile Include="CKAN\SanityChecker.cs" />

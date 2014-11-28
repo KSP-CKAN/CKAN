@@ -204,6 +204,11 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
 
+            if (!Meta.IsUpdated())
+            {
+                User.WriteLine("CKAN has an update available.  Version {0} can be downloaded at http://www.github.com/KSP-CKAN/CKAN/releases", Meta.GetMostRecentVersion().ToString());
+            }
+
             return Exit.OK;
         }
 

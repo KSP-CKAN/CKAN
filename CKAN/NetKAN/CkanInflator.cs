@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN
@@ -14,7 +13,7 @@ namespace CKAN.NetKAN
         // Inflate will add a value, but only if that key is not
         // already filled with something else.
 
-        internal static void Inflate(JObject metadata, string key, string value)
+        public static void Inflate(JObject metadata, string key, string value)
         {
             if (metadata[key] == null)
             {
@@ -22,7 +21,7 @@ namespace CKAN.NetKAN
             }
         }
 
-        internal static void Inflate(JObject metadata, string key, long value)
+        public static void Inflate(JObject metadata, string key, long value)
         {
             if (metadata[key] == null)
             {

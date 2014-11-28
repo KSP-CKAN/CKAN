@@ -1,17 +1,16 @@
 using System;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using log4net;
+using Newtonsoft.Json.Linq;
 
-namespace CKAN.NetKAN
+namespace CKAN
 {
     /// <summary>
     /// A simple class to pull the relevant details out of a Github release.
     /// For gh2ckan. :)
     /// </summary>
-    public class GithubRelease : CkanInflator
+    public class GithubRelease
     {
         public Version version;
         public Uri download;
@@ -47,28 +46,6 @@ namespace CKAN.NetKAN
             download = new Uri( asset["browser_download_url"].ToString() );
 
             log.DebugFormat("Download {0} is {1} bytes", download, size);
-        }
-
-        override public void InflateMetadata(JObject metadata, string filename, object context)
-        {
-            var repo = (string)context;
-
-            // Check how big our file is
-            long download_size = (new FileInfo (filename)).Length;
-
-            // Make sure resources exist.
-            if (metadata["resources"] == null)
-            {
-                metadata["resources"] = new JObject();
-            }
-
-            Inflate(metadata, "author", author);
-            Inflate(metadata, "version", version.ToString());
-            Inflate(metadata, "download", Uri.EscapeUriString(download.ToString()));
-            Inflate(metadata, "x_generated_by", "netkan");
-            Inflate(metadata, "download_size", download_size);
-            Inflate((JObject) metadata["resources"], "repository", GithubPage(repo));
-
         }
 
         public string Download(string identifier, NetFileCache cache)
