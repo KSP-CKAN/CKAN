@@ -137,7 +137,6 @@ namespace CKAN
             m_InstallWorker.DoWork += InstallMods;
 
             UpdateModsList();
-            UpdateModFilterList();
 
             ApplyToolButton.Enabled = false;
 
@@ -422,7 +421,6 @@ namespace CKAN
         private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdateModsList();
-            UpdateModFilterList();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

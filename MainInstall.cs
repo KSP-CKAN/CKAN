@@ -283,7 +283,6 @@ namespace CKAN
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
             UpdateModsList();
-            UpdateModFilterList();
             m_TabController.SetTabLock(false);
 
             AddStatusMessage("");

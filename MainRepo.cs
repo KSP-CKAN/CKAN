@@ -38,7 +38,6 @@ namespace CKAN
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
             UpdateModsList();
-            UpdateModFilterList();
 
             Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
 
