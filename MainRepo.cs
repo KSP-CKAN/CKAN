@@ -37,12 +37,12 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateModsList();
-
             Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
 
             SetDescription("Scanning for manually installed mods");
             KSPManager.CurrentInstance.ScanGameData();
+
+            UpdateModsList();
 
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
