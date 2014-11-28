@@ -108,10 +108,9 @@ namespace CKAN
             return changeset.ToList();
         }
 
-        private int CountModsByFilter(GUIModFilter filter)
+        private int CountModsByFilter(GUIModFilter filter, List<CkanModule> modules)
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-            List<CkanModule> modules = registry.Available();
 
             int count = modules.Count();
 
@@ -144,12 +143,9 @@ namespace CKAN
             return count;
         }
 
-        private List<CkanModule> GetModsByFilter(GUIModFilter filter)
+        private List<CkanModule> GetModsByFilter(GUIModFilter filter, List<CkanModule> modules)
         {
-
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-
-            List<CkanModule> modules = registry.Available();
 
             // filter by left menu selection
             switch (m_ModFilter)
@@ -180,39 +176,6 @@ namespace CKAN
             return modules;
         }
 
-        private void UpdateModFilterList()
-        {
-            if (menuStrip2.InvokeRequired)
-            {
-                menuStrip2.Invoke(new MethodInvoker(delegate { _UpdateModFilterList(); }));
-            }
-            else
-            {
-                _UpdateModFilterList();
-            }
-        }
-
-        private void _UpdateModFilterList()
-        {
-            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
-                CountModsByFilter(GUIModFilter.All));
-
-            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
-                CountModsByFilter(GUIModFilter.Installed));
-
-            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
-                CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-
-            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
-                CountModsByFilter(GUIModFilter.NewInRepository));
-
-            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
-                CountModsByFilter(GUIModFilter.NotInstalled));
-
-            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
-                CountModsByFilter(GUIModFilter.Incompatible));
-        }
-
         public void UpdateModsList(bool markUpdates = false)
         {
             Util.Invoke(this, () => _UpdateModsList(markUpdates));
@@ -222,9 +185,29 @@ namespace CKAN
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
+            List<CkanModule> modules = registry.Available();
+
+            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
+                CountModsByFilter(GUIModFilter.All, modules));
+
+            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
+                CountModsByFilter(GUIModFilter.Installed, modules));
+
+            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
+                CountModsByFilter(GUIModFilter.InstalledUpdateAvailable, modules));
+
+            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
+                CountModsByFilter(GUIModFilter.NewInRepository, modules));
+
+            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
+                CountModsByFilter(GUIModFilter.NotInstalled, modules));
+
+            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
+                CountModsByFilter(GUIModFilter.Incompatible, modules));
+
             ModList.Rows.Clear();
 
-            List<CkanModule> modules = GetModsByFilter(m_ModFilter);
+            modules = GetModsByFilter(m_ModFilter, modules);
 
             // filter by left menu selection
             switch (m_ModFilter)
