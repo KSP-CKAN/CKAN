@@ -15,7 +15,7 @@ namespace CKAN {
         private string orig_string = null;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
 
-        struct Comparison {
+        public struct Comparison {
             public int compare_to;
             public string remainder1;
             public string remainder2;
@@ -126,22 +126,45 @@ namespace CKAN {
         /// Compare the leading non-numerical parts of two strings
         /// </summary>
        
-        static Comparison StringComp(string v1, string v2) {
-            Comparison comp;
+        internal static Comparison StringComp(string v1, string v2)
+        {
+            var comp = new Comparison();
 
-            // Extract the string section from each part.
+            // Our starting assumptions are that both versions are completely
+            // strings, with no remainder. We'll then check if they're not.
 
-            Match v1_match  = Regex.Match (v1, "^([^0-9]*)(.*)");
-            string v1_str   = v1_match.Groups [1].Value;
-            comp.remainder1 = v1_match.Groups [2].Value;
+            comp.remainder1 = "";
+            comp.remainder2 = "";
+            string str1 = v1;
+            string str2 = v2;
 
-            Match v2_match  = Regex.Match (v2, "^([^0-9]*)(.*)");
-            string v2_str   = v2_match.Groups [1].Value;
-            comp.remainder2 = v2_match.Groups [2].Value;
+            // Start by walking along our version string until we find a number,
+            // thereby finding the starting string in both cases. If we fall off
+            // the end, then our assumptions made above hold.
 
-            // Do the comparison
-            comp.compare_to = v1_str.CompareTo (v2_str);
+            for (int i = 0; i < v1.Length; i++)
+            {
+                if (Char.IsNumber(v1[i]))
+                {
+                    comp.remainder1 = v1.Substring(i);
+                    str1 = v1.Substring(0, i);
+                    break;
+                }
+            }
 
+            for (int i = 0; i < v2.Length; i++)
+            {
+                if (Char.IsNumber(v2[i]))
+                {
+                    comp.remainder2 = v2.Substring(i);
+                    str2 = v2.Substring(0, i);
+                    break;
+                }
+            }
+
+            // Then compare the two strings, and return our comparison state.
+
+            comp.compare_to = String.Compare(str1, str2);
             return comp;
         }
 
@@ -149,19 +172,40 @@ namespace CKAN {
         /// Compare the leading numerical parts of two strings
         /// </summary>
 
-        static Comparison NumComp(string v1, string v2) {
-            Comparison comp;
+        internal static Comparison NumComp(string v1, string v2)
+        {
+            var comp = new Comparison();
+            comp.remainder1 = "";
+            comp.remainder2 = "";
 
-            Match v1_match  = Regex.Match (v1, "^([0-9]*)(.*)");
-            int v1_int      = Convert.ToInt32(v1_match.Groups [1].Value);
-            comp.remainder1 = v1_match.Groups [2].Value;
+            int minimumLength1 = 0;
+            for (int i = 0; i < v1.Length; i++)
+            {
+                if (!Char.IsNumber(v1[i]))
+                {
+                    comp.remainder1 = v1.Substring(i);
+                    break;
+                }
 
-            Match v2_match  = Regex.Match (v2, "^([0-9]*)(.*)");
-            int v2_int      = Convert.ToInt32( v2_match.Groups [1].Value);
-            comp.remainder2 = v2_match.Groups [2].Value;
+                minimumLength1++;
+            }
 
-            comp.compare_to = v1_int.CompareTo (v2_int);
+            int minimumLength2 = 0;
+            for (int i = 0; i < v2.Length; i++)
+            {
+                if (!Char.IsNumber(v2[i]))
+                {
+                    comp.remainder2 = v2.Substring(i);
+                    break;
+                }
 
+                minimumLength2++;
+            }
+
+            int integer1 = int.Parse(v1.Substring(0, minimumLength1));
+            int integer2 = int.Parse(v2.Substring(0, minimumLength2));
+
+            comp.compare_to = integer1.CompareTo(integer2);
             return comp;
         }
     }
