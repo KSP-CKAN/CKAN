@@ -191,14 +191,7 @@ namespace CKAN
             {
                 var nameCell = (DataGridViewTextBoxCell) row.Cells[2];
                 var name = (string) nameCell.Value;
-                if (name.ToLowerInvariant().IndexOf(m_ModNameFilter.ToLowerInvariant()) != -1)
-                {
-                    row.Visible = true;
-                }
-                else
-                {
-                    row.Visible = false;
-                }
+                row.Visible = name.ToLowerInvariant().IndexOf(m_ModNameFilter.ToLowerInvariant()) != -1;
             }
         }
 
