@@ -10,12 +10,12 @@ namespace CKAN
     {
         private GUIModFilter m_ModFilter = GUIModFilter.All;
         private string m_ModNameFilter = "";
-        private List<CkanModule> _modules = new List<CkanModule>();
+        private List<CkanModule> m_modules = new List<CkanModule>();
 
 
         // this functions computes a changeset from the user's choices in the GUI
         private List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
-            // this probably needs to be refactored
+        // this probably needs to be refactored
         {
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
 
@@ -113,69 +113,34 @@ namespace CKAN
 
         private static int CountModsByFilter(Registry registry, IEnumerable<CkanModule> modules, GUIModFilter filter)
         {
-            switch (filter)                {
-                    case GUIModFilter.All:
-                        return modules.Count();                        
-                    case GUIModFilter.Installed:
-                        return modules.Count(m => registry.IsInstalled(m.identifier));                        
-                    case GUIModFilter.InstalledUpdateAvailable:
-                        return modules.Count
-                            (
-                                m => registry.IsInstalled(m.identifier) &&
-                                       m.version.IsGreaterThan(registry.InstalledVersion(m.identifier))
-                            );                        
-                    case GUIModFilter.NewInRepository:
-                        return modules.Count();                        
-                    case GUIModFilter.NotInstalled:
-                        return modules.Count(m => !registry.IsInstalled(m.identifier));                        
-                    case GUIModFilter.Incompatible:
-                        return registry.Incompatible().Count;
-                        
-            }
-            throw new Kraken("Attempted to filter by unknown filter in CountModsByFilter");          
-        }
-
-        private List<CkanModule> GetModsByFilter(GUIModFilter filter)
-        {
-
-            Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-
-            List<CkanModule> modules = registry.Available();
-
-            // filter by left menu selection
-            switch (m_ModFilter)
+            switch (filter)
             {
                 case GUIModFilter.All:
-                    break;
+                    return modules.Count();
                 case GUIModFilter.Installed:
-                    modules.RemoveAll(m => !registry.IsInstalled(m.identifier));
-                    break;
+                    return modules.Count(m => registry.IsInstalled(m.identifier));
                 case GUIModFilter.InstalledUpdateAvailable:
-                    modules.RemoveAll
+                    return modules.Count
                         (
-                            m => !(registry.IsInstalled(m.identifier) &&
-                                   m.version.IsGreaterThan(
-                                       registry.InstalledVersion(m.identifier)))
+                            m => registry.IsInstalled(m.identifier) &&
+                                   m.version.IsGreaterThan(registry.InstalledVersion(m.identifier))
                         );
-                    break;
                 case GUIModFilter.NewInRepository:
-                    break;
+                    return modules.Count();
                 case GUIModFilter.NotInstalled:
-                    modules.RemoveAll(m => registry.IsInstalled(m.identifier));
-                    break;
+                    return modules.Count(m => !registry.IsInstalled(m.identifier));
                 case GUIModFilter.Incompatible:
-                    modules = registry.Incompatible();
-                    break;
-            }
+                    return registry.Incompatible().Count;
 
-            return modules;
+            }
+            throw new Kraken("Attempted to filter by unknown filter in CountModsByFilter");
         }
 
         private void UpdateModFilterList()
         {
             if (menuStrip2.InvokeRequired)
             {
-                menuStrip2.Invoke(new MethodInvoker(delegate { _UpdateModFilterList(); }));
+                menuStrip2.Invoke(new MethodInvoker(_UpdateModFilterList));
             }
             else
             {
@@ -186,7 +151,7 @@ namespace CKAN
         private void _UpdateModFilterList()
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-            var modules = registry.Available();            
+            var modules = m_modules;
             FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
                 CountModsByFilter(registry, modules, GUIModFilter.All));
 
@@ -208,7 +173,7 @@ namespace CKAN
 
         public void UpdateModsList(bool markUpdates = false, bool reloadModules = true)
         {
-            Util.Invoke(this, () => _UpdateModsList(markUpdates,reloadModules));
+            Util.Invoke(this, () => _UpdateModsList(markUpdates, reloadModules));
         }
 
         private void ChangeFilterText()
@@ -218,24 +183,24 @@ namespace CKAN
             {
                 var registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
                 var ckanModules =
-                    _modules.Where(
+                    m_modules.Where(
                         m => m.name.IndexOf(m_ModNameFilter, StringComparison.InvariantCultureIgnoreCase) >= 0);
                 SetModlistToModules(ckanModules, registry);
             });
         }
-    
 
-    private void _UpdateModsList(bool markUpdates, bool reloadModules)
-    {
+        private void _UpdateModsList(bool markUpdates, bool reloadModules)
+        {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
             ModList.Rows.Clear();
-            if(reloadModules)
-                _modules = GetModsByFilter(m_ModFilter);
+            
+            if (reloadModules)
+                m_modules = registry.Available();
 
             // filter by left menu selection
-        IEnumerable<CkanModule> filteredModules = _modules;
-       
+            IEnumerable<CkanModule> filteredModules = m_modules;
+
             switch (m_ModFilter)
             {
                 case GUIModFilter.All:
@@ -257,15 +222,17 @@ namespace CKAN
                     filteredModules = filteredModules.Where(m => !registry.IsInstalled(m.identifier));
                     break;
                 case GUIModFilter.Incompatible:
+                    filteredModules = registry.Incompatible();
                     break;
             }
 
             // filter by name         
-        filteredModules =
-            filteredModules.Where(m => m.name.IndexOf(m_ModNameFilter, StringComparison.InvariantCultureIgnoreCase) >= 0);
+            filteredModules =
+                filteredModules.Where(m => m.name.IndexOf(m_ModNameFilter, StringComparison.InvariantCultureIgnoreCase) >= 0);
             SetModlistToModules(filteredModules, registry);
 
         }
+
         private void SetModlistToModules(IEnumerable<CkanModule> modules, Registry registry)
         {
             ModList.Rows.Clear();
