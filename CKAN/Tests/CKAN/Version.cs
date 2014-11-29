@@ -128,7 +128,7 @@ namespace CKANTests
 
             str = CKAN.Version.StringComp("f0bar", "foo1bar");
 
-            Assert.AreEqual(0, str.compare_to);
+            Assert.AreEqual(-1, str.compare_to);
             Assert.AreEqual("0bar", str.remainder1);
             Assert.AreEqual("1bar", str.remainder2);
 
