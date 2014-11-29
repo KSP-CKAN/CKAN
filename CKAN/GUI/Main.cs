@@ -215,7 +215,7 @@ namespace CKAN
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
             m_ModNameFilter = FilterByNameTextBox.Text;
-            UpdateModsList();
+            ChangeFilterText();
         }
 
         /// <summary>
