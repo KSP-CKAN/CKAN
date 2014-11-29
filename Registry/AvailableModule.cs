@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using log4net;
 using Newtonsoft.Json;
@@ -44,12 +45,11 @@ namespace CKAN
         ///     Returns null if there are no compatible versions.
         /// </summary>
         public CkanModule Latest(KSPVersion ksp_version = null)
-        {
+        {            
             var available_versions = new List<Version>(module_version.Keys);
 
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
-            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
-
+            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
             if (available_versions.Count == 0)
             {
@@ -88,24 +88,10 @@ namespace CKAN
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
         public CkanModule ByVersion(Version v)
-        {
-            // A straight module_version[v] doesn't work, because it's a reference type,
-            // and of course we have references to different things that have the same
-            // data. Hence we have an awful O(N), even though we shouldn't. :(
-
-            // TODO: Change the guts of this or *something* so we don't need to do
-            // ridiculous things like this.
-
-            KeyValuePair<Version, CkanModule> entry = module_version
-                .Where(x => x.Key.IsEqualTo(v))
-                .FirstOrDefault();
-
-            if (entry.Equals(default(KeyValuePair<Version,CkanModule>)))
-            {
-                return null;
-            }
-
-            return entry.Value;
+        {            
+            CkanModule module;
+            module_version.TryGetValue(v, out module);
+            return module;
         }
     }
 }
