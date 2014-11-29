@@ -33,6 +33,7 @@ namespace CKAN
 
                 bool isInstalled = registry.IsInstalled(mod.identifier);
                 var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                if(isInstalledCell==null) continue; //Ignore Ad mods
                 var isInstalledChecked = (bool) isInstalledCell.Value;
 
                 if (!isInstalled && isInstalledChecked)
@@ -87,6 +88,7 @@ namespace CKAN
 
                 bool isInstalled = registry.IsInstalled(mod.identifier);
                 var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                if (isInstalledCell == null) continue; //Ignore Ad mods
                 var isInstalledChecked = (bool) isInstalledCell.Value;
                 DataGridViewCell shouldBeUpdatedCell = row.Cells[1];
                 bool shouldBeUpdated = false;
@@ -285,6 +287,7 @@ namespace CKAN
                         var installedCell = new DataGridViewTextBoxCell();
                         installedCell.Value = "AD";
                         item.Cells.Add(installedCell);
+                        installedCell.ReadOnly = true;
                     }
                 }
                 else
