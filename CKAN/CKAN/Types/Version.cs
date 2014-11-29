@@ -126,66 +126,45 @@ namespace CKAN {
         /// Compare the leading non-numerical parts of two strings
         /// </summary>
        
-        public static Comparison StringComp(string v1, string v2)
+        internal static Comparison StringComp(string v1, string v2)
         {
             var comp = new Comparison();
+
+            // Our starting assumptions are that both versions are completely
+            // strings, with no remainder. We'll then check if they're not.
+
             comp.remainder1 = "";
             comp.remainder2 = "";
+            string str1 = v1;
+            string str2 = v2;
 
-            var minimumLength1 = 0;
+            // Start by walking along our version string until we find a number,
+            // thereby finding the starting string in both cases. If we fall off
+            // the end, then our assumptions made above hold.
+
             for (int i = 0; i < v1.Length; i++)
             {
                 if (Char.IsNumber(v1[i]))
                 {
                     comp.remainder1 = v1.Substring(i);
+                    str1 = v1.Substring(0, i);
                     break;
                 }
-
-                minimumLength1++;
             }
 
-            int minimumLength2 = 0;
             for (int i = 0; i < v2.Length; i++)
             {
                 if (Char.IsNumber(v2[i]))
                 {
                     comp.remainder2 = v2.Substring(i);
+                    str2 = v2.Substring(0, i);
                     break;
                 }
-
-                minimumLength2++;
             }
 
-            int minimumLength = Math.Min(minimumLength1, minimumLength2);
-            if (minimumLength == 0)
-            {
-                if (minimumLength1 < minimumLength2)
-                {
-                    comp.compare_to = -1;
-                    return comp;
-                }
-                else if (minimumLength1 > minimumLength2)
-                {
-                    comp.compare_to = 1;
-                    return comp;
-                }
-            }
+            // Then compare the two strings, and return our comparison state.
 
-            for (int i = 0; i < minimumLength; i++)
-            {
-                if (v1[i] < v2[i])
-                {
-                    comp.compare_to = -1;
-                    return comp;
-                }
-                else if (v1[i] > v2[i])
-                {
-                    comp.compare_to = 1;
-                    return comp;
-                }
-            }
-
-            comp.compare_to = 0;
+            comp.compare_to = String.Compare(str1, str2);
             return comp;
         }
 
@@ -193,13 +172,13 @@ namespace CKAN {
         /// Compare the leading numerical parts of two strings
         /// </summary>
 
-        public static Comparison NumComp(string v1, string v2)
+        internal static Comparison NumComp(string v1, string v2)
         {
             var comp = new Comparison();
             comp.remainder1 = "";
             comp.remainder2 = "";
 
-            var minimumLength1 = 0;
+            int minimumLength1 = 0;
             for (int i = 0; i < v1.Length; i++)
             {
                 if (!Char.IsNumber(v1[i]))
