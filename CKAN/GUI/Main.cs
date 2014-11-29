@@ -271,7 +271,7 @@ namespace CKAN
         {
             m_ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
-            UpdateModsList(reloadModules:false);
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
