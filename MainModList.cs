@@ -110,8 +110,10 @@ namespace CKAN
             return changeset.ToList();
         }
 
-        private int CountModsByFilter(GUIModFilter filter, List<CkanModule> modules)
+        private int CountModsByFilter(GUIModFilter filter, List<CkanModule> _modules)
         {
+            List<CkanModule> modules = new List<CkanModule>(_modules);
+
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
             int count = modules.Count();
