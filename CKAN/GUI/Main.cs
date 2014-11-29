@@ -215,7 +215,7 @@ namespace CKAN
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
             m_ModNameFilter = FilterByNameTextBox.Text;
-            UpdateModsList();
+            ChangeFilterText();
         }
 
         /// <summary>
@@ -271,42 +271,42 @@ namespace CKAN
         {
             m_ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Installed;
             FilterToolButton.Text = "Filter (Installed)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.InstalledUpdateAvailable;
             FilterToolButton.Text = "Filter (Updated)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NewInRepository;
             FilterToolButton.Text = "Filter (New)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NotInstalled;
             FilterToolButton.Text = "Filter (Not installed)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
-            UpdateModsList();
+            UpdateModsList(reloadModules: false);
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
