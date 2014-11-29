@@ -87,7 +87,9 @@ namespace CKAN {
             return version;
         }
 
-        public Version VersionObject()
+        // Private for now, since we can't guarnatee public code will only call
+        // us with long versions.
+        private Version VersionObject()
         {
             if (cachedVersionObject == null)
             {
