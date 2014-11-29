@@ -17,7 +17,8 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
-        [JsonProperty] internal Dictionary<Version, CkanModule> module_version = new Dictionary<Version, CkanModule>();
+        [JsonProperty]
+        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>();
 
         /// <summary>
         /// Record the given module version as being available.
@@ -55,9 +56,7 @@ namespace CKAN
                 return null;
             }
 
-            // Sort most recent versions first.
-
-            available_versions.Sort();
+            // Sort most recent versions first.            
             available_versions.Reverse();
 
             if (ksp_version == null)
