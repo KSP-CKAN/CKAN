@@ -270,42 +270,42 @@ namespace CKAN
         {
             m_ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Installed;
             FilterToolButton.Text = "Filter (Installed)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.InstalledUpdateAvailable;
             FilterToolButton.Text = "Filter (Updated)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NewInRepository;
             FilterToolButton.Text = "Filter (New)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NotInstalled;
             FilterToolButton.Text = "Filter (Not installed)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
-            UpdateModsList();
+            UpdateModTypeFilter();
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
