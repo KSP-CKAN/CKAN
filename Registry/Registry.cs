@@ -425,6 +425,16 @@ namespace CKAN
         }
 
         /// <summary>
+        ///     Check if a mod is is compatible
+        /// </summary>
+        /// <returns><c>true</c>, if compatible<c>false</c> otherwise.</returns>
+        public bool IsCompatible(string candidate, KSPVersion ksp_version = null)
+        {            
+            CkanModule available = LatestAvailable(candidate, ksp_version);
+            return available != null;
+        }
+
+        /// <summary>
         ///     Returns the latest available version of a module that
         ///     satisifes the specified version.
         ///     Throws a ModuleNotFoundException if asked for a non-existant module.
