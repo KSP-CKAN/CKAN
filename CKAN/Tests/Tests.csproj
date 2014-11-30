@@ -51,6 +51,7 @@
     <Compile Include="CKAN\Meta.cs" />
     <Compile Include="CKAN\License.cs" />
     <Compile Include="CKAN\ReleaseStatus.cs" />
+    <Compile Include="CmdLine\Main.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,6 +62,10 @@
     <ProjectReference Include="..\NetKAN\NetKAN.csproj">
       <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
       <Name>NetKAN</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CmdLine\CmdLine.csproj">
+      <Project>{E97D81F6-85E2-4F1F-906D-BE21766602E5}</Project>
+      <Name>CmdLine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

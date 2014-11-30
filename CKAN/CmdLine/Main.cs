@@ -14,7 +14,7 @@ using System.Transactions;
 
 namespace CKAN.CmdLine
 {
-    internal class MainClass
+    public class MainClass
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
