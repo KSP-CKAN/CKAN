@@ -9,8 +9,29 @@ namespace CKAN
 {
     public partial class Main : Form
     {
-        private GUIModFilter m_ModFilter = GUIModFilter.All;
-        private string m_ModNameFilter = "";
+        public GUIModFilter ModFilter
+        {
+            get { return _modFilter; }
+            set
+            {
+                var old = _modFilter;
+                _modFilter = value;
+                if(!old.Equals(value)) UpdateFilters();
+            }
+        }
+
+        public string ModNameFilter
+        {
+            get { return _modNameFilter; }
+            set
+            {
+                var old = _modNameFilter;
+                _modNameFilter = value;
+                if (!old.Equals(value)) UpdateFilters();                
+            }
+        }
+        private GUIModFilter _modFilter = GUIModFilter.All;
+        private string _modNameFilter = "";
         private ReadOnlyCollection<CkanModule> m_modules;
 
         // this functions computes a changeset from the user's choices in the GUI
@@ -231,7 +252,7 @@ namespace CKAN
                 }
 
                 // installed
-                if (m_ModFilter != GUIModFilter.Incompatible)
+                if (ModFilter != GUIModFilter.Incompatible)
                 {
                     if (!isAutodetected)
                     {
