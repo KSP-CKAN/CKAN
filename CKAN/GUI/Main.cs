@@ -214,7 +214,7 @@ namespace CKAN
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
             m_ModNameFilter = FilterByNameTextBox.Text;
-            UpdateModNameFilter();
+            UpdateFilters();
         }
 
         /// <summary>
@@ -270,42 +270,42 @@ namespace CKAN
         {
             m_ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Installed;
             FilterToolButton.Text = "Filter (Installed)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.InstalledUpdateAvailable;
             FilterToolButton.Text = "Filter (Updated)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NewInRepository;
             FilterToolButton.Text = "Filter (New)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.NotInstalled;
             FilterToolButton.Text = "Filter (Not installed)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
             m_ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
-            UpdateModTypeFilter();
+            UpdateFilters();
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)

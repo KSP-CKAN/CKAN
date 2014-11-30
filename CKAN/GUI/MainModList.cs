@@ -138,69 +138,44 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");         
         }
 
-        private IEnumerable<CkanModule> GetModsByFilter(GUIModFilter filter)
+        public void UpdateFilters()
+        {
+            Util.Invoke(this, _UpdateFilters);
+        }
+
+        private void _UpdateFilters()
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {                
+                var mod = (CkanModule) row.Tag;
+                var nameMatchesFilter = mod.name.IndexOf(ModNameFilter,StringComparison.InvariantCultureIgnoreCase) != -1;               
+                var modMatchesType = ModFilter==GUIModFilter.All || IsModInFilter(ModFilter, mod);                
+                row.Visible = nameMatchesFilter && modMatchesType;
+            }
+        }
+
+        private bool IsModInFilter(GUIModFilter filter,Module m)
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-            var modules = Enumerable.Empty<CkanModule>();
+            var id = m.identifier;
             switch (filter)
             {
                 case GUIModFilter.All:
-                    modules = m_modules;
-                    break;
+                    return true;                    
                 case GUIModFilter.Installed:
-                    modules = m_modules.Where(m => registry.IsInstalled(m.identifier));
-                    break;
+                    return registry.IsInstalled(id);                    
                 case GUIModFilter.InstalledUpdateAvailable:
-                    modules = m_modules.Where
-                        (
-                            m => registry.IsInstalled(m.identifier) &&
-                                   m.version.IsGreaterThan(registry.InstalledVersion(m.identifier))
-                        );
-                    break;
+                    return registry.IsInstalled(id) &&
+                        m.version.IsGreaterThan(registry.InstalledVersion(id));                        
                 case GUIModFilter.NewInRepository:
-                    modules = m_modules;
-                    break;
+                    return true;                    
                 case GUIModFilter.NotInstalled:
-                    modules = m_modules.Where(m => !registry.IsInstalled(m.identifier));
-                    break;
+                    return !registry.IsInstalled(id);                    
                 case GUIModFilter.Incompatible:
-                    modules = registry.Incompatible();
-                    break;
-                default:
-                    throw new Kraken("Unknown filter type in GetModsByFilter");         
+                    return !registry.IsCompatible(id);
             }
-
-            return modules;
-        }
-
-        public void UpdateModNameFilter()
-        {
-            Util.Invoke(this, _UpdateModNameFilter);
-        }
-
-        private void _UpdateModNameFilter()
-        {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var nameCell = (DataGridViewTextBoxCell) row.Cells[2];
-                var name = (string) nameCell.Value;
-                row.Visible = name.ToLowerInvariant().IndexOf(m_ModNameFilter.ToLowerInvariant()) != -1;
-            }
-        }
-
-        public void UpdateModTypeFilter()
-        {
-            Util.Invoke(this, _UpdateModTypeFilters);
-        }
-
-        private void _UpdateModTypeFilters()
-        {
-            var modules = GetModsByFilter(m_ModFilter);
-            Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
-            SetModListToModules(modules,registry);
-            UpdateModNameFilter();
-
-        }
+            throw new Kraken("Unknown filter type in IsModInFilter");
+        }        
 
         public void UpdateModsList(bool markUpdates = false)
         {
@@ -212,6 +187,7 @@ namespace CKAN
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
             m_modules = new ReadOnlyCollection<CkanModule>(registry.Available());
+            ConstructModList(m_modules, registry);
 
             FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
                 CountModsByFilter(GUIModFilter.All));
@@ -230,14 +206,11 @@ namespace CKAN
 
             FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
                 CountModsByFilter(GUIModFilter.Incompatible));
-            
 
-            UpdateModTypeFilter();
-            UpdateModNameFilter();
-            
+            UpdateFilters();
         }
 
-        private void SetModListToModules(IEnumerable<CkanModule> modules, Registry registry)
+        private void ConstructModList(IEnumerable<CkanModule> modules, Registry registry)
         {
             ModList.Rows.Clear();
             foreach (CkanModule mod in modules)
@@ -400,12 +373,11 @@ namespace CKAN
 
                 item.Cells.Add(homepageCell);
 
-                ModList.Rows.Add(item);
-
-                // sort by name
-                ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
-                ModList.Refresh();
+                ModList.Rows.Add(item);                
             }
+            // sort by name
+            ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
+            ModList.Refresh();
         }
     }
 }
