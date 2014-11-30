@@ -213,8 +213,7 @@ namespace CKAN
 
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
-            m_ModNameFilter = FilterByNameTextBox.Text;
-            UpdateFilters();
+            ModNameFilter = FilterByNameTextBox.Text;
         }
 
         /// <summary>
@@ -228,7 +227,7 @@ namespace CKAN
 
         private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (m_ModFilter == GUIModFilter.Incompatible)
+            if (ModFilter == GUIModFilter.Incompatible)
             {
                 return;
             }
@@ -268,44 +267,38 @@ namespace CKAN
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.All;
+            ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
-            UpdateFilters();
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.Installed;
+            ModFilter = GUIModFilter.Installed;
             FilterToolButton.Text = "Filter (Installed)";
-            UpdateFilters();
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.InstalledUpdateAvailable;
+            ModFilter = GUIModFilter.InstalledUpdateAvailable;
             FilterToolButton.Text = "Filter (Updated)";
-            UpdateFilters();
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.NewInRepository;
+            ModFilter = GUIModFilter.NewInRepository;
             FilterToolButton.Text = "Filter (New)";
-            UpdateFilters();
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.NotInstalled;
+            ModFilter = GUIModFilter.NotInstalled;
             FilterToolButton.Text = "Filter (Not installed)";
-            UpdateFilters();
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            m_ModFilter = GUIModFilter.Incompatible;
+            ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
-            UpdateFilters();
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
