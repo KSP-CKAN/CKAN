@@ -429,10 +429,10 @@ namespace CKAN
         ///     the specified version of KSP (installed version by default).
         /// </summary>
         /// <returns><c>true</c>, if compatible is found <c>false</c> otherwise.</returns>
-        public bool IsCompatible(string candidate, KSPVersion ksp_version = null)
+        public bool IsCompatible(CkanModule mod, KSPVersion ksp_version = null)
         {
             ksp_version = ksp_version ?? KSPManager.CurrentInstance.Version();
-            CkanModule available = LatestAvailable(candidate, ksp_version);
+            CkanModule available = LatestAvailable(mod.identifier, ksp_version);
             return available != null;
         }
 
