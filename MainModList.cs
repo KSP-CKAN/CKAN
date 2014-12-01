@@ -19,9 +19,8 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule)row.Tag;
-                var nameMatchesFilter = mainModList.IsNameInFilter(mod);
-                var modMatchesType = mainModList.IsModInFilter(mod);
-                row.Visible = nameMatchesFilter && modMatchesType;
+                var isVisible = mainModList.IsVisible(mod);
+                row.Visible = isVisible;
             }
         }
 
@@ -420,9 +419,17 @@ namespace CKAN
             return output;
         }
 
-        public bool IsNameInFilter(CkanModule mod)
+        private bool IsNameInNameFilter(Module mod)
         {
             return mod.name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+        }
+
+        public bool IsVisible(CkanModule mod)
+        {
+            var nameMatchesFilter = IsNameInNameFilter(mod);
+            var modMatchesType = IsModInFilter(mod);
+            var isVisible = nameMatchesFilter && modMatchesType;
+            return isVisible;
         }
     }     
 }
