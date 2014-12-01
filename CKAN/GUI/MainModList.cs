@@ -16,7 +16,7 @@ namespace CKAN
 
         private void _UpdateFilters(MainModList mainModList)
         {
-            foreach (DataGridViewRow row in mainModList.Modlist.Rows)
+            foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule)row.Tag;
                 var nameMatchesFilter = mainModList.IsNameInFilter(mod);
@@ -36,7 +36,7 @@ namespace CKAN
 
             mainModList.Modules = new ReadOnlyCollection<CkanModule>(registry.Available());
             
-            var rows = mainModList.ConstructModList(mainModList.Modules, registry, mainModList.Modlist);
+            var rows = mainModList.ConstructModList(mainModList.Modules, registry, ModList);
             //rows.Sort();
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
@@ -59,15 +59,12 @@ namespace CKAN
     }
 
     public class MainModList
-    {        
-        public DataGridView Modlist { get; private set; }        
-
+    {
         public delegate void ModFiltersUpdatedEvent(MainModList source);
         public event ModFiltersUpdatedEvent ModFiltersUpdated;
 
-        public MainModList(DataGridView modlist, ModFiltersUpdatedEvent onModFiltersUpdated)
-        {            
-            Modlist = modlist;     
+        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
+        {                        
             ModFiltersUpdated += onModFiltersUpdated;
             ModFiltersUpdated(this);
         }
@@ -105,7 +102,7 @@ namespace CKAN
         private ReadOnlyCollection<CkanModule> _modules;
 
         // this functions computes a changeset from the user's choices in the GUI
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
+        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(DataGridView dataGridView)
         // this probably needs to be refactored
         {
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
@@ -116,7 +113,7 @@ namespace CKAN
 
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
-            foreach (DataGridViewRow row in Modlist.Rows)
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 var mod = (CkanModule)row.Tag;
                 if (mod == null)
@@ -171,7 +168,7 @@ namespace CKAN
                 }
             }
 
-            foreach (DataGridViewRow row in Modlist.Rows)
+            foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 var mod = (CkanModule)row.Tag;
                 if (mod == null)

@@ -84,7 +84,7 @@ namespace CKAN
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
             
-            mainModList = new MainModList(this, ModList, FilterToolButton, a => { });
+            mainModList = new MainModList(a => { });
             mainModList.ModFiltersUpdated += source => UpdateFilters(this);            
 
             RecreateDialogs();
@@ -110,7 +110,7 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                if (mainModList.ComputeChangeSetFromModList().Any())
+                if (mainModList.ComputeChangeSetFromModList(ModList).Any())
                 {
                     ApplyToolButton_Click(null, null);
                 }
@@ -236,7 +236,7 @@ namespace CKAN
                 return;
             }
 
-            var changeset = mainModList.ComputeChangeSetFromModList();
+            var changeset = mainModList.ComputeChangeSetFromModList(ModList);
 
             if (changeset != null && changeset.Any())
             {
