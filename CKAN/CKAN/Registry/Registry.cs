@@ -425,11 +425,13 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Check if a mod is is compatible
+        ///     Check if a compatible version of this mod exists for the given version of KSP, or 
+        ///     the specified version of KSP (installed version by default).
         /// </summary>
-        /// <returns><c>true</c>, if compatible<c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if compatible is found <c>false</c> otherwise.</returns>
         public bool IsCompatible(string candidate, KSPVersion ksp_version = null)
-        {            
+        {
+            ksp_version = ksp_version ?? KSPManager.CurrentInstance.Version();
             CkanModule available = LatestAvailable(candidate, ksp_version);
             return available != null;
         }
