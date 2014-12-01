@@ -39,6 +39,8 @@ namespace CKAN
 
         private TabController m_TabController = null;
 
+        public MainModList mainModList { get; private set; }
+
         public Main()
         {
             User.frontEnd = FrontEndType.UI;
@@ -83,6 +85,8 @@ namespace CKAN
 
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
+            
+            mainModList = new MainModList(this, ModList, FilterToolButton);
 
             RecreateDialogs();
 
@@ -90,6 +94,7 @@ namespace CKAN
             // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Util.HideConsoleWindow();
             Application.Run(this);
+            
         }
 
         void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -106,7 +111,7 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                if (ComputeChangeSetFromModList().Any())
+                if (mainModList.ComputeChangeSetFromModList().Any())
                 {
                     ApplyToolButton_Click(null, null);
                 }
@@ -213,7 +218,7 @@ namespace CKAN
 
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
-            ModNameFilter = FilterByNameTextBox.Text;
+            mainModList.ModNameFilter = FilterByNameTextBox.Text;
         }
 
         /// <summary>
@@ -227,12 +232,12 @@ namespace CKAN
 
         private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (ModFilter == GUIModFilter.Incompatible)
+            if (mainModList.ModFilter == GUIModFilter.Incompatible)
             {
                 return;
             }
 
-            var changeset = ComputeChangeSetFromModList();
+            var changeset = mainModList.ComputeChangeSetFromModList();
 
             if (changeset != null && changeset.Any())
             {
@@ -267,37 +272,37 @@ namespace CKAN
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.All;
+            mainModList.ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.Installed;
+            mainModList.ModFilter = GUIModFilter.Installed;
             FilterToolButton.Text = "Filter (Installed)";
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.InstalledUpdateAvailable;
+            mainModList.ModFilter = GUIModFilter.InstalledUpdateAvailable;
             FilterToolButton.Text = "Filter (Updated)";
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.NewInRepository;
+            mainModList.ModFilter = GUIModFilter.NewInRepository;
             FilterToolButton.Text = "Filter (New)";
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.NotInstalled;
+            mainModList.ModFilter = GUIModFilter.NotInstalled;
             FilterToolButton.Text = "Filter (Not installed)";
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            ModFilter = GUIModFilter.Incompatible;
+            mainModList.ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
         }
 
