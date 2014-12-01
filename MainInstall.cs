@@ -33,7 +33,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            var installer = ModuleInstaller.Instance;
+            ModuleInstaller installer = ModuleInstaller.Instance;
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
@@ -41,8 +41,8 @@ namespace CKAN
             var toUninstall = new HashSet<string>();
             var toUpgrade = new HashSet<string>();
 
-            // first we uninstall whatever the user wanted
-            foreach (var change in opts.Key)
+            // First compose sets of what the user wants installed, upgraded, and removed.
+            foreach (KeyValuePair<CkanModule,GUIModChangeType> change in opts.Key)
             {
                 if (change.Value == GUIModChangeType.Remove)
                 {
@@ -58,11 +58,7 @@ namespace CKAN
                 }
             }
 
-            SetDescription("Uninstalling selected mods");
-            installer.UninstallList(toUninstall);
-            
-            SetDescription("Updating selected mods");
-            installer.Upgrade(toUpgrade);
+            // Now work on satisifying dependencies.
 
             var recommended = new Dictionary<string, List<string>>();
             var suggested = new Dictionary<string, List<string>>();
@@ -97,6 +93,7 @@ namespace CKAN
                                     }
                                 }
                             }
+                            // XXX - Don't ignore all krakens! Those things are important!
                             catch (Kraken)
                             {
                             }
@@ -125,24 +122,24 @@ namespace CKAN
                                     }
                                 }
                             }
+                            // XXX - Don't ignore all krakens! Those things are important!
                             catch (Kraken)
                             {
                             }
                         }
                     }
                 }
-                else if (change.Value == GUIModChangeType.Update)
-                {
-                    // any mods for update we just put in the install list
-                    toInstall.Add(change.Key.identifier);
-                }
             }
 
+            // If we're going to install something anyway, then don't list it in the
+            // recommended list, since they can't de-select it anyway.
             foreach(var item in toInstall)
             {
                 recommended.Remove(item);
             }
 
+            // If there are any mods that would be recommended, prompt the user to make
+            // selections.
             if(recommended.Any())
             {
                 Util.Invoke(this, () => UpdateRecommendedDialog(recommended));
@@ -161,6 +158,8 @@ namespace CKAN
 
             m_TabController.HideTab("ChooseRecommendedModsTabPage");
 
+            // And now on to suggestions. Again, we don't show anything that's scheduled to
+            // be installed on our suggest list.
             foreach(var item in toInstall)
             {
                 suggested.Remove(item);
@@ -191,9 +190,21 @@ namespace CKAN
                 return;
             }
 
+            // Now let's make all our changes.
+
             m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
+
+            SetDescription("Uninstalling selected mods");
+            installer.UninstallList(toUninstall);
+
+            SetDescription("Updating selected mods");
+            installer.Upgrade(toUpgrade);
+
+            // TODO: We should be able to resolve all our provisioning conflicts
+            // before we start installing anything. CKAN.SanityChecker can be used to
+            // pre-check if our changes are going to be consistent.
 
             bool resolvedAllProvidedMods = false;
 
