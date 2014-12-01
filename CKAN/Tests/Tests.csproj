@@ -51,6 +51,7 @@
     <Compile Include="CKAN\Meta.cs" />
     <Compile Include="CKAN\License.cs" />
     <Compile Include="CKAN\ReleaseStatus.cs" />
+    <Compile Include="CKAN\RegistryLive.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

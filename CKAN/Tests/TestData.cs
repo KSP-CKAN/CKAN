@@ -247,6 +247,14 @@ namespace Tests
             return DataDir("ModuleManager-2.5.1.zip");
         }
 
+        /// <summary>
+        /// A path to our test registry.json file. Please copy before using.
+        /// </summary>
+        public static string TestRegistry()
+        {
+            return DataDir("registry.json");
+        }
+
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.
         // Taken from https://stackoverflow.com/a/20445952

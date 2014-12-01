@@ -4,3 +4,6 @@ DogeCoinFlag is by [daviddwk](https://www.reddit.com/r/dogecoin/comments/1tdlgg/
 
 > Feel free to use it as you wish. I'm not entirely sure how licensing works, but as long as you credit me somewhere I'd be happy.
 
+---
+
+`registry.json` is real registry data from pjf's system at some point. Tests should copy this before using.
