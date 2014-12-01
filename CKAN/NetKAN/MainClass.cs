@@ -60,11 +60,22 @@ namespace CKAN.NetKAN
             }
             else if (remote.source == "github")
             {
+                if (options.GitHubToken != null)
+                {
+                    GithubAPI.SetCredentials(options.GitHubToken);
+                }
+
                 metadata = GitHub(json, remote.id, cache);
             }
             else
             {
                 log.FatalFormat("Unknown remote source: {0}", remote.source);
+                return EXIT_ERROR;
+            }
+
+            if (metadata == null)
+            {
+                log.Error("There was an error, aborting");
                 return EXIT_ERROR;
             }
 
@@ -176,6 +187,12 @@ namespace CKAN.NetKAN
         {
             // Find the release on github and download.
             GithubRelease release = GithubAPI.GetLatestRelease(repo);
+
+            if (release == null)
+            {
+                log.Error("Downloaded releases for " + repo + " but there were none");
+                return null;
+            }
             string filename = release.Download((string) orig_metadata["identifier"], cache);
 
             // Extract embedded metadata, or use what we have.

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using log4net;
 using Newtonsoft.Json;
@@ -31,6 +33,11 @@ namespace CKAN.NetKAN
             return;
         }
 
+        public static void SetCredentials(string oauth_token)
+        {
+            web.Headers.Add("Authorization", String.Format("token {0}", oauth_token));
+        }
+
         public static string Call(string path)
         {
             Init();
@@ -54,9 +61,14 @@ namespace CKAN.NetKAN
             // Finding the most recent *stable* release means filtering
             // out on pre-releases.
 
-            JObject release = (JObject) releases.Where(x => (bool) x["prerelease"] == false).First();
+            var final_releases = releases.Where(x => (bool) x["prerelease"] == false);
 
-            return new GithubRelease(release);
+            if (final_releases == null || !final_releases.Any())
+            {
+                return null;
+            }
+
+            return new GithubRelease((JObject) final_releases.First());
         }
 
     }
