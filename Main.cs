@@ -391,22 +391,23 @@ namespace CKAN
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var lst = m_Configuration.CommandLineArguments.Split(' ');
-            if (lst == null || lst.Length == 0)
+            if (lst.Length == 0)
             {
                 return;
             }
 
             string binary = lst[0];
-            string args = "";
+            string args = String.Empty;
 
             for(int i = 1; i < lst.Length; i++)
             {
                 args += lst[i] + " ";
             }
-
+            
             try
             {
-                Process.Start(Path.Combine(KSPManager.CurrentInstance.GameDir(), binary), args);
+                Directory.SetCurrentDirectory(KSPManager.CurrentInstance.GameDir());
+                Process.Start(binary, args);
             }
             catch(Exception exception)
             {
