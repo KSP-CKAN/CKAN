@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 using log4net;
@@ -86,7 +84,8 @@ namespace CKAN
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
             
-            mainModList = new MainModList(this, ModList, FilterToolButton);
+            mainModList = new MainModList(this, ModList, FilterToolButton, a => { });
+            mainModList.ModFiltersUpdated += source => UpdateFilters(this);            
 
             RecreateDialogs();
 

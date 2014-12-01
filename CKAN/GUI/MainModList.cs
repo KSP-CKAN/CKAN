@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,12 +9,12 @@ namespace CKAN
 {
     public partial class Main
     {
-        public void UpdateFilters(Main control)
+        private void UpdateFilters(Main control)
         {
-            Util.Invoke(control, _UpdateFilters);
+            Util.Invoke(control, () => _UpdateFilters(mainModList));
         }
 
-        public void _UpdateFilters()
+        private void _UpdateFilters(MainModList mainModList)
         {
             foreach (DataGridViewRow row in mainModList.Modlist.Rows)
             {
@@ -26,10 +27,10 @@ namespace CKAN
 
         public void UpdateModsList(bool markUpdates = false)
         {
-            Util.Invoke(this, () => _UpdateModsList(markUpdates));
+            Util.Invoke(this, () => _UpdateModsList(markUpdates, mainModList));
         }
 
-        public void _UpdateModsList(bool markUpdates)
+        private void _UpdateModsList(bool markUpdates, MainModList mainModList)
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
@@ -39,6 +40,7 @@ namespace CKAN
             //rows.Sort();
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
+            ModList.Sort(ModList.Columns[2],ListSortDirection.Ascending);
             
             mainModList.FilterButton.DropDownItems[0].Text = String.Format("All ({0})", mainModList.CountModsByFilter(GUIModFilter.All));
 
@@ -52,21 +54,24 @@ namespace CKAN
 
             mainModList.FilterButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", mainModList.CountModsByFilter(GUIModFilter.Incompatible));
 
-            UpdateFilters(mainModList.Main);
+            UpdateFilters(this);
         }
     }
 
     public class MainModList
-    {
-        public Main Main { get; set; }
-        public DataGridView Modlist { get; set; }
-        public ToolStripMenuItem FilterButton { get; set; }
+    {        
+        public DataGridView Modlist { get; private set; }
+        public ToolStripMenuItem FilterButton { get; private set; }
 
-        public MainModList(Main main, DataGridView modlist, ToolStripMenuItem filterButton)
+        public delegate void ModFiltersUpdatedEvent(MainModList source);
+        public event ModFiltersUpdatedEvent ModFiltersUpdated;
+
+        public MainModList(DataGridView modlist, ToolStripMenuItem filterButton, ModFiltersUpdatedEvent onModFiltersUpdated)
         {
             FilterButton = filterButton;
-            Modlist = modlist;
-            Main = main;
+            Modlist = modlist;     
+            ModFiltersUpdated += onModFiltersUpdated;
+            ModFiltersUpdated(this);
         }
 
         public GUIModFilter ModFilter
@@ -76,18 +81,18 @@ namespace CKAN
             {
                 var old = _modFilter;
                 _modFilter = value;
-                if (!old.Equals(value)) Main.UpdateFilters(Main);
+                if (!old.Equals(value)) ModFiltersUpdated(this);
             }
         }
 
         public string ModNameFilter
         {
-            get { return _modNameFilter; }
+            private get { return _modNameFilter; }
             set
             {
                 var old = _modNameFilter;
                 _modNameFilter = value;
-                if (!old.Equals(value)) Main.UpdateFilters(Main);
+                if (!old.Equals(value)) ModFiltersUpdated(this);
             }
         }
 
