@@ -42,17 +42,17 @@ namespace CKAN
             ModList.Rows.AddRange(rows.ToArray());
             ModList.Sort(ModList.Columns[2],ListSortDirection.Ascending);
             
-            mainModList.FilterButton.DropDownItems[0].Text = String.Format("All ({0})", mainModList.CountModsByFilter(GUIModFilter.All));
+            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})", mainModList.CountModsByFilter(GUIModFilter.All));
 
-            mainModList.FilterButton.DropDownItems[1].Text = String.Format("Installed ({0})", mainModList.CountModsByFilter(GUIModFilter.Installed));
+            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})", mainModList.CountModsByFilter(GUIModFilter.Installed));
 
-            mainModList.FilterButton.DropDownItems[2].Text = String.Format("Updated ({0})", mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})", mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
 
-            mainModList.FilterButton.DropDownItems[3].Text = String.Format("New in repository ({0})", mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
+            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})", mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
 
-            mainModList.FilterButton.DropDownItems[4].Text = String.Format("Not installed ({0})", mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
+            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})", mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
 
-            mainModList.FilterButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", mainModList.CountModsByFilter(GUIModFilter.Incompatible));
 
             UpdateFilters(this);
         }
@@ -60,15 +60,13 @@ namespace CKAN
 
     public class MainModList
     {        
-        public DataGridView Modlist { get; private set; }
-        public ToolStripMenuItem FilterButton { get; private set; }
+        public DataGridView Modlist { get; private set; }        
 
         public delegate void ModFiltersUpdatedEvent(MainModList source);
         public event ModFiltersUpdatedEvent ModFiltersUpdated;
 
-        public MainModList(DataGridView modlist, ToolStripMenuItem filterButton, ModFiltersUpdatedEvent onModFiltersUpdated)
-        {
-            FilterButton = filterButton;
+        public MainModList(DataGridView modlist, ModFiltersUpdatedEvent onModFiltersUpdated)
+        {            
             Modlist = modlist;     
             ModFiltersUpdated += onModFiltersUpdated;
             ModFiltersUpdated(this);
