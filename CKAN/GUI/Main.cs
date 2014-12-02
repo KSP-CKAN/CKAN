@@ -86,8 +86,6 @@ namespace CKAN
 
             RecreateDialogs();
 
-            MirrorsList mirrors = Repo.FetchMasterList();
-
             // We should run application only when we really sure.
             // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Util.HideConsoleWindow();
