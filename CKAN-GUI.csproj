@@ -56,6 +56,7 @@
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUIMod.cs" />
     <Compile Include="KSPCommandLineOptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -23,12 +23,13 @@ namespace CKAN
 
         public GUIMod(CkanModule mod, Registry registry)
         {
+            //Currently anything which could alter these causes a full reload of the modlist
+            // If this is ever changed these could be moved into the properties
             Mod = mod;
             IsInstalled = registry.IsInstalled(mod.identifier);
             IsInstallChecked = IsInstalled;
             HasUpdate = IsInstalled && Mod.version.IsGreaterThan(registry.InstalledVersion(mod.identifier));
             IsIncompatible = !registry.IsCompatible(mod.identifier);
-            //TODO Remove magic values
             IsAutodetected = IsInstalled && registry.InstalledVersion(mod.identifier).ToString().Equals("autodetected dll");
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
             
