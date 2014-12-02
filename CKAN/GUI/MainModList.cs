@@ -72,14 +72,17 @@ namespace CKAN
         public string LatestVersion { get; private set; }
         public string KSPversion { get; private set; }
         public string Abstract { get; private set; }
-        public object Homepage { get; set; }
-        public string Identifier { get; set; }
+        public object Homepage { get; private set; }
+        public string Identifier { get; private set; }
+        public bool IsInstallChecked { get; set; }
+        public bool IsUpgradeChecked { get; set; }
 
 
         public GUIMod(CkanModule mod, Registry registry)
         {
             Mod = mod;
             IsInstalled = registry.IsInstalled(mod.identifier);
+            IsInstallChecked = IsInstalled;
             HasUpdate = IsInstalled && Mod.version.IsGreaterThan(registry.InstalledVersion(mod.identifier));
             IsIncompatible = !registry.IsCompatible(mod.identifier);
             //TODO Remove magic values
@@ -162,22 +165,18 @@ namespace CKAN
 
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
-            foreach (DataGridViewRow row in dataGridView.Rows)
+            foreach (GUIMod mod in _modules)
             {
-                var mod = (GUIMod)row.Tag;
-                if (mod == null || mod.IsAutodetected)
+                if (mod == null || mod.IsAutodetected || mod.IsIncompatible)
                 {
                     continue;
                 }
 
-                var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
-                var isInstalledChecked = (bool)isInstalledCell.Value;
-
-                if (!mod.IsInstalled && isInstalledChecked)
+                if (!mod.IsInstalled && mod.IsInstallChecked)
                 {
                     modulesToInstall.Add(mod.Identifier);
                 }
-                else if (mod.IsInstalled && !isInstalledChecked)
+                else if (mod.IsInstalled && !mod.IsInstallChecked)
                 {
                     modulesToRemove.Add(mod.Identifier);
                 }
@@ -214,29 +213,18 @@ namespace CKAN
                 }
             }
 
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {
-                var mod = (GUIMod)row.Tag;
-                if (mod == null || mod.IsAutodetected)
+            foreach (GUIMod mod in _modules)
+            {               
+                if (mod == null || mod.IsAutodetected || mod.IsIncompatible)
                 {
                     continue;
                 }
 
-                var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;                
-                var isInstalledChecked = (bool)isInstalledCell.Value;
-
-                DataGridViewCell shouldBeUpdatedCell = row.Cells[1];
-                bool shouldBeUpdated = false;
-                if (shouldBeUpdatedCell is DataGridViewCheckBoxCell && shouldBeUpdatedCell.Value != null)
-                {
-                    shouldBeUpdated = (bool)shouldBeUpdatedCell.Value;
-                }
-
-                if (mod.IsInstalled && !isInstalledChecked)
+                if (mod.IsInstalled && !mod.IsInstallChecked)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Remove));
                 }
-                else if (mod.IsInstalled && isInstalledChecked && mod.HasUpdate && shouldBeUpdated)
+                else if (mod.IsInstalled && mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
                 {
                     changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Update));
                 }
