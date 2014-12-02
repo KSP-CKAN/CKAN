@@ -84,8 +84,7 @@ namespace CKAN
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
             
-            mainModList = new MainModList(a => { });
-            mainModList.ModFiltersUpdated += source => UpdateFilters(this);            
+            mainModList = new MainModList(source => UpdateFilters(this));            
 
             RecreateDialogs();
 
@@ -110,7 +109,7 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                if (mainModList.ComputeChangeSetFromModList().Any())
+                if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(KSPManager.CurrentInstance).registry).Any())
                 {
                     ApplyToolButton_Click(null, null);
                 }
@@ -253,7 +252,7 @@ namespace CKAN
                     ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
                 }
             }
-            var changeset = mainModList.ComputeChangeSetFromModList();
+            var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(KSPManager.CurrentInstance).registry);
 
 
             if (changeset != null && changeset.Any())

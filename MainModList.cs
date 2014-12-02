@@ -58,6 +58,7 @@ namespace CKAN
     {        
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
         {                        
+            Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
             ModFiltersUpdated += onModFiltersUpdated;
             ModFiltersUpdated(this);
         }
@@ -77,7 +78,7 @@ namespace CKAN
         }
         public string ModNameFilter
         {
-            private get { return _modNameFilter; }
+            get { return _modNameFilter; }
             set
             {
                 var old = _modNameFilter;
@@ -87,15 +88,15 @@ namespace CKAN
         }
         
         private GUIModFilter _modFilter = GUIModFilter.All;
-        private string _modNameFilter = "";
+        private string _modNameFilter = String.Empty;
 
         /// <summary>
         /// This function returns a changeset based on the selections of the user. 
         /// Currently returns null if a conflict is detected.        
         /// </summary>
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
+        /// <param name="registry"></param>
+        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry)
         {
-            Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
             var modulesToInstall = new HashSet<string>();
