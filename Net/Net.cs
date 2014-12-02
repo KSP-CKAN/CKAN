@@ -62,9 +62,10 @@ namespace CKAN
                     // Apparently we need a catch, even if we do nothing.
                 }
 
-                if (ex is WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed"))
+                // Look for an exception regarding the authentication.
+                if (Regex.IsMatch(ex.ToString(), "The authentication or decryption has failed."))
                 {
-                    throw new MissingCertificateKraken("Failed downloading "+url, ex);
+                    throw new MissingCertificateKraken("Failed downloading " + url, ex);
                 }
 
                 // Not the exception we were looking for! Throw it further upwards!
