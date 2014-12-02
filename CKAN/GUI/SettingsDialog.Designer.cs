@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.CKANRepositoryTextBox = new System.Windows.Forms.TextBox();
             this.CKANRepositoryApplyButton = new System.Windows.Forms.Button();
             this.CKANRepositoryDefaultButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
@@ -36,21 +35,14 @@
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.ResetAutoStartChoice = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.KSPInstallPathLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ResetAutoStartChoice = new System.Windows.Forms.Button();
+            this.CKANRepositoryComboBox = new System.Windows.Forms.ComboBox();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // CKANRepositoryTextBox
-            // 
-            this.CKANRepositoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CKANRepositoryTextBox.Location = new System.Drawing.Point(6, 19);
-            this.CKANRepositoryTextBox.Name = "CKANRepositoryTextBox";
-            this.CKANRepositoryTextBox.Size = new System.Drawing.Size(330, 20);
-            this.CKANRepositoryTextBox.TabIndex = 4;
             // 
             // CKANRepositoryApplyButton
             // 
@@ -76,7 +68,7 @@
             // 
             // RepositoryGroupBox
             // 
-            this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryTextBox);
+            this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryComboBox);
             this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryDefaultButton);
             this.RepositoryGroupBox.Controls.Add(this.CKANRepositoryApplyButton);
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -132,6 +124,23 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "KSP Install";
             // 
+            // KSPInstallPathLabel
+            // 
+            this.KSPInstallPathLabel.Location = new System.Drawing.Point(137, 20);
+            this.KSPInstallPathLabel.Name = "KSPInstallPathLabel";
+            this.KSPInstallPathLabel.Size = new System.Drawing.Size(320, 41);
+            this.KSPInstallPathLabel.TabIndex = 2;
+            this.KSPInstallPathLabel.Text = "label2";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(124, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Current KSP install path: ";
+            // 
             // ResetAutoStartChoice
             // 
             this.ResetAutoStartChoice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -143,22 +152,14 @@
             this.ResetAutoStartChoice.UseVisualStyleBackColor = true;
             this.ResetAutoStartChoice.Click += new System.EventHandler(this.ResetAutoStartChoice_Click);
             // 
-            // label1
+            // CKANRepositoryComboBox
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Current KSP install path: ";
-            // 
-            // KSPInstallPathLabel
-            // 
-            this.KSPInstallPathLabel.Location = new System.Drawing.Point(137, 20);
-            this.KSPInstallPathLabel.Name = "KSPInstallPathLabel";
-            this.KSPInstallPathLabel.Size = new System.Drawing.Size(320, 41);
-            this.KSPInstallPathLabel.TabIndex = 2;
-            this.KSPInstallPathLabel.Text = "label2";
+            this.CKANRepositoryComboBox.FormattingEnabled = true;
+            this.CKANRepositoryComboBox.Location = new System.Drawing.Point(6, 18);
+            this.CKANRepositoryComboBox.Name = "CKANRepositoryComboBox";
+            this.CKANRepositoryComboBox.Size = new System.Drawing.Size(330, 21);
+            this.CKANRepositoryComboBox.TabIndex = 8;
+            this.CKANRepositoryComboBox.SelectedIndexChanged += new System.EventHandler(this.CKANRepositoryComboBox_SelectedIndexChanged);
             // 
             // SettingsDialog
             // 
@@ -173,7 +174,6 @@
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
             this.RepositoryGroupBox.ResumeLayout(false);
-            this.RepositoryGroupBox.PerformLayout();
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -184,7 +184,6 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox CKANRepositoryTextBox;
         private System.Windows.Forms.Button CKANRepositoryApplyButton;
         private System.Windows.Forms.Button CKANRepositoryDefaultButton;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
@@ -195,5 +194,6 @@
         private System.Windows.Forms.Button ResetAutoStartChoice;
         private System.Windows.Forms.Label KSPInstallPathLabel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox CKANRepositoryComboBox;
     }
 }

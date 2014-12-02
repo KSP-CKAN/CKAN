@@ -15,9 +15,29 @@ namespace CKAN
 
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
-            CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
-            KSPInstallPathLabel.Text = KSPManager.CurrentInstance.GameDir();
+            MirrorsList mirrors = new MirrorsList();
 
+            try
+            {
+                mirrors = Repo.FetchMasterList();
+            }
+            catch
+            {
+                User.Error("Couldn't fetch CKAN mirrors master list from {0}", Repo.repo_master_list.ToString());
+            }
+            
+            CKANRepositoryComboBox.Items.Clear();
+            foreach (Mirror mirror in mirrors.mirrors)
+            {
+                CKANRepositoryComboBox.Items.Add(mirror);
+            }
+
+            if (CKANRepositoryComboBox.Items.Count > 0)
+            {
+                CKANRepositoryComboBox.SelectedIndex = 0;
+            }
+
+            KSPInstallPathLabel.Text = KSPManager.CurrentInstance.GameDir();
             UpdateCacheInfo();
         }
 
@@ -44,7 +64,7 @@ namespace CKAN
 
         private void CKANRepositoryApplyButton_Click(object sender, EventArgs e)
         {
-            Main.Instance.m_Configuration.Repository = CKANRepositoryTextBox.Text;
+            Main.Instance.m_Configuration.Repository = ((Mirror)CKANRepositoryComboBox.SelectedItem).url.ToString();
             Main.Instance.UpdateRepo();
             Main.Instance.m_Configuration.Save();
             Close();
@@ -81,6 +101,11 @@ namespace CKAN
 
             Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Application.Exit();
+        }
+
+        private void CKANRepositoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
     }
