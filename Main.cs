@@ -159,7 +159,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = (CkanModule) row.Tag;
+                var mod = ((GUIMod)row.Tag).ToCkanModule();
                 if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
                 {
                     continue;
@@ -194,7 +194,7 @@ namespace CKAN
                 return;
             }
 
-            var module = (CkanModule) selectedItem.Tag;
+            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -318,7 +318,7 @@ namespace CKAN
                 return;
             }
 
-            var module = (CkanModule)selectedItem.Tag;
+            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -366,7 +366,7 @@ namespace CKAN
                 return;
             }
 
-            var module = (CkanModule)selectedItem.Tag;
+            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
