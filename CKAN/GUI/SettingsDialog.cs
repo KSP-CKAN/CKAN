@@ -32,7 +32,15 @@ namespace CKAN
                 CKANRepositoryComboBox.Items.Add(mirror);
             }
 
-            if (CKANRepositoryComboBox.Items.Count > 0)
+            for (int i = 0; i < CKANRepositoryComboBox.Items.Count; i++)
+            {
+                if (((Mirror)CKANRepositoryComboBox.Items[i]).url.ToString() == Main.Instance.m_Configuration.Repository)
+                {
+                    CKANRepositoryComboBox.SelectedIndex = i;
+                }
+            }
+
+            if (CKANRepositoryComboBox.SelectedIndex == -1 && CKANRepositoryComboBox.Items.Count > 0)
             {
                 CKANRepositoryComboBox.SelectedIndex = 0;
             }
