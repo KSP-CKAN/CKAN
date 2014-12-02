@@ -37,7 +37,7 @@ namespace CKAN
             var guiMods = ckanModules.Select(m=>new GUIMod(m,registry)).ToList();
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(guiMods);
             
-            var rows = mainModList.ConstructModList(mainModList.Modules);
+            var rows = MainModList.ConstructModList(mainModList.Modules);
             //rows.Sort();
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
@@ -154,8 +154,7 @@ namespace CKAN
         private ReadOnlyCollection<GUIMod> _modules;
 
         // this functions computes a changeset from the user's choices in the GUI
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(DataGridView dataGridView)
-        // this probably needs to be refactored
+        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList()
         {
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
 
@@ -165,20 +164,23 @@ namespace CKAN
 
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
-            foreach (GUIMod mod in _modules)
+            foreach (var mod in _modules.Where(mod => mod.IsInstallable()))
             {
-                if (mod == null || mod.IsAutodetected || mod.IsIncompatible)
+                if (mod.IsInstalled)
                 {
-                    continue;
+                    if (!mod.IsInstallChecked)
+                    {
+                        modulesToRemove.Add(mod.Identifier);
+                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Remove));
+                    }
+                    else if (mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
+                    {
+                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Update));
+                    }
                 }
-
-                if (!mod.IsInstalled && mod.IsInstallChecked)
+                else if (mod.IsInstallChecked)
                 {
-                    modulesToInstall.Add(mod.Identifier);
-                }
-                else if (mod.IsInstalled && !mod.IsInstallChecked)
-                {
-                    modulesToRemove.Add(mod.Identifier);
+                    modulesToInstall.Add(mod.Identifier);                    
                 }
             }
 
@@ -193,41 +195,18 @@ namespace CKAN
                 resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry);
             }
             catch (Exception)
-            {
+            {                
                 return null;
             }
 
-            foreach (var mod in resolver.ModList())
-            {
-                changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install));
-            }
-
+            changeset.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+            
             var installer = ModuleInstaller.Instance;
-
-            foreach (string moduleName in modulesToRemove)
+            foreach (var reverseDependencies in modulesToRemove.Select(installer.FindReverseDependencies))
             {
-                var reverseDependencies = installer.FindReverseDependencies(moduleName);
-                foreach (var mod in reverseDependencies.Select(reverseDependency => registry.LatestAvailable(reverseDependency)))
-                {
-                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove));
-                }
-            }
-
-            foreach (GUIMod mod in _modules)
-            {               
-                if (mod == null || mod.IsAutodetected || mod.IsIncompatible)
-                {
-                    continue;
-                }
-
-                if (mod.IsInstalled && !mod.IsInstallChecked)
-                {
-                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Remove));
-                }
-                else if (mod.IsInstalled && mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
-                {
-                    changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Update));
-                }
+                //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
+                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep));
+                changeset.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));                
             }
 
             return changeset.ToList();
@@ -253,7 +232,7 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
 
-        public bool IsModInFilter(GUIMod m)
+        private bool IsModInFilter(GUIMod m)
         {            
             switch (ModFilter)
             {
@@ -273,28 +252,27 @@ namespace CKAN
             throw new Kraken("Unknown filter type in IsModInFilter");
         }
 
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
+        public static IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
         {
             
             var output = new List<DataGridViewRow>();
             foreach (var mod in modules)
             {
                 var item = new DataGridViewRow {Tag = mod};
-
-                // installed// installed
-                var installedCell = mod.IsIncompatible || mod.IsAutodetected
-                    ? new DataGridViewTextBoxCell()                    
-                    : (DataGridViewCell) new DataGridViewCheckBoxCell();
+                
+                var installedCell = mod.IsInstallable()
+                    ? (DataGridViewCell) new DataGridViewCheckBoxCell()                    
+                    : new DataGridViewTextBoxCell();
                 installedCell.Value = mod.IsIncompatible 
                     ? "-" 
                     : (!mod.IsAutodetected ? (object) mod.IsInstalled : "AD");
                 
                 
                 // want update
-                DataGridViewCell updateCell = !mod.IsInstalled || mod.IsAutodetected || !mod.HasUpdate
+                DataGridViewCell updateCell = !mod.IsInstallable() || !mod.HasUpdate
                     ? (DataGridViewCell) new DataGridViewTextBoxCell()
                     : new DataGridViewCheckBoxCell();
-                updateCell.Value = !mod.IsInstalled || mod.IsAutodetected || !mod.HasUpdate
+                updateCell.Value = !mod.IsInstallable() || !mod.HasUpdate
                     ? "-"
                     : (object) false;                
                 
@@ -311,12 +289,11 @@ namespace CKAN
                     installedVersionCell, latestVersionCell, kspVersionCell, 
                     descriptionCell, homepageCell);                
 
-                installedCell.ReadOnly = (mod.IsIncompatible || mod.IsAutodetected);
-                updateCell.ReadOnly = !mod.IsInstalled || mod.IsAutodetected || !mod.HasUpdate;
+                installedCell.ReadOnly = !mod.IsInstallable();
+                updateCell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
                 output.Add(item);
             }
-            // sort by name
             return output;
         }
 

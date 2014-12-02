@@ -110,7 +110,7 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                if (mainModList.ComputeChangeSetFromModList(ModList).Any())
+                if (mainModList.ComputeChangeSetFromModList().Any())
                 {
                     ApplyToolButton_Click(null, null);
                 }
@@ -253,7 +253,7 @@ namespace CKAN
                     ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
                 }
             }
-            var changeset = mainModList.ComputeChangeSetFromModList(ModList);
+            var changeset = mainModList.ComputeChangeSetFromModList();
 
 
             if (changeset != null && changeset.Any())
