@@ -226,6 +226,7 @@ namespace CKAN
         /// </summary>
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
@@ -235,8 +236,25 @@ namespace CKAN
             {
                 return;
             }
-
+            var grid = sender as DataGridView;
+            var row = grid.Rows[e.RowIndex];
+            var columnIndex = e.ColumnIndex;
+            var gridViewCell = row.Cells[columnIndex];
+            if (columnIndex < 2)
+            {
+                var checkbox = (DataGridViewCheckBoxCell)gridViewCell;
+                
+                if (columnIndex==0)
+                {
+                    ((GUIMod) row.Tag).IsInstallChecked = (bool) checkbox.Value;
+                }
+                else if (columnIndex == 1)
+                {
+                    ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
+                }
+            }
             var changeset = mainModList.ComputeChangeSetFromModList(ModList);
+
 
             if (changeset != null && changeset.Any())
             {
@@ -250,19 +268,15 @@ namespace CKAN
                 ApplyToolButton.Enabled = false;
             }
 
-            if (e == null)
+            if (e.RowIndex < 0 || columnIndex < 0)
             {
                 return;
             }
 
-            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+            
+            if (gridViewCell is DataGridViewLinkCell)
             {
-                return;
-            }
-
-            if (ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewLinkCell)
-            {
-                var cell = ModList.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewLinkCell;
+                var cell = gridViewCell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
 
