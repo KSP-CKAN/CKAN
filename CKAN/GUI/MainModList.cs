@@ -419,6 +419,9 @@ namespace CKAN
                 ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
                 ModList.Refresh();
             }
+
+            // Re-apply the sorting of the mods list.
+            _UpdateModNameFilter();
         }
     }
 }
