@@ -29,7 +29,7 @@ namespace CKAN
             IsInstalled = registry.IsInstalled(mod.identifier);
             IsInstallChecked = IsInstalled;
             HasUpdate = IsInstalled && Mod.version.IsGreaterThan(registry.InstalledVersion(mod.identifier));
-            IsIncompatible = !registry.IsCompatible(mod.identifier);
+            IsIncompatible = !registry.IsCompatible(mod.identifier, KSPManager.CurrentInstance.Version());
             IsAutodetected = IsInstalled && registry.InstalledVersion(mod.identifier).ToString().Equals("autodetected dll");
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
             
