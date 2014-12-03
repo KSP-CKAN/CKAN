@@ -49,24 +49,19 @@ namespace CKAN
 
             log.DebugFormat("Processing relationships for {0} modules", modules.Count);
 
-            foreach (var module in modules)
+            foreach (string module in modules)
             {
-                var mod = registry.LatestAvailable(module);
+                CkanModule mod = registry.LatestAvailable(module);
                 if (mod == null)
                 {
                     throw new ModuleNotFoundKraken(module);
                 }
-                 
-                log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 
-                foreach (var listedMod in modlist.Values)
+                Module conflicting_mod = GetAllConflictsWith(mod).FirstOrDefault();
+                if (conflicting_mod != null)
                 {
-                    if (listedMod.ConflictsWith(mod))
-                    {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listedMod));
-                    }
-                }
-
+                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, conflicting_mod));
+                }                
                 user_requested_mods.Add(mod);
                 Add(mod);
             }
@@ -80,9 +75,7 @@ namespace CKAN
                 Resolve(module, options);
             }
 
-            var final_modules = new List<Module>(modlist.Values);
-            final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
-
+            IEnumerable<Module> final_modules = modlist.Values.Concat(registry.InstalledModules.Select(x => x.Module));
             if(!options.without_enforce_consistency)
             {
                 // Finally, let's do a sanity check that our solution is actually sane.
@@ -98,10 +91,12 @@ namespace CKAN
         /// </summary>
         public static RelationshipResolverOptions DefaultOpts()
         {
-            var opts = new RelationshipResolverOptions();
-            opts.with_recommends = true;
-            opts.with_suggests = false;
-            opts.with_all_suggests = false;
+            var opts = new RelationshipResolverOptions
+            {
+                with_recommends = true,
+                with_suggests = false,
+                with_all_suggests = false
+            };
 
             return opts;
         }
@@ -126,8 +121,7 @@ namespace CKAN
                 log.DebugFormat("Resolving recommends for {0}", module.identifier);
                 ResolveStanza(module.recommends, sub_options, true);
             }
-
-            if (options.with_suggests || options.with_all_suggests)
+            else if (options.with_suggests || options.with_all_suggests)
             {
                 log.DebugFormat("Resolving suggests for {0}", module.identifier);
                 ResolveStanza(module.suggests, sub_options, true);
@@ -144,7 +138,7 @@ namespace CKAN
         /// 
         /// Throws a TooManyModsProvideKraken if we have too many choices.
         /// </summary>
-        private void ResolveStanza(List<RelationshipDescriptor> stanza, RelationshipResolverOptions options, bool soft_resolve = false)
+        private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, RelationshipResolverOptions options, bool soft_resolve = false)
         {
             if (stanza == null)
             {
@@ -193,8 +187,10 @@ namespace CKAN
                     {
                         continue;
                     }
-
-                    throw new TooManyModsProvideKraken(dep_name, candidates);
+                    else
+                    {
+                        throw new TooManyModsProvideKraken(dep_name, candidates);
+                    }                                                            
                 }
 
                 CkanModule candidate = candidates[0];
@@ -206,36 +202,22 @@ namespace CKAN
                 var fixed_mods = new HashSet<Module>(modlist.Values);
 
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
-
-                foreach (var mod in fixed_mods)
+                //TODO Write tests that test this. Had Where(mod => mod.ConflictsWith(mod)) without issue.                 
+                Module conflicted_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
+                if (conflicted_mod != null)
                 {
-                    if (mod.ConflictsWith(candidate))
+                    if (!soft_resolve)
                     {
-                        if (soft_resolve)
-                        {
-                            log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
-
-                            // I want labeled loops please, so I don't have to set this to null,
-                            // break, and then look at it at the end. o_O
-                            candidate = null;
-                            break;
-                        }
-                        else
-                        {
-                            var this_is_why_we_cant_have_nice_things = new List<string> {
-                                string.Format(
-                                "{0} and {1} conflict with each other, yet we require them both!",
-                                candidate, mod)
-                            };
-
-                            throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
-                        }
+                        throw new InconsistentKraken(string.Format(
+                            "{0} and {1} conflict with each other, yet we require them both!",
+                            candidate, conflicted_mod));
+                    }
+                    else
+                    {
+                        log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);                        
                     }
                 }
-
-                // Our candidate may have been set to null if it was vetoed by our
-                // sanity check above.
-                if (candidate != null)
+                else
                 {
                     // Okay, looks like we want this one. Adding.
                     Add(candidate);
@@ -258,6 +240,7 @@ namespace CKAN
                 log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
                 throw new Exception(); // TODO: Something more meaningful!
             }
+
             modlist.Add(module.identifier, module);
             log.DebugFormat("Added {0}", module.identifier);
 
@@ -267,16 +250,12 @@ namespace CKAN
                 return;
             }
 
-            // Handle provides/aliases if it does.
-            foreach (string alias in module.provides)
-            {
-                // It's okay if there's already a key for one of our aliases
-                // in the resolution list. In which case, we don't do anything.
-                if (! modlist.ContainsKey(alias))
-                {
-                    log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
-                    modlist.Add(alias, module);
-                }
+            // It's okay if there's already a key for one of our aliases
+            // in the resolution list. In which case, we don't do anything.
+            foreach (var alias in module.provides.Where(alias => !modlist.ContainsKey(alias)))
+            {                
+                log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
+                modlist.Add(alias, module);                
             }
         }
 
