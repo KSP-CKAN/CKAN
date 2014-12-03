@@ -364,6 +364,7 @@ namespace CKAN
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyPress += new KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // Installed
             // 

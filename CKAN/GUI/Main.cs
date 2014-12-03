@@ -218,6 +218,29 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Called on key press when the mod is focused. Scrolls to the first mod 
+        /// with name begining with the key pressed. 
+        /// </summary>        
+        private void ModList_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row=>row.Visible);
+            var does_name_begin_with_char = new Func<DataGridViewRow,bool>(row => 
+            { 
+                var modname = ((CkanModule) row.Tag).name;
+                var key = e.KeyChar.ToString();
+                return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            });
+
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
+            if (match != null)
+            {                
+                match.Selected = true;
+                //Not the best of names. Why not FirstVisableRowIndex?
+                ModList.FirstDisplayedScrollingRowIndex = match.Index;                
+            }            
+        }
+
+        /// <summary>
         /// I'm pretty sure this is what gets called when the user clicks on a ticky
         /// in the mod list.
         /// </summary>
