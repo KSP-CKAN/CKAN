@@ -49,9 +49,9 @@ namespace CKAN
 
             log.DebugFormat("Processing relationships for {0} modules", modules.Count);
 
-            foreach (string module in modules)
+            foreach (var module in modules)
             {
-                CkanModule mod = registry.LatestAvailable(module);
+                var mod = registry.LatestAvailable(module);
                 if (mod == null)
                 {
                     throw new ModuleNotFoundKraken(module);
@@ -59,16 +59,16 @@ namespace CKAN
                  
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 
-                foreach (CkanModule listed_mod in this.modlist.Values)
+                foreach (var listedMod in modlist.Values)
                 {
-                    if (listed_mod.ConflictsWith(mod))
+                    if (listedMod.ConflictsWith(mod))
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.",mod, listed_mod));
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listedMod));
                     }
                 }
 
                 user_requested_mods.Add(mod);
-                this.Add(mod);
+                Add(mod);
             }
              
             // Now that we've already pre-populated modlist, we can resolve
@@ -173,7 +173,7 @@ namespace CKAN
 
                 if (candidates.Count == 0)
                 {
-                    if (! soft_resolve)
+                    if (!soft_resolve)
                     {
                         log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
                         throw new ModuleNotFoundKraken(dep_name);
@@ -189,7 +189,7 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     // TODO: It would be great if instead we picked the one with the
                     // most recommendations.
-                    if(options.without_toomanyprovides_kraken)
+                    if (options.without_toomanyprovides_kraken)
                     {
                         continue;
                     }
@@ -203,12 +203,11 @@ namespace CKAN
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
 
-                var fixed_mods =
-                    new HashSet<Module>(this.modlist.Values);
+                var fixed_mods = new HashSet<Module>(modlist.Values);
 
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
-                foreach (Module mod in fixed_mods)
+                foreach (var mod in fixed_mods)
                 {
                     if (mod.ConflictsWith(candidate))
                     {
@@ -288,6 +287,17 @@ namespace CKAN
         {
             var modules = new HashSet<CkanModule>(modlist.Values);
             return modules.ToList();
+        }
+
+        /// <summary>
+        /// Calculate all conflicting mods between the supplied mod and the list of mods
+        /// currently in the relationship provider. 
+        /// </summary>
+        /// <returns>IEnumerable<Module> of conflicting mods</returns>
+        public IEnumerable<Module> GetAllConflictsWith(Module mod)
+        {
+            log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
+            return modlist.Values.Where(listedMod => listedMod.ConflictsWith(mod));
         }
     }
 }
