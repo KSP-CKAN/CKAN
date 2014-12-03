@@ -121,7 +121,7 @@ namespace CKAN
                 log.DebugFormat("Resolving recommends for {0}", module.identifier);
                 ResolveStanza(module.recommends, sub_options, true);
             }
-            else if (options.with_suggests || options.with_all_suggests)
+            if (options.with_suggests || options.with_all_suggests)
             {
                 log.DebugFormat("Resolving suggests for {0}", module.identifier);
                 ResolveStanza(module.suggests, sub_options, true);
