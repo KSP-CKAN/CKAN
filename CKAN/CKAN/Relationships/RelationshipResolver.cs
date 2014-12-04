@@ -12,6 +12,7 @@ namespace CKAN
         public bool with_suggests = false;
         public bool without_toomanyprovides_kraken = false;
         public bool without_enforce_consistency = false;
+        public bool proceed_with_mod_conflicts = false;
     }
 
     // Alas, it appears that structs cannot have defaults. Try
@@ -28,7 +29,7 @@ namespace CKAN
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private Registry registry;
 
@@ -58,14 +59,19 @@ namespace CKAN
                 }
 
                 Module conflicting_mod = GetAllConflictsWith(mod).FirstOrDefault();
-                if (conflicting_mod != null)
+                if (conflicting_mod != null && !options.proceed_with_mod_conflicts)
                 {
-                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, conflicting_mod));
-                }                
-                user_requested_mods.Add(mod);
-                Add(mod);
+                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod,
+                        conflicting_mod));
+                }
+                else
+                {
+                    user_requested_mods.Add(mod);
+                    Add(mod);
+                }
+
             }
-             
+
             // Now that we've already pre-populated modlist, we can resolve
             // the rest of our dependencies.
 
@@ -76,7 +82,7 @@ namespace CKAN
             }
 
             IEnumerable<Module> final_modules = modlist.Values.Concat(registry.InstalledModules.Select(x => x.Module));
-            if(!options.without_enforce_consistency)
+            if (!options.without_enforce_consistency && !options.proceed_with_mod_conflicts)
             {
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
@@ -190,7 +196,7 @@ namespace CKAN
                     else
                     {
                         throw new TooManyModsProvideKraken(dep_name, candidates);
-                    }                                                            
+                    }
                 }
 
                 CkanModule candidate = candidates[0];
@@ -206,7 +212,7 @@ namespace CKAN
                 Module conflicted_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
                 if (conflicted_mod != null)
                 {
-                    if (!soft_resolve)
+                    if (!soft_resolve && !options.proceed_with_mod_conflicts)
                     {
                         throw new InconsistentKraken(string.Format(
                             "{0} and {1} conflict with each other, yet we require them both!",
@@ -214,7 +220,7 @@ namespace CKAN
                     }
                     else
                     {
-                        log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);                        
+                        log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
                     }
                 }
                 else
@@ -253,9 +259,9 @@ namespace CKAN
             // It's okay if there's already a key for one of our aliases
             // in the resolution list. In which case, we don't do anything.
             foreach (var alias in module.provides.Where(alias => !modlist.ContainsKey(alias)))
-            {                
+            {
                 log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
-                modlist.Add(alias, module);                
+                modlist.Add(alias, module);
             }
         }
 
