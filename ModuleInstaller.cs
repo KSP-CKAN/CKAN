@@ -938,7 +938,14 @@ namespace CKAN
             {
                 var downloader = new NetAsyncDownloader();
 
-                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+                try
+                {
+                    downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+                }
+                catch (DownloadErrorsKraken k)
+                {
+                    User.displayError("An error has occurred while downloading the requested modules: {0}", k.Message);
+                }
             }
         }
 
