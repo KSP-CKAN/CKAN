@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class RenameInstanceDialog : Form
+    public partial class RenameInstanceDialog : FormCompatibility
     {
         public RenameInstanceDialog()
         {

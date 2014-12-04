@@ -5,7 +5,7 @@ using log4net;
 namespace CKAN
 {
 
-    public partial class ErrorDialog : Form
+    public partial class ErrorDialog : FormCompatibility
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ErrorDialog));
 
