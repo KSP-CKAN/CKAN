@@ -263,6 +263,8 @@ namespace CKAN
                 {
                     // The current instance is not a valid KSP directory. Mark it for removal and continue.
                     _InstancesToRemove.Add(i);
+
+                    log.DebugFormat("Marked {0} to be removed", name);
                 }
 
                 log.DebugFormat("Added {0} at {1}", name, path);
@@ -271,15 +273,21 @@ namespace CKAN
             // Remove any invalid keys.
             if (_InstancesToRemove.Count > 0)
             {
+                log.DebugFormat("Starting removal of invalid KSP directory keys from the registry");
+
                 foreach (int i in _InstancesToRemove)
                 {
                     var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
                     _Instances.Remove(name);
+
+                    log.DebugFormat("Removed {0} from the list of instances in memory", name);
                 }
 
                 // Remove all keys.
                 for (int i = 0; i < instanceCount; i++)
                 {
+                    log.DebugFormat("Attempting to remove key number {0} (i = {1}) out of {2} in the registry", i + 1, i, instanceCount);
+
                     bool result_1 = KSPPathConstants.RemoveRegistryKey(@"KSPInstanceName_" + i);
                     bool result_2 = KSPPathConstants.RemoveRegistryKey(@"KSPInstancePath_" + i);
 
@@ -289,8 +297,12 @@ namespace CKAN
                     }
                 }
 
+                log.DebugFormat("Removal of all keys in the registry complete, starting repopulation from memory");
+
                 // Repopulate the keys.
                 PopulateRegistryWithInstances();
+
+                log.DebugFormat("Repopulation from memory complete");
             }
 
             instances_loaded = true;
