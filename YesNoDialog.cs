@@ -2,7 +2,7 @@
 
 namespace CKAN
 {
-    public partial class YesNoDialog : Form
+    public partial class YesNoDialog : FormCompatibility
     {
         public YesNoDialog()
         {
