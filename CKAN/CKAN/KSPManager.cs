@@ -245,6 +245,8 @@ namespace CKAN
             _AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
             var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
 
+            List<int> _InstancesToRemove = new List<int>();
+
             for (int i = 0; i < instanceCount; i++)
             {
                 var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
@@ -252,10 +254,43 @@ namespace CKAN
 
                 log.DebugFormat("Loading {0} from {1}", name, path);
 
-                var ksp = new KSP(path);
-                _Instances.Add(name, ksp);
+                try
+                {
+                    var ksp = new KSP(path);
+                    _Instances.Add(name, ksp);
+                }
+                catch (NotKSPDirKraken)
+                {
+                    // The current instance is not a valid KSP directory. Mark it for removal and continue.
+                    _InstancesToRemove.Add(i);
+                }
 
                 log.DebugFormat("Added {0} at {1}", name, path);
+            }
+
+            // Remove any invalid keys.
+            if (_InstancesToRemove.Count > 0)
+            {
+                foreach (int i in _InstancesToRemove)
+                {
+                    var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
+                    _Instances.Remove(name);
+                }
+
+                // Remove all keys.
+                for (int i = 0; i < instanceCount; i++)
+                {
+                    bool result_1 = KSPPathConstants.RemoveRegistryKey(@"KSPInstanceName_" + i);
+                    bool result_2 = KSPPathConstants.RemoveRegistryKey(@"KSPInstancePath_" + i);
+
+                    if (!result_1 || !result_2)
+                    {
+                        throw new Kraken("Could not remove registry value in base key");
+                    }
+                }
+
+                // Repopulate the keys.
+                PopulateRegistryWithInstances();
             }
 
             instances_loaded = true;
