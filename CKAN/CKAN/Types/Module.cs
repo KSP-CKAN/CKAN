@@ -4,9 +4,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using System.Linq;
 
 namespace CKAN
 {
@@ -14,6 +11,7 @@ namespace CKAN
     {
         public string max_version;
         public string min_version;
+        //Why is the identifier called name? 
         public /* required */ string name;
         public string version;
     }
@@ -37,7 +35,7 @@ namespace CKAN
     [JsonObject(MemberSerialization.OptIn)]
     public class Module
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Module));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Module));
 
         // identifier, license, and version are always required, so we know
         // what we've got.
@@ -228,11 +226,11 @@ namespace CKAN
 
         // Only CKAN modules can have install and bundle instructions.
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
 
-//      private static JsonSchema metadata_schema;
-//      private static string metadata_schema_path = "CKAN.schema";
-//      private static bool metadata_schema_missing_warning_fired;
+        //      private static JsonSchema metadata_schema;
+        //      private static string metadata_schema_path = "CKAN.schema";
+        //      private static bool metadata_schema_missing_warning_fired;
         [JsonProperty("install")] public ModuleInstallDescriptor[] install;
         [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
@@ -243,31 +241,31 @@ namespace CKAN
             return true;
             // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
 
-//            if (metadata_schema == null)
-//            {
-//                string schema = "";
-//
-//                try
-//                {
-//                    schema = File.ReadAllText(metadata_schema_path);
-//                }
-//                catch (Exception)
-//                {
-//                    if (!metadata_schema_missing_warning_fired)
-//                    {
-//                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-//                            metadata_schema_path);
-//                        metadata_schema_missing_warning_fired = true;
-//                    }
-//
-//                    return true;
-//                }
-//
-//                metadata_schema = JsonSchema.Parse(schema);
-//            }
-//
-//            JObject obj = JObject.Parse(json);
-//            return obj.IsValid(metadata_schema);
+            //            if (metadata_schema == null)
+            //            {
+            //                string schema = "";
+            //
+            //                try
+            //                {
+            //                    schema = File.ReadAllText(metadata_schema_path);
+            //                }
+            //                catch (Exception)
+            //                {
+            //                    if (!metadata_schema_missing_warning_fired)
+            //                    {
+            //                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
+            //                            metadata_schema_path);
+            //                        metadata_schema_missing_warning_fired = true;
+            //                    }
+            //
+            //                    return true;
+            //                }
+            //
+            //                metadata_schema = JsonSchema.Parse(schema);
+            //            }
+            //
+            //            JObject obj = JObject.Parse(json);
+            //            return obj.IsValid(metadata_schema);
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
@@ -307,7 +305,7 @@ namespace CKAN
             }
 
             // NOTE: Many of these tests may be better inour Deserialisation handler.
-            if (! newModule.IsSpecSupported())
+            if (!newModule.IsSpecSupported())
             {
                 throw new UnsupportedKraken(
                     String.Format(

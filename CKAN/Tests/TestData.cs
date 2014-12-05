@@ -88,9 +88,9 @@ namespace Tests
             ";
         }
 
-        public static CKAN.CkanModule DogeCoinFlag_101_bugged_module()
+        public static CkanModule DogeCoinFlag_101_bugged_module()
         {
-            return CKAN.CkanModule.FromJson(DogeCoinFlag_101_bugged());
+            return CkanModule.FromJson(DogeCoinFlag_101_bugged());
         }
 
         ///<summary>
@@ -129,9 +129,9 @@ namespace Tests
             ";
         }
 
-        public static CKAN.CkanModule DogeCoinFlag_101_module()
+        public static CkanModule DogeCoinFlag_101_module()
         {
-            return CKAN.CkanModule.FromJson(DogeCoinFlag_101());
+            return CkanModule.FromJson(DogeCoinFlag_101());
         }
 
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
@@ -219,9 +219,9 @@ namespace Tests
             ;
         }
 
-        public static CKAN.CkanModule kOS_014_module()
+        public static CkanModule kOS_014_module()
         {
-            return CKAN.CkanModule.FromJson(kOS_014());
+            return CkanModule.FromJson(kOS_014());
         }
 
         public static string KS_CustomAsteroids_string()
@@ -229,9 +229,9 @@ namespace Tests
             return File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
         }
 
-        public static CKAN.CkanModule FireSpitterModule()
+        public static CkanModule FireSpitterModule()
         {
-            return CKAN.CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
+            return CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
         }
 
         public static string KspAvcJson()
@@ -239,9 +239,9 @@ namespace Tests
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
 
-        public static CKAN.CkanModule ModuleManagerModule()
+        public static CkanModule ModuleManagerModule()
         {
-            return CKAN.CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
+            return CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
         }
 
         public static string ModuleManagerZip()
@@ -311,7 +311,7 @@ namespace Tests
             };
             mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
             mod.conflicts = conflicts ?? new List<RelationshipDescriptor>();
-            mod.depends = conflicts ?? new List<RelationshipDescriptor>();
+            mod.depends = depends ?? new List<RelationshipDescriptor>();
             return mod;
         }
     }
