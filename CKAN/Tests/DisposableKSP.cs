@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using CKAN;
 
 namespace Tests
 {
@@ -7,13 +8,14 @@ namespace Tests
     /// A disposable KSP instance. Use the `.KSP` property to access, will
     /// be automatically cleaned up on DisposableKSP falling out of using() scope.
     /// </summary>
-    public class DisposableKSP :IDisposable
+    public class DisposableKSP : IDisposable
     {
         private readonly string good_ksp = Tests.TestData.good_ksp_dir();
-        private CKAN.KSP _ksp;
+        private KSP _ksp;
         private string disposable_dir;
 
-        public CKAN.KSP KSP {
+        public KSP KSP
+        {
             get
             {
                 return _ksp;
@@ -41,7 +43,7 @@ namespace Tests
                 File.Copy(registry_file, registry_path, true);
             }
 
-            _ksp = new CKAN.KSP(disposable_dir);
+            _ksp = new KSP(disposable_dir);
         }
 
         public void Dispose()
