@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class AboutDialog : Form
+    public partial class AboutDialog : FormCompatibility
     {
         public AboutDialog()
         {
