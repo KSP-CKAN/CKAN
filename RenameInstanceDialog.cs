@@ -14,6 +14,7 @@ namespace CKAN
         public RenameInstanceDialog()
         {
             InitializeComponent();
+            ApplyFormCompatibilityFixes();
         }
 
         public DialogResult ShowRenameInstanceDialog(string name)

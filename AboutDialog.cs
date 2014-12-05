@@ -14,6 +14,7 @@ namespace CKAN
         public AboutDialog()
         {
             InitializeComponent();
+            ApplyFormCompatibilityFixes();
             StartPosition = FormStartPosition.CenterScreen;
         }
 

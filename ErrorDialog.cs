@@ -12,6 +12,7 @@ namespace CKAN
         public ErrorDialog()
         {
             InitializeComponent();
+            ApplyFormCompatibilityFixes();
             StartPosition = FormStartPosition.CenterScreen;
         }
 
