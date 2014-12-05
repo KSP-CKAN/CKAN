@@ -29,6 +29,10 @@ namespace CKAN
             {
                 Repo.Update(m_Configuration.Repository);
             }
+            catch (MissingCertificateKraken ex)
+            {
+                m_ErrorDialog.ShowErrorDialog(ex.ToString());
+            }
             catch (Exception)
             {
                 m_ErrorDialog.ShowErrorDialog("Failed to connect to repository");
