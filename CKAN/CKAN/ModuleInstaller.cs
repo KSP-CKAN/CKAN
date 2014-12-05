@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System.Threading;
+using System.Transactions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using System.Transactions;
 using ChinhDo.Transactions;
 using log4net;
 
@@ -205,10 +202,7 @@ namespace CKAN
             }
 
             // We're about to install all our mods; so begin our transaction.
-            var txoptions = new TransactionOptions();
-            txoptions.Timeout = TransactionManager.MaximumTimeout;
-
-            using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, txoptions))
+            using (TransactionScope transaction = new TransactionScope())
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
