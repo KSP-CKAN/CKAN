@@ -1,6 +1,8 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using CKAN;
+using Version = CKAN.Version;
 
 namespace Tests
 {
@@ -46,7 +48,7 @@ namespace Tests
         public static string DogeCoinFlagZipCorrupt()
         {
             string such_zip_very_corrupt_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
-        
+
             return such_zip_very_corrupt_wow;
         }
 
@@ -168,7 +170,7 @@ namespace Tests
 
         public static Uri TestKAN()
         {
-            return new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/testkan.zip");
+            return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
         }
 
         public static string good_ksp_dir()
@@ -224,7 +226,7 @@ namespace Tests
 
         public static string KS_CustomAsteroids_string()
         {
-            return File.ReadAllText(Path.Combine(DataDir(),"KS/CustomAsteroids.json"));
+            return File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
         }
 
         public static CKAN.CkanModule FireSpitterModule()
@@ -281,6 +283,36 @@ namespace Tests
             {
                 File.Copy(file, file.Replace(src, dst));
             }
+        }
+    }
+
+    public class RandomModuleGenerator
+    {
+        public Random Generator { get; set; }
+
+        public RandomModuleGenerator(Random generator)
+        {
+            Generator = generator;
+        }
+
+        public CkanModule GeneratorRandomModule(
+            KSPVersion kspVersion = null,
+            List<RelationshipDescriptor> conflicts = null,
+            List<RelationshipDescriptor> depends = null)
+        {
+            var mod = new CkanModule
+            {
+                name = Generator.Next().ToString(),
+                @abstract = Generator.Next().ToString(),
+                identifier = Generator.Next().ToString(),
+                spec_version = new Version(1.ToString()),
+                ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
+                version = new Version(Generator.Next().ToString())
+            };
+            mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
+            mod.conflicts = conflicts ?? new List<RelationshipDescriptor>();
+            mod.depends = conflicts ?? new List<RelationshipDescriptor>();
+            return mod;
         }
     }
 }
