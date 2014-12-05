@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using CKAN;
 using Version = CKAN.Version;
@@ -13,7 +14,7 @@ namespace Tests
             // TODO: Have this actually walk our directory structure and find
             // t/data. This means we can relocate our test executable and
             // things will still work.
-            string current = System.IO.Directory.GetCurrentDirectory();
+            string current = Directory.GetCurrentDirectory();
 
             return Path.Combine(current, "../../../../t/data");
         }
@@ -262,11 +263,11 @@ namespace Tests
         // Taken from https://stackoverflow.com/a/20445952
         public static string NewTempDir()
         {
-            string tempFolder = Path.GetTempFileName();
-            File.Delete(tempFolder);
-            Directory.CreateDirectory(tempFolder);
+            string temp_folder = Path.GetTempFileName();
+            File.Delete(temp_folder);
+            Directory.CreateDirectory(temp_folder);
 
-            return tempFolder;
+            return temp_folder;
         }
 
         // Ugh, this is awful.
@@ -298,20 +299,24 @@ namespace Tests
         public CkanModule GeneratorRandomModule(
             KSPVersion kspVersion = null,
             List<RelationshipDescriptor> conflicts = null,
-            List<RelationshipDescriptor> depends = null)
+            List<RelationshipDescriptor> depends = null,
+            List<RelationshipDescriptor> sugests = null,
+            List<String> provides = null)
         {
             var mod = new CkanModule
             {
-                name = Generator.Next().ToString(),
-                @abstract = Generator.Next().ToString(),
-                identifier = Generator.Next().ToString(),
-                spec_version = new Version(1.ToString()),
+                name = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                identifier = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
                 ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
-                version = new Version(Generator.Next().ToString())
+                version = new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
             };
             mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
-            mod.conflicts = conflicts ?? new List<RelationshipDescriptor>();
-            mod.depends = depends ?? new List<RelationshipDescriptor>();
+            mod.conflicts = conflicts;
+            mod.depends = depends;
+            mod.suggests = sugests;
+            mod.provides = provides;
             return mod;
         }
     }
