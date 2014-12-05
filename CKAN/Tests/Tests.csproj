@@ -29,6 +29,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CKAN\Relationships\RelationshipResolver.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="CKAN\Types\KSPVersion.cs" />
     <Compile Include="CKAN\Net\Net.cs" />
@@ -67,5 +68,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
 </Project>
