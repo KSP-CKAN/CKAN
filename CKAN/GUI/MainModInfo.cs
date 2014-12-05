@@ -97,13 +97,19 @@ namespace CKAN
 
             alreadyVisited.Add(module);
 
+            string nodeText = module.name;
+            if (virtualProvides)
+            {
+                nodeText = String.Format("provided by - {0}", module.name);
+            }
+
             if (parentNode == null)
             {
-                node = new TreeNode(module.name);
+                node = new TreeNode(nodeText);
             }
             else
             {
-                node = parentNode.Nodes.Add(module.name);
+                node = parentNode.Nodes.Add(nodeText);
             }
 
             IEnumerable<RelationshipDescriptor> relationships = null;
@@ -168,6 +174,15 @@ namespace CKAN
                 }
             }
 
+            if (virtualProvides)
+            {
+                node.Collapse(true);
+            }
+            else
+            {
+                node.ExpandAll();
+            }
+
             return node;
         }
 
@@ -192,7 +207,6 @@ namespace CKAN
 
             DependsGraphTree.Nodes.Clear();
             DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
-            DependsGraphTree.Nodes[0].ExpandAll();
         }
 
         private void UpdateModContentsTree(CkanModule module)
