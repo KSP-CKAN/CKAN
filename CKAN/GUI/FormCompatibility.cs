@@ -9,7 +9,7 @@ namespace CKAN
         // inheriting from this class ensures that forms are equally sized on windows and on linux/ macosx
         private const int formHeightDifference = 24;
 
-        public FormCompatibility()
+        public void ApplyFormCompatibilityFixes()
         {
             if (Util.IsLinux)
             {
