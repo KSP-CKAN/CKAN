@@ -12,7 +12,6 @@ namespace CKAN
         {
             get
             {
-                Mod.UpdateModFieldsViaRegistry(registry);
                 return Mod.IsInstalled;
             }
         }
@@ -21,7 +20,6 @@ namespace CKAN
         {
             get
             {
-                Mod.UpdateModFieldsViaRegistry(registry);
                 return Mod.HasUpdate;
             }
         }
@@ -30,7 +28,6 @@ namespace CKAN
         {
             get
             {
-                Mod.UpdateModFieldsViaRegistry(registry);
                 return Mod.IsIncompatible;
             }
         }
@@ -39,7 +36,6 @@ namespace CKAN
         {
             get
             {
-                Mod.UpdateModFieldsViaRegistry(registry);
                 return Mod.IsAutodetected;
             }
         }
