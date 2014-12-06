@@ -364,11 +364,11 @@ namespace CKAN
             return newModule;
         }
 
-        public void UpdateModFieldsViaRegistry(Registry registry)
+        public void UpdateModFieldsViaRegistry(Registry registry, KSPVersion kspVersion)
         {
             IsInstalled = registry.IsInstalled(identifier);
             HasUpdate = IsInstalled && version.IsGreaterThan(registry.InstalledVersion(identifier));
-            IsIncompatible = !registry.IsCompatible(identifier, KSPManager.CurrentInstance.Version());
+            IsIncompatible = !registry.IsCompatible(identifier, kspVersion);
             IsAutodetected = IsInstalled && registry.InstalledVersion(identifier).ToString().Equals("autodetected dll");
 
         }
