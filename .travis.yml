@@ -1,5 +1,11 @@
 language: c
 
+# These commands simulate having a graphical display, which is needed
+# for our GUI tests.
+before_install:
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+
 install:
     - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
