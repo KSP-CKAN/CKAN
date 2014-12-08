@@ -47,7 +47,7 @@ namespace CKANTests
             {
                 CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };                
                 var item = new MainModList(delegate { });
-                Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty(), manager.CurrentInstance), Is.Empty);
+                Assert.That(item.ComputeUserChangeSet(), Is.Empty);
             }
         }
 

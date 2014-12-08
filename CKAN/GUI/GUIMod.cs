@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -18,7 +20,7 @@ namespace CKAN
         public object Homepage { get; private set; }
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
-        public bool IsUpgradeChecked { get; set; }
+        public bool IsUpgradeChecked { get; private set; }
 
 
         public GUIMod(CkanModule mod, Registry registry, KSPVersion ksp_version)
@@ -52,6 +54,44 @@ namespace CKAN
         public CkanModule ToCkanModule()
         {
             return Mod;
+        }
+
+        public KeyValuePair<CkanModule, GUIModChangeType>? GetRequestedChange()
+        {
+            if (IsInstalled ^ IsInstallChecked)
+            {
+                var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
+                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, change_type);
+            }
+
+            if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
+            {
+                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
+            }
+            return null;
+        }
+
+        public static implicit operator CkanModule(GUIMod mod)
+        {
+            return mod.ToCkanModule();
+        }
+
+        public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
+        {
+            //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
+
+            var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
+
+            bool value = (setvalueto.HasValue ? setvalueto.Value : (bool)update_cell.Value);
+            IsUpgradeChecked = value;
+            update_cell.Value = value;
+        }
+
+        public void SetInstallChecked(DataGridViewRow row)
+        {
+            //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
+            var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
+            IsInstallChecked = (bool)install_cell.Value;
         }
     }
 }

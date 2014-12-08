@@ -19,8 +19,8 @@ namespace CKAN
             if (ModList == null) return;
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod) row.Tag);
-                var isVisible = mainModList.IsVisible(mod);
+                var mod = ((GUIMod)row.Tag);
+                var isVisible = MainModList.IsVisible(mod);
                 row.Visible = isVisible;
             }
         }
@@ -34,32 +34,27 @@ namespace CKAN
         private void _UpdateModsList()
         {
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
-
-            var ckanModules = registry.Available(CurrentInstance.Version()).Concat(
-                registry.Incompatible(CurrentInstance.Version())).ToList();
-            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())).ToList();
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
-            var rows = MainModList.ConstructModList(mainModList.Modules);
+            var ksp_version = CurrentInstance.Version();
+            var ckanModules = registry.Available(ksp_version).Concat(registry.Incompatible(ksp_version)).ToList();
+            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry,ksp_version)).ToList();
+            MainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
+            var rows = MainModList.ConstructModList(MainModList.Modules);
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
             ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
 
             //TODO Consider using smart enum patten so stuff like this is easier
-            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.All));
-            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Installed));
-            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+
+            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})", MainModList.CountModsByFilter(GUIModFilter.All));
+            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})", MainModList.CountModsByFilter(GUIModFilter.Installed));
+            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})", MainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})", MainModList.CountModsByFilter(GUIModFilter.NewInRepository));
+            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})", MainModList.CountModsByFilter(GUIModFilter.NotInstalled));
+            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", MainModList.CountModsByFilter(GUIModFilter.Incompatible));
 
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
+
             UpdateFilters(this);
         }
 
@@ -142,72 +137,108 @@ namespace CKAN
         private GUIModFilter _modFilter = GUIModFilter.All;
         private string _modNameFilter = String.Empty;
 
+
         /// <summary>
         /// This function returns a changeset based on the selections of the user. 
         /// Currently returns null if a conflict is detected.        
         /// </summary>
         /// <param name="registry"></param>
-        /// <param name="current_instance"></param>
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, KSP current_instance)
+      /// <param name="current_instance"></param>
+public IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, ModuleInstaller installer)
         {
-            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
-            var modulesToInstall = new HashSet<string>();
-            var modulesToRemove = new HashSet<string>();
 
-            foreach (var mod in Modules.Where(mod => mod.IsInstallable()))
+            var modules_to_install = new HashSet<string>();
+            var modules_to_remove = new HashSet<string>();
+            var options = new RelationshipResolverOptions()
             {
-                if (mod.IsInstalled)
+                without_toomanyprovides_kraken = true,
+                with_recommends = false
+            };
+
+            foreach (var change in changeSet)
+
+            {
+                switch (change.Value)
                 {
-                    if (!mod.IsInstallChecked)
-                    {
-                        modulesToRemove.Add(mod.Identifier);
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Remove));
-                    }
-                    else if (mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
-                    {
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Update));
-                    }
-                }
-                else if (mod.IsInstallChecked)
-                {
-                    modulesToInstall.Add(mod.Identifier);
+                    case GUIModChangeType.None:
+                        break;
+                    case GUIModChangeType.Install:
+                        modules_to_install.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Remove:
+                        modules_to_remove.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Update:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
-            RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
-            options.with_recommends = false;
-            options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = true;
+            //May throw InconsistentKraken
+            var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry);
+            changeSet.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
-            RelationshipResolver resolver;
-            try
-            {
-                resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry);
-            }
-            catch (Exception)
-            {
-                //TODO FIX this so the UI reacts.
-                return null;
-            }
-
-            changeset.UnionWith(
-                resolver.ModList()
-                    .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
-
-
-            ModuleInstaller installer = ModuleInstaller.GetInstance(current_instance, GUI.user);
-
-            foreach (var reverseDependencies in modulesToRemove.Select(mod => installer.FindReverseDependencies(mod)))
+            foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep));
-                changeset.UnionWith(
-                    modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
+                var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep));
+                changeSet.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
+            }
+            return changeSet;
+
+        }
+
+        public Dictionary<Module, HashSet<Module>> ComputeConflictsFromModList(Registry registry, IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> changeSet)
+        {
+            var modules_to_install = new HashSet<string>();
+            var modules_to_remove = new HashSet<string>();
+            var options = new RelationshipResolverOptions
+            {
+                without_toomanyprovides_kraken = true,
+                with_conflicts = true,
+                without_enforce_consistency = true,
+                with_recommends = false
+            };
+
+            foreach (var change in changeSet)
+            {
+                switch (change.Value)
+                {
+                    case GUIModChangeType.None:
+                        break;
+                    case GUIModChangeType.Install:
+                        modules_to_install.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Remove:
+                        modules_to_remove.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Update:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
-            return changeset.ToList();
+            var installed =
+                registry.Installed()
+                    .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
+                    .Select(pair => pair.Key);
+
+            //We wish to only check mods that would exist after the changes are made. 
+            var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);
+            var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry);
+            return resolver.Conflicts;
+        }
+
+        public HashSet<KeyValuePair<CkanModule, GUIModChangeType>> ComputeUserChangeSet()
+        {
+
+            var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
+            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>(
+                changes.Where(change => change.HasValue).Select(change => change.Value)
+                );
+            return changeset;
         }
 
         public bool IsVisible(GUIMod mod)
