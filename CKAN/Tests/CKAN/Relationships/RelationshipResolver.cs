@@ -238,6 +238,25 @@ namespace Tests.CKAN.Relationships
 
         }
 
+        [Test]
+        public void Constructor_WithRegisteryThatHasRequiredModuleRemoved_Throws()
+        {
+            var list = new List<string>();
+            var mod = generator.GeneratorRandomModule();
+            mod.ksp_version = new KSPVersion("0.10");
+            list.Add(mod.identifier);
+            registry.AddAvailable(mod);
+            registry.RemoveAvailable(mod);
+
+            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry));
+
+        }
+
+
+
         private void AddToRegistry(params CkanModule[] modules)
         {
             foreach (var module in modules)
