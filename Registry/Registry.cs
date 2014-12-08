@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Runtime.Serialization;
@@ -318,10 +319,11 @@ namespace CKAN
         /// </summary>
         public void RemoveAvailable(string identifier, Version version)
         {
-            if (available_modules.ContainsKey(identifier))
+            AvailableModule availableModule;
+            if (available_modules.TryGetValue(identifier, out availableModule))
             {
                 SealionTransaction();
-                available_modules[identifier].Remove(version);
+                availableModule.Remove(version);
             }
         }
 
@@ -422,6 +424,17 @@ namespace CKAN
             }
 
             return incompatible;
+        }
+
+        /// <summary>
+        ///     Check if a mod is is compatible
+        /// </summary>
+        /// <returns><c>true</c>, if compatible<c>false</c> otherwise.</returns>
+        public bool IsCompatible(string candidate, KSPVersion ksp_version)
+        {
+            //TODO Discuss how we mark nonnull parameters            
+            //Contract.Requires<ArgumentNullException>(ksp_version != null, "ksp_version");
+            return LatestAvailable(candidate, ksp_version) != null;
         }
 
         /// <summary>
@@ -549,11 +562,11 @@ namespace CKAN
                     continue;
                 }
 
-                if (this.installed_files.ContainsKey(file))
+                string owner;
+                if (installed_files.TryGetValue(file, out owner))
                 {
                     // Woah! Registering an already owned file? Not cool!
-                    // (Although if it existed, we should have thrown a kraken well before this.)
-                    string owner = this.installed_files[file];
+                    // (Although if it existed, we should have thrown a kraken well before this.)                    
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
                                       mod.identifier, file, owner
@@ -640,12 +653,13 @@ namespace CKAN
 
             string relative_path = ksp.ToRelativeGameDir(absolute_path);
 
-            if (installed_files.ContainsKey(relative_path))
+            string owner;
+            if (installed_files.TryGetValue(relative_path, out owner))
             {
                 log.InfoFormat(
                     "Not registering {0}, it belongs to {1}",
                     relative_path,
-                    installed_files[relative_path]
+                    owner
                 );
                 return;
             }
@@ -727,12 +741,8 @@ namespace CKAN
 
             SealionTransaction();
 
-            if (this.installed_modules.ContainsKey(module))
-            {
-                return this.installed_modules[module];
-            }
-
-            return null;
+            InstalledModule installedModule;
+            return installed_modules.TryGetValue(module, out installedModule) ? installedModule : null;
         }
             
         /// <summary>
@@ -771,25 +781,22 @@ namespace CKAN
         ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
-        public Version InstalledVersion(string modName)
+        public Version InstalledVersion(string modIdentifier)
         {
-            if (installed_modules.ContainsKey(modName))
+            InstalledModule installedModule;
+            if (installed_modules.TryGetValue(modIdentifier, out installedModule))
             {
-                return installed_modules[modName].Module.version;
+                return installedModule.Module.version;
             }
-            else if (installed_dlls.ContainsKey(modName))
+            if (installed_dlls.ContainsKey(modIdentifier))
             {
                 return new DllVersion();
             }
 
             var provided = Provided();
 
-            if (provided.ContainsKey(modName))
-            {
-                return provided[modName];
-            }
-
-            return null;
+            ProvidesVersion version;
+            return provided.TryGetValue(modIdentifier, out version) ? version : null;
         }
 
         /// <summary>
@@ -821,11 +828,8 @@ namespace CKAN
                 );
             }
 
-            if (this.installed_files.ContainsKey(file))
-            {
-                return this.installed_files[file];
-            }
-            return null;
+            string fileOwner;
+            return installed_files.TryGetValue(file, out fileOwner) ? fileOwner : null;
         }
 
         /// <summary>
