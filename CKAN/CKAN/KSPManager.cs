@@ -176,6 +176,14 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Removes the invalid KSP instance keys in the registry.
+        /// </summary>
+        public static void RemoveMissing()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Attempts to remove the requested registry key.
         /// </summary>
         /// <returns><c>true</c>, if registry key was removed, <c>false</c> otherwise.</returns>
