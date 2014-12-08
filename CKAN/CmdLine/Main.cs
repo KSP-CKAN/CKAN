@@ -471,6 +471,11 @@ namespace CKAN.CmdLine
                 Console.WriteLine(kraken);
                 return Exit.ERROR;
             }
+            catch (DownloadErrorsKraken kraken)
+            {
+                User.displayError(kraken.Message);
+                return Exit.ERROR;
+            }
 
             return Exit.OK;
         }
