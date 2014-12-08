@@ -245,8 +245,6 @@ namespace CKAN
             _AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
             var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
 
-            List<int> _InstancesToRemove = new List<int>();
-
             for (int i = 0; i < instanceCount; i++)
             {
                 var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
@@ -261,48 +259,16 @@ namespace CKAN
                 }
                 catch (NotKSPDirKraken)
                 {
-                    // The current instance is not a valid KSP directory. Mark it for removal and continue.
-                    _InstancesToRemove.Add(i);
+                    // The current instance is not a valid KSP directory. Warn the user.
+                    log.WarnFormat("Instance {0} is not valid", name);
 
-                    log.DebugFormat("Marked {0} to be removed", name);
+                    // Make sure the instance is not in the list and continue to the next key.
+                    _Instances.Remove(name);
+                    log.DebugFormat("Skipped {0}", name);
+                    continue;
                 }
 
                 log.DebugFormat("Added {0} at {1}", name, path);
-            }
-
-            // Remove any invalid keys.
-            if (_InstancesToRemove.Count > 0)
-            {
-                log.DebugFormat("Starting removal of invalid KSP directory keys from the registry");
-
-                foreach (int i in _InstancesToRemove)
-                {
-                    var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
-                    _Instances.Remove(name);
-
-                    log.DebugFormat("Removed {0} from the list of instances in memory", name);
-                }
-
-                // Remove all keys.
-                for (int i = 0; i < instanceCount; i++)
-                {
-                    log.DebugFormat("Attempting to remove key number {0} (i = {1}) out of {2} in the registry", i + 1, i, instanceCount);
-
-                    bool result_1 = KSPPathConstants.RemoveRegistryKey(@"KSPInstanceName_" + i);
-                    bool result_2 = KSPPathConstants.RemoveRegistryKey(@"KSPInstancePath_" + i);
-
-                    if (!result_1 || !result_2)
-                    {
-                        throw new Kraken("Could not remove registry value in base key");
-                    }
-                }
-
-                log.DebugFormat("Removal of all keys in the registry complete, starting repopulation from memory");
-
-                // Repopulate the keys.
-                PopulateRegistryWithInstances();
-
-                log.DebugFormat("Repopulation from memory complete");
             }
 
             instances_loaded = true;
