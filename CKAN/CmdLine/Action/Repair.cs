@@ -32,6 +32,8 @@ namespace CKAN.CmdLine
 
             switch (option)
             {
+                case "installs":
+                    return Installs();
                 case "registry":
                     return Registry();
             }
@@ -43,6 +45,16 @@ namespace CKAN.CmdLine
         {
             this.option = option;
             this.suboptions = suboptions;
+        }
+
+        /// <summary>
+        /// Repair the list of installs in the registry by removing invalid keys.
+        /// </summary>
+        private int Installs()
+        {
+            KSPManager.RemoveMissing();
+            Console.WriteLine("Removed invalid instance registry keys.");
+            return Exit.OK;
         }
 
         /// <summary>
