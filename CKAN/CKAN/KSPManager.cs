@@ -174,10 +174,9 @@ namespace CKAN
         /// <exception cref="CKAN.Kraken">Could not find a valid name.</exception>
         public static string GetNextValidInstanceName(string name)
         {
-            // Look for the current name in the list of loaded instances.
-            if (!Instances.ContainsKey(name))
+            // Check if the current name is valid.
+            if (InstanceNameIsValid(name))
             {
-                // The passed argument is a valid key in the collection.
                 return name;
             }
 
@@ -187,7 +186,7 @@ namespace CKAN
             for (int i = 1; i < 1000; i++)
             {
                 validName = name + " (" + i.ToString() + ")";
-                if (!Instances.ContainsKey(validName))
+                if (InstanceNameIsValid(validName))
                 {
                     return validName;
                 }
@@ -196,13 +195,29 @@ namespace CKAN
             // Check if a name with the current timestamp is valid.
             validName = name + " (" + DateTime.Now.ToString() + ")";
 
-            if (!Instances.ContainsKey(validName))
+            if (InstanceNameIsValid(validName))
             {
                 return validName;
             }
 
             // Give up.
             throw new Kraken("Could not return a valid name for the new instance.");
+        }
+
+        /// <summary>
+        /// Check if the instance name is valid for adding to the collection.
+        /// </summary>
+        /// <returns><c>true</c>, if name is valid, <c>false</c> otherwise.</returns>
+        /// <param name="name">Name to check.</param>
+        public static bool InstanceNameIsValid(string name)
+        {
+            // Look for the current name in the list of loaded instances.
+            if (Instances.ContainsKey(name))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
