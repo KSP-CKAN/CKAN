@@ -317,6 +317,7 @@ namespace Tests
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> sugests = null,
+            List<RelationshipDescriptor> recommends = null,
             List<String> provides = null,
             string identifier = null,
             Version version = null)
@@ -334,6 +335,7 @@ namespace Tests
             mod.conflicts = conflicts;
             mod.depends = depends;
             mod.suggests = sugests;
+            mod.recommends = recommends;
             mod.provides = provides;
             return mod;
         }
