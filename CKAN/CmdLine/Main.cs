@@ -316,12 +316,12 @@ namespace CKAN.CmdLine
         // Uninstalls a module, if it exists.
         private static int Remove(RemoveOptions options)
         {
-            if (options.Modname != null && options.Modname.Length > 0)
+            if (options.modules != null && options.modules.Count > 0)
             {
                 try
                 {
                     var installer = ModuleInstaller.Instance;
-                    installer.UninstallList(options.Modname);
+                    installer.UninstallList(options.modules);
                     return Exit.OK;
                 }
                 catch (ModNotInstalledKraken kraken)
@@ -469,6 +469,11 @@ namespace CKAN.CmdLine
             {
                 // Another very pretty kraken.
                 Console.WriteLine(kraken);
+                return Exit.ERROR;
+            }
+            catch (DownloadErrorsKraken kraken)
+            {
+                User.displayError(kraken.Message);
                 return Exit.ERROR;
             }
 
