@@ -187,8 +187,8 @@ namespace CKAN.CmdLine
 
     internal class RemoveOptions : CommonOptions
     {
-        [ValueOption(0)]
-        public string Modname { get; set; }
+        [ValueList(typeof(List<string>))]
+        public List<string> modules { get; set; }
     }
 
     internal class ShowOptions : CommonOptions
