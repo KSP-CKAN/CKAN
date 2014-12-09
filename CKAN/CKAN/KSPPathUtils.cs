@@ -101,12 +101,6 @@ namespace CKAN
             path = NormalizePath(path);
 
             return Path.GetDirectoryName(path);
-
-            //if (Regex.IsMatch(path, "/"))
-            //{
-            //    return Regex.Replace(path, @"(^.*)/.+", "$1");
-            //}
-            //return String.Empty;
         }
 
         /// <summary>
