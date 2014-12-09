@@ -167,6 +167,45 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Gets the name of the next valid instance. Will attempt to append a number or the current (local) time to find the next valid solution.
+        /// </summary>
+        /// <returns>The next valid instance name.</returns>
+        /// <param name="name">The name to check.</param>
+        /// <exception cref="CKAN.Kraken">Could not find a valid name.</exception>
+        public static string GetNextValidInstanceName(string name)
+        {
+            // Look for the current name in the list of loaded instances.
+            if (!Instances.ContainsKey(name))
+            {
+                // The passed argument is a valid key in the collection.
+                return name;
+            }
+
+            string validName;
+
+            // Try appending a number to the name.
+            for (int i = 1; i < 1000; i++)
+            {
+                validName = name + " (" + i.ToString() + ")";
+                if (!Instances.ContainsKey(validName))
+                {
+                    return validName;
+                }
+            }
+
+            // Check if a name with the current timestamp is valid.
+            validName = name + " (" + DateTime.Now.ToString() + ")";
+
+            if (!Instances.ContainsKey(validName))
+            {
+                return validName;
+            }
+
+            // Give up.
+            throw new Kraken("Could not return a valid name for the new instance.");
+        }
+
+        /// <summary>
         /// Removes the instance from the registry and saves.
         /// </summary>
         public static void RemoveInstance(string name)
