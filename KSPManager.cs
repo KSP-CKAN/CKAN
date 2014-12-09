@@ -205,12 +205,18 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Check if the instance name is valid for adding to the collection.
+        /// Check if the instance name is valid.
         /// </summary>
         /// <returns><c>true</c>, if name is valid, <c>false</c> otherwise.</returns>
         /// <param name="name">Name to check.</param>
         public static bool InstanceNameIsValid(string name)
         {
+            // Discard null, empty strings and white space only strings.
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
+
             // Look for the current name in the list of loaded instances.
             if (Instances.ContainsKey(name))
             {
