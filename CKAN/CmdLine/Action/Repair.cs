@@ -12,6 +12,9 @@ namespace CKAN.CmdLine
         {
             [VerbOption("registry", HelpText="Try to repair the CKAN registry")]
             public CommonOptions Registry { get; set; }
+
+            [VerbOption("installs", HelpText="Remove invalid KSP instances from the CKAN registry")]
+            public CommonOptions Installs { get; set; }
         }
 
         public Repair() {}
