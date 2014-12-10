@@ -11,7 +11,6 @@
     <AssemblyName>CKAN-GUI</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
