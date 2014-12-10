@@ -15,3 +15,5 @@ netkan.exe
 *.resources
 *.suo
 *.orig
+*.ncrunchproject
+*.ncrunchsolution

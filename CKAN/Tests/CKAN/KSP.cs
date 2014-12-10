@@ -1,7 +1,6 @@
-using NUnit.Framework;
 using System;
 using System.IO;
-using CKAN;
+using NUnit.Framework;
 
 namespace CKANTests
 {
@@ -47,7 +46,10 @@ namespace CKANTests
         [Test()]
         public void Training()
         {
-            Assert.AreEqual(Path.Combine(ksp_dir, "saves", "training"), ksp.Tutorial());
+            //Use Uri to avoid issues with windows vs linux line seperators.
+            var canonicalPath = new Uri(Path.Combine(ksp_dir, "saves", "training")).LocalPath;
+            var training = new Uri(ksp.Tutorial()).LocalPath;
+            Assert.AreEqual(canonicalPath, training);
         }
 
         [Test]
