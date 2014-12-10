@@ -53,7 +53,7 @@ else {
 chdir($BUILD);
 
 # And build..
-system("xbuild", "/property:Configuration=$TARGET", "CKAN.sln");
+system("xbuild", "/property:Configuration=$TARGET", "/property:win32icon=../assets/ckan.ico", "CKAN.sln");
 
 say "\n\n=== Repacking ===\n\n";
 
@@ -71,7 +71,7 @@ my @cmd = (
     "build/CmdLine/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
 );
 
-system(@cmd);
+system([0,1], qq{@cmd | grep -v "Duplicate Win32 resource"});
 
 # Repack netkan
 
@@ -84,7 +84,7 @@ system(@cmd);
     glob("build/NetKAN/bin/$TARGET/*.dll"),
 );
 
-system(@cmd);
+system([0,1], qq{@cmd | grep -v "Duplicate Win32 resource"});
 
 say "\n\n=== Tidying up===\n\n";
 
