@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Transactions;
 using log4net;
 using Newtonsoft.Json;
-using System.Transactions;
-using System.Threading;
 
 namespace CKAN
 {
@@ -425,17 +422,7 @@ namespace CKAN
 
             return incompatible;
         }
-
-        /// <summary>
-        ///     Check if a mod is is compatible
-        /// </summary>
-        /// <returns><c>true</c>, if compatible<c>false</c> otherwise.</returns>
-        public bool IsCompatible(string candidate, KSPVersion ksp_version)
-        {
-            //TODO Discuss how we mark nonnull parameters            
-            //Contract.Requires<ArgumentNullException>(ksp_version != null, "ksp_version");
-            return LatestAvailable(candidate, ksp_version) != null;
-        }
+        
 
         /// <summary>
         ///     Returns the latest available version of a module that
@@ -813,6 +800,20 @@ namespace CKAN
         }
 
         /// <summary>
+        ///     Check if a mod is autodetected.
+        /// </summary>
+        /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
+        public bool IsAutodetected(string identifier)
+        {            
+            return IsInstalled(identifier) && InstalledVersion(identifier).ToString().Equals("autodetected dll");
+        }
+
+        public bool HasUpdate(string identifier)
+        {
+            return IsInstalled(identifier) && InstalledVersion(identifier).IsGreaterThan(InstalledVersion(identifier));
+        }
+
+        /// <summary>
         /// Returns the module which owns this file, or null if not known.
         /// Throws a PathErrorKraken if an absolute path is provided.
         /// </summary>
@@ -898,6 +899,5 @@ namespace CKAN
             set.Add(module);
             return FindReverseDependencies(set);
         }
-
     }
 }

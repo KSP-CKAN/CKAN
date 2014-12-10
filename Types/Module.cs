@@ -255,14 +255,6 @@ namespace CKAN
         [JsonProperty("spec_version", Required = Required.Always)]
         public Version spec_version;
 
-        // NOTE It is currently the callers responsibility to call 
-        // UpdateModFieldsViaRegistry to insure that these are current.
-        // TODO Fix this. See comments on PR 498
-        public bool IsInstalled { get; private set; }
-        public bool HasUpdate { get; private set; }
-        public bool IsIncompatible { get; private set; }
-        public bool IsAutodetected { get; private set; }
-
         private static bool validate_json_against_schema(string json)
         {
 
@@ -362,16 +354,7 @@ namespace CKAN
             }
             // All good! Return module
             return newModule;
-        }
-
-        public void UpdateModFieldsViaRegistry(Registry registry, KSPVersion kspVersion)
-        {
-            IsInstalled = registry.IsInstalled(identifier);
-            HasUpdate = IsInstalled && version.IsGreaterThan(registry.InstalledVersion(identifier));
-            IsIncompatible = !registry.IsCompatible(identifier, kspVersion);
-            IsAutodetected = IsInstalled && registry.InstalledVersion(identifier).ToString().Equals("autodetected dll");
-
-        }
+        }            
 
         public static string ToJson(CkanModule module)
         {
