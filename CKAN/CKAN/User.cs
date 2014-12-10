@@ -61,31 +61,28 @@ namespace CKAN
             displayError(text, args);
         }
 
-        public static bool YesNoDialogConsole(string text = null)
+        public static bool YesNoDialogConsole(string text)
         {
             while(true)
             {
-                if (text != null)
+                Console.Write("{0} [Y/N] ", text);
+                
+                string input = Console.In.ReadLine();
+                
+                if (input == null)
                 {
-                    WriteLine("{0} [Y/N]", text);
-                    
-                    string input = Console.In.ReadLine();
-                    
-                    if (input == null)
-                    {
-                        continue;
-                    }
-                    input = input.ToLower();
-    
-                    if (input.Equals("y") || input.Equals("yes"))
-                    {
-                        return true;
-                    }
-                    if (input.Equals("n") || input.Equals("no"))
-                    {
-                        return false;
-                    }
-                    
+                    log.ErrorFormat("No console available for input, assuming no.");
+                    return false;
+                }
+                input = input.ToLower();
+
+                if (input.Equals("y") || input.Equals("yes"))
+                {
+                    return true;
+                }
+                if (input.Equals("n") || input.Equals("no"))
+                {
+                    return false;
                 }
             }
         }

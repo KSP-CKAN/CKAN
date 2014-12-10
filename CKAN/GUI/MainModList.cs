@@ -253,6 +253,8 @@ namespace CKAN
                     break;
             }
 
+            bool anyModsForUpdate = false;
+
             foreach (CkanModule mod in modules)
             {
                 var item = new DataGridViewRow();
@@ -311,6 +313,7 @@ namespace CKAN
                         var updateCell = new DataGridViewCheckBoxCell();
                         item.Cells.Add(updateCell);
                         updateCell.ReadOnly = false;
+                        anyModsForUpdate = true;
                     }
                     else
                     {
@@ -419,6 +422,11 @@ namespace CKAN
                 ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
                 ModList.Refresh();
             }
+
+            UpdateAllToolButton.Enabled = anyModsForUpdate;
+
+            // Re-apply the sorting of the mods list.
+            _UpdateModNameFilter();
         }
     }
 }
