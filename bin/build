@@ -2135,7 +2135,7 @@ my $METACLASS = "build/CKAN/Meta.cs";
 
 my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
 
-my @BUILD_OPTS = is_stable() ? "/p:DefineConstants=STABLE" : "";
+my @BUILD_OPTS = is_stable() ? "/p:DefineConstants=STABLE" : ();
 
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
