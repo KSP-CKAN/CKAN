@@ -1,6 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using CKAN;
+using Version = CKAN.Version;
 
 namespace Tests
 {
@@ -11,7 +14,7 @@ namespace Tests
             // TODO: Have this actually walk our directory structure and find
             // t/data. This means we can relocate our test executable and
             // things will still work.
-            string current = System.IO.Directory.GetCurrentDirectory();
+            string current = Directory.GetCurrentDirectory();
 
             return Path.Combine(current, "../../../../t/data");
         }
@@ -46,7 +49,7 @@ namespace Tests
         public static string DogeCoinFlagZipCorrupt()
         {
             string such_zip_very_corrupt_wow = Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
-        
+
             return such_zip_very_corrupt_wow;
         }
 
@@ -86,9 +89,9 @@ namespace Tests
             ";
         }
 
-        public static CKAN.CkanModule DogeCoinFlag_101_bugged_module()
+        public static CkanModule DogeCoinFlag_101_bugged_module()
         {
-            return CKAN.CkanModule.FromJson(DogeCoinFlag_101_bugged());
+            return CkanModule.FromJson(DogeCoinFlag_101_bugged());
         }
 
         ///<summary>
@@ -127,9 +130,9 @@ namespace Tests
             ";
         }
 
-        public static CKAN.CkanModule DogeCoinFlag_101_module()
+        public static CkanModule DogeCoinFlag_101_module()
         {
-            return CKAN.CkanModule.FromJson(DogeCoinFlag_101());
+            return CkanModule.FromJson(DogeCoinFlag_101());
         }
 
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
@@ -168,7 +171,7 @@ namespace Tests
 
         public static Uri TestKAN()
         {
-            return new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/testkan.zip");
+            return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
         }
 
         public static string good_ksp_dir()
@@ -217,19 +220,19 @@ namespace Tests
             ;
         }
 
-        public static CKAN.CkanModule kOS_014_module()
+        public static CkanModule kOS_014_module()
         {
-            return CKAN.CkanModule.FromJson(kOS_014());
+            return CkanModule.FromJson(kOS_014());
         }
 
         public static string KS_CustomAsteroids_string()
         {
-            return File.ReadAllText(Path.Combine(DataDir(),"KS/CustomAsteroids.json"));
+            return File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
         }
 
-        public static CKAN.CkanModule FireSpitterModule()
+        public static CkanModule FireSpitterModule()
         {
-            return CKAN.CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
+            return CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
         }
 
         public static string KspAvcJson()
@@ -237,9 +240,9 @@ namespace Tests
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
 
-        public static CKAN.CkanModule ModuleManagerModule()
+        public static CkanModule ModuleManagerModule()
         {
-            return CKAN.CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
+            return CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
         }
 
         public static string ModuleManagerZip()
@@ -260,11 +263,11 @@ namespace Tests
         // Taken from https://stackoverflow.com/a/20445952
         public static string NewTempDir()
         {
-            string tempFolder = Path.GetTempFileName();
-            File.Delete(tempFolder);
-            Directory.CreateDirectory(tempFolder);
+            string temp_folder = Path.GetTempFileName();
+            File.Delete(temp_folder);
+            Directory.CreateDirectory(temp_folder);
 
-            return tempFolder;
+            return temp_folder;
         }
 
         // Ugh, this is awful.
@@ -281,6 +284,40 @@ namespace Tests
             {
                 File.Copy(file, file.Replace(src, dst));
             }
+        }
+    }
+
+    public class RandomModuleGenerator
+    {
+        public Random Generator { get; set; }
+
+        public RandomModuleGenerator(Random generator)
+        {
+            Generator = generator;
+        }
+
+        public CkanModule GeneratorRandomModule(
+            KSPVersion kspVersion = null,
+            List<RelationshipDescriptor> conflicts = null,
+            List<RelationshipDescriptor> depends = null,
+            List<RelationshipDescriptor> sugests = null,
+            List<String> provides = null)
+        {
+            var mod = new CkanModule
+            {
+                name = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                identifier = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
+                ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
+                version = new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
+            };
+            mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
+            mod.conflicts = conflicts;
+            mod.depends = depends;
+            mod.suggests = sugests;
+            mod.provides = provides;
+            return mod;
         }
     }
 }

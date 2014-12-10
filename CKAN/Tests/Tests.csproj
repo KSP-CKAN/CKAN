@@ -28,29 +28,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CKAN\Relationships\RelationshipResolver.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="CKAN\KSPVersion.cs" />
-    <Compile Include="CKAN\Net.cs" />
-    <Compile Include="CKAN\Version.cs" />
-    <Compile Include="CKAN\Module.cs" />
-    <Compile Include="CKAN\Registry.cs" />
-    <Compile Include="CKAN\Repo.cs" />
+    <Compile Include="CKAN\Types\KSPVersion.cs" />
+    <Compile Include="CKAN\Net\Net.cs" />
+    <Compile Include="CKAN\Types\Version.cs" />
+    <Compile Include="CKAN\Types\Module.cs" />
+    <Compile Include="CKAN\Registry\Registry.cs" />
+    <Compile Include="CKAN\Net\Repo.cs" />
     <Compile Include="CKAN\Cache.cs" />
     <Compile Include="CKAN\KSP.cs" />
     <Compile Include="CKAN\ModuleInstaller.cs" />
     <Compile Include="CKAN\KSPManager.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\GitHubTests.cs" />
-    <Compile Include="CKAN\ModuleInstallDescriptor.cs" />
+    <Compile Include="CKAN\Types\ModuleInstallDescriptor.cs" />
     <Compile Include="ZipLib.cs" />
-    <Compile Include="CKAN\SanityChecker.cs" />
+    <Compile Include="CKAN\Relationships\SanityChecker.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="CKAN\KSPPathUtils.cs" />
     <Compile Include="DisposableKSP.cs" />
     <Compile Include="CKAN\Meta.cs" />
-    <Compile Include="CKAN\License.cs" />
-    <Compile Include="CKAN\ReleaseStatus.cs" />
-    <Compile Include="CKAN\RegistryLive.cs" />
+    <Compile Include="CKAN\Types\License.cs" />
+    <Compile Include="CKAN\Types\ReleaseStatus.cs" />
+    <Compile Include="CKAN\Registry\RegistryLive.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
