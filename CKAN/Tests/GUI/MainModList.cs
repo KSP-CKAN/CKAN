@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using CKAN;
 using NUnit.Framework;
 using Tests;
 
 namespace CKANTests
 {
-    [TestFixture]    
+    [TestFixture]
     public class MainModListTests
     {
         [Test]
         public void OnCreation_HasDefaultFilters()
         {
-            var item = new MainModList(delegate {});
+            var item = new MainModList(delegate { });
             Assert.That(item.ModFilter.Equals(GUIModFilter.All));
             Assert.That(item.ModNameFilter.Equals(String.Empty));
         }
@@ -45,10 +43,14 @@ namespace CKANTests
         [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
-            var item = new MainModList(delegate {});
-            Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty()), Is.Empty);
+            using (var tidy = new DisposableKSP())
+            {
+                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                var item = new MainModList(delegate { });
+                Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty()), Is.Empty);
+            }
         }
-        
+
         [Test]
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
@@ -60,7 +62,7 @@ namespace CKANTests
                 var registry = CKAN.Registry.Empty();
                 registry.AddAvailable(ckanMod);
                 var item = new MainModList(delegate { });
-                Assert.That(item.IsVisible(new GUIMod(ckanMod,registry)));
+                Assert.That(item.IsVisible(new GUIMod(ckanMod, registry)));
             }
         }
 
@@ -70,9 +72,9 @@ namespace CKANTests
             var item = new MainModList(delegate { });
             foreach (GUIModFilter filter in Enum.GetValues(typeof(GUIModFilter)))
             {
-                Assert.That(item.CountModsByFilter(filter),Is.EqualTo(0));
+                Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
             }
-            
+
         }
 
         [Test]
@@ -81,7 +83,7 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;                
+                CKAN.KSPManager._CurrentInstance = tidy.KSP;
                 var registry = CKAN.Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
@@ -90,9 +92,9 @@ namespace CKANTests
                     new GUIMod(TestData.FireSpitterModule(), registry),
                     new GUIMod(TestData.kOS_014_module(), registry)
                 });
-                Assert.That(modList,Has.Count.EqualTo(2));
+                Assert.That(modList, Has.Count.EqualTo(2));
             }
-            
+
         }
     }
 }
