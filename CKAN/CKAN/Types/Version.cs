@@ -1,7 +1,6 @@
 namespace CKAN {
-    using System.Text.RegularExpressions;
-    using log4net;
     using System;
+    using System.Text.RegularExpressions;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -10,9 +9,9 @@ namespace CKAN {
 
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
-        private int epoch = 0;
-        private string version = null;
-        private string orig_string = null;
+        private readonly int epoch;
+        private readonly string version;
+        private readonly string orig_string;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
 
         public struct Comparison {
@@ -27,14 +26,14 @@ namespace CKAN {
         public Version (string version) {
             this.orig_string = version;
 
-            Match match = Regex.Match (
+            Match match = Regex.Match(
                 version,
                 @"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$"
             );
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0) {
-                this.epoch = Convert.ToInt32( match.Groups["epoch"].Value );
+                this.epoch = Convert.ToInt32(match.Groups["epoch"].Value);
             }
 
             this.version = match.Groups["version"].Value;
@@ -44,9 +43,25 @@ namespace CKAN {
             return orig_string;
         }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as Version;
+            return other!=null ? IsEqualTo(other) : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return version.GetHashCode();
+        }
+
+        int IComparable<Version>.CompareTo(Version other)
+        {
+            return CompareTo(other);
+        }
+
         // When cast from a string.
         public static explicit operator Version(string v) {
-            return new Version (v);
+            return new Version(v);
         }
 
         /// <summary>
@@ -54,13 +69,12 @@ namespace CKAN {
         /// Returns +1 if this is greater than that
         /// Returns  0 if equal.
         /// </summary>
-
         public int CompareTo(Version that) {
 
             if (that.epoch == this.epoch && that.version == this.version) {
                 return 0;
             }
- 
+
             // Compare epochs first.
             if (this.epoch < that.epoch) {
                 return -1;
@@ -79,7 +93,7 @@ namespace CKAN {
             while (comp.remainder1.Length > 0 && comp.remainder2.Length > 0) {
 
                 // Start by comparing the string parts.
-                comp = StringComp (comp.remainder1, comp.remainder2);
+                comp = StringComp(comp.remainder1, comp.remainder2);
 
                 // If we've found a difference, return it.
                 if (comp.compare_to != 0) {
@@ -90,7 +104,7 @@ namespace CKAN {
                 // It's okay not to check if our strings are exhausted, because
                 // if they are the exhausted parts will return zero.
 
-                comp = NumComp (comp.remainder1, comp.remainder2);
+                comp = NumComp(comp.remainder1, comp.remainder2);
 
                 // Again, return difference if found.
                 if (comp.compare_to != 0) {
@@ -111,21 +125,21 @@ namespace CKAN {
         }
 
         public bool IsEqualTo(Version that) {
-            return CompareTo (that) == 0;
+            return CompareTo(that) == 0;
         }
 
         public bool IsLessThan(Version that) {
-            return CompareTo (that) < 0;
+            return CompareTo(that) < 0;
         }
 
         public bool IsGreaterThan(Version that) {
-            return CompareTo (that) > 0;
+            return CompareTo(that) > 0;
         }
 
         /// <summary>
         /// Compare the leading non-numerical parts of two strings
         /// </summary>
-       
+
         internal static Comparison StringComp(string v1, string v2)
         {
             var comp = new Comparison();

@@ -4,9 +4,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using System.Linq;
 
 namespace CKAN
 {
@@ -24,8 +21,7 @@ namespace CKAN
         public Uri homepage;
         public Uri bugtracker;
 
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
-        public Uri kerbalstuff;
+        [JsonConverter(typeof (JsonOldResourceUrlConverter))] public Uri kerbalstuff;
     }
 
     /// <summary>
@@ -34,47 +30,46 @@ namespace CKAN
 
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
-    [JsonObject(MemberSerialization.OptIn)]
-    public class Module
+    [JsonObject(MemberSerialization.OptIn)] public class Module
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Module));
 
         // identifier, license, and version are always required, so we know
         // what we've got.
 
-        [JsonProperty("abstract")] public string @abstract;
-        [JsonProperty("description")] public string description;
+        [JsonProperty("abstract")] public readonly string @abstract;
+        [JsonProperty("description")] public readonly string description;
 
-        [JsonProperty("author")] [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public List<string> author;
+        [JsonProperty("author"), JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public readonly
+            List<string> author;
 
-        [JsonProperty("comment")] public string comment;
+        [JsonProperty("comment")] public readonly string comment;
 
-        [JsonProperty("conflicts")] public List<RelationshipDescriptor> conflicts;
-        [JsonProperty("depends")] public List<RelationshipDescriptor> depends;
+        [JsonProperty("conflicts")] public readonly List<RelationshipDescriptor> conflicts;
+        [JsonProperty("depends")] public readonly List<RelationshipDescriptor> depends;
 
-        [JsonProperty("download")] public Uri download;
-        [JsonProperty("download_size")] public long download_size;
-        [JsonProperty("identifier", Required = Required.Always)] public string identifier;
+        [JsonProperty("download")] public readonly Uri download;
+        [JsonProperty("download_size")] public readonly long download_size;
+        [JsonProperty("identifier", Required = Required.Always)] public readonly string identifier;
 
         [JsonProperty("ksp_version")] public KSPVersion ksp_version;
-
         [JsonProperty("ksp_version_max")] public KSPVersion ksp_version_max;
         [JsonProperty("ksp_version_min")] public KSPVersion ksp_version_min;
 
-        [JsonProperty("license", Required = Required.Always)] public License license;
+        [JsonProperty("license", Required = Required.Always)] public readonly License license;
 
-        [JsonProperty("name")] public string name;
+        [JsonProperty("name")] public readonly string name;
 
-        [JsonProperty("provides")] public List<string> provides;
+        [JsonProperty("provides")] public readonly List<string> provides;
 
-        [JsonProperty("recommends")] public List<RelationshipDescriptor> recommends;
-        [JsonProperty("release_status")] public ReleaseStatus release_status;
+        [JsonProperty("recommends")] public readonly List<RelationshipDescriptor> recommends;
+        [JsonProperty("release_status")] public readonly ReleaseStatus release_status;
 
-        [JsonProperty("resources")] public ResourcesDescriptor resources;
-        [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;
-        [JsonProperty("version", Required = Required.Always)] public Version version;
+        [JsonProperty("resources")] public readonly ResourcesDescriptor resources;
+        [JsonProperty("suggests")] public readonly List<RelationshipDescriptor> suggests;
+        [JsonProperty("version", Required = Required.Always)] public readonly Version version;
 
-        [JsonProperty("supports")] public List<RelationshipDescriptor> supports; 
+        [JsonProperty("supports")] public readonly List<RelationshipDescriptor> supports;
 
         // A list of eveything this mod provides.
         public List<string> ProvidesList
@@ -98,6 +93,19 @@ namespace CKAN
         public string serialise()
         {
             return JsonConvert.SerializeObject(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Module;
+            return other != null
+                ? identifier.Equals(other.identifier) && version.Equals(other.version)
+                : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return identifier.GetHashCode();
         }
 
         public override string ToString()
@@ -230,44 +238,16 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
-//      private static JsonSchema metadata_schema;
-//      private static string metadata_schema_path = "CKAN.schema";
-//      private static bool metadata_schema_missing_warning_fired;
-        [JsonProperty("install")] public ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
+        //      private static JsonSchema metadata_schema;
+        //      private static string metadata_schema_path = "CKAN.schema";
+        //      private static bool metadata_schema_missing_warning_fired;
+        [JsonProperty("install")] public readonly ModuleInstallDescriptor[] install;
+        [JsonProperty("spec_version", Required = Required.Always)] public readonly Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
-
             log.Debug("In-client JSON schema validation unimplemented.");
-            return true;
-            // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
-
-//            if (metadata_schema == null)
-//            {
-//                string schema = "";
-//
-//                try
-//                {
-//                    schema = File.ReadAllText(metadata_schema_path);
-//                }
-//                catch (Exception)
-//                {
-//                    if (!metadata_schema_missing_warning_fired)
-//                    {
-//                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-//                            metadata_schema_path);
-//                        metadata_schema_missing_warning_fired = true;
-//                    }
-//
-//                    return true;
-//                }
-//
-//                metadata_schema = JsonSchema.Parse(schema);
-//            }
-//
-//            JObject obj = JObject.Parse(json);
-//            return obj.IsValid(metadata_schema);
+            return true;          
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
@@ -307,15 +287,15 @@ namespace CKAN
             }
 
             // NOTE: Many of these tests may be better inour Deserialisation handler.
-            if (! newModule.IsSpecSupported())
+            if (!newModule.IsSpecSupported())
             {
                 throw new UnsupportedKraken(
                     String.Format(
                         "{0} requires CKAN {1}, we can't read it.",
                         newModule,
                         newModule.spec_version
-                    )
-                );
+                        )
+                    );
             }
 
             // Check everything in the spec if defined.
