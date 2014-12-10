@@ -5,13 +5,17 @@ using log4net;
 
 namespace CKAN
 {
-    public class RelationshipResolverOptions
+    public class RelationshipResolverOptions : ICloneable
     {
         public bool with_all_suggests = false;
         public bool with_recommends = true;
         public bool with_suggests = false;
         public bool without_toomanyprovides_kraken = false;
         public bool without_enforce_consistency = false;
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     // Alas, it appears that structs cannot have defaults. Try
@@ -28,7 +32,7 @@ namespace CKAN
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private Registry registry;
 
@@ -51,26 +55,27 @@ namespace CKAN
 
             foreach (string module in modules)
             {
+
                 CkanModule mod = registry.LatestAvailable(module);
                 if (mod == null)
                 {
                     throw new ModuleNotFoundKraken(module);
                 }
-                 
+
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 
-                foreach (CkanModule listed_mod in this.modlist.Values)
+                foreach (CkanModule listed_mod in modlist.Values)
                 {
                     if (listed_mod.ConflictsWith(mod))
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.",mod, listed_mod));
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listed_mod));
                     }
                 }
 
                 user_requested_mods.Add(mod);
-                this.Add(mod);
+                Add(mod);
             }
-             
+
             // Now that we've already pre-populated modlist, we can resolve
             // the rest of our dependencies.
 
@@ -83,7 +88,7 @@ namespace CKAN
             var final_modules = new List<Module>(modlist.Values);
             final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
 
-            if(!options.without_enforce_consistency)
+            if (!options.without_enforce_consistency)
             {
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
@@ -115,7 +120,7 @@ namespace CKAN
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
             // is true.
-            RelationshipResolverOptions sub_options = options;
+            var sub_options = (RelationshipResolverOptions)options.Clone();
             sub_options.with_suggests = false;
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
@@ -144,7 +149,7 @@ namespace CKAN
         /// 
         /// Throws a TooManyModsProvideKraken if we have too many choices.
         /// </summary>
-        private void ResolveStanza(List<RelationshipDescriptor> stanza, RelationshipResolverOptions options, bool soft_resolve = false)
+        private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, RelationshipResolverOptions options, bool soft_resolve = false)
         {
             if (stanza == null)
             {
@@ -173,7 +178,7 @@ namespace CKAN
 
                 if (candidates.Count == 0)
                 {
-                    if (! soft_resolve)
+                    if (!soft_resolve)
                     {
                         log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
                         throw new ModuleNotFoundKraken(dep_name);
@@ -189,7 +194,7 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     // TODO: It would be great if instead we picked the one with the
                     // most recommendations.
-                    if(options.without_toomanyprovides_kraken)
+                    if (options.without_toomanyprovides_kraken)
                     {
                         continue;
                     }
@@ -204,7 +209,7 @@ namespace CKAN
                 // list thus far, as well as everything on the system.
 
                 var fixed_mods =
-                    new HashSet<Module>(this.modlist.Values);
+                    new HashSet<Module>(modlist.Values);
 
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
@@ -273,7 +278,7 @@ namespace CKAN
             {
                 // It's okay if there's already a key for one of our aliases
                 // in the resolution list. In which case, we don't do anything.
-                if (! modlist.ContainsKey(alias))
+                if (!modlist.ContainsKey(alias))
                 {
                     log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
                     modlist.Add(alias, module);

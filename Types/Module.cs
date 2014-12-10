@@ -11,6 +11,7 @@ namespace CKAN
     {
         public string max_version;
         public string min_version;
+        //Why is the identifier called name? 
         public /* required */ string name;
         public string version;
     }
@@ -247,13 +248,8 @@ namespace CKAN
         };
         // Only CKAN modules can have install and bundle instructions.
 
-        //      private static JsonSchema metadata_schema;
-        //      private static string metadata_schema_path = "CKAN.schema";
-        //      private static bool metadata_schema_missing_warning_fired;
-        [JsonProperty("install")]
-        public ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version", Required = Required.Always)]
-        public Version spec_version;
+        [JsonProperty("install")] public ModuleInstallDescriptor[] install;
+        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
