@@ -471,9 +471,9 @@ namespace CKAN.CmdLine
                 Console.WriteLine(kraken);
                 return Exit.ERROR;
             }
-            catch (DownloadErrorsKraken kraken)
+            catch (DownloadErrorsKraken)
             {
-                User.displayError(kraken.Message);
+                User.displayError("One or more files failed to download, stopped.");
                 return Exit.ERROR;
             }
 
