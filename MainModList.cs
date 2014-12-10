@@ -33,19 +33,9 @@ namespace CKAN
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
-            var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();
-            var ksp_version = KSPManager.CurrentInstance.Version();
-            var has_any_updates = false;
-            foreach (var ckan_module in ckanModules)
-            {
-                ckan_module.UpdateModFieldsViaRegistry(registry, ksp_version);
-                if (ckan_module.HasUpdate)
-                    has_any_updates = true;
-            }
+            var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();                        
             var gui_mods = ckanModules.Select(m => new GUIMod(m, registry)).ToList();
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
-            var rows = MainModList.ConstructModList(mainModList.Modules);
-            //rows.Sort();
+            var rows = MainModList.ConstructModList(mainModList.Modules);            
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
             ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
@@ -58,6 +48,7 @@ namespace CKAN
             FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})", mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
             FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", mainModList.CountModsByFilter(GUIModFilter.Incompatible));
 
+            var has_any_updates = gui_mods.Any(mod=>mod.HasUpdate);            
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
         }
