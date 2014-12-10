@@ -95,8 +95,12 @@ namespace Tests.CKAN.Relationships
 
         }
 
-        [Test]
-        [Ignore("Check if intended")]
+        // Right now our RR always returns the modules it was provided. However
+        // if we've already got the same version(s) installed, it should be able to
+        // return a list *without* them. This isn't a hard error at the moment,
+        // since ModuleInstaller.InstallList will ignore already installed mods, but
+        // it would be nice to have. Discussed a little in GH #521.
+        [Test][Category("TODO")][Explicit]
         public void ModList_WithInstalledModules_DoesNotContainThem()
         {
             var list = new List<string>();
