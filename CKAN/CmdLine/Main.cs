@@ -33,19 +33,11 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            // If we're starting with no options, and this isn't
-            // a stable build, then invoke the GUI instead.
+            // If we're starting with no options then invoke the GUI instead.
 
             if (args.Length == 0)
             {
-                if (Meta.IsStable())
-                {
-                    args = new string[] { "--help" };
-                }
-                else
-                {
-                    return Gui();
-                }
+                return Gui();
             }
 
             Options cmdline;

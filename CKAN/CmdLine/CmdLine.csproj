@@ -8,7 +8,6 @@
     <RootNamespace>CKAN.CmdLine</RootNamespace>
     <AssemblyName>CmdLine</AssemblyName>
     <StartupObject>CKAN.CmdLine.MainClass</StartupObject>
-    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
