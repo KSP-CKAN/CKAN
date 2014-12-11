@@ -1,11 +1,11 @@
 using NUnit.Framework;
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.SharpZipLib.Zip;
-using CKAN;
 using System.Text.RegularExpressions;
+using System.Transactions;
+using CKAN;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace CKANTests
 {
@@ -113,12 +113,12 @@ namespace CKANTests
             }
         }
 
-        #pragma warning disable 0414
+#pragma warning disable 0414
 
         // GH #315, all of these should result in the same output.
         // Even though they're not necessarily all spec-valid, we should accept them
         // nonetheless.
-        private static readonly string[] SuchPaths =
+        public static readonly string[] SuchPaths =
         {
             "GameData/SuchTest",
             "GameData/SuchTest/",
@@ -128,9 +128,10 @@ namespace CKANTests
             "GameData/SuchTest\\"
         };
 
-        #pragma warning restore 0414
+#pragma warning restore 0414
 
-        [Test][TestCaseSource("SuchPaths")]
+        [Test]
+        [TestCaseSource("SuchPaths")]
         public void FindInstallbleFilesWithBonusPath(string path)
         {
             dogemod.install[0].install_to = path;
@@ -190,7 +191,8 @@ namespace CKANTests
             string dogezip = Tests.TestData.DogeCoinFlagZip();
             CkanModule bugged_mod = Tests.TestData.DogeCoinFlag_101_bugged_module();
 
-            Assert.Throws<BadMetadataKraken>(delegate {
+            Assert.Throws<BadMetadataKraken>(delegate
+            {
                 CKAN.ModuleInstaller.FindInstallableFiles(bugged_mod, dogezip, null);
             });
 
@@ -206,18 +208,19 @@ namespace CKANTests
             }
         }
 
-        #pragma warning disable 0414
+#pragma warning disable 0414
 
         // All of these targets should fail.
-        private static readonly string[] BadTargets = {
+        public static readonly string[] BadTargets = {
             "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
             "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/..",
             @"GameData\..\..\etc\pwned", @"GameData\.."
         };
 
-        #pragma warning restore 0414
+#pragma warning restore 0414
 
-        [Test][TestCaseSource("BadTargets")]
+        [Test]
+        [TestCaseSource("BadTargets")]
         public void FindInstallableFilesWithBadTarget(string location)
         {
             // This install location? It shouldn't be valid.
@@ -265,7 +268,7 @@ namespace CKANTests
             }
 
             // And now, our file should be gone!
-            Assert.IsFalse(File.Exists (file));
+            Assert.IsFalse(File.Exists(file));
         }
 
         [Test]
@@ -286,8 +289,10 @@ namespace CKANTests
                 File.Delete(tmpfile);
             }
         }
-        
-        [Test()][Category("TODO")][Explicit]
+
+        [Test()]
+        [Category("TODO")]
+        [Explicit]
         //Test how we handle corrupt data
         public void CorruptZip_242()
         {
@@ -322,7 +327,7 @@ namespace CKANTests
             string tmpfile = Path.GetTempFileName();
 
             // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
-            File.Delete (tmpfile);
+            File.Delete(tmpfile);
             CKAN.ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
 
             return tmpfile;
@@ -355,7 +360,7 @@ namespace CKANTests
         private void TestDogeCoinStanza(CKAN.ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
-            Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag",stanza.file);
+            Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag", stanza.file);
         }
 
     }
