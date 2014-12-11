@@ -176,10 +176,12 @@ namespace CKAN
                 }
             }
 
-            RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
-            options.with_recommends = false;
-            options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = true;
+            var options = new RelationshipResolverOptions
+            {
+                with_recommends = false,
+                without_toomanyprovides_kraken = true,
+                without_enforce_consistency = true
+            };
 
             RelationshipResolver resolver;
             try

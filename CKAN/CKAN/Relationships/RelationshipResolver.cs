@@ -5,8 +5,6 @@ using log4net;
 
 namespace CKAN
 {
-    // Alas, it appears that structs cannot have defaults. Try
-    // DefaultOpts() to get friendly defaults.
     public class RelationshipResolverOptions : ICloneable
     {
         public bool with_all_suggests;
@@ -87,22 +85,6 @@ namespace CKAN
                 );
             }
         }
-
-        /// <summary>
-        ///     Returns the default options for relationship resolution.
-        /// </summary>
-        public static RelationshipResolverOptions DefaultOpts()
-        {
-            var opts = new RelationshipResolverOptions
-            {
-                with_recommends = true,
-                with_suggests = false,
-                with_all_suggests = false
-            };
-
-            return opts;
-        }
-
 
         private readonly ResolveQueue queue = new ResolveQueue();
 

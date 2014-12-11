@@ -16,7 +16,7 @@ namespace Tests.CKAN.Relationships
         public void Setup()
         {
             registry = Registry.Empty();
-            options = RelationshipResolver.DefaultOpts();
+            options = new RelationshipResolverOptions();
             generator = new RandomModuleGenerator(new Random(0451));
             //Sanity checker means even incorrect RelationshipResolver logic was passing
             options.without_enforce_consistency = true;
@@ -26,7 +26,7 @@ namespace Tests.CKAN.Relationships
         public void Constructor_WithoutModules_AlwaysReturns()
         {
             registry = Registry.Empty();
-            options = RelationshipResolver.DefaultOpts();
+            options = new RelationshipResolverOptions();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<string>(),
                 options,
                 registry,
