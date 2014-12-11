@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
     public enum RelationshipType
     {
         Depends = 0,
@@ -17,7 +15,6 @@ namespace CKAN
 
     public partial class Main : Form
     {
-
         private void UpdateModInfo(CkanModule module)
         {
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
@@ -45,7 +42,7 @@ namespace CKAN
             else
             {
                 Util.Invoke(MetadataModuleGitHubLinkLabel,
-                   () => MetadataModuleGitHubLinkLabel.Text = "N/A");
+                    () => MetadataModuleGitHubLinkLabel.Text = "N/A");
             }
 
             if (module.release_status != null)
@@ -75,11 +72,11 @@ namespace CKAN
         }
 
         private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
-       
+
         private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
             TreeNode node = null;
-            
+
             if (module == null)
             {
                 return node;
@@ -146,13 +143,13 @@ namespace CKAN
                     try
                     {
                         dependencyModule = registry.LatestAvailable
-                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+                            (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                        (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+                            (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
 
                         if (dependencyModules == null)
                         {
@@ -188,13 +185,30 @@ namespace CKAN
 
         private void UpdateModDependencyGraph(CkanModule module)
         {
-            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
+            ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
+            //Can be costly. For now only update when visible. 
+            if (ModInfoTabControl.SelectedIndex != RelationshipTabPage.TabIndex)
+            {
+                return;
+            }
+            Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
         private CkanModule dependencyGraphRootModule = null;
 
-        private void _UpdateModDependencyGraph(CkanModule module)
+        private void _UpdateModDependencyGraph()
         {
+            var module = (CkanModule) ModInfoTabControl.Tag;
+            if (module == dependencyGraphRootModule)
+            {
+                return;
+            }
+            else
+            {
+                dependencyGraphRootModule = module;
+            }
+
+
             if (ModuleRelationshipType.SelectedIndex == -1)
             {
                 ModuleRelationshipType.SelectedIndex = 0;
@@ -202,30 +216,51 @@ namespace CKAN
 
             var relationshipType = (RelationshipType) ModuleRelationshipType.SelectedIndex;
 
-            dependencyGraphRootModule = module;
+
             alreadyVisited.Clear();
 
             DependsGraphTree.Nodes.Clear();
             DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
         }
 
+        // When switching tabs ensure that the resulting tab is updated. 
+        private void ModInfoIndexChanged(object sender, EventArgs e)
+        {
+            if (ModInfoTabControl.SelectedIndex == ContentTabPage.TabIndex)
+                UpdateModContentsTree(null);
+            if (ModInfoTabControl.SelectedIndex == RelationshipTabPage.TabIndex)
+                UpdateModDependencyGraph(null);
+        }
+
         private void UpdateModContentsTree(CkanModule module)
         {
-            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(module));
+            ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
+            //Can be costly. For now only update when visible. 
+            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
+            {
+                return;
+            }
+            Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
         }
 
-        private void _UpdateModContentsTreeRecursively(CkanModule module, string parentFolder, TreeNode node, List<string> items)
-        {
+        private CkanModule current_mod_contents_module;
 
-        }
-
-        private void _UpdateModContentsTree(CkanModule module)
+        private void _UpdateModContentsTree()
         {
+            var module = (CkanModule) ModInfoTabControl.Tag;
+            if (module == current_mod_contents_module)
+            {
+                return;
+            }
+            else
+            {
+                current_mod_contents_module = module;
+            }
             if (!KSPManager.CurrentInstance.Cache.IsCachedZip(module.download))
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
-                ContentsPreviewTree.Enabled = false; 
+                ContentsPreviewTree.Enabled = false;
             }
             else
             {
@@ -233,7 +268,7 @@ namespace CKAN
                 ContentsDownloadButton.Enabled = false;
                 ContentsPreviewTree.Enabled = true;
             }
-          
+
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
@@ -250,7 +285,5 @@ namespace CKAN
 
             ContentsPreviewTree.Nodes[0].ExpandAll();
         }
-
     }
-
 }
