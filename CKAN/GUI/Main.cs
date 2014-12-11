@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 
@@ -222,7 +221,7 @@ namespace CKAN
         /// with name begining with the key pressed. 
         /// </summary>        
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
-        {
+        {            
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row=>row.Visible);
             var does_name_begin_with_char = new Func<DataGridViewRow,bool>(row => 
             { 
@@ -230,14 +229,43 @@ namespace CKAN
                 var key = e.KeyChar.ToString();
                 return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             });
-
+            ModList.ClearSelection();
             DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
             if (match != null)
             {                
                 match.Selected = true;
-                //Not the best of names. Why not FirstVisableRowIndex?
-                ModList.FirstDisplayedScrollingRowIndex = match.Index;                
-            }            
+                
+                if (Util.IsLinux)
+                {
+                    try
+                    {
+
+                        var first_row_index = ModList.GetType().GetField("first_row_index",
+                            BindingFlags.NonPublic | BindingFlags.Instance);
+                        var vertical_scroll_bar = ModList.GetType().GetField("verticalScrollBar",
+                            BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ModList);
+                        var safe_set_method = vertical_scroll_bar.GetType().GetMethod("SafeValueSet",
+                            BindingFlags.NonPublic | BindingFlags.Instance);
+
+                        first_row_index.SetValue(ModList, match.Index);                        
+                        safe_set_method.Invoke(vertical_scroll_bar,
+                            new object[] {match.Index*match.Height});
+                    }
+                    catch 
+                    {
+                        //Compared to crashing ignoring the keypress is fine.
+                    }
+                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
+                    ModList.Refresh();
+                }
+                else
+                {
+                    //Not the best of names. Why not FirstVisableRowIndex?
+                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
+                }                                
+            }   
+            
+            
         }
 
         /// <summary>
