@@ -187,6 +187,7 @@ namespace CKAN
             {
                 m_TabController.HideTab("WaitTabPage");
                 m_TabController.ShowTab("ManageModsTabPage");
+                e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false, opts.Key);
                 return;
             }
 
@@ -212,7 +213,13 @@ namespace CKAN
             {
                 try
                 {
-                    InstallList(toInstall, opts.Value);
+                    if (!InstallList(toInstall, opts.Value))
+                    {
+                        // install failed for some reason, error message is already displayed to the user
+                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false, opts.Key);
+                        return;
+                    }
+
                     resolvedAllProvidedMods = true;
                 }
                 catch (TooManyModsProvideKraken tooManyProvides)
@@ -235,15 +242,19 @@ namespace CKAN
                     {
                         m_TabController.HideTab("WaitTabPage");
                         m_TabController.ShowTab("ManageModsTabPage");
+                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false, opts.Key);
                         return;
                     }
 
                     m_TabController.ShowTab("WaitTabPage");
                 }
             }
+
+            e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(true, opts.Key);
         }
 
-        private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
+        // Returns true/ false so we know to keep the log tab open and to rollback to the users's selection
+        private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
         {
             if (toInstall.Any())
             {
@@ -260,12 +271,12 @@ namespace CKAN
                 catch (ModuleNotFoundKraken ex)
                 {
                     User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
-                    return;
+                    return false;
                 }
                 catch (BadMetadataKraken ex)
                 {
                     User.WriteLine("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
-                    return;
+                    return false;
                 }
                 catch (FileExistsKraken ex)
                 {
@@ -302,25 +313,27 @@ namespace CKAN
                     }
 
                     User.WriteLine("Your GameData has been returned to its original state.\n");
-                    return;
+                    return false;
                 }
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
                     User.WriteLine(ex.InconsistenciesPretty);
-                    return;
+                    return false;
                 }
                 catch (CancelledActionKraken)
                 {
-                    return;
+                    return false;
                 }
                 catch (MissingCertificateKraken kraken)
                 {
                     // Another very pretty kraken.
                     Console.WriteLine(kraken);
-                    return;
+                    return false;
                 }
             }
+
+            return true;
         }
 
         private void OnModInstalled(CkanModule mod)
@@ -333,8 +346,42 @@ namespace CKAN
             UpdateModsList();
             m_TabController.SetTabLock(false);
 
-            AddStatusMessage("");
-            HideWaitDialog(true);
+            var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>) e.Result;
+
+            if (result.Key)
+            {
+                // install successful
+                AddStatusMessage("Success!");
+                HideWaitDialog(true);
+            }
+            else
+            {
+                // there was an error
+                // rollback user's choices but stay on the log dialog
+                AddStatusMessage("Error!");
+                SetDescription("An error occurred, check the log for information");
+                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
+                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+
+                var opts = (List<KeyValuePair<CkanModule, GUIModChangeType>>)result.Value;
+
+                foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
+                {
+                    if (opt.Value == GUIModChangeType.Install)
+                    {
+                        MarkModForInstall(opt.Key.identifier);
+                    }
+                    else if (opt.Value == GUIModChangeType.Update)
+                    {
+                        MarkModForUpdate(opt.Key.identifier);
+                    }
+                    else if (opt.Value == GUIModChangeType.Remove)
+                    {
+                        MarkModForInstall(opt.Key.identifier, true);
+                    }
+                }
+            }
+
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
         }
