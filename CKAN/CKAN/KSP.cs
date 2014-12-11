@@ -302,7 +302,7 @@ namespace CKAN
         // TODO: This would likely be better in the Registry class itself.
         public void ScanGameData()
         {
-            using (TransactionScope tx = new TransactionScope())
+            using (CkanTransaction tx = new CkanTransaction())
             {
                 this.Registry.ClearDlls();
 
