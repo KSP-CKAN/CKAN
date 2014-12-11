@@ -11,6 +11,7 @@ namespace CKAN
     {
         public string max_version;
         public string min_version;
+        //Why is the identifier called name? 
         public /* required */ string name;
         public string version;
     }
@@ -32,7 +33,7 @@ namespace CKAN
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)] public class Module
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Module));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Module));
 
         // identifier, license, and version are always required, so we know
         // what we've got.
@@ -236,7 +237,7 @@ namespace CKAN
 
         // Only CKAN modules can have install and bundle instructions.
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
 
         //      private static JsonSchema metadata_schema;
         //      private static string metadata_schema_path = "CKAN.schema";
