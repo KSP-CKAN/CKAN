@@ -180,6 +180,7 @@ namespace Tests.CKAN.Relationships
                 registry));
         }
 
+
         [Test]
         public void Constructor_WithConflictingModulesInDependancies_DoesNotThrowWithConflictSetting()
         {
