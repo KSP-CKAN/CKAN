@@ -35,6 +35,7 @@ namespace CKAN
 
             var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();                        
             var gui_mods = ckanModules.Select(m => new GUIMod(m, registry)).ToList();
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
             var rows = MainModList.ConstructModList(mainModList.Modules);            
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
