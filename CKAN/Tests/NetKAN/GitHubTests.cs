@@ -1,6 +1,5 @@
-using NUnit.Framework;
-using System;
 using CKAN.NetKAN;
+using NUnit.Framework;
 
 namespace NetKAN.GitHubTests
 {
@@ -14,17 +13,19 @@ namespace NetKAN.GitHubTests
 
         [Test()]
         [Category("FlakyNetwork")]
-        public void Release ()
+        [Category("Online")]
+        public void Release()
         {
             GithubRelease ckan = CKAN.NetKAN.GithubAPI.GetLatestRelease("KSP-CKAN/Test");
-            Assert.IsNotNull (ckan.author);
-            Assert.IsNotNull (ckan.download);
-            Assert.IsNotNull (ckan.size);
-            Assert.IsNotNull (ckan.version);
+            Assert.IsNotNull(ckan.author);
+            Assert.IsNotNull(ckan.download);
+            Assert.IsNotNull(ckan.size);
+            Assert.IsNotNull(ckan.version);
         }
 
         [Test()]
         [Category("FlakyNetwork")]
+        [Category("Online")]
         public void TestGithubRelease()
         {
             Assert.AreEqual(GithubRelease.GithubPage("KSP-CKAN/CKAN"), "https://github.com/KSP-CKAN/CKAN");

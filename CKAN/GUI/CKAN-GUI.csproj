@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
+    <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -55,6 +56,9 @@
     </Compile>
     <Compile Include="ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCompatibility.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="KSPCommandLineOptionsDialog.cs">
       <SubType>Form</SubType>

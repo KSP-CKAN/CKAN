@@ -7,10 +7,11 @@ namespace CKAN
 
     public class CkanTransaction : IDisposable
     {
-        // as per http://blogs.msdn.com/b/dbrowne/archive/2010/05/21/using-new-transactionscope-considered-harmful.aspx
-        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
-        private System.Transactions.TransactionScope m_Scope = null;
+        // as per http://blogs.msdn.com/b/dbrowne/archive/2010/05/21/using-new-transactionscope-considered-harmful.aspx
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanTransaction));
+
+        private TransactionScope m_Scope = null;
 
         public CkanTransaction()
         {
@@ -29,5 +30,6 @@ namespace CKAN
         {
             m_Scope.Dispose();
         }
+
     }
 }

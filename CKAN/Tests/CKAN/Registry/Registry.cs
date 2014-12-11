@@ -2,7 +2,6 @@ using System.Transactions;
 using NUnit.Framework;
 using CKAN;
 using Tests;
-using TransactionScope = CKAN.TransactionScope;
 
 namespace CKANTests
 {
