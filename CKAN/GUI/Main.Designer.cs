@@ -34,6 +34,7 @@ namespace CKAN
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.profilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -159,15 +160,23 @@ namespace CKAN
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.profilesToolStripMenuItem,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // profilesToolStripMenuItem
+            // 
+            this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
+            this.profilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.profilesToolStripMenuItem.Text = "Profiles";
+            this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
+            // 
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(92, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(152, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
@@ -365,7 +374,7 @@ namespace CKAN
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyPress += new KeyPressEventHandler(this.ModList_KeyPress);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // Installed
             // 
@@ -1259,6 +1268,7 @@ namespace CKAN
         private ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private TextBox MetadataModuleAbstractLabel;
+        private ToolStripMenuItem profilesToolStripMenuItem;
     }
 }
 

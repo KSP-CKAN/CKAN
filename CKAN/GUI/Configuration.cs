@@ -11,6 +11,13 @@ namespace CKAN
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
 
+        // use list of ProfilesEntry instead of dictionary because of lack of serialization support
+        public HashSet<ProfilesEntry> Profiles = new HashSet<ProfilesEntry>()
+        {
+            new ProfilesEntry { Name="default", ModIdentifiers=new List<string>() }
+        };
+        public string ActiveProfileName = "default";
+
         private string m_Path = "";
 
         public void Save()

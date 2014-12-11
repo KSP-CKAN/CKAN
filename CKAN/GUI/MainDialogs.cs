@@ -8,11 +8,13 @@ namespace CKAN
 
         private ErrorDialog m_ErrorDialog = null;
         private SettingsDialog m_SettingsDialog = null;
+        private ProfilesDialog m_ProfilesDialog = null;
        // private YesNoDialog m_YesNoDialog = null;
 
         public void RecreateDialogs()
         {
             m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
+            m_ProfilesDialog = controlFactory.CreateControl<ProfilesDialog>();
           //  m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
         }
 

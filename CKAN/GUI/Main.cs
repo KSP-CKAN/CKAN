@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -500,5 +501,18 @@ namespace CKAN
             Enabled = true;
         }
 
+        private void profilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            m_ProfilesDialog.ShowDialog();
+            Enabled = true;
+        }
+
+        public void ReloadProfile()
+        {
+            // TODO: set active mods in list, then switch to changeset tab
+        }
+
+        // TODO: on list cell click, check installed and update profile + save configuration
     }
 }
