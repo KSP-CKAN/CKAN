@@ -195,6 +195,42 @@ namespace CKAN
             }
         }
 
+        public void MarkModForInstall(string identifier, bool uninstall = false)
+        {
+            Util.Invoke(this, () => _MarkModForInstall(identifier));
+        }
+
+        private void _MarkModForInstall(string identifier, bool uninstall = false)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                CkanModule mod = (CkanModule) row.Tag;
+                if (mod.identifier == identifier)
+                {
+                    (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
+                    break;
+                }
+            }
+        }
+
+        public void MarkModForUpdate(string identifier)
+        {
+            Util.Invoke(this, () => _MarkModForUpdate(identifier));
+        }
+
+        public void _MarkModForUpdate(string identifier)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                CkanModule mod = (CkanModule)row.Tag;
+                if (mod.identifier == identifier)
+                {
+                    (row.Cells[1] as DataGridViewCheckBoxCell).Value = true;
+                    break;
+                }
+            }
+        }
+
         public void UpdateModsList(bool markUpdates = false)
         {
             Util.Invoke(this, () => _UpdateModsList(markUpdates));
