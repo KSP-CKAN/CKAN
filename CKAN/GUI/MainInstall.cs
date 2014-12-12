@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using System.Transactions;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -197,8 +196,7 @@ namespace CKAN
             m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
-            
-            using (var transation = new TransactionScope())
+            using (var transaction = new CkanTransaction())
             {
                 var downloader = new NetAsyncDownloader();
                 cancelCallback = () =>
@@ -207,6 +205,7 @@ namespace CKAN
                     installCanceled = true;
                 };
 
+            
                 SetDescription("Uninstalling selected mods");
                 installer.UninstallList(toUninstall);
                 if (installCanceled) return;
@@ -265,7 +264,7 @@ namespace CKAN
                 }
                 if (!installCanceled)
                 {
-                    transation.Complete();
+                    transaction.Complete();
                 }
                     
             }
