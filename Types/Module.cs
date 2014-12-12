@@ -40,39 +40,61 @@ namespace CKAN
         // identifier, license, and version are always required, so we know
         // what we've got.
 
-        [JsonProperty("abstract")] public string @abstract;
-        [JsonProperty("description")] public string description;
+        [JsonProperty("abstract")]
+        public string @abstract;
+        [JsonProperty("description")]
+        public string description;
 
-        [JsonProperty("author")] [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))] public List<string> author;
+        [JsonProperty("author")]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+        public List<string> author;
 
-        [JsonProperty("comment")] public string comment;
+        [JsonProperty("comment")]
+        public string comment;
 
-        [JsonProperty("conflicts")] public List<RelationshipDescriptor> conflicts;
-        [JsonProperty("depends")] public List<RelationshipDescriptor> depends;
+        [JsonProperty("conflicts")]
+        public List<RelationshipDescriptor> conflicts;
+        [JsonProperty("depends")]
+        public List<RelationshipDescriptor> depends;
 
-        [JsonProperty("download")] public Uri download;
-        [JsonProperty("download_size")] public long download_size;
-        [JsonProperty("identifier", Required = Required.Always)] public string identifier;
+        [JsonProperty("download")]
+        public Uri download;
+        [JsonProperty("download_size")]
+        public long download_size;
+        [JsonProperty("identifier", Required = Required.Always)]
+        public string identifier;
 
-        [JsonProperty("ksp_version")] public KSPVersion ksp_version;
+        [JsonProperty("ksp_version")]
+        public KSPVersion ksp_version;
 
-        [JsonProperty("ksp_version_max")] public KSPVersion ksp_version_max;
-        [JsonProperty("ksp_version_min")] public KSPVersion ksp_version_min;
+        [JsonProperty("ksp_version_max")]
+        public KSPVersion ksp_version_max;
+        [JsonProperty("ksp_version_min")]
+        public KSPVersion ksp_version_min;
 
-        [JsonProperty("license", Required = Required.Always)] public License license;
+        [JsonProperty("license", Required = Required.Always)]
+        public License license;
 
-        [JsonProperty("name")] public string name;
+        [JsonProperty("name")]
+        public string name;
 
-        [JsonProperty("provides")] public List<string> provides;
+        [JsonProperty("provides")]
+        public List<string> provides;
 
-        [JsonProperty("recommends")] public List<RelationshipDescriptor> recommends;
-        [JsonProperty("release_status")] public ReleaseStatus release_status;
+        [JsonProperty("recommends")]
+        public List<RelationshipDescriptor> recommends;
+        [JsonProperty("release_status")]
+        public ReleaseStatus release_status;
 
-        [JsonProperty("resources")] public ResourcesDescriptor resources;
-        [JsonProperty("suggests")] public List<RelationshipDescriptor> suggests;
-        [JsonProperty("version", Required = Required.Always)] public Version version;
+        [JsonProperty("resources")]
+        public ResourcesDescriptor resources;
+        [JsonProperty("suggests")]
+        public List<RelationshipDescriptor> suggests;
+        [JsonProperty("version", Required = Required.Always)]
+        public Version version;
 
-        [JsonProperty("supports")] public List<RelationshipDescriptor> supports; 
+        [JsonProperty("supports")]
+        public List<RelationshipDescriptor> supports;
 
         // A list of eveything this mod provides.
         public List<string> ProvidesList
@@ -213,6 +235,7 @@ namespace CKAN
 
     public class CkanModule : Module
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
         private static readonly string[] required_fields =
         {
             "spec_version",
@@ -223,14 +246,8 @@ namespace CKAN
             "license",
             "version"
         };
-
         // Only CKAN modules can have install and bundle instructions.
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
-
-        //      private static JsonSchema metadata_schema;
-        //      private static string metadata_schema_path = "CKAN.schema";
-        //      private static bool metadata_schema_missing_warning_fired;
         [JsonProperty("install")] public ModuleInstallDescriptor[] install;
         [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
@@ -293,7 +310,7 @@ namespace CKAN
                 throw new BadMetadataKraken(null, "Validation against spec failed");
             }
 
-            CkanModule newModule = null;
+            CkanModule newModule;
 
             try
             {
@@ -331,10 +348,9 @@ namespace CKAN
                     throw new BadMetadataKraken(null, error);
                 }
             }
-
             // All good! Return module
             return newModule;
-        }
+        }            
 
         public static string ToJson(CkanModule module)
         {
