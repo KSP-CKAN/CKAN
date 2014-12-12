@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+using NUnit.Framework;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using CKAN;
 using ICSharpCode.SharpZipLib.Zip;
-using NUnit.Framework;
 
 namespace CKANTests
 {

@@ -38,6 +38,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
+    <Compile Include="CkanTransaction.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
     <Compile Include="Types\KSPVersion.cs" />

@@ -1,8 +1,7 @@
+using System.Transactions;
 using NUnit.Framework;
-using System;
 using CKAN;
 using Tests;
-using System.Transactions;
 
 namespace CKANTests
 {
@@ -151,7 +150,7 @@ namespace CKANTests
             {
                 registry.AddAvailable(module);
 
-                using (var scope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
+                using (var scope2 = new System.Transactions.TransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     Assert.Throws<CKAN.TransactionalKraken>(delegate
                     {

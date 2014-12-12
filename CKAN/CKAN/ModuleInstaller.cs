@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System.Threading;
+using System.Transactions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using System.Transactions;
 using ChinhDo.Transactions;
 using log4net;
 
@@ -205,10 +202,7 @@ namespace CKAN
             }
 
             // We're about to install all our mods; so begin our transaction.
-            var txoptions = new TransactionOptions();
-            txoptions.Timeout = TransactionManager.MaximumTimeout;
-
-            using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, txoptions))
+            using (CkanTransaction transaction = new CkanTransaction())
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
@@ -302,7 +296,7 @@ namespace CKAN
             // We'll need our registry to record which files we've installed.
             Registry registry = registry_manager.registry;
 
-            using (var transaction = new TransactionScope())
+            using (var transaction = new CkanTransaction())
             {
                 // Install all the things!
                 IEnumerable<string> files = InstallModule(module, filename);
@@ -704,7 +698,7 @@ namespace CKAN
                 return;
             }
 
-            using (var transaction = new TransactionScope())
+            using (var transaction = new CkanTransaction())
             {
                 foreach (string mod in goners)
                 {
@@ -735,7 +729,7 @@ namespace CKAN
          
         private void Uninstall(string modName)
         {
-            using (var transaction = new TransactionScope())
+            using (var transaction = new CkanTransaction())
             {
                 InstalledModule mod = registry_manager.registry.InstalledModule(modName);
 
@@ -826,7 +820,7 @@ namespace CKAN
 
             // TODO: Download our files.
 
-            using (var tx = new TransactionScope())
+            using (var tx = new CkanTransaction())
             {
 
                 foreach (string identifier in remove)
