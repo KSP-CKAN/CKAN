@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -319,6 +319,10 @@ namespace CKAN
                     // Another very pretty kraken.
                     Console.WriteLine(kraken);
                     return;
+                }
+                catch (DownloadErrorsKraken e)
+                {
+                    return false;
                 }
             }
         }
