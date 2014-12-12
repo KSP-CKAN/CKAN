@@ -14,6 +14,7 @@ namespace CKAN {
         private string version = null;
         private string orig_string = null;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
+        public const string AutodetectedDllString = "autodetected dll";
 
         public struct Comparison {
             public int compare_to;
@@ -220,8 +221,8 @@ namespace CKAN {
         }
 
         override public string ToString()
-        {
-            return "autodetected dll";
+        {            
+            return AutodetectedDllString;
         }
     }
 

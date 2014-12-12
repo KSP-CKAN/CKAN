@@ -59,6 +59,7 @@
     <Compile Include="FormCompatibility.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GUIMod.cs" />
     <Compile Include="KSPCommandLineOptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
