@@ -22,6 +22,8 @@ my $METACLASS = "build/CKAN/Meta.cs";
 
 my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
 
+my @BUILD_OPTS = is_stable() ? "/p:DefineConstants=STABLE" : ();
+
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
 
@@ -54,7 +56,7 @@ else {
 chdir($BUILD);
 
 # And build..
-system("xbuild", "/property:Configuration=$TARGET", "/property:win32icon=../assets/ckan.ico", "CKAN.sln");
+system("xbuild", "/property:Configuration=$TARGET", @BUILD_OPTS, "/property:win32icon=../assets/ckan.ico", "CKAN.sln");
 
 say "\n\n=== Repacking ===\n\n";
 
@@ -153,4 +155,13 @@ sub add_assembly_version {
     close($fh);
 
     return;
+}
+
+sub is_stable {
+    my $branch = capturex(qw(git rev-parse --abbrev-ref HEAD));
+
+    return $branch =~ m{
+        (\b|_)stable(\b|_)|   # Contains stable as a word (underscores ok)
+        v\d+\.\d*[02468]$     # Ends with vx.y, where y is even.
+    }x;
 }
