@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Tests</RootNamespace>
     <AssemblyName>Tests</AssemblyName>
-    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -27,8 +26,11 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0-pjf-ckan_gh221\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\GUIMod.cs" />
+    <Compile Include="GUI\MainModList.cs" />
     <Compile Include="CKAN\Relationships\RelationshipResolver.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="CKAN\Types\KSPVersion.cs" />
@@ -59,6 +61,10 @@
     <ProjectReference Include="..\CKAN\CKAN.csproj">
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
+      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
+      <Name>CKAN-GUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\NetKAN\NetKAN.csproj">
       <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>

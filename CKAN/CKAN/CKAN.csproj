@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>CKAN</RootNamespace>
     <AssemblyName>CKAN</AssemblyName>
-    <!-- <DefineConstants>$(DefineConstants);STABLE</DefineConstants> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -71,4 +70,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Net\" />
+    <Folder Include="Converters\" />
+  </ItemGroup>
 </Project>

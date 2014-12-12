@@ -66,7 +66,9 @@ namespace CKAN
                     User.displayError("Directory {0} is not valid KSP directory.", m_BrowseKSPFolder.SelectedPath);
                     return;
                 }
-                KSPManager.Instances.Add("New instance", instance);
+
+                string instanceName = KSPManager.GetNextValidInstanceName("New instance");
+                KSPManager.Instances.Add(instanceName, instance);
                 UpdateInstancesList();
             }
         }
