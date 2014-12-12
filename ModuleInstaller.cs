@@ -850,7 +850,7 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers)
+        public void Upgrade(IEnumerable<string> identifiers, NetAsyncDownloader netAsyncDownloader)
         {
             List<CkanModule> upgrades = new List<CkanModule>();
 
@@ -871,7 +871,7 @@ namespace CKAN
                 upgrades.Add(latest);
             }
 
-            Upgrade(upgrades);
+            Upgrade(upgrades, netAsyncDownloader);
         }
 
         /// <summary>
@@ -879,10 +879,10 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules)
+        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncDownloader netAsyncDownloader)
         {
             // Start by making sure we've downloaded everything.
-            DownloadModules(modules);
+            DownloadModules(modules, netAsyncDownloader);
 
             foreach (CkanModule module in modules)
             {
@@ -922,7 +922,7 @@ namespace CKAN
         /// <summary>
         /// Makes sure all the specified mods are downloaded.
         /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods)
+        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncDownloader downloader)
         {
             List<CkanModule> downloads = new List<CkanModule> ();
 
@@ -936,8 +936,6 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                var downloader = new NetAsyncDownloader();
-
                 downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
             }
         }
