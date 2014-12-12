@@ -485,7 +485,7 @@ namespace CKAN
                     }
                     else
                     {
-                        first = true;
+                        first = false;
                     }
 
                     recommendedByString += mod;
