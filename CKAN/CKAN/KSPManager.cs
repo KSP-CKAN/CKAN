@@ -236,6 +236,44 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Removes the invalid KSP instance keys in the registry.
+        /// </summary>
+        public static void RemoveMissing()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Attempts to remove the requested registry key.
+        /// </summary>
+        /// <returns><c>true</c>, if registry key was removed, <c>false</c> otherwise.</returns>
+        /// <param name="key">Key to remove.</param>
+        public static bool RemoveRegistryKey(string key)
+        {
+            // Check input.
+            if (key == null)
+            {
+                return false;
+            }
+
+            var _key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(KSPPathConstants.CKAN_SUBKEY, true);
+
+            if (_key == null)
+            {
+                return false;
+            }
+            else
+            {
+                _key.DeleteValue(key);
+            }
+
+            // Write the changes.
+            _key.Close();
+
+            return true;
+        }
+
+        /// <summary>
         /// Renames an instance in the registry and saves.
         /// </summary>
         /// 
@@ -312,8 +350,21 @@ namespace CKAN
 
                 log.DebugFormat("Loading {0} from {1}", name, path);
 
-                var ksp = new KSP(path);
-                _Instances.Add(name, ksp);
+                try
+                {
+                    var ksp = new KSP(path);
+                    _Instances.Add(name, ksp);
+                }
+                catch (NotKSPDirKraken)
+                {
+                    // The current instance is not a valid KSP directory. Warn the user.
+                    log.WarnFormat("Instance {0} is not valid", name);
+
+                    // Make sure the instance is not in the list and continue to the next key.
+                    _Instances.Remove(name);
+                    log.DebugFormat("Skipped {0}", name);
+                    continue;
+                }
 
                 log.DebugFormat("Added {0} at {1}", name, path);
             }
