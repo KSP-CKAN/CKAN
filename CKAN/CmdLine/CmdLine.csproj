@@ -52,7 +52,5 @@
       <Name>CKAN-GUI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Action\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

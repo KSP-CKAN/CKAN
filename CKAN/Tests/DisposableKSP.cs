@@ -43,7 +43,7 @@ namespace Tests
                 File.Copy(registry_file, registry_path, true);
             }
 
-            _ksp = new KSP(disposable_dir);
+            _ksp = new KSP(disposable_dir, NullUser.User);
         }
 
         public void Dispose()

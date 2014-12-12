@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using CKAN;
 
 namespace CKANTests
 {
@@ -12,7 +13,7 @@ namespace CKANTests
             // Make sure that LoadInstancesFromRegistry sets the
             // internal instances_loaded variable correctly.
             Assert.IsFalse(CKAN.KSPManager.instances_loaded);
-            CKAN.KSPManager.LoadInstancesFromRegistry();
+            CKAN.KSPManager.LoadInstancesFromRegistry(NullUser.User);
             Assert.IsTrue(CKAN.KSPManager.instances_loaded);
         }
     }

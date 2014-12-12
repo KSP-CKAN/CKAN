@@ -11,7 +11,7 @@ namespace CKAN
     {
         private BackgroundWorker m_InstallWorker;
 
-        private void InstallModsReportProgress(string message, int percent)
+        private void InstallModsReportProgress(string message, int percent, IUser user)
         {
             SetDescription(message + " - " + percent + "%");
             SetProgress(percent);
@@ -33,7 +33,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            ModuleInstaller installer = ModuleInstaller.Instance;
+            ModuleInstaller installer = ModuleInstaller.GetInstance(GUI.user);
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
@@ -203,7 +203,7 @@ namespace CKAN
 
             using (var transaction = new CkanTransaction())
             {
-                var downloader = new NetAsyncDownloader();
+                var downloader = new NetAsyncDownloader(GUI.user);
                 cancelCallback = () =>
                 {
                     downloader.CancelDownload();
@@ -230,7 +230,7 @@ namespace CKAN
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    User.WriteLine(
+                    GUI.user.DisplayMessage(
                         "Module {0} required, but not listed in index, or not available for your version of KSP",
                         ex.module);
                     return;
@@ -304,30 +304,31 @@ namespace CKAN
         {
             if (toInstall.Any())
             {
-                // actual magic happens here, we run the installer with our mod list
-                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
 
+                // actual magic happens here, we run the installer with our mod list
+                ModuleInstaller.GetInstance(GUI.user).onReportModInstalled = OnModInstalled;
+                cancelCallback = downloader.CancelDownload;
                 try
                 {
-                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options, downloader);
+                    ModuleInstaller.GetInstance(GUI.user).InstallList(toInstall.ToList(), options, downloader);
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    User.WriteLine(
+                    GUI.user.DisplayMessage(
                         "Module {0} required, but not listed in index, or not available for your version of KSP",
                         ex.module);
                     return false;
                 }
                 catch (BadMetadataKraken ex)
                 {
-                    User.WriteLine("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
+                    GUI.user.DisplayMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
                     return false;
                 }
                 catch (FileExistsKraken ex)
                 {
                     if (ex.owning_module != null)
                     {
-                        User.WriteLine(
+                        GUI.user.DisplayMessage(
                             "\nOh no! We tried to overwrite a file owned by another mod!\n" +
                             "Please try a `ckan update` and try again.\n\n" +
                             "If this problem re-occurs, then it maybe a packaging bug.\n" +
@@ -344,7 +345,7 @@ namespace CKAN
                     }
                     else
                     {
-                        User.WriteLine(
+                        GUI.user.DisplayMessage(
                             "\n\nOh no!\n\n" +
                             "It looks like you're trying to install a mod which is already installed,\n" +
                             "or which conflicts with another mod which is already installed.\n\n" +
@@ -357,13 +358,13 @@ namespace CKAN
                             );
                     }
 
-                    User.WriteLine("Your GameData has been returned to its original state.\n");
+                    GUI.user.DisplayMessage("Your GameData has been returned to its original state.\n");
                     return false;
                 }
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
-                    User.WriteLine(ex.InconsistenciesPretty);
+                    GUI.user.DisplayMessage(ex.InconsistenciesPretty);
                     return false;
                 }
                 catch (CancelledActionKraken)
@@ -373,7 +374,7 @@ namespace CKAN
                 catch (MissingCertificateKraken kraken)
                 {
                     // Another very pretty kraken.
-                    Console.WriteLine(kraken);
+                    GUI.user.DisplayMessage(kraken.ToString());
                     return false;
                 }
                 catch (DownloadErrorsKraken e)

@@ -3,13 +3,13 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using CommandLine;
+using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using CommandLine;
 
 namespace CKAN.NetKAN
 {
@@ -27,6 +27,7 @@ namespace CKAN.NetKAN
         {
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Error;
+            var user = new ConsoleUser();
 
             var options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, options);
@@ -46,7 +47,7 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
-            NetFileCache cache = FindCache(options);
+            NetFileCache cache = FindCache(options, user);
 
             log.InfoFormat("Processing {0}", options.File);
 
@@ -124,8 +125,8 @@ namespace CKAN.NetKAN
                     avc.InflateMetadata(metadata, null, null);
                 }
                 catch (Newtonsoft.Json.JsonReaderException)
-                {
-                    User.WriteLine("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                {                    
+                    user.DisplayMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
                     return EXIT_ERROR;
                 }
 
@@ -305,7 +306,7 @@ namespace CKAN.NetKAN
             return JObject.Parse(File.ReadAllText(filename));
         }
 
-        internal static NetFileCache FindCache(CmdLineOptions options)
+        internal static NetFileCache FindCache(CmdLineOptions options, IUser user)
         {
             if (options.CacheDir != null)
             {
@@ -315,7 +316,7 @@ namespace CKAN.NetKAN
 
             try
             {
-                KSP ksp = KSPManager.GetPreferredInstance();
+                KSP ksp = KSPManager.GetPreferredInstance(user);
                 log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.GetCachePath());
                 return ksp.Cache;
             }

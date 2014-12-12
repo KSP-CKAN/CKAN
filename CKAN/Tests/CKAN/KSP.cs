@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using CKAN;
 using NUnit.Framework;
 
 namespace CKANTests
@@ -15,7 +16,7 @@ namespace CKANTests
         {
             ksp_dir = Tests.TestData.NewTempDir();
             Tests.TestData.CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
-            ksp = new CKAN.KSP(ksp_dir);
+            ksp = new CKAN.KSP(ksp_dir,NullUser.User);
         }
 
         [TearDown()]

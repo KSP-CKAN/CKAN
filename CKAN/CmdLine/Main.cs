@@ -5,18 +5,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using CommandLine;
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using System.Transactions;
 
 namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
+        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));        
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
@@ -29,6 +26,7 @@ namespace CKAN.CmdLine
         [STAThread]
         public static int Main(string[] args)
         {
+
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
@@ -40,6 +38,7 @@ namespace CKAN.CmdLine
                 return Gui();
             }
 
+            var user = new ConsoleUser();
             Options cmdline;
 
             try
@@ -49,7 +48,7 @@ namespace CKAN.CmdLine
             catch (BadCommandKraken)
             {
                 // Our help screen will already be shown. Let's add some extra data.
-                User.WriteLine("You are using CKAN version {0}", Meta.Version());
+                user.DisplayMessage("You are using CKAN version {0}", Meta.Version());
 
                 return Exit.BADOPT;
             }
@@ -74,7 +73,7 @@ namespace CKAN.CmdLine
 
             if (options.KSPdir != null && options.KSP != null)
             {
-                User.WriteLine("--ksp and --kspdir can't be specified at the same time");
+                user.DisplayMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
 
@@ -84,11 +83,11 @@ namespace CKAN.CmdLine
 
                 try
                 {
-                    KSPManager.SetCurrentInstance(options.KSP);
+                    KSPManager.SetCurrentInstance(options.KSP, user);
                 }
                 catch (InvalidKSPInstanceKraken)
                 {
-                    User.WriteLine("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
+                    user.DisplayMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
                     return Exit.BADOPT;
                 }
             }
@@ -96,18 +95,18 @@ namespace CKAN.CmdLine
             {
                 // Set a KSP directory by its path
 
-                KSPManager.SetCurrentInstanceByPath(options.KSPdir);
+                KSPManager.SetCurrentInstanceByPath(options.KSPdir, user);
             }
             else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
             {
                 // Find whatever our preferred instance is.
                 // We don't do this on `ksp/version` commands, they don't need it.
-                CKAN.KSP ksp = KSPManager.GetPreferredInstance();
+                CKAN.KSP ksp = KSPManager.GetPreferredInstance(user);
 
                 if (ksp == null)
                 {
-                    User.WriteLine("I don't know where KSP is installed.");
-                    User.WriteLine("Use 'ckan ksp help' for assistance on setting this.");
+                    user.DisplayMessage("I don't know where KSP is installed.");
+                    user.DisplayMessage("Use 'ckan ksp help' for assistance on setting this.");
                     return Exit.ERROR;
                 }
                 else
@@ -124,28 +123,28 @@ namespace CKAN.CmdLine
                     return Gui();
 
                 case "version":
-                    return Version();
+                    return Version(user);
 
                 case "update":
-                    return Update((UpdateOptions) options);
+                    return Update((UpdateOptions) options,user);
 
                 case "available":
-                    return Available();
+                    return Available(user);
 
                 case "install":
-                    return Install((InstallOptions) cmdline.options);
+                    return Install((InstallOptions) cmdline.options,user);
 
                 case "scan":
                     return Scan();
 
                 case "list":
-                    return List();
+                    return List(user);
 
                 case "show":
-                    return Show((ShowOptions) cmdline.options);
+                    return Show((ShowOptions)cmdline.options, user);
 
                 case "remove":
-                    return Remove((RemoveOptions) cmdline.options);
+                    return Remove((RemoveOptions)cmdline.options, user);
 
                 case "upgrade":
                     var upgrade = new Upgrade();
@@ -161,7 +160,7 @@ namespace CKAN.CmdLine
                     return RunSubCommand<KSP>((SubCommandOptions) cmdline.options);
 
                 default:
-                    User.WriteLine("Unknown command, try --help");
+                    user.DisplayMessage("Unknown command, try --help");
                     return Exit.BADOPT;
             }
         }
@@ -176,50 +175,50 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int Version()
+        private static int Version(IUser user)
         {
-            User.WriteLine(Meta.Version());
+            user.DisplayMessage(Meta.Version());
 
             return Exit.OK;
         }
 
-        private static int Update(UpdateOptions options)
+        private static int Update(UpdateOptions options, IUser user)
         {
-            User.WriteLine("Downloading updates...");
+            user.DisplayMessage("Downloading updates...");
 
             try
             {
                 int updated = Repo.Update(options.repo);
-                User.WriteLine("Updated information on {0} available modules", updated);
+                user.DisplayMessage("Updated information on {0} available modules", updated);
             }
             catch (MissingCertificateKraken kraken)
             {
                 // Handling the kraken means we have prettier output.
-                Console.WriteLine(kraken);
+                user.DisplayError(kraken.ToString());
                 return Exit.ERROR;
             }
 
             return Exit.OK;
         }
 
-        private static int Available()
+        private static int Available(IUser user)
         {
             List<CkanModule> available = RegistryManager.Instance(KSPManager.CurrentInstance).registry.Available();
 
-            User.WriteLine("Mods available for KSP {0}", KSPManager.CurrentInstance.Version());
-            User.WriteLine("");
+            user.DisplayMessage("Mods available for KSP {0}", KSPManager.CurrentInstance.Version());
+            user.DisplayMessage("");
 
-            var width = Console.WindowWidth;
+            var width = user.WindowWidth;
 
             foreach (CkanModule module in available)
             {
                 string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
                 if (width > 0) {
-                    User.WriteLine(entry.PadRight(width).Substring(0, width - 1));
+                    user.DisplayMessage(entry.PadRight(width).Substring(0, width - 1));
                 }
                 else
                 {
-                    User.WriteLine(entry);
+                    user.DisplayMessage(entry);
                 }
             }
 
@@ -233,16 +232,16 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int List()
+        private static int List(IUser user)
         {
             CKAN.KSP ksp = KSPManager.CurrentInstance;
 
-            User.WriteLine("\nKSP found at {0}\n", ksp.GameDir());
-            User.WriteLine("KSP Version: {0}\n",ksp.Version());
+            user.DisplayMessage("\nKSP found at {0}\n", ksp.GameDir());
+            user.DisplayMessage("KSP Version: {0}\n", ksp.Version());
 
             Registry registry = RegistryManager.Instance(ksp).registry;
 
-            User.WriteLine("Installed Modules:\n");
+            user.DisplayMessage("Installed Modules:\n");
 
             var installed = new SortedDictionary<string, Version>(registry.Installed());
 
@@ -297,35 +296,35 @@ namespace CKAN.CmdLine
                     }
                 }
 
-                User.WriteLine("{0} {1} {2}", bullet, mod.Key, mod.Value);
+                user.DisplayMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            User.WriteLine("\nLegend: ✓ - Up to date. ✗ - Incompatible. ↑ - Upgradable. ? - Unknown ");
+            user.DisplayMessage("\nLegend: ✓ - Up to date. ✗ - Incompatible. ↑ - Upgradable. ? - Unknown ");
 
             return Exit.OK;
         }
 
         // Uninstalls a module, if it exists.
-        private static int Remove(RemoveOptions options)
+        private static int Remove(RemoveOptions options, IUser user)
         {
             if (options.modules != null && options.modules.Count > 0)
             {
                 try
                 {
-                    var installer = ModuleInstaller.Instance;
+                    var installer = ModuleInstaller.GetInstance(user);
                     installer.UninstallList(options.modules);
                     return Exit.OK;
                 }
                 catch (ModNotInstalledKraken kraken)
                 {
-                    User.WriteLine("I can't do that, {0} isn't installed.", kraken.mod);
-                    User.WriteLine("Try `ckan list` for a list of installed mods.");
+                    user.DisplayMessage("I can't do that, {0} isn't installed.", kraken.mod);
+                    user.DisplayMessage("Try `ckan list` for a list of installed mods.");
                     return Exit.BADOPT;
                 }
             }
             else
             {
-                User.WriteLine("No mod selected, nothing to do");
+                user.DisplayMessage("No mod selected, nothing to do");
                 return Exit.BADOPT;
             }
         }
@@ -336,7 +335,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int Install(InstallOptions options)
+        private static int Install(InstallOptions options, IUser user)
         {
             if (options.ckan_file != null)
             {
@@ -363,7 +362,7 @@ namespace CKAN.CmdLine
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
-                User.WriteLine(
+                user.DisplayMessage(
                     "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
@@ -377,7 +376,7 @@ namespace CKAN.CmdLine
             // Install everything requested. :)
             try
             {
-                var installer = ModuleInstaller.Instance;
+                var installer = ModuleInstaller.GetInstance(user);
 
                 installer.onReportProgress = ProgressReporter.FormattedDownloads;
 
@@ -385,27 +384,27 @@ namespace CKAN.CmdLine
             }
             catch (ModuleNotFoundKraken ex)
             {
-                User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
-                User.WriteLine("If you're lucky, you can do a `ckan update` and try again.");
-                User.WriteLine("Try `ckan install --no-recommends` to skip installation of recommended modules");
+                user.DisplayMessage("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
+                user.DisplayMessage("If you're lucky, you can do a `ckan update` and try again.");
+                user.DisplayMessage("Try `ckan install --no-recommends` to skip installation of recommended modules");
                 return Exit.ERROR;
             }
             catch (BadMetadataKraken ex)
             {
-                User.WriteLine("Bad metadata detected for module {0}", ex.module);
-                User.WriteLine(ex.Message);
+                user.DisplayMessage("Bad metadata detected for module {0}", ex.module);
+                user.DisplayMessage(ex.Message);
                 return Exit.ERROR;
             }
             catch (TooManyModsProvideKraken ex)
             {
-                User.WriteLine("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
+                user.DisplayMessage("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
                 foreach (CkanModule mod in ex.modules)
                 {
-                    User.WriteLine("* {0} ({1})", mod.identifier, mod.name);
+                    user.DisplayMessage("* {0} ({1})", mod.identifier, mod.name);
                 }
 
-                User.WriteLine(""); // Looks tidier.
+                user.DisplayMessage(String.Empty); // Looks tidier.
 
                 return Exit.ERROR;
             }
@@ -413,7 +412,7 @@ namespace CKAN.CmdLine
             {
                 if (ex.owning_module != null)
                 {
-                    User.WriteLine(
+                    user.DisplayMessage(
                         "\nOh no! We tried to overwrite a file owned by another mod!\n"+
                         "Please try a `ckan update` and try again.\n\n"+
                         "If this problem re-occurs, then it maybe a packaging bug.\n"+
@@ -430,7 +429,7 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    User.WriteLine(
+                    user.DisplayMessage(
                         "\n\nOh no!\n\n"+
                         "It looks like you're trying to install a mod which is already installed,\n"+
                         "or which conflicts with another mod which is already installed.\n\n"+
@@ -443,29 +442,29 @@ namespace CKAN.CmdLine
                     );
                 }
 
-                User.WriteLine("Your GameData has been returned to its original state.\n");
+                user.DisplayMessage("Your GameData has been returned to its original state.\n");
                 return Exit.ERROR;
             }
             catch (InconsistentKraken ex)
             {
                 // The prettiest Kraken formats itself for us.
-                User.WriteLine(ex.InconsistenciesPretty);
+                user.DisplayMessage(ex.InconsistenciesPretty);
                 return Exit.ERROR;
             }
             catch (CancelledActionKraken)
             {
-                User.WriteLine("Installation cancelled at user request.");
+                user.DisplayMessage("Installation cancelled at user request.");
                 return Exit.ERROR;
             }
             catch (MissingCertificateKraken kraken)
             {
                 // Another very pretty kraken.
-                Console.WriteLine(kraken);
+                user.DisplayMessage(kraken.ToString());
                 return Exit.ERROR;
             }
             catch (DownloadErrorsKraken)
             {
-                User.displayError("One or more files failed to download, stopped.");
+                user.DisplayMessage("One or more files failed to download, stopped.");
                 return Exit.ERROR;
             }
 
@@ -474,12 +473,12 @@ namespace CKAN.CmdLine
 
         // TODO: We should have a command (probably this one) that shows
         // info about uninstalled modules.
-        private static int Show(ShowOptions options)
+        private static int Show(ShowOptions options,IUser user)
         {
             if (options.Modname == null)
             {
                 // empty argument
-                User.WriteLine("show <module> - module name argument missing, perhaps you forgot it?");
+                user.DisplayMessage("show <module> - module name argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -488,22 +487,22 @@ namespace CKAN.CmdLine
 
             if (module == null)
             {
-                User.WriteLine("{0} not installed.", options.Modname);
-                User.WriteLine("Try `ckan list` to show installed modules");
+                user.DisplayMessage("{0} not installed.", options.Modname);
+                user.DisplayMessage("Try `ckan list` to show installed modules");
                 return Exit.BADOPT;
             }
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            User.WriteLine("{0} version {1}", module.Module.name, module.Module.version);
+            user.DisplayMessage("{0} version {1}", module.Module.name, module.Module.version);
 
-            User.WriteLine("\n== Files ==\n");
+            user.DisplayMessage("\n== Files ==\n");
 
             IEnumerable<string> files = module.Files;
 
             foreach (string file in files)
             {
-                User.WriteLine(file);
+                user.DisplayMessage(file);
             }
 
             return Exit.OK;

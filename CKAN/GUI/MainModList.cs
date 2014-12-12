@@ -192,7 +192,7 @@ namespace CKAN
                 resolver.ModList()
                     .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
-            var installer = ModuleInstaller.Instance;
+            ModuleInstaller installer = ModuleInstaller.GetInstance(GUI.user);
             foreach (var reverseDependencies in modulesToRemove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed

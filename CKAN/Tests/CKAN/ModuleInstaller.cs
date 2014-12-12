@@ -347,7 +347,7 @@ namespace CKANTests
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
                     // This should throw, as our tidy KSP has no mods installed.
-                    CKAN.ModuleInstaller.Instance.UninstallList("Foo");
+                    CKAN.ModuleInstaller.GetInstance(NullUser.User).UninstallList("Foo");
                 });
 
                 CKAN.KSPManager._CurrentInstance = null; // I weep even more.
