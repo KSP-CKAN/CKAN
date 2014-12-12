@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
 {
     public class Upgrade : ICommand
     {
-        public Upgrade()
+        public IUser User { get; set; }
+
+        public Upgrade(IUser user)
+        {
+            User = user;
+        }
+
+        public Upgrade():this(new ConsoleUser())
         {
         }
 
@@ -16,14 +22,14 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                User.WriteLine("\nUnsupported option at this time.");
+                User.DisplayMessage("\nUnsupported option at this time.");
                 return Exit.BADOPT;
             }
 
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
-                User.WriteLine("Usage: ckan upgrade Mod [Mod2, ...]");
+                User.DisplayMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
 
@@ -42,7 +48,7 @@ namespace CKAN.CmdLine
 
                     if (module == null)
                     {
-                        User.WriteLine("Cannot install {0}, version {1} not available",ident,version);
+                        User.DisplayMessage("Cannot install {0}, version {1} not available",ident,version);
                         return Exit.ERROR;
                     }
 
@@ -56,12 +62,10 @@ namespace CKAN.CmdLine
                 }
             }
 
-            User.WriteLine("\nUpgrading modules...\n");
-
+            User.DisplayMessage("\nUpgrading modules...\n");
             // TODO: These instances all need to go.
-            ModuleInstaller.Instance.Upgrade(to_upgrade, new NetAsyncDownloader());
-
-            User.WriteLine("\nDone!\n");
+            ModuleInstaller.GetInstance(User).Upgrade(to_upgrade,new NetAsyncDownloader(User));
+            User.DisplayMessage("\nDone!\n");
 
             return Exit.OK;
 
