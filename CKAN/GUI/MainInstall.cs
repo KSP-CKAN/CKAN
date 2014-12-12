@@ -345,6 +345,10 @@ namespace CKAN
                     Console.WriteLine(kraken);
                     return;
                 }
+                catch (DownloadErrorsKraken e)
+                {
+                    return false;
+                }
             }
         }
 
