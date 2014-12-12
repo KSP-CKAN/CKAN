@@ -22,6 +22,7 @@ namespace CKAN
     /// </summary>
     public class NetAsyncDownloader
     {
+        public IUser User { get; set; }
 
         // Private utility class for tracking downloads
         private class NetAsyncDownloaderDownloadPart
@@ -60,8 +61,9 @@ namespace CKAN
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
         /// </summary>
-        public NetAsyncDownloader()
+        public NetAsyncDownloader(IUser user)
         {
+            User = user;
             downloads = new List<NetAsyncDownloaderDownloadPart>();
         }
 
@@ -81,7 +83,7 @@ namespace CKAN
 
             for (int i = 0; i < downloads.Count; i++)
             {
-                User.WriteLine("Downloading \"{0}\"", downloads[i].url);
+                User.DisplayMessage("Downloading \"{0}\"", downloads[i].url);
 
                 // We need a new variable for our closure/lambda, hence index = i.
                 int index = i;
@@ -137,7 +139,7 @@ namespace CKAN
                 this.onProgressReport += (percent, bytesPerSecond, bytesLeft) =>
                         progress(
                             String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond / 1024, bytesLeft / 1024 / 1024),
-                            percent
+                            percent, User
                         );
             }
 
@@ -204,7 +206,7 @@ namespace CKAN
                 {
                     if (errors[i] != null)
                     {
-                        User.Error("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                        User.DisplayError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
                     }
                     else
                     {
