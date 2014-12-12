@@ -16,6 +16,7 @@ namespace CKAN
 
         private void _UpdateFilters()
         {
+            if (ModList == null) return;
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = ((GUIMod)row.Tag);

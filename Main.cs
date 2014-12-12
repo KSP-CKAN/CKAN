@@ -49,7 +49,7 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             m_Instance = this;
-            
+            mainModList = new MainModList(source => UpdateFilters(this));            
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
@@ -85,7 +85,7 @@ namespace CKAN
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
             
-            mainModList = new MainModList(source => UpdateFilters(this));            
+            
 
             RecreateDialogs();
 
