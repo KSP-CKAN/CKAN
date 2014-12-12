@@ -59,7 +59,7 @@ namespace CKAN.CmdLine
             User.WriteLine("\nUpgrading modules...\n");
 
             // TODO: These instances all need to go.
-            ModuleInstaller.Instance.Upgrade(to_upgrade);
+            ModuleInstaller.Instance.Upgrade(to_upgrade, new NetAsyncDownloader());
 
             User.WriteLine("\nDone!\n");
 

@@ -1,9 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Forms;
 using System.Threading;
+using System.Transactions;
+using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -19,7 +21,7 @@ namespace CKAN
 
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
-        private bool installCanceled = false;
+        private volatile bool installCanceled = false;
 
         // this will be the final list of mods we want to install 
         private HashSet<string> toInstall = new HashSet<string>();
@@ -195,63 +197,87 @@ namespace CKAN
             m_TabController.RenameTab("WaitTabPage", "Installing mods");
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
-
-            SetDescription("Uninstalling selected mods");
-            installer.UninstallList(toUninstall);
-
-            SetDescription("Updating selected mods");
-            installer.Upgrade(toUpgrade);
-
-            // TODO: We should be able to resolve all our provisioning conflicts
-            // before we start installing anything. CKAN.SanityChecker can be used to
-            // pre-check if our changes are going to be consistent.
-
-            bool resolvedAllProvidedMods = false;
-
-            while(!resolvedAllProvidedMods)
+            
+            using (var transation = new TransactionScope())
             {
+                var downloader = new NetAsyncDownloader();
+                cancelCallback = () =>
+                {
+                    downloader.CancelDownload();
+                    installCanceled = true;
+                };
+
+                SetDescription("Uninstalling selected mods");
+                installer.UninstallList(toUninstall);
+                if (installCanceled) return;
+                SetDescription("Updating selected mods");
                 try
                 {
-                    InstallList(toInstall, opts.Value);
-                    resolvedAllProvidedMods = true;
+                    installer.Upgrade(toUpgrade, downloader);
                 }
-                catch (TooManyModsProvideKraken tooManyProvides)
+                catch (ModuleNotFoundKraken ex)
                 {
-                    Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
-
-                    m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                    m_TabController.SetTabLock(true);
-
-                    lock (this)
-                    {
-                        Monitor.Wait(this);
-                    }
-
-                    m_TabController.SetTabLock(false);
-
-                    m_TabController.HideTab("ChooseProvidedModsTabPage");
-
-                    if (installCanceled)
-                    {
-                        m_TabController.HideTab("WaitTabPage");
-                        m_TabController.ShowTab("ManageModsTabPage");
-                        return;
-                    }
-
-                    m_TabController.ShowTab("WaitTabPage");
+                    User.WriteLine("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
+                    return;
                 }
+
+
+                // TODO: We should be able to resolve all our provisioning conflicts
+                // before we start installing anything. CKAN.SanityChecker can be used to
+                // pre-check if our changes are going to be consistent.
+
+                bool resolvedAllProvidedMods = false;
+                
+                while (!resolvedAllProvidedMods)
+                {
+                    if (installCanceled) return;
+                    try
+                    {
+
+                        InstallList(toInstall, opts.Value, downloader);
+                        resolvedAllProvidedMods = true;
+                    }
+                    catch (TooManyModsProvideKraken tooManyProvides)
+                    {
+                        Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
+
+                        m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                        m_TabController.SetTabLock(true);
+
+                        lock (this)
+                        {
+                            Monitor.Wait(this);
+                        }
+
+                        m_TabController.SetTabLock(false);
+
+                        m_TabController.HideTab("ChooseProvidedModsTabPage");
+
+                        if (installCanceled)
+                        {
+                            m_TabController.HideTab("WaitTabPage");
+                            m_TabController.ShowTab("ManageModsTabPage");
+                            return;
+                        }
+
+                        m_TabController.ShowTab("WaitTabPage");
+                    }
+                }
+                if (!installCanceled)
+                {
+                    transation.Complete();
+                }
+                    
             }
+            
         }
 
-        private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options)
+        private void InstallList(HashSet<string> toInstall, RelationshipResolverOptions options, NetAsyncDownloader downloader)
         {
             if (toInstall.Any())
             {
-                var downloader = new NetAsyncDownloader();
-
                 // actual magic happens here, we run the installer with our mod list
-                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
-                cancelCallback = downloader.CancelDownload;
+                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;                
 
                 try
                 {
