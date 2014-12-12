@@ -35,14 +35,12 @@ namespace CKAN
         public ControlFactory controlFactory = null;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
-
         private TabController m_TabController = null;
 
         public MainModList mainModList { get; private set; }
 
-        public Main()
+        public Main(GUIUser User)
         {
-            User.frontEnd = FrontEndType.UI;
             User.yesNoDialog = YesNoDialog;
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
@@ -57,7 +55,7 @@ namespace CKAN
 
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
-            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() == null)
+            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance(GUI.user) == null)
             {
                 Hide();
 
@@ -392,7 +390,7 @@ namespace CKAN
 
             ResetProgress();
             ShowWaitDialog(false);
-            ModuleInstaller.Instance.CachedOrDownload(module);
+            ModuleInstaller.GetInstance(GUI.user).CachedOrDownload(module);
             HideWaitDialog(true);
 
             UpdateModContentsTree(module);
@@ -473,7 +471,7 @@ namespace CKAN
             }
             catch(Exception exception)
             {
-                User.Error("Couldn't start KSP. {0}.", exception.Message);
+                GUI.user.DisplayError("Couldn't start KSP. {0}.", exception.Message);
             }
         }
 
@@ -512,5 +510,32 @@ namespace CKAN
             Enabled = true;
         }
 
+    }
+
+    public class GUIUser : IUser
+    {
+        public Func<string,bool> yesNoDialog;
+        public Action<string, object[]> displayMessage;
+        public Action<string, object[]> displayError;       
+
+        public bool DisplayYesNoDialog(string message)
+        {
+            return yesNoDialog(message);
+        }
+
+        public void DisplayMessage(string message, params object[] args)
+        {
+            
+        }
+
+        public void DisplayError(string message, params object[] args)
+        {
+            
+        }
+
+        public int WindowWidth
+        {
+            get { return -1; }
+        }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -21,9 +16,9 @@ namespace CKAN
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
-            if (!KSPManager.Instances.Any())
+            if (!KSPManager.GetInstances(GUI.user).Any())
             {
-                KSPManager.FindAndRegisterDefaultInstance();
+                KSPManager.FindAndRegisterDefaultInstance(GUI.user);
             }
 
             UpdateInstancesList();
@@ -41,7 +36,7 @@ namespace CKAN
 
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in KSPManager.Instances)
+            foreach (var instance in KSPManager.GetInstances(GUI.user))
             {
                 var item = new ListViewItem() { Text = instance.Key, Tag = instance.Key };
 
@@ -60,15 +55,16 @@ namespace CKAN
                 KSP instance;
                 try
                 {
-                     instance = new KSP(m_BrowseKSPFolder.SelectedPath);
+                    instance = new KSP(m_BrowseKSPFolder.SelectedPath, GUI.user);
                 }
                 catch (NotKSPDirKraken){
-                    User.displayError("Directory {0} is not valid KSP directory.", m_BrowseKSPFolder.SelectedPath);
+                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {m_BrowseKSPFolder.SelectedPath});
                     return;
                 }
 
+
                 string instanceName = KSPManager.GetNextValidInstanceName("New instance");
-                KSPManager.Instances.Add(instanceName, instance);
+                KSPManager.GetInstances(GUI.user).Add(instanceName, instance);
                 UpdateInstancesList();
             }
         }
@@ -79,10 +75,10 @@ namespace CKAN
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                KSPManager.SetAutoStart(instance);
+                KSPManager.SetAutoStart(instance, GUI.user);
             }
 
-            KSPManager.SetCurrentInstance(instance);
+            KSPManager.SetCurrentInstance(instance, GUI.user);
             Hide();
             Main.Instance.Show();
         }
@@ -109,7 +105,7 @@ namespace CKAN
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                KSPManager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
+                KSPManager.RenameInstance(instance, m_RenameInstanceDialog.GetResult(), GUI.user);
                 UpdateInstancesList();
             }
         }

@@ -272,7 +272,7 @@ namespace CKAN
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
-            IEnumerable<string> contents = ModuleInstaller.Instance.GetModuleContentsList(module);
+            IEnumerable<string> contents = ModuleInstaller.GetInstance(GUI.user).GetModuleContentsList(module);
             if (contents == null)
             {
                 return;
