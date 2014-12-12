@@ -1,12 +1,31 @@
 using System;
 using System.IO;
+using System.Net;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using Newtonsoft.Json;
 using ChinhDo.Transactions;
 
 namespace CKAN
 {
+    public struct Mirror
+    {
+        public string name;
+        public Uri url;
+
+        public override string ToString()
+        {
+            return String.Format("{0} ({1})", name, url.DnsSafeHost);
+        }
+    }
+
+    public struct MirrorsList
+    {
+        public Mirror[] mirrors;
+    }
+
     /// <summary>
     ///     Class for downloading the CKAN meta-info itself.
     /// </summary>
@@ -18,6 +37,21 @@ namespace CKAN
         // Right now we only use the default repo, but in the future we'll
         // want to let users add their own.
         public static readonly Uri default_ckan_repo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
+        
+        public static readonly Uri repo_master_list = new Uri("http://api.ksp-ckan.org/mirrors");
+
+        public static MirrorsList FetchMasterList(Uri master_uri = null)
+        {
+            WebClient client = new WebClient();
+
+            if (master_uri == null)
+            {
+                master_uri = repo_master_list;
+            }
+
+            string json = client.DownloadString(master_uri);
+            return JsonConvert.DeserializeObject<MirrorsList>(json);
+        }
 
         /// <summary>
         ///     Download and update the local CKAN meta-info.
