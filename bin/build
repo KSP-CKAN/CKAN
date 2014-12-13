@@ -2253,7 +2253,9 @@ sub set_build {
 }
 
 sub is_stable {
-    my $branch = capturex(qw(git rev-parse --abbrev-ref HEAD));
+    my $branch = eval { capturex(qw(git rev-parse --abbrev-ref HEAD)) };
+
+    return 0 if not $branch;    # If git fails, we're not stable. See #546.
 
     return $branch =~ m{
         (\b|_)stable(\b|_)|   # Contains stable as a word (underscores ok)
