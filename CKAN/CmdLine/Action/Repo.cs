@@ -205,6 +205,7 @@ namespace CKAN.CmdLine
                 {
                     if (String.Equals(repository.name, options.name, StringComparison.OrdinalIgnoreCase))
                     {
+                        options.name = repository.name;
                         options.uri = repository.uri.ToString();
                     }
                 }
