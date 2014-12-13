@@ -4,10 +4,10 @@ using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class ModuleInstallDescriptor
     {
-        [Test()]
+        [Test]
         // NOTE: I've *never* got these to fail. The problem I'm trying to reproduce
         // seems to involve saving to the registry and back. It's now fixed in
         // JsonSingleOrArrayConverter.cs, but these tests remain, because tests are good.

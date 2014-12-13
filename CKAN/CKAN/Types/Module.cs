@@ -104,7 +104,7 @@ namespace CKAN
             get
             {
                 var provides = new List<string>();
-                provides.Add(this.identifier);
+                provides.Add(identifier);
 
                 if (this.provides != null)
                 {
@@ -229,7 +229,7 @@ namespace CKAN
         /// </summary>
         public bool DoesProvide(string identifier)
         {
-            return this.identifier == identifier || this.provides.Contains(identifier);
+            return this.identifier == identifier || provides.Contains(identifier);
         }
     }
 
@@ -378,7 +378,7 @@ namespace CKAN
         /// </summary>
         private bool IsSpecSupported()
         {
-            return IsSpecSupported(this.spec_version);
+            return IsSpecSupported(spec_version);
         }
 
         /// <summary>

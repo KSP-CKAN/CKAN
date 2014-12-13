@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace NetKAN.GitHubTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class GithubAPITests
     {
 
@@ -11,19 +11,19 @@ namespace NetKAN.GitHubTests
         // to github, these sometimes cause test failures because github will throw random
         // 403s. (Hence we disable them in travis with --exclude=FlakyNetwork)
 
-        [Test()]
+        [Test]
         [Category("FlakyNetwork")]
         [Category("Online")]
         public void Release()
         {
-            GithubRelease ckan = CKAN.NetKAN.GithubAPI.GetLatestRelease("KSP-CKAN/Test");
+            GithubRelease ckan = GithubAPI.GetLatestRelease("KSP-CKAN/Test");
             Assert.IsNotNull(ckan.author);
             Assert.IsNotNull(ckan.download);
             Assert.IsNotNull(ckan.size);
             Assert.IsNotNull(ckan.version);
         }
 
-        [Test()]
+        [Test]
         [Category("FlakyNetwork")]
         [Category("Online")]
         public void TestGithubRelease()

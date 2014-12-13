@@ -10,7 +10,7 @@ using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class SanityChecker
     {
         private CKAN.Registry registry;
@@ -39,7 +39,7 @@ namespace CKANTests
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
-            var mods = new List<CKAN.CkanModule>();
+            var mods = new List<CkanModule>();
             mods.Add(registry.LatestAvailable("DogeCoinFlag"));
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
@@ -48,7 +48,7 @@ namespace CKANTests
         [Test]
         public void CustomBiomes()
         {
-            var mods = new List<CKAN.CkanModule>();
+            var mods = new List<CkanModule>();
 
             mods.Add(registry.LatestAvailable("CustomBiomes"));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
@@ -63,7 +63,7 @@ namespace CKANTests
         [Test]
         public void CustomBiomesWithDlls()
         {
-            var mods = new List<CKAN.CkanModule>();
+            var mods = new List<CkanModule>();
             var dlls = new List<string>();
 
             dlls.Add("CustomBiomes");

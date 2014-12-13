@@ -140,7 +140,7 @@ namespace Tests.CKAN.Relationships
             var sugested = generator.GeneratorRandomModule();
             var mod = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor(){name = sugested.identifier}
+                new RelationshipDescriptor {name = sugested.identifier}
             });
             var sugester = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>
             {

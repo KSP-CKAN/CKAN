@@ -143,13 +143,13 @@ namespace CKAN
                     try
                     {
                         dependencyModule = registry.LatestAvailable
-                            (dependency.name.ToString(), manager.CurrentInstance.Version());
+                            (dependency.name, manager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name.ToString(), manager.CurrentInstance.Version());
+                            (dependency.name, manager.CurrentInstance.Version());
 
                         if (dependencyModules == null)
                         {
@@ -194,7 +194,7 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
-        private CkanModule dependencyGraphRootModule = null;
+        private CkanModule dependencyGraphRootModule;
 
         private void _UpdateModDependencyGraph()
         {

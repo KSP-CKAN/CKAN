@@ -124,7 +124,7 @@ namespace CKAN.NetKAN
                     AVC avc = AVC.FromZipFile(mod, file);
                     avc.InflateMetadata(metadata, null, null);
                 }
-                catch (Newtonsoft.Json.JsonReaderException)
+                catch (JsonReaderException)
                 {                    
                     user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
                     return EXIT_ERROR;
@@ -346,7 +346,7 @@ namespace CKAN.NetKAN
 
     internal class MetadataNotFoundKraken : Exception
     {
-        public string filename = null;
+        public string filename;
 
         public MetadataNotFoundKraken(string filename)
         {

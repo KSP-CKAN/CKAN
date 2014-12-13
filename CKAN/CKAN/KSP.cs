@@ -34,7 +34,7 @@ namespace CKAN
 
         public Registry Registry
         {
-            get { return this.RegistryManager.registry; }
+            get { return RegistryManager.registry; }
         }
 
         #endregion
@@ -303,7 +303,7 @@ namespace CKAN
         {
             using (CkanTransaction tx = new CkanTransaction())
             {
-                this.Registry.ClearDlls();
+                Registry.ClearDlls();
 
                 // TODO: It would be great to optimise this to skip .git directories and the like.
                 // Yes, I keep my GameData in git.
@@ -324,12 +324,12 @@ namespace CKAN
                 foreach (string file in files)
                 {
                     string dll = KSPPathUtils.NormalizePath(file);
-                    this.Registry.RegisterDll(this, dll);
+                    Registry.RegisterDll(this, dll);
                 }
                     
                 tx.Complete();
             }
-            this.RegistryManager.Save();
+            RegistryManager.Save();
         }
 
         #endregion
@@ -339,7 +339,7 @@ namespace CKAN
         /// </summary>
         public string ToRelativeGameDir(string path)
         {
-            return KSPPathUtils.ToRelative(path, this.GameDir());
+            return KSPPathUtils.ToRelative(path, GameDir());
         }
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace CKAN
         /// </summary>
         public string ToAbsoluteGameDir(string path)
         {
-            return KSPPathUtils.ToAbsolute(path, this.GameDir());
+            return KSPPathUtils.ToAbsolute(path, GameDir());
         }
 
     }

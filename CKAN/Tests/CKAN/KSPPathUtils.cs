@@ -3,10 +3,10 @@ using NUnit.Framework;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class KSPPathUtils
     {
-        [Test()]
+        [Test]
         public void NormalizePath()
         {
             Assert.AreEqual("/a/b/c", CKAN.KSPPathUtils.NormalizePath("/a/b/c"), "Identity function failed");
@@ -17,7 +17,7 @@ namespace CKANTests
             Assert.AreEqual("SPACE", CKAN.KSPPathUtils.NormalizePath("SPACE"), "All upper-case, no slashes");
         }
 
-        [Test()]
+        [Test]
         public void GetLastPathElement()
         {
             Assert.AreEqual("c", CKAN.KSPPathUtils.GetLastPathElement("/a/b/c"), "Simple case");
@@ -29,7 +29,7 @@ namespace CKANTests
             Assert.AreEqual("buckethead", CKAN.KSPPathUtils.GetLastPathElement("buckethead"), "No slashes at all");
         }
 
-        [Test()]
+        [Test]
         public void GetLeadingPathElements()
         {
             Assert.AreEqual("/a/b", CKAN.KSPPathUtils.GetLeadingPathElements("/a/b/c"), "Simple case");

@@ -9,7 +9,7 @@ namespace CKAN
     public partial class Main : Form
     {
 
-        private MainCancelCallback cancelCallback = null;
+        private MainCancelCallback cancelCallback;
 
         public void ShowWaitDialog(bool cancelable = true)
         {

@@ -46,7 +46,7 @@ namespace CKAN
         {
             User = user;
             this.ksp = ksp;
-            this.registry_manager = RegistryManager.Instance(ksp);
+            registry_manager = RegistryManager.Instance(ksp);
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
         }
 
@@ -69,7 +69,7 @@ namespace CKAN
         public string Download(Uri url, string filename)
         {
             User.RaiseProgress(String.Format("Downloading \"{0}\"", url), 0);            
-            return Download(url, filename, this.Cache);
+            return Download(url, filename, Cache);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace CKAN
 
             string tmp_file = Net.Download(url);
 
-            return cache.Store(url, tmp_file, filename, move: true);
+            return cache.Store(url, tmp_file, filename, true);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace CKAN
         /// </summary>
         public string CachedOrDownload(CkanModule module, string filename = null)
         {
-            return CachedOrDownload(module.identifier, module.version, module.download, this.Cache, filename);
+            return CachedOrDownload(module.identifier, module.version, module.download, Cache, filename);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace CKAN
         /// </summary>
         public string CachedOrDownload(string identifier, Version version, Uri url, string filename = null)
         {
-            return CachedOrDownload(identifier, version, url, this.Cache, filename);
+            return CachedOrDownload(identifier, version, url, Cache, filename);
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace CKAN
             }
 
             // Find our in the cache if we don't already have it.
-            filename = filename ?? this.Cache.GetCachedZip(module.download);
+            filename = filename ?? Cache.GetCachedZip(module.download);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
@@ -647,8 +647,6 @@ namespace CKAN
                     StreamUtils.Copy(zipStream, writer, buffer);
                 }
             }
-
-            return;
         }
 
         /// <summary>
@@ -787,8 +785,6 @@ namespace CKAN
                 }
                 transaction.Complete();
             }
-
-            return;
         }
 
         #region AddRemove
@@ -821,7 +817,7 @@ namespace CKAN
                     Install(module);
                 }
 
-                this.registry_manager.Save();
+                registry_manager.Save();
 
                 tx.Complete();
             }
@@ -839,7 +835,7 @@ namespace CKAN
             foreach (string ident in identifiers)
             {
                 CkanModule latest = registry_manager.registry.LatestAvailable(
-                                        ident, this.ksp.Version()
+                                        ident, ksp.Version()
                                     );
 
                 if (latest == null)

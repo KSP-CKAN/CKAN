@@ -43,7 +43,7 @@ namespace NetKAN.KerbalStuffTests
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         public void KSP_Version_Inflate_199()
         {
-            JObject metadata = JObject.Parse(Tests.TestData.DogeCoinFlag_101());
+            JObject metadata = JObject.Parse(TestData.DogeCoinFlag_101());
 
             // Add our own field, and remove existing ones.
             metadata["ksp_version_min"] = "0.23.5";
@@ -55,7 +55,7 @@ namespace NetKAN.KerbalStuffTests
 
             CKAN.NetKAN.KSMod ksmod = test_ksmod();
 
-            ksmod.InflateMetadata(metadata, Tests.TestData.DogeCoinFlagZip(), ksmod.versions[0]);
+            ksmod.InflateMetadata(metadata, TestData.DogeCoinFlagZip(), ksmod.versions[0]);
 
             // Make sure min is still there, and the rest unharmed.
             Assert.AreEqual(null, (string) metadata["ksp_version"]);

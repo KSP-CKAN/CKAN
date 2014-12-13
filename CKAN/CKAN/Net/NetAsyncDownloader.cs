@@ -26,18 +26,18 @@ namespace CKAN
             public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
-            public long bytesDownloaded = 0;
-            public long bytesLeft = 0;
-            public int bytesPerSecond = 0;
-            public Exception error = null;
-            public int lastProgressUpdateSize = 0;
-            public int percentComplete = 0;
+            public long bytesDownloaded;
+            public long bytesLeft;
+            public int bytesPerSecond;
+            public Exception error;
+            public int lastProgressUpdateSize;
+            public int percentComplete;
 
             public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
             {
                 this.url = url;
                 this.path = path ?? file_transaction.GetTempFileName();
-                this.lastProgressUpdateTime = DateTime.Now;
+                lastProgressUpdateTime = DateTime.Now;
             }
         }
 
@@ -49,13 +49,13 @@ namespace CKAN
 
         private Object download_complete_lock = new Object();
 
-        private bool downloadCanceled = false;
+        private bool downloadCanceled;
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
         // Can be set by ourself in the DownloadModules method.
         private delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
-        private NetAsyncCompleted onCompleted = null;
+        private NetAsyncCompleted onCompleted;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -75,7 +75,7 @@ namespace CKAN
             foreach (Uri url in urls)
             {
                 var download = new NetAsyncDownloaderDownloadPart(url);
-                this.downloads.Add(download);
+                downloads.Add(download);
             }
 
             var filePaths = new string[downloads.Count];
@@ -132,12 +132,12 @@ namespace CKAN
             }
 
             // Attach our progress report, if requested.            
-            this.onCompleted =
+            onCompleted =
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
 
             // Start the download!
-            this.Download(unique_downloads.Keys);
+            Download(unique_downloads.Keys);
 
             // The Monitor.Wait function releases a lock, and then waits until it can re-acquire it.
             // Elsewhere, our downloading callback pulses the lock, which causes us to wake up and

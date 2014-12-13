@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class ModuleInstaller
     {
         private string flag_path;
@@ -33,7 +33,7 @@ namespace CKANTests
             mm_mod = Tests.TestData.ModuleManagerModule();
         }
 
-        [Test()]
+        [Test]
         public void GenerateDefaultInstall()
         {
             string filename = Tests.TestData.DogeCoinFlagZip();
@@ -67,7 +67,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         public void FindInstallableFiles()
         {
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
@@ -96,7 +96,7 @@ namespace CKANTests
             Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
         }
 
-        [Test()]
+        [Test]
         public void FindInstallableFilesWithKSP()
         {
             using (var tidy = new Tests.DisposableKSP())
@@ -166,7 +166,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         // Make sure all our filters work.
         public void FindInstallableFilesWithFilter()
         {
@@ -183,7 +183,7 @@ namespace CKANTests
             Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/notes.txt.bak"), "Filtered .bak file");
         }
 
-        [Test()]
+        [Test]
         public void No_Installable_Files()
         {
             // This tests GH #93
@@ -226,20 +226,20 @@ namespace CKANTests
             // This install location? It shouldn't be valid.
             dogemod.install[0].install_to = location;
 
-            Assert.Throws<CKAN.BadInstallLocationKraken>(delegate
+            Assert.Throws<BadInstallLocationKraken>(delegate
             {
                 CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
             });
         }
 
-        [Test()]
+        [Test]
         // GH #205, make sure we write in *binary*, not text.
         public void BinaryNotText_205()
         {
             // Use CopyZipEntry (via CopyDogeFromZip) and make sure it
             // comes out the right size.
             string tmpfile = CopyDogeFromZip();
-            long size = new System.IO.FileInfo(tmpfile).Length;
+            long size = new FileInfo(tmpfile).Length;
 
             try
             {
@@ -253,7 +253,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         // Make sure when we roll-back a transaction, files written with CopyZipEntry go
         // back to their pre-transaction state.
         public void FileSysRollBack()
@@ -263,7 +263,7 @@ namespace CKANTests
             using (var scope = new TransactionScope())
             {
                 file = CopyDogeFromZip();
-                Assert.IsTrue(new System.IO.FileInfo(file).Length > 0);
+                Assert.IsTrue(new FileInfo(file).Length > 0);
                 scope.Dispose(); // Rollback
             }
 
@@ -290,7 +290,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         [Category("TODO")]
         [Explicit]
         //Test how we handle corrupt data
@@ -309,7 +309,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         public void TransformOutputName()
         {
             Assert.AreEqual("GameData/kOS/Plugins/kOS.dll", CKAN.ModuleInstaller.TransformOutputName("GameData/kOS", "GameData/kOS/Plugins/kOS.dll", "GameData"));

@@ -15,7 +15,7 @@ namespace CKAN.NetKAN
         private static readonly Uri api_base = new Uri("https://api.github.com/");
         private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
         private static readonly WebClient web = new WebClient();
-        private static bool done_init = false;
+        private static bool done_init;
 
         internal static void Init() {
             if (done_init)
@@ -27,7 +27,6 @@ namespace CKAN.NetKAN
             web.Headers.Add("user-agent", "CKAN Github2CKAN ( https://github.com/KSP-CKAN/CKAN )");
 
             done_init = true;
-            return;
         }
 
         public static void SetCredentials(string oauth_token)

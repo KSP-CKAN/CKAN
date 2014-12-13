@@ -14,10 +14,10 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KSPManager));
 
-        internal bool instances_loaded = false;
+        internal bool instances_loaded;
         internal Dictionary<string, KSP> _Instances = new Dictionary<string, KSP>();
-        internal KSP _CurrentInstance = null;
-        internal string _AutoStartInstance = null;
+        internal KSP _CurrentInstance;
+        internal string _AutoStartInstance;
 
         public KSPManager(IUser user)
         {
@@ -188,7 +188,7 @@ namespace CKAN
             // Try appending a number to the name.
             for (int i = 1; i < 1000; i++)
             {
-                validName = name + " (" + i.ToString() + ")";
+                validName = name + " (" + i + ")";
                 if (InstanceNameIsValid(validName))
                 {
                     return validName;
@@ -196,7 +196,7 @@ namespace CKAN
             }
 
             // Check if a name with the current timestamp is valid.
-            validName = name + " (" + DateTime.Now.ToString() + ")";
+            validName = name + " (" + DateTime.Now + ")";
 
             if (InstanceNameIsValid(validName))
             {

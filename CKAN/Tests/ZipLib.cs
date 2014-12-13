@@ -4,10 +4,10 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture()]
+    [TestFixture]
     public class ZipLib
     {
-        [Test()]
+        [Test]
         public void GH221()
         {
             // This is a perfectly fine file, written by 'file-roller', but

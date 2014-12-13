@@ -166,12 +166,12 @@ namespace CKAN
         public InconsistentKraken(string inconsistency, Exception inner_exception = null)
             :base(null, inner_exception)
         {
-            this.inconsistencies = new List<string> { inconsistency };
+            inconsistencies = new List<string> { inconsistency };
         }
 
         public override string ToString()
         {
-            return this.InconsistenciesPretty + this.StackTrace;
+            return InconsistenciesPretty + StackTrace;
         }
     }
 
@@ -207,7 +207,7 @@ namespace CKAN
         public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)
         {
-            this.exceptions = new List<Exception> (errors);
+            exceptions = new List<Exception> (errors);
         }
 
         public override string ToString()

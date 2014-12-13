@@ -138,9 +138,9 @@ namespace CKAN
             }
         }
 
-        private TabControl m_TabControl = null;
+        private TabControl m_TabControl;
 
-        private bool m_TabLock = false;
+        private bool m_TabLock;
 
         private Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
 
