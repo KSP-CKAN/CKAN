@@ -3,10 +3,10 @@ using NUnit.Framework;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class KSPManager
     {
-        [Test()]
+        [Test]
         public void InstanceAccessorState()
         {
             // Make sure that LoadInstancesFromRegistry sets the

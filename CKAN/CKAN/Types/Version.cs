@@ -1,18 +1,17 @@
-namespace CKAN {
-    using System.Text.RegularExpressions;
-    using log4net;
-    using System;
-    using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
+namespace CKAN {
     /// <summary>
     /// Version comparison utilities.
     /// </summary>
 
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
-        private int epoch = 0;
-        private string version = null;
-        private string orig_string = null;
+        private int epoch;
+        private string version;
+        private string orig_string;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
@@ -26,7 +25,7 @@ namespace CKAN {
         /// Creates a new version object from the `ToString()` representation of anything!
         /// </summary>
         public Version (string version) {
-            this.orig_string = version;
+            orig_string = version;
 
             Match match = Regex.Match (
                 version,
@@ -35,7 +34,7 @@ namespace CKAN {
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0) {
-                this.epoch = Convert.ToInt32( match.Groups["epoch"].Value );
+                epoch = Convert.ToInt32( match.Groups["epoch"].Value );
             }
 
             this.version = match.Groups["version"].Value;
@@ -58,14 +57,14 @@ namespace CKAN {
 
         public int CompareTo(Version that) {
 
-            if (that.epoch == this.epoch && that.version == this.version) {
+            if (that.epoch == epoch && that.version == version) {
                 return 0;
             }
  
             // Compare epochs first.
-            if (this.epoch < that.epoch) {
+            if (epoch < that.epoch) {
                 return -1;
-            } else if (this.epoch > that.epoch) {
+            } else if (epoch > that.epoch) {
                 return 1;
             }
 
@@ -73,7 +72,7 @@ namespace CKAN {
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
 
             Comparison comp;
-            comp.remainder1 = this.version;
+            comp.remainder1 = version;
             comp.remainder2 = that.version;
 
             // Process our strings while there are characters remaining
@@ -129,13 +128,11 @@ namespace CKAN {
        
         internal static Comparison StringComp(string v1, string v2)
         {
-            var comp = new Comparison();
+            var comp = new Comparison {remainder1 = "", remainder2 = ""};
 
             // Our starting assumptions are that both versions are completely
             // strings, with no remainder. We'll then check if they're not.
 
-            comp.remainder1 = "";
-            comp.remainder2 = "";
             string str1 = v1;
             string str2 = v2;
 
@@ -175,9 +172,7 @@ namespace CKAN {
 
         internal static Comparison NumComp(string v1, string v2)
         {
-            var comp = new Comparison();
-            comp.remainder1 = "";
-            comp.remainder2 = "";
+            var comp = new Comparison {remainder1 = "", remainder2 = ""};
 
             int minimumLength1 = 0;
             for (int i = 0; i < v1.Length; i++)

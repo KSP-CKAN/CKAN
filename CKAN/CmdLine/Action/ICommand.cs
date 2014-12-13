@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CKAN.CmdLine
+﻿namespace CKAN.CmdLine
 {
     public interface ICommand
     {

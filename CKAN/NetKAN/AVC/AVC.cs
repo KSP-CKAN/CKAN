@@ -1,11 +1,10 @@
-using Newtonsoft.Json;
-using ICSharpCode.SharpZipLib.Zip;
-using CKAN;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using Newtonsoft.Json.Linq;
+using System.Linq;
+using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN
 {
@@ -49,7 +48,7 @@ namespace CKAN.NetKAN
         {
             log.DebugFormat("Finding AVC .version file for {0}", module);
 
-            string version_ext = ".version";
+            const string version_ext = ".version";
 
             // Get all our version files.
             List<ZipEntry> files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)
@@ -60,13 +59,8 @@ namespace CKAN.NetKAN
             if (files.Count == 0)
             {
                 // Oh dear, no version file at all? Let's see if we can find *any* to use.
-                foreach (ZipEntry file in zipfile)
-                {
-                    if (file.Name.EndsWith(version_ext))
-                    {
-                        files.Add(file);
-                    }
-                }
+                var version_files = zipfile.Cast<ZipEntry>().Where(file => file.Name.EndsWith(version_ext));
+                files.AddRange(version_files);
 
                 // Okay, there's *really* nothing there.
                 if (files.Count == 0)

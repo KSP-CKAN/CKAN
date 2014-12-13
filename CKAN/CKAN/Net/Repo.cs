@@ -68,7 +68,7 @@ namespace CKAN
                 registry.ClearAvailable();
 
                 // Walk the archive, looking for .ckan files.
-                string filter = @"\.ckan$";
+                const string filter = @"\.ckan$";
 
                 foreach (ZipEntry entry in zipfile)
                 {

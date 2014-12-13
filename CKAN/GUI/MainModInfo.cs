@@ -75,21 +75,11 @@ namespace CKAN
 
         private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
-            TreeNode node = null;
-
-            if (module == null)
+            if (module == null 
+                || (depth > 0 && dependencyGraphRootModule == module)
+                || (alreadyVisited.Contains(module)))
             {
-                return node;
-            }
-
-            if (depth > 0 && dependencyGraphRootModule == module)
-            {
-                return node;
-            }
-
-            if (alreadyVisited.Contains(module))
-            {
-                return node;
+                return null;
             }
 
             alreadyVisited.Add(module);
@@ -100,14 +90,7 @@ namespace CKAN
                 nodeText = String.Format("provided by - {0}", module.name);
             }
 
-            if (parentNode == null)
-            {
-                node = new TreeNode(nodeText);
-            }
-            else
-            {
-                node = parentNode.Nodes.Add(nodeText);
-            }
+            var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
 
             IEnumerable<RelationshipDescriptor> relationships = null;
             switch (relationship)
@@ -131,25 +114,22 @@ namespace CKAN
                 return node;
             }
 
-            int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
                 Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
                 try
                 {
-                    CkanModule dependencyModule = null;
-
                     try
                     {
-                        dependencyModule = registry.LatestAvailable
-                            (dependency.name.ToString(), manager.CurrentInstance.Version());
+                        var dependencyModule = registry.LatestAvailable
+                            (dependency.name, manager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name.ToString(), manager.CurrentInstance.Version());
+                            (dependency.name, manager.CurrentInstance.Version());
 
                         if (dependencyModules == null)
                         {
@@ -161,8 +141,7 @@ namespace CKAN
 
                         foreach (var dep in dependencyModules)
                         {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
-                            i++;
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);                            
                         }
                     }
                 }
@@ -194,7 +173,7 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
-        private CkanModule dependencyGraphRootModule = null;
+        private CkanModule dependencyGraphRootModule;
 
         private void _UpdateModDependencyGraph()
         {

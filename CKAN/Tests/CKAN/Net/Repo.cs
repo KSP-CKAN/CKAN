@@ -3,10 +3,10 @@ using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class Repo
     {
-        [Test()]
+        [Test]
         public void UpdateRegistry()
         {
             CKAN.Registry registry = CKAN.Registry.Empty();

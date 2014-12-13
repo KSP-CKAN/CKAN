@@ -1,24 +1,24 @@
-using NUnit.Framework;
 using System;
 using System.IO;
+using NUnit.Framework;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class Cache
     {
         private readonly string cache_dir = Path.Combine(Tests.TestData.DataDir(),"cache_test");
 
         private CKAN.NetFileCache cache;
 
-        [SetUp()]
+        [SetUp]
         public void MakeCache()
         {
             Directory.CreateDirectory(cache_dir);
             cache = new CKAN.NetFileCache(cache_dir);
         }
 
-        [TearDown()]
+        [TearDown]
         public void RemoveCache()
         {
             Directory.Delete(cache_dir, true);
@@ -81,7 +81,7 @@ namespace CKANTests
             Assert.IsFalse(cache.IsCached(url));
         }
 
-        [Test()]
+        [Test]
         public void CacheKraken()
         {
             string dir = "/this/path/better/not/exist";

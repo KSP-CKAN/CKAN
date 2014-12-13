@@ -68,12 +68,9 @@ namespace CKAN
 
             // Time to check if there's anything that we can satisfy.
 
-            foreach (Version v in available_versions)
+            foreach (Version v in available_versions.Where(v => module_version[v].IsCompatibleKSP(ksp_version)))
             {
-                if (module_version[v].IsCompatibleKSP(ksp_version))
-                {
-                    return module_version[v];
-                }
+                return module_version[v];
             }
 
             log.DebugFormat("No version of {0} is compatible with KSP {1}",

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading;
 
 namespace CKAN
@@ -15,7 +11,7 @@ namespace CKAN
     public class ControlFactory
     {
 
-        private int m_MainThreadID = 0;
+        private int m_MainThreadID;
 
         public ControlFactory()
         {

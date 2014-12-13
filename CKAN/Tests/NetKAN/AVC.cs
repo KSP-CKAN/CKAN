@@ -3,13 +3,13 @@ using NUnit.Framework;
 
 namespace Tests.NetKAN
 {
-    [TestFixture()]
+    [TestFixture]
     public class AVC
     {
-        [Test()]
+        [Test]
         public void Json()
         {
-            string json = Tests.TestData.KspAvcJson();
+            string json = TestData.KspAvcJson();
 
             var avc = JsonConvert.DeserializeObject<global::CKAN.NetKAN.AVC>(json);
 

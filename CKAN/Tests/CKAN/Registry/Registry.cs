@@ -1,21 +1,21 @@
 using System.Transactions;
-using NUnit.Framework;
 using CKAN;
+using NUnit.Framework;
 using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class Registry
     {
-        private static readonly CKAN.CkanModule module = TestData.kOS_014_module();
+        private static readonly CkanModule module = TestData.kOS_014_module();
         private static readonly string identifier = module.identifier;
         private static readonly CKAN.KSPVersion v0_24_2 = new CKAN.KSPVersion("0.24.2");
         private static readonly CKAN.KSPVersion v0_25_0 = new CKAN.KSPVersion("0.25.0");
 
-        private CKAN.Registry registry = null;
+        private CKAN.Registry registry;
 
-        [SetUp()]
+        [SetUp]
         public void Setup()
         {
             // Provide an empty registry before each test.
@@ -23,7 +23,7 @@ namespace CKANTests
             Assert.IsNotNull(registry);
         }
 
-        [Test()]
+        [Test]
         public void Empty()
         {
             CKAN.Registry registry = CKAN.Registry.Empty();
@@ -31,7 +31,7 @@ namespace CKANTests
 
         }
 
-        [Test()]
+        [Test]
         public void AddAvailable()
         {
             // We shouldn't have kOS in our registry.
@@ -44,7 +44,7 @@ namespace CKANTests
             Assert.IsTrue(registry.available_modules.ContainsKey(module.identifier));
         }
 
-        [Test()]
+        [Test]
         public void RemoveAvailableByName()
         {
             // Add our module and test it's there.
@@ -57,7 +57,7 @@ namespace CKANTests
             Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
         }
 
-        [Test()]
+        [Test]
         public void RemoveAvailableByModule()
         {
             // Add our module and test it's there.
@@ -70,7 +70,7 @@ namespace CKANTests
             Assert.IsNull(registry.LatestAvailable(identifier, v0_24_2));
         }
 
-        [Test()]
+        [Test]
         public void LatestAvailable()
         {
 
@@ -100,10 +100,10 @@ namespace CKANTests
             {
                 reg = CKAN.Registry.Empty();
                 reg.AddAvailable(module);
-                Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
+                Assert.AreEqual(identifier, reg.LatestAvailable(identifier).identifier);
                 scope.Complete();
             }
-            Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
+            Assert.AreEqual(identifier, reg.LatestAvailable(identifier).identifier);
         }
 
         [Test]
@@ -114,11 +114,11 @@ namespace CKANTests
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
 
                 scope.Complete();
             }
-            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace CKANTests
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
 
                 scope.Dispose(); // Rollback, our module should no longer be available.
             }
@@ -150,9 +150,9 @@ namespace CKANTests
             {
                 registry.AddAvailable(module);
 
-                using (var scope2 = new System.Transactions.TransactionScope(TransactionScopeOption.RequiresNew))
+                using (var scope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    Assert.Throws<CKAN.TransactionalKraken>(delegate
+                    Assert.Throws<TransactionalKraken>(delegate
                     {
                         registry.AddAvailable(TestData.DogeCoinFlag_101_module());
                     });

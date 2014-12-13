@@ -10,11 +10,11 @@ namespace CKANTests
         // to stop the compiler from giving us warnings.
         #pragma warning disable 0414
 
-        private static string[] GoodStatuses = new string[] {
+        private static string[] GoodStatuses = {
             "stable", "testing", "development"
         };
 
-        private static string[] BadStatuses = new string[] {
+        private static string[] BadStatuses = {
             "cheese", "some thing I wrote last night" , "",
             "yo dawg I heard you like tests",
             "42"

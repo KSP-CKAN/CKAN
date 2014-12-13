@@ -1,9 +1,8 @@
-namespace CKAN {
-    using System;
-    using log4net;
-    using System.Text.RegularExpressions;
-    using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
+namespace CKAN {
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class KSPVersion : IComparable<KSPVersion> {
         private string version;
@@ -55,24 +54,14 @@ namespace CKAN {
         }
 
         // True for short version (eg: 0.25), false for long (eg: 0.25.2).
-        public bool IsShortVersion() {
-            if (version == null) {
-                return false;
-            }
-            else if (Regex.IsMatch (version, @"^\d+\.\d+$")) {
-                return true;
-            }
-            return false;
+        public bool IsShortVersion()
+        {
+            return version != null && Regex.IsMatch (version, @"^\d+\.\d+$");
         }
 
-        public bool IsLongVersion() {
-            if (version == null) {
-                return false;
-            }
-            else if (Regex.IsMatch (version, @"^\d+\.\d+\.\d+$")) {
-                return true;
-            }
-            return false;
+        public bool IsLongVersion()
+        {
+            return version != null && Regex.IsMatch (version, @"^\d+\.\d+\.\d+$");
         }
 
         public bool IsAny() {
@@ -91,24 +80,19 @@ namespace CKAN {
         // us with long versions.
         private Version VersionObject()
         {
-            if (cachedVersionObject == null)
-            {
-                cachedVersionObject = new Version(version);
-            }
-
-            return cachedVersionObject;
+            return cachedVersionObject ?? (cachedVersionObject = new Version(version));
         }
 
         public int CompareTo(KSPVersion that) {
 
             // We need two long versions to be able to compare properly.
-            if ((! this.IsLongVersion ()) && (! that.IsLongVersion ())) {
+            if ((! IsLongVersion ()) && (! that.IsLongVersion ())) {
                 throw new KSPVersionIncomparableException (this, that, "CompareTo");
             }
 
             // Hooray, we can hook the regular Version code here.
 
-            Version v1 = this.VersionObject();
+            Version v1 = VersionObject();
             Version v2 = that.VersionObject();
 
             return v1.CompareTo (v2);
@@ -127,19 +111,19 @@ namespace CKAN {
             }
 
             // If we target any, then yes, it's a match.
-            if (this.IsAny()) {
+            if (IsAny()) {
                 return true;
-            } else if (this.IsLongVersion()) {
-                return this.CompareTo (that) == 0;
+            } else if (IsLongVersion()) {
+                return CompareTo (that) == 0;
             }
 
             // We've got a short version, so split it into two separate versions,
             // and compare each.
 
-            KSPVersion min = new KSPVersion (this.Version());
+            KSPVersion min = new KSPVersion (Version());
             min.ToLongMin ();
 
-            KSPVersion max = new KSPVersion (this.Version());
+            KSPVersion max = new KSPVersion (Version());
             max.ToLongMax ();
 
             return (that >= min && that <= max);
@@ -183,7 +167,7 @@ namespace CKAN {
         }
 
         public override string ToString () {
-            return this.Version();
+            return Version();
         }
 
     }

@@ -181,9 +181,11 @@ namespace Tests
 
         public static List<string> bad_ksp_dirs()
         {
-            var dirs = new List<string>();
-            dirs.Add(Path.Combine(DataDir(), "KSP/bad-ksp"));
-            dirs.Add(Path.Combine(DataDir(), "KSP/missing-gamedata"));
+            var dirs = new List<string>
+            {
+                Path.Combine(DataDir(), "KSP/bad-ksp"),
+                Path.Combine(DataDir(), "KSP/missing-gamedata")
+            };
 
             return dirs;
         }

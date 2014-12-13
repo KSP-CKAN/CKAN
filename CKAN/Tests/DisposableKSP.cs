@@ -10,17 +10,10 @@ namespace Tests
     /// </summary>
     public class DisposableKSP : IDisposable
     {
-        private readonly string good_ksp = Tests.TestData.good_ksp_dir();
-        private KSP _ksp;
+        private readonly string good_ksp = TestData.good_ksp_dir();
         private string disposable_dir;
 
-        public KSP KSP
-        {
-            get
-            {
-                return _ksp;
-            }
-        }
+        public KSP KSP { get; private set; }
 
         /// <summary>
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
@@ -29,8 +22,8 @@ namespace Tests
         public DisposableKSP(string directory_to_clone = null, string registry_file = null)
         {
             directory_to_clone = directory_to_clone ?? good_ksp;
-            disposable_dir = Tests.TestData.NewTempDir();
-            Tests.TestData.CopyDirectory(directory_to_clone, disposable_dir);
+            disposable_dir = TestData.NewTempDir();
+            TestData.CopyDirectory(directory_to_clone, disposable_dir);
 
             // If we've been given a registry file, then copy it into position before
             // creating our KSP object.
@@ -43,13 +36,13 @@ namespace Tests
                 File.Copy(registry_file, registry_path, true);
             }
 
-            _ksp = new KSP(disposable_dir, NullUser.User);
+            KSP = new KSP(disposable_dir, NullUser.User);
         }
 
         public void Dispose()
         {
             Directory.Delete(disposable_dir, true);
-            _ksp = null; // In case .Dispose() was called manually.
+            KSP = null; // In case .Dispose() was called manually.
         }
     }
 }

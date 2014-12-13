@@ -35,12 +35,7 @@ namespace CKAN
         /// </summary>
         public static string BuildVersion()
         {
-            if (BUILD_VERSION == null)
-            {
-                return Development;
-            }
-
-            return BUILD_VERSION;
+            return BUILD_VERSION ?? Development;
         }
 
         /// <summary>
@@ -57,7 +52,7 @@ namespace CKAN
 
             string short_version = Regex.Match(build_version, @"^(.*)-\d+-.*$").Result("$1");
 
-            return new CKAN.Version(short_version);
+            return new Version(short_version);
         }
 
         /// <summary>

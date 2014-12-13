@@ -6,8 +6,8 @@ namespace CKAN
 {
     public partial class ChooseKSPInstance : Form
     {
-        private FolderBrowserDialog m_BrowseKSPFolder = null;
-        private RenameInstanceDialog m_RenameInstanceDialog = null;
+        private FolderBrowserDialog m_BrowseKSPFolder;
+        private RenameInstanceDialog m_RenameInstanceDialog;
 
         public ChooseKSPInstance()
         {
@@ -39,11 +39,11 @@ namespace CKAN
 
             foreach (var instance in Main.Instance.Manager.GetInstances())
             {
-                var item = new ListViewItem() { Text = instance.Key, Tag = instance.Key };
+                var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
 
-                item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = instance.Value.Version().ToString() });
+                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.Version().ToString() });
 
-                item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = instance.Value.GameDir() });
+                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.GameDir() });
 
                 KSPInstancesListView.Items.Add(item);
             }

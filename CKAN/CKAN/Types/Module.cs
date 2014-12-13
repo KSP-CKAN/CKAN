@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
@@ -103,8 +104,7 @@ namespace CKAN
             // serialise it.
             get
             {
-                var provides = new List<string>();
-                provides.Add(this.identifier);
+                var provides = new List<string> {identifier};
 
                 if (this.provides != null)
                 {
@@ -180,15 +180,7 @@ namespace CKAN
             {
                 return false;
             }
-
-            foreach (RelationshipDescriptor conflict in mod1.conflicts)
-            {
-                if (mod2.ProvidesList.Contains(conflict.name))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name));
         }
 
         /// <summary>
@@ -229,7 +221,7 @@ namespace CKAN
         /// </summary>
         public bool DoesProvide(string identifier)
         {
-            return this.identifier == identifier || this.provides.Contains(identifier);
+            return this.identifier == identifier || provides.Contains(identifier);
         }
     }
 
@@ -365,12 +357,7 @@ namespace CKAN
             // This could be a read-only state variable; do we have those in C#?
             Version release = Meta.ReleaseNumber();
 
-            if (release == null)
-            {
-                return true; // Dev builds will read anything
-            }
-
-            return release.IsGreaterThan(spec_vesion);
+            return release == null || release.IsGreaterThan(spec_vesion);
         }
 
         /// <summary>
@@ -378,7 +365,7 @@ namespace CKAN
         /// </summary>
         private bool IsSpecSupported()
         {
-            return IsSpecSupported(this.spec_version);
+            return IsSpecSupported(spec_version);
         }
 
         /// <summary>

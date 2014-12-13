@@ -16,7 +16,7 @@ namespace CKAN
         InstalledUpdateAvailable = 2,
         NewInRepository = 3,
         NotInstalled = 4,
-        Incompatible = 5,
+        Incompatible = 5
     }
 
     public enum GUIModChangeType
@@ -24,18 +24,17 @@ namespace CKAN
         None = 0,
         Install = 1,
         Remove = 2,
-        Update = 3,
+        Update = 3
     }
 
-    public partial class Main : Form
+    public partial class Main
     {
-        private static Main m_Instance;
-        public Configuration m_Configuration = null;
+        public Configuration m_Configuration;
 
-        public ControlFactory controlFactory = null;
+        public ControlFactory controlFactory;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
-        private TabController m_TabController = null;
+        private TabController m_TabController;
         private volatile KSPManager manager;
 
         internal KSP CurrentInstance
@@ -57,7 +56,7 @@ namespace CKAN
             User.displayError = ErrorDialog;
 
             controlFactory = new ControlFactory();
-            m_Instance = this;
+            Instance = this;
             mainModList = new MainModList(source => UpdateFilters(this));            
             InitializeComponent();
 
@@ -113,41 +112,33 @@ namespace CKAN
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == (Keys.Control | Keys.F))
+            switch (keyData)
             {
-                ActiveControl = FilterByNameTextBox;
-                return true;
-            }
-            else if (keyData == (Keys.Control | Keys.S))
-            {
-                MainModList temp_qualifier = mainModList;
-                if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry,CurrentInstance).Any())
-                {
-                    ApplyToolButton_Click(null, null);
-                }
+                case (Keys.Control | Keys.F):
+                    ActiveControl = FilterByNameTextBox;
+                    return true;
+                case (Keys.Control | Keys.S):
+                    var registry = RegistryManager.Instance(CurrentInstance).registry;
+                    if (mainModList.ComputeChangeSetFromModList(registry,CurrentInstance).Any())
+                    {
+                        ApplyToolButton_Click(null, null);
+                    }
 
-                return true;
+                    return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        public static Main Instance
-        {
-            get { return m_Instance; }
-        }
+        public static Main Instance { get; private set; }
 
         private void Main_Load(object sender, EventArgs e)
         {
-            m_UpdateRepoWorker = new BackgroundWorker();
-            m_UpdateRepoWorker.WorkerReportsProgress = false;
-            m_UpdateRepoWorker.WorkerSupportsCancellation = true;
+            m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker();
-            m_InstallWorker.WorkerReportsProgress = true;
-            m_InstallWorker.WorkerSupportsCancellation = true;
+            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
@@ -171,18 +162,20 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
-                if (!RegistryManager.Instance(CurrentInstance).registry.IsInstalled(mod.identifier))
+                var registry = RegistryManager.Instance(CurrentInstance).registry;
+                if (!registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance(CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
-                    if (row.Cells[1] is DataGridViewCheckBoxCell)
+                    var cell = row.Cells[1] as DataGridViewCheckBoxCell;
+                    if (cell != null)
                     {
-                        var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
+                        var updateCell = cell;
                         updateCell.Value = true;
                         ApplyToolButton.Enabled = true;
                     }
@@ -316,7 +309,6 @@ namespace CKAN
                     ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
                 }
             }
-            MainModList temp_qualifier = mainModList;
             var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance);
 
 
@@ -453,15 +445,7 @@ namespace CKAN
             UpdateModDependencyGraph(module);
         }
 
-        private void exportInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-      
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var lst = m_Configuration.CommandLineArguments.Split(' ');
@@ -487,16 +471,6 @@ namespace CKAN
             {
                 GUI.user.RaiseError("Couldn't start KSP. {0}.", exception.Message);
             }
-        }
-
-        private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateModsList();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

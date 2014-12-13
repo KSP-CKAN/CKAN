@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
 
         private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset;
@@ -28,11 +28,9 @@ namespace CKAN
                     continue;
                 }
 
-                var item = new ListViewItem();
-                item.Text = String.Format("{0} {1}", change.Key.name, change.Key.version);
+                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Key.name, change.Key.version)};
 
-                var subChangeType = new ListViewItem.ListViewSubItem();
-                subChangeType.Text = change.Value.ToString();
+                var subChangeType = new ListViewItem.ListViewSubItem {Text = change.Value.ToString()};
 
                 item.SubItems.Add(subChangeType);
                 ChangesListView.Items.Add(item);

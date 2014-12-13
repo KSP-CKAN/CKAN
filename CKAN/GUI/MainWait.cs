@@ -6,10 +6,10 @@ namespace CKAN
 
     internal delegate void MainCancelCallback();
 
-    public partial class Main : Form
+    public partial class Main
     {
 
-        private MainCancelCallback cancelCallback = null;
+        private MainCancelCallback cancelCallback;
 
         public void ShowWaitDialog(bool cancelable = true)
         {

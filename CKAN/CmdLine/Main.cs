@@ -76,7 +76,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
-            KSPManager manager= new KSPManager(user);;
+            KSPManager manager= new KSPManager(user);
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
@@ -211,13 +211,7 @@ namespace CKAN.CmdLine
             foreach (CkanModule module in available)
             {
                 string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
-                if (width > 0) {
-                    user.RaiseMessage(entry.PadRight(width).Substring(0, width - 1));
-                }
-                else
-                {
-                    user.RaiseMessage(entry);
-                }
+                user.RaiseMessage(width > 0 ? entry.PadRight(width).Substring(0, width - 1) : entry);
             }
 
             return Exit.OK;
@@ -244,7 +238,6 @@ namespace CKAN.CmdLine
 
             foreach (KeyValuePair<string, Version> mod in installed)
             {
-                string identifier = mod.Key;
                 Version current_version = mod.Value;
 
                 string bullet = "*";
@@ -365,10 +358,12 @@ namespace CKAN.CmdLine
             }
 
             // Prepare options. Can these all be done in the new() somehow?
-            var install_ops = new RelationshipResolverOptions();
-            install_ops.with_all_suggests = options.with_all_suggests;
-            install_ops.with_suggests = options.with_suggests;
-            install_ops.with_recommends = ! options.no_recommends;
+            var install_ops = new RelationshipResolverOptions
+            {
+                with_all_suggests = options.with_all_suggests,
+                with_suggests = options.with_suggests,
+                with_recommends = !options.no_recommends
+            };
 
             // Install everything requested. :)
             try
@@ -500,14 +495,6 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
-        }
-
-        private static int RunSubCommand<T>(SubCommandOptions options)
-            where T : ISubCommand, new()
-        {
-            ISubCommand subopt = new T ();
-
-            return subopt.RunSubCommand(options);
         }
     }
 }
