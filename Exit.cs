@@ -1,5 +1,3 @@
-using System;
-
 namespace CKAN.CmdLine
 {
     public static class Exit

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using CommandLine;
-using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
