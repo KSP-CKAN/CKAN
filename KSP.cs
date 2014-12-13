@@ -72,17 +72,17 @@ namespace CKAN
 
             if (! Directory.Exists(CkanDir()))
             {
-                User.DisplayMessage("Setting up CKAN for the first time...");
-                User.DisplayMessage("Creating {0}", CkanDir());
+                User.RaiseMessage("Setting up CKAN for the first time...");
+                User.RaiseMessage("Creating {0}", CkanDir());
                 Directory.CreateDirectory(CkanDir());
 
-                User.DisplayMessage("Scanning for installed mods...");
+                User.RaiseMessage("Scanning for installed mods...");
                 ScanGameData();
             }
 
             if (! Directory.Exists(DownloadCacheDir()))
             {
-                User.DisplayMessage("Creating {0}", DownloadCacheDir());
+                User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
             }
 
