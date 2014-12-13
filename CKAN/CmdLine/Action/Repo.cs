@@ -1,16 +1,41 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using Newtonsoft.Json;
 using CommandLine;
 
 namespace CKAN.CmdLine
 {
+    // TODO maybe rename to "remote" or something so this class can be re-used between "multiple repos" and "mirrors"?
+    public struct Repository
+    {
+        public string name;
+        public Uri url;
+        
+        public override string ToString()
+        {
+            return String.Format("{0} ({1})", name, url.DnsSafeHost);
+        }
+    }
+    
+    public struct RepositoryList
+    {
+        public Repository[] repositories;
+    }
+
     public class Repo : ISubCommand
     {
         public string option;
         public object suboptions;
 
+        // TODO Change the URL base to api.ksp-ckan.org
+        public static readonly Uri default_repo_master_list = new Uri("http://ksp.gurkensalat.com/repositories.json");
+
         internal class RepoSubOptions : CommonOptions
         {
+            [VerbOption("available", HelpText="List (canonical) available repositories")]
+            public CommonOptions AvailableOptions { get; set; }
+
             [VerbOption("list", HelpText="List repositories")]
             public CommonOptions ListOptions { get; set; }
 
@@ -25,6 +50,10 @@ namespace CKAN.CmdLine
 
             [VerbOption("default", HelpText="Set the default repository")]
             public DefaultOptions DefaultOptions { get; set; }
+        }
+
+        internal class AvailableOptions : CommonOptions
+        {
         }
 
         internal class AddOptions : CommonOptions
@@ -86,6 +115,9 @@ namespace CKAN.CmdLine
 
             switch (option)
             {
+                case "available":
+                    return AvailableRepositories();
+
                 case "list":
                     return ListInstalls();
 
@@ -105,6 +137,48 @@ namespace CKAN.CmdLine
                     User.WriteLine("Unknown command: ksp {0}", option);
                     return Exit.BADOPT;
             }
+        }
+
+        public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        {
+            WebClient client = new WebClient();
+
+            if (master_uri == null)
+            {
+                master_uri = default_repo_master_list;
+            }
+            
+            string json = client.DownloadString(master_uri);
+            return JsonConvert.DeserializeObject<RepositoryList>(json);
+        }
+
+        private static int AvailableRepositories()
+        {
+            User.WriteLine("Listing all (canonical) available CKAN repositories:");
+            RepositoryList repositories = new RepositoryList();
+            
+            try
+            {
+                repositories = FetchMasterRepositoryList();
+            }
+            catch
+            {
+                User.Error("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                return Exit.ERROR;
+            }
+            
+            int maxNameLen = 10;
+            foreach (Repository repository in repositories.repositories)
+            {
+                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
+            }
+
+            foreach (Repository repository in repositories.repositories)
+            {
+                User.WriteLine("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.url);
+            }
+            
+            return Exit.OK;
         }
 
         private static int ListInstalls()
