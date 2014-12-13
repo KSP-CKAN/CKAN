@@ -301,13 +301,14 @@ namespace Tests
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> sugests = null,
-            List<String> provides = null)
+            List<String> provides = null,
+            string identifier = null)
         {
             var mod = new CkanModule
             {
                 name = Generator.Next().ToString(CultureInfo.InvariantCulture),
                 @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                identifier = Generator.Next().ToString(CultureInfo.InvariantCulture),
+                identifier = identifier??Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
                 ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
                 version = new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))

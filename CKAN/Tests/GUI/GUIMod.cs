@@ -1,4 +1,6 @@
-﻿using CKAN;
+﻿using System;
+using System.Linq;
+using CKAN;
 using NUnit.Framework;
 using Tests;
 
@@ -20,6 +22,26 @@ namespace CKANTests
                 var mod = new GUIMod(ckanMod, registry);
                 Assert.False(mod.IsUpgradeChecked);
             }            
+        }
+        [Test]
+        public void HasUpdateReturnsTrueWhenUpdateAvailible()
+        {
+            using (var tidy = new DisposableKSP())
+            {
+                
+                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                var generatror = new RandomModuleGenerator(new Random(0451));
+                var oldVersion = generatror.GeneratorRandomModule(new CKAN.KSPVersion("0.24"));
+                var newVersion = generatror.GeneratorRandomModule(new CKAN.KSPVersion("0.25"),
+                    identifier:oldVersion.identifier);
+                var registry = CKAN.Registry.Empty();
+                registry.RegisterModule(oldVersion, Enumerable.Empty<string>(), null);
+                registry.AddAvailable(newVersion);
+
+
+                var mod = new GUIMod(oldVersion, registry);
+                Assert.True(mod.HasUpdate);
+            }
         }
     }
 }

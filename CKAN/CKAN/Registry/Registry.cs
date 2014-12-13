@@ -810,7 +810,7 @@ namespace CKAN
 
         public bool HasUpdate(string identifier)
         {
-            return IsInstalled(identifier) && InstalledVersion(identifier).IsGreaterThan(InstalledVersion(identifier));
+            return IsInstalled(identifier) && LatestAvailable(identifier).version.IsGreaterThan(InstalledVersion(identifier));
         }
 
         /// <summary>
