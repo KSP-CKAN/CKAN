@@ -325,21 +325,19 @@ namespace CKAN
             string ident_filter = @"(?:^|/)" + Regex.Escape(identifier) + @"$";
 
             // Let's find that directory
-            foreach (ZipEntry entry in zipfile)
-            {
-                string directory = Path.GetDirectoryName(entry.Name);
 
-                // Normalise our path.
-                directory = directory.Replace('\\', '/');
-                directory = Regex.Replace(directory, "/$", "");
-
-                // If this looks like what we're after, remember it.
-                if (Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase))
+            // Normalise our path.
+            var normalised = zipfile.Cast<ZipEntry>().Select(entry => Path.GetDirectoryName(entry.Name))
+                .Select(directory =>
                 {
-                    candidate_set.Add(directory);
-                }
-            }
-
+                    var dir = directory.Replace('\\', '/');
+                    return Regex.Replace(dir, "/$", "");
+                });
+            
+            // If this looks like what we're after, remember it.
+            var directories = normalised.Where(directory => Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase));
+            candidate_set.UnionWith(directories);
+            
             // Sort to have shortest first. It's not *quite* top-level directory order,
             // but it's good enough for now.
             var candidates = new List<string>(candidate_set);
@@ -655,12 +653,9 @@ namespace CKAN
         {
             // Pre-check, have they even asked for things which are installed?
 
-            foreach (string mod in mods)
+            foreach (string mod in mods.Where(mod => registry_manager.registry.InstalledModule(mod) == null))
             {
-                if (registry_manager.registry.InstalledModule(mod) == null)
-                {
-                    throw new ModNotInstalledKraken(mod);
-                }
+                throw new ModNotInstalledKraken(mod);
             }
 
             // Find all the things which need uninstalling.
@@ -898,15 +893,7 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncDownloader downloader)
         {
-            List<CkanModule> downloads = new List<CkanModule> ();
-
-            foreach (CkanModule module in mods)
-            {
-                if (!ksp.Cache.IsCachedZip(module.download))
-                {
-                    downloads.Add(module);
-                }
-            }
+            List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
 
             if (downloads.Count > 0)
             {

@@ -71,9 +71,8 @@ namespace CKAN
         /// </summary>
         public string[] Download(ICollection<Uri> urls)
         {
-            foreach (Uri url in urls)
+            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url)))
             {
-                var download = new NetAsyncDownloaderDownloadPart(url);
                 downloads.Add(download);
             }
 
@@ -122,12 +121,9 @@ namespace CKAN
 
             // Walk through all our modules, but only keep the first of each
             // one that has a unique download path.
-            foreach (CkanModule module in modules)
+            foreach (CkanModule module in modules.Where(module => !unique_downloads.ContainsKey(module.download)))
             {
-                if (!unique_downloads.ContainsKey(module.download))
-                {
-                    unique_downloads[module.download] = module;
-                }
+                unique_downloads[module.download] = module;
             }
 
             // Attach our progress report, if requested.            
@@ -167,12 +163,10 @@ namespace CKAN
             // Let's check if any of these are certificate errors. If so,
             // we'll report that instead, as this is common (and user-fixable)
             // under Linux.
-            foreach (Exception ex in exceptions)
+            if (exceptions.Any(ex => ex is WebException && 
+                Regex.IsMatch(ex.Message, "authentication or decryption has failed")))
             {
-                if (ex is WebException && Regex.IsMatch(ex.Message, "authentication or decryption has failed"))
-                {
-                    throw new MissingCertificateKraken();
-                }
+                throw new MissingCertificateKraken();
             }
 
             if (exceptions.Count > 0)
@@ -285,16 +279,16 @@ namespace CKAN
             long totalBytesLeft = 0;
             long totalBytesDownloaded = 0;
 
-            for (int i = 0; i < downloads.Count; i++)
+            foreach (NetAsyncDownloaderDownloadPart t in downloads)
             {
-                if (downloads[i].bytesLeft > 0)
+                if (t.bytesLeft > 0)
                 {
-                    totalBytesPerSecond += downloads[i].bytesPerSecond;
+                    totalBytesPerSecond += t.bytesPerSecond;
                 }
 
-                totalBytesLeft += downloads[i].bytesLeft;
-                totalBytesDownloaded += downloads[i].bytesDownloaded;
-                totalBytesLeft += downloads[i].bytesLeft;
+                totalBytesLeft += t.bytesLeft;
+                totalBytesDownloaded += t.bytesDownloaded;
+                totalBytesLeft += t.bytesLeft;
             }
             totalPercentage = (int) ((totalBytesDownloaded*100)/(totalBytesLeft + totalBytesDownloaded + 1));
 

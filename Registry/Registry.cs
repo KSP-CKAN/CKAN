@@ -468,24 +468,16 @@ namespace CKAN
 
             // Walk through all our available modules, and see if anything
             // provides what we need.
-            foreach (var pair in available_modules)
-            {
-                // Skip this module if not available for our system.
-                if (pair.Value.Latest(ksp_version) == null)
-                {
-                    continue;
-                }
 
+            // Skip this module if not available for our system.
+            var available_for_system = available_modules.Where(pair=>pair.Value.Latest(ksp_version)!=null);
+            foreach (var pair in available_for_system)
+            {
                 List<string> provides = pair.Value.Latest(ksp_version).provides;
                 if (provides != null)
                 {
-                    foreach (string provided in provides)
-                    {
-                        if (provided == module)
-                        {
-                            modules.Add(pair.Value.Latest(ksp_version));
-                        }
-                    }
+                    var matches = provides.Where(provided => module == provided);
+                    modules.AddRange(matches.Select(provided => pair.Value.Latest(ksp_version)));
                 }
             }
 
@@ -528,15 +520,10 @@ namespace CKAN
             // We always work with relative files, so let's get some!
             IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelativeGameDir(x));
 
-            foreach (string file in relative_files)
+            // For now, it's always cool if a module wants to register a directory.
+            // We have to flip back to absolute paths to actually test this.
+            foreach (string file in relative_files.Where(file => !Directory.Exists(ksp.ToAbsoluteGameDir(file))))
             {
-                // For now, it's always cool if a module wants to register a directory.
-                // We have to flip back to absolute paths to actually test this.
-                if (Directory.Exists(ksp.ToAbsoluteGameDir(file)))
-                {
-                    continue;
-                }
-
                 string owner;
                 if (installed_files.TryGetValue(file, out owner))
                 {
@@ -544,8 +531,8 @@ namespace CKAN
                     // (Although if it existed, we should have thrown a kraken well before this.)                    
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                                      mod.identifier, file, owner
-                    ));
+                            mod.identifier, file, owner
+                            ));
                 }
             }
 
@@ -584,20 +571,16 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string rel_file in installed_modules[module].Files)
+            var absolute_files = installed_modules[module].Files.Select(ksp.ToAbsoluteGameDir);
+            // Note, this checks to see if a *file* exists; it doesn't
+            // trigger on directories, which we allow to still be present
+            // (they may be shared by multiple mods.
+                
+            foreach (var absolute_file in absolute_files.Where(File.Exists))
             {
-                string absolute_file = ksp.ToAbsoluteGameDir(rel_file);
-
-                // Note, this checks to see if a *file* exists; it doesn't
-                // trigger on directories, which we allow to still be present
-                // (they may be shared by multiple mods.
-                if (File.Exists(absolute_file))
-                {
-                    inconsistencies.Add(string.Format(
-                        "{0} is registered to {1} but has not been removed!",
-                        absolute_file, module
-                    ));
-                }
+                inconsistencies.Add(string.Format(
+                    "{0} is registered to {1} but has not been removed!",
+                    absolute_file, module));
             }
 
             if (inconsistencies.Count > 0)
@@ -780,7 +763,11 @@ namespace CKAN
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
         public bool IsInstalled(string modName)
         {
-            return InstalledVersion(modName) != null;
+            if (InstalledVersion(modName) == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
