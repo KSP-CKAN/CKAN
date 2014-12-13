@@ -221,7 +221,7 @@ namespace CKAN.NetKAN
 
         /// <summary>
         /// Returns the CKAN metadata found in the file provided, or returns the
-        /// second parameter (the default) if none found.
+        /// second parameter (the default) if none found.</summary>
         internal static JObject MetadataFromFileOrDefault(string filename, JObject default_json)
         {
             try
