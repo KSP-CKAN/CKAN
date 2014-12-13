@@ -128,13 +128,11 @@ namespace CKAN {
        
         internal static Comparison StringComp(string v1, string v2)
         {
-            var comp = new Comparison();
+            var comp = new Comparison {remainder1 = "", remainder2 = ""};
 
             // Our starting assumptions are that both versions are completely
             // strings, with no remainder. We'll then check if they're not.
 
-            comp.remainder1 = "";
-            comp.remainder2 = "";
             string str1 = v1;
             string str2 = v2;
 
@@ -174,9 +172,7 @@ namespace CKAN {
 
         internal static Comparison NumComp(string v1, string v2)
         {
-            var comp = new Comparison();
-            comp.remainder1 = "";
-            comp.remainder2 = "";
+            var comp = new Comparison {remainder1 = "", remainder2 = ""};
 
             int minimumLength1 = 0;
             for (int i = 0; i < v1.Length; i++)

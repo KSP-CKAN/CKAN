@@ -103,8 +103,7 @@ namespace CKAN
             // serialise it.
             get
             {
-                var provides = new List<string>();
-                provides.Add(identifier);
+                var provides = new List<string> {identifier};
 
                 if (this.provides != null)
                 {

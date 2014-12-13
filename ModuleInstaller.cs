@@ -316,8 +316,7 @@ namespace CKAN
         /// </summary>
         internal static ModuleInstallDescriptor GenerateDefaultInstall(string identifier, ZipFile zipfile)
         {
-            var stanza = new ModuleInstallDescriptor();
-            stanza.install_to = "GameData";
+            var stanza = new ModuleInstallDescriptor {install_to = "GameData"};
 
             // Candidate top-level directories.
             var candidate_set = new HashSet<string>();
@@ -462,10 +461,12 @@ namespace CKAN
                 }
 
                 // Prepare our file info.
-                InstallableFile file_info = new InstallableFile (); 
-                file_info.source = entry;
-                file_info.makedir = makeDirs;
-                file_info.destination = null;
+                InstallableFile file_info = new InstallableFile 
+                {
+                    source = entry,
+                    makedir = makeDirs,
+                    destination = null
+                };
 
                 // If we have a place to install it, fill that in...
                 if (installDir != null)
@@ -702,8 +703,7 @@ namespace CKAN
 
         public void UninstallList(string mod)
         {
-            var list = new List<string>();
-            list.Add(mod);
+            var list = new List<string> {mod};
             UninstallList(list);
         }
 
