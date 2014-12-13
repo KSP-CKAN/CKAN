@@ -74,6 +74,9 @@ namespace CKAN.CmdLine
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public SubCommandOptions KSP { get; set; }
 
+        [VerbOption("repo", HelpText = "Manage CKAN repositories")]
+        public SubCommandOptions RepoCommand { get; set; }
+
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
     }

@@ -186,6 +186,10 @@ namespace CKAN.CmdLine
                 case "repair":
                     var repair = new Repair(manager.CurrentInstance,user);
                     return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "repo":
+                    return RunSubCommand<Repo>((SubCommandOptions) cmdline.options);
+
                 case "ksp":
                     var ksp = new KSP(manager, user);
                     return ksp.RunSubCommand((SubCommandOptions) cmdline.options);                    
@@ -255,7 +259,7 @@ namespace CKAN.CmdLine
 
             try
             {
-                int updated = Repo.Update(registry_manager, current_instance.Version(), options.repo);
+                int updated = CKAN.Repo.Update(registry_manager, current_instance.Version(), options.repo);
                 user.RaiseMessage("Updated information on {0} available modules", updated);
             }
             catch (MissingCertificateKraken kraken)

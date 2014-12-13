@@ -34,6 +34,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Action\KSP.cs" />
+    <Compile Include="Action\Repo.cs" />
     <Compile Include="Exit.cs" />
     <Compile Include="ProgressReporter.cs" />
     <Compile Include="Action\Repair.cs" />
