@@ -76,8 +76,8 @@ namespace CKAN.NetKAN
             // the latest. See GH #214. Thanks to @Starstrider42 for spotting this.
 
             var latest =
-                from release in this.versions
-                where release.id == this.default_version_id
+                from release in versions
+                where release.id == default_version_id
                 select release
             ;
 
