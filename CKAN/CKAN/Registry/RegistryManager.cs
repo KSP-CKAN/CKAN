@@ -77,6 +77,15 @@ namespace CKAN
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
             log.DebugFormat("Loaded CKAN registry at {0}", path);
+
+            // Add the default master repository at a minium
+            Dictionary<string, System.Uri> repositories = registry.Repositories;
+            if (repositories == null || repositories.Count == 0)
+            {
+                repositories = new Dictionary<string, System.Uri>();
+                repositories.Add("default", CKAN.Repo.default_ckan_repo);
+                registry.Repositories = repositories;
+            }
         }
 
         private void LoadOrCreate()
