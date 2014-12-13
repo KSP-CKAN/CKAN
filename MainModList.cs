@@ -19,7 +19,7 @@ namespace CKAN
             if (ModList == null) return;
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod)row.Tag);
+                var mod = ((GUIMod) row.Tag);
                 var isVisible = mainModList.IsVisible(mod);
                 row.Visible = isVisible;
             }
@@ -34,25 +34,69 @@ namespace CKAN
         {
             Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
 
-            var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();                        
+            var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();
             var gui_mods = ckanModules.Select(m => new GUIMod(m, registry)).ToList();
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
-            var rows = MainModList.ConstructModList(mainModList.Modules);            
+            var rows = MainModList.ConstructModList(mainModList.Modules);
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
             ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
 
             //TODO Consider using smart enum patten so stuff like this is easier
-            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})", mainModList.CountModsByFilter(GUIModFilter.All));
-            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})", mainModList.CountModsByFilter(GUIModFilter.Installed));
-            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})", mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})", mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})", mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})", mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.All));
+            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Installed));
+            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
+            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
+            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Incompatible));
 
-            var has_any_updates = gui_mods.Any(mod=>mod.HasUpdate);            
+            var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
+        }
+
+        public void MarkModForInstall(string identifier, bool uninstall = false)
+        {
+            Util.Invoke(this, () => _MarkModForInstall(identifier));
+        }
+
+        private void _MarkModForInstall(string identifier, bool uninstall = false)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (GUIMod)row.Tag;
+                if (mod.Identifier == identifier)
+                {
+                    mod.IsInstallChecked = true;
+                    //TODO Fix up MarkMod stuff when I commit the GUIConflict
+                    (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
+                    break;
+                }
+            }
+        }
+
+        public void MarkModForUpdate(string identifier)
+        {
+            Util.Invoke(this, () => _MarkModForUpdate(identifier));
+        }
+
+        public void _MarkModForUpdate(string identifier)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (GUIMod)row.Tag;
+                if (mod.Identifier == identifier)
+                {
+                    (row.Cells[1] as DataGridViewCheckBoxCell).Value = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -66,8 +110,10 @@ namespace CKAN
         }
 
         public delegate void ModFiltersUpdatedEvent(MainModList source);
+
         public event ModFiltersUpdatedEvent ModFiltersUpdated;
         public ReadOnlyCollection<GUIMod> Modules { get; set; }
+
         public GUIModFilter ModFilter
         {
             get { return _modFilter; }
@@ -78,6 +124,7 @@ namespace CKAN
                 if (!old.Equals(value)) ModFiltersUpdated(this);
             }
         }
+
         public string ModNameFilter
         {
             get { return _modNameFilter; }
@@ -99,7 +146,6 @@ namespace CKAN
         /// <param name="registry"></param>
         public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry)
         {
-
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
             var modulesToInstall = new HashSet<string>();
             var modulesToRemove = new HashSet<string>();
@@ -111,11 +157,13 @@ namespace CKAN
                     if (!mod.IsInstallChecked)
                     {
                         modulesToRemove.Add(mod.Identifier);
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Remove));
+                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
+                            GUIModChangeType.Remove));
                     }
                     else if (mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
                     {
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(), GUIModChangeType.Update));
+                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
+                            GUIModChangeType.Update));
                     }
                 }
                 else if (mod.IsInstallChecked)
@@ -140,14 +188,17 @@ namespace CKAN
                 return null;
             }
 
-            changeset.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+            changeset.UnionWith(
+                resolver.ModList()
+                    .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
             var installer = ModuleInstaller.Instance;
             foreach (var reverseDependencies in modulesToRemove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep));
-                changeset.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
+                changeset.UnionWith(
+                    modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
             }
 
             return changeset.ToList();
@@ -183,33 +234,32 @@ namespace CKAN
 
         public static IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
         {
-
             var output = new List<DataGridViewRow>();
             foreach (var mod in modules)
             {
-                var item = new DataGridViewRow { Tag = mod };
+                var item = new DataGridViewRow {Tag = mod};
 
                 var installedCell = mod.IsInstallable()
-                    ? (DataGridViewCell)new DataGridViewCheckBoxCell()
+                    ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                     : new DataGridViewTextBoxCell();
                 installedCell.Value = mod.IsIncompatible
                     ? "-"
-                    : (!mod.IsAutodetected ? (object)mod.IsInstalled : "AD");
+                    : (!mod.IsAutodetected ? (object) mod.IsInstalled : "AD");
 
                 var updateCell = !mod.IsInstallable() || !mod.HasUpdate
-                    ? (DataGridViewCell)new DataGridViewTextBoxCell()
+                    ? (DataGridViewCell) new DataGridViewTextBoxCell()
                     : new DataGridViewCheckBoxCell();
                 updateCell.Value = !mod.IsInstallable() || !mod.HasUpdate
                     ? "-"
-                    : (object)false;
+                    : (object) false;
 
-                var nameCell = new DataGridViewTextBoxCell { Value = mod.Name };
-                var authorCell = new DataGridViewTextBoxCell { Value = mod.Authors };
-                var installedVersionCell = new DataGridViewTextBoxCell { Value = mod.InstalledVersion };
-                var latestVersionCell = new DataGridViewTextBoxCell { Value = mod.LatestVersion };
-                var kspVersionCell = new DataGridViewTextBoxCell { Value = mod.KSPversion };
-                var descriptionCell = new DataGridViewTextBoxCell { Value = mod.Abstract };
-                var homepageCell = new DataGridViewLinkCell { Value = mod.Homepage };
+                var nameCell = new DataGridViewTextBoxCell {Value = mod.Name};
+                var authorCell = new DataGridViewTextBoxCell {Value = mod.Authors};
+                var installedVersionCell = new DataGridViewTextBoxCell {Value = mod.InstalledVersion};
+                var latestVersionCell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
+                var kspVersionCell = new DataGridViewTextBoxCell {Value = mod.KSPversion};
+                var descriptionCell = new DataGridViewTextBoxCell {Value = mod.Abstract};
+                var homepageCell = new DataGridViewLinkCell {Value = mod.Homepage};
 
                 item.Cells.AddRange(installedCell, updateCell,
                     nameCell, authorCell,
