@@ -48,7 +48,7 @@ namespace CKAN.NetKAN
         {
             log.DebugFormat("Finding AVC .version file for {0}", module);
 
-            string version_ext = ".version";
+            const string version_ext = ".version";
 
             // Get all our version files.
             List<ZipEntry> files = ModuleInstaller.FindInstallableFiles(module, zipfile, null)

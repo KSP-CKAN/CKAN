@@ -16,13 +16,13 @@ namespace CKAN.NetKAN
 {
     internal class MainClass
     {
-        private static readonly int EXIT_OK = 0;
-        private static readonly int EXIT_BADOPT = 1;
-        private static readonly int EXIT_ERROR = 2;
+        private const int EXIT_OK = 0;
+        private const int EXIT_BADOPT = 1;
+        private const int EXIT_ERROR = 2;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
-        private static readonly string expand_token = "$kref"; // See #70 for naming reasons
-        private static readonly string version_token = "$vref"; // It'd be nice if we could have repeated $krefs.
+        private const string expand_token = "$kref"; // See #70 for naming reasons
+        private const string version_token = "$vref"; // It'd be nice if we could have repeated $krefs.
 
         public static int Main(string[] args)
         {
