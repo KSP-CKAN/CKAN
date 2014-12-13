@@ -17,8 +17,8 @@ namespace CKAN
         {
             // First check the registry.
 
-            string reg_key = @"HKEY_CURRENT_USER\Software\Valve\Steam";
-            string reg_value = @"SteamPath";
+            const string reg_key = @"HKEY_CURRENT_USER\Software\Valve\Steam";
+            const string reg_value = @"SteamPath";
 
             log.DebugFormat("Checking {0}\\{1} for Steam path", reg_key, reg_value);
 
