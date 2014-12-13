@@ -115,6 +115,24 @@ namespace CKAN.CmdLine
                 }
             }
 
+            #region Aliases
+
+            switch (cmdline.action)
+            {
+                case "add":
+                    cmdline.action = "install";
+                    break;
+
+                case "uninstall":
+                    cmdline.action = "remove";
+                    break;
+
+                default:
+                    break;
+            } 
+
+            #endregion
+
             switch (cmdline.action)
             {
                 case "gui":
