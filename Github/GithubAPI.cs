@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using log4net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
