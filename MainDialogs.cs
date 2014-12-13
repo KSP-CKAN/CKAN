@@ -6,8 +6,8 @@ namespace CKAN
     public partial class Main : Form
     {
 
-        private ErrorDialog m_ErrorDialog = null;
-        private SettingsDialog m_SettingsDialog = null;
+        private ErrorDialog m_ErrorDialog;
+        private SettingsDialog m_SettingsDialog;
        // private YesNoDialog m_YesNoDialog = null;
 
         public void RecreateDialogs()

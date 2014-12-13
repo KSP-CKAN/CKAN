@@ -16,7 +16,7 @@ namespace CKAN
         InstalledUpdateAvailable = 2,
         NewInRepository = 3,
         NotInstalled = 4,
-        Incompatible = 5,
+        Incompatible = 5
     }
 
     public enum GUIModChangeType
@@ -24,18 +24,18 @@ namespace CKAN
         None = 0,
         Install = 1,
         Remove = 2,
-        Update = 3,
+        Update = 3
     }
 
     public partial class Main : Form
     {
         private static Main m_Instance;
-        public Configuration m_Configuration = null;
+        public Configuration m_Configuration;
 
-        public ControlFactory controlFactory = null;
+        public ControlFactory controlFactory;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
-        private TabController m_TabController = null;
+        private TabController m_TabController;
         private volatile KSPManager manager;
 
         internal KSP CurrentInstance

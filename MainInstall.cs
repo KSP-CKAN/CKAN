@@ -14,7 +14,7 @@ namespace CKAN
 
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
-        private volatile bool installCanceled = false;
+        private volatile bool installCanceled;
 
         // this will be the final list of mods we want to install 
         private HashSet<string> toInstall = new HashSet<string>();
@@ -72,11 +72,11 @@ namespace CKAN
                                 // the mod is not already in the install list
                                 if (
                                     RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(), manager.CurrentInstance.Version()) !=
+                                        .registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) !=
                                     null &&
                                     !RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.IsInstalled(mod.name.ToString()) &&
-                                    !toInstall.Contains(mod.name.ToString()))
+                                        .registry.IsInstalled(mod.name) &&
+                                    !toInstall.Contains(mod.name))
                                 {
                                     // add it to the list of recommended mods we display to the user
                                     if (recommended.ContainsKey(mod.name))
@@ -385,7 +385,7 @@ namespace CKAN
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
 
-                var opts = (List<KeyValuePair<CkanModule, GUIModChangeType>>) result.Value;
+                var opts = result.Value;
 
                 foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
                 {

@@ -11,7 +11,7 @@ namespace CKAN
     public class ControlFactory
     {
 
-        private int m_MainThreadID = 0;
+        private int m_MainThreadID;
 
         public ControlFactory()
         {
