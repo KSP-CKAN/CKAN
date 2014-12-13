@@ -59,7 +59,7 @@ namespace CKAN.NetKAN
 
             var final_releases = releases.Where(x => (bool) x["prerelease"] == false);
 
-            if (final_releases == null || !final_releases.Any())
+            if (!final_releases.Any())
             {
                 return null;
             }
