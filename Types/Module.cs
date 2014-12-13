@@ -364,12 +364,7 @@ namespace CKAN
             // This could be a read-only state variable; do we have those in C#?
             Version release = Meta.ReleaseNumber();
 
-            if (release == null)
-            {
-                return true; // Dev builds will read anything
-            }
-
-            return release.IsGreaterThan(spec_vesion);
+            return release == null || release.IsGreaterThan(spec_vesion);
         }
 
         /// <summary>

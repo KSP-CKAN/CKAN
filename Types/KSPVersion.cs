@@ -54,24 +54,14 @@ namespace CKAN {
         }
 
         // True for short version (eg: 0.25), false for long (eg: 0.25.2).
-        public bool IsShortVersion() {
-            if (version == null) {
-                return false;
-            }
-            if (Regex.IsMatch (version, @"^\d+\.\d+$")) {
-                return true;
-            }
-            return false;
+        public bool IsShortVersion()
+        {
+            return version != null && Regex.IsMatch (version, @"^\d+\.\d+$");
         }
 
-        public bool IsLongVersion() {
-            if (version == null) {
-                return false;
-            }
-            if (Regex.IsMatch (version, @"^\d+\.\d+\.\d+$")) {
-                return true;
-            }
-            return false;
+        public bool IsLongVersion()
+        {
+            return version != null && Regex.IsMatch (version, @"^\d+\.\d+\.\d+$");
         }
 
         public bool IsAny() {

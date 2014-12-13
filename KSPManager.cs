@@ -120,15 +120,9 @@ namespace CKAN
             }
 
             // If we know of no instances, try to find one.
-            if (GetInstances().Count == 0)
-            {
-                return FindAndRegisterDefaultInstance();
-            }
-
             // Otherwise, we know of too many instances!
             // We don't know which one to pick, so we return null.
-
-            return null;
+            return GetInstances().Count == 0 ? FindAndRegisterDefaultInstance() : null;
         }
 
         /// <summary>
@@ -221,12 +215,7 @@ namespace CKAN
             }
 
             // Look for the current name in the list of loaded instances.
-            if (_Instances.ContainsKey(name))
-            {
-                return false;
-            }
-
-            return true;
+            return !_Instances.ContainsKey(name);
         }
 
         /// <summary>
