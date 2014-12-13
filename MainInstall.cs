@@ -209,24 +209,6 @@ namespace CKAN
                 SetDescription("Updating selected mods");
                 installer.Upgrade(toUpgrade, downloader);
 
-                try
-                {
-                    if (!InstallList(toInstall, opts.Value, downloader))
-                    {
-                        // install failed for some reason, error message is already displayed to the user                    
-                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                            opts.Key);
-                        return;
-                    }
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    GUI.user.RaiseMessage(
-                        "Module {0} required, but not listed in index, or not available for your version of KSP",
-                        ex.module);
-                    return;
-                }
-
 
                 // TODO: We should be able to resolve all our provisioning conflicts
                 // before we start installing anything. CKAN.SanityChecker can be used to
