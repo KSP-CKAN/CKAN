@@ -8,6 +8,10 @@ namespace CKAN
         {
             InitializeComponent();
             ApplyFormCompatibilityFixes();
+
+            // Set the default actions for pressing Enter and Escape.
+            AcceptButton = OKButton;
+            CancelButton = CancelRenameInstanceButton;
         }
 
         public DialogResult ShowRenameInstanceDialog(string name)
