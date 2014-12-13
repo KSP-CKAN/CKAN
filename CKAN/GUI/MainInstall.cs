@@ -322,6 +322,7 @@ namespace CKAN
                 }
                 catch (DownloadErrorsKraken e)
                 {
+                    // User notified in InstallList
                     return false;
                 }
             }
