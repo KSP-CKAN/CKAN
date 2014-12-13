@@ -348,7 +348,7 @@ namespace CKAN
                     GUI.user.RaiseMessage(kraken.ToString());
                     return false;
                 }
-                catch (DownloadErrorsKraken e)
+                catch (DownloadErrorsKraken)
                 {
                     // User notified in InstallList
                     return false;
