@@ -57,11 +57,11 @@ namespace CKAN
         // wishes to deal with multiple KSP installs.
         //
         // It would be totally fine to have this be an instance based upon KSP path, mind.
-        public static ModuleInstaller GetInstance(IUser user)
+        public static ModuleInstaller GetInstance(KSP current_instance, IUser user)
         {
             if (_Instance == null)
             {
-                _Instance = new ModuleInstaller(KSPManager.CurrentInstance, user);
+                _Instance = new ModuleInstaller(current_instance, user);
             }
             return _Instance;
         }        
