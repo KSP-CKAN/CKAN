@@ -20,12 +20,8 @@ namespace CKAN
 
         private string gamedir;
         private KSPVersion version;
-        private NetFileCache _Cache;
 
-        public NetFileCache Cache 
-        {
-            get { return _Cache; }
-        }
+        public NetFileCache Cache { get; private set; }
 
         public RegistryManager RegistryManager
         {
@@ -59,7 +55,7 @@ namespace CKAN
             
             gamedir = directory;
             Init();
-            _Cache = new NetFileCache(DownloadCacheDir());
+            Cache = new NetFileCache(DownloadCacheDir());
         }
 
         /// <summary>
