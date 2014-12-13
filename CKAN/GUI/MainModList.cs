@@ -58,41 +58,37 @@ namespace CKAN
             UpdateFilters(this);
         }
 
-        public void MarkModForInstall(string identifier, bool uninstall = false)
+        public void MarkMods(Dictionary<CkanModule, GUIModChangeType> mods)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier));
+            Util.Invoke(this, () => _MarkMods(mods));
         }
 
-        private void _MarkModForInstall(string identifier, bool uninstall = false)
+        private void _MarkMods(Dictionary<CkanModule, GUIModChangeType> mods)
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (GUIMod)row.Tag;
-                if (mod.Identifier == identifier)
+                if (mods.ContainsKey(mod.ToCkanModule()))
                 {
-                    mod.IsInstallChecked = true;
-                    //TODO Fix up MarkMod stuff when I commit the GUIConflict
-                    (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
-                    break;
+                    var value = mods[mod];
+                    switch (value)
+                    {
+                        case GUIModChangeType.None:
+                            break;
+                        case GUIModChangeType.Install:
+                            mod.SetInstallChecked(row,true);
+                            break;
+                        case GUIModChangeType.Remove:
+                            mod.SetInstallChecked(row, false);
+                            break;
+                        case GUIModChangeType.Update:
+                            mod.SetUpgradeChecked(row,true);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
-            }
-        }
-
-        public void MarkModForUpdate(string identifier)
-        {
-            Util.Invoke(this, () => _MarkModForUpdate(identifier));
-        }
-
-        public void _MarkModForUpdate(string identifier)
-        {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (GUIMod)row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    (row.Cells[1] as DataGridViewCheckBoxCell).Value = true;
-                    break;
-                }
+                
             }
         }
     }

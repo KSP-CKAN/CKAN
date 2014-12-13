@@ -19,7 +19,7 @@ namespace CKAN
         public string Abstract { get; private set; }
         public object Homepage { get; private set; }
         public string Identifier { get; private set; }
-        public bool IsInstallChecked { get; set; }
+        public bool IsInstallChecked { get; private set; }
         public bool IsUpgradeChecked { get; private set; }
 
 
@@ -82,16 +82,18 @@ namespace CKAN
 
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
 
-            bool value = (setvalueto.HasValue ? setvalueto.Value : (bool)update_cell.Value);
+            bool value = setvalueto ?? (bool)update_cell.Value;
             IsUpgradeChecked = value;
             update_cell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row)
+        public void SetInstallChecked(DataGridViewRow row, bool? setvalueto = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            IsInstallChecked = (bool)install_cell.Value;
+            bool value = setvalueto ?? (bool)install_cell.Value;
+            IsInstallChecked = value;
+            install_cell.Value = value;
         }
     }
 }

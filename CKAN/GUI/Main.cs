@@ -288,7 +288,7 @@ namespace CKAN
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row=>row.Visible);
             var does_name_begin_with_char = new Func<DataGridViewRow,bool>(row => 
             { 
-                var modname = ((CkanModule) row.Tag).name;
+                var modname = ((GUIMod) row.Tag).Name;
                 var key = e.KeyChar.ToString();
                 return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             });

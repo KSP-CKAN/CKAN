@@ -204,7 +204,12 @@ namespace CKAN
 
                 SetDescription("Uninstalling selected mods");
                 installer.UninstallList(toUninstall);
-                if (installCanceled) return;
+                if (installCanceled)
+                {
+                    e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
+                            opts.Key);
+                    return;
+                }
 
                 SetDescription("Updating selected mods");
                 installer.Upgrade(toUpgrade, downloader);
@@ -365,43 +370,35 @@ namespace CKAN
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateModsList();
+            
             m_TabController.SetTabLock(false);
 
             var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>) e.Result;
 
-            if (result.Key)
-            {
-                // install successful
+            if (result.Key)// install successful
+            {                
+                //Note with this in the succsess the users selection will not be changed on failure. 
+                //The only differance the MarkMods is to mark dependancies.                 
+                UpdateModsList();
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
             }
-            else
+            else// there was an error
             {
-                // there was an error
+                /*TODO Mark the dependancies in the install process instead of here. This is reached only after 
+                 *     the transaction is completed and we can not cancel installList mid install.
+                 *     Thus the user may of been on the main page for a long time by this point. We 
+                 *     might be overriding her new choices*/
+
                 // rollback user's choices but stay on the log dialog
                 AddStatusMessage("Error!");
                 SetDescription("An error occurred, check the log for information");
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+                var mods = result.Value.ToDictionary(opt => opt.Key, opt => opt.Value);
+                MarkMods(mods);
 
-                var opts = result.Value;
 
-                foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
-                {
-                    switch (opt.Value)
-                    {
-                        case GUIModChangeType.Install:
-                            MarkModForInstall(opt.Key.identifier);
-                            break;
-                        case GUIModChangeType.Update:
-                            MarkModForUpdate(opt.Key.identifier);
-                            break;
-                        case GUIModChangeType.Remove:
-                            MarkModForInstall(opt.Key.identifier, true);
-                            break;
-                    }
-                }
             }
 
             Util.Invoke(this, () => Enabled = true);
