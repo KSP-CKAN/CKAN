@@ -364,10 +364,12 @@ namespace CKAN.CmdLine
             }
 
             // Prepare options. Can these all be done in the new() somehow?
-            var install_ops = new RelationshipResolverOptions();
-            install_ops.with_all_suggests = options.with_all_suggests;
-            install_ops.with_suggests = options.with_suggests;
-            install_ops.with_recommends = ! options.no_recommends;
+            var install_ops = new RelationshipResolverOptions
+            {
+                with_all_suggests = options.with_all_suggests,
+                with_suggests = options.with_suggests,
+                with_recommends = !options.no_recommends
+            };
 
             // Install everything requested. :)
             try
