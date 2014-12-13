@@ -189,7 +189,7 @@ namespace CKAN
         /// </summary>
         private static KSPVersion DetectVersion(string path)
         {
-            string readme = "";
+            string readme;
             try
             {
                 // Slurp our README into memory

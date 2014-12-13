@@ -404,7 +404,7 @@ namespace CKAN
 
                 if (available == null)
                 {
-                    incompatible.Add(LatestAvailable(candidate, null));
+                    incompatible.Add(LatestAvailable(candidate));
                 }
             }
 

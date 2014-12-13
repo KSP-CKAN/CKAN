@@ -128,8 +128,8 @@ namespace CKAN {
             // If we target any, then yes, it's a match.
             if (IsAny()) {
                 return true;
-            } else if (this.IsLongVersion()) {
-                return this.CompareTo (that) == 0;
+            } else if (IsLongVersion()) {
+                return CompareTo (that) == 0;
             }
 
             // We've got a short version, so split it into two separate versions,
