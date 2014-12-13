@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
+using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -10,11 +11,11 @@ namespace CKAN.CmdLine
     public struct Repository
     {
         public string name;
-        public Uri url;
+        public Uri uri;
         
         public override string ToString()
         {
-            return String.Format("{0} ({1})", name, url.DnsSafeHost);
+            return String.Format("{0} ({1})", name, uri.DnsSafeHost);
         }
     }
     
@@ -25,6 +26,8 @@ namespace CKAN.CmdLine
 
     public class Repo : ISubCommand
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+
         public string option;
         public object suboptions;
 
@@ -62,7 +65,7 @@ namespace CKAN.CmdLine
             public string name { get; set; }
 
             [ValueOption(1)]
-            public string path { get; set; }
+            public string uri { get; set; }
         }
 
         internal class RenameOptions : CommonOptions
@@ -119,10 +122,10 @@ namespace CKAN.CmdLine
                     return AvailableRepositories();
 
                 case "list":
-                    return ListInstalls();
+                    return ListRepositories();
 
                 case "add":
-                    return AddInstall((AddOptions)suboptions);
+                    return AddRepository((AddOptions)suboptions);
 
                 case "rename":
                     return RenameInstall((RenameOptions)suboptions);
@@ -175,13 +178,13 @@ namespace CKAN.CmdLine
 
             foreach (Repository repository in repositories.repositories)
             {
-                User.WriteLine("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.url);
+                User.WriteLine("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
             }
             
             return Exit.OK;
         }
 
-        private static int ListInstalls()
+        private static int ListRepositories()
         {
             User.WriteLine("Listing all known repositories:");
             RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
@@ -201,9 +204,58 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int AddInstall(AddOptions options)
+        private static int AddRepository(AddOptions options)
         {
-            User.WriteLine("Adding repository:");
+            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+
+            if (options.name == null)
+            {
+                User.WriteLine("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
+                return Exit.BADOPT;
+            }
+
+            if (options.uri == null)
+            {
+                RepositoryList repositoryList = new RepositoryList();
+
+                try
+                {
+                    repositoryList = FetchMasterRepositoryList();
+                }
+                catch
+                {
+                    User.Error("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                    return Exit.ERROR;
+                }
+
+                foreach (Repository repository in repositoryList.repositories)
+                {
+                    if (String.Equals(repository.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        options.uri = repository.uri.ToString();
+                    }
+                }
+
+                // Nothing found in the master list?
+                if (options.uri == null)
+                {
+                    User.WriteLine("Name {0} not found in master list, please provide name and uri.", options.name);
+                    return Exit.BADOPT;
+                }
+            }
+
+            log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            if (repositories.ContainsKey(options.name))
+            {
+                User.WriteLine("Repository with name \"{0}\" already exists, aborting..", options.name);
+                return Exit.BADOPT;
+            }
+
+            repositories.Add(options.name, new System.Uri(options.uri));
+            manager.Save();
+
             return Exit.OK;
         }
 
