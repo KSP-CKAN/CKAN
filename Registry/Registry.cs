@@ -39,7 +39,7 @@ namespace CKAN
         /// </summary>
         [JsonIgnore] public ICollection<InstalledModule> InstalledModules
         {
-            get { return this.installed_modules.Values; }
+            get { return installed_modules.Values; }
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace CKAN
         /// </summary>
         [JsonIgnore] public ICollection<string> InstalledDlls
         {
-            get { return this.installed_dlls.Keys; }
+            get { return installed_dlls.Keys; }
         }
 
         #region Registry Upgrades
@@ -95,7 +95,7 @@ namespace CKAN
                     }
                 }
 
-                this.installed_files = normalised_installed_files;
+                installed_files = normalised_installed_files;
 
                 // Now update all our module file manifests.
 
@@ -156,7 +156,7 @@ namespace CKAN
             this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
             this.installed_files = installed_files;
-            this.registry_version = LATEST_REGISTRY_VERSION;
+            registry_version = LATEST_REGISTRY_VERSION;
         }
 
         // If deserialsing, we don't want everything put back directly,
@@ -241,7 +241,7 @@ namespace CKAN
         {
             // Hey, you know what's a great way to back-up your own object?
             // JSON. ;)
-            this.transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
+            transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
             log.Debug("State saved");
         }
 
@@ -564,7 +564,7 @@ namespace CKAN
             // is uninstalled.
             foreach (string file in relative_files)
             {
-                this.installed_files[file] = mod.identifier;
+                installed_files[file] = mod.identifier;
             }
 
             // Finally, register our module proper.
@@ -584,7 +584,7 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string rel_file in this.installed_modules[module].Files)
+            foreach (string rel_file in installed_modules[module].Files)
             {
                 string absolute_file = ksp.ToAbsoluteGameDir(rel_file);
 
@@ -607,13 +607,13 @@ namespace CKAN
             }
 
             // Okay, all the files are gone. Let's clear our metadata.
-            foreach (string rel_file in this.installed_modules[module].Files)
+            foreach (string rel_file in installed_modules[module].Files)
             {
-                this.installed_files.Remove(rel_file);
+                installed_files.Remove(rel_file);
             }
 
             // Bye bye, module, it's been nice having you visit.
-            this.installed_modules.Remove(module);
+            installed_modules.Remove(module);
         }
 
         /// <summary>

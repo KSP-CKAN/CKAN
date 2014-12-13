@@ -7,9 +7,9 @@ namespace CKAN
 {
     public class RelationshipResolverOptions : ICloneable
     {
-        public bool with_all_suggests = false;
+        public bool with_all_suggests;
         public bool with_recommends = true;
-        public bool with_suggests = false;
+        public bool with_suggests;
         public bool without_toomanyprovides_kraken = false;
         public bool without_enforce_consistency = false;
         public object Clone()
@@ -183,13 +183,10 @@ namespace CKAN
                         log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
                         throw new ModuleNotFoundKraken(dep_name);
                     }
-                    else
-                    {
-                        log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
-                        continue;
-                    }
+                    log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                    continue;
                 }
-                else if (candidates.Count > 1)
+                if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
                     // TODO: It would be great if instead we picked the one with the
@@ -226,16 +223,13 @@ namespace CKAN
                             candidate = null;
                             break;
                         }
-                        else
-                        {
-                            var this_is_why_we_cant_have_nice_things = new List<string> {
-                                string.Format(
+                        var this_is_why_we_cant_have_nice_things = new List<string> {
+                            string.Format(
                                 "{0} and {1} conflict with each other, yet we require them both!",
                                 candidate, mod)
-                            };
+                        };
 
-                            throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
-                        }
+                        throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
                     }
                 }
 

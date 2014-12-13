@@ -9,9 +9,9 @@ namespace CKAN {
 
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
-        private int epoch = 0;
-        private string version = null;
-        private string orig_string = null;
+        private int epoch;
+        private string version;
+        private string orig_string;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
@@ -25,7 +25,7 @@ namespace CKAN {
         /// Creates a new version object from the `ToString()` representation of anything!
         /// </summary>
         public Version (string version) {
-            this.orig_string = version;
+            orig_string = version;
 
             Match match = Regex.Match (
                 version,
@@ -34,7 +34,7 @@ namespace CKAN {
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0) {
-                this.epoch = Convert.ToInt32( match.Groups["epoch"].Value );
+                epoch = Convert.ToInt32( match.Groups["epoch"].Value );
             }
 
             this.version = match.Groups["version"].Value;
@@ -57,12 +57,12 @@ namespace CKAN {
 
         public int CompareTo(Version that) {
 
-            if (that.epoch == this.epoch && that.version == this.version) {
+            if (that.epoch == epoch && that.version == version) {
                 return 0;
             }
  
             // Compare epochs first.
-            if (this.epoch < that.epoch) {
+            if (epoch < that.epoch) {
                 return -1;
             } else if (this.epoch > that.epoch) {
                 return 1;
@@ -72,7 +72,7 @@ namespace CKAN {
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
 
             Comparison comp;
-            comp.remainder1 = this.version;
+            comp.remainder1 = version;
             comp.remainder2 = that.version;
 
             // Process our strings while there are characters remaining

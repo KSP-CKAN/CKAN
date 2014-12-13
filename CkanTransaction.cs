@@ -11,7 +11,7 @@ namespace CKAN
         // as per http://blogs.msdn.com/b/dbrowne/archive/2010/05/21/using-new-transactionscope-considered-harmful.aspx
         private static readonly ILog log = LogManager.GetLogger(typeof(CkanTransaction));
 
-        private TransactionScope m_Scope = null;
+        private TransactionScope m_Scope;
 
         public CkanTransaction()
         {

@@ -40,7 +40,7 @@ namespace CKAN
 
             // We want everthing that matches our 'file', either as an exact match,
             // or as a path leading up to it.
-            string wanted_filter = "^" + Regex.Escape(this.file) + "(/|$)";
+            string wanted_filter = "^" + Regex.Escape(file) + "(/|$)";
 
             // If it doesn't match our install path, ignore it.
             if (! Regex.IsMatch(normalised_path, wanted_filter))
@@ -58,7 +58,7 @@ namespace CKAN
             // All these comparisons are case insensitive.
             var path_segments = new List<string>(normalised_path.ToLower().Split('/'));
 
-            foreach (string filter_text in this.filter)
+            foreach (string filter_text in filter)
             {
                 if (path_segments.Contains(filter_text.ToLower()))
                 {
@@ -67,7 +67,7 @@ namespace CKAN
             }
 
             // Finally, check our filter regexpes.
-            foreach (string regexp in this.filter_regexp)
+            foreach (string regexp in filter_regexp)
             {
                 if (Regex.IsMatch(normalised_path, regexp))
                 {

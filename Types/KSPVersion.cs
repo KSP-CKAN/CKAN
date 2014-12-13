@@ -58,7 +58,7 @@ namespace CKAN {
             if (version == null) {
                 return false;
             }
-            else if (Regex.IsMatch (version, @"^\d+\.\d+$")) {
+            if (Regex.IsMatch (version, @"^\d+\.\d+$")) {
                 return true;
             }
             return false;
@@ -68,7 +68,7 @@ namespace CKAN {
             if (version == null) {
                 return false;
             }
-            else if (Regex.IsMatch (version, @"^\d+\.\d+\.\d+$")) {
+            if (Regex.IsMatch (version, @"^\d+\.\d+\.\d+$")) {
                 return true;
             }
             return false;
@@ -101,13 +101,13 @@ namespace CKAN {
         public int CompareTo(KSPVersion that) {
 
             // We need two long versions to be able to compare properly.
-            if ((! this.IsLongVersion ()) && (! that.IsLongVersion ())) {
+            if ((! IsLongVersion ()) && (! that.IsLongVersion ())) {
                 throw new KSPVersionIncomparableException (this, that, "CompareTo");
             }
 
             // Hooray, we can hook the regular Version code here.
 
-            Version v1 = this.VersionObject();
+            Version v1 = VersionObject();
             Version v2 = that.VersionObject();
 
             return v1.CompareTo (v2);
@@ -126,7 +126,7 @@ namespace CKAN {
             }
 
             // If we target any, then yes, it's a match.
-            if (this.IsAny()) {
+            if (IsAny()) {
                 return true;
             } else if (this.IsLongVersion()) {
                 return this.CompareTo (that) == 0;
@@ -135,10 +135,10 @@ namespace CKAN {
             // We've got a short version, so split it into two separate versions,
             // and compare each.
 
-            KSPVersion min = new KSPVersion (this.Version());
+            KSPVersion min = new KSPVersion (Version());
             min.ToLongMin ();
 
-            KSPVersion max = new KSPVersion (this.Version());
+            KSPVersion max = new KSPVersion (Version());
             max.ToLongMax ();
 
             return (that >= min && that <= max);
@@ -182,7 +182,7 @@ namespace CKAN {
         }
 
         public override string ToString () {
-            return this.Version();
+            return Version();
         }
 
     }

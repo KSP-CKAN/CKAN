@@ -57,7 +57,7 @@ namespace CKAN
 
             string short_version = Regex.Match(build_version, @"^(.*)-\d+-.*$").Result("$1");
 
-            return new CKAN.Version(short_version);
+            return new Version(short_version);
         }
 
         /// <summary>
