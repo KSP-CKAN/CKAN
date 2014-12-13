@@ -75,7 +75,7 @@ namespace CKAN.CmdLine
         {
             string[] args = unparsed.options.ToArray();
 
-            if (args == null || args.Length == 0)
+            if (args.Length == 0)
             {
                 // There's got to be a better way of showing help...
                 args = new string[1];
@@ -83,7 +83,7 @@ namespace CKAN.CmdLine
             }
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse, null);
+            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse);
 
             // That line above will have set our 'option' and 'suboption' fields.
 

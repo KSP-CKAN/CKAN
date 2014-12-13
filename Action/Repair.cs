@@ -25,7 +25,7 @@ namespace CKAN.CmdLine
         {
             string[] args = unparsed.options.ToArray();
 
-            if (args == null || args.Length == 0)
+            if (args.Length == 0)
             {
                 // There's got to be a better way of showing help...
                 args = new string[1];
@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
             }
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse, null);
+            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse);
 
             switch (option)
             {
