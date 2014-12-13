@@ -45,14 +45,8 @@ namespace CKAN.CmdLine
             [VerbOption("add", HelpText="Add a repository")]
             public AddOptions AddOptions { get; set; }
 
-            [VerbOption("rename", HelpText="Rename a repository")]
-            public RenameOptions RenameOptions { get; set; }
-
             [VerbOption("forget", HelpText="Forget a repository")]
             public ForgetOptions ForgetOptions { get; set; }
-
-            [VerbOption("default", HelpText="Set the default repository")]
-            public DefaultOptions DefaultOptions { get; set; }
         }
 
         internal class AvailableOptions : CommonOptions
@@ -68,22 +62,7 @@ namespace CKAN.CmdLine
             public string uri { get; set; }
         }
 
-        internal class RenameOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string old_name { get; set; }
-
-            [ValueOption(1)]
-            public string new_name { get; set; }
-        }
-
         internal class ForgetOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string name { get; set; }
-        }
-
-        internal class DefaultOptions : CommonOptions
         {
             [ValueOption(0)]
             public string name { get; set; }
@@ -127,14 +106,8 @@ namespace CKAN.CmdLine
                 case "add":
                     return AddRepository((AddOptions)suboptions);
 
-                case "rename":
-                    return RenameInstall((RenameOptions)suboptions);
-
                 case "forget":
                     return ForgetInstall((ForgetOptions)suboptions);
-
-                case "default":
-                    return SetDefaultInstall((DefaultOptions)suboptions);
 
                 default:
                     User.WriteLine("Unknown command: ksp {0}", option);
@@ -259,21 +232,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int RenameInstall(RenameOptions options)
-        {
-            User.WriteLine("Renaming repository:");
-            return Exit.OK;
-        }
-
         private static int ForgetInstall(ForgetOptions options)
         {
             User.WriteLine("Forgetting repository:");
-            return Exit.OK;
-        }
-
-        private static int SetDefaultInstall(DefaultOptions options)
-        {
-            User.WriteLine("Setting the default repository:");
             return Exit.OK;
         }
     }
