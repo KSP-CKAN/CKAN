@@ -23,7 +23,7 @@ namespace CKAN.CmdLine
             [VerbOption("forget", HelpText="Forget a KSP install")]
             public ForgetOptions ForgetOptions { get; set; }
 
-            [VerbOption("default", HelpText="Set a default KSP install")]
+            [VerbOption("default", HelpText="Set the default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
         }
 
