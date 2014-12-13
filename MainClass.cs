@@ -56,23 +56,22 @@ namespace CKAN.NetKAN
             NetKanRemote remote = FindRemote(json);
 
             JObject metadata;
-            if (remote.source == "kerbalstuff")
+            switch (remote.source)
             {
-                metadata = KerbalStuff(json, remote.id, cache);
-            }
-            else if (remote.source == "github")
-            {
-                if (options.GitHubToken != null)
-                {
-                    GithubAPI.SetCredentials(options.GitHubToken);
-                }
+                case "kerbalstuff":
+                    metadata = KerbalStuff(json, remote.id, cache);
+                    break;
+                case "github":
+                    if (options.GitHubToken != null)
+                    {
+                        GithubAPI.SetCredentials(options.GitHubToken);
+                    }
 
-                metadata = GitHub(json, remote.id, cache);
-            }
-            else
-            {
-                log.FatalFormat("Unknown remote source: {0}", remote.source);
-                return EXIT_ERROR;
+                    metadata = GitHub(json, remote.id, cache);
+                    break;
+                default:
+                    log.FatalFormat("Unknown remote source: {0}", remote.source);
+                    return EXIT_ERROR;
             }
 
             if (metadata == null)
