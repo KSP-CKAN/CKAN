@@ -11,11 +11,6 @@ namespace CKAN
     {
         private BackgroundWorker m_InstallWorker;
 
-        private void InstallModsReportProgress(string message, int percent, IUser user)
-        {
-            SetDescription(message + " - " + percent + "%");
-            SetProgress(percent);
-        }
 
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
@@ -34,8 +29,7 @@ namespace CKAN
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-            // setup progress callback
-            installer.onReportProgress += InstallModsReportProgress;
+            // setup progress callback        
 
             toInstall = new HashSet<string>();
             var toUninstall = new HashSet<string>();
@@ -227,7 +221,7 @@ namespace CKAN
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    GUI.user.DisplayMessage(
+                    GUI.user.RaiseMessage(
                         "Module {0} required, but not listed in index, or not available for your version of KSP",
                         ex.module);
                     return;
@@ -311,21 +305,19 @@ namespace CKAN
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    GUI.user.DisplayMessage(
-                        "Module {0} required, but not listed in index, or not available for your version of KSP",
-                        ex.module);
+                    GUI.user.RaiseMessage("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
                     return false;
                 }
                 catch (BadMetadataKraken ex)
                 {
-                    GUI.user.DisplayMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
+                    GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
                     return false;
                 }
                 catch (FileExistsKraken ex)
                 {
                     if (ex.owning_module != null)
                     {
-                        GUI.user.DisplayMessage(
+                        GUI.user.RaiseMessage(
                             "\nOh no! We tried to overwrite a file owned by another mod!\n" +
                             "Please try a `ckan update` and try again.\n\n" +
                             "If this problem re-occurs, then it maybe a packaging bug.\n" +
@@ -342,7 +334,7 @@ namespace CKAN
                     }
                     else
                     {
-                        GUI.user.DisplayMessage(
+                        GUI.user.RaiseMessage(
                             "\n\nOh no!\n\n" +
                             "It looks like you're trying to install a mod which is already installed,\n" +
                             "or which conflicts with another mod which is already installed.\n\n" +
@@ -355,13 +347,13 @@ namespace CKAN
                             );
                     }
 
-                    GUI.user.DisplayMessage("Your GameData has been returned to its original state.\n");
+                    GUI.user.RaiseMessage("Your GameData has been returned to its original state.\n");
                     return false;
                 }
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
-                    GUI.user.DisplayMessage(ex.InconsistenciesPretty);
+                    GUI.user.RaiseMessage(ex.InconsistenciesPretty);
                     return false;
                 }
                 catch (CancelledActionKraken)
@@ -371,7 +363,7 @@ namespace CKAN
                 catch (MissingCertificateKraken kraken)
                 {
                     // Another very pretty kraken.
-                    GUI.user.DisplayMessage(kraken.ToString());
+                    GUI.user.RaiseMessage(kraken.ToString());
                     return false;
                 }
                 catch (DownloadErrorsKraken e)

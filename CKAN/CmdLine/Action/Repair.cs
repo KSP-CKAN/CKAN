@@ -57,7 +57,7 @@ namespace CKAN.CmdLine
         {
             CurrentInstance.Registry.Repair();
             CurrentInstance.RegistryManager.Save();
-            User.DisplayMessage("Registry repairs attempted. Hope it helped.");
+            User.RaiseMessage("Registry repairs attempted. Hope it helped.");
             return Exit.OK;
         }
     }

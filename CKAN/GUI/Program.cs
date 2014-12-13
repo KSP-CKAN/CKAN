@@ -25,7 +25,7 @@ namespace CKAN
 
             // Provide a stack backtrace, so our users and non-debugging devs can
             // see what's gone wrong.
-            user.DisplayError("Unhandled exception:\n{0} ", exception.ToString());
+            user.RaiseError("Unhandled exception:\n{0} ", exception.ToString());
             Debugger.Break();
         }
     }

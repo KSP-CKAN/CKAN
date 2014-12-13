@@ -25,13 +25,6 @@ namespace CKAN
         public void ErrorDialog(string text, params object[] args)
         {
             m_ErrorDialog.ShowErrorDialog(String.Format(text, args));
-        }
-
-        public bool YesNoDialog(string text)
-        {
-            return true;
-//            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
-        }
-
+        }        
     }
 }

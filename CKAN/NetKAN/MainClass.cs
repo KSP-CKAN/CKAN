@@ -126,7 +126,7 @@ namespace CKAN.NetKAN
                 }
                 catch (Newtonsoft.Json.JsonReaderException)
                 {                    
-                    user.DisplayMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                    user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
                     return EXIT_ERROR;
                 }
 

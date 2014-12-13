@@ -8,20 +8,15 @@ using ChinhDo.Transactions;
 using log4net;
 
 namespace CKAN
-{
-    // Called with status updates on how we're progressing.
-    public delegate void NetAsyncProgressReport(int percent, int bytesPerSecond, long bytesLeft);
-
-    // Called on completion (including on error)
-    // Called with ALL NULLS on error.
-    // Can be set by ourself in the DownloadModules method.
-    public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
+{  
+    
 
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
     public class NetAsyncDownloader
     {
+
         public IUser User { get; set; }
 
         // Private utility class for tracking downloads
@@ -47,16 +42,20 @@ namespace CKAN
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
-        private static readonly TxFileManager file_transaction = new TxFileManager ();
+        private static readonly TxFileManager file_transaction = new TxFileManager();
 
         private List<NetAsyncDownloaderDownloadPart> downloads;
-        public NetAsyncCompleted onCompleted = null;
-        public NetAsyncProgressReport onProgressReport = null;
         private int completed_downloads;
 
         private Object download_complete_lock = new Object();
 
         private bool downloadCanceled = false;
+
+        // Called on completion (including on error)
+        // Called with ALL NULLS on error.
+        // Can be set by ourself in the DownloadModules method.
+        private delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
+        private NetAsyncCompleted onCompleted = null;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -83,7 +82,7 @@ namespace CKAN
 
             for (int i = 0; i < downloads.Count; i++)
             {
-                User.DisplayMessage("Downloading \"{0}\"", downloads[i].url);
+                User.RaiseMessage("Downloading \"{0}\"", downloads[i].url);
 
                 // We need a new variable for our closure/lambda, hence index = i.
                 int index = i;
@@ -92,7 +91,7 @@ namespace CKAN
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
                         FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                                           args.TotalBytesToReceive - args.BytesReceived);
+                            args.TotalBytesToReceive - args.BytesReceived);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
@@ -117,9 +116,8 @@ namespace CKAN
         /// </summary>
         public void DownloadModules(
             NetFileCache cache,
-            IEnumerable<CkanModule> modules,
-            ModuleInstallerReportProgress progress = null
-        )
+            IEnumerable<CkanModule> modules
+            )
         {
             var unique_downloads = new Dictionary<Uri, CkanModule>();
 
@@ -132,18 +130,11 @@ namespace CKAN
                     unique_downloads[module.download] = module;
                 }
             }
-                
-            // Attach our progress report, if requested.
-            if (progress != null)
-            {
-                this.onProgressReport += (percent, bytesPerSecond, bytesLeft) =>
-                        progress(
-                            String.Format("{0} kbps - downloading - {1} MiB left", bytesPerSecond / 1024, bytesLeft / 1024 / 1024),
-                            percent, User
-                        );
-            }
 
-            this.onCompleted = (_uris, paths, errors) => ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
+            // Attach our progress report, if requested.            
+            this.onCompleted =
+                (_uris, paths, errors) =>
+                    ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
 
             // Start the download!
             this.Download(unique_downloads.Keys);
@@ -198,7 +189,8 @@ namespace CKAN
         /// Called by NetAsyncDownloader on completion.
         /// Called with all nulls on download cancellation.
         /// </summary>
-        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, CkanModule[] modules, Exception[] errors)
+        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, CkanModule[] modules,
+            Exception[] errors)
         {
             if (urls != null)
             {
@@ -206,14 +198,13 @@ namespace CKAN
                 {
                     if (errors[i] != null)
                     {
-                        User.DisplayError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                        User.RaiseError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
                     }
                     else
                     {
                         // Even if some of our downloads failed, we want to cache the
                         // ones which succeeded.
                         cache.Store(urls[i], filenames[i], modules[i].StandardName());
-
                     }
                 }
             }
@@ -238,6 +229,7 @@ namespace CKAN
             {
                 Monitor.Pulse(download_complete_lock);
             }
+            User.RaiseDownloadsCompleted(urls, filenames, errors);
         }
 
         /// <summary>
@@ -252,7 +244,7 @@ namespace CKAN
 
             lock (download_complete_lock)
             {
-               Monitor.Pulse(download_complete_lock);
+                Monitor.Pulse(download_complete_lock);
             }
 
             if (onCompleted != null)
@@ -290,31 +282,32 @@ namespace CKAN
             download.bytesDownloaded = bytesDownloaded;
             downloads[index] = download;
 
-            if (onProgressReport != null)
+
+            int totalPercentage = 0;
+            int totalBytesPerSecond = 0;
+            long totalBytesLeft = 0;
+            long totalBytesDownloaded = 0;
+
+            for (int i = 0; i < downloads.Count; i++)
             {
-                int totalPercentage = 0;
-                int totalBytesPerSecond = 0;
-                long totalBytesLeft = 0;
-                long totalBytesDownloaded = 0;
-
-                for (int i = 0; i < downloads.Count; i++)
+                if (downloads[i].bytesLeft > 0)
                 {
-                    if(downloads[i].bytesLeft > 0)
-                    {
-                        totalBytesPerSecond += downloads[i].bytesPerSecond;
-                    }
-
-                    totalBytesLeft += downloads[i].bytesLeft;
-                    totalBytesDownloaded += downloads[i].bytesDownloaded;
-                    totalBytesLeft += downloads[i].bytesLeft;
+                    totalBytesPerSecond += downloads[i].bytesPerSecond;
                 }
 
-                totalPercentage = (int)((totalBytesDownloaded * 100) / (totalBytesLeft + totalBytesDownloaded + 1));
+                totalBytesLeft += downloads[i].bytesLeft;
+                totalBytesDownloaded += downloads[i].bytesDownloaded;
+                totalBytesLeft += downloads[i].bytesLeft;
+            }
+            totalPercentage = (int) ((totalBytesDownloaded*100)/(totalBytesLeft + totalBytesDownloaded + 1));
 
-                if (!downloadCanceled)
-                {
-                    onProgressReport(totalPercentage, totalBytesPerSecond, totalBytesLeft);
-                }
+            if (!downloadCanceled)
+            {
+                User.RaiseProgress(
+                    String.Format("{0} kbps - downloading - {1} MiB left",
+                        totalBytesPerSecond/1024,
+                        totalBytesLeft/1024/1024),
+                    totalPercentage);
             }
         }
 
@@ -342,24 +335,21 @@ namespace CKAN
                 log.Info("All files finished downloading");
 
                 // If we have a callback, then signal that we're done.
-                if (onCompleted != null)
+
+                var fileUrls = new Uri[downloads.Count];
+                var filePaths = new string[downloads.Count];
+                var errors = new Exception[downloads.Count];
+
+                for (int i = 0; i < downloads.Count; i++)
                 {
-                    var fileUrls = new Uri[downloads.Count];
-                    var filePaths = new string[downloads.Count];
-                    var errors = new Exception[downloads.Count];
-
-                    for (int i = 0; i < downloads.Count; i++)
-                    {
-                        fileUrls[i] = downloads[i].url;
-                        filePaths[i] = downloads[i].path;
-                        errors[i] = downloads[i].error;
-                    }
-
-                    log.Debug("Signalling completion via callback");
-                    onCompleted(fileUrls, filePaths, errors);
+                    fileUrls[i] = downloads[i].url;
+                    filePaths[i] = downloads[i].path;
+                    errors[i] = downloads[i].error;
                 }
+
+                log.Debug("Signalling completion via callback");
+                onCompleted(fileUrls, filePaths, errors);
             }
         }
     }
 }
-

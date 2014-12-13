@@ -52,8 +52,7 @@ namespace CKAN
         public MainModList mainModList { get; private set; }
 
         public Main(GUIUser User)
-        {
-            User.yesNoDialog = YesNoDialog;
+        {            
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
 
@@ -486,7 +485,7 @@ namespace CKAN
             }
             catch(Exception exception)
             {
-                GUI.user.DisplayError("Couldn't start KSP. {0}.", exception.Message);
+                GUI.user.RaiseError("Couldn't start KSP. {0}.", exception.Message);
             }
         }
 
@@ -527,30 +526,38 @@ namespace CKAN
 
     }
 
-    public class GUIUser : IUser
-    {
-        public Func<string,bool> yesNoDialog;
+    public class GUIUser : NullUser
+    {        
         public Action<string, object[]> displayMessage;
-        public Action<string, object[]> displayError;       
-
-        public bool DisplayYesNoDialog(string message)
+        public Action<string, object[]> displayError;
+       
+        
+        protected override bool DisplayYesNoDialog(string message)
         {
-            return yesNoDialog(message);
+            return true;
         }
 
-        public void DisplayMessage(string message, params object[] args)
+        protected override void DisplayMessage(string message, params object[] args)
         {
-            
+            displayMessage(message, args);
         }
 
-        public void DisplayError(string message, params object[] args)
+        protected override void DisplayError(string message, params object[] args)
         {
-            
+            displayError(message, args);
         }
 
-        public int WindowWidth
+        protected override void ReportProgress(string format, int percent)
+        {
+            Main.Instance.SetDescription(format + " - " + percent + "%");
+            Main.Instance.SetProgress(percent);
+        }
+
+        public override int WindowWidth
         {
             get { return -1; }
         }
+
+        
     }
 }
