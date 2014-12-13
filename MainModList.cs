@@ -25,13 +25,13 @@ namespace CKAN
             }
         }
 
-        private void UpdateModsList(bool markUpdates = false)
+        private void UpdateModsList()
         {
-            Util.Invoke(this, () => _UpdateModsList(markUpdates));
+            Util.Invoke(this, _UpdateModsList);
         }
 
 
-        private void _UpdateModsList(bool markUpdates)
+        private void _UpdateModsList()
         {
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
 

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
 

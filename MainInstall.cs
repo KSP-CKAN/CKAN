@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
         private BackgroundWorker m_InstallWorker;
 
@@ -500,7 +500,7 @@ namespace CKAN
 
             foreach (var pair in mods)
             {
-                CkanModule module = null;
+                CkanModule module;
 
                 try
                 {
@@ -578,50 +578,6 @@ namespace CKAN
             {
                 Monitor.Pulse(this);
             }
-        }
-
-        /// <summary>
-        /// Returns mods that we require to install the selected module.
-        /// This returns null if we can't compute these without user input,
-        /// or if the mods conflict.
-        /// </summary>
-        private List<CkanModule> GetInstallDependencies(CkanModule module, RelationshipResolverOptions options)
-        {
-            var tmp = new List<string>();
-            tmp.Add(module.identifier);
-
-            RelationshipResolver resolver = null;
-
-            try
-            {
-                resolver = new RelationshipResolver(tmp, options,
-                    RegistryManager.Instance(manager.CurrentInstance).registry);                
-            }
-            catch (Kraken kraken)
-            {
-                // TODO: Both of these krakens contain extra information; either a list of
-                // mods the user can choose from, or a list of inconsistencies that are blocking
-                // this selection. We *should* display those to the user. See GH #345.
-                if (kraken is TooManyModsProvideKraken || kraken is InconsistentKraken)
-                {
-                    // Expected krakens.
-                    return null;
-                }
-                else if (kraken is ModuleNotFoundKraken)
-                {
-                    var not_found = (ModuleNotFoundKraken) kraken;
-                    log.ErrorFormat(
-                        "Can't find {0}, but {1} depends on it",
-                        not_found.module, module
-                        );
-                    return null;
-                }
-
-                log.ErrorFormat("Unexpected Kraken in GetInstallDeps: {0}", kraken.GetType());
-                return null;
-            }
-
-            return resolver.ModList();
         }
     }
 }
