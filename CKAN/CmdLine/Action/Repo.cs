@@ -107,7 +107,7 @@ namespace CKAN.CmdLine
                     return AddRepository((AddOptions)suboptions);
 
                 case "forget":
-                    return ForgetInstall((ForgetOptions)suboptions);
+                    return ForgetRepository((ForgetOptions)suboptions);
 
                 default:
                     User.WriteLine("Unknown command: ksp {0}", option);
@@ -232,9 +232,28 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int ForgetInstall(ForgetOptions options)
+        private static int ForgetRepository(ForgetOptions options)
         {
-            User.WriteLine("Forgetting repository:");
+            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+
+            if (options.name == null)
+            {
+                User.WriteLine("forget <name> - argument missing, perhaps you forgot it?");
+                return Exit.BADOPT;
+            }
+
+            log.DebugFormat("About to forget repository '{0}'", options.name);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            if (!(repositories.ContainsKey(options.name)))
+            {
+                User.WriteLine("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                return Exit.BADOPT;
+            }
+
+            repositories.Remove(options.name);
+            manager.Save();
+
             return Exit.OK;
         }
     }
