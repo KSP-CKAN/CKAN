@@ -333,7 +333,7 @@ namespace CKAN
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
             }
 
-            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", _AutoStartInstance == null ? "" : _AutoStartInstance);
+            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", _AutoStartInstance ?? "");
             KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", _Instances.Count);
 
             int i = 0;

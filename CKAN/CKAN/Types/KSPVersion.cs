@@ -90,12 +90,7 @@ namespace CKAN {
         // us with long versions.
         private Version VersionObject()
         {
-            if (cachedVersionObject == null)
-            {
-                cachedVersionObject = new Version(version);
-            }
-
-            return cachedVersionObject;
+            return cachedVersionObject ?? (cachedVersionObject = new Version(version));
         }
 
         public int CompareTo(KSPVersion that) {
