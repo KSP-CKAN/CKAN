@@ -883,8 +883,7 @@ namespace CKAN
         /// </summary>
         public HashSet<string> FindReverseDependencies(string module)
         {
-            var set = new HashSet<string>();
-            set.Add(module);
+            var set = new HashSet<string> {module};
             return FindReverseDependencies(set);
         }
     }

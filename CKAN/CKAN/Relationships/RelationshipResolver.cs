@@ -103,10 +103,12 @@ namespace CKAN
         /// </summary>
         public static RelationshipResolverOptions DefaultOpts()
         {
-            var opts = new RelationshipResolverOptions();
-            opts.with_recommends = true;
-            opts.with_suggests = false;
-            opts.with_all_suggests = false;
+            var opts = new RelationshipResolverOptions
+            {
+                with_recommends = true,
+                with_suggests = false,
+                with_all_suggests = false
+            };
 
             return opts;
         }

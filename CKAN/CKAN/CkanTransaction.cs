@@ -13,9 +13,11 @@ namespace CKAN
 
         public CkanTransaction()
         {
-            var transactionOptions = new TransactionOptions();
-            transactionOptions.IsolationLevel = IsolationLevel.ReadCommitted;
-            transactionOptions.Timeout = TransactionManager.MaximumTimeout;
+            var transactionOptions = new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+                Timeout = TransactionManager.MaximumTimeout
+            };
             m_Scope = new TransactionScope(TransactionScopeOption.Required, transactionOptions);
         }
 

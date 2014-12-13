@@ -21,10 +21,8 @@ namespace CKAN
         {
             if (!File.Exists(path))
             {
-                var configuration = new Configuration();
-                configuration.Repository = defaultRepo;
-                configuration.m_Path = path;
-                
+                var configuration = new Configuration {Repository = defaultRepo, m_Path = path};
+
                 if(Util.IsLinux)
                 {
                     configuration.CommandLineArguments = "./KSP.x86_64";

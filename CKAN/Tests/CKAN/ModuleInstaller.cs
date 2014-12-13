@@ -336,8 +336,7 @@ namespace CKANTests
             using (var tidy = new Tests.DisposableKSP())
             {
                 CKAN.KSP ksp = tidy.KSP;
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser());                
-                manager._CurrentInstance = ksp;
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) {_CurrentInstance = ksp};
 
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
