@@ -39,7 +39,7 @@ namespace CKAN
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        public RelationshipResolver(List<string> modules, RelationshipResolverOptions options, Registry registry)
+        public RelationshipResolver(ICollection<string> modules, RelationshipResolverOptions options, Registry registry)
         {
 
             this.registry = registry;
@@ -64,12 +64,9 @@ namespace CKAN
 
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 
-                foreach (CkanModule listed_mod in modlist.Values)
+                foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(mod)))
                 {
-                    if (listed_mod.ConflictsWith(mod))
-                    {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listed_mod));
-                    }
+                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listed_mod));
                 }
 
                 user_requested_mods.Add(mod);
@@ -158,20 +155,13 @@ namespace CKAN
                 return;
             }
 
-            foreach (RelationshipDescriptor dep in stanza)
+            foreach (string dep_name in stanza.Select(dep => dep.name))
             {
-                string dep_name = dep.name;
-
                 log.DebugFormat("Considering {0}", dep_name);
 
                 // If we already have this dependency covered, skip.
-                if (modlist.ContainsKey(dep_name))
-                {
-                    continue;
-                }
-
                 // If it's already installed, skip.
-                if (registry.IsInstalled(dep_name))
+                if (modlist.ContainsKey(dep_name) || registry.IsInstalled(dep_name))
                 {
                     continue;
                 }
@@ -270,15 +260,14 @@ namespace CKAN
             }
 
             // Handle provides/aliases if it does.
-            foreach (string alias in module.provides)
+
+            // It's okay if there's already a key for one of our aliases
+            // in the resolution list. In which case, we don't do anything.
+            var aliases = module.provides.Where(alias => !modlist.ContainsKey(alias));
+            foreach (string alias in aliases)
             {
-                // It's okay if there's already a key for one of our aliases
-                // in the resolution list. In which case, we don't do anything.
-                if (!modlist.ContainsKey(alias))
-                {
-                    log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
-                    modlist.Add(alias, module);
-                }
+                log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
+                modlist.Add(alias, module);
             }
         }
 

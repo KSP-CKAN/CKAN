@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
@@ -179,15 +180,7 @@ namespace CKAN
             {
                 return false;
             }
-
-            foreach (RelationshipDescriptor conflict in mod1.conflicts)
-            {
-                if (mod2.ProvidesList.Contains(conflict.name))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name));
         }
 
         /// <summary>

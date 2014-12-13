@@ -321,9 +321,8 @@ namespace CKAN
 
                 files = files.Where(file => Regex.IsMatch(file, @"\.dll$", RegexOptions.IgnoreCase));
 
-                foreach (string file in files)
+                foreach (string dll in files.Select(KSPPathUtils.NormalizePath))
                 {
-                    string dll = KSPPathUtils.NormalizePath(file);
                     Registry.RegisterDll(this, dll);
                 }
                     

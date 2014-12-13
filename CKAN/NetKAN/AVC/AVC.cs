@@ -59,13 +59,8 @@ namespace CKAN.NetKAN
             if (files.Count == 0)
             {
                 // Oh dear, no version file at all? Let's see if we can find *any* to use.
-                foreach (ZipEntry file in zipfile)
-                {
-                    if (file.Name.EndsWith(version_ext))
-                    {
-                        files.Add(file);
-                    }
-                }
+                var version_files = zipfile.Cast<ZipEntry>().Where(file => file.Name.EndsWith(version_ext));
+                files.AddRange(version_files);
 
                 // Okay, there's *really* nothing there.
                 if (files.Count == 0)
