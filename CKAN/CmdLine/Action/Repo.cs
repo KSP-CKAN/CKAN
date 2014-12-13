@@ -167,7 +167,7 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
             
-            int maxNameLen = 10;
+            int maxNameLen = 0;
             foreach (Repository repository in repositories.repositories)
             {
                 maxNameLen = Math.Max(maxNameLen, repository.name.Length);
@@ -184,6 +184,20 @@ namespace CKAN.CmdLine
         private static int ListInstalls()
         {
             User.WriteLine("Listing all known repositories:");
+            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            int maxNameLen = 0;
+            foreach(KeyValuePair<string, Uri> repository in repositories)
+            {
+                maxNameLen = Math.Max(maxNameLen, repository.Key.Length);
+            }
+
+            foreach(KeyValuePair<string, Uri> repository in repositories)
+            {
+                User.WriteLine("  {0}: {1}", repository.Key.PadRight(maxNameLen), repository.Value);
+            }
+
             return Exit.OK;
         }
 
