@@ -331,6 +331,7 @@ namespace CKAN
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
             UpdateModsList();
+            SaveActiveProfile();
             m_TabController.SetTabLock(false);
 
             AddStatusMessage("");

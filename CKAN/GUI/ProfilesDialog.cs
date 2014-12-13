@@ -105,60 +105,7 @@ namespace CKAN
             string newActiveProfileName = CKANActiveProfileComboBox.SelectedItem as string;
             Main.Instance.m_Configuration.ActiveProfileName = newActiveProfileName;
             Main.Instance.m_Configuration.Save();
+            Main.Instance.LoadActiveProfile();
         }
-
-        /*
-         * private void saveProfileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-
-            List<string> selectedInstalledMods = new List<string>();
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (CkanModule)row.Tag;
-                if (row.Cells[1] is DataGridViewCheckBoxCell)
-                {
-                    var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
-                    var isInstalledChecked = (bool) isInstalledCell.Value;
-                    if (isInstalledChecked)
-                    {
-                        selectedInstalledMods.Add(mod.identifier);
-                    }
-                }
-            }
-
-            m_Configuration.EnabledMods = new System.Collections.Generic.List<string>();
-            m_Configuration.Save();
-            // TODO
-            //foreach (DataGridViewRow row in ModList.Rows)
-            //{
-            //    var mod = (CkanModule)row.Tag;
-
-            //    if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
-            //    {
-            //        continue;
-            //    }
-
-            //    bool isUpToDate =
-            //        !RegistryManager.Instance(KSPManager.CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
-            //    if (!isUpToDate)
-            //    {
-            //        if (row.Cells[1] is DataGridViewCheckBoxCell)
-            //        {
-            //            var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
-            //            updateCell.Value = true;
-            //            ApplyToolButton.Enabled = true;
-            //        }
-            //    }
-            //}
-
-            //ModList.Refresh();
-        }
-
-        private void loadProfileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            m_TabController.ShowTab("ChangesetTabPage", 1);
-        }
-         */
     }
 }

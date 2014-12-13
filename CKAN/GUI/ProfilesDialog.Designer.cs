@@ -59,7 +59,7 @@
             this.CKANActiveProfileApplyButton.Name = "CKANActiveProfileApplyButton";
             this.CKANActiveProfileApplyButton.Size = new System.Drawing.Size(75, 23);
             this.CKANActiveProfileApplyButton.TabIndex = 1;
-            this.CKANActiveProfileApplyButton.Text = "Apply";
+            this.CKANActiveProfileApplyButton.Text = "Load";
             this.CKANActiveProfileApplyButton.UseVisualStyleBackColor = true;
             this.CKANActiveProfileApplyButton.Click += new System.EventHandler(this.CKANActiveProfileApplyButton_Click);
             // 

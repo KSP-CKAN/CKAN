@@ -139,6 +139,7 @@ namespace CKAN
             UpdateModsList();
 
             ApplyToolButton.Enabled = false;
+            LoadActiveProfile();
 
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
@@ -508,11 +509,56 @@ namespace CKAN
             Enabled = true;
         }
 
-        public void ReloadProfile()
+        public void LoadActiveProfile()
         {
-            // TODO: set active mods in list, then switch to changeset tab
+            ProfilesEntry activeProfile = m_Configuration.Profiles.First(entry => entry.Name == m_Configuration.ActiveProfileName);
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (CkanModule)row.Tag;
+                var identifier = mod.identifier;
+                if (row.Cells[0] is DataGridViewCheckBoxCell)
+                {
+                    var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                    isInstalledCell.Value = activeProfile.ModIdentifiers.Contains(identifier);
+                }
+            }
+
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+
+            var changeset = ComputeChangeSetFromModList();
+
+            if (changeset != null && changeset.Any())
+            {
+                UpdateChangesDialog(changeset, m_InstallWorker);
+                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                ApplyToolButton.Enabled = true;
+            }
+            else
+            {
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
         }
 
-        // TODO: on list cell click, check installed and update profile + save configuration
+        public void SaveActiveProfile()
+        {
+            ProfilesEntry activeProfile = m_Configuration.Profiles.First(entry => entry.Name == m_Configuration.ActiveProfileName);
+            activeProfile.ModIdentifiers.Clear();
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (CkanModule)row.Tag;
+                var identifier = mod.identifier;
+                if (row.Cells[0] is DataGridViewCheckBoxCell)
+                {
+                    var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                    var isInstalledChecked = (bool)isInstalledCell.Value;
+                    if (isInstalledChecked)
+                    {
+                        activeProfile.ModIdentifiers.Add(identifier);
+                    }
+                }
+            }
+            m_Configuration.Save();
+        }
     }
 }

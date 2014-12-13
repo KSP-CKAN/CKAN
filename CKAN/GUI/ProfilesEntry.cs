@@ -9,7 +9,7 @@ namespace CKAN
     public struct ProfilesEntry : IEquatable<ProfilesEntry>
     {
         public string Name;
-        public List<string> ModIdentifiers;
+        public HashSet<string> ModIdentifiers;
 
         public override bool Equals(object obj)
         {
@@ -38,7 +38,7 @@ namespace CKAN
             return new ProfilesEntry
             {
                 Name = name,
-                ModIdentifiers = new List<string>()
+                ModIdentifiers = new HashSet<string>()
             };
         }
 
@@ -47,7 +47,7 @@ namespace CKAN
             return new ProfilesEntry
             {
                 Name = name,
-                ModIdentifiers = new List<string>(modIdentifiers)
+                ModIdentifiers = new HashSet<string>(modIdentifiers)
             };
         }
 
@@ -56,7 +56,7 @@ namespace CKAN
             return new ProfilesEntry
             {
                 Name = name,
-                ModIdentifiers = new List<string>(other.ModIdentifiers)
+                ModIdentifiers = new HashSet<string>(other.ModIdentifiers)
             };
         }
     }

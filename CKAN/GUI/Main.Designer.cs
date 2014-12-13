@@ -34,7 +34,6 @@ namespace CKAN
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.profilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,6 +123,7 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.profilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -160,18 +160,10 @@ namespace CKAN
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.profilesToolStripMenuItem,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // profilesToolStripMenuItem
-            // 
-            this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
-            this.profilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.profilesToolStripMenuItem.Text = "Profiles";
-            this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
             // 
             // ExitToolButton
             // 
@@ -184,7 +176,8 @@ namespace CKAN
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
-            this.kSPCommandlineToolStripMenuItem});
+            this.kSPCommandlineToolStripMenuItem,
+            this.profilesToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -1126,6 +1119,13 @@ namespace CKAN
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(383, 13);
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
+            // 
+            // profilesToolStripMenuItem
+            // 
+            this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
+            this.profilesToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.profilesToolStripMenuItem.Text = "Profiles";
+            this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
             // 
             // Main
             // 
