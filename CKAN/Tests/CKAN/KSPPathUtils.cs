@@ -1,6 +1,5 @@
-﻿using NUnit.Framework;
-using System;
-using CKAN;
+﻿using CKAN;
+using NUnit.Framework;
 
 namespace CKANTests
 {

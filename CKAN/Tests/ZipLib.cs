@@ -1,7 +1,6 @@
-using NUnit.Framework;
-using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
-using System;
+using ICSharpCode.SharpZipLib.Zip;
+using NUnit.Framework;
 
 namespace Tests
 {

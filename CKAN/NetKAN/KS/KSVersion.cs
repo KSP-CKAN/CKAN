@@ -1,7 +1,6 @@
 using System;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN.NetKAN
 {

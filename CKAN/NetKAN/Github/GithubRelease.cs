@@ -1,9 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using log4net;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN
 {

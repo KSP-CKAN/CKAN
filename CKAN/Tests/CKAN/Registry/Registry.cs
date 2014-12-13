@@ -1,6 +1,6 @@
 using System.Transactions;
-using NUnit.Framework;
 using CKAN;
+using NUnit.Framework;
 using Tests;
 
 namespace CKANTests

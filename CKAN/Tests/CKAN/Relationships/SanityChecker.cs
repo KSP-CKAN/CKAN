@@ -1,8 +1,7 @@
-using NUnit.Framework;
-using System;
-using CKAN;
 using System.Collections.Generic;
 using System.Linq;
+using CKAN;
+using NUnit.Framework;
 using Tests;
 
 // We're exercising FindReverseDependencies in here, because:

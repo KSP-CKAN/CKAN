@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace CKAN

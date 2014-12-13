@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Tests;
-using System.Collections.Generic;
 
 namespace CKANTests
 {
