@@ -326,7 +326,7 @@ namespace CKAN
 
         /// <summary>
         /// Removes the given module from the registry of available modules.
-        /// Does *nothing* if the module was not present to begin with.
+        /// Does *nothing* if the module was not present to begin with.</summary>
         public void RemoveAvailable(Module module)
         {
             RemoveAvailable(module.identifier, module.version);
