@@ -267,7 +267,7 @@
                 "Zlib",
                 "Zope",
                 "WTFPL",
-                "open-source", "restricted", "unrestricted", "unknown"
+                "open-source", "restricted", "unrestricted", "no-derivatives", "unknown"
             ]
         },
         "licenses" : {
