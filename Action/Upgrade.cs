@@ -19,14 +19,14 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                User.DisplayMessage("\nUnsupported option at this time.");
+                User.RaiseMessage("\nUnsupported option at this time.");
                 return Exit.BADOPT;
             }
 
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
-                User.DisplayMessage("Usage: ckan upgrade Mod [Mod2, ...]");
+                User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
 
@@ -45,7 +45,7 @@ namespace CKAN.CmdLine
 
                     if (module == null)
                     {
-                        User.DisplayMessage("Cannot install {0}, version {1} not available",ident,version);
+                        User.RaiseMessage("Cannot install {0}, version {1} not available", ident, version);
                         return Exit.ERROR;
                     }
 
@@ -59,13 +59,11 @@ namespace CKAN.CmdLine
                 }
             }
 
-            User.DisplayMessage("\nUpgrading modules...\n");
+
+            User.RaiseMessage("\nUpgrading modules...\n");
             // TODO: These instances all need to go.
-
-            
             ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade,new NetAsyncDownloader(User));
-            User.DisplayMessage("\nDone!\n");
-
+            User.RaiseMessage("\nDone!\n");
             return Exit.OK;
 
         }

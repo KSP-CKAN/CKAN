@@ -16,7 +16,7 @@ namespace CKAN.CmdLine
         {
             if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
             {
-               user.DisplayMessage(
+                user.RaiseMessage(
                     // The \r at the front here causes download messages to *overwrite* each other.
                     String.Format("\r{0} - {1}%           ", message, progress)
                 );
@@ -26,7 +26,7 @@ namespace CKAN.CmdLine
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                user.DisplayMessage("\n{0}", message);
+                user.RaiseMessage("\n{0}", message);
             }
         }
     }
