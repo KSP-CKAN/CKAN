@@ -7,18 +7,6 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
-    // TODO maybe rename to "remote" or something so this class can be re-used between "multiple repos" and "mirrors"?
-    public struct Repository
-    {
-        public string name;
-        public Uri uri;
-        
-        public override string ToString()
-        {
-            return String.Format("{0} ({1})", name, uri.DnsSafeHost);
-        }
-    }
-    
     public struct RepositoryList
     {
         public Repository[] repositories;
