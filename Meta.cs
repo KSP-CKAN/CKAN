@@ -35,12 +35,7 @@ namespace CKAN
         /// </summary>
         public static string BuildVersion()
         {
-            if (BUILD_VERSION == null)
-            {
-                return Development;
-            }
-
-            return BUILD_VERSION;
+            return BUILD_VERSION ?? Development;
         }
 
         /// <summary>

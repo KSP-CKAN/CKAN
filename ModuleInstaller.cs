@@ -56,12 +56,8 @@ namespace CKAN
         // It would be totally fine to have this be an instance based upon KSP path, mind.
         public static ModuleInstaller GetInstance(KSP current_instance, IUser user)
         {
-            if (_Instance == null)
-            {
-                _Instance = new ModuleInstaller(current_instance, user);
-            }
-            return _Instance;
-        }        
+            return _Instance ?? (_Instance = new ModuleInstaller(current_instance, user));
+        }
 
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
