@@ -64,7 +64,7 @@ namespace CKAN {
             // Compare epochs first.
             if (epoch < that.epoch) {
                 return -1;
-            } else if (this.epoch > that.epoch) {
+            } else if (epoch > that.epoch) {
                 return 1;
             }
 

@@ -105,9 +105,8 @@ namespace CKANTests
 
                 // See if we can find an expected estination path in the right place.
                 string file = contents
-                    .Select(x => x.destination)
-                    .Where(x => Regex.IsMatch(x, "GameData/DogeCoinFlag/Flags/dogecoin\\.png$"))
-                    .FirstOrDefault();
+                    .Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "GameData/DogeCoinFlag/Flags/dogecoin\\.png$"));
 
                 Assert.IsNotNull(file);
             }
@@ -142,9 +141,8 @@ namespace CKANTests
                                                         );
 
                 string file = contents
-                    .Select(x => x.destination)
-                    .Where(x => Regex.IsMatch(x, "GameData/SuchTest/DogeCoinFlag/Flags/dogecoin\\.png$"))
-                    .FirstOrDefault();
+                    .Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "GameData/SuchTest/DogeCoinFlag/Flags/dogecoin\\.png$"));
 
                 Assert.IsNotNull(file);
             }
@@ -158,9 +156,8 @@ namespace CKANTests
                 List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mm_mod, mm_zip, tidy.KSP);
 
                 string file = contents
-                    .Select(x => x.destination)
-                    .Where(x => Regex.IsMatch(x, @"ModuleManager\.2\.5\.1\.dll$"))
-                    .FirstOrDefault();
+                    .Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, @"ModuleManager\.2\.5\.1\.dll$"));
 
                 Assert.IsNotNull(file, "ModuleManager install");
             }

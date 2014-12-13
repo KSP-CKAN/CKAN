@@ -244,7 +244,6 @@ namespace CKAN.CmdLine
 
             foreach (KeyValuePair<string, Version> mod in installed)
             {
-                string identifier = mod.Key;
                 Version current_version = mod.Value;
 
                 string bullet = "*";
@@ -500,14 +499,6 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
-        }
-
-        private static int RunSubCommand<T>(SubCommandOptions options)
-            where T : ISubCommand, new()
-        {
-            ISubCommand subopt = new T ();
-
-            return subopt.RunSubCommand(options);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace CKAN
         Update = 3
     }
 
-    public partial class Main : Form
+    public partial class Main
     {
         private static Main m_Instance;
         public Configuration m_Configuration;
@@ -120,7 +120,6 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                MainModList temp_qualifier = mainModList;
                 if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry,CurrentInstance).Any())
                 {
                     ApplyToolButton_Click(null, null);
@@ -180,9 +179,10 @@ namespace CKAN
                     !RegistryManager.Instance(CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
-                    if (row.Cells[1] is DataGridViewCheckBoxCell)
+                    var cell = row.Cells[1] as DataGridViewCheckBoxCell;
+                    if (cell != null)
                     {
-                        var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
+                        var updateCell = cell;
                         updateCell.Value = true;
                         ApplyToolButton.Enabled = true;
                     }
@@ -316,7 +316,6 @@ namespace CKAN
                     ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
                 }
             }
-            MainModList temp_qualifier = mainModList;
             var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance);
 
 
@@ -453,15 +452,7 @@ namespace CKAN
             UpdateModDependencyGraph(module);
         }
 
-        private void exportInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-      
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var lst = m_Configuration.CommandLineArguments.Split(' ');
@@ -487,16 +478,6 @@ namespace CKAN
             {
                 GUI.user.RaiseError("Couldn't start KSP. {0}.", exception.Message);
             }
-        }
-
-        private void setCommandlineOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void clearChangesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateModsList();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

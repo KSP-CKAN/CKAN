@@ -131,18 +131,15 @@ namespace CKAN
                 return node;
             }
 
-            int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
                 Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
                 try
                 {
-                    CkanModule dependencyModule = null;
-
                     try
                     {
-                        dependencyModule = registry.LatestAvailable
+                        var dependencyModule = registry.LatestAvailable
                             (dependency.name, manager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
@@ -161,8 +158,7 @@ namespace CKAN
 
                         foreach (var dep in dependencyModules)
                         {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
-                            i++;
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);                            
                         }
                     }
                 }

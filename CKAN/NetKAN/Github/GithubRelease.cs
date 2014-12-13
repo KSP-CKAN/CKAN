@@ -27,14 +27,10 @@ namespace CKAN.NetKAN
             // GH #290, we need to look for the first asset which is a zip, otherwise we
             // end up picking up manuals, pictures of cats, and all sorts of other things.
 
-            JToken asset = parsed_json["assets"]
-                .Children()
-                .Where(asset_info => 
-                    asset_info["content_type"].ToString() == "application/x-zip-compressed" ||
+            JToken asset = parsed_json["assets"].Children().FirstOrDefault(
+                asset_info => asset_info["content_type"].ToString() == "application/x-zip-compressed" ||
                     asset_info["content_type"].ToString() == "application/zip" ||
-                    asset_info["name"].ToString().EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
-                )
-                .FirstOrDefault();
+                    asset_info["name"].ToString().EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
 
             if (asset == null)
             {

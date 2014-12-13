@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
 
         private ErrorDialog m_ErrorDialog;

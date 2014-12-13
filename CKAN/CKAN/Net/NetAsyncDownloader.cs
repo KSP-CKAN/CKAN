@@ -31,7 +31,6 @@ namespace CKAN
             public int bytesPerSecond;
             public Exception error;
             public int lastProgressUpdateSize;
-            public int percentComplete;
 
             public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
             {
@@ -265,8 +264,6 @@ namespace CKAN
             }
 
             NetAsyncDownloaderDownloadPart download = downloads[index];
-
-            download.percentComplete = percent;
 
             DateTime now = DateTime.Now;
             TimeSpan timeSpan = now - download.lastProgressUpdateTime;

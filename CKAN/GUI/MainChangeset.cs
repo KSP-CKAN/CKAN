@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
 
         private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset;
