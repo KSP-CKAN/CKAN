@@ -35,15 +35,24 @@ namespace CKAN
         public ControlFactory controlFactory = null;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
-
         private TabController m_TabController = null;
+        private volatile KSPManager manager;
+
+        internal KSP CurrentInstance
+        {
+            get { return manager.CurrentInstance; }            
+        }
+
+        internal KSPManager Manager
+        {
+            get { return manager; }
+            set { manager = value; }
+        }
 
         public MainModList mainModList { get; private set; }
 
-        public Main()
-        {
-            User.frontEnd = FrontEndType.UI;
-            User.yesNoDialog = YesNoDialog;
+        public Main(GUIUser User)
+        {            
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
 
@@ -57,7 +66,8 @@ namespace CKAN
 
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
-            if (KSPManager.CurrentInstance == null && KSPManager.GetPreferredInstance() == null)
+            Manager = new KSPManager(User);            
+            if (CurrentInstance == null && manager.GetPreferredInstance() == null)
             {
                 Hide();
 
@@ -71,7 +81,7 @@ namespace CKAN
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(KSPManager.CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
 
@@ -110,7 +120,8 @@ namespace CKAN
             }
             else if (keyData == (Keys.Control | Keys.S))
             {
-                if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(KSPManager.CurrentInstance).registry).Any())
+                MainModList temp_qualifier = mainModList;
+                if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry,CurrentInstance).Any())
                 {
                     ApplyToolButton_Click(null, null);
                 }
@@ -146,8 +157,8 @@ namespace CKAN
 
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
-            Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), KSPManager.CurrentInstance.Version());
-            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", KSPManager.CurrentInstance.Version());
+            Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), CurrentInstance.Version());
+            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -159,14 +170,14 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod)row.Tag).ToCkanModule();
-                if (!RegistryManager.Instance(KSPManager.CurrentInstance).registry.IsInstalled(mod.identifier))
+                var mod = (CkanModule) row.Tag;
+                if (!RegistryManager.Instance(CurrentInstance).registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance(KSPManager.CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !RegistryManager.Instance(CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     if (row.Cells[1] is DataGridViewCheckBoxCell)
@@ -305,7 +316,8 @@ namespace CKAN
                     ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
                 }
             }
-            var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(KSPManager.CurrentInstance).registry);
+            MainModList temp_qualifier = mainModList;
+            var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance);
 
 
             if (changeset != null && changeset.Any())
@@ -392,7 +404,7 @@ namespace CKAN
 
             ResetProgress();
             ShowWaitDialog(false);
-            ModuleInstaller.Instance.CachedOrDownload(module);
+            ModuleInstaller.GetInstance(CurrentInstance, GUI.user).CachedOrDownload(module);
             HideWaitDialog(true);
 
             UpdateModContentsTree(module);
@@ -468,12 +480,12 @@ namespace CKAN
             
             try
             {
-                Directory.SetCurrentDirectory(KSPManager.CurrentInstance.GameDir());
+                Directory.SetCurrentDirectory(CurrentInstance.GameDir());
                 Process.Start(binary, args);
             }
             catch(Exception exception)
             {
-                User.Error("Couldn't start KSP. {0}.", exception.Message);
+                GUI.user.RaiseError("Couldn't start KSP. {0}.", exception.Message);
             }
         }
 
@@ -512,5 +524,40 @@ namespace CKAN
             Enabled = true;
         }
 
+    }
+
+    public class GUIUser : NullUser
+    {        
+        public Action<string, object[]> displayMessage;
+        public Action<string, object[]> displayError;
+       
+        
+        protected override bool DisplayYesNoDialog(string message)
+        {
+            return true;
+        }
+
+        protected override void DisplayMessage(string message, params object[] args)
+        {
+            displayMessage(message, args);
+        }
+
+        protected override void DisplayError(string message, params object[] args)
+        {
+            displayError(message, args);
+        }
+
+        protected override void ReportProgress(string format, int percent)
+        {
+            Main.Instance.SetDescription(format + " - " + percent + "%");
+            Main.Instance.SetProgress(percent);
+        }
+
+        public override int WindowWidth
+        {
+            get { return -1; }
+        }
+
+        
     }
 }

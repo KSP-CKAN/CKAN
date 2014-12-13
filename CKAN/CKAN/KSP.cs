@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using log4net;
-using System.Transactions;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -15,6 +13,7 @@ namespace CKAN
     /// </summary>
     public class KSP
     {
+        public IUser User { get; set; }
 
         #region Fields and Properties
 
@@ -47,8 +46,9 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist.
         /// Throws a NotKSPDirKraken if directory is not a KSP install.
         /// </summary>
-        public KSP(string directory)
+        public KSP(string directory, IUser user)
         {
+            User = user;
 
             // Make sure our path is absolute and has normalised slashes.
             directory = KSPPathUtils.NormalizePath(Path.GetFullPath(directory));
@@ -72,17 +72,17 @@ namespace CKAN
 
             if (! Directory.Exists(CkanDir()))
             {
-                User.WriteLine("Setting up CKAN for the first time...");
-                User.WriteLine("Creating {0}", CkanDir());
+                User.RaiseMessage("Setting up CKAN for the first time...");
+                User.RaiseMessage("Creating {0}", CkanDir());
                 Directory.CreateDirectory(CkanDir());
 
-                User.WriteLine("Scanning for installed mods...");
+                User.RaiseMessage("Scanning for installed mods...");
                 ScanGameData();
             }
 
             if (! Directory.Exists(DownloadCacheDir()))
             {
-                User.WriteLine("Creating {0}", DownloadCacheDir());
+                User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
             }
 

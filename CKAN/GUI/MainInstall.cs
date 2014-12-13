@@ -11,11 +11,6 @@ namespace CKAN
     {
         private BackgroundWorker m_InstallWorker;
 
-        private void InstallModsReportProgress(string message, int percent)
-        {
-            SetDescription(message + " - " + percent + "%");
-            SetProgress(percent);
-        }
 
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
@@ -33,9 +28,8 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            ModuleInstaller installer = ModuleInstaller.Instance;
-            // setup progress callback
-            installer.onReportProgress += InstallModsReportProgress;
+            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+            // setup progress callback        
 
             toInstall = new HashSet<string>();
             var toUninstall = new HashSet<string>();
@@ -77,10 +71,10 @@ namespace CKAN
                                 // the mod is not installed _and_
                                 // the mod is not already in the install list
                                 if (
-                                    RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(),
-                                            KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(KSPManager.CurrentInstance)
+                                    RegistryManager.Instance(manager.CurrentInstance)
+                                        .registry.LatestAvailable(mod.name.ToString(), manager.CurrentInstance.Version()) !=
+                                    null &&
+                                    !RegistryManager.Instance(manager.CurrentInstance)
                                         .registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -109,12 +103,9 @@ namespace CKAN
                             try
                             {
                                 if (
-                                    RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(),
-                                            KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.IsInstalled(mod.name.ToString()) &&
-                                    !toInstall.Contains(mod.name.ToString()))
+                                    RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) != null &&
+                                    !RegistryManager.Instance(manager.CurrentInstance).registry.IsInstalled(mod.name) &&
+                                    !toInstall.Contains(mod.name))
                                 {
                                     if (suggested.ContainsKey(mod.name))
                                     {
@@ -203,7 +194,7 @@ namespace CKAN
 
             using (var transaction = new CkanTransaction())
             {
-                var downloader = new NetAsyncDownloader();
+                var downloader = new NetAsyncDownloader(GUI.user);
                 cancelCallback = () =>
                 {
                     downloader.CancelDownload();
@@ -217,24 +208,6 @@ namespace CKAN
 
                 SetDescription("Updating selected mods");
                 installer.Upgrade(toUpgrade, downloader);
-
-                try
-                {
-                    if (!InstallList(toInstall, opts.Value, downloader))
-                    {
-                        // install failed for some reason, error message is already displayed to the user                    
-                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                            opts.Key);
-                        return;
-                    }
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    User.WriteLine(
-                        "Module {0} required, but not listed in index, or not available for your version of KSP",
-                        ex.module);
-                    return;
-                }
 
 
                 // TODO: We should be able to resolve all our provisioning conflicts
@@ -305,29 +278,28 @@ namespace CKAN
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
-                ModuleInstaller.Instance.onReportModInstalled = OnModInstalled;
-
+                ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).onReportModInstalled = OnModInstalled;
+                cancelCallback = downloader.CancelDownload;
                 try
                 {
-                    ModuleInstaller.Instance.InstallList(toInstall.ToList(), options, downloader);
+                    ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user)
+                        .InstallList(toInstall.ToList(), options, downloader);
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    User.WriteLine(
-                        "Module {0} required, but not listed in index, or not available for your version of KSP",
-                        ex.module);
+                    GUI.user.RaiseMessage("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
                     return false;
                 }
                 catch (BadMetadataKraken ex)
                 {
-                    User.WriteLine("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
+                    GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
                     return false;
                 }
                 catch (FileExistsKraken ex)
                 {
                     if (ex.owning_module != null)
                     {
-                        User.WriteLine(
+                        GUI.user.RaiseMessage(
                             "\nOh no! We tried to overwrite a file owned by another mod!\n" +
                             "Please try a `ckan update` and try again.\n\n" +
                             "If this problem re-occurs, then it maybe a packaging bug.\n" +
@@ -344,7 +316,7 @@ namespace CKAN
                     }
                     else
                     {
-                        User.WriteLine(
+                        GUI.user.RaiseMessage(
                             "\n\nOh no!\n\n" +
                             "It looks like you're trying to install a mod which is already installed,\n" +
                             "or which conflicts with another mod which is already installed.\n\n" +
@@ -357,13 +329,13 @@ namespace CKAN
                             );
                     }
 
-                    User.WriteLine("Your GameData has been returned to its original state.\n");
+                    GUI.user.RaiseMessage("Your GameData has been returned to its original state.\n");
                     return false;
                 }
                 catch (InconsistentKraken ex)
                 {
                     // The prettiest Kraken formats itself for us.
-                    User.WriteLine(ex.InconsistenciesPretty);
+                    GUI.user.RaiseMessage(ex.InconsistenciesPretty);
                     return false;
                 }
                 catch (CancelledActionKraken)
@@ -373,10 +345,10 @@ namespace CKAN
                 catch (MissingCertificateKraken kraken)
                 {
                     // Another very pretty kraken.
-                    Console.WriteLine(kraken);
+                    GUI.user.RaiseMessage(kraken.ToString());
                     return false;
                 }
-                catch (DownloadErrorsKraken e)
+                catch (DownloadErrorsKraken)
                 {
                     // User notified in InstallList
                     return false;
@@ -403,7 +375,6 @@ namespace CKAN
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
-                
             }
             else
             {
@@ -533,7 +504,7 @@ namespace CKAN
 
                 try
                 {
-                    module = RegistryManager.Instance(KSPManager.CurrentInstance).registry.LatestAvailable(pair.Key);
+                    module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key);
                 }
                 catch
                 {
@@ -624,7 +595,7 @@ namespace CKAN
             try
             {
                 resolver = new RelationshipResolver(tmp, options,
-                    RegistryManager.Instance(KSPManager.CurrentInstance).registry);
+                    RegistryManager.Instance(manager.CurrentInstance).registry);                
             }
             catch (Kraken kraken)
             {

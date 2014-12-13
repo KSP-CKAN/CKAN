@@ -337,14 +337,8 @@ namespace CKAN
         /// the specified version of KSP (installed version by default)
         /// </summary>
         // TODO: This name is misleading. It's more a LatestAvailable's'
-        public List<CkanModule> Available(KSPVersion ksp_version = null)
-        {
-            // Default to the user's current KSP install for version.
-            if (ksp_version == null)
-            {
-                ksp_version = KSPManager.CurrentInstance.Version();
-            }
-
+        public List<CkanModule> Available(KSPVersion ksp_version)
+        {            
             var candidates = new List<string>(available_modules.Keys);
             var compatible = new List<CkanModule>();
 
@@ -395,14 +389,8 @@ namespace CKAN
         ///     Returns a simple array of all incompatible modules for
         ///     the specified version of KSP (installed version by default)
         /// </summary>
-        public List<CkanModule> Incompatible(KSPVersion ksp_version = null)
-        {
-            // Default to the user's current KSP install for version.
-            if (ksp_version == null)
-            {
-                ksp_version = KSPManager.CurrentInstance.Version();
-            }
-
+        public List<CkanModule> Incompatible(KSPVersion ksp_version)
+        {           
             var candidates = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
 

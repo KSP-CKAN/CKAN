@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Transactions;
+using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
-using ChinhDo.Transactions;
 using log4net;
 
 namespace CKAN
 {
-    public delegate void ModuleInstallerReportProgress(string message, int progress);
-
     public delegate void ModuleInstallerReportModInstalled(CkanModule module);
 
     public struct InstallableFile 
@@ -24,6 +21,7 @@ namespace CKAN
 
     public class ModuleInstaller
     {
+        public IUser User { get; set; }
         private static ModuleInstaller _Instance;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
@@ -33,8 +31,7 @@ namespace CKAN
         private KSP ksp;
 
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
-        public ModuleInstallerReportProgress onReportProgress = null;
-
+          
         // Our own cache is that of the KSP instance we're using.
         public NetFileCache Cache
         {
@@ -45,8 +42,9 @@ namespace CKAN
         }
 
         // Constructor
-        private ModuleInstaller(KSP ksp)
+        private ModuleInstaller(KSP ksp, IUser user)
         {
+            User = user;
             this.ksp = ksp;
             this.registry_manager = RegistryManager.Instance(ksp);
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
@@ -56,29 +54,21 @@ namespace CKAN
         // wishes to deal with multiple KSP installs.
         //
         // It would be totally fine to have this be an instance based upon KSP path, mind.
-        public static ModuleInstaller Instance
+        public static ModuleInstaller GetInstance(KSP current_instance, IUser user)
         {
-            get
+            if (_Instance == null)
             {
-                if (_Instance == null)
-                {
-                    _Instance = new ModuleInstaller( KSPManager.CurrentInstance);
-                }
-
-                return _Instance;
+                _Instance = new ModuleInstaller(current_instance, user);
             }
-        }
+            return _Instance;
+        }        
 
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
         public string Download(Uri url, string filename)
         {
-            if (onReportProgress != null)
-            {
-                onReportProgress(String.Format("Downloading \"{0}\"", url), 0);
-            }
-
+            User.RaiseProgress(String.Format("Downloading \"{0}\"", url), 0);            
             return Download(url, filename, this.Cache);
         }
 
@@ -157,9 +147,7 @@ namespace CKAN
             RelationshipResolverOptions options,
             NetAsyncDownloader downloader = null
         )
-        {
-            onReportProgress = onReportProgress ?? ((message, progress) => { });
-
+        {            
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry);
             List<CkanModule> modsToInstall = resolver.ModList();
             List<CkanModule> downloads = new List<CkanModule> (); 
@@ -167,38 +155,38 @@ namespace CKAN
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
 
-            User.WriteLine("About to install...\n");
+            User.RaiseMessage("About to install...\n");
 
             foreach (CkanModule module in modsToInstall)
             {
                 if (!ksp.Cache.IsCachedZip(module.download))
                 {
-                    User.WriteLine(" * {0}", module);
+                    User.RaiseMessage(" * {0}", module);
                     downloads.Add(module);
                 }
                 else
                 {
-                    User.WriteLine(" * {0} (cached)", module);
+                    User.RaiseMessage(" * {0} (cached)", module);
                 }
             }
 
-            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+            bool ok = User.RaiseYesNoDialog("\nContinue?");
 
             if (!ok)
             {
                 throw new CancelledActionKraken("User declined install list");
             }
 
-            User.WriteLine(""); // Just to look tidy.
+            User.RaiseMessage(String.Empty); // Just to look tidy.
 
             if (downloads.Count > 0)
             {
                 if (downloader == null)
                 {
-                    downloader = new NetAsyncDownloader();
+                    downloader = new NetAsyncDownloader(User);
                 }
                 
-                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+                downloader.DownloadModules(ksp.Cache, downloads);
             }
 
             // We're about to install all our mods; so begin our transaction.
@@ -206,19 +194,19 @@ namespace CKAN
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
-                    int percentComplete = (i * 100) / modsToInstall.Count;
+                    int percent_complete = (i * 100) / modsToInstall.Count;
                     
-                    onReportProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
-                                         percentComplete);
+                    User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
+                                         percent_complete);
 
                     Install(modsToInstall[i]);
                 }
 
-                onReportProgress("Updating registry", 70);
+                User.RaiseProgress("Updating registry", 70);
 
                 registry_manager.Save();
 
-                onReportProgress("Commiting filesystem changes", 80);
+                User.RaiseProgress("Commiting filesystem changes", 80);
 
                 transaction.Complete();
 
@@ -228,11 +216,11 @@ namespace CKAN
             // leaves everything consistent, and this is just gravy. (And ScanGameData
             // acts as a Tx, anyway, so we don't need to provide our own.)
 
-            onReportProgress("Rescanning GameData", 90);
+            User.RaiseProgress("Rescanning GameData", 90);
 
             ksp.ScanGameData();
 
-            onReportProgress("Done!", 100);
+            User.RaiseProgress("Done!", 100);
         }
 
         /// <summary>
@@ -277,7 +265,7 @@ namespace CKAN
             // TODO: This really should be handled by higher-up code.
             if (version != null)
             {
-                User.WriteLine("    {0} {1} already installed, skipped", module.identifier, version);
+                User.RaiseMessage("    {0} {1} already installed, skipped", module.identifier, version);
                 return;
             }
 
@@ -683,18 +671,18 @@ namespace CKAN
             // Find all the things which need uninstalling.
             IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
 
-            User.WriteLine("About to remove:\n");
+            User.RaiseMessage("About to remove:\n");
 
             foreach (string mod in goners)
             {
-                User.WriteLine(" * {0}", mod);
+                User.RaiseMessage(" * {0}", mod);
             }
 
-            bool ok = User.YesNo("\nContinue?", FrontEndType.CommandLine);
+            bool ok = User.RaiseYesNoDialog("\nContinue?");
 
             if (!ok)
             {
-                User.WriteLine("Mod removal aborted at user request.");
+                User.RaiseMessage("Mod removal aborted at user request.");
                 return;
             }
 
@@ -702,7 +690,7 @@ namespace CKAN
             {
                 foreach (string mod in goners)
                 {
-                    User.WriteLine("Removing {0}...", mod);
+                    User.RaiseMessage("Removing {0}...", mod);
                     Uninstall(mod);
                 }
 
@@ -711,7 +699,7 @@ namespace CKAN
                 transaction.Complete();
             }
 
-            User.WriteLine("Done!");
+            User.RaiseMessage("Done!");
         }
 
         public void UninstallList(string mod)
@@ -794,7 +782,7 @@ namespace CKAN
                     }
                     else
                     {
-                        User.WriteLine("Not removing directory {0}, it's not empty", directory);
+                        User.RaiseMessage("Not removing directory {0}, it's not empty", directory);
                     }
                 }
                 transaction.Complete();
@@ -930,7 +918,7 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                downloader.DownloadModules(ksp.Cache, downloads, onReportProgress);
+                downloader.DownloadModules(ksp.Cache, downloads);
             }
         }
 

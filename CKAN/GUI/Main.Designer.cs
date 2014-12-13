@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -56,7 +55,7 @@ namespace CKAN
             this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UpdateCell = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -347,7 +346,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.UpdateCell,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -375,9 +374,9 @@ namespace CKAN
             // 
             // Update
             // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.Width = 46;
+            this.UpdateCell.HeaderText = "Update";
+            this.UpdateCell.Name = "Update";
+            this.UpdateCell.Width = 46;
             // 
             // ModName
             // 
@@ -1222,7 +1221,6 @@ namespace CKAN
         private DataGridViewTextBoxColumn KSPVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
-        private DataGridViewCheckBoxColumn DoUpdate;
         private TabControl MainTabControl;
         private TabPage ManageModsTabPage;
         private Label KSPVersionLabel;
@@ -1233,7 +1231,7 @@ namespace CKAN
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
-        private DataGridViewCheckBoxColumn Update;
+        private DataGridViewCheckBoxColumn UpdateCell;
         private TabPage ChangesetTabPage;
         private Button CancelChangesButton;
         private Button ConfirmChangesButton;

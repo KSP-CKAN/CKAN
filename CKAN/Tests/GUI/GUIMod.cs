@@ -15,11 +15,11 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) {_CurrentInstance = tidy.KSP};
                 var registry = CKAN.Registry.Empty();
                 var ckanMod = TestData.kOS_014_module();
                 registry.AddAvailable(ckanMod);
-                var mod = new GUIMod(ckanMod, registry);
+                var mod = new GUIMod(ckanMod, registry, manager.CurrentInstance.Version());
                 Assert.False(mod.IsUpgradeChecked);
             }            
         }
@@ -28,8 +28,8 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
                 var generatror = new RandomModuleGenerator(new Random(0451));
                 var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"));
                 var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"),
@@ -39,7 +39,7 @@ namespace CKANTests
                 registry.AddAvailable(newVersion);
 
 
-                var mod = new GUIMod(oldVersion, registry);
+                var mod = new GUIMod(oldVersion, registry, manager.CurrentInstance.Version());
                 Assert.True(mod.HasUpdate);
             }
         }

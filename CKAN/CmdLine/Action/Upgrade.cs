@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
 {
     public class Upgrade : ICommand
     {
-        public Upgrade()
+        public IUser User { get; set; }
+
+        public Upgrade(IUser user)
         {
+            User = user;
         }
+
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
@@ -16,14 +19,14 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                User.WriteLine("\nUnsupported option at this time.");
+                User.RaiseMessage("\nUnsupported option at this time.");
                 return Exit.BADOPT;
             }
 
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
-                User.WriteLine("Usage: ckan upgrade Mod [Mod2, ...]");
+                User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
 
@@ -42,7 +45,7 @@ namespace CKAN.CmdLine
 
                     if (module == null)
                     {
-                        User.WriteLine("Cannot install {0}, version {1} not available",ident,version);
+                        User.RaiseMessage("Cannot install {0}, version {1} not available", ident, version);
                         return Exit.ERROR;
                     }
 
@@ -56,13 +59,11 @@ namespace CKAN.CmdLine
                 }
             }
 
-            User.WriteLine("\nUpgrading modules...\n");
 
+            User.RaiseMessage("\nUpgrading modules...\n");
             // TODO: These instances all need to go.
-            ModuleInstaller.Instance.Upgrade(to_upgrade, new NetAsyncDownloader());
-
-            User.WriteLine("\nDone!\n");
-
+            ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade,new NetAsyncDownloader(User));
+            User.RaiseMessage("\nDone!\n");
             return Exit.OK;
 
         }
