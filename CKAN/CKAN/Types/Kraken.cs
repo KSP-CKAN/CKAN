@@ -127,7 +127,7 @@ namespace CKAN
         internal static string FormatMessage(string requested, List<CkanModule> modules)
         {
             string oops = string.Format("Too many mods provide {0}:\n", requested);
-            return oops + String.Join("\n* ", modules); ;
+            return oops + String.Join("\n* ", modules);
         }
     }
 
@@ -143,7 +143,7 @@ namespace CKAN
         {
             get {
                 const string message = "The following inconsistecies were found:\n";
-                return message + String.Join("\n * ", inconsistencies); ;
+                return message + String.Join("\n * ", inconsistencies);
             }
         }
 

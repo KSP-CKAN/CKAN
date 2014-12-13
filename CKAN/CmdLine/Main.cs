@@ -76,7 +76,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
-            KSPManager manager= new KSPManager(user);;
+            KSPManager manager= new KSPManager(user);
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
