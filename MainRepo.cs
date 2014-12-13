@@ -12,7 +12,7 @@ namespace CKAN
         {
             m_TabController.RenameTab("WaitTabPage", "Updating repository");
 
-            KSPManager.CurrentInstance.ScanGameData();
+            CurrentInstance.ScanGameData();
 
             m_UpdateRepoWorker.RunWorkerAsync();
 
@@ -27,7 +27,8 @@ namespace CKAN
         {
             try
             {
-                Repo.Update(m_Configuration.Repository);
+                KSP current_instance1 = CurrentInstance;
+                Repo.Update(RegistryManager.Instance(CurrentInstance), current_instance1.Version(), (Uri)null);
             }
             catch (MissingCertificateKraken ex)
             {
@@ -42,7 +43,7 @@ namespace CKAN
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
             SetDescription("Scanning for manually installed mods");
-            KSPManager.CurrentInstance.ScanGameData();
+            CurrentInstance.ScanGameData();
 
             UpdateModsList();
 

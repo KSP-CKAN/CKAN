@@ -134,7 +134,7 @@ namespace CKAN
             int i = 0;
             foreach (RelationshipDescriptor dependency in relationships)
             {
-                Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
+                Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
                 try
                 {
@@ -143,13 +143,13 @@ namespace CKAN
                     try
                     {
                         dependencyModule = registry.LatestAvailable
-                            (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+                            (dependency.name.ToString(), manager.CurrentInstance.Version());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name.ToString(), KSPManager.CurrentInstance.Version());
+                            (dependency.name.ToString(), manager.CurrentInstance.Version());
 
                         if (dependencyModules == null)
                         {
@@ -256,7 +256,7 @@ namespace CKAN
             {
                 current_mod_contents_module = module;
             }
-            if (!KSPManager.CurrentInstance.Cache.IsCachedZip(module.download))
+            if (!manager.CurrentInstance.Cache.IsCachedZip(module.download))
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
@@ -272,7 +272,7 @@ namespace CKAN
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
-            IEnumerable<string> contents = ModuleInstaller.GetInstance(GUI.user).GetModuleContentsList(module);
+            IEnumerable<string> contents = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).GetModuleContentsList(module);
             if (contents == null)
             {
                 return;

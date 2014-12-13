@@ -16,7 +16,7 @@ namespace CKAN
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
             CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
-            KSPInstallPathLabel.Text = KSPManager.CurrentInstance.GameDir();
+            KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
 
             UpdateCacheInfo();
         }
@@ -24,7 +24,7 @@ namespace CKAN
         private void UpdateCacheInfo()
         {
             long cacheSize = 0;
-            var cachePath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "downloads");
+            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
 
             var cacheDirectory = new DirectoryInfo(cachePath);
             int count = 0;
@@ -60,7 +60,7 @@ namespace CKAN
 
         private void ClearCKANCacheButton_Click(object sender, EventArgs e)
         {
-            var cachePath = Path.Combine(KSPManager.CurrentInstance.CkanDir(), "downloads");
+            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
             foreach (var file in Directory.GetFiles(cachePath))
             {
                 try
@@ -77,7 +77,7 @@ namespace CKAN
 
         private void ResetAutoStartChoice_Click(object sender, EventArgs e)
         {
-            KSPManager.ClearAutoStart();
+            Main.Instance.Manager.ClearAutoStart();
 
             Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Application.Exit();

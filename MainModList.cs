@@ -30,12 +30,14 @@ namespace CKAN
             Util.Invoke(this, () => _UpdateModsList(markUpdates));
         }
 
+
         private void _UpdateModsList(bool markUpdates)
         {
-            Registry registry = RegistryManager.Instance(KSPManager.CurrentInstance).registry;
+            Registry registry = RegistryManager.Instance(CurrentInstance).registry;
 
-            var ckanModules = registry.Available().Concat(registry.Incompatible()).ToList();
-            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry)).ToList();
+            var ckanModules = registry.Available(CurrentInstance.Version()).Concat(
+                registry.Incompatible(CurrentInstance.Version())).ToList();
+            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())).ToList();
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
             var rows = MainModList.ConstructModList(mainModList.Modules);
             ModList.Rows.Clear();
@@ -102,6 +104,7 @@ namespace CKAN
 
     public class MainModList
     {
+
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
@@ -144,7 +147,8 @@ namespace CKAN
         /// Currently returns null if a conflict is detected.        
         /// </summary>
         /// <param name="registry"></param>
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry)
+        /// <param name="current_instance"></param>
+        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, KSP current_instance)
         {
             var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
             var modulesToInstall = new HashSet<string>();
@@ -192,8 +196,10 @@ namespace CKAN
                 resolver.ModList()
                     .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(GUI.user);
-            foreach (var reverseDependencies in modulesToRemove.Select(installer.FindReverseDependencies))
+
+            ModuleInstaller installer = ModuleInstaller.GetInstance(current_instance, GUI.user);
+
+            foreach (var reverseDependencies in modulesToRemove.Select(mod => installer.FindReverseDependencies(mod)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep));
@@ -206,14 +212,18 @@ namespace CKAN
 
         public bool IsVisible(GUIMod mod)
         {
+
             var nameMatchesFilter = IsNameInNameFilter(mod);
             var modMatchesType = IsModInFilter(mod);
             var isVisible = nameMatchesFilter && modMatchesType;
             return isVisible;
         }
 
+   
+
         public int CountModsByFilter(GUIModFilter filter)
         {
+
             switch (filter)
             {
                 case GUIModFilter.All:
@@ -227,7 +237,7 @@ namespace CKAN
                 case GUIModFilter.NotInstalled:
                     return Modules.Count(m => !m.IsInstalled);
                 case GUIModFilter.Incompatible:
-                    return Modules.Count(m => m.IsIncompatible);
+                    return Modules.Count(m => m.IsIncompatible);            
             }
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
@@ -280,7 +290,7 @@ namespace CKAN
         }
 
         private bool IsModInFilter(GUIMod m)
-        {
+        {     
             switch (ModFilter)
             {
                 case GUIModFilter.All:
