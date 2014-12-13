@@ -1,12 +1,11 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using ChinhDo.Transactions;
 using log4net;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
