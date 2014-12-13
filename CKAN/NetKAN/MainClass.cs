@@ -47,7 +47,7 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
-            NetFileCache cache = FindCache(options, user);
+            NetFileCache cache = FindCache(options, new KSPManager(user), user);
 
             log.InfoFormat("Processing {0}", options.File);
 
@@ -306,7 +306,7 @@ namespace CKAN.NetKAN
             return JObject.Parse(File.ReadAllText(filename));
         }
 
-        internal static NetFileCache FindCache(CmdLineOptions options, IUser user)
+        internal static NetFileCache FindCache(CmdLineOptions options, KSPManager ksp_manager, IUser user)
         {
             if (options.CacheDir != null)
             {
@@ -316,7 +316,7 @@ namespace CKAN.NetKAN
 
             try
             {
-                KSP ksp = KSPManager.GetPreferredInstance(user);
+                KSP ksp = ksp_manager.GetPreferredInstance();
                 log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.GetCachePath());
                 return ksp.Cache;
             }

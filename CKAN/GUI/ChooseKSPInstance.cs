@@ -16,9 +16,10 @@ namespace CKAN
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
-            if (!KSPManager.GetInstances(GUI.user).Any())
+
+            if (!Main.Instance.Manager.GetInstances().Any())
             {
-                KSPManager.FindAndRegisterDefaultInstance(GUI.user);
+                Main.Instance.Manager.FindAndRegisterDefaultInstance();
             }
 
             UpdateInstancesList();
@@ -36,7 +37,7 @@ namespace CKAN
 
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in KSPManager.GetInstances(GUI.user))
+            foreach (var instance in Main.Instance.Manager.GetInstances())
             {
                 var item = new ListViewItem() { Text = instance.Key, Tag = instance.Key };
 
@@ -62,9 +63,8 @@ namespace CKAN
                     return;
                 }
 
-
-                string instanceName = KSPManager.GetNextValidInstanceName("New instance");
-                KSPManager.GetInstances(GUI.user).Add(instanceName, instance);
+                string instanceName = Main.Instance.Manager.GetNextValidInstanceName("New instance");
+                Main.Instance.Manager.GetInstances().Add(instanceName, instance);
                 UpdateInstancesList();
             }
         }
@@ -75,11 +75,11 @@ namespace CKAN
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                KSPManager.SetAutoStart(instance, GUI.user);
+                Main.Instance.Manager.SetAutoStart(instance);
             }
 
-            KSPManager.SetCurrentInstance(instance, GUI.user);
-            Hide();
+            Main.Instance.Manager.SetCurrentInstance(instance);
+            Hide();    
             Main.Instance.Show();
         }
 
@@ -105,7 +105,7 @@ namespace CKAN
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                KSPManager.RenameInstance(instance, m_RenameInstanceDialog.GetResult(), GUI.user);
+                Main.Instance.Manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
         }

@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using ChinhDo.Transactions;
 
 namespace CKAN
 {
@@ -24,10 +24,8 @@ namespace CKAN
         ///     Optionally takes a URL to the zipfile repo to download.
         ///     Returns the number of unique modules updated.
         /// </summary>
-        public static int Update(Uri repo = null)
+        public static int Update(RegistryManager registry_manager, KSPVersion ksp_version, Uri repo = null)
         {
-            RegistryManager registry_manager = RegistryManager.Instance(KSPManager.CurrentInstance);
-
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
             {
@@ -40,17 +38,17 @@ namespace CKAN
             registry_manager.Save();
 
             // Return how many we got!
-            return registry_manager.registry.Available().Count;
+            return registry_manager.registry.Available(ksp_version).Count;
         }
 
-        public static int Update(string repo = null)
+        public static int Update(RegistryManager registry_manager, KSPVersion ksp_version, string repo = null)
         {
             if (repo == null)
             {
-                return Update((Uri) null);
+                return Update(registry_manager, ksp_version, (Uri) null);
             }
 
-            return Update(new Uri(repo));
+            return Update(registry_manager, ksp_version, new Uri(repo));
         }
 
         /// <summary>

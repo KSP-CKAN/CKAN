@@ -33,7 +33,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(GUI.user);
+            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
             installer.onReportProgress += InstallModsReportProgress;
 
@@ -77,10 +77,10 @@ namespace CKAN
                                 // the mod is not installed _and_
                                 // the mod is not already in the install list
                                 if (
-                                    RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(),
-                                            KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(KSPManager.CurrentInstance)
+                                    RegistryManager.Instance(manager.CurrentInstance)
+                                        .registry.LatestAvailable(mod.name.ToString(), manager.CurrentInstance.Version()) !=
+                                    null &&
+                                    !RegistryManager.Instance(manager.CurrentInstance)
                                         .registry.IsInstalled(mod.name.ToString()) &&
                                     !toInstall.Contains(mod.name.ToString()))
                                 {
@@ -109,12 +109,9 @@ namespace CKAN
                             try
                             {
                                 if (
-                                    RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name.ToString(),
-                                            KSPManager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(KSPManager.CurrentInstance)
-                                        .registry.IsInstalled(mod.name.ToString()) &&
-                                    !toInstall.Contains(mod.name.ToString()))
+                                    RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) != null &&
+                                    !RegistryManager.Instance(manager.CurrentInstance).registry.IsInstalled(mod.name) &&
+                                    !toInstall.Contains(mod.name))
                                 {
                                     if (suggested.ContainsKey(mod.name))
                                     {
@@ -304,13 +301,13 @@ namespace CKAN
         {
             if (toInstall.Any())
             {
-
                 // actual magic happens here, we run the installer with our mod list
-                ModuleInstaller.GetInstance(GUI.user).onReportModInstalled = OnModInstalled;
+                ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).onReportModInstalled = OnModInstalled;
                 cancelCallback = downloader.CancelDownload;
                 try
                 {
-                    ModuleInstaller.GetInstance(GUI.user).InstallList(toInstall.ToList(), options, downloader);
+                    ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user)
+                        .InstallList(toInstall.ToList(), options, downloader);
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
@@ -404,7 +401,6 @@ namespace CKAN
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
-                
             }
             else
             {
@@ -534,7 +530,7 @@ namespace CKAN
 
                 try
                 {
-                    module = RegistryManager.Instance(KSPManager.CurrentInstance).registry.LatestAvailable(pair.Key);
+                    module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key);
                 }
                 catch
                 {
@@ -625,7 +621,7 @@ namespace CKAN
             try
             {
                 resolver = new RelationshipResolver(tmp, options,
-                    RegistryManager.Instance(KSPManager.CurrentInstance).registry);
+                    RegistryManager.Instance(manager.CurrentInstance).registry);                
             }
             catch (Kraken kraken)
             {

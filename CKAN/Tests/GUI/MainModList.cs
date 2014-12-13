@@ -45,9 +45,9 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };                
                 var item = new MainModList(delegate { });
-                Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty()), Is.Empty);
+                Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty(), manager.CurrentInstance), Is.Empty);
             }
         }
 
@@ -56,13 +56,13 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
 
                 var ckanMod = TestData.FireSpitterModule();
                 var registry = CKAN.Registry.Empty();
                 registry.AddAvailable(ckanMod);
                 var item = new MainModList(delegate { });
-                Assert.That(item.IsVisible(new GUIMod(ckanMod, registry)));
+                Assert.That(item.IsVisible(new GUIMod(ckanMod, registry, manager.CurrentInstance.Version())));
             }
         }
 
@@ -83,14 +83,14 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager._CurrentInstance = tidy.KSP;
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
                 var registry = CKAN.Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
                 var modList = MainModList.ConstructModList(new List<GUIMod>
                 {
-                    new GUIMod(TestData.FireSpitterModule(), registry),
-                    new GUIMod(TestData.kOS_014_module(), registry)
+                    new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.Version()),
+                    new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version())
                 });
                 Assert.That(modList, Has.Count.EqualTo(2));
             }

@@ -12,9 +12,6 @@ namespace CKAN.CmdLine
             User = user;
         }
 
-        public Upgrade():this(new ConsoleUser())
-        {
-        }
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
@@ -64,7 +61,9 @@ namespace CKAN.CmdLine
 
             User.DisplayMessage("\nUpgrading modules...\n");
             // TODO: These instances all need to go.
-            ModuleInstaller.GetInstance(User).Upgrade(to_upgrade,new NetAsyncDownloader(User));
+
+            
+            ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade,new NetAsyncDownloader(User));
             User.DisplayMessage("\nDone!\n");
 
             return Exit.OK;
