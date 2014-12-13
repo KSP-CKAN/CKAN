@@ -1,9 +1,8 @@
-namespace CKAN {
-    using System.Text.RegularExpressions;
-    using log4net;
-    using System;
-    using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
+namespace CKAN {
     /// <summary>
     /// Version comparison utilities.
     /// </summary>

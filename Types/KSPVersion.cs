@@ -1,9 +1,8 @@
-namespace CKAN {
-    using System;
-    using log4net;
-    using System.Text.RegularExpressions;
-    using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
+namespace CKAN {
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class KSPVersion : IComparable<KSPVersion> {
         private string version;

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.IO;
+using System.Security.Cryptography;
 using Newtonsoft.Json;
-using System.Linq;
-using System.Runtime.Serialization;
-using log4net;
 
 namespace CKAN
 {

@@ -3,8 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using ChinhDo.Transactions;
-using log4net;
 using ICSharpCode.SharpZipLib.Zip;
+using log4net;
 
 namespace CKAN
 {
