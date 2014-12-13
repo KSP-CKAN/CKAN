@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using log4net;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -74,7 +73,10 @@ namespace CKAN
         /// <param name="path">The path to normalize.</param>
         public static string NormalizePath(string path)
         {
-            return path.Replace('\\', '/').TrimEnd('/');
+            return path
+                .TrimEnd('/', '\\')
+                .Replace('\\', Path.DirectorySeparatorChar)
+                .Replace('/', Path.DirectorySeparatorChar);
         }
 
         /// <summary>
@@ -84,12 +86,12 @@ namespace CKAN
         /// <param name="path">The path to process.</param>
         public static string GetLastPathElement(string path)
         {
-            return Regex.Replace(NormalizePath(path), @"^.*/", "");
+            return new DirectoryInfo(NormalizePath(path)).Name;
         }
 
         /// <summary>
         /// Gets the leading path elements. Ex: /a/b/c returns /a/b
-        /// 
+        ///
         /// Returns empty string if there is no leading path. (Eg: "Example.dll" -> "");
         /// </summary>
         /// <returns>The leading path elements.</returns>
@@ -98,11 +100,7 @@ namespace CKAN
         {
             path = NormalizePath(path);
 
-            if (Regex.IsMatch(path, "/"))
-            {
-                return Regex.Replace(path, @"(^.*)/.+", "$1");
-            }
-            return String.Empty;
+            return Path.GetDirectoryName(path);
         }
 
         /// <summary>
@@ -132,7 +130,7 @@ namespace CKAN
                 );
             }
 
-            if (! path.StartsWith(root))
+            if (!path.StartsWith(root))
             {
                 throw new PathErrorKraken(
                     path,
@@ -142,7 +140,7 @@ namespace CKAN
                     )
                 );
             }
-        
+
             // The +1 here is because root will never have
             // a trailing slash.
             return path.Remove(0, root.Length + 1);
