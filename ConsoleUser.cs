@@ -8,11 +8,6 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUser));
         
-        public event DisplayYesNoDialog AskUser;
-        public event DisplayMessage Message;
-        public event DisplayError Error;
-        public event ReportProgress Progress;
-
         protected override bool DisplayYesNoDialog(string message)
         {
             Console.Write("{0} [Y/N] ", message);
