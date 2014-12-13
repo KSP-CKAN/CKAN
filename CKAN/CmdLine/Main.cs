@@ -257,16 +257,36 @@ namespace CKAN.CmdLine
         {
             user.RaiseMessage("Downloading updates...");
 
-            try
+            int exitValue = Exit.OK;
+            // Do the loop over the repositories here so we can report update counts per repo
+            if (options.repo == null || options.repo.Equals("--all"))
             {
-                int updated = CKAN.Repo.Update(registry_manager, current_instance.Version(), options.repo);
-                user.RaiseMessage("Updated information on {0} available modules", updated);
+                RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+                Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+                // Some repos might fail, try to update as much as possible
+                foreach (KeyValuePair<string, Uri> repository in repositories)
+                {
+                    try
+                    {
+                        // int updated = CKAN.Repo.Update(repository.Value);
+						int updated = CKAN.Repo.Update(registry_manager, current_instance.Version(), options.repo);
+                        user.RaiseMessage("Updated information on {0} available modules", updated);
+                    }
+                    catch (MissingCertificateKraken kraken)
+                    {
+                        // Handling the kraken means we have prettier output.
+                        Console.WriteLine(kraken);
+                    }
+                }
             }
-            catch (MissingCertificateKraken kraken)
+            else
             {
                 // Handling the kraken means we have prettier output.
                 user.RaiseMessage(kraken.ToString());
                 return Exit.ERROR;
+				
+				// TODO download from single repo
             }
 
             return Exit.OK;
