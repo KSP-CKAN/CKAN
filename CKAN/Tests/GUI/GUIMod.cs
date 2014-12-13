@@ -31,8 +31,8 @@ namespace CKANTests
                 
                 CKAN.KSPManager._CurrentInstance = tidy.KSP;
                 var generatror = new RandomModuleGenerator(new Random(0451));
-                var oldVersion = generatror.GeneratorRandomModule(new CKAN.KSPVersion("0.24"));
-                var newVersion = generatror.GeneratorRandomModule(new CKAN.KSPVersion("0.25"),
+                var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"));
+                var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"),
                     identifier:oldVersion.identifier);
                 var registry = CKAN.Registry.Empty();
                 registry.RegisterModule(oldVersion, Enumerable.Empty<string>(), null);

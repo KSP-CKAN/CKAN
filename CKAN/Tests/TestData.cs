@@ -302,7 +302,8 @@ namespace Tests
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> sugests = null,
             List<String> provides = null,
-            string identifier = null)
+            string identifier = null,
+            Version version = null)
         {
             var mod = new CkanModule
             {
@@ -311,7 +312,7 @@ namespace Tests
                 identifier = identifier??Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
                 ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
-                version = new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
+                version = version ?? new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
             };
             mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
             mod.conflicts = conflicts;
