@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CommandLine;
 using ICSharpCode.SharpZipLib.Zip;
@@ -257,21 +258,16 @@ namespace CKAN.NetKAN
         {
             using (var zipfile = new ZipFile(filename))
             {
-                foreach (ZipEntry entry in zipfile)
+                // Skip everything but embedded .ckan files.
+                var entries = zipfile.Cast<ZipEntry>().Where(entry => Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase));
+                foreach (ZipEntry entry in entries)
                 {
-                    // Skip everything but embedded .ckan files.
-                    if (! Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase))
-                    {
-                        continue;
-                    }
-
                     log.DebugFormat("Reading {0}", entry.Name);
 
                     using (Stream zipStream = zipfile.GetInputStream(entry))
                     {
                         JObject meta_ckan = DeserializeFromStream(zipStream);
                         zipStream.Close();
-
                         return meta_ckan;
                     }
                 }
