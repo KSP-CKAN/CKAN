@@ -98,6 +98,7 @@ namespace CKAN
             Main.Instance.m_Configuration.ActiveProfileName = newProfileName;
             Main.Instance.m_Configuration.Save();
             repopulateProfileComboBoxes();
+            Main.Instance.LoadActiveProfile();
         }
 
         private void CKANActiveProfileApplyButton_Click(object sender, EventArgs e)
