@@ -5,18 +5,15 @@ namespace CKAN.CmdLine
 {
     public class KSP : ISubCommand
     {
+        public KSPManager Manager { get; set; }
         public IUser User { get; set; }
         public string option;
         public object suboptions;
 
-        public KSP(IUser user)
+        public KSP(KSPManager manager, IUser user)
         {
+            Manager = manager;
             User = user;
-        }
-
-        public KSP() : this(new ConsoleUser())
-        {
-            
         }
         
         internal class KSPSubOptions : CommonOptions
@@ -119,7 +116,7 @@ namespace CKAN.CmdLine
             User.DisplayMessage(String.Empty);
 
             int count = 1;
-            foreach (var instance in KSPManager.GetInstances(User))
+            foreach (var instance in Manager.GetInstances())
             {
                 User.DisplayMessage("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
                 count++;
@@ -136,7 +133,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (KSPManager.GetInstances(User).ContainsKey(options.name))
+            if (Manager.GetInstances().ContainsKey(options.name))
             {
                 User.DisplayMessage("Install with name \"{0}\" already exists, aborting..", options.name);
                 return Exit.BADOPT;
@@ -145,7 +142,7 @@ namespace CKAN.CmdLine
             try
             {
 
-                KSPManager.AddInstance(options.name, options.path,User);
+                Manager.AddInstance(options.name, options.path);
                 User.DisplayMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
                 return Exit.OK;
             }
@@ -164,13 +161,13 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!KSPManager.GetInstances(User).ContainsKey(options.old_name))
+            if (!Manager.GetInstances().ContainsKey(options.old_name))
             {
                 User.DisplayMessage("Couldn't find install with name \"{0}\", aborting..", options.old_name);
                 return Exit.BADOPT;
             }
 
-            KSPManager.RenameInstance(options.old_name, options.new_name,User);
+            Manager.RenameInstance(options.old_name, options.new_name);
 
             User.DisplayMessage("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
             return Exit.OK;
@@ -184,13 +181,13 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!KSPManager.GetInstances(User).ContainsKey(options.name))
+            if (!Manager.GetInstances().ContainsKey(options.name))
             {
                 User.DisplayMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
                 return Exit.BADOPT;
             }
 
-            KSPManager.RemoveInstance(options.name,User);
+            Manager.RemoveInstance(options.name);
 
             User.DisplayMessage("Successfully removed \"{0}\"", options.name);
             return Exit.OK;
@@ -204,13 +201,13 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!KSPManager.GetInstances(User).ContainsKey(options.name))
+            if (!Manager.GetInstances().ContainsKey(options.name))
             {
                 User.DisplayMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
                 return Exit.BADOPT;
             }
 
-            KSPManager.SetAutoStart(options.name,User);
+            Manager.SetAutoStart(options.name);
 
             User.DisplayMessage("Successfully set \"{0}\" as the default KSP installation", options.name);
             return Exit.OK;
