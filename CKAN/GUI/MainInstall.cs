@@ -38,17 +38,17 @@ namespace CKAN
             // First compose sets of what the user wants installed, upgraded, and removed.
             foreach (KeyValuePair<CkanModule, GUIModChangeType> change in opts.Key)
             {
-                if (change.Value == GUIModChangeType.Remove)
+                switch (change.Value)
                 {
-                    toUninstall.Add(change.Key.identifier);
-                }
-                else if (change.Value == GUIModChangeType.Update)
-                {
-                    toUpgrade.Add(change.Key.identifier);
-                }
-                else if (change.Value == GUIModChangeType.Install)
-                {
-                    toInstall.Add(change.Key.identifier);
+                    case GUIModChangeType.Remove:
+                        toUninstall.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Update:
+                        toUpgrade.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Install:
+                        toInstall.Add(change.Key.identifier);
+                        break;
                 }
             }
 
@@ -389,17 +389,17 @@ namespace CKAN
 
                 foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
                 {
-                    if (opt.Value == GUIModChangeType.Install)
+                    switch (opt.Value)
                     {
-                        MarkModForInstall(opt.Key.identifier);
-                    }
-                    else if (opt.Value == GUIModChangeType.Update)
-                    {
-                        MarkModForUpdate(opt.Key.identifier);
-                    }
-                    else if (opt.Value == GUIModChangeType.Remove)
-                    {
-                        MarkModForInstall(opt.Key.identifier, true);
+                        case GUIModChangeType.Install:
+                            MarkModForInstall(opt.Key.identifier);
+                            break;
+                        case GUIModChangeType.Update:
+                            MarkModForUpdate(opt.Key.identifier);
+                            break;
+                        case GUIModChangeType.Remove:
+                            MarkModForInstall(opt.Key.identifier, true);
+                            break;
                     }
                 }
             }

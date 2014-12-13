@@ -113,19 +113,19 @@ namespace CKAN
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == (Keys.Control | Keys.F))
+            switch (keyData)
             {
-                ActiveControl = FilterByNameTextBox;
-                return true;
-            }
-            else if (keyData == (Keys.Control | Keys.S))
-            {
-                if (mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry,CurrentInstance).Any())
-                {
-                    ApplyToolButton_Click(null, null);
-                }
+                case (Keys.Control | Keys.F):
+                    ActiveControl = FilterByNameTextBox;
+                    return true;
+                case (Keys.Control | Keys.S):
+                    var registry = RegistryManager.Instance(CurrentInstance).registry;
+                    if (mainModList.ComputeChangeSetFromModList(registry,CurrentInstance).Any())
+                    {
+                        ApplyToolButton_Click(null, null);
+                    }
 
-                return true;
+                    return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
