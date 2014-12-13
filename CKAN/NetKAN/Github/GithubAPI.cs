@@ -59,12 +59,7 @@ namespace CKAN.NetKAN
 
             var final_releases = releases.Where(x => (bool) x["prerelease"] == false);
 
-            if (!final_releases.Any())
-            {
-                return null;
-            }
-
-            return new GithubRelease((JObject) final_releases.First());
+            return !final_releases.Any() ? null : new GithubRelease(final_releases.Cast<JObject>().First());
         }
 
     }

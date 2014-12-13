@@ -780,11 +780,7 @@ namespace CKAN
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
         public bool IsInstalled(string modName)
         {
-            if (InstalledVersion(modName) == null)
-            {
-                return false;
-            }
-            return true;
+            return InstalledVersion(modName) != null;
         }
 
         /// <summary>

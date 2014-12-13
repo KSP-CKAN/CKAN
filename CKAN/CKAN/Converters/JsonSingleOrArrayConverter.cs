@@ -29,12 +29,7 @@ namespace CKAN
             }
 
             // If the object is null, we'll return null. Otherwise end up with a list of null.
-            if (token.ToObject<T>() == null)
-            {
-                return null;
-            }
-
-            return new List<T> { token.ToObject<T>() };
+            return token.ToObject<T>() == null ? null : new List<T> { token.ToObject<T>() };
         }
 
         public override bool CanWrite
