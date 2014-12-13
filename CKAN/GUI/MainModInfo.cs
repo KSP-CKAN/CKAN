@@ -75,21 +75,11 @@ namespace CKAN
 
         private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
-            TreeNode node = null;
-
-            if (module == null)
+            if (module == null 
+                || (depth > 0 && dependencyGraphRootModule == module)
+                || (alreadyVisited.Contains(module)))
             {
-                return node;
-            }
-
-            if (depth > 0 && dependencyGraphRootModule == module)
-            {
-                return node;
-            }
-
-            if (alreadyVisited.Contains(module))
-            {
-                return node;
+                return null;
             }
 
             alreadyVisited.Add(module);
@@ -100,14 +90,7 @@ namespace CKAN
                 nodeText = String.Format("provided by - {0}", module.name);
             }
 
-            if (parentNode == null)
-            {
-                node = new TreeNode(nodeText);
-            }
-            else
-            {
-                node = parentNode.Nodes.Add(nodeText);
-            }
+            var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
 
             IEnumerable<RelationshipDescriptor> relationships = null;
             switch (relationship)

@@ -29,7 +29,6 @@ namespace CKAN
 
     public partial class Main
     {
-        private static Main m_Instance;
         public Configuration m_Configuration;
 
         public ControlFactory controlFactory;
@@ -57,7 +56,7 @@ namespace CKAN
             User.displayError = ErrorDialog;
 
             controlFactory = new ControlFactory();
-            m_Instance = this;
+            Instance = this;
             mainModList = new MainModList(source => UpdateFilters(this));            
             InitializeComponent();
 
@@ -131,10 +130,7 @@ namespace CKAN
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        public static Main Instance
-        {
-            get { return m_Instance; }
-        }
+        public static Main Instance { get; private set; }
 
         private void Main_Load(object sender, EventArgs e)
         {
@@ -166,13 +162,14 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (CkanModule) row.Tag;
-                if (!RegistryManager.Instance(CurrentInstance).registry.IsInstalled(mod.identifier))
+                var registry = RegistryManager.Instance(CurrentInstance).registry;
+                if (!registry.IsInstalled(mod.identifier))
                 {
                     continue;
                 }
 
                 bool isUpToDate =
-                    !RegistryManager.Instance(CurrentInstance).registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
+                    !registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
                 if (!isUpToDate)
                 {
                     var cell = row.Cells[1] as DataGridViewCheckBoxCell;

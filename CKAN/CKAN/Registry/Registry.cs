@@ -818,41 +818,34 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-
         public static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
         {
-            // Make our hypothetical install, and remove the listed modules from it.
-            HashSet<Module> hypothetical = new HashSet<Module> (orig_installed); // Clone because we alter hypothetical.
-            hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
-
-            log.DebugFormat( "Started with {0}, removing {1}, and keeping {2}; our dlls are {3}",
-                              string.Join(", ", orig_installed),
-                              string.Join(", ", modules_to_remove),
-                              string.Join(", ", hypothetical),
-                              string.Join(", ", dlls)
-                              );
-
-            // Find what would break with this configuration.
-            // The Values.SelectMany() flattens our list of broken mods.
-            var broken = new HashSet<string> (
-                SanityChecker
-                .FindUnmetDependencies(hypothetical, dlls)
-                .Values
-                .SelectMany(x => x)
-                .Select(x => x.identifier)
-                );
-
-            // If nothing else would break, it's just the list of modules we're removing.
-            HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
-            if (to_remove.IsSupersetOf(broken))
+            while (true)
             {
-                log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
-                return to_remove;
-            }
+                // Make our hypothetical install, and remove the listed modules from it.
+                HashSet<Module> hypothetical = new HashSet<Module>(orig_installed); // Clone because we alter hypothetical.
+                hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
 
-            // Otherwise, remove our broken modules as well, and recurse.
-            broken.UnionWith(to_remove);
-            return FindReverseDependencies(broken, orig_installed, dlls);
+                log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
+
+                // Find what would break with this configuration.
+                // The Values.SelectMany() flattens our list of broken mods.
+                var broken = new HashSet<string>(SanityChecker.FindUnmetDependencies(hypothetical, dlls)
+                    .Values.SelectMany(x => x).Select(x => x.identifier));
+
+                // If nothing else would break, it's just the list of modules we're removing.
+                HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
+                
+                if (to_remove.IsSupersetOf(broken))
+                {
+                    log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
+                    return to_remove;
+                }
+
+                // Otherwise, remove our broken modules as well, and recurse.
+                broken.UnionWith(to_remove);
+                modules_to_remove = broken;
+            }
         }
 
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)

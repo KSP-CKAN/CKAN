@@ -211,13 +211,7 @@ namespace CKAN.CmdLine
             foreach (CkanModule module in available)
             {
                 string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
-                if (width > 0) {
-                    user.RaiseMessage(entry.PadRight(width).Substring(0, width - 1));
-                }
-                else
-                {
-                    user.RaiseMessage(entry);
-                }
+                user.RaiseMessage(width > 0 ? entry.PadRight(width).Substring(0, width - 1) : entry);
             }
 
             return Exit.OK;
