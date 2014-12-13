@@ -138,15 +138,11 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
-            m_UpdateRepoWorker = new BackgroundWorker();
-            m_UpdateRepoWorker.WorkerReportsProgress = false;
-            m_UpdateRepoWorker.WorkerSupportsCancellation = true;
+            m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker();
-            m_InstallWorker.WorkerReportsProgress = true;
-            m_InstallWorker.WorkerSupportsCancellation = true;
+            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 

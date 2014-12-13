@@ -422,14 +422,11 @@ namespace CKAN
 
             foreach (CkanModule module in tooManyProvides.modules)
             {
-                ListViewItem item = new ListViewItem();
-                item.Tag = module;
-                item.Checked = true;
+                ListViewItem item = new ListViewItem {Tag = module, Checked = true, Text = module.name};
 
-                item.Text = module.name;
 
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
-                description.Text = module.@abstract;
+                ListViewItem.ListViewSubItem description = 
+                    new ListViewItem.ListViewSubItem {Text = module.@abstract};
 
                 item.SubItems.Add(description);
                 ChooseProvidedModsListView.Items.Add(item);
@@ -516,11 +513,8 @@ namespace CKAN
                     continue;
                 }
 
-                ListViewItem item = new ListViewItem();
-                item.Tag = module;
-                item.Checked = !suggested;
+                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key};
 
-                item.Text = pair.Key;
 
                 ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem();
                 string recommendedByString = "";
@@ -544,8 +538,7 @@ namespace CKAN
 
                 item.SubItems.Add(recommendedBy);
 
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
-                description.Text = module.@abstract;
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem {Text = module.@abstract};
 
                 item.SubItems.Add(description);
 
