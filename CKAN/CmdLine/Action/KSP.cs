@@ -82,6 +82,23 @@ namespace CKAN.CmdLine
                 args[0] = "help";
             }
 
+            #region Aliases
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                switch (args[i])
+                {
+                    case "use":
+                        args[i] = "default";
+                        break;
+
+                    default:
+                        break;
+                }
+            } 
+
+            #endregion
+
             // Parse and process our sub-verbs
             Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse);
 
