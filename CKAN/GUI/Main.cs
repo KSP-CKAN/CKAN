@@ -277,6 +277,7 @@ namespace CKAN
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            SaveActiveProfile();
         }
 
         private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
