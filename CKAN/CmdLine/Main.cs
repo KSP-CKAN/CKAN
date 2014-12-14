@@ -388,14 +388,28 @@ namespace CKAN.CmdLine
             {
                 user.RaiseMessage("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
+                int count = 1;
+
                 foreach (CkanModule mod in ex.modules)
                 {
-                    user.RaiseMessage("* {0} ({1})", mod.identifier, mod.name);
+                    user.RaiseMessage("{0}) {1} ({2})", count, mod.identifier, mod.name);
+                    count++;
                 }
 
-                user.RaiseMessage(String.Empty); // Looks tidier.
+                int result = 0;
 
-                return Exit.ERROR;
+                // Ask the user to select one of the mods on the list.
+                if (!AskUserForNumber(out result, user, 1, ex.modules.Count, true))
+                {
+                    user.RaiseMessage(String.Empty); // Looks tidier.
+
+                    return Exit.ERROR;
+                }
+
+                // Add the module to the list.
+                options.modules.Add(ex.modules[result - 1].identifier);
+
+                return Install(options, current_instance, user);
             }
             catch (FileExistsKraken ex)
             {
