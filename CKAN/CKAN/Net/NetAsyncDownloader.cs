@@ -212,7 +212,7 @@ namespace CKAN
 
                 foreach (string tmpfile in filenames)
                 {
-                    log.DebugFormat("Cleaing up {0}", tmpfile);
+                    log.DebugFormat("Cleaning up {0}", tmpfile);
                     file_transaction.Delete(tmpfile);
                 }
             }
