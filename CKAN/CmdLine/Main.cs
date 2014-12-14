@@ -526,7 +526,7 @@ namespace CKAN.CmdLine
 
             if (cancellable)
             {
-                output += "(To cancel press \"c\" or \"n\")";
+                output += " (To cancel press \"c\" or \"n\")";
             }
 
             output += ": ";
