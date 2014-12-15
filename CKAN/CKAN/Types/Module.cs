@@ -273,7 +273,7 @@ namespace CKAN
         /// Tries to parse an identifier in the format Modname=version
         /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
         /// </summary>
-        public static CkanModule FromIDandVersion(CKAN.KSP ksp, string mod)
+        public static CkanModule FromIDandVersion(Registry registry, string mod)
         {
             Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
 
@@ -282,7 +282,7 @@ namespace CKAN
                 string ident = match.Groups["mod"].Value;
                 string version = match.Groups["version"].Value;
 
-                CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
+                CkanModule module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
                     throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, version {1} not available", ident, version));
@@ -291,7 +291,7 @@ namespace CKAN
             }
             else
             {
-                return ksp.Registry.LatestAvailable(mod, ksp.Version());
+                return registry.LatestAvailable(mod);
             }
         }
 

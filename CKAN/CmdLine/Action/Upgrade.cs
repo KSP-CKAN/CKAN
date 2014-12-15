@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
             {
                 try
                 {
-                    to_upgrade.Add(CkanModule.FromIDandVersion(ksp, mod));
+                    to_upgrade.Add(CkanModule.FromIDandVersion(ksp.Registry, mod));
                 }
                 catch (ModuleNotFoundKraken k)
                 {
