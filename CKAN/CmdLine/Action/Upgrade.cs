@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
             {
                 try
                 {
-                    to_upgrade.Add(ParseModNameAndVersion(ksp, mod));
+                    to_upgrade.Add(CkanModule.FromIDandVersion(ksp, mod));
                 }
                 catch (ModuleNotFoundKraken k)
                 {
@@ -51,32 +51,6 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
 
-        }
-
-        /// <summary>
-        /// Tries to parse an identifier in the format Modname=x.x.x
-        /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
-        /// </summary>
-        private CkanModule ParseModNameAndVersion(CKAN.KSP ksp, string mod)
-        {
-            Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
-
-            if (match.Success)
-            {
-                string ident = match.Groups["mod"].Value;
-                string version = match.Groups["version"].Value;
-
-                CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
-
-                if (module == null)                
-                    throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, version {1} not available", ident, version));                
-                else
-                    return module;
-            }
-            else
-            {
-                return ksp.Registry.LatestAvailable(mod, ksp.Version());
-            }
         }
     }
 }

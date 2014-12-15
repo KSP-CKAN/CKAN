@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -266,6 +267,32 @@ namespace CKAN
             //
             //            JObject obj = JObject.Parse(json);
             //            return obj.IsValid(metadata_schema);
+        }
+
+        /// <summary>
+        /// Tries to parse an identifier in the format Modname=version
+        /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
+        /// </summary>
+        public static CkanModule FromIDandVersion(CKAN.KSP ksp, string mod)
+        {
+            Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+
+            if (match.Success)
+            {
+                string ident = match.Groups["mod"].Value;
+                string version = match.Groups["version"].Value;
+
+                CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
+
+                if (module == null)
+                    throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, version {1} not available", ident, version));
+                else
+                    return module;
+            }
+            else
+            {
+                return ksp.Registry.LatestAvailable(mod, ksp.Version());
+            }
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
