@@ -9,6 +9,7 @@ namespace CKAN
     
     public delegate void DisplayMessage(string message, params object[] args);
     public delegate bool DisplayYesNoDialog(string message);
+    public delegate int DisplaySelectionDialog(string message, params string[] args);
     public delegate void DisplayError(string message, params object[] args);
     public delegate void ReportProgress(string format, int percent);
     public delegate void DownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors);
@@ -17,12 +18,13 @@ namespace CKAN
     {       
         event DisplayYesNoDialog AskUser;
         event DisplayMessage Message;
+        event DisplaySelectionDialog AskUserForSelection;
         event DisplayError Error;
         event ReportProgress Progress;
         event DownloadsComplete DownloadsComplete;
         int WindowWidth { get; }
         
-
+        int RaiseSelectionDialog(string message, params string[] args);
         void RaiseMessage(string message, params object[] url);
         void RaiseProgress(string message, int percent);
         bool RaiseYesNoDialog(string question);
@@ -41,6 +43,7 @@ namespace CKAN
         {
             AskUser += DisplayYesNoDialog;
             Message += DisplayMessage;
+            AskUserForSelection += DisplaySelectionDialog;
             Error += DisplayError;
             Progress += ReportProgress;
             DownloadsComplete += ReportDownloadsComplete;
@@ -48,6 +51,7 @@ namespace CKAN
 
         public event DisplayYesNoDialog AskUser;
         public event DisplayMessage Message;
+        public event DisplaySelectionDialog AskUserForSelection;
         public event DisplayError Error;
         public event ReportProgress Progress;
         public event DownloadsComplete DownloadsComplete;
@@ -59,6 +63,11 @@ namespace CKAN
 
         protected virtual void DisplayMessage(string message, params object[] args)
         {
+        }
+
+        protected virtual int DisplaySelectionDialog(string message, params string[] args)
+        {
+            return 0;
         }
 
         protected virtual void DisplayError(string message, params object[] args)
@@ -93,6 +102,11 @@ namespace CKAN
         {
             //Return value will be from last handler added.
             return AskUser(question);
+        }
+
+        public int RaiseSelectionDialog(string message, params string[] args)
+        {
+            return AskUserForSelection(message, args);
         }
 
         public void RaiseError(string message, params object[] args)
