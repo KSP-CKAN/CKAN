@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace CKAN
@@ -12,12 +11,12 @@ namespace CKAN
 
         public static void SetRegistryValue<T>(string key, T value)
         {
-            Microsoft.Win32.Registry.SetValue(KSPPathConstants.CKAN_KEY, key, value);
+            Microsoft.Win32.Registry.SetValue(CKAN_KEY, key, value);
         }
 
         public static T GetRegistryValue<T>(string key, T defaultValue)
         {
-            return (T)Microsoft.Win32.Registry.GetValue(KSPPathConstants.CKAN_KEY, key, defaultValue);
+            return (T)Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, defaultValue);
         }
 
     }

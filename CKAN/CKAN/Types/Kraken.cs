@@ -126,12 +126,8 @@ namespace CKAN
 
         internal static string FormatMessage(string requested, List<CkanModule> modules)
         {
-            string oops = string.Format("Too many mods provide {0}:\n\n", requested);
-            foreach (var mod in modules)
-            {
-                oops += "* " + mod + "\n";
-            }
-            return oops;
+            string oops = string.Format("Too many mods provide {0}:\n", requested);
+            return oops + String.Join("\n* ", modules);
         }
     }
 
@@ -146,14 +142,8 @@ namespace CKAN
         public string InconsistenciesPretty
         {
             get {
-                string message = "The following inconsistecies were found:\n\n";
-
-                foreach (string issue in inconsistencies)
-                {
-                    message += " * " + issue + "\n";
-                }
-
-                return message;
+                const string message = "The following inconsistecies were found:\n";
+                return message + String.Join("\n * ", inconsistencies);
             }
         }
 
@@ -166,12 +156,12 @@ namespace CKAN
         public InconsistentKraken(string inconsistency, Exception inner_exception = null)
             :base(null, inner_exception)
         {
-            this.inconsistencies = new List<string> { inconsistency };
+            inconsistencies = new List<string> { inconsistency };
         }
 
         public override string ToString()
         {
-            return this.InconsistenciesPretty + this.StackTrace;
+            return InconsistenciesPretty + StackTrace;
         }
     }
 
@@ -207,7 +197,7 @@ namespace CKAN
         public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)
         {
-            this.exceptions = new List<Exception> (errors);
+            exceptions = new List<Exception> (errors);
         }
 
         public override string ToString()

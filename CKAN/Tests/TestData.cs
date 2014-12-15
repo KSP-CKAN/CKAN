@@ -182,9 +182,11 @@ namespace Tests
 
         public static List<string> bad_ksp_dirs()
         {
-            var dirs = new List<string>();
-            dirs.Add(Path.Combine(DataDir(), "KSP/bad-ksp"));
-            dirs.Add(Path.Combine(DataDir(), "KSP/missing-gamedata"));
+            var dirs = new List<string>
+            {
+                Path.Combine(DataDir(), "KSP/bad-ksp"),
+                Path.Combine(DataDir(), "KSP/missing-gamedata")
+            };
 
             return dirs;
         }
@@ -302,16 +304,19 @@ namespace Tests
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> sugests = null,
-            List<String> provides = null)
+            List<String> provides = null,
+            string identifier = null,
+            Version version = null)
         {
+
             var mod = new CkanModule();
             var type = typeof(CkanModule);
             setReadOnlyValue(type,"name",mod,Generator.Next().ToString(CultureInfo.InvariantCulture));
             setReadOnlyValue(type,"abstract",mod,Generator.Next().ToString(CultureInfo.InvariantCulture));
-            setReadOnlyValue(type,"identifier",mod,Generator.Next().ToString(CultureInfo.InvariantCulture));
+            setReadOnlyValue(type, "identifier", mod, identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture));
             setReadOnlyValue(type,"spec_version",mod,new Version(1.ToString(CultureInfo.InvariantCulture)));
             setReadOnlyValue(type,"ksp_version",mod,kspVersion ?? new KSPVersion("0." + Generator.Next()));
-            setReadOnlyValue(type,"version",mod,new Version(Generator.Next().ToString(CultureInfo.InvariantCulture)));
+            setReadOnlyValue(type,"version",mod,version??new Version(Generator.Next().ToString(CultureInfo.InvariantCulture)));
             setReadOnlyValue(type,"ksp_version_max",mod,new KSPVersion(null));
             setReadOnlyValue(type,"ksp_version_min",mod,new KSPVersion(null));
             setReadOnlyValue(type,"conflicts",mod,conflicts);

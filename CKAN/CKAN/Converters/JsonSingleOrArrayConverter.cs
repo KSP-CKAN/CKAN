@@ -1,8 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -30,12 +29,7 @@ namespace CKAN
             }
 
             // If the object is null, we'll return null. Otherwise end up with a list of null.
-            if (token.ToObject<T>() == null)
-            {
-                return null;
-            }
-
-            return new List<T> { token.ToObject<T>() };
+            return token.ToObject<T>() == null ? null : new List<T> { token.ToObject<T>() };
         }
 
         public override bool CanWrite

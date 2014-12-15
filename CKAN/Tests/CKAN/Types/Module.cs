@@ -1,11 +1,10 @@
-using NUnit.Framework;
-using System;
 using CKAN;
+using NUnit.Framework;
 using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class Module
     {
         [Test]
@@ -80,12 +79,12 @@ namespace CKANTests
             }
 
             // We should always support old versions, and the classic '1' version.
-            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("1")));
-            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v0.02")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("1")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("v0.02")));
 
             // We shouldn't support this far-in-the-future version.
             // NB: V2K bug!!!
-            Assert.IsFalse(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v2000.99.99")));
+            Assert.IsFalse(CkanModule.IsSpecSupported(new CKAN.Version("v2000.99.99")));
         }
 
         [Test]
@@ -94,8 +93,8 @@ namespace CKANTests
             // We should support both two and three number dotted specs, on both
             // tagged and dev releases.
 
-            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v1.1")));
-            Assert.IsTrue(CKAN.CkanModule.IsSpecSupported(new CKAN.Version("v1.0.2")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("v1.1")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("v1.0.2")));
         }
 
         [Test]
@@ -108,7 +107,7 @@ namespace CKANTests
 
             // Modules form the future are unsupported.
 
-            Assert.Throws<CKAN.UnsupportedKraken>(delegate
+            Assert.Throws<UnsupportedKraken>(delegate
             {
                 CkanModule.FromJson(TestData.FutureMetaData());
             });

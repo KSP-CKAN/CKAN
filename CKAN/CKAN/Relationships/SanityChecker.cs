@@ -1,5 +1,5 @@
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using log4net;
 
 namespace CKAN
@@ -174,16 +174,13 @@ namespace CKAN
 
                 // If it does have dependencies, but we can't find anything that provides them,
                 // add them to our unmet list.
-                foreach (RelationshipDescriptor dep in mod.depends)
+                foreach (RelationshipDescriptor dep in mod.depends.Where(dep => ! provided.Contains(dep.name)))
                 {
-                    if (! provided.Contains(dep.name))
+                    if (!unmet.ContainsKey(dep.name))
                     {
-                        if (!unmet.ContainsKey(dep.name))
-                        {
-                            unmet[dep.name] = new List<Module>();
-                        }
-                        unmet[dep.name].Add(mod); // mod needs dep.name, but doesn't have it.
+                        unmet[dep.name] = new List<Module>();
                     }
+                    unmet[dep.name].Add(mod); // mod needs dep.name, but doesn't have it.
                 }
             }
 

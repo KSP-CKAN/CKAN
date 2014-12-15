@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.IO;
+using System.Security.Cryptography;
 using Newtonsoft.Json;
-using System.Linq;
-using System.Runtime.Serialization;
-using log4net;
 
 namespace CKAN
 {
@@ -29,7 +26,7 @@ namespace CKAN
         public InstalledModuleFile(string path, KSP ksp)
         {
             string absolute_path = ksp.ToAbsoluteGameDir(path);
-            this.sha1_sum = Sha1Sum(absolute_path);
+            sha1_sum = Sha1Sum(absolute_path);
         }
 
         // We need this because otherwise JSON.net tries to pass in
@@ -113,9 +110,9 @@ namespace CKAN
 
         public InstalledModule(KSP ksp, Module module, IEnumerable<string> relative_files)
         {
-            this.install_time = DateTime.Now;
-            this.source_module = module;
-            this.installed_files = new Dictionary<string, InstalledModuleFile>();
+            install_time = DateTime.Now;
+            source_module = module;
+            installed_files = new Dictionary<string, InstalledModuleFile>();
 
             foreach (string file in relative_files)
             {
@@ -143,7 +140,7 @@ namespace CKAN
         /// <summary>
         /// Ensures all files for this module have relative paths.
         /// Called when upgrading registry versions. Should be a no-op
-        /// if called on newer registries.
+        /// if called on newer registries.</summary>
         public void Renormalise(KSP ksp)
         {
             var normalised_installed_files = new Dictionary<string, InstalledModuleFile>();
@@ -160,7 +157,7 @@ namespace CKAN
                 normalised_installed_files[path] = tuple.Value;
             }
 
-            this.installed_files = normalised_installed_files;
+            installed_files = normalised_installed_files;
         }
 
         #endregion

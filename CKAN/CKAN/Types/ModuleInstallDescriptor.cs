@@ -1,6 +1,7 @@
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -40,7 +41,7 @@ namespace CKAN
 
             // We want everthing that matches our 'file', either as an exact match,
             // or as a path leading up to it.
-            string wanted_filter = "^" + Regex.Escape(this.file) + "(/|$)";
+            string wanted_filter = "^" + Regex.Escape(file) + "(/|$)";
 
             // If it doesn't match our install path, ignore it.
             if (! Regex.IsMatch(normalised_path, wanted_filter))
@@ -58,25 +59,15 @@ namespace CKAN
             // All these comparisons are case insensitive.
             var path_segments = new List<string>(normalised_path.ToLower().Split('/'));
 
-            foreach (string filter_text in this.filter)
+            if (filter.Any(filter_text => path_segments.Contains(filter_text.ToLower())))
             {
-                if (path_segments.Contains(filter_text.ToLower()))
-                {
-                    return false;
-                }
+                return false;
             }
 
             // Finally, check our filter regexpes.
-            foreach (string regexp in this.filter_regexp)
-            {
-                if (Regex.IsMatch(normalised_path, regexp))
-                {
-                    return false;
-                }
-            }
+            return filter_regexp.All(regexp => !Regex.IsMatch(normalised_path, regexp));
 
             // I guess we want this file after all. ;)
-            return true;
         }
     }
 }

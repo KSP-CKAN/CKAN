@@ -3,8 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using ChinhDo.Transactions;
-using log4net;
 using ICSharpCode.SharpZipLib.Zip;
+using log4net;
 
 namespace CKAN
 {
@@ -141,7 +141,7 @@ namespace CKAN
             log.DebugFormat("Storing {0}", url);
 
             // Make sure we clear our cache entry first.
-            this.Remove(url);
+            Remove(url);
 
             string hash = CreateURLHash(url);
 
@@ -158,7 +158,7 @@ namespace CKAN
             }
             else
             {
-                tx_file.Copy(path, targetPath, overwrite: true);
+                tx_file.Copy(path, targetPath, true);
             }
 
             return targetPath;
@@ -171,7 +171,7 @@ namespace CKAN
         /// </summary>
         public bool Remove(Uri url)
         {
-            string file = this.GetCachedFilename(url);
+            string file = GetCachedFilename(url);
 
             if (file != null)
             {

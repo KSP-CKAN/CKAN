@@ -31,9 +31,7 @@ namespace NetKAN.KerbalStuffTests
         [Test]
         public void KSHome()
         {
-            var ks = new CKAN.NetKAN.KSMod();
-            ks.name = "foo bar";
-            ks.id = 123;
+            var ks = new CKAN.NetKAN.KSMod {name = "foo bar", id = 123};
 
             // KSHome no longer escapes URLs.
             Assert.AreEqual("https://kerbalstuff.com/mod/123/foo bar", ks.KSHome().ToString());
@@ -43,7 +41,7 @@ namespace NetKAN.KerbalStuffTests
         // GH #199: Don't pre-fill KSP version fields if we see a ksp_min/max
         public void KSP_Version_Inflate_199()
         {
-            JObject metadata = JObject.Parse(Tests.TestData.DogeCoinFlag_101());
+            JObject metadata = JObject.Parse(TestData.DogeCoinFlag_101());
 
             // Add our own field, and remove existing ones.
             metadata["ksp_version_min"] = "0.23.5";
@@ -55,7 +53,7 @@ namespace NetKAN.KerbalStuffTests
 
             CKAN.NetKAN.KSMod ksmod = test_ksmod();
 
-            ksmod.InflateMetadata(metadata, Tests.TestData.DogeCoinFlagZip(), ksmod.versions[0]);
+            ksmod.InflateMetadata(metadata, TestData.DogeCoinFlagZip(), ksmod.versions[0]);
 
             // Make sure min is still there, and the rest unharmed.
             Assert.AreEqual(null, (string) metadata["ksp_version"]);
@@ -74,16 +72,20 @@ namespace NetKAN.KerbalStuffTests
 
         public CKAN.NetKAN.KSMod test_ksmod()
         {
-            var ksmod = new CKAN.NetKAN.KSMod();
-            ksmod.license = "CC-BY";
-            ksmod.name = "Dogecoin Flag";
-            ksmod.short_description = "Such test. Very unit. Wow.";
-            ksmod.author = "pjf";
+            var ksmod = new CKAN.NetKAN.KSMod
+            {
+                license = "CC-BY",
+                name = "Dogecoin Flag",
+                short_description = "Such test. Very unit. Wow.",
+                author = "pjf",
+                versions = new CKAN.NetKAN.KSVersion[1]
+            };
 
-            ksmod.versions = new CKAN.NetKAN.KSVersion[1];
-            ksmod.versions[0] = new CKAN.NetKAN.KSVersion();
-            ksmod.versions[0].friendly_version = new CKAN.Version("0.25");
-            ksmod.versions[0].download_path = new System.Uri("http://example.com/");
+            ksmod.versions[0] = new CKAN.NetKAN.KSVersion
+            {
+                friendly_version = new CKAN.Version("0.25"),
+                download_path = new System.Uri("http://example.com/")
+            };
 
             return ksmod;
         }

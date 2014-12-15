@@ -2,31 +2,33 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using CommandLine;
+using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using CommandLine;
 
 namespace CKAN.NetKAN
 {
     internal class MainClass
     {
-        private static readonly int EXIT_OK = 0;
-        private static readonly int EXIT_BADOPT = 1;
-        private static readonly int EXIT_ERROR = 2;
+        private const int EXIT_OK = 0;
+        private const int EXIT_BADOPT = 1;
+        private const int EXIT_ERROR = 2;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
-        private static readonly string expand_token = "$kref"; // See #70 for naming reasons
-        private static readonly string version_token = "$vref"; // It'd be nice if we could have repeated $krefs.
+        private const string expand_token = "$kref"; // See #70 for naming reasons
+        private const string version_token = "$vref"; // It'd be nice if we could have repeated $krefs.
 
         public static int Main(string[] args)
         {
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Error;
+            var user = new ConsoleUser();
 
             var options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, options);
@@ -46,7 +48,7 @@ namespace CKAN.NetKAN
                 return EXIT_BADOPT;
             }
 
-            NetFileCache cache = FindCache(options);
+            NetFileCache cache = FindCache(options, new KSPManager(user), user);
 
             log.InfoFormat("Processing {0}", options.File);
 
@@ -54,23 +56,22 @@ namespace CKAN.NetKAN
             NetKanRemote remote = FindRemote(json);
 
             JObject metadata;
-            if (remote.source == "kerbalstuff")
+            switch (remote.source)
             {
-                metadata = KerbalStuff(json, remote.id, cache);
-            }
-            else if (remote.source == "github")
-            {
-                if (options.GitHubToken != null)
-                {
-                    GithubAPI.SetCredentials(options.GitHubToken);
-                }
+                case "kerbalstuff":
+                    metadata = KerbalStuff(json, remote.id, cache);
+                    break;
+                case "github":
+                    if (options.GitHubToken != null)
+                    {
+                        GithubAPI.SetCredentials(options.GitHubToken);
+                    }
 
-                metadata = GitHub(json, remote.id, cache);
-            }
-            else
-            {
-                log.FatalFormat("Unknown remote source: {0}", remote.source);
-                return EXIT_ERROR;
+                    metadata = GitHub(json, remote.id, cache);
+                    break;
+                default:
+                    log.FatalFormat("Unknown remote source: {0}", remote.source);
+                    return EXIT_ERROR;
             }
 
             if (metadata == null)
@@ -123,9 +124,9 @@ namespace CKAN.NetKAN
                     AVC avc = AVC.FromZipFile(mod, file);
                     avc.InflateMetadata(metadata, null, null);
                 }
-                catch (Newtonsoft.Json.JsonReaderException)
-                {
-                    User.WriteLine("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                catch (JsonReaderException)
+                {                    
+                    user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
                     return EXIT_ERROR;
                 }
 
@@ -219,7 +220,7 @@ namespace CKAN.NetKAN
 
         /// <summary>
         /// Returns the CKAN metadata found in the file provided, or returns the
-        /// second parameter (the default) if none found.
+        /// second parameter (the default) if none found.</summary>
         internal static JObject MetadataFromFileOrDefault(string filename, JObject default_json)
         {
             try
@@ -256,21 +257,16 @@ namespace CKAN.NetKAN
         {
             using (var zipfile = new ZipFile(filename))
             {
-                foreach (ZipEntry entry in zipfile)
+                // Skip everything but embedded .ckan files.
+                var entries = zipfile.Cast<ZipEntry>().Where(entry => Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase));
+                foreach (ZipEntry entry in entries)
                 {
-                    // Skip everything but embedded .ckan files.
-                    if (! Regex.IsMatch(entry.Name, ".CKAN$", RegexOptions.IgnoreCase))
-                    {
-                        continue;
-                    }
-
                     log.DebugFormat("Reading {0}", entry.Name);
 
                     using (Stream zipStream = zipfile.GetInputStream(entry))
                     {
                         JObject meta_ckan = DeserializeFromStream(zipStream);
                         zipStream.Close();
-
                         return meta_ckan;
                     }
                 }
@@ -305,7 +301,7 @@ namespace CKAN.NetKAN
             return JObject.Parse(File.ReadAllText(filename));
         }
 
-        internal static NetFileCache FindCache(CmdLineOptions options)
+        internal static NetFileCache FindCache(CmdLineOptions options, KSPManager ksp_manager, IUser user)
         {
             if (options.CacheDir != null)
             {
@@ -315,7 +311,7 @@ namespace CKAN.NetKAN
 
             try
             {
-                KSP ksp = KSPManager.GetPreferredInstance();
+                KSP ksp = ksp_manager.GetPreferredInstance();
                 log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.GetCachePath());
                 return ksp.Cache;
             }
@@ -345,7 +341,7 @@ namespace CKAN.NetKAN
 
     internal class MetadataNotFoundKraken : Exception
     {
-        public string filename = null;
+        public string filename;
 
         public MetadataNotFoundKraken(string filename)
         {

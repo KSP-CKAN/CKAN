@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using CommandLine;
-using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
@@ -39,18 +37,12 @@ namespace CKAN.CmdLine
 
     internal class Actions
     {
-        #if (!STABLE)
-
-        // These features are still in development; disable them on stable
-        // builds.
 
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
 
         [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
         public UpgradeOptions Upgrade { get; set; }
-
-        #endif
 
         [VerbOption("update", HelpText = "Update list of available mods")]
         public UpdateOptions Update { get; set; }

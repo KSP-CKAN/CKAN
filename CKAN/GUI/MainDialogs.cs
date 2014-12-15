@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class Main : Form
+    public partial class Main
     {
 
-        private ErrorDialog m_ErrorDialog = null;
-        private SettingsDialog m_SettingsDialog = null;
+        private ErrorDialog m_ErrorDialog;
+        private SettingsDialog m_SettingsDialog;
        // private YesNoDialog m_YesNoDialog = null;
 
         public void RecreateDialogs()
@@ -25,13 +24,6 @@ namespace CKAN
         public void ErrorDialog(string text, params object[] args)
         {
             m_ErrorDialog.ShowErrorDialog(String.Format(text, args));
-        }
-
-        public bool YesNoDialog(string text)
-        {
-            return true;
-//            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
-        }
-
+        }        
     }
 }

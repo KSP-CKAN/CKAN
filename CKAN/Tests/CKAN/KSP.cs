@@ -1,30 +1,31 @@
 using System;
 using System.IO;
+using CKAN;
 using NUnit.Framework;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class KSP
     {
         private CKAN.KSP ksp;
         private string ksp_dir;
 
-        [SetUp()]
+        [SetUp]
         public void Setup()
         {
             ksp_dir = Tests.TestData.NewTempDir();
             Tests.TestData.CopyDirectory(Tests.TestData.good_ksp_dir(), ksp_dir);
-            ksp = new CKAN.KSP(ksp_dir);
+            ksp = new CKAN.KSP(ksp_dir,NullUser.User);
         }
 
-        [TearDown()]
+        [TearDown]
         public void TearDown()
         {
             Directory.Delete(ksp_dir, true);
         }
 
-        [Test()]
+        [Test]
         public void IsGameDir()
         {
             // Our test data directory should be good.
@@ -43,7 +44,7 @@ namespace CKANTests
             }
         }
 
-        [Test()]
+        [Test]
         public void Training()
         {
             //Use Uri to avoid issues with windows vs linux line seperators.
@@ -66,7 +67,7 @@ namespace CKANTests
             Assert.IsTrue(ksp.Registry.IsInstalled("Example"), "Example installed");
 
             CKAN.Version version = ksp.Registry.InstalledVersion("Example");
-            Assert.IsInstanceOf<CKAN.DllVersion>(version, "DLL detected as a DLL, not full mod");
+            Assert.IsInstanceOf<DllVersion>(version, "DLL detected as a DLL, not full mod");
 
             // Now let's do the same with different case.
 

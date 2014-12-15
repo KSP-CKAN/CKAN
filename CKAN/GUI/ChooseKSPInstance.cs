@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace CKAN
 {
     public partial class ChooseKSPInstance : Form
     {
-        private FolderBrowserDialog m_BrowseKSPFolder = null;
-        private RenameInstanceDialog m_RenameInstanceDialog = null;
+        private FolderBrowserDialog m_BrowseKSPFolder;
+        private RenameInstanceDialog m_RenameInstanceDialog;
 
         public ChooseKSPInstance()
         {
@@ -21,9 +16,10 @@ namespace CKAN
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
-            if (!KSPManager.Instances.Any())
+
+            if (!Main.Instance.Manager.GetInstances().Any())
             {
-                KSPManager.FindAndRegisterDefaultInstance();
+                Main.Instance.Manager.FindAndRegisterDefaultInstance();
             }
 
             UpdateInstancesList();
@@ -41,13 +37,13 @@ namespace CKAN
 
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in KSPManager.Instances)
+            foreach (var instance in Main.Instance.Manager.GetInstances())
             {
-                var item = new ListViewItem() { Text = instance.Key, Tag = instance.Key };
+                var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
 
-                item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = instance.Value.Version().ToString() });
+                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.Version().ToString() });
 
-                item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = instance.Value.GameDir() });
+                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.GameDir() });
 
                 KSPInstancesListView.Items.Add(item);
             }
@@ -60,13 +56,15 @@ namespace CKAN
                 KSP instance;
                 try
                 {
-                     instance = new KSP(m_BrowseKSPFolder.SelectedPath);
+                    instance = new KSP(m_BrowseKSPFolder.SelectedPath, GUI.user);
                 }
                 catch (NotKSPDirKraken){
-                    User.displayError("Directory {0} is not valid KSP directory.", m_BrowseKSPFolder.SelectedPath);
+                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {m_BrowseKSPFolder.SelectedPath});
                     return;
                 }
-                KSPManager.Instances.Add("New instance", instance);
+
+                string instanceName = Main.Instance.Manager.GetNextValidInstanceName("New instance");
+                Main.Instance.Manager.GetInstances().Add(instanceName, instance);
                 UpdateInstancesList();
             }
         }
@@ -77,11 +75,11 @@ namespace CKAN
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                KSPManager.SetAutoStart(instance);
+                Main.Instance.Manager.SetAutoStart(instance);
             }
 
-            KSPManager.SetCurrentInstance(instance);
-            Hide();
+            Main.Instance.Manager.SetCurrentInstance(instance);
+            Hide();    
             Main.Instance.Show();
         }
 
@@ -107,7 +105,7 @@ namespace CKAN
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                KSPManager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
+                Main.Instance.Manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
         }

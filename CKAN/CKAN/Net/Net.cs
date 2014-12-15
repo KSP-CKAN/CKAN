@@ -1,9 +1,8 @@
 using System;
-using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using log4net;
 using ChinhDo.Transactions;
+using log4net;
 
 namespace CKAN
 {
@@ -24,14 +23,15 @@ namespace CKAN
         ///     Throws a MissingCertificateException *and* prints a message to the
         ///     console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
-        public static string Download(Uri url, string filename = null)
+        public static string Download(Uri url, string filename = null, IUser user = null)
         {
-            return Download(url.ToString(), filename);
+            return Download(url.ToString(), filename, user);
         }
 
-        public static string Download(string url, string filename = null)
+        public static string Download(string url, string filename = null, IUser user = null)
         {
-            User.WriteLine("Downloading {0}", url);
+            user = user ?? new ConsoleUser();
+            user.RaiseMessage("Downloading {0}", url);
 
             // Generate a temporary file if none is provided.
             if (filename == null)

@@ -1,8 +1,7 @@
-using NUnit.Framework;
-using System;
-using CKAN;
 using System.Collections.Generic;
 using System.Linq;
+using CKAN;
+using NUnit.Framework;
 using Tests;
 
 // We're exercising FindReverseDependencies in here, because:
@@ -11,7 +10,7 @@ using Tests;
 
 namespace CKANTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class SanityChecker
     {
         private CKAN.Registry registry;
@@ -40,8 +39,7 @@ namespace CKANTests
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
-            var mods = new List<CKAN.CkanModule>();
-            mods.Add(registry.LatestAvailable("DogeCoinFlag"));
+            var mods = new List<CkanModule> {registry.LatestAvailable("DogeCoinFlag")};
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
         }
@@ -49,7 +47,7 @@ namespace CKANTests
         [Test]
         public void CustomBiomes()
         {
-            var mods = new List<CKAN.CkanModule>();
+            var mods = new List<CkanModule>();
 
             mods.Add(registry.LatestAvailable("CustomBiomes"));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
@@ -64,7 +62,7 @@ namespace CKANTests
         [Test]
         public void CustomBiomesWithDlls()
         {
-            var mods = new List<CKAN.CkanModule>();
+            var mods = new List<CkanModule>();
             var dlls = new List<string>();
 
             dlls.Add("CustomBiomes");
@@ -85,17 +83,19 @@ namespace CKANTests
             var mods = new List<CKAN.Module> { registry.LatestAvailable("SRL") };
             var dlls = new List<string> { "QuickRevert" };
 
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, null), "SRL can be installed by itself");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "SRL conflicts with QuickRevert DLL");
         }
 
         [Test]
         public void ModulesToProvides()
         {
-            var mods = new List<CKAN.Module>();
-            mods.Add(registry.LatestAvailable("CustomBiomes"));
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
-            mods.Add(registry.LatestAvailable("DogeCoinFlag"));
+            var mods = new List<CKAN.Module>
+            {
+                registry.LatestAvailable("CustomBiomes"),
+                registry.LatestAvailable("CustomBiomesKerbal"),
+                registry.LatestAvailable("DogeCoinFlag")
+            };
 
             var provides = CKAN.SanityChecker.ModulesToProvides(mods);
             Assert.Contains("CustomBiomes", provides.Keys);
@@ -130,10 +130,12 @@ namespace CKANTests
         [Test]
         public void ReverseDepends()
         {
-            var mods = new List<CKAN.Module>();
-            mods.Add(registry.LatestAvailable("CustomBiomes"));
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
-            mods.Add(registry.LatestAvailable("DogeCoinFlag"));
+            var mods = new List<CKAN.Module>
+            {
+                registry.LatestAvailable("CustomBiomes"),
+                registry.LatestAvailable("CustomBiomesKerbal"),
+                registry.LatestAvailable("DogeCoinFlag")
+            };
 
             // Make sure some of our expectations regarding dependencies are correct.
             Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal").depends.Select(x => x.name).ToList());

@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
-using System.Transactions;
-using System.Linq;
 
 namespace CKAN
 {
@@ -15,6 +12,7 @@ namespace CKAN
     /// </summary>
     public class KSP
     {
+        public IUser User { get; set; }
 
         #region Fields and Properties
 
@@ -22,12 +20,8 @@ namespace CKAN
 
         private string gamedir;
         private KSPVersion version;
-        private NetFileCache _Cache;
 
-        public NetFileCache Cache 
-        {
-            get { return _Cache; }
-        }
+        public NetFileCache Cache { get; private set; }
 
         public RegistryManager RegistryManager
         {
@@ -36,7 +30,7 @@ namespace CKAN
 
         public Registry Registry
         {
-            get { return this.RegistryManager.registry; }
+            get { return RegistryManager.registry; }
         }
 
         #endregion
@@ -47,8 +41,9 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist.
         /// Throws a NotKSPDirKraken if directory is not a KSP install.
         /// </summary>
-        public KSP(string directory)
+        public KSP(string directory, IUser user)
         {
+            User = user;
 
             // Make sure our path is absolute and has normalised slashes.
             directory = KSPPathUtils.NormalizePath(Path.GetFullPath(directory));
@@ -60,7 +55,7 @@ namespace CKAN
             
             gamedir = directory;
             Init();
-            _Cache = new NetFileCache(DownloadCacheDir());
+            Cache = new NetFileCache(DownloadCacheDir());
         }
 
         /// <summary>
@@ -72,17 +67,17 @@ namespace CKAN
 
             if (! Directory.Exists(CkanDir()))
             {
-                User.WriteLine("Setting up CKAN for the first time...");
-                User.WriteLine("Creating {0}", CkanDir());
+                User.RaiseMessage("Setting up CKAN for the first time...");
+                User.RaiseMessage("Creating {0}", CkanDir());
                 Directory.CreateDirectory(CkanDir());
 
-                User.WriteLine("Scanning for installed mods...");
+                User.RaiseMessage("Scanning for installed mods...");
                 ScanGameData();
             }
 
             if (! Directory.Exists(DownloadCacheDir()))
             {
-                User.WriteLine("Creating {0}", DownloadCacheDir());
+                User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
             }
 
@@ -190,7 +185,7 @@ namespace CKAN
         /// </summary>
         private static KSPVersion DetectVersion(string path)
         {
-            string readme = "";
+            string readme;
             try
             {
                 // Slurp our README into memory
@@ -302,9 +297,9 @@ namespace CKAN
         // TODO: This would likely be better in the Registry class itself.
         public void ScanGameData()
         {
-            using (TransactionScope tx = new TransactionScope())
+            using (CkanTransaction tx = new CkanTransaction())
             {
-                this.Registry.ClearDlls();
+                Registry.ClearDlls();
 
                 // TODO: It would be great to optimise this to skip .git directories and the like.
                 // Yes, I keep my GameData in git.
@@ -322,15 +317,14 @@ namespace CKAN
 
                 files = files.Where(file => Regex.IsMatch(file, @"\.dll$", RegexOptions.IgnoreCase));
 
-                foreach (string file in files)
+                foreach (string dll in files.Select(KSPPathUtils.NormalizePath))
                 {
-                    string dll = KSPPathUtils.NormalizePath(file);
-                    this.Registry.RegisterDll(this, dll);
+                    Registry.RegisterDll(this, dll);
                 }
                     
                 tx.Complete();
             }
-            this.RegistryManager.Save();
+            RegistryManager.Save();
         }
 
         #endregion
@@ -340,7 +334,7 @@ namespace CKAN
         /// </summary>
         public string ToRelativeGameDir(string path)
         {
-            return KSPPathUtils.ToRelative(path, this.GameDir());
+            return KSPPathUtils.ToRelative(path, GameDir());
         }
 
         /// <summary>
@@ -349,7 +343,7 @@ namespace CKAN
         /// </summary>
         public string ToAbsoluteGameDir(string path)
         {
-            return KSPPathUtils.ToAbsolute(path, this.GameDir());
+            return KSPPathUtils.ToAbsolute(path, GameDir());
         }
 
     }

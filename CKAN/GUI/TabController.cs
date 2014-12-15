@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -142,9 +138,9 @@ namespace CKAN
             }
         }
 
-        private TabControl m_TabControl = null;
+        private TabControl m_TabControl;
 
-        private bool m_TabLock = false;
+        private bool m_TabLock;
 
         private Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
 

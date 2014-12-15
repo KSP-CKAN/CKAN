@@ -1,9 +1,7 @@
+using System;
+using Newtonsoft.Json;
+
 namespace CKAN {
-
-    using Newtonsoft.Json;
-    using System;
-    using log4net;
-
     // A lovely class for serialising things that can be converted
     // to simple strings and back.
 

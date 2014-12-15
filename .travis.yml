@@ -1,4 +1,4 @@
-language: c
+language: csharp
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.

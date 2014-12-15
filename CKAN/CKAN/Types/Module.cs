@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
@@ -72,6 +73,7 @@ namespace CKAN
 
         [JsonProperty("supports")] public readonly List<RelationshipDescriptor> supports;
 
+
         // A list of eveything this mod provides.
         public List<string> ProvidesList
         {
@@ -79,8 +81,7 @@ namespace CKAN
             // serialise it.
             get
             {
-                var provides = new List<string>();
-                provides.Add(this.identifier);
+                var provides = new List<string> {identifier};
 
                 if (this.provides != null)
                 {
@@ -169,15 +170,7 @@ namespace CKAN
             {
                 return false;
             }
-
-            foreach (RelationshipDescriptor conflict in mod1.conflicts)
-            {
-                if (mod2.ProvidesList.Contains(conflict.name))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name));
         }
 
         /// <summary>
@@ -218,12 +211,13 @@ namespace CKAN
         /// </summary>
         public bool DoesProvide(string identifier)
         {
-            return this.identifier == identifier || this.provides.Contains(identifier);
+            return this.identifier == identifier || provides.Contains(identifier);
         }
     }
 
     public class CkanModule : Module
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
         private static readonly string[] required_fields =
         {
             "spec_version",
@@ -234,16 +228,10 @@ namespace CKAN
             "license",
             "version"
         };
-
         // Only CKAN modules can have install and bundle instructions.
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
-
-        //      private static JsonSchema metadata_schema;
-        //      private static string metadata_schema_path = "CKAN.schema";
-        //      private static bool metadata_schema_missing_warning_fired;
-        [JsonProperty("install")] public readonly ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version", Required = Required.Always)] public readonly Version spec_version;
+        [JsonProperty("install")] public ModuleInstallDescriptor[] install;
+        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
@@ -276,7 +264,7 @@ namespace CKAN
                 throw new BadMetadataKraken(null, "Validation against spec failed");
             }
 
-            CkanModule newModule = null;
+            CkanModule newModule;
 
             try
             {
@@ -314,10 +302,9 @@ namespace CKAN
                     throw new BadMetadataKraken(null, error);
                 }
             }
-
             // All good! Return module
             return newModule;
-        }
+        }            
 
         public static string ToJson(CkanModule module)
         {
@@ -332,12 +319,7 @@ namespace CKAN
             // This could be a read-only state variable; do we have those in C#?
             Version release = Meta.ReleaseNumber();
 
-            if (release == null)
-            {
-                return true; // Dev builds will read anything
-            }
-
-            return release.IsGreaterThan(spec_vesion);
+            return release == null || release.IsGreaterThan(spec_vesion);
         }
 
         /// <summary>
@@ -345,7 +327,7 @@ namespace CKAN
         /// </summary>
         private bool IsSpecSupported()
         {
-            return IsSpecSupported(this.spec_version);
+            return IsSpecSupported(spec_version);
         }
 
         /// <summary>

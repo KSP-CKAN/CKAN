@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Transactions;
 using log4net;
 using Newtonsoft.Json;
-using System.Transactions;
-using System.Threading;
 
 namespace CKAN
 {
@@ -41,7 +39,7 @@ namespace CKAN
         /// </summary>
         [JsonIgnore] public ICollection<InstalledModule> InstalledModules
         {
-            get { return this.installed_modules.Values; }
+            get { return installed_modules.Values; }
         }
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace CKAN
         /// </summary>
         [JsonIgnore] public ICollection<string> InstalledDlls
         {
-            get { return this.installed_dlls.Keys; }
+            get { return installed_dlls.Keys; }
         }
 
         #region Registry Upgrades
@@ -97,7 +95,7 @@ namespace CKAN
                     }
                 }
 
-                this.installed_files = normalised_installed_files;
+                installed_files = normalised_installed_files;
 
                 // Now update all our module file manifests.
 
@@ -158,7 +156,7 @@ namespace CKAN
             this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
             this.installed_files = installed_files;
-            this.registry_version = LATEST_REGISTRY_VERSION;
+            registry_version = LATEST_REGISTRY_VERSION;
         }
 
         // If deserialsing, we don't want everything put back directly,
@@ -243,7 +241,7 @@ namespace CKAN
         {
             // Hey, you know what's a great way to back-up your own object?
             // JSON. ;)
-            this.transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
+            transaction_backup = JsonConvert.SerializeObject(this, Formatting.None);
             log.Debug("State saved");
         }
 
@@ -318,16 +316,17 @@ namespace CKAN
         /// </summary>
         public void RemoveAvailable(string identifier, Version version)
         {
-            if (available_modules.ContainsKey(identifier))
+            AvailableModule availableModule;
+            if (available_modules.TryGetValue(identifier, out availableModule))
             {
                 SealionTransaction();
-                available_modules[identifier].Remove(version);
+                availableModule.Remove(version);
             }
         }
 
         /// <summary>
         /// Removes the given module from the registry of available modules.
-        /// Does *nothing* if the module was not present to begin with.
+        /// Does *nothing* if the module was not present to begin with.</summary>
         public void RemoveAvailable(Module module)
         {
             RemoveAvailable(module.identifier, module.version);
@@ -338,14 +337,8 @@ namespace CKAN
         /// the specified version of KSP (installed version by default)
         /// </summary>
         // TODO: This name is misleading. It's more a LatestAvailable's'
-        public List<CkanModule> Available(KSPVersion ksp_version = null)
-        {
-            // Default to the user's current KSP install for version.
-            if (ksp_version == null)
-            {
-                ksp_version = KSPManager.CurrentInstance.Version();
-            }
-
+        public List<CkanModule> Available(KSPVersion ksp_version)
+        {            
             var candidates = new List<string>(available_modules.Keys);
             var compatible = new List<CkanModule>();
 
@@ -396,14 +389,8 @@ namespace CKAN
         ///     Returns a simple array of all incompatible modules for
         ///     the specified version of KSP (installed version by default)
         /// </summary>
-        public List<CkanModule> Incompatible(KSPVersion ksp_version = null)
-        {
-            // Default to the user's current KSP install for version.
-            if (ksp_version == null)
-            {
-                ksp_version = KSPManager.CurrentInstance.Version();
-            }
-
+        public List<CkanModule> Incompatible(KSPVersion ksp_version)
+        {           
             var candidates = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
 
@@ -417,12 +404,13 @@ namespace CKAN
 
                 if (available == null)
                 {
-                    incompatible.Add(LatestAvailable(candidate, null));
+                    incompatible.Add(LatestAvailable(candidate));
                 }
             }
 
             return incompatible;
         }
+        
 
         /// <summary>
         ///     Returns the latest available version of a module that
@@ -480,24 +468,16 @@ namespace CKAN
 
             // Walk through all our available modules, and see if anything
             // provides what we need.
-            foreach (var pair in available_modules)
-            {
-                // Skip this module if not available for our system.
-                if (pair.Value.Latest(ksp_version) == null)
-                {
-                    continue;
-                }
 
+            // Skip this module if not available for our system.
+            var available_for_system = available_modules.Where(pair=>pair.Value.Latest(ksp_version)!=null);
+            foreach (var pair in available_for_system)
+            {
                 List<string> provides = pair.Value.Latest(ksp_version).provides;
                 if (provides != null)
                 {
-                    foreach (string provided in provides)
-                    {
-                        if (provided == module)
-                        {
-                            modules.Add(pair.Value.Latest(ksp_version));
-                        }
-                    }
+                    var matches = provides.Where(provided => module == provided);
+                    modules.AddRange(matches.Select(provided => pair.Value.Latest(ksp_version)));
                 }
             }
 
@@ -540,24 +520,19 @@ namespace CKAN
             // We always work with relative files, so let's get some!
             IEnumerable<string> relative_files = absolute_files.Select(x => ksp.ToRelativeGameDir(x));
 
-            foreach (string file in relative_files)
+            // For now, it's always cool if a module wants to register a directory.
+            // We have to flip back to absolute paths to actually test this.
+            foreach (string file in relative_files.Where(file => !Directory.Exists(ksp.ToAbsoluteGameDir(file))))
             {
-                // For now, it's always cool if a module wants to register a directory.
-                // We have to flip back to absolute paths to actually test this.
-                if (Directory.Exists(ksp.ToAbsoluteGameDir(file)))
-                {
-                    continue;
-                }
-
-                if (this.installed_files.ContainsKey(file))
+                string owner;
+                if (installed_files.TryGetValue(file, out owner))
                 {
                     // Woah! Registering an already owned file? Not cool!
-                    // (Although if it existed, we should have thrown a kraken well before this.)
-                    string owner = this.installed_files[file];
+                    // (Although if it existed, we should have thrown a kraken well before this.)                    
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
-                                      mod.identifier, file, owner
-                    ));
+                            mod.identifier, file, owner
+                            ));
                 }
             }
 
@@ -576,7 +551,7 @@ namespace CKAN
             // is uninstalled.
             foreach (string file in relative_files)
             {
-                this.installed_files[file] = mod.identifier;
+                installed_files[file] = mod.identifier;
             }
 
             // Finally, register our module proper.
@@ -596,20 +571,16 @@ namespace CKAN
 
             var inconsistencies = new List<string>();
 
-            foreach (string rel_file in this.installed_modules[module].Files)
+            var absolute_files = installed_modules[module].Files.Select(ksp.ToAbsoluteGameDir);
+            // Note, this checks to see if a *file* exists; it doesn't
+            // trigger on directories, which we allow to still be present
+            // (they may be shared by multiple mods.
+                
+            foreach (var absolute_file in absolute_files.Where(File.Exists))
             {
-                string absolute_file = ksp.ToAbsoluteGameDir(rel_file);
-
-                // Note, this checks to see if a *file* exists; it doesn't
-                // trigger on directories, which we allow to still be present
-                // (they may be shared by multiple mods.
-                if (File.Exists(absolute_file))
-                {
-                    inconsistencies.Add(string.Format(
-                        "{0} is registered to {1} but has not been removed!",
-                        absolute_file, module
-                    ));
-                }
+                inconsistencies.Add(string.Format(
+                    "{0} is registered to {1} but has not been removed!",
+                    absolute_file, module));
             }
 
             if (inconsistencies.Count > 0)
@@ -619,13 +590,13 @@ namespace CKAN
             }
 
             // Okay, all the files are gone. Let's clear our metadata.
-            foreach (string rel_file in this.installed_modules[module].Files)
+            foreach (string rel_file in installed_modules[module].Files)
             {
-                this.installed_files.Remove(rel_file);
+                installed_files.Remove(rel_file);
             }
 
             // Bye bye, module, it's been nice having you visit.
-            this.installed_modules.Remove(module);
+            installed_modules.Remove(module);
         }
 
         /// <summary>
@@ -640,12 +611,13 @@ namespace CKAN
 
             string relative_path = ksp.ToRelativeGameDir(absolute_path);
 
-            if (installed_files.ContainsKey(relative_path))
+            string owner;
+            if (installed_files.TryGetValue(relative_path, out owner))
             {
                 log.InfoFormat(
                     "Not registering {0}, it belongs to {1}",
                     relative_path,
-                    installed_files[relative_path]
+                    owner
                 );
                 return;
             }
@@ -727,12 +699,8 @@ namespace CKAN
 
             SealionTransaction();
 
-            if (this.installed_modules.ContainsKey(module))
-            {
-                return this.installed_modules[module];
-            }
-
-            return null;
+            InstalledModule installedModule;
+            return installed_modules.TryGetValue(module, out installedModule) ? installedModule : null;
         }
             
         /// <summary>
@@ -771,25 +739,22 @@ namespace CKAN
         ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
-        public Version InstalledVersion(string modName)
+        public Version InstalledVersion(string modIdentifier)
         {
-            if (installed_modules.ContainsKey(modName))
+            InstalledModule installedModule;
+            if (installed_modules.TryGetValue(modIdentifier, out installedModule))
             {
-                return installed_modules[modName].Module.version;
+                return installedModule.Module.version;
             }
-            else if (installed_dlls.ContainsKey(modName))
+            if (installed_dlls.ContainsKey(modIdentifier))
             {
                 return new DllVersion();
             }
 
             var provided = Provided();
 
-            if (provided.ContainsKey(modName))
-            {
-                return provided[modName];
-            }
-
-            return null;
+            ProvidesVersion version;
+            return provided.TryGetValue(modIdentifier, out version) ? version : null;
         }
 
         /// <summary>
@@ -803,6 +768,20 @@ namespace CKAN
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        ///     Check if a mod is autodetected.
+        /// </summary>
+        /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
+        public bool IsAutodetected(string identifier)
+        {            
+            return IsInstalled(identifier) && InstalledVersion(identifier).ToString().Equals("autodetected dll");
+        }
+
+        public bool HasUpdate(string identifier)
+        {            
+            return IsInstalled(identifier) && LatestAvailable(identifier).version.IsGreaterThan(InstalledVersion(identifier));
         }
 
         /// <summary>
@@ -821,11 +800,8 @@ namespace CKAN
                 );
             }
 
-            if (this.installed_files.ContainsKey(file))
-            {
-                return this.installed_files[file];
-            }
-            return null;
+            string fileOwner;
+            return installed_files.TryGetValue(file, out fileOwner) ? fileOwner : null;
         }
 
         /// <summary>
@@ -842,41 +818,34 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-
         public static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
         {
-            // Make our hypothetical install, and remove the listed modules from it.
-            HashSet<Module> hypothetical = new HashSet<Module> (orig_installed); // Clone because we alter hypothetical.
-            hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
-
-            log.DebugFormat( "Started with {0}, removing {1}, and keeping {2}; our dlls are {3}",
-                              string.Join(", ", orig_installed),
-                              string.Join(", ", modules_to_remove),
-                              string.Join(", ", hypothetical),
-                              string.Join(", ", dlls)
-                              );
-
-            // Find what would break with this configuration.
-            // The Values.SelectMany() flattens our list of broken mods.
-            var broken = new HashSet<string> (
-                SanityChecker
-                .FindUnmetDependencies(hypothetical, dlls)
-                .Values
-                .SelectMany(x => x)
-                .Select(x => x.identifier)
-                );
-
-            // If nothing else would break, it's just the list of modules we're removing.
-            HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
-            if (to_remove.IsSupersetOf(broken))
+            while (true)
             {
-                log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
-                return to_remove;
-            }
+                // Make our hypothetical install, and remove the listed modules from it.
+                HashSet<Module> hypothetical = new HashSet<Module>(orig_installed); // Clone because we alter hypothetical.
+                hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
 
-            // Otherwise, remove our broken modules as well, and recurse.
-            broken.UnionWith(to_remove);
-            return FindReverseDependencies(broken, orig_installed, dlls);
+                log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
+
+                // Find what would break with this configuration.
+                // The Values.SelectMany() flattens our list of broken mods.
+                var broken = new HashSet<string>(SanityChecker.FindUnmetDependencies(hypothetical, dlls)
+                    .Values.SelectMany(x => x).Select(x => x.identifier));
+
+                // If nothing else would break, it's just the list of modules we're removing.
+                HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
+                
+                if (to_remove.IsSupersetOf(broken))
+                {
+                    log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
+                    return to_remove;
+                }
+
+                // Otherwise, remove our broken modules as well, and recurse.
+                broken.UnionWith(to_remove);
+                modules_to_remove = broken;
+            }
         }
 
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
@@ -890,10 +859,8 @@ namespace CKAN
         /// </summary>
         public HashSet<string> FindReverseDependencies(string module)
         {
-            var set = new HashSet<string>();
-            set.Add(module);
+            var set = new HashSet<string> {module};
             return FindReverseDependencies(set);
         }
-
     }
 }

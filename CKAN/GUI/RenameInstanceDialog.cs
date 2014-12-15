@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -15,6 +8,10 @@ namespace CKAN
         {
             InitializeComponent();
             ApplyFormCompatibilityFixes();
+
+            // Set the default actions for pressing Enter and Escape.
+            AcceptButton = OKButton;
+            CancelButton = CancelRenameInstanceButton;
         }
 
         public DialogResult ShowRenameInstanceDialog(string name)

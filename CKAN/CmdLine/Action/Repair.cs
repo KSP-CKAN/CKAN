@@ -1,10 +1,11 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 
 namespace CKAN.CmdLine
 {
     public class Repair : ISubCommand
     {
+        public CKAN.KSP CurrentInstance { get; set; }
+        public IUser User { get; set; }
         public string option;
         public object suboptions;
 
@@ -14,13 +15,17 @@ namespace CKAN.CmdLine
             public CommonOptions Registry { get; set; }
         }
 
-        public Repair() {}
+        public Repair(CKAN.KSP current_instance,IUser user)
+        {
+            CurrentInstance = current_instance;
+            User = user;
+        }
 
         public int RunSubCommand(SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
-            if (args == null || args.Length == 0)
+            if (args.Length == 0)
             {
                 // There's got to be a better way of showing help...
                 args = new string[1];
@@ -28,7 +33,7 @@ namespace CKAN.CmdLine
             }
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse, null);
+            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse);
 
             switch (option)
             {
@@ -50,9 +55,9 @@ namespace CKAN.CmdLine
         /// </summary>
         private int Registry()
         {
-            KSPManager.CurrentInstance.Registry.Repair();
-            KSPManager.CurrentInstance.RegistryManager.Save();
-            Console.WriteLine("Registry repairs attempted. Hope it helped.");
+            CurrentInstance.Registry.Repair();
+            CurrentInstance.RegistryManager.Save();
+            User.RaiseMessage("Registry repairs attempted. Hope it helped.");
             return Exit.OK;
         }
     }
