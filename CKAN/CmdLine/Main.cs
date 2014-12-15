@@ -503,7 +503,10 @@ namespace CKAN.CmdLine
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
             #region Abstract and description
-            user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
+            if (!string.IsNullOrEmpty(module.Module.@abstract))
+                user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
+            else
+                user.RaiseMessage("{0}", module.Module.name);
 
             if (!string.IsNullOrEmpty(module.Module.description))
                 user.RaiseMessage("\n{0}\n", module.Module.description);
