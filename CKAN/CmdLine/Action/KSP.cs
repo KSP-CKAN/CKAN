@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using CommandLine;
 
 namespace CKAN.CmdLine
@@ -195,21 +196,49 @@ namespace CKAN.CmdLine
 
         private int SetDefaultInstall(DefaultOptions options)
         {
-            if (options.name == null)
+            string name = options.name;
+
+            if (name == null)
             {
-                User.RaiseMessage("default <name> - argument missing, perhaps you forgot it?");
+                // No input argument from the user. Present a list of the possible instances.
+                string message = "default <name> - argument missing, please select from the list below.";
+                string[] keys = new string[Manager.GetInstances().Count];
+
+                for (int i = 0; i < Manager.GetInstances().Count; i++)
+                {
+                    var instance = Manager.GetInstances().ElementAt(i);
+
+                    keys[i] = String.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
+                }
+
+                int result = -1;
+
+                try
+                {
+                    result = User.RaiseSelectionDialog(message, keys);
+                }
+                catch (Kraken)
+                {
+                    return Exit.BADOPT;
+                }
+
+                if (result < 0)
+                {
+                    return Exit.BADOPT;
+                }
+
+                name = Manager.GetInstances().ElementAt(result).Key;
+            }
+
+            if (!Manager.GetInstances().ContainsKey(name))
+            {
+                User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", name);
                 return Exit.BADOPT;
             }
 
-            if (!Manager.GetInstances().ContainsKey(options.name))
-            {
-                User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
-                return Exit.BADOPT;
-            }
+            Manager.SetAutoStart(name);
 
-            Manager.SetAutoStart(options.name);
-
-            User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", options.name);
+            User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", name);
             return Exit.OK;
         }
     }

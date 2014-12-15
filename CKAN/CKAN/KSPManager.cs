@@ -15,7 +15,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(KSPManager));
 
         internal bool instances_loaded;
-        internal Dictionary<string, KSP> _Instances = new Dictionary<string, KSP>();
+        internal SortedList<string, KSP> _Instances = new SortedList<string, KSP>();
         internal KSP _CurrentInstance;
         internal string _AutoStartInstance;
 
@@ -25,7 +25,7 @@ namespace CKAN
             LoadInstancesFromRegistry();
         }
 
-        public Dictionary<string, KSP> GetInstances()
+        public SortedList<string, KSP> GetInstances()
         {
             if (!instances_loaded)
             {
