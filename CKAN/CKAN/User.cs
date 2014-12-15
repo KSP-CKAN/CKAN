@@ -9,7 +9,7 @@ namespace CKAN
     
     public delegate void DisplayMessage(string message, params object[] args);
     public delegate bool DisplayYesNoDialog(string message);
-    public delegate int DisplaySelectionDialog(string message, params string[] args);
+    public delegate int DisplaySelectionDialog(string message, params object[] args);
     public delegate void DisplayError(string message, params object[] args);
     public delegate void ReportProgress(string format, int percent);
     public delegate void DownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors);
@@ -24,7 +24,7 @@ namespace CKAN
         event DownloadsComplete DownloadsComplete;
         int WindowWidth { get; }
         
-        int RaiseSelectionDialog(string message, params string[] args);
+        int RaiseSelectionDialog(string message, params object[] args);
         void RaiseMessage(string message, params object[] url);
         void RaiseProgress(string message, int percent);
         bool RaiseYesNoDialog(string question);
@@ -65,7 +65,7 @@ namespace CKAN
         {
         }
 
-        protected virtual int DisplaySelectionDialog(string message, params string[] args)
+        protected virtual int DisplaySelectionDialog(string message, params object[] args)
         {
             return 0;
         }
@@ -104,7 +104,7 @@ namespace CKAN
             return AskUser(question);
         }
 
-        public int RaiseSelectionDialog(string message, params string[] args)
+        public int RaiseSelectionDialog(string message, params object[] args)
         {
             return AskUserForSelection(message, args);
         }

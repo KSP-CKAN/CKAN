@@ -202,13 +202,30 @@ namespace CKAN.CmdLine
             {
                 // No input argument from the user. Present a list of the possible instances.
                 string message = "default <name> - argument missing, please select from the list below.";
-                string[] keys = new string[Manager.GetInstances().Count];
 
+                // Try to get the current default instance.
+                string defaultInstance = Manager.GetAutoStartInstance();
+                int defaultInstancePresent = 0;
+
+                if (!String.IsNullOrWhiteSpace(defaultInstance))
+                {
+                    defaultInstancePresent = 1;
+                }
+
+                object[] keys = new object[Manager.GetInstances().Count + defaultInstancePresent];
+                 
+                // Populate the list with instances.
                 for (int i = 0; i < Manager.GetInstances().Count; i++)
                 {
                     var instance = Manager.GetInstances().ElementAt(i);
 
-                    keys[i] = String.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
+                    keys[i + defaultInstancePresent] = String.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
+                }
+
+                if (!String.IsNullOrWhiteSpace(defaultInstance))
+                {
+                    // There is a current default instance, mark it for the user.
+                    keys[0] = Manager.GetInstances().IndexOfKey(defaultInstance);
                 }
 
                 int result = -1;

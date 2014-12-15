@@ -45,7 +45,7 @@ namespace CKAN
             Console.Error.WriteLine(message,args);
         }
 
-        protected override int DisplaySelectionDialog(string message, params string[] args)
+        protected override int DisplaySelectionDialog(string message, params object[] args)
         {
             // Validate input.
             if (String.IsNullOrWhiteSpace(message))
@@ -58,9 +58,34 @@ namespace CKAN
                 throw new Kraken("Passed list of selection candidates must be non-empty.");
             }
 
-            foreach (string argument in args)
+            // Check if we have a default selection.
+            int defaultSelection = -1;
+
+            if (args[0] is int)
             {
-                if (String.IsNullOrWhiteSpace(argument))
+                // Check that the default selection makes sense.
+                defaultSelection = (int)args[0];
+
+                if (defaultSelection < 0 || defaultSelection > args.Length - 1)
+                {
+                    throw new Kraken("Passed default arguments is out of range of the selection candidates.");
+                }
+
+                // Extract the relevant arguments.
+                object[] newArgs = new object[args.Length - 1];
+
+                for (int i = 1; i < args.Length; i++)
+                {
+                    newArgs[i - 1] = args[i];
+                }
+
+                args = newArgs;
+            }
+
+            // Further data validation.
+            foreach (object argument in args)
+            {
+                if (String.IsNullOrWhiteSpace(argument.ToString()))
                 {
                     throw new Kraken("Candidate may not be empty.");
                 }
@@ -69,13 +94,27 @@ namespace CKAN
             // List options.
             for (int i = 0; i < args.Length; i++)
             {
-                string CurrentRow = String.Format("{0}) {1}", i + 1, args[i]);
+                string CurrentRow = String.Format("{0}", i + 1);
+
+                if (i == defaultSelection)
+                {
+                    CurrentRow += "*";
+                }
+
+                CurrentRow += String.Format(") {0}", args[i]);
 
                 RaiseMessage(CurrentRow);
             }
 
             // Create message string.
-            string output = String.Format("Enter a number between {0} and {1} (To cancel press \"c\" or \"n\"): ", 1, args.Length);
+            string output = String.Format("Enter a number between {0} and {1} (To cancel press \"c\" or \"n\".", 1, args.Length);
+
+            if (defaultSelection >= 0)
+            {
+                output += String.Format(" \"Enter\" will select {0}.", defaultSelection + 1);
+            }
+
+            output += "): ";
 
             RaiseMessage(output);
 
@@ -86,6 +125,15 @@ namespace CKAN
             {
                 // Wait for input from the command line.
                 string input = Console.ReadLine().Trim().ToLower();
+
+                // Check for default selection.
+                if (String.IsNullOrEmpty(input))
+                {
+                    if (defaultSelection >= 0)
+                    {
+                        return defaultSelection;
+                    }
+                }
 
                 // Check for cancellation characters.
                 if (input == "c" || input == "n")
