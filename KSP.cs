@@ -164,12 +164,19 @@ namespace CKAN
                 log.DebugFormat("Cannot find GameData in {0}", directory);
                 return false;
             }
-            //next we should be able to get game version
+            
+            if (!File.Exists(Path.Combine(directory, "readme.txt")))
+            {
+                log.DebugFormat("Cannot find readme in {0}", directory);
+                return false;
+            }
+
+            //If both exist we should be able to get game version
             try
             {
                 DetectVersion(directory);
             }
-            catch
+            catch (NotKSPDirKraken)
             {
                 log.DebugFormat("Cannot detect KSP version in {0}", directory);
                 return false;
@@ -183,17 +190,19 @@ namespace CKAN
         /// Detects the version of KSP in a given directory.
         /// Throws a NotKSPDirKraken if anything goes wrong.
         /// </summary>
-        private static KSPVersion DetectVersion(string path)
+        private static KSPVersion DetectVersion(string directory)
         {
+            //Contract.Requires<ArgumentNullException>(directory==null);
+
             string readme;
             try
             {
                 // Slurp our README into memory
-                readme = File.ReadAllText(Path.Combine(path, "readme.txt"));
+                readme = File.ReadAllText(Path.Combine(directory, "readme.txt"));
             }
             catch
             {
-                log.Error("Could not open KSP readme.txt");
+                log.Error("Could not open KSP readme.txt in "+directory);
                 throw new NotKSPDirKraken("readme.txt not found or not readable");
             }
 
@@ -211,7 +220,7 @@ namespace CKAN
             // Oh noes! We couldn't find the version!
             log.Error("Could not find KSP version in readme.txt");
 
-            throw new NotKSPDirKraken(path, "Could not find KSP version in readme.txt");
+            throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
         }
 
         #endregion
