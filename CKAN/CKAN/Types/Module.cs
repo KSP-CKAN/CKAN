@@ -275,6 +275,8 @@ namespace CKAN
         /// </summary>
         public static CkanModule FromIDandVersion(Registry registry, string mod)
         {
+            CkanModule module;
+
             Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
 
             if (match.Success)
@@ -282,17 +284,18 @@ namespace CKAN
                 string ident = match.Groups["mod"].Value;
                 string version = match.Groups["version"].Value;
 
-                CkanModule module = registry.GetModuleByVersion(ident, version);
+                module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
                     throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, version {1} not available", ident, version));
-                else
-                    return module;
             }
             else
-            {
-                return registry.LatestAvailable(mod);
-            }
+                module = registry.LatestAvailable(mod);
+
+            if (module == null)
+                throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, module not available", mod));
+            else
+                return module;            
         }
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>

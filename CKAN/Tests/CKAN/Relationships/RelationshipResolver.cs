@@ -243,7 +243,7 @@ namespace Tests.CKAN.Relationships
         }
 
         [Test]
-        public void Constructor_WithRegisteryThatHasRequiredModuleRemoved_Throws()
+        public void Constructor_WithRegistryThatHasRequiredModuleRemoved_Throws()
         {
             var list = new List<string>();
             var mod = generator.GeneratorRandomModule();
