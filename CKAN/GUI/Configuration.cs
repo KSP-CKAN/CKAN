@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace CKAN
@@ -9,6 +10,13 @@ namespace CKAN
         public string Repository = "";
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
+
+        // use set of ProfilesEntry instead of dictionary because of lack of serialization support
+        public HashSet<ProfilesEntry> Profiles = new HashSet<ProfilesEntry>()
+        {
+            new ProfilesEntry { Name="default", ModIdentifiers=new HashSet<string>() }
+        };
+        public string ActiveProfileName = "default";
 
         private string m_Path = "";
 

@@ -122,6 +122,7 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.profilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -166,7 +167,7 @@ namespace CKAN
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(92, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(152, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
@@ -174,7 +175,8 @@ namespace CKAN
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
-            this.kSPCommandlineToolStripMenuItem});
+            this.kSPCommandlineToolStripMenuItem,
+            this.profilesToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -364,7 +366,7 @@ namespace CKAN
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyPress += new KeyPressEventHandler(this.ModList_KeyPress);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // Installed
             // 
@@ -1117,6 +1119,13 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // profilesToolStripMenuItem
+            // 
+            this.profilesToolStripMenuItem.Name = "profilesToolStripMenuItem";
+            this.profilesToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.profilesToolStripMenuItem.Text = "Profiles";
+            this.profilesToolStripMenuItem.Click += new System.EventHandler(this.profilesToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1257,6 +1266,7 @@ namespace CKAN
         private ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private TextBox MetadataModuleAbstractLabel;
+        private ToolStripMenuItem profilesToolStripMenuItem;
     }
 }
 
