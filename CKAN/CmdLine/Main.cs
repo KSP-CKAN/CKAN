@@ -386,20 +386,30 @@ namespace CKAN.CmdLine
             }
             catch (TooManyModsProvideKraken ex)
             {
-                user.RaiseMessage("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
+                // Request the user selects one of the mods.
+                string[] mods = new string[ex.modules.Count];
 
-                int count = 1;
-
-                foreach (CkanModule mod in ex.modules)
+                for (int i = 0; i < ex.modules.Count; i++)
                 {
-                    user.RaiseMessage("{0}) {1} ({2})", count, mod.identifier, mod.name);
-                    count++;
+                    mods[i] = String.Format("{0} ({1})", ex.modules[i].identifier, ex.modules[i].name);
                 }
 
-                int result = 0;
+                string message = String.Format("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
-                // Ask the user to select one of the mods on the list.
-                if (!AskUserForNumber(out result, user, 1, ex.modules.Count, true))
+                int result = -1;
+
+                try
+                {
+                    result = user.RaiseSelectionDialog(message, mods);
+                }
+                catch (Kraken e)
+                {
+                    user.RaiseMessage(e.Message);
+
+                    return Exit.ERROR;
+                }
+
+                if (result < 0)
                 {
                     user.RaiseMessage(String.Empty); // Looks tidier.
 
@@ -407,7 +417,7 @@ namespace CKAN.CmdLine
                 }
 
                 // Add the module to the list.
-                options.modules.Add(ex.modules[result - 1].identifier);
+                options.modules.Add(ex.modules[result].identifier);
 
                 return Install(options, current_instance, user);
             }
@@ -509,76 +519,6 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
-        }
-
-        private static bool AskUserForNumber(out int result, IUser user, int lower = 0, int upper = 1, bool cancellable = false)
-        {
-            result = lower;
-
-            // Check for valid input.
-            if (upper < lower)
-            {
-                throw new Kraken("Invalid arguments, upper must be larger than lower.");
-            }
-
-            // Create message string.
-            string output = String.Format("Enter a number between {0} and {1}", lower, upper);
-
-            if (cancellable)
-            {
-                output += " (To cancel press \"c\" or \"n\")";
-            }
-
-            output += ": ";
-
-            user.RaiseMessage(output);
-
-            bool valid = false;
-
-            while (!valid)
-            {
-                // Wait for input from the command line.
-                string input = Console.ReadLine().Trim().ToLower();
-
-                // Check for cancellation characters.
-                if (input == "c" || input == "n")
-                {
-                    return false;
-                }
-
-                // Attempt to parse the input.
-                try
-                {
-                    result = Convert.ToInt32(input);
-                }
-                catch (FormatException)
-                {
-                    user.RaiseMessage("The input is not a number.");
-                    continue;
-                }
-                catch (OverflowException)
-                {
-                    user.RaiseMessage("The number in the input is too large.");
-                    continue;
-                }
-
-                // Check the input against the boundaries.
-                if (result > upper)
-                {
-                    user.RaiseMessage("The number in the input is too large.");
-                    continue;
-                }
-                else if (result < lower)
-                {
-                    user.RaiseMessage("The number in the input is too small.");
-                    continue;
-                }
-
-                // We have checked for all errors and have gotten a valid result. Stop the input loop.
-                valid = true;
-            }
-
-            return true;
         }
     }
 }
