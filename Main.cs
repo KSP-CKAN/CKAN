@@ -501,15 +501,31 @@ namespace CKAN.CmdLine
 
             // TODO: Print *lots* of information out; I should never have to dig through JSON
 
-            user.RaiseMessage("{0} version {1}", module.Module.name, module.Module.version);
+            user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
 
-            user.RaiseMessage("\n== Files ==\n");
+            if (!string.IsNullOrEmpty(module.Module.description))
+                user.RaiseMessage("\n{0}\n", module.Module.description);
 
-            IEnumerable<string> files = module.Files;
+            user.RaiseMessage("\nModule info:");
+            user.RaiseMessage("- version:\t{0}", module.Module.version);
+            user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+            user.RaiseMessage("- status:\t{0}", module.Module.release_status);
+            user.RaiseMessage("- license:\t{0}", module.Module.license);
 
+            user.RaiseMessage("\nResources:");
+            if (module.Module.resources.bugtracker != null) user.RaiseMessage("- bugtracker: {0}", module.Module.resources.bugtracker.ToString());
+            if (module.Module.resources.homepage != null) user.RaiseMessage("- homepage: {0}", module.Module.resources.homepage.ToString());
+            if (module.Module.resources.kerbalstuff != null) user.RaiseMessage("- kerbalstuff: {0}", module.Module.resources.kerbalstuff.ToString());
+            if (module.Module.resources.repository != null) user.RaiseMessage("- repository: {0}", module.Module.resources.repository.ToString());
+            
+
+            ICollection<string> files = module.Files as ICollection<string>;
+            if (files == null) throw new InvalidCastException();
+
+            user.RaiseMessage("\nShowing {0} installed files:", files.Count);
             foreach (string file in files)
             {
-                user.RaiseMessage(file);
+                user.RaiseMessage("- {0}", file);
             }
 
             return Exit.OK;
