@@ -157,10 +157,17 @@ namespace CKAN
         /// </summary>
         public KSP AddInstance(string name, string path)
         {
-            var ksp = new KSP(path, User);
-            GetInstances().Add(name, ksp);
-            PopulateRegistryWithInstances();
-            return ksp;
+            try
+            {
+                var ksp = new KSP(path, User);
+                GetInstances().Add(name, ksp);
+                PopulateRegistryWithInstances();
+                return ksp;
+            }
+            catch (NotKSPDirKraken e)
+            {
+                return null;
+            }
         }
 
         /// <summary>
