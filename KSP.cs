@@ -108,7 +108,7 @@ namespace CKAN
         {
             // Find the directory our executable is stored in.
             // In Perl, this is just `use FindBin qw($Bin);` Verbose enough, C#?
-            string exe_dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string exe_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
 
