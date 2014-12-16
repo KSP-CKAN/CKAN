@@ -279,7 +279,7 @@ namespace CKAN
             long totalBytesLeft = 0;
             long totalBytesDownloaded = 0;
 
-            foreach (NetAsyncDownloaderDownloadPart t in downloads)
+            foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
             {
                 if (t.bytesLeft > 0)
                 {
