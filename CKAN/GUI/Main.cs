@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -145,6 +146,7 @@ namespace CKAN
             UpdateModsList();
 
             ApplyToolButton.Enabled = false;
+            LoadActiveProfile();
 
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
@@ -284,6 +286,7 @@ namespace CKAN
         {
             
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            SaveActiveProfile();
         }
 
         private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -498,6 +501,65 @@ namespace CKAN
             Enabled = true;
         }
 
+        private void profilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            m_ProfilesDialog.ShowDialog();
+            Enabled = true;
+        }
+
+        public void LoadActiveProfile()
+        {
+            ProfilesEntry activeProfile = m_Configuration.Profiles.First(entry => entry.Name == m_Configuration.ActiveProfileName);
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var guiMod = (GUIMod)row.Tag;
+                var mod = guiMod.ToCkanModule();
+                var identifier = mod.identifier;
+                if (row.Cells[0] is DataGridViewCheckBoxCell)
+                {
+                    var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                    isInstalledCell.Value = activeProfile.ModIdentifiers.Contains(identifier);
+                }
+            }
+
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var changeset = mainModList.ComputeChangeSetFromModList(registry, CurrentInstance);
+
+            if (changeset != null && changeset.Any())
+            {
+                UpdateChangesDialog(changeset, m_InstallWorker);
+                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                ApplyToolButton.Enabled = true;
+            }
+            else
+            {
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
+        }
+
+        public void SaveActiveProfile()
+        {
+            ProfilesEntry activeProfile = m_Configuration.Profiles.First(entry => entry.Name == m_Configuration.ActiveProfileName);
+            activeProfile.ModIdentifiers.Clear();
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag).ToCkanModule();
+                var identifier = mod.identifier;
+                if (row.Cells[0] is DataGridViewCheckBoxCell)
+                {
+                    var isInstalledCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                    var isInstalledChecked = (bool)isInstalledCell.Value;
+                    if (isInstalledChecked)
+                    {
+                        activeProfile.ModIdentifiers.Add(identifier);
+                    }
+                }
+            }
+            m_Configuration.Save();
+        }
     }
 
     public class GUIUser : NullUser
