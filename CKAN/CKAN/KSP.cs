@@ -18,7 +18,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
-        private string gamedir;
+        private readonly string gamedir;
         private KSPVersion version;
 
         public NetFileCache Cache { get; private set; }
@@ -355,6 +355,21 @@ namespace CKAN
             return KSPPathUtils.ToAbsolute(path, GameDir());
         }
 
+        public override string ToString()
+        {
+            return "KSP Install:" + gamedir;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as KSP;
+            return other != null ? gamedir.Equals(other.GameDir()) : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return gamedir.GetHashCode();
+        }
     }
 
 }
