@@ -31,15 +31,14 @@ namespace CKANTests
 
                 CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
                 var generatror = new RandomModuleGenerator(new Random(0451));
-                var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"));
-                var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"),
+                var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"), kspVersion: tidy.KSP.Version());
+                var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"), kspVersion: tidy.KSP.Version(),
                     identifier:oldVersion.identifier);
                 var registry = CKAN.Registry.Empty();
                 registry.RegisterModule(oldVersion, Enumerable.Empty<string>(), null);
                 registry.AddAvailable(newVersion);
-
-
-                var mod = new GUIMod(oldVersion, registry, manager.CurrentInstance.Version());
+                
+                var mod = new GUIMod(oldVersion, registry, tidy.KSP.Version());
                 Assert.True(mod.HasUpdate);
             }
         }
