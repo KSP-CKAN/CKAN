@@ -36,6 +36,7 @@ namespace CKANTests
                     identifier:oldVersion.identifier);
                 var registry = CKAN.Registry.Empty();
                 registry.RegisterModule(oldVersion, Enumerable.Empty<string>(), null);
+                registry.AddAvailable(oldVersion);
                 registry.AddAvailable(newVersion);
 
 

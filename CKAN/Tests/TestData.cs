@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using CKAN;
 using Version = CKAN.Version;
 
@@ -307,21 +308,30 @@ namespace Tests
             string identifier = null,
             Version version = null)
         {
-            var mod = new CkanModule
-            {
-                name = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                identifier = identifier??Generator.Next().ToString(CultureInfo.InvariantCulture),
-                spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
-                ksp_version = kspVersion ?? new KSPVersion("0." + Generator.Next()),
-                version = version ?? new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
-            };
-            mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
-            mod.conflicts = conflicts;
-            mod.depends = depends;
-            mod.suggests = sugests;
-            mod.provides = provides;
+
+            var mod = new CkanModule();
+            var type = typeof(CkanModule);
+            setReadOnlyValue(type,"name",mod,Generator.Next().ToString(CultureInfo.InvariantCulture));
+            setReadOnlyValue(type,"abstract",mod,Generator.Next().ToString(CultureInfo.InvariantCulture));
+            setReadOnlyValue(type, "identifier", mod, identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture));
+            setReadOnlyValue(type,"spec_version",mod,new Version(1.ToString(CultureInfo.InvariantCulture)));
+            setReadOnlyValue(type,"ksp_version",mod,kspVersion ?? new KSPVersion("0." + Generator.Next()));
+            setReadOnlyValue(type,"version",mod,version??new Version(Generator.Next().ToString(CultureInfo.InvariantCulture)));
+            setReadOnlyValue(type,"ksp_version_max",mod,new KSPVersion(null));
+            setReadOnlyValue(type,"ksp_version_min",mod,new KSPVersion(null));
+            setReadOnlyValue(type,"conflicts",mod,conflicts);
+            setReadOnlyValue(type,"depends",mod,depends);
+            setReadOnlyValue(type,"suggests",mod,sugests);
+            setReadOnlyValue(type,"provides",mod,provides);
             return mod;
+        }
+
+        private void setReadOnlyValue(Type t,string field, object obj, object value)
+        {
+            if (obj == null) return;
+
+            var field_info = t.GetField(field,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.FlattenHierarchy);
+            field_info.SetValue(obj,value);
         }
     }
 }
