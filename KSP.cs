@@ -136,9 +136,9 @@ namespace CKAN
             string steam = KSPPathUtils.SteamPath();
             if (steam != null)
             {
-                string ksp_dir = Path.Combine(steam, KSPPathConstants.steamKSP);
+                string ksp_dir = Path.Combine(steam, KSPManager.steamKSP);
 
-                if (Directory.Exists(ksp_dir))
+                if (Directory.Exists(ksp_dir) && IsKspDir(ksp_dir))
                 {
                     log.InfoFormat("KSP found at {0}", ksp_dir);
                     return ksp_dir;

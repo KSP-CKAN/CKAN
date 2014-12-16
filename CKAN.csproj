@@ -47,7 +47,6 @@
     <Compile Include="Types\Kraken.cs" />
     <Compile Include="KSPManager.cs" />
     <Compile Include="KSPPathUtils.cs" />
-    <Compile Include="KSPPathConstants.cs" />
     <Compile Include="Registry\AvailableModule.cs" />
     <Compile Include="Registry\InstalledModule.cs" />
     <Compile Include="Registry\Registry.cs" />
@@ -65,6 +64,7 @@
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
+    <Compile Include="Win32Registry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
