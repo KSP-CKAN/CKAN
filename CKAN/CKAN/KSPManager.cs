@@ -307,8 +307,7 @@ namespace CKAN
                 if (KSP.IsKspDir(path))
                 {
                     _Instances.Add(name, new KSP(path, User));
-                    log.DebugFormat("Added {0} at {1}", name, path);
-                    instanceCount--;
+                    log.DebugFormat("Added {0} at {1}", name, path);                    
                 }
                 else
                 {
