@@ -49,7 +49,7 @@ namespace CKAN
         {
             if (Regex.IsMatch(format, "download", RegexOptions.IgnoreCase))
             {
-                 DisplayMessage(
+                Console.Write(
                     // The \r at the front here causes download messages to *overwrite* each other.
                      String.Format("\r{0} - {1}%           ", format, percent)
                  );
@@ -59,7 +59,7 @@ namespace CKAN
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                DisplayMessage("\n{0}", format);
+                Console.Write("\n{0}", format);
             }
         }
         protected override void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)
