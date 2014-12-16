@@ -133,7 +133,7 @@ namespace CKAN.CmdLine
             User.RaiseMessage(String.Empty);
 
             int count = 1;
-            foreach (var instance in Manager.GetInstances())
+            foreach (var instance in Manager.Instances)
             {
                 User.RaiseMessage("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
                 count++;
@@ -150,16 +150,16 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (Manager.GetInstances().ContainsKey(options.name))
+            if (Manager.HasInstance(options.name))
             {
                 User.RaiseMessage("Install with name \"{0}\" already exists, aborting..", options.name);
                 return Exit.BADOPT;
             }
 
             try
-            {
-
-                Manager.AddInstance(options.name, options.path);
+            {                
+                string path = options.path;
+                Manager.AddInstance(options.name, new CKAN.KSP(path, User));
                 User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
                 return Exit.OK;
             }
@@ -178,7 +178,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!Manager.GetInstances().ContainsKey(options.old_name))
+            if (!Manager.HasInstance(options.old_name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.old_name);
                 return Exit.BADOPT;
@@ -198,7 +198,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!Manager.GetInstances().ContainsKey(options.name))
+            if (!Manager.HasInstance(options.name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
                 return Exit.BADOPT;
@@ -218,7 +218,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!Manager.GetInstances().ContainsKey(options.name))
+            if (!Manager.HasInstance(options.name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
                 return Exit.BADOPT;
