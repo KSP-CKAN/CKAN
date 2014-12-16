@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -17,7 +18,7 @@ namespace CKAN
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
 
-            if (!Main.Instance.Manager.GetInstances().Any())
+            if (!Main.Instance.Manager.Instances.Any())
             {
                 Main.Instance.Manager.FindAndRegisterDefaultInstance();
             }
@@ -37,7 +38,7 @@ namespace CKAN
 
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in Main.Instance.Manager.GetInstances())
+            foreach (var instance in Main.Instance.Manager.Instances)
             {
                 var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
 
@@ -64,7 +65,7 @@ namespace CKAN
                 }
 
                 string instanceName = Main.Instance.Manager.GetNextValidInstanceName("New instance");
-                Main.Instance.Manager.GetInstances().Add(instanceName, instance);
+                Main.Instance.Manager.Instances.Add(instanceName, instance);
                 UpdateInstancesList();
             }
         }
