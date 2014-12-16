@@ -10,8 +10,9 @@ namespace CKAN
         public bool with_all_suggests;
         public bool with_recommends = true;
         public bool with_suggests;
-        public bool without_toomanyprovides_kraken = false;
-        public bool without_enforce_consistency = false;
+        public bool with_conflicts;
+        public bool without_toomanyprovides_kraken;
+        public bool without_enforce_consistency;
         public object Clone()
         {
             return MemberwiseClone();
@@ -31,6 +32,8 @@ namespace CKAN
 
     public class RelationshipResolver
     {
+        public readonly Dictionary<Module, HashSet<Module>> Conflicts = new Dictionary<Module, HashSet<Module>>();
+
         // A list of all the mods we're going to install.
         private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
@@ -64,9 +67,10 @@ namespace CKAN
 
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 
-                foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(mod)))
+
+                foreach (CkanModule listed_mod in modlist.Values.Where(listedMod => listedMod.ConflictsWith(mod)))
                 {
-                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listed_mod));
+                    HandleConflict(mod, listed_mod, options.with_conflicts);
                 }
 
                 user_requested_mods.Add(mod);
@@ -93,6 +97,39 @@ namespace CKAN
                     registry.InstalledDlls
                 );
             }
+        }
+
+        private void HandleConflict(Module mod, Module listedMod, bool withConflicts)
+        {
+            if (!withConflicts)
+            {
+                throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listedMod));
+            }
+            else
+            {
+                HashSet<Module> set;
+                Conflicts.TryGetValue(listedMod, out set);
+                if (set == null)
+                {
+                    var conflict = new HashSet<Module> { mod };
+                    Conflicts.Add(listedMod, conflict);
+                }
+                else
+                {
+                    set.Add(mod);
+                }
+                Conflicts.TryGetValue(mod, out set);
+                if (set == null)
+                {
+                    var conflict = new HashSet<Module> { listedMod };
+                    Conflicts.Add(mod, conflict);
+                }
+                else
+                {
+                    set.Add(listedMod);
+                }
+            }
+
         }
 
         /// <summary>
@@ -159,15 +196,13 @@ namespace CKAN
             {
                 log.DebugFormat("Considering {0}", dep_name);
 
-                // If we already have this dependency covered, skip.
-                // If it's already installed, skip.
+                // If we already have this dependency covered or if it's already installed, skip.
                 if (modlist.ContainsKey(dep_name) || registry.IsInstalled(dep_name))
                 {
                     continue;
                 }
 
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name);
-
                 if (candidates.Count == 0)
                 {
                     if (!soft_resolve)
@@ -187,8 +222,10 @@ namespace CKAN
                     {
                         continue;
                     }
-
-                    throw new TooManyModsProvideKraken(dep_name, candidates);
+                    else
+                    {
+                        throw new TooManyModsProvideKraken(dep_name, candidates);
+                    }
                 }
 
                 CkanModule candidate = candidates[0];
@@ -197,42 +234,26 @@ namespace CKAN
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
 
-                var fixed_mods =
-                    new HashSet<Module>(modlist.Values);
-
+                var fixed_mods = new HashSet<Module>(modlist.Values);
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
-                foreach (Module mod in fixed_mods)
-                {
-                    if (mod.ConflictsWith(candidate))
+                foreach (Module mod in fixed_mods.Where(mod=>mod.ConflictsWith(candidate)))
+                {                    
+                    if (soft_resolve)
                     {
-                        if (soft_resolve)
-                        {
-                            log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
-
-                            // I want labeled loops please, so I don't have to set this to null,
-                            // break, and then look at it at the end. o_O
-                            candidate = null;
-                            break;
-                        }
-                        var this_is_why_we_cant_have_nice_things = new List<string> {
-                            string.Format(
-                                "{0} and {1} conflict with each other, yet we require them both!",
-                                candidate, mod)
-                        };
-
-                        throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
+                        log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
+                        candidate = null;
+                        break;
+                    }
+                    else
+                    {
+                        HandleConflict(candidate, mod, options.with_conflicts);
                     }
                 }
-
-                // Our candidate may have been set to null if it was vetoed by our
-                // sanity check above.
-                if (candidate != null)
-                {
-                    // Okay, looks like we want this one. Adding.
-                    Add(candidate);
-                    Resolve(candidate, options);
-                }
+                if (candidate == null) continue;
+                // Okay, looks like we want this one. Adding.                
+                Add(candidate);
+                Resolve(candidate, options);
             }
         }
 

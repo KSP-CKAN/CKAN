@@ -179,6 +179,86 @@ namespace Tests.CKAN.Relationships
                 options,
                 registry));
         }
+
+
+        [Test]
+        public void Constructor_WithConflictingModulesInDependancies_DoesNotThrowWithConflictSetting()
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule();
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier}
+            });
+            var conflicts_with_dependant = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=dependant.identifier}
+            });
+
+            options.with_conflicts = true;
+
+            list.Add(depender.identifier);
+            list.Add(conflicts_with_dependant.identifier);
+            AddToRegistry(depender, dependant, conflicts_with_dependant);
+
+            Assert.DoesNotThrow(() => new RelationshipResolver(
+                list,
+                options,
+                registry));
+        }
+
+        [Test]
+        public void Constructor_WithConflictingModulesInDependancies_HasConflictsInConflictProp()
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule();
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier}
+            });
+            var conflicts_with_dependant = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=dependant.identifier}
+            });
+
+            options.with_conflicts = true;
+
+            list.Add(depender.identifier);
+            list.Add(conflicts_with_dependant.identifier);
+            AddToRegistry(depender, dependant, conflicts_with_dependant);
+            var resolver = new RelationshipResolver(list, options, registry);
+            Assert.That(resolver.Conflicts.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Constructor_WithMultipleConflictingModulesInDependancies_HasConflictsCorrectNumberOfConflictsInProp()
+        {
+            var list = new List<string>();
+            var moda = generator.GeneratorRandomModule();
+            var modb = generator.GeneratorRandomModule();
+            var depender = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=moda.identifier},
+                new RelationshipDescriptor {name=modb.identifier}
+            });
+
+            options.with_conflicts = true;
+
+            list.Add(depender.identifier);
+            list.Add(moda.identifier);
+            list.Add(modb.identifier);
+            AddToRegistry(depender, moda, modb);
+            var resolver = new RelationshipResolver(list, options, registry);
+            Assert.That(resolver.Conflicts.Count, Is.EqualTo(3));
+            var expected = new HashSet<Module>
+            {
+                moda,
+                modb
+            };
+            var result = resolver.Conflicts[depender];
+            Assert.That(result, Is.EquivalentTo(expected));
+        }
+
         [Test]
         public void Constructor_WithSuggests_HasSugestedInModlist()
         {
@@ -258,8 +338,6 @@ namespace Tests.CKAN.Relationships
                 registry));
 
         }
-
-
 
         private void AddToRegistry(params CkanModule[] modules)
         {
