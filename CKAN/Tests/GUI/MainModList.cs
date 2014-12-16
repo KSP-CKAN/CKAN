@@ -45,7 +45,7 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };                
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var item = new MainModList(delegate { });
                 Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty(), manager.CurrentInstance), Is.Empty);
             }
@@ -56,7 +56,7 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
 
                 var ckanMod = TestData.FireSpitterModule();
                 var registry = CKAN.Registry.Empty();
@@ -83,7 +83,7 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var registry = CKAN.Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());

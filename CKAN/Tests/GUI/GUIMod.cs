@@ -15,7 +15,7 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) {_CurrentInstance = tidy.KSP};
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
                 var registry = CKAN.Registry.Empty();
                 var ckanMod = TestData.kOS_014_module();
                 registry.AddAvailable(ckanMod);
@@ -29,7 +29,7 @@ namespace CKANTests
             using (var tidy = new DisposableKSP())
             {
 
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) { _CurrentInstance = tidy.KSP };
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var generatror = new RandomModuleGenerator(new Random(0451));
                 var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"));
                 var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"),
