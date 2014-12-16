@@ -304,17 +304,11 @@ namespace CKAN
                 var path = KSPPathConstants.GetRegistryValue(@"KSPInstancePath_" + i, "");
 
                 log.DebugFormat("Loading {0} from {1}", name, path);
-                if (KSP.IsKspDir(path))
-                {
-                    var ksp = new KSP(path, User);
-                    _Instances.Add(name, ksp);
-                    log.DebugFormat("Added {0} at {1}", name, path);
-                    instanceCount--;
-                }
-                else
-                {
-                    log.DebugFormat("{0} at {1} is not a vaild install", name, path);
-                }     
+
+                var ksp = new KSP(path,User);
+                _Instances.Add(name, ksp);
+
+                log.DebugFormat("Added {0} at {1}", name, path);
             }
 
             instances_loaded = true;
