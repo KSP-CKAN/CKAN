@@ -49,7 +49,7 @@ namespace CKAN.NetKAN
 
             if (options.File == null)
             {
-                log.Fatal("Usage: netkan [--verbose|--debug] [--outputdir=...] <filename>");
+                log.Fatal("Usage: netkan [--verbose|--debug] [--prerelease] [--outputdir=...] <filename>");
                 return EXIT_BADOPT;
             }
 
@@ -72,7 +72,7 @@ namespace CKAN.NetKAN
                         GithubAPI.SetCredentials(options.GitHubToken);
                     }
 
-                    metadata = GitHub(json, remote.id, cache);
+                    metadata = GitHub(json, remote.id, options.PreRelease, cache);
                     break;
                 default:
                     log.FatalFormat("Unknown remote source: {0}", remote.source);
@@ -189,10 +189,10 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Fetch things from Github, returning a complete CkanModule document.
         /// </summary>
-        private static JObject GitHub(JObject orig_metadata, string repo, NetFileCache cache)
+        private static JObject GitHub(JObject orig_metadata, string repo, bool prerelease, NetFileCache cache)
         {
             // Find the release on github and download.
-            GithubRelease release = GithubAPI.GetLatestRelease(repo);
+            GithubRelease release = GithubAPI.GetLatestRelease(repo, prerelease);
 
             if (release == null)
             {

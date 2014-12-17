@@ -25,6 +25,9 @@ namespace CKAN.NetKAN
         [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
 
+        [Option("prerelease", HelpText = "Index GitHub Prereleases")]
+        public bool PreRelease { get; set; }
+
         // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }
