@@ -47,17 +47,18 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Repository is in the form "Author/Repo". Eg: "pjf/DogeCoinFlag".
         /// </summary>
-        public static GithubRelease GetLatestRelease( string repository )
+        public static GithubRelease GetLatestRelease( string repository, bool prerelease )
         {
             string json = Call ("repos/" + repository + "/releases");
             log.Debug("Parsing JSON...");
             JArray releases = JArray.Parse(json);
-            log.Debug("Parsed, finding most recent stable release");
+            string releaseType = prerelease ? "pre-" : "stable";
+            log.Debug("Parsed, finding most recent " + releaseType + " release");
 
             // Finding the most recent *stable* release means filtering
             // out on pre-releases.
 
-            var final_releases = releases.Where(x => (bool) x["prerelease"] == false);
+            var final_releases = releases.Where(x => (bool) x["prerelease"] == prerelease);
 
             return !final_releases.Any() ? null : new GithubRelease(final_releases.Cast<JObject>().First());
         }

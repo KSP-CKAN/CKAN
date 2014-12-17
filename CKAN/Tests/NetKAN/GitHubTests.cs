@@ -16,7 +16,7 @@ namespace NetKAN.GitHubTests
         [Category("Online")]
         public void Release()
         {
-            GithubRelease ckan = GithubAPI.GetLatestRelease("KSP-CKAN/Test");
+            GithubRelease ckan = GithubAPI.GetLatestRelease("KSP-CKAN/Test", false);
             Assert.IsNotNull(ckan.author);
             Assert.IsNotNull(ckan.download);
             Assert.IsNotNull(ckan.size);
