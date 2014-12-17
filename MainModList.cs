@@ -184,7 +184,7 @@ namespace CKAN
             RelationshipResolver resolver;
             try
             {
-                resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry);
+                resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry, current_instance.Version());
             }
             catch (Exception)
             {
