@@ -12,6 +12,8 @@ namespace CKAN
 
     public class Net
     {
+        public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
+
         private static readonly ILog log = LogManager.GetLogger(typeof (Net));
         private static TxFileManager file_transaction = new TxFileManager();
 
@@ -42,7 +44,8 @@ namespace CKAN
             log.DebugFormat("Downloading {0} to {1}", url, filename);
 
             var agent = new WebClient();
-
+            agent.Headers.Add("user-agent", UserAgentString);
+           
             try
             {
                 agent.DownloadFile(url, filename);

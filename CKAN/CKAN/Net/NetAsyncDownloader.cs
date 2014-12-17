@@ -37,6 +37,8 @@ namespace CKAN
                 this.url = url;
                 this.path = path ?? file_transaction.GetTempFileName();
                 lastProgressUpdateTime = DateTime.Now;
+
+                agent.Headers.Add("user-agent", Net.UserAgentString);
             }
         }
 
