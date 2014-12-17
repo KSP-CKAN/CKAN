@@ -42,6 +42,11 @@ namespace CKAN.NetKAN
                 LogManager.GetRepository().Threshold = Level.Debug;
             }
 
+            if (options.NetUserAgent != null)
+            {
+                Net.UserAgentString = options.NetUserAgent;
+            }
+
             if (options.File == null)
             {
                 log.Fatal("Usage: netkan [--verbose|--debug] [--outputdir=...] <filename>");

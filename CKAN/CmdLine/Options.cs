@@ -93,6 +93,9 @@ namespace CKAN.CmdLine
 
         [Option("kspdir", DefaultValue = null, HelpText = "KSP dir to use")]
         public string KSPdir { get; set; }
+
+        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
+        public string NetUserAgent { get; set; }
     }
 
     /// <summary>
