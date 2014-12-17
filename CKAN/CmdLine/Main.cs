@@ -289,7 +289,7 @@ namespace CKAN.CmdLine
                         if (latest == null)
                         {
                             // Not compatible!
-                            bullet = "✗";
+                            bullet = "X";
                         }
                         else if (latest.version.IsEqualTo(current_version))
                         {
@@ -314,7 +314,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            user.RaiseMessage("\nLegend: ✓ - Up to date. ✗ - Incompatible. ↑ - Upgradable. ? - Unknown ");
+            user.RaiseMessage("\nLegend: ✓ - Up to date. X - Incompatible. ↑ - Upgradable. ? - Unknown ");
 
             return Exit.OK;
         }
