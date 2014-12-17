@@ -14,7 +14,7 @@ namespace CKAN
         /// <summary>
         /// Returns the version of the CKAN.dll used, complete with git info
         /// and other decorations as filled in by our build system.
-        /// Eg: v1.3.5-12-g055d7c3 (unstable) or "development (unstable)"
+        /// Eg: v1.3.5-12-g055d7c3 (beta) or "development (unstable)"
         /// </summary>
         public static string Version()
         {
@@ -23,7 +23,7 @@ namespace CKAN
             #if (STABLE)
             version += " (stable)";
             #else
-            version += " (unstable)";
+            version += " (beta)";
             #endif
 
             return version;
