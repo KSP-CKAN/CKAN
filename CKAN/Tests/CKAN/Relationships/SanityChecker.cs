@@ -39,7 +39,7 @@ namespace CKANTests
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
-            var mods = new List<CkanModule> {registry.LatestAvailable("DogeCoinFlag")};
+            var mods = new List<CkanModule> {registry.LatestAvailable("DogeCoinFlag",null)};
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
         }
@@ -49,13 +49,13 @@ namespace CKANTests
         {
             var mods = new List<CkanModule>();
 
-            mods.Add(registry.LatestAvailable("CustomBiomes"));
+            mods.Add(registry.LatestAvailable("CustomBiomes",null));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with stock data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS"));
+            mods.Add(registry.LatestAvailable("CustomBiomesRSS",null));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with conflicting data");
         }
 
@@ -70,17 +70,17 @@ namespace CKANTests
 
             // This would actually be a terrible thing for users to have, but it tests the
             // relationship we want.
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes DLL, with config added");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS"));
+            mods.Add(registry.LatestAvailable("CustomBiomesRSS",null));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes with conflicting data");
         }
 
         [Test]
         public void ConflictWithDll()
         {
-            var mods = new List<CKAN.Module> { registry.LatestAvailable("SRL") };
+            var mods = new List<CKAN.Module> { registry.LatestAvailable("SRL",null) };
             var dlls = new List<string> { "QuickRevert" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
@@ -92,9 +92,9 @@ namespace CKANTests
         {
             var mods = new List<CKAN.Module>
             {
-                registry.LatestAvailable("CustomBiomes"),
-                registry.LatestAvailable("CustomBiomesKerbal"),
-                registry.LatestAvailable("DogeCoinFlag")
+                registry.LatestAvailable("CustomBiomes",null),
+                registry.LatestAvailable("CustomBiomesKerbal",null),
+                registry.LatestAvailable("DogeCoinFlag",null)
             };
 
             var provides = CKAN.SanityChecker.ModulesToProvides(mods);
@@ -112,13 +112,13 @@ namespace CKANTests
             var dlls = new List<string>();
             Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "Empty list");
 
-            mods.Add(registry.LatestAvailable("DogeCoinFlag"));
+            mods.Add(registry.LatestAvailable("DogeCoinFlag",null));
             Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "DogeCoinFlag");
 
-            mods.Add(registry.LatestAvailable("CustomBiomes"));
+            mods.Add(registry.LatestAvailable("CustomBiomes",null));
             Assert.Contains("CustomBiomesData", CKAN.SanityChecker.FindUnmetDependencies(mods, dlls).Keys, "Missing CustomBiomesData");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal"));
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
             Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "CBD+CBK");
 
             mods.RemoveAll(x => x.identifier == "CustomBiomes");
@@ -132,14 +132,14 @@ namespace CKANTests
         {
             var mods = new List<CKAN.Module>
             {
-                registry.LatestAvailable("CustomBiomes"),
-                registry.LatestAvailable("CustomBiomesKerbal"),
-                registry.LatestAvailable("DogeCoinFlag")
+                registry.LatestAvailable("CustomBiomes",null),
+                registry.LatestAvailable("CustomBiomesKerbal",null),
+                registry.LatestAvailable("DogeCoinFlag",null)
             };
 
             // Make sure some of our expectations regarding dependencies are correct.
-            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal").depends.Select(x => x.name).ToList());
-            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes").depends.Select(x => x.name).ToList());
+            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal",null).depends.Select(x => x.name).ToList());
+            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes",null).depends.Select(x => x.name).ToList());
 
             // Removing DCF should only remove itself.
             var to_remove = new List<string>();

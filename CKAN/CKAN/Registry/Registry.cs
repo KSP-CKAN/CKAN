@@ -404,7 +404,7 @@ namespace CKAN
 
                 if (available == null)
                 {
-                    incompatible.Add(LatestAvailable(candidate));
+                    incompatible.Add(LatestAvailable(candidate, null));
                 }
             }
 
@@ -422,7 +422,7 @@ namespace CKAN
          
         // TODO: Consider making this internal, because practically everything should
         // be calling LatestAvailableWithProvides()
-        public CkanModule LatestAvailable(string module, KSPVersion ksp_version = null)
+        public CkanModule LatestAvailable(string module, KSPVersion ksp_version)
         {
             log.DebugFormat("Finding latest available for {0}", module);
 
@@ -443,8 +443,9 @@ namespace CKAN
         ///     satisifes the specified version. Takes into account module 'provides',
         ///     which may result in a list of alternatives being provided.
         ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
+        ///     If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version = null)
+        public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version)
         {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 

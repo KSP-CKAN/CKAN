@@ -29,7 +29,8 @@ namespace Tests.CKAN.Relationships
             options = RelationshipResolver.DefaultOpts();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<string>(),
                 options,
-                registry));
+                registry,
+                null));
         }
 
         [Test]
@@ -49,7 +50,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
         }
 
         [Test]
@@ -77,7 +79,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<TooManyModsProvideKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
 
         }
 
@@ -91,7 +94,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
 
         }
 
@@ -109,7 +113,7 @@ namespace Tests.CKAN.Relationships
             AddToRegistry(mod_a);
             registry.Installed().Add(mod_a.identifier, mod_a.version);
 
-            var relationship_resolver = new RelationshipResolver(list, options, registry);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             CollectionAssert.IsEmpty(relationship_resolver.ModList());
         }
 
@@ -128,7 +132,7 @@ namespace Tests.CKAN.Relationships
             AddToRegistry(sugester, sugested);
             registry.Installed().Add(sugested.identifier, sugested.version);
 
-            var relationship_resolver = new RelationshipResolver(list, options, registry);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             CollectionAssert.Contains(relationship_resolver.ModList(), sugested);
         }
 
@@ -151,7 +155,7 @@ namespace Tests.CKAN.Relationships
             list.Add(mod.identifier);
             AddToRegistry(sugester, sugested, mod);
 
-            var relationship_resolver = new RelationshipResolver(list, options, registry);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             CollectionAssert.DoesNotContain(relationship_resolver.ModList(), sugested);
         }
 
@@ -177,7 +181,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
         }
         [Test]
         public void Constructor_WithSuggests_HasSugestedInModlist()
@@ -193,7 +198,7 @@ namespace Tests.CKAN.Relationships
             list.Add(sugester.identifier);
             AddToRegistry(sugester, sugested);
 
-            var relationship_resolver = new RelationshipResolver(list, options, registry);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             CollectionAssert.Contains(relationship_resolver.ModList(), sugested);
         }
 
@@ -212,7 +217,7 @@ namespace Tests.CKAN.Relationships
             });
             list.Add(depender.identifier);
             AddToRegistry(mod_b, depender);
-            var relationship_resolver = new RelationshipResolver(list, options, registry);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
 
             CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
             {
@@ -238,7 +243,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
 
         }
 
@@ -255,7 +261,8 @@ namespace Tests.CKAN.Relationships
             Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
                 list,
                 options,
-                registry));
+                registry,
+                null));
 
         }
 
