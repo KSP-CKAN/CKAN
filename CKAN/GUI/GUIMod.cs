@@ -38,7 +38,7 @@ namespace CKAN
             var kspVersion = mod.ksp_version;
 
             InstalledVersion = installedVersion != null ? installedVersion.ToString() : "-";
-            LatestVersion = latestVersion != null ? latestVersion.ToString() : "-";
+            LatestVersion = latestVersion != null ? latestVersion.version.ToString() : "-";
             KSPversion = kspVersion != null ? kspVersion.ToString() : "-";
 
             Abstract = mod.@abstract;
