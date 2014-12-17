@@ -779,9 +779,19 @@ namespace CKAN
             return IsInstalled(identifier) && InstalledVersion(identifier).ToString().Equals("autodetected dll");
         }
 
-        public bool HasUpdate(string identifier)
+        public bool HasUpdate(string identifier, KSPVersion version)
         {
-            return IsInstalled(identifier) && LatestAvailable(identifier).version.IsGreaterThan(InstalledVersion(identifier));
+            CkanModule newestVersion;
+            try
+            {
+                newestVersion = LatestAvailable(identifier, version);
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                return false;
+            }
+            if (newestVersion == null) return false;
+            return IsInstalled(identifier) && newestVersion.version.IsGreaterThan(InstalledVersion(identifier));
         }
 
         /// <summary>
