@@ -21,20 +21,20 @@ namespace CKAN
         public bool IsUpgradeChecked { get; set; }
 
 
-        public GUIMod(CkanModule mod, Registry registry, KSPVersion ksp_version)
+        public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
         {
             //Currently anything which could alter these causes a full reload of the modlist
             // If this is ever changed these could be moved into the properties
             Mod = mod;
             IsInstalled = registry.IsInstalled(mod.identifier);
             IsInstallChecked = IsInstalled;
-            HasUpdate = registry.HasUpdate(mod.identifier);
-            IsIncompatible = !mod.IsCompatibleKSP(ksp_version);
+            HasUpdate = registry.HasUpdate(mod.identifier, current_ksp_version);
+            IsIncompatible = !mod.IsCompatibleKSP(current_ksp_version);
             IsAutodetected = registry.IsAutodetected(mod.identifier);
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
             var installedVersion = registry.InstalledVersion(mod.identifier);
-            var latestVersion = mod.version;
+            var latestVersion = registry.LatestAvailable(mod.identifier);
             var kspVersion = mod.ksp_version;
 
             InstalledVersion = installedVersion != null ? installedVersion.ToString() : "-";
