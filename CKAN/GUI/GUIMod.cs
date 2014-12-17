@@ -34,7 +34,7 @@ namespace CKAN
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
             var installedVersion = registry.InstalledVersion(mod.identifier);
-            var latestVersion = registry.LatestAvailable(mod.identifier);
+            var latestVersion = registry.LatestAvailable(mod.identifier, current_ksp_version);
             var kspVersion = mod.ksp_version;
 
             InstalledVersion = installedVersion != null ? installedVersion.ToString() : "-";

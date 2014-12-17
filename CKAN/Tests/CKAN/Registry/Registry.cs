@@ -100,10 +100,10 @@ namespace CKANTests
             {
                 reg = CKAN.Registry.Empty();
                 reg.AddAvailable(module);
-                Assert.AreEqual(identifier, reg.LatestAvailable(identifier).identifier);
+                Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
                 scope.Complete();
             }
-            Assert.AreEqual(identifier, reg.LatestAvailable(identifier).identifier);
+            Assert.AreEqual(identifier, reg.LatestAvailable(identifier, null).identifier);
         }
 
         [Test]
@@ -114,11 +114,11 @@ namespace CKANTests
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
 
                 scope.Complete();
             }
-            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
+            Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
         }
 
         [Test]
@@ -129,14 +129,14 @@ namespace CKANTests
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier,null).identifier);
 
                 scope.Dispose(); // Rollback, our module should no longer be available.
             }
 
             Assert.Throws<ModuleNotFoundKraken>(delegate
             {
-                registry.LatestAvailable(identifier);
+                registry.LatestAvailable(identifier,null);
             });
         }
 

@@ -202,7 +202,7 @@ namespace CKAN
             foreach (var reverseDependencies in modulesToRemove.Select(mod => installer.FindReverseDependencies(mod)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep));
+                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep, current_instance.Version()));
                 changeset.UnionWith(
                     modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
             }
