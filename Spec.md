@@ -393,6 +393,7 @@ are described. Unless specified otherwise, these are URLs:
 - `license` : The mod's license.
 - `repository` : The repository where the module source can be found.
 - `kerbalstuff` : The mod on KerbalStuff.
+- `jenkins` : Build server for mod.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
@@ -401,7 +402,8 @@ Example resources:
         "homepage"     : "http://tinyurl.com/DogeCoinFlag",
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
         "repository"   : "http://github.com/pjf/DogeCoinFlag",
-        "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
+        "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag",
+        "jenkins"      : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
     }
 
 While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
