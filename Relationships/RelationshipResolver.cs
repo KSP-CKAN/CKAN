@@ -35,14 +35,16 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private Registry registry;
+        private KSPVersion kspversion;
 
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        public RelationshipResolver(ICollection<string> modules, RelationshipResolverOptions options, Registry registry)
+        public RelationshipResolver(ICollection<string> modules, RelationshipResolverOptions options, Registry registry, KSPVersion kspversion)
         {
 
             this.registry = registry;
+            this.kspversion = kspversion;
 
             // Start by figuring out what versions we're installing, and then
             // adding them to the list. This *must* be pre-populated with all
@@ -56,7 +58,7 @@ namespace CKAN
             foreach (string module in modules)
             {
 
-                CkanModule mod = registry.LatestAvailable(module);
+                CkanModule mod = registry.LatestAvailable(module, kspversion);
                 if (mod == null)
                 {
                     throw new ModuleNotFoundKraken(module);
@@ -166,7 +168,7 @@ namespace CKAN
                     continue;
                 }
 
-                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name);
+                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion);
 
                 if (candidates.Count == 0)
                 {
