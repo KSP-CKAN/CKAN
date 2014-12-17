@@ -500,7 +500,7 @@ namespace CKAN
 
                 try
                 {
-                    module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key);
+                    module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key, CurrentInstance.Version());
                 }
                 catch
                 {
