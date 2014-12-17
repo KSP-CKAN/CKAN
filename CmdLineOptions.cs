@@ -22,6 +22,9 @@ namespace CKAN.NetKAN
         [Option("github-token", HelpText = "GitHub OAuth token for API access")]
         public string GitHubToken { get; set; }
 
+        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
+        public string NetUserAgent { get; set; }
+
         // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }
