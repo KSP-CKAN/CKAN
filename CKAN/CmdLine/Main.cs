@@ -69,6 +69,12 @@ namespace CKAN.CmdLine
                 log.Info("Verbose logging enabled");
             }
 
+            // Assign user-agent string if user has given us one
+            if (options.NetUserAgent != null)
+            {
+                Net.UserAgentString = options.NetUserAgent;
+            }
+
             // TODO: Allow the user to specify just a directory.
             // User provided KSP instance
 
