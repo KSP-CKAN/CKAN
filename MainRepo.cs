@@ -28,7 +28,11 @@ namespace CKAN
             try
             {
                 KSP current_instance1 = CurrentInstance;
-                Repo.Update(RegistryManager.Instance(CurrentInstance), current_instance1.Version(), (Uri)null);
+                Repo.Update(RegistryManager.Instance(CurrentInstance), current_instance1.Version(), new Uri(m_Configuration.Repository));
+            }
+            catch (UriFormatException ex)
+            {
+                m_ErrorDialog.ShowErrorDialog(ex.Message);
             }
             catch (MissingCertificateKraken ex)
             {
