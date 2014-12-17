@@ -24,7 +24,7 @@ namespace CKAN.NetKAN
             }
 
             // Github requires a user-agent. How about that?
-            web.Headers.Add("user-agent", "CKAN Github2CKAN ( https://github.com/KSP-CKAN/CKAN )");
+            web.Headers.Add("user-agent", Net.UserAgentString);
 
             done_init = true;
         }

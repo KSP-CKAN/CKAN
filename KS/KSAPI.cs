@@ -14,6 +14,11 @@ namespace CKAN.NetKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
         private static readonly WebClient web = new WebClient();
 
+        public KSAPI()
+        {
+            web.Headers.Add("user-agent", Net.UserAgentString);
+        }
+
         public static string Call(string path)
         {
             // TODO: There's got to be a better way than using regexps.
