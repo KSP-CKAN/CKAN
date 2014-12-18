@@ -335,8 +335,7 @@ namespace CKANTests
         {
             using (var tidy = new Tests.DisposableKSP())
             {
-                CKAN.KSP ksp = tidy.KSP;
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser()) {_CurrentInstance = ksp};
+                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
 
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
@@ -344,7 +343,7 @@ namespace CKANTests
                     CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).UninstallList("Foo");
                 });
 
-                manager._CurrentInstance = null; // I weep even more.
+                manager.CurrentInstance = null; // I weep even more.
             }
         }
 

@@ -49,7 +49,6 @@
     <Compile Include="ZipLib.cs" />
     <Compile Include="CKAN\Relationships\SanityChecker.cs" />
     <Compile Include="NetKAN\AVC.cs" />
-    <Compile Include="CKAN\KSPPathUtils.cs" />
     <Compile Include="DisposableKSP.cs" />
     <Compile Include="CKAN\Meta.cs" />
     <Compile Include="CKAN\Types\License.cs" />

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using CKAN;
 using log4net;
 
 namespace CKAN
@@ -11,49 +13,40 @@ namespace CKAN
     public class KSPManager
     {
         public IUser User { get; set; }
+        public IWin32Registry Win32Registry { get; set; }
+        public KSP CurrentInstance { get; set; }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(KSPManager));
 
-        internal bool instances_loaded;
-        internal Dictionary<string, KSP> _Instances = new Dictionary<string, KSP>();
-        internal KSP _CurrentInstance;
-        internal string _AutoStartInstance;
+        private static readonly ILog log = LogManager.GetLogger(typeof (KSPManager));
 
-        public KSPManager(IUser user)
+        private readonly Dictionary<string, KSP> instances = new Dictionary<string, KSP>();
+
+        internal string AutoStartInstance
+        {
+            get { return Win32Registry.AutoStartInstance; }
+            private set
+            {
+                if (!String.IsNullOrEmpty(value) && !HasInstance(value))
+                {
+                    throw new InvalidKSPInstanceKraken(value);
+                }
+                Win32Registry.AutoStartInstance = value;
+            }
+        }
+
+        public Dictionary<string, KSP> Instances
+        {
+            get { return new Dictionary<string, KSP>(instances); }            
+        }
+
+
+        public KSPManager(IUser user, IWin32Registry win32_registry = null)
         {
             User = user;
+            Win32Registry = win32_registry ?? new Win32Registry();
             LoadInstancesFromRegistry();
         }
 
-        public Dictionary<string, KSP> GetInstances()
-        {
-            if (!instances_loaded)
-            {
-                // This also sets instances_loaded to true.
-                LoadInstancesFromRegistry();
-            }
-            return _Instances;
-        }
-        
-
-        public KSP CurrentInstance
-        {
-            get
-            {
-                return _CurrentInstance;
-            }
-        }
-
-        public string GetAutoStartInstance()
-        {
-            if (!instances_loaded)
-            {
-                // This also sets instances_loaded to true.
-                LoadInstancesFromRegistry();
-            }
-            return _AutoStartInstance;
-        }
-        
 
         /// <summary>
         /// Returns the prefered KSP instance, or null if none can be found.
@@ -70,17 +63,16 @@ namespace CKAN
         /// 
         /// Returns null if we have multiple instances, but none of them are preferred.
         /// </summary>
- 
         public KSP GetPreferredInstance()
         {
-            if (_CurrentInstance != null)
+            if (CurrentInstance != null)
             {
                 // TODO: Throw a better exception
                 throw new KSPManagerKraken("Tried to set KSP instance twice!");
             }
 
-            _CurrentInstance = _GetPreferredInstance();
-            return _CurrentInstance;
+            CurrentInstance = _GetPreferredInstance();
+            return CurrentInstance;
         }
 
         // Actual worker for GetPreferredInstance()
@@ -92,37 +84,36 @@ namespace CKAN
 
             if (path != null)
             {
-                return new KSP(path,User);
-            }
-
-            // Return the autostart, if we can find it.
-            if (GetAutoStartInstance() != null)
-            {
-                // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
-                // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
-                if (GetAutoStartInstance() == "")
-                {
-                    return null;
-                }
-
-                if (GetInstances().ContainsKey(GetAutoStartInstance()))
-                {
-                    return GetInstances()[GetAutoStartInstance()];
-                }
+                return new KSP(path, User);
             }
 
             // If we only know of a single instance, return that.
-            if (GetInstances().Count == 1)
+            if (instances.Count == 1)
             {
-                // Surely there's a better way to get the singleton value than this?
-                var keys = new List<string>(GetInstances().Keys);
-                return GetInstances()[keys[0]];
+                return instances.First().Value;
             }
+
+            // Return the autostart, if we can find it.
+            if (AutoStartInstance != null)
+            {
+                // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
+                // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
+                if (AutoStartInstance == "")
+                {
+                    return null;
+                }
+                if (HasInstance(AutoStartInstance))
+                {
+                    return instances[AutoStartInstance];
+                }
+            }
+
+           
 
             // If we know of no instances, try to find one.
             // Otherwise, we know of too many instances!
             // We don't know which one to pick, so we return null.
-            return GetInstances().Count == 0 ? FindAndRegisterDefaultInstance() : null;
+            return !instances.Any() ? FindAndRegisterDefaultInstance() : null;
         }
 
         /// <summary>
@@ -133,48 +124,43 @@ namespace CKAN
         /// </summary>
         public KSP FindAndRegisterDefaultInstance()
         {
-            if (GetInstances().Count == 0)
+            if (instances.Any())
+                throw new KSPManagerKraken("Attempted to scan for defaults with instances in registry");
+
+            string gamedir;
+            try
             {
-                string gamedir;
-                try
-                {
-                    gamedir = KSP.FindGameDir();
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    return null;
-                }
-                 
-                return AddInstance ("auto", gamedir);
+                gamedir = KSP.FindGameDir();
+                return AddInstance("auto", new KSP(gamedir, User));
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
+            catch (NotKSPDirKraken)//Todo check carefully if this is nessesary. 
+            {
+                return null;
             }
 
-            throw new KSPManagerKraken("Attempted to scan for defaults with instances in registry");
+            
         }
 
         /// <summary>
         /// Adds a KSP instance to registry.
         /// Returns the resulting KSP object.
         /// </summary>
-        public KSP AddInstance(string name, string path)
+        public KSP AddInstance(string name, KSP ksp_instance)
         {
-            try
-            {
-                var ksp = new KSP(path, User);
-                GetInstances().Add(name, ksp);
-                PopulateRegistryWithInstances();
-                return ksp;
-            }
-            catch (NotKSPDirKraken e)
-            {
-                return null;
-            }
+            instances.Add(name, ksp_instance);
+            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);                
+            return ksp_instance;
         }
 
         /// <summary>
-        /// Gets the name of the next valid instance. Will attempt to append a number or the current (local) time to find the next valid solution.
+        /// Given a string returns a unused valid instance name by postfixing the string
         /// </summary>
-        /// <returns>The next valid instance name.</returns>
-        /// <param name="name">The name to check.</param>
+        /// <returns> A unused valid instance name.</returns>
+        /// <param name="name">The name to use as a base.</param>
         /// <exception cref="CKAN.Kraken">Could not find a valid name.</exception>
         public string GetNextValidInstanceName(string name)
         {
@@ -184,17 +170,11 @@ namespace CKAN
                 return name;
             }
 
-            string validName;
-
             // Try appending a number to the name.
-            for (int i = 1; i < 1000; i++)
-            {
-                validName = name + " (" + i + ")";
-                if (InstanceNameIsValid(validName))
-                {
-                    return validName;
-                }
-            }
+            var validName = Enumerable.Repeat(name, 1000)
+                .Select((s, i) => s + " (" + i + ")")
+                .FirstOrDefault(InstanceNameIsValid);
+            if (validName != null) return validName;
 
             // Check if a name with the current timestamp is valid.
             validName = name + " (" + DateTime.Now + ")";
@@ -213,16 +193,11 @@ namespace CKAN
         /// </summary>
         /// <returns><c>true</c>, if name is valid, <c>false</c> otherwise.</returns>
         /// <param name="name">Name to check.</param>
-        public bool InstanceNameIsValid(string name)
+        private bool InstanceNameIsValid(string name)
         {
             // Discard null, empty strings and white space only strings.
-            if (String.IsNullOrWhiteSpace(name))
-            {
-                return false;
-            }
-
             // Look for the current name in the list of loaded instances.
-            return !_Instances.ContainsKey(name);
+            return !String.IsNullOrWhiteSpace(name) && !HasInstance(name);
         }
 
         /// <summary>
@@ -230,8 +205,8 @@ namespace CKAN
         /// </summary>
         public void RemoveInstance(string name)
         {
-            GetInstances().Remove(name);
-            PopulateRegistryWithInstances();
+            instances.Remove(name);
+            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
         }
 
         /// <summary>
@@ -241,10 +216,10 @@ namespace CKAN
         // TODO: What should we do if our target name already exists?
         public void RenameInstance(string from, string to)
         {
-            var ksp = GetInstances()[from];
-            GetInstances().Remove(from);
-            GetInstances().Add(to, ksp);
-            PopulateRegistryWithInstances();
+            var ksp = instances[from];
+            instances.Remove(from);
+            instances.Add(to, ksp);
+            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
         }
 
 
@@ -256,18 +231,18 @@ namespace CKAN
         {
             // TODO: Should we disallow this if _CurrentInstance is already set?
 
-            if (!GetInstances().ContainsKey(name))
+            if (!HasInstance(name))
             {
                 throw new InvalidKSPInstanceKraken(name);
             }
 
-            _CurrentInstance = GetInstances()[name];
+            CurrentInstance = instances[name];
         }
 
         public void SetCurrentInstanceByPath(string name)
         {
             // TODO: Should we disallow this if _CurrentInstance is already set?
-            _CurrentInstance = new KSP(name,User);
+            CurrentInstance = new KSP(name, User);
         }
 
         /// <summary>
@@ -275,83 +250,63 @@ namespace CKAN
         /// </summary>
         public void SetAutoStart(string name)
         {
-            if (!GetInstances().ContainsKey(name))
+            if (!HasInstance(name))
             {
                 throw new InvalidKSPInstanceKraken(name);
             }
 
-            _AutoStartInstance = name;
-            PopulateRegistryWithInstances();
+            AutoStartInstance = name;
+        }
+
+        public bool HasInstance(string name)
+        {
+            return instances.ContainsKey(name);
         }
 
         public void ClearAutoStart()
         {
-            _AutoStartInstance = null;
-            PopulateRegistryWithInstances();
+            Win32Registry.AutoStartInstance = null;
         }
 
         public void LoadInstancesFromRegistry()
         {
             log.Debug("Loading KSP instances from registry");
 
-            _Instances.Clear();
+            instances.Clear();
 
-            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
-            if (key == null)
+            foreach (Tuple<string, string> instance in Win32Registry.GetInstances())
             {
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
-            }
-
-            _AutoStartInstance = KSPPathConstants.GetRegistryValue(@"KSPAutoStartInstance", "");
-            var instanceCount = KSPPathConstants.GetRegistryValue(@"KSPInstanceCount", 0);
-
-            for (int i = 0; i < instanceCount; i++)
-            {
-                var name = KSPPathConstants.GetRegistryValue(@"KSPInstanceName_" + i, "");
-                var path = KSPPathConstants.GetRegistryValue(@"KSPInstancePath_" + i, "");
-
+                var name = instance.Item1;
+                var path = instance.Item2;
                 log.DebugFormat("Loading {0} from {1}", name, path);
                 if (KSP.IsKspDir(path))
                 {
-                    _Instances.Add(name, new KSP(path, User));
-                    log.DebugFormat("Added {0} at {1}", name, path);                    
+                    instances.Add(name, new KSP(path, User));
+                    log.DebugFormat("Added {0} at {1}", name, path);
                 }
                 else
                 {
-                    log.DebugFormat("{0} at {1} is not a vaild install", name, path);
-                }     
+                    log.WarnFormat("{0} at {1} is not a vaild install", name, path);                    
+                }
+
+                //var ksp = new KSP(path, User);
+                //instances.Add(name, ksp);
+
+                
             }
 
-            instances_loaded = true;
+            AutoStartInstance = Win32Registry.AutoStartInstance;
         }
 
-        public void PopulateRegistryWithInstances()
-        {
-            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
-            if (key == null)
-            {
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
-            }
-
-            KSPPathConstants.SetRegistryValue(@"KSPAutoStartInstance", _AutoStartInstance ?? "");
-            KSPPathConstants.SetRegistryValue(@"KSPInstanceCount", _Instances.Count);
-
-            int i = 0;
-            foreach (var instance in _Instances)
-            {
-                var name = instance.Key;
-                var ksp = instance.Value;
-
-                KSPPathConstants.SetRegistryValue(@"KSPInstanceName_" + i, name);
-                KSPPathConstants.SetRegistryValue(@"KSPInstancePath_" + i, ksp.GameDir());
-
-                i++;
-            }
+        public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
         }
+
+
     }
 
-    public class KSPManagerKraken : Kraken {
-        public KSPManagerKraken(string reason = null, Exception inner_exception = null) :base(reason, inner_exception)
+    public class KSPManagerKraken : Kraken
+    {
+        public KSPManagerKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
         {
         }
     }
@@ -359,13 +314,10 @@ namespace CKAN
     public class InvalidKSPInstanceKraken : Exception
     {
         public string instance;
+
         public InvalidKSPInstanceKraken(string instance, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.instance = instance;
         }
-
-
     }
-}
-
