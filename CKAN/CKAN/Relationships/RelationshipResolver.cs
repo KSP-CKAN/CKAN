@@ -55,12 +55,8 @@ namespace CKAN
 
             foreach (string module in modules)
             {
-
-                CkanModule mod = registry.LatestAvailable(module);
-                if (mod == null)
-                {
-                    throw new ModuleNotFoundKraken(module);
-                }
+                // Throws ModuleNotFoundKraken if it can't be found
+                CkanModule mod = CkanModule.FromIDandVersion(registry, module);
 
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
 

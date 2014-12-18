@@ -31,28 +31,14 @@ namespace CKAN.CmdLine
 
             foreach (string mod in options.modules)
             {
-                Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
-
-                if (match.Success)
+                try
                 {
-                    string ident = match.Groups["mod"].Value;
-                    string version = match.Groups["version"].Value;
-
-                    CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
-
-                    if (module == null)
-                    {
-                        User.WriteLine("Cannot install {0}, version {1} not available",ident,version);
-                        return Exit.ERROR;
-                    }
-
-                    to_upgrade.Add(module);
+                    to_upgrade.Add(CkanModule.FromIDandVersion(ksp.Registry, mod));
                 }
-                else
+                catch (ModuleNotFoundKraken k)
                 {
-                    to_upgrade.Add(
-                        ksp.Registry.LatestAvailable(mod, ksp.Version())
-                    );
+                    User.displayError(k.Message);
+                    return Exit.ERROR;
                 }
             }
 
