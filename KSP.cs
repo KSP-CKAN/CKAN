@@ -18,7 +18,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
-        private string gamedir;
+        private readonly string gamedir;
         private KSPVersion version;
 
         public NetFileCache Cache { get; private set; }
@@ -108,7 +108,7 @@ namespace CKAN
         {
             // Find the directory our executable is stored in.
             // In Perl, this is just `use FindBin qw($Bin);` Verbose enough, C#?
-            string exe_dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string exe_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
 
@@ -136,9 +136,9 @@ namespace CKAN
             string steam = KSPPathUtils.SteamPath();
             if (steam != null)
             {
-                string ksp_dir = Path.Combine(steam, KSPPathConstants.steamKSP);
+                string ksp_dir = Path.Combine(steam, KSPManager.steamKSP);
 
-                if (Directory.Exists(ksp_dir))
+                if (Directory.Exists(ksp_dir) && IsKspDir(ksp_dir))
                 {
                     log.InfoFormat("KSP found at {0}", ksp_dir);
                     return ksp_dir;
@@ -355,6 +355,21 @@ namespace CKAN
             return KSPPathUtils.ToAbsolute(path, GameDir());
         }
 
+        public override string ToString()
+        {
+            return "KSP Install:" + gamedir;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as KSP;
+            return other != null ? gamedir.Equals(other.GameDir()) : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return gamedir.GetHashCode();
+        }
     }
 
 }
