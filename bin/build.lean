@@ -46,6 +46,7 @@ my $VERSION = eval { capturex(qw(git describe --tags --long)) };
 if ($VERSION) {
     chomp $VERSION;
     set_build($METACLASS, $VERSION);
+    add_assembly_version("build/CmdLine/Properties/AssemblyInfo.cs", $VERSION);
 }
 else {
     warn "No recent tag found, making development build.\n";
@@ -120,6 +121,7 @@ sub copy {
     return;
 }
 
+# Sets a fancy BUILD_VERSION in the specified file.
 sub set_build {
     my ($file, $build) = @_;
 
@@ -137,6 +139,22 @@ sub set_build {
 
     print {$fh} $contents;
     close($fh);
+}
+
+# Adds C# compatible version info to the file specified.
+sub add_assembly_version {
+    my ($file, $build) = @_;
+
+    # Manipulate our build to produce a x.x.x.x format
+    if (not $build =~ s/v(\d+\.\d+\.\d+)-(\d+).*/$1.$2/) {
+        warn "Can't munge $build cleanly into a x.x.x.x version, skipping\n";
+    }
+
+    open(my $fh, '>>', $file);
+    say {$fh} qq{[assembly: AssemblyVersion("$build")]};
+    close($fh);
+
+    return;
 }
 
 sub is_stable {
