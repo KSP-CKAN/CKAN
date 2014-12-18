@@ -295,7 +295,15 @@ namespace CKAN
                 
             }
 
-            AutoStartInstance = Win32Registry.AutoStartInstance;
+            try
+            {
+                AutoStartInstance = Win32Registry.AutoStartInstance;
+            }
+            catch (InvalidKSPInstanceKraken e)
+            {
+                log.WarnFormat("Auto-start instance was invalid: {0}", e.Message);
+                AutoStartInstance = null;
+            }
         }
 
         public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
