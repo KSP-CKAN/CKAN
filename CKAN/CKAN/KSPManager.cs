@@ -299,8 +299,9 @@ namespace CKAN
             {
                 AutoStartInstance = Win32Registry.AutoStartInstance;
             }
-            catch (Exception)
+            catch (InvalidKSPInstanceKraken e)
             {
+                log.WarnFormat("Auto-start instance was invalid: {0}", e.Message);
                 AutoStartInstance = null;
             }
         }
