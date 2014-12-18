@@ -295,7 +295,14 @@ namespace CKAN
                 
             }
 
-            AutoStartInstance = Win32Registry.AutoStartInstance;
+            try
+            {
+                AutoStartInstance = Win32Registry.AutoStartInstance;
+            }
+            catch (Exception)
+            {
+                AutoStartInstance = null;
+            }
         }
 
         public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
