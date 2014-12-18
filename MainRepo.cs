@@ -38,9 +38,9 @@ namespace CKAN
             {
                 m_ErrorDialog.ShowErrorDialog(ex.ToString());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository");
+                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
             }
         }
 
