@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,36 +8,35 @@ namespace CKAN
     {
         private FolderBrowserDialog m_BrowseKSPFolder;
         private RenameInstanceDialog m_RenameInstanceDialog;
+        private readonly KSPManager manager;
+        private Control main;
 
         public ChooseKSPInstance()
         {
+            main = Main.Instance;
+            manager = Main.Instance.Manager;
             InitializeComponent();
+            
             StartPosition = FormStartPosition.CenterScreen;
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
 
-
-            if (!Main.Instance.Manager.Instances.Any())
+            if (!manager.Instances.Any())
             {
-                Main.Instance.Manager.FindAndRegisterDefaultInstance();
+                manager.FindAndRegisterDefaultInstance();
             }
 
             UpdateInstancesList();
 
-            SelectButton.Enabled = false;
-            RenameButton.Enabled = false;
-            SetAsDefaultCheckbox.Enabled = false;
+            SetButtonsEnabled(false);
         }
 
         private void UpdateInstancesList()
         {
-            SelectButton.Enabled = false;
-            RenameButton.Enabled = false;
-            SetAsDefaultCheckbox.Enabled = false;
-
+            SetButtonsEnabled(false);
             KSPInstancesListView.Items.Clear();
 
-            foreach (var instance in Main.Instance.Manager.Instances)
+            foreach (var instance in manager.Instances)
             {
                 var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
 
@@ -64,8 +62,8 @@ namespace CKAN
                     return;
                 }
 
-                string instanceName = Main.Instance.Manager.GetNextValidInstanceName("New instance");
-                Main.Instance.Manager.Instances.Add(instanceName, instance);
+                string instanceName = manager.GetNextValidInstanceName("New instance");
+                manager.AddInstance(instanceName, instance);
                 UpdateInstancesList();
             }
         }
@@ -76,27 +74,18 @@ namespace CKAN
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                Main.Instance.Manager.SetAutoStart(instance);
+                manager.SetAutoStart(instance);
             }
 
-            Main.Instance.Manager.SetCurrentInstance(instance);
+            manager.SetCurrentInstance(instance);
             Hide();    
-            Main.Instance.Show();
+            main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (KSPInstancesListView.SelectedItems.Count == 0)
-            {
-                SelectButton.Enabled = false;
-                RenameButton.Enabled = false;
-                SetAsDefaultCheckbox.Enabled = false;
-                return;
-            }
-
-            RenameButton.Enabled = true;
-            SelectButton.Enabled = true;
-            SetAsDefaultCheckbox.Enabled = true;
+            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;            
+            SetButtonsEnabled(has_instance);
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
@@ -106,9 +95,22 @@ namespace CKAN
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                Main.Instance.Manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
+                manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
+        }
+
+        private void Delete_Click(object sender, EventArgs e)
+        {
+            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
+            manager.RemoveInstance(instance);
+            UpdateInstancesList();
+
+        }
+
+        private void SetButtonsEnabled(bool has_instance)
+        {
+            DeleteButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
         }
 
     }
