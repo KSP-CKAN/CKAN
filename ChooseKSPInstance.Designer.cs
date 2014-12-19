@@ -40,6 +40,7 @@
             this.AddNewButton = new System.Windows.Forms.Button();
             this.RenameButton = new System.Windows.Forms.Button();
             this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
+            this.DeleteButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // KSPInstancesListView
@@ -58,7 +59,7 @@
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);
             this.KSPInstancesListView.MultiSelect = false;
             this.KSPInstancesListView.Name = "KSPInstancesListView";
-            this.KSPInstancesListView.Size = new System.Drawing.Size(350, 301);
+            this.KSPInstancesListView.Size = new System.Drawing.Size(462, 301);
             this.KSPInstancesListView.TabIndex = 0;
             this.KSPInstancesListView.UseCompatibleStateImageBehavior = false;
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
@@ -85,7 +86,7 @@
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.SelectButton.Enabled = false;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SelectButton.Location = new System.Drawing.Point(287, 320);
+            this.SelectButton.Location = new System.Drawing.Point(399, 320);
             this.SelectButton.Name = "SelectButton";
             this.SelectButton.Size = new System.Drawing.Size(75, 23);
             this.SelectButton.TabIndex = 1;
@@ -97,7 +98,7 @@
             // 
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddNewButton.Location = new System.Drawing.Point(206, 320);
+            this.AddNewButton.Location = new System.Drawing.Point(318, 320);
             this.AddNewButton.Name = "AddNewButton";
             this.AddNewButton.Size = new System.Drawing.Size(75, 23);
             this.AddNewButton.TabIndex = 2;
@@ -109,7 +110,7 @@
             // 
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RenameButton.Location = new System.Drawing.Point(125, 320);
+            this.RenameButton.Location = new System.Drawing.Point(237, 320);
             this.RenameButton.Name = "RenameButton";
             this.RenameButton.Size = new System.Drawing.Size(75, 23);
             this.RenameButton.TabIndex = 3;
@@ -127,11 +128,24 @@
             this.SetAsDefaultCheckbox.Text = "Set as default";
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
             // 
+            // Delete
+            // 
+            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteButton.Location = new System.Drawing.Point(156, 320);
+            this.DeleteButton.Name = "DeleteButton";
+            this.DeleteButton.Size = new System.Drawing.Size(75, 23);
+            this.DeleteButton.TabIndex = 5;
+            this.DeleteButton.Text = "Delete";
+            this.DeleteButton.UseVisualStyleBackColor = true;
+            this.DeleteButton.Click += new System.EventHandler(this.Delete_Click);
+            // 
             // ChooseKSPInstance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(374, 355);
+            this.ClientSize = new System.Drawing.Size(486, 355);
+            this.Controls.Add(this.DeleteButton);
             this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
             this.Controls.Add(this.AddNewButton);
@@ -154,5 +168,6 @@
         private System.Windows.Forms.Button AddNewButton;
         private System.Windows.Forms.Button RenameButton;
         private System.Windows.Forms.CheckBox SetAsDefaultCheckbox;
+        private System.Windows.Forms.Button DeleteButton;
     }
 }
