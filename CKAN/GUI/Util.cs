@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+
 
 namespace CKAN
 {
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
 
     public static class Util
     {
-
+        
         public static bool IsLinux
         {
             get
@@ -75,12 +76,17 @@ namespace CKAN
                 ShowWindow(GetConsoleWindow(), 0);
             }
         }
+   }
+}
 
-
+namespace CKAN
+{
+    public static class UtilWithoutWinForm
+    {
         public static bool IsInstallable(this GUIMod mod)
         {
+
             return !(mod == null || mod.IsAutodetected || mod.IsIncompatible);
         }
-   }
-
+    }
 }
