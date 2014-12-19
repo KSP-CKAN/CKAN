@@ -139,6 +139,13 @@ namespace CKANTests
             Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invaild"));
         }
 
+        [Test] //37a33
+        public void Ctor_InvaildAutoStart_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP,"invaild")
+                ));
+        }
+
 
         //TODO Test FindAndRegisterDefaultInstance
 
@@ -153,14 +160,20 @@ namespace CKANTests
 
     public class FakeWin32Registry : IWin32Registry
     {
-        public FakeWin32Registry(CKAN.KSP instance)
+        public FakeWin32Registry(CKAN.KSP instance,string autostart)
         {
             Instances = new List<Tuple<string, string>>
             {
                 new Tuple<string, string>("test", instance.GameDir())
             };
-            AutoStartInstance = "test";
+            AutoStartInstance = autostart;
         }
+
+        public FakeWin32Registry(CKAN.KSP instance):this(instance, "test")
+        {
+            
+        }
+
 
         public FakeWin32Registry(List<Tuple<string, string>> instances, string auto_start_instance = null)
         {
