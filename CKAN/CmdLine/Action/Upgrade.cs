@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
@@ -59,6 +60,14 @@ namespace CKAN.CmdLine
                 }
             }
 
+
+            var auto_detected_modules = to_upgrade.Where(module => ksp.Registry.IsAutodetected(module.identifier)).ToList();
+            foreach (var module in auto_detected_modules.Select(mod => mod.identifier))
+            {
+                User.RaiseMessage("Cannot upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying again", module);
+            }
+            //Exit if any are auto_detected
+            if (auto_detected_modules.Any()) return Exit.ERROR;   
 
             User.RaiseMessage("\nUpgrading modules...\n");
             // TODO: These instances all need to go.
