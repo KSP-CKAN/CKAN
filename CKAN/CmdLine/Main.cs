@@ -5,10 +5,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using System.Text;
 
 namespace CKAN.CmdLine
 {
@@ -358,24 +358,9 @@ namespace CKAN.CmdLine
             {
                 // Oooh! We're installing from a CKAN file.
                 log.InfoFormat("Installing from CKAN file {0}", options.ckan_file);
-
-                CkanModule module = CkanModule.FromFile(options.ckan_file);
-
-                // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(current_instance);
-
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
-
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
-                // Add our module to the things we should install...
-                options.modules.Add(module.identifier);
-
-                // And continue with our install as per normal.
+                options.modules.Add(LoadCkanFromFile(current_instance, options.ckan_file).identifier);
             }
- 
+
             if (options.modules.Count == 0)
             {
                 // What? No files specified?
@@ -485,6 +470,22 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
+        }
+
+        internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)
+        {
+            CkanModule module = CkanModule.FromFile(ckan_file);
+
+            // We'll need to make some registry changes to do this.
+            RegistryManager registry_manager = RegistryManager.Instance(current_instance);
+
+            // Remove this version of the module in the registry, if it exists.
+            registry_manager.registry.RemoveAvailable(module);
+
+            // Sneakily add our version in...
+            registry_manager.registry.AddAvailable(module);            
+            
+            return module;
         }
 
         // TODO: We should have a command (probably this one) that shows

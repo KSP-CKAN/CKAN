@@ -19,9 +19,8 @@ namespace CKAN.CmdLine
             UpgradeOptions options = (UpgradeOptions) raw_options;
 
             if (options.ckan_file != null)
-            {
-                User.RaiseMessage("\nUnsupported option at this time.");
-                return Exit.BADOPT;
+            {                
+                options.modules.Add(MainClass.LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
             if (options.modules.Count == 0)
