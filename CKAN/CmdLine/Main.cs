@@ -5,16 +5,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using System.Text;
 
 namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));        
+        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
@@ -32,6 +34,9 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
+            IUser user = new ConsoleUser();
+            CheckMonoVersion(user, 3, 1, 0);
+
             // If we're starting with no options then invoke the GUI instead.
 
             if (args.Length == 0)
@@ -39,7 +44,7 @@ namespace CKAN.CmdLine
                 return Gui();
             }
 
-            IUser user = new ConsoleUser();
+
             Options cmdline;
 
             try
@@ -187,6 +192,43 @@ namespace CKAN.CmdLine
                 default:
                     user.RaiseMessage("Unknown command, try --help");
                     return Exit.BADOPT;
+            }
+        }
+
+        private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
+        {
+            try
+            {
+                Type type = Type.GetType("Mono.Runtime");
+                if (type == null) return;
+
+                MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                if (display_name != null)
+                {                    
+                    var version_string = (string) display_name.Invoke(null, null);
+                    var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
+                    
+                    if (match.Success)
+                    {                        
+                        int major = Int32.Parse(match.Groups["major"].Value);
+                        int minor = Int32.Parse(match.Groups["minor"].Value);
+                        int patch = Int32.Parse(match.Groups["revision"].Value);
+                        
+                        if (major < rec_major || (major == rec_major && minor < rec_minor))
+                        {
+                            user.RaiseMessage(
+                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\n",
+                                String.Join(".", major, minor, patch),
+                                String.Join(".", rec_major, rec_minor, rec_patch)
+                                );
+                            user.RaiseMessage("Update recommend\n");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignored. This may be fragile and is just a warning method
             }
         }
 
