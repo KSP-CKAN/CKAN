@@ -155,6 +155,7 @@ namespace CKAN.CmdLine
                     return Available(manager.CurrentInstance, user);
 
                 case "install":
+                    Scan(manager.CurrentInstance);
                     return Install((InstallOptions)cmdline.options, manager.CurrentInstance, user);
 
                 case "scan":
@@ -170,6 +171,7 @@ namespace CKAN.CmdLine
                     return Remove((RemoveOptions)cmdline.options, manager.CurrentInstance, user);
 
                 case "upgrade":
+                    Scan(manager.CurrentInstance);
                     var upgrade = new Upgrade(user);
                     return upgrade.RunCommand(manager.CurrentInstance, cmdline.options);
 
