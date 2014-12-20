@@ -44,6 +44,7 @@ namespace CKAN
         private static readonly TxFileManager file_transaction = new TxFileManager();
 
         private List<NetAsyncDownloaderDownloadPart> downloads;
+        private List<CkanModule> modules;
         private int completed_downloads;
 
         private Object download_complete_lock = new Object();
@@ -63,6 +64,7 @@ namespace CKAN
         {
             User = user;
             downloads = new List<NetAsyncDownloaderDownloadPart>();
+            modules = new List<CkanModule>();
         }
 
         /// <summary>
@@ -125,11 +127,11 @@ namespace CKAN
             {
                 unique_downloads[module.download] = module;
             }
-
+            this.modules.AddRange(unique_downloads.Values);
             // Attach our progress report, if requested.            
             onCompleted =
                 (_uris, paths, errors) =>
-                    ModuleDownloadsComplete(cache, _uris, paths, unique_downloads.Values.ToArray(), errors);
+                    ModuleDownloadsComplete(cache, _uris, paths, errors);
 
             // Start the download!
             Download(unique_downloads.Keys);
@@ -182,7 +184,7 @@ namespace CKAN
         /// Called by NetAsyncDownloader on completion.
         /// Called with all nulls on download cancellation.
         /// </summary>
-        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, CkanModule[] modules,
+        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames,
             Exception[] errors)
         {
             if (urls != null)
