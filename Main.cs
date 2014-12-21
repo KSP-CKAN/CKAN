@@ -338,12 +338,12 @@ namespace CKAN.CmdLine
                         else if (latest.version.IsEqualTo(current_version))
                         {
                             // Up to date
-                            bullet = "✓";
+                            bullet = "Y";
                         }
                         else if (latest.version.IsGreaterThan(mod.Value))
                         {
                             // Upgradable
-                            bullet = "↑";
+                            bullet = "^";
                         }
 
                     }
@@ -358,7 +358,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            user.RaiseMessage("\nLegend: ✓ - Up to date. X - Incompatible. ↑ - Upgradable. ? - Unknown ");
+            user.RaiseMessage("\nLegend: Y - Up to date. X - Incompatible. ^ - Upgradable. ? - Unknown ");
 
             return Exit.OK;
         }
