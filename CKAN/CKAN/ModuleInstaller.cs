@@ -216,7 +216,7 @@ namespace CKAN
 
             ksp.ScanGameData();
 
-            User.RaiseProgress("Done!", 100);
+            User.RaiseProgress("Done!\n", 100);
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace CKAN
                 transaction.Complete();
             }
 
-            User.RaiseMessage("Done!");
+            User.RaiseMessage("Done!\n");
         }
 
         public void UninstallList(string mod)
