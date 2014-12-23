@@ -188,7 +188,8 @@ namespace CKAN.CmdLine
                     return repair.RunSubCommand((SubCommandOptions) cmdline.options);
 
                 case "repo":
-                    return RunSubCommand<Repo>((SubCommandOptions) cmdline.options);
+                    var repo = new Repo(manager.CurrentInstance,user);
+                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
 
                 case "ksp":
                     var ksp = new KSP(manager, user);
@@ -261,8 +262,7 @@ namespace CKAN.CmdLine
             // Do the loop over the repositories here so we can report update counts per repo
             if (options.repo == null || options.repo.Equals("--all"))
             {
-                RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
-                Dictionary<string, Uri> repositories = manager.registry.Repositories;
+                Dictionary<string, Uri> repositories = registry_manager.registry.Repositories;
 
                 // Some repos might fail, try to update as much as possible
                 foreach (KeyValuePair<string, Uri> repository in repositories)
@@ -282,8 +282,6 @@ namespace CKAN.CmdLine
             }
             else
             {
-                // Handling the kraken means we have prettier output.
-                user.RaiseMessage(kraken.ToString());
                 return Exit.ERROR;
 				
 				// TODO download from single repo

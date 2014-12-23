@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
 using log4net;
+using CKAN;
 
 namespace CKAN.CmdLine
 {
@@ -16,6 +17,8 @@ namespace CKAN.CmdLine
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
 
+        public CKAN.KSP CurrentInstance { get; set; }
+        public IUser User { get; set; }
         public string option;
         public object suboptions;
 
@@ -56,8 +59,10 @@ namespace CKAN.CmdLine
             public string name { get; set; }
         }
 
-        public Repo()
+        public Repo(CKAN.KSP current_instance,IUser user)
         {
+            CurrentInstance = current_instance;
+            User = user;
         }
 
         internal void Parse(string option, object suboptions)
@@ -96,11 +101,9 @@ namespace CKAN.CmdLine
 
                 case "forget":
                     return ForgetRepository((ForgetOptions)suboptions);
-
-                default:
-                    User.WriteLine("Unknown command: ksp {0}", option);
-                    return Exit.BADOPT;
             }
+
+            throw new BadCommandKraken("Unknown command: repo " + option);
         }
 
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
@@ -116,9 +119,9 @@ namespace CKAN.CmdLine
             return JsonConvert.DeserializeObject<RepositoryList>(json);
         }
 
-        private static int AvailableRepositories()
+        private int AvailableRepositories()
         {
-            User.WriteLine("Listing all (canonical) available CKAN repositories:");
+            User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
             RepositoryList repositories = new RepositoryList();
             
             try
@@ -127,7 +130,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.Error("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
                 return Exit.ERROR;
             }
             
@@ -139,16 +142,16 @@ namespace CKAN.CmdLine
 
             foreach (Repository repository in repositories.repositories)
             {
-                User.WriteLine("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
+                User.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
             }
             
             return Exit.OK;
         }
 
-        private static int ListRepositories()
+        private int ListRepositories()
         {
-            User.WriteLine("Listing all known repositories:");
-            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+            User.RaiseMessage("Listing all known repositories:");
+            RegistryManager manager = RegistryManager.Instance(CurrentInstance);
             Dictionary<string, Uri> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
@@ -159,19 +162,19 @@ namespace CKAN.CmdLine
 
             foreach(KeyValuePair<string, Uri> repository in repositories)
             {
-                User.WriteLine("  {0}: {1}", repository.Key.PadRight(maxNameLen), repository.Value);
+                User.RaiseMessage("  {0}: {1}", repository.Key.PadRight(maxNameLen), repository.Value);
             }
 
             return Exit.OK;
         }
 
-        private static int AddRepository(AddOptions options)
+        private int AddRepository(AddOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+            RegistryManager manager = RegistryManager.Instance(CurrentInstance);
 
             if (options.name == null)
             {
-                User.WriteLine("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
+                User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -185,7 +188,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.Error("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
                     return Exit.ERROR;
                 }
 
@@ -201,7 +204,7 @@ namespace CKAN.CmdLine
                 // Nothing found in the master list?
                 if (options.uri == null)
                 {
-                    User.WriteLine("Name {0} not found in master list, please provide name and uri.", options.name);
+                    User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
                     return Exit.BADOPT;
                 }
             }
@@ -211,7 +214,7 @@ namespace CKAN.CmdLine
 
             if (repositories.ContainsKey(options.name))
             {
-                User.WriteLine("Repository with name \"{0}\" already exists, aborting..", options.name);
+                User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
                 return Exit.BADOPT;
             }
 
@@ -221,13 +224,13 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int ForgetRepository(ForgetOptions options)
+        private int ForgetRepository(ForgetOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(KSPManager.CurrentInstance);
+            RegistryManager manager = RegistryManager.Instance(CurrentInstance);
 
             if (options.name == null)
             {
-                User.WriteLine("forget <name> - argument missing, perhaps you forgot it?");
+                User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
@@ -236,7 +239,7 @@ namespace CKAN.CmdLine
 
             if (!(repositories.ContainsKey(options.name)))
             {
-                User.WriteLine("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
                 return Exit.BADOPT;
             }
 
