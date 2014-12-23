@@ -550,8 +550,6 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            // TODO: Print *lots* of information out; I should never have to dig through JSON
-
             #region Abstract and description
             if (!string.IsNullOrEmpty(module.Module.@abstract))
                 user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
@@ -565,7 +563,18 @@ namespace CKAN.CmdLine
             #region General info (author, version...)
             user.RaiseMessage("\nModule info:");
             user.RaiseMessage("- version:\t{0}", module.Module.version);
-            user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+
+            if (module.Module.author != null)
+            {
+                user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+            }
+            else
+            {
+                // Did you know that authors are optional in the spec?
+                // You do now. #673.
+                user.RaiseMessage("- authors:\tUNKNOWN");
+            }
+
             user.RaiseMessage("- status:\t{0}", module.Module.release_status);
             user.RaiseMessage("- license:\t{0}", module.Module.license); 
             #endregion
