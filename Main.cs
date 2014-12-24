@@ -5,7 +5,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -14,7 +16,7 @@ namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));        
+        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
@@ -32,6 +34,9 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
+            IUser user = new ConsoleUser();
+            CheckMonoVersion(user, 3, 1, 0);
+
             // If we're starting with no options then invoke the GUI instead.
 
             if (args.Length == 0)
@@ -39,7 +44,7 @@ namespace CKAN.CmdLine
                 return Gui();
             }
 
-            IUser user = new ConsoleUser();
+
             Options cmdline;
 
             try
@@ -190,6 +195,43 @@ namespace CKAN.CmdLine
             }
         }
 
+        private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
+        {
+            try
+            {
+                Type type = Type.GetType("Mono.Runtime");
+                if (type == null) return;
+
+                MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                if (display_name != null)
+                {                    
+                    var version_string = (string) display_name.Invoke(null, null);
+                    var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
+                    
+                    if (match.Success)
+                    {                        
+                        int major = Int32.Parse(match.Groups["major"].Value);
+                        int minor = Int32.Parse(match.Groups["minor"].Value);
+                        int patch = Int32.Parse(match.Groups["revision"].Value);
+                        
+                        if (major < rec_major || (major == rec_major && minor < rec_minor))
+                        {
+                            user.RaiseMessage(
+                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\n",
+                                String.Join(".", major, minor, patch),
+                                String.Join(".", rec_major, rec_minor, rec_patch)
+                                );
+                            user.RaiseMessage("Update recommend\n");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignored. This may be fragile and is just a warning method
+            }
+        }
+
         private static int Gui()
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
@@ -296,12 +338,12 @@ namespace CKAN.CmdLine
                         else if (latest.version.IsEqualTo(current_version))
                         {
                             // Up to date
-                            bullet = "✓";
+                            bullet = "-";
                         }
                         else if (latest.version.IsGreaterThan(mod.Value))
                         {
                             // Upgradable
-                            bullet = "↑";
+                            bullet = "^";
                         }
 
                     }
@@ -316,7 +358,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            user.RaiseMessage("\nLegend: ✓ - Up to date. X - Incompatible. ↑ - Upgradable. ? - Unknown ");
+            user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
 
             return Exit.OK;
         }
@@ -509,8 +551,6 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            // TODO: Print *lots* of information out; I should never have to dig through JSON
-
             #region Abstract and description
             if (!string.IsNullOrEmpty(module.Module.@abstract))
                 user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
@@ -524,7 +564,18 @@ namespace CKAN.CmdLine
             #region General info (author, version...)
             user.RaiseMessage("\nModule info:");
             user.RaiseMessage("- version:\t{0}", module.Module.version);
-            user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+
+            if (module.Module.author != null)
+            {
+                user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+            }
+            else
+            {
+                // Did you know that authors are optional in the spec?
+                // You do now. #673.
+                user.RaiseMessage("- authors:\tUNKNOWN");
+            }
+
             user.RaiseMessage("- status:\t{0}", module.Module.release_status);
             user.RaiseMessage("- license:\t{0}", module.Module.license); 
             #endregion
