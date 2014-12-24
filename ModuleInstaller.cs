@@ -355,7 +355,13 @@ namespace CKAN
             var files = new List<InstallableFile> ();
 
             // Normalize the path before doing everything else
+            // TODO: This really should happen in the ModuleInstallDescriptor itself.
             stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+
+            // Convert our stanza to a standard `file` type. This is a no-op if it's
+            // already the basic type.
+
+            stanza = stanza.ConvertFindToFile(zipfile);
   
             if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
