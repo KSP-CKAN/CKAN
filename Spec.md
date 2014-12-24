@@ -110,9 +110,10 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* '1' should be used.
 
-This document describes the CKAN specification 'v1.2'. Changes since spec `1`
-are maked with (**v1.2**). For maximum compatibility, using older spec versions
-is preferred when newer features are not required.
+This document describes the CKAN specification 'v1.4'. Changes since spec `1`
+are maked with **v1.2** through to **v1.4** respectively. For maximum
+compatibility, using older spec versions is preferred when newer features are
+not required.
 
 ##### name
 
@@ -239,13 +240,19 @@ ALPHA or pre-), or with silly orderings.
 
 ##### install
 
-A list of install directives for this mod, each must contain the two
-mandatory directives: 
+A list of install directives for this mod, each *must* contain one of
+two mandatory source directives:
 
 - `file`: The file or directory root that this directive pertains to.
   All leading directories are stripped from the start of the filename
   during install. (Eg: `MyMods/KSP/Foo` will be installed into
   `GameData/Foo`.)
+- `find`: (**v1.4**) Locate the top-most directory which exactly matches
+  the name specified. This is particularly useful when distributions
+  have structures which change based upon each release.
+
+In addition a destination directive *must* be provided:
+
 - `install_to`: The location where this section should be installed.
   Valid values for this entry are `GameData`, `Ships`, `Tutorial`,
   and `GameRoot` (which should be used sparingly, if at all).
@@ -257,7 +264,7 @@ subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this
 path and abort the install if any attempts to traverse up directories are found
 (eg: `GameData/../Example`).
 
-Optionally, an install directive may filter the files to install using:
+Optionally, one or more filter directives *may* be provided:
 
 - `filter` : A string, or list of strings, of file parts that should not
   be installed. These are treated as literal things which must match a
