@@ -141,13 +141,14 @@ namespace CKAN
         /// <summary>
         /// Given a zipfile, returns a `file` ModuleInstallDescriptor that can be used for
         /// installation.
-        /// Throws a FileNotFoundKraken() if unable to locate a suitable directory.
+        /// Returns `this` if already of a `file` type.
         /// </summary>
         public ModuleInstallDescriptor ConvertFindToFile(ZipFile zipfile)
         {
-            if (this.find == null)
+            // If we're already a file type stanza, then we have nothing to do.
+            if (this.file != null)
             {
-                throw new UnsupportedKraken(".ConvertFindToFind only works with `find` stanzas.");
+                return this;
             }
 
             var stanza = (ModuleInstallDescriptor) this.Clone();
@@ -189,8 +190,9 @@ namespace CKAN
                 );
             }
 
-            // Fill in our stanza!
+            // Fill in our stanza, and remove our old `find` info.
             stanza.file = candidates[0];
+            stanza.find = null;
             return stanza;
         }
     }
