@@ -39,12 +39,12 @@ namespace CKANTests
             string filename = Tests.TestData.DogeCoinFlagZip();
             using (var zipfile = new ZipFile(filename))
             {
-                CKAN.ModuleInstallDescriptor stanza = CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza = CKAN.ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza);
 
                 // Same again, but screwing up the case (we see this *all the time*)
-                CKAN.ModuleInstallDescriptor stanza2 = CKAN.ModuleInstaller.GenerateDefaultInstall("DogecoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor stanza2 = CKAN.ModuleInstallDescriptor.DefaultInstallStanza("DogecoinFlag", zipfile);
 
                 TestDogeCoinStanza(stanza2);
 
@@ -52,13 +52,13 @@ namespace CKANTests
 
                 Assert.Throws<FileNotFoundKraken>(delegate
                 {
-                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                    CKAN.ModuleInstallDescriptor.DefaultInstallStanza("Xyzzy", zipfile);
                 });
 
                 // Make sure the FNFKraken looks like what we expect.
                 try
                 {
-                    CKAN.ModuleInstaller.GenerateDefaultInstall("Xyzzy", zipfile);
+                    CKAN.ModuleInstallDescriptor.DefaultInstallStanza("Xyzzy", zipfile);
                 }
                 catch (FileNotFoundKraken kraken)
                 {
@@ -298,7 +298,7 @@ namespace CKANTests
             using (var zipfile = new ZipFile(corrupt_dogezip))
             {
                 // GenerateDefault Install
-                CKAN.ModuleInstaller.GenerateDefaultInstall("DogeCoinFlag", zipfile);
+                CKAN.ModuleInstallDescriptor.DefaultInstallStanza("DogeCoinFlag", zipfile);
 
                 // FindInstallableFiles
                 CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
