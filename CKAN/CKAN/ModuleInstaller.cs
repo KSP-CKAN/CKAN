@@ -304,59 +304,6 @@ namespace CKAN
         }
             
         /// <summary>
-        /// Returns a default install stanza for the module provided. This finds the topmost
-        /// directory which matches the module identifier, and generates a stanza that
-        /// installs that into GameData.
-        /// 
-        /// Throws a FileNotFoundKraken() if unable to locate a suitable directory.
-        /// </summary>
-        internal static ModuleInstallDescriptor GenerateDefaultInstall(string identifier, ZipFile zipfile)
-        {
-            var stanza = new ModuleInstallDescriptor {install_to = "GameData"};
-
-            // Candidate top-level directories.
-            var candidate_set = new HashSet<string>();
-
-            // Match *only* things with our module identifier as a directory.
-            // We can't just look for directories, because some zipfiles
-            // don't include entries for directories, but still include entries
-            // for the files they contain.
-
-            string ident_filter = @"(?:^|/)" + Regex.Escape(identifier) + @"$";
-
-            // Let's find that directory
-
-            // Normalise our path.
-            var normalised = zipfile.Cast<ZipEntry>().Select(entry => Path.GetDirectoryName(entry.Name))
-                .Select(directory =>
-                {
-                    var dir = directory.Replace('\\', '/');
-                    return Regex.Replace(dir, "/$", "");
-                });
-            
-            // If this looks like what we're after, remember it.
-            var directories = normalised.Where(directory => Regex.IsMatch(directory, ident_filter, RegexOptions.IgnoreCase));
-            candidate_set.UnionWith(directories);
-            
-            // Sort to have shortest first. It's not *quite* top-level directory order,
-            // but it's good enough for now.
-            var candidates = new List<string>(candidate_set);
-            candidates.Sort((a,b) => a.Length.CompareTo(b.Length));
-
-            if (candidates.Count == 0)
-            {
-                throw new FileNotFoundKraken(
-                    identifier,
-                    String.Format("Could not find {0} directory in zipfile to install", identifier)
-                );
-            }
-
-            // Fill in our stanza!
-            stanza.file = candidates[0];
-            return stanza;
-        }
-
-        /// <summary>
         /// Installs the module from the zipfile provided.
         /// Returns a list of files installed.
         /// Propagates a BadMetadataKraken if our install metadata is bad.
@@ -408,7 +355,13 @@ namespace CKAN
             var files = new List<InstallableFile> ();
 
             // Normalize the path before doing everything else
+            // TODO: This really should happen in the ModuleInstallDescriptor itself.
             stanza.install_to = KSPPathUtils.NormalizePath(stanza.install_to);
+
+            // Convert our stanza to a standard `file` type. This is a no-op if it's
+            // already the basic type.
+
+            stanza = stanza.ConvertFindToFile(zipfile);
   
             if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
@@ -554,7 +507,7 @@ namespace CKAN
                 }
                 else
                 {
-                    ModuleInstallDescriptor default_stanza = GenerateDefaultInstall(module.identifier, zipfile);
+                    ModuleInstallDescriptor default_stanza = ModuleInstallDescriptor.DefaultInstallStanza(module.identifier, zipfile);
                     files.AddRange(FindInstallableFiles(default_stanza, zipfile, ksp));
                 }
             }

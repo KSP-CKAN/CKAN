@@ -135,6 +135,20 @@ namespace Tests
             return CkanModule.FromJson(DogeCoinFlag_101());
         }
 
+        /// <summary>
+        /// The Doge Coin flag we all love, but using `find` install stanzas.
+        /// </summary>
+        public static CkanModule DogeCoinFlag_101_module_find()
+        {
+            CkanModule doge = DogeCoinFlag_101_module();
+
+            // Hand hack in the 'find' directive.
+            doge.install[0].file = null;
+            doge.install[0].find = "DogeCoinFlag";
+
+            return doge;
+        }
+
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
         public static string FutureMetaData()
         {
