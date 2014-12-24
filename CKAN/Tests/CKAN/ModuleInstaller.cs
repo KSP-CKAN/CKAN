@@ -34,6 +34,17 @@ namespace CKANTests
         }
 
         [Test]
+        public void Sanity()
+        {
+            // Test our assumptions are right with the data we're using.
+
+            // Our _find mod should have a find section, but not a file section.
+            CkanModule mod = Tests.TestData.DogeCoinFlag_101_module_find();
+            Assert.IsNull(mod.install[0].file);
+            Assert.IsNotNull(mod.install[0].find);
+        }
+
+        [Test]
         public void GenerateDefaultInstall()
         {
             string filename = Tests.TestData.DogeCoinFlagZip();
@@ -67,10 +78,17 @@ namespace CKANTests
             }
         }
 
-        [Test]
-        public void FindInstallableFiles()
+        // Test data: different ways to install the same file.
+        public static CkanModule[] doge_mods =
         {
-            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, null);
+            Tests.TestData.DogeCoinFlag_101_module(),
+            Tests.TestData.DogeCoinFlag_101_module_find()
+        };
+
+        [Test][TestCaseSource("doge_mods")]
+        public void FindInstallableFiles(CkanModule mod)
+        {
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mod, dogezip, null);
             List<string> filenames = new List<string>();
 
             Assert.IsNotNull(contents);
@@ -96,12 +114,12 @@ namespace CKANTests
             Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
         }
 
-        [Test]
-        public void FindInstallableFilesWithKSP()
+        [Test][TestCaseSource("doge_mods")]
+        public void FindInstallableFilesWithKSP(CkanModule mod)
         {
             using (var tidy = new Tests.DisposableKSP())
             {
-                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, dogezip, tidy.KSP);
+                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mod, dogezip, tidy.KSP);
 
                 // See if we can find an expected estination path in the right place.
                 string file = contents
@@ -111,8 +129,6 @@ namespace CKANTests
                 Assert.IsNotNull(file);
             }
         }
-
-#pragma warning disable 0414
 
         // GH #315, all of these should result in the same output.
         // Even though they're not necessarily all spec-valid, we should accept them
@@ -126,8 +142,6 @@ namespace CKANTests
             "GameData\\SuchTest/",
             "GameData/SuchTest\\"
         };
-
-#pragma warning restore 0414
 
         [Test]
         [TestCaseSource("SuchPaths")]
@@ -163,14 +177,13 @@ namespace CKANTests
             }
         }
 
-        [Test]
+        [Test][TestCaseSource("doge_mods")]
         // Make sure all our filters work.
-        public void FindInstallableFilesWithFilter()
+        public void FindInstallableFilesWithFilter(CkanModule mod)
         {
             string extra_doge = Tests.TestData.DogeCoinFlagZipWithExtras();
-            CkanModule dogemod = Tests.TestData.DogeCoinFlag_101_module();
 
-            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(dogemod, extra_doge, null);
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mod, extra_doge, null);
 
             var files = contents.Select(x => x.source.Name);
 
