@@ -188,6 +188,12 @@ namespace Tests
             return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
         }
 
+        // A repo full of deliciously bad metadata...
+        public static Uri BadKAN()
+        {
+            return new Uri("../../../Tests/DATA/CKAN-meta-badkan.zip", UriKind.Relative);
+        }
+
         public static string good_ksp_dir()
         {
             return Path.Combine(DataDir(), "KSP/KSP-0.25");
