@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Upgrade : ICommand
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
+
         public IUser User { get; set; }
 
         public Upgrade(IUser user)
@@ -23,39 +26,80 @@ namespace CKAN.CmdLine
                 options.modules.Add(MainClass.LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0)
+            if (options.modules.Count == 0 && ! options.upgrade_all)
             {
                 // What? No files specified?
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
+                User.RaiseMessage("  or   ckan upgrade --all");
                 return Exit.BADOPT;
             }
 
             var to_upgrade = new List<CkanModule> ();
 
-            foreach (string mod in options.modules)
+            if (options.upgrade_all)
             {
-                Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+                var installed = new Dictionary<string, Version>(ksp.Registry.Installed());
 
-                if (match.Success)
+                foreach (KeyValuePair<string, Version> mod in installed)
                 {
-                    string ident = match.Groups["mod"].Value;
-                    string version = match.Groups["version"].Value;
+                    Version current_version = mod.Value;
 
-                    CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
-
-                    if (module == null)
+                    if ((current_version is ProvidesVersion) || (current_version is DllVersion))
                     {
-                        User.RaiseMessage("Cannot install {0}, version {1} not available", ident, version);
-                        return Exit.ERROR;
+                        continue;
                     }
+                    else
+                    {
+                        try
+                        {
+                            // Check if upgrades are available
+                            CkanModule latest = ksp.Registry.LatestAvailable(mod.Key, ksp.Version());
 
-                    to_upgrade.Add(module);
+                            if (latest.version.IsGreaterThan(mod.Value))
+                            {
+                                // Upgradable
+                                log.InfoFormat("New version {0} found for {1}",
+                                    latest.version, latest.identifier);
+                                to_upgrade.Add(latest);
+                            }
+
+                        }
+                        catch (ModuleNotFoundKraken)
+                        {               
+                            log.InfoFormat("{0} is installed, but no longer in the registry",
+                                mod.Key);                            
+                        }
+                    }
+                
                 }
-                else
+            }
+            else
+            {
+                foreach (string mod in options.modules)
                 {
-                    to_upgrade.Add(
-                        ksp.Registry.LatestAvailable(mod, ksp.Version())
-                    );
+                    Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+
+                    if (match.Success)
+                    {
+                        string ident = match.Groups["mod"].Value;
+                        string version = match.Groups["version"].Value;
+
+                        CkanModule module = ksp.Registry.GetModuleByVersion(ident, version);
+
+                        if (module == null)
+                        {
+                            User.RaiseMessage("Cannot install {0}, version {1} not available", ident, version);
+                            return Exit.ERROR;
+                        }
+
+                        to_upgrade.Add(module);
+                    }
+                    else
+                    {
+                        to_upgrade.Add(
+                            ksp.Registry.LatestAvailable(mod, ksp.Version())
+                        );
+                    }
                 }
             }
 
