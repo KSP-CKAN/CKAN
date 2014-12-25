@@ -48,9 +48,8 @@ namespace CKAN
         {
             menuStrip1.Enabled = false;
 
-            RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-            install_ops.with_recommends = false;
-            
+            RelationshipResolverOptions install_ops = new RelationshipResolverOptions {with_recommends = false};
+
             m_InstallWorker.RunWorkerAsync(
                 new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                     m_Changeset, install_ops));

@@ -18,17 +18,6 @@ namespace CKAN
         }
     }
 
-    // Alas, it appears that structs cannot have defaults. Try
-    // DefaultOpts() to get friendly defaults.
-
-    // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
-    // right thing in processing all depdenencies first, then recommends, and then suggests,
-    // we could find that a recommendation many layers deep prevents a recommendation in the
-    // original mod's recommends list.
-    //
-    // If we resolved in things breadth-first order, we're less likely to encounter surprises
-    // where a nth-deep recommend blocks a top-level recommend.
-
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
@@ -72,7 +61,7 @@ namespace CKAN
                 }
 
                 user_requested_mods.Add(mod);
-                Add(mod);
+                this.Add(mod);
             }
 
             // Now that we've already pre-populated modlist, we can resolve
@@ -81,7 +70,7 @@ namespace CKAN
             foreach (CkanModule module in user_requested_mods)
             {
                 log.InfoFormat("Resolving relationships for {0}", module.identifier);
-                Resolve(module, options);
+                Resolve(module, options, true);
             }
 
             var final_modules = new List<Module>(modlist.Values);
@@ -97,26 +86,13 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        ///     Returns the default options for relationship resolution.
-        /// </summary>
-        public static RelationshipResolverOptions DefaultOpts()
-        {
-            var opts = new RelationshipResolverOptions
-            {
-                with_recommends = true,
-                with_suggests = false,
-                with_all_suggests = false
-            };
-
-            return opts;
-        }
+        private readonly ResolveQueue queue = new ResolveQueue();
 
         /// <summary>
         /// Resolves all relationships for a module.
         /// May recurse to ResolveStanza, which may add additional modules to be installed.
         /// </summary>
-        private void Resolve(CkanModule module, RelationshipResolverOptions options)
+        private void Resolve(CkanModule module, RelationshipResolverOptions options, bool head_of_recursion = false)
         {
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
@@ -124,20 +100,42 @@ namespace CKAN
             var sub_options = (RelationshipResolverOptions)options.Clone();
             sub_options.with_suggests = false;
 
-            log.DebugFormat("Resolving dependencies for {0}", module.identifier);
-            ResolveStanza(module.depends, sub_options);
+            queue.Add(ResolvePhase.Depends, module);
 
             if (options.with_recommends)
             {
-                log.DebugFormat("Resolving recommends for {0}", module.identifier);
-                ResolveStanza(module.recommends, sub_options, true);
+                queue.Add(ResolvePhase.Recommends, module);
             }
 
             if (options.with_suggests || options.with_all_suggests)
             {
-                log.DebugFormat("Resolving suggests for {0}", module.identifier);
-                ResolveStanza(module.suggests, sub_options, true);
+                queue.Add(ResolvePhase.Suggests, module);
             }
+
+            if (!head_of_recursion) return;
+
+            while (queue.HasNext())
+            {
+                var pair = queue.Dequeue();
+                List<RelationshipDescriptor> relationships;
+                switch (pair.Key)
+                {
+                    case ResolvePhase.Depends:
+                        relationships = pair.Value.depends;
+                        break;
+                    case ResolvePhase.Recommends:
+                        relationships = pair.Value.recommends;
+                        break;
+                    case ResolvePhase.Suggests:
+                        relationships = pair.Value.suggests;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                log.DebugFormat("Relsolving {0} for {1}", pair.Key, module.identifier);
+                ResolveStanza(relationships, sub_options, pair.Key != ResolvePhase.Depends);
+            }
+
         }
 
         /// <summary>
@@ -200,7 +198,7 @@ namespace CKAN
                 // list thus far, as well as everything on the system.
 
                 var fixed_mods =
-                    new HashSet<Module>(modlist.Values);
+                    new HashSet<Module>(this.modlist.Values);
 
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
@@ -217,13 +215,15 @@ namespace CKAN
                             candidate = null;
                             break;
                         }
-                        var this_is_why_we_cant_have_nice_things = new List<string> {
-                            string.Format(
-                                "{0} and {1} conflict with each other, yet we require them both!",
-                                candidate, mod)
-                        };
-
-                        throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
+                        else
+                        {
+                            throw new InconsistentKraken(new List<string>
+                            {
+                                string.Format(
+                                    "{0} and {1} conflict with each other, yet we require them both!",
+                                    candidate, mod)
+                            });
+                        }
                     }
                 }
 
@@ -272,6 +272,46 @@ namespace CKAN
                 modlist.Add(alias, module);
             }
         }
+
+        private enum ResolvePhase
+        {
+            Depends, Recommends, Suggests
+        }
+
+        private class ResolveQueue
+        {
+            private readonly Dictionary<ResolvePhase, Queue<Module>> to_be_resolved
+                = new Dictionary<ResolvePhase, Queue<Module>>
+            {
+                {ResolvePhase.Depends, new Queue<Module>()},
+                {ResolvePhase.Recommends, new Queue<Module>()},
+                {ResolvePhase.Suggests, new Queue<Module>()}
+            };
+
+            public void Add(ResolvePhase phase, Module module)
+            {
+                to_be_resolved[phase].Enqueue(module);
+            }
+
+            public bool HasNext()
+            {
+                return to_be_resolved[ResolvePhase.Depends].Count > 0
+                       || to_be_resolved[ResolvePhase.Recommends].Count > 0
+                       || to_be_resolved[ResolvePhase.Suggests].Count > 0;
+            }
+            //Returns in depends,recommends, suggests order.
+            public KeyValuePair<ResolvePhase, Module> Dequeue()
+            {
+                //Contract.Requires(HasNext());
+                var phases = Enum.GetValues(typeof(ResolvePhase)).Cast<ResolvePhase>();
+                foreach (var phase in phases.Where(phase => to_be_resolved[phase].Count > 0))
+                {
+                    return new KeyValuePair<ResolvePhase, Module>(phase, to_be_resolved[phase].Dequeue());
+                }
+                return default(KeyValuePair<ResolvePhase, Module>);
+            }
+        }
+
 
         /// <summary>
         /// Returns a list of all modules to install to satisify the changes required.

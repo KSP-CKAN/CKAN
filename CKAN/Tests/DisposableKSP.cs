@@ -15,6 +15,7 @@ namespace Tests
 
         public KSP KSP { get; private set; }
 
+
         /// <summary>
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
         /// Use .KSP to access the KSP object itself.
@@ -37,6 +38,7 @@ namespace Tests
             }
 
             KSP = new KSP(disposable_dir, NullUser.User);
+
         }
 
         public void Dispose()

@@ -53,46 +53,125 @@ namespace CKAN
 
         private void UpdateModInfoAuthor(CkanModule module)
         {
-            var authors = "";
-
-            if (module.author != null)
-            {
-                for (int i = 0; i < module.author.Count; i++)
-                {
-                    authors += module.author[i];
-
-                    if (i != module.author.Count - 1)
-                    {
-                        authors += ", ";
-                    }
-                }
-            }
+            var authors = module.author != null
+                ? String.Join(", ", module.author)
+                : String.Empty;
 
             MetadataModuleAuthorLabel.Text = authors;
         }
 
-        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
+        private readonly HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
+        private readonly Queue<QueueItem> to_visit = new Queue<QueueItem>();
 
-        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
+        private struct QueueItem
         {
-            if (module == null 
-                || (depth > 0 && dependencyGraphRootModule == module)
-                || (alreadyVisited.Contains(module)))
+            public CkanModule Module;
+            public TreeNode ParentNode;
+            public bool VirtualProvides;
+        }
+
+        private TreeNode UpdateModDependencyGraph(TreeNode parentNode, CkanModule module, RelationshipType relationship, bool isHeadNode, bool virtualProvides = false)
+        {
+
+            if (module == null
+                || (!isHeadNode && dependencyGraphRootModule == module)
+                || alreadyVisited.Contains(module))
             {
                 return null;
             }
 
+
+
             alreadyVisited.Add(module);
 
-            string nodeText = module.name;
-            if (virtualProvides)
+            var node = parentNode == null
+                ? new TreeNode(module.name)
+                : parentNode.Nodes.Add(module.name);
+
+            var relationships = GetRelationshipDescriptorsFromType(module, relationship);
+
+            if (relationships == null)
             {
-                nodeText = String.Format("provided by - {0}", module.name);
+                return node;
             }
 
-            var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
+            var current_instance = Instance.CurrentInstance;
+            var registry = RegistryManager.Instance(current_instance).registry;
 
-            IEnumerable<RelationshipDescriptor> relationships = null;
+            foreach (RelationshipDescriptor dependency in relationships)
+            {
+                try
+                {
+                    var dependency_module = registry.LatestAvailable(dependency.name, current_instance.Version());
+                    var queue_items = new QueueItem
+                    {
+                        Module = dependency_module,
+                        ParentNode = node,
+                        VirtualProvides = false,
+
+                    };
+                    to_visit.Enqueue(queue_items);
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    //Can not find referanced module. Check for a module that provides it. 
+                    try
+                    {
+                        List<CkanModule> dependency_modules = registry.LatestAvailableWithProvides(dependency.name, current_instance.Version());
+
+                        if (dependency_modules == null)
+                        {
+                            continue;
+                        }
+
+                        var new_node = node.Nodes.Add(dependency.name + " (virtual)");
+                        new_node.ForeColor = Color.Gray;
+
+                        foreach (var dep in dependency_modules)
+                        {
+                            var queue_items = new QueueItem
+                            {
+                                Module = dep,
+                                ParentNode = new_node,
+                                VirtualProvides = true
+                            };
+                            to_visit.Enqueue(queue_items);
+                        }
+                    }
+                    catch (ModuleNotFoundKraken)
+                    {
+                        //No need to display mods we can not provide. 
+                    }
+                }
+
+            }
+
+            while (to_visit.Count > 0)
+            {
+                var item = to_visit.Dequeue();
+                UpdateModDependencyGraph(item, relationship);
+            }
+
+            if (virtualProvides)
+            {
+                node.Collapse(true);
+            }
+            else
+            {
+                node.ExpandAll();
+            }
+
+            return node;
+        }
+
+        private void UpdateModDependencyGraph(QueueItem item, RelationshipType relationship)
+        {
+            UpdateModDependencyGraph(item.ParentNode, item.Module, relationship, false, item.VirtualProvides);
+        }
+
+        private static IEnumerable<RelationshipDescriptor> GetRelationshipDescriptorsFromType(Module module, RelationshipType relationship)
+        {
+            IEnumerable<RelationshipDescriptor> relationships;
             switch (relationship)
             {
                 case RelationshipType.Depends:
@@ -107,59 +186,9 @@ namespace CKAN
                 case RelationshipType.Supports:
                     relationships = module.supports;
                     break;
+                default: throw new ArgumentException("Unknown type of relationship");
             }
-
-            if (relationships == null)
-            {
-                return node;
-            }
-
-            foreach (RelationshipDescriptor dependency in relationships)
-            {
-                Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-
-                try
-                {
-                    try
-                    {
-                        var dependencyModule = registry.LatestAvailable
-                            (dependency.name, manager.CurrentInstance.Version());
-                        UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
-                    }
-                    catch (ModuleNotFoundKraken)
-                    {
-                        List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name, manager.CurrentInstance.Version());
-
-                        if (dependencyModules == null)
-                        {
-                            continue;
-                        }
-
-                        var newNode = node.Nodes.Add(dependency.name + " (virtual)");
-                        newNode.ForeColor = Color.Gray;
-
-                        foreach (var dep in dependencyModules)
-                        {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);                            
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            if (virtualProvides)
-            {
-                node.Collapse(true);
-            }
-            else
-            {
-                node.ExpandAll();
-            }
-
-            return node;
+            return relationships;
         }
 
         private void UpdateModDependencyGraph(CkanModule module)
@@ -193,13 +222,15 @@ namespace CKAN
                 ModuleRelationshipType.SelectedIndex = 0;
             }
 
-            var relationshipType = (RelationshipType) ModuleRelationshipType.SelectedIndex;
+            var relationshipType = (RelationshipType)ModuleRelationshipType.SelectedIndex;
 
 
             alreadyVisited.Clear();
 
             DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
+            DependsGraphTree.Nodes.Add(UpdateModDependencyGraph(null, module, relationshipType, true));
+            DependsGraphTree.Nodes[0].ExpandAll();
+
         }
 
         // When switching tabs ensure that the resulting tab is updated. 
@@ -219,14 +250,13 @@ namespace CKAN
             {
                 return;
             }
-            Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
+            Util.Invoke(ContentsPreviewTree, ()=>_UpdateModContentsTree(module));
         }
 
         private CkanModule current_mod_contents_module;
 
-        private void _UpdateModContentsTree()
-        {
-            var module = (CkanModule) ModInfoTabControl.Tag;
+        private void _UpdateModContentsTree(CkanModule module)
+        {            
             if (module == current_mod_contents_module)
             {
                 return;

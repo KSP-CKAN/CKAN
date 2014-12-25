@@ -16,7 +16,7 @@ namespace Tests.CKAN.Relationships
         public void Setup()
         {
             registry = Registry.Empty();
-            options = RelationshipResolver.DefaultOpts();
+            options = new RelationshipResolverOptions();
             generator = new RandomModuleGenerator(new Random(0451));
             //Sanity checker means even incorrect RelationshipResolver logic was passing
             options.without_enforce_consistency = true;
@@ -26,7 +26,7 @@ namespace Tests.CKAN.Relationships
         public void Constructor_WithoutModules_AlwaysReturns()
         {
             registry = Registry.Empty();
-            options = RelationshipResolver.DefaultOpts();
+            options = new RelationshipResolverOptions();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<string>(),
                 options,
                 registry,
@@ -266,7 +266,88 @@ namespace Tests.CKAN.Relationships
 
         }
 
+        [Test]
+        public void Constructor_RecommendsAddedInbreadthFirstOrder_Throws()
+        {
+            options.without_toomanyprovides_kraken = false;
+            // If a conflicts with c choose c as it is shallower.
+            // D->b->a
+            //  \  
+            //   >c
+            //
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule();
+            var mod_b = generator.GeneratorRandomModule(recommends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_a.identifier}
+            });
+            var mod_c = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_a.identifier}
+            });
+            var mod_d = generator.GeneratorRandomModule(recommends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_b.identifier},
+                new RelationshipDescriptor {name = mod_c.identifier}
+            });
 
+            list.Add(mod_d.identifier);
+            AddToRegistry(mod_a, mod_b, mod_c, mod_d);
+
+            options.with_recommends = true;
+            var modlist = new RelationshipResolver(list, options, registry,null).ModList();
+            CollectionAssert.Contains(modlist, mod_c);
+        }
+
+        [Test]
+        public void Constructor_SugestedModulesHaveDependancesAdded()
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule();
+            var mod_b = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_a.identifier}
+            });
+            var mod_c = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_b.identifier}
+            });
+
+
+            list.Add(mod_c.identifier);
+            AddToRegistry(mod_a, mod_b, mod_c);
+
+            options.with_recommends = true;
+            options.with_all_suggests = true;
+            var modlist = new RelationshipResolver(list, options, registry, null).ModList();
+            CollectionAssert.Contains(modlist, mod_a);
+        }
+        [Test]
+        public void Constructor_SugestedodulesHaveConflictingDependances_ThrowsIfWithAllSuggests()
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule();
+            var mod_b = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_a.identifier}
+            });
+            var mod_c = generator.GeneratorRandomModule(
+                sugests: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_b.identifier}
+            }, conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = mod_a.identifier}
+            });
+
+
+            list.Add(mod_c.identifier);
+            AddToRegistry(mod_a, mod_b, mod_c);
+
+            options.with_recommends = true;
+            options.with_all_suggests = true;
+            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(list, options, registry, null));
+        }
 
         private void AddToRegistry(params CkanModule[] modules)
         {
