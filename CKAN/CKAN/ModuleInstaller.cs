@@ -584,13 +584,20 @@ namespace CKAN
                 // overwite files, as it ensures deletiion on rollback.
                 file_transaction.Snapshot(fullPath);
 
-                // It's a file! Prepare the streams
-                using (Stream zipStream = zipfile.GetInputStream(entry))
-                using (FileStream writer = File.Create(fullPath))
+                try
                 {
-                    // 4k is the block size on practically every disk and OS.
-                    byte[] buffer = new byte[4096];
-                    StreamUtils.Copy(zipStream, writer, buffer);
+                    // It's a file! Prepare the streams
+                    using (Stream zipStream = zipfile.GetInputStream(entry))
+                    using (FileStream writer = File.Create(fullPath))
+                    {
+                        // 4k is the block size on practically every disk and OS.
+                        byte[] buffer = new byte[4096];
+                        StreamUtils.Copy(zipStream, writer, buffer);
+                    }
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    throw new DirectoryNotFoundKraken("", ex.Message, ex);
                 }
             }
         }
