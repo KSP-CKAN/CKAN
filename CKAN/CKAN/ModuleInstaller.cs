@@ -707,6 +707,12 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
+                        // Skip Ships/VAB ans Ships/SPH
+                        if (directory == KSPPathUtils.ToAbsolute("VAB", ksp.Ships())
+                            || directory == KSPPathUtils.ToAbsolute("SPH", ksp.Ships()))
+                        {
+                            continue;
+                        }
 
                         // We *don't* use our file_transaction to delete files here, because
                         // it fails if the system's temp directory is on a different device
