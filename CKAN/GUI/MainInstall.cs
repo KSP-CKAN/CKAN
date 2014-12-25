@@ -375,6 +375,8 @@ namespace CKAN
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
             }
             else
             {
