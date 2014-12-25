@@ -46,6 +46,9 @@ namespace CKAN
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
         {
+            if (m_Changeset == null)
+                return;
+
             menuStrip1.Enabled = false;
 
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
