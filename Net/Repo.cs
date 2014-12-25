@@ -99,19 +99,42 @@ namespace CKAN
                         log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
                         registry.AddAvailable(module);
                     }
-                    catch (Kraken kraken)
+                    catch (Exception exception)
                     {
-                        if (kraken is UnsupportedKraken || kraken is BadMetadataKraken)
-                        {
-                            // Either of these can be caused by data meant for future
-                            // clients, so they're not really warnings, they're just
-                            // informational.
+                        // Alas, we can get exceptions which *wrap* our exceptions,
+                        // because json.net seems to enjoy wrapping rather than propagating.
+                        // See KSP-CKAN/CKAN-meta#182 as to why we need to walk the whole
+                        // exception stack.
 
-                            log.InfoFormat("Skipping {0} : {1}", filename, kraken.Message);
+                        bool handled = false;
+
+                        while (exception != null)
+                        {
+                            if (exception is UnsupportedKraken || exception is BadMetadataKraken)
+                            {
+                                // Either of these can be caused by data meant for future
+                                // clients, so they're not really warnings, they're just
+                                // informational.
+
+                                log.InfoFormat("Skipping {0} : {1}", filename, exception.Message);
+
+                                // I'd *love a way to "return" from the catch block.
+                                handled = true;
+                                break;
+                            }
+
+                            // Look further down the stack.
+                            exception = exception.InnerException;
                         }
 
-                        // This is not the kraken we're looking for.
-                        throw;
+                        // If we haven't handled our exception, then it really was exceptional.
+                        if (handled == false)
+                        {
+                            // In case whatever's calling us is lazy in error reporting, we'll
+                            // report that we've got an issue here.
+                            log.ErrorFormat("Error processing {0} : {1}", filename, exception.Message);
+                            throw;
+                        }
                     }
                 }
 
