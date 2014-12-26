@@ -42,10 +42,15 @@ namespace CKAN
             UpdateModsList();
             UpdateChangesDialog(null, m_InstallWorker);
             m_TabController.ShowTab("ManageModsTabPage");
+            m_TabController.HideTab("ChangesetTabPage");
+            ApplyToolButton.Enabled = false;
         }
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
         {
+            if (m_Changeset == null)
+                return;
+
             menuStrip1.Enabled = false;
 
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
