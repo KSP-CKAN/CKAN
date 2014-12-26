@@ -178,15 +178,7 @@ namespace CKAN
         private void _UpdateModDependencyGraph()
         {
             var module = (CkanModule) ModInfoTabControl.Tag;
-            if (module == dependencyGraphRootModule)
-            {
-                return;
-            }
-            else
-            {
-                dependencyGraphRootModule = module;
-            }
-
+            dependencyGraphRootModule = module;
 
             if (ModuleRelationshipType.SelectedIndex == -1)
             {
