@@ -186,6 +186,11 @@ namespace CKAN.CmdLine
                 case "repair":
                     var repair = new Repair(manager.CurrentInstance,user);
                     return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "repo":
+                    var repo = new Repo(manager.CurrentInstance,user);
+                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
+
                 case "ksp":
                     var ksp = new KSP(manager, user);
                     return ksp.RunSubCommand((SubCommandOptions) cmdline.options);                    
@@ -253,16 +258,33 @@ namespace CKAN.CmdLine
         {
             user.RaiseMessage("Downloading updates...");
 
-            try
+            int exitValue = Exit.OK;
+            // Do the loop over the repositories here so we can report update counts per repo
+            if (options.repo == null || options.repo.Equals("--all"))
             {
-                int updated = Repo.Update(registry_manager, current_instance.Version(), options.repo);
-                user.RaiseMessage("Updated information on {0} available modules", updated);
+                Dictionary<string, Uri> repositories = registry_manager.registry.Repositories;
+
+                // Some repos might fail, try to update as much as possible
+                foreach (KeyValuePair<string, Uri> repository in repositories)
+                {
+                    try
+                    {
+                        // int updated = CKAN.Repo.Update(repository.Value);
+						int updated = CKAN.Repo.Update(registry_manager, current_instance.Version(), options.repo);
+                        user.RaiseMessage("Updated information on {0} available modules", updated);
+                    }
+                    catch (MissingCertificateKraken kraken)
+                    {
+                        // Handling the kraken means we have prettier output.
+                        Console.WriteLine(kraken);
+                    }
+                }
             }
-            catch (MissingCertificateKraken kraken)
+            else
             {
-                // Handling the kraken means we have prettier output.
-                user.RaiseMessage(kraken.ToString());
                 return Exit.ERROR;
+				
+				// TODO download from single repo
             }
 
             return Exit.OK;

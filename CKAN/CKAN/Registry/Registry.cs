@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using System;
 using log4net;
 using Newtonsoft.Json;
 
@@ -25,6 +26,8 @@ namespace CKAN
 
         [JsonProperty] private int registry_version;
 
+        [JsonProperty] private Dictionary<string, Uri> repositories; // name => uri
+
         // TODO: These may be good as custom types, especially those which process
         // paths (and flip from absolute to relative, and vice-versa).
         [JsonProperty] internal Dictionary<string, AvailableModule> available_modules;
@@ -33,6 +36,17 @@ namespace CKAN
         [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
         [JsonIgnore] private string transaction_backup;
+
+        /// <summary>
+        /// Returns all the activated registries
+        /// </summary>
+        [JsonIgnore] public Dictionary<string, Uri> Repositories
+        {
+            get { return this.repositories; }
+
+            // TODO writable only so it can be initialized, better ideas welcome
+            set { this.repositories = value; }
+        }
 
         /// <summary>
         /// Returns all the installed modules
@@ -148,7 +162,8 @@ namespace CKAN
             Dictionary<string, InstalledModule> installed_modules,
             Dictionary<string, string> installed_dlls,
             Dictionary<string, AvailableModule> available_modules,
-            Dictionary<string, string> installed_files
+            Dictionary<string, string> installed_files,
+            Dictionary<string, Uri> repositories
             )
         {
             // Is there a better way of writing constructors than this? Srsly?
@@ -156,6 +171,7 @@ namespace CKAN
             this.installed_dlls = installed_dlls;
             this.available_modules = available_modules;
             this.installed_files = installed_files;
+            this.repositories = repositories;
             registry_version = LATEST_REGISTRY_VERSION;
         }
 
@@ -173,7 +189,8 @@ namespace CKAN
                 new Dictionary<string, InstalledModule>(),
                 new Dictionary<string, string>(),
                 new Dictionary<string, AvailableModule>(),
-                new Dictionary<string, string>()
+                new Dictionary<string, string>(),
+                new Dictionary<string, Uri>()
                 );
         }
 
