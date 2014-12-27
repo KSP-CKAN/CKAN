@@ -7,3 +7,6 @@
 [submodule "CKAN/CmdLine"]
 	path = CKAN/CmdLine
 	url = git://github.com/KSP-CKAN/CKAN-cmdline.git
+[submodule "CKAN/NetKAN"]
+	path = CKAN/NetKAN
+	url = git://github.com/KSP-CKAN/CKAN-netkan.git
