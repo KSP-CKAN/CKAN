@@ -40,6 +40,14 @@ namespace CKAN
             "open-source", "restricted", "unrestricted", "unknown"
         };
 
+        // TODO: It would be nice to generate these as well
+        /// <summary>
+        /// Contains a mapping between non-valid license name that can be converted and valid one for sanitization.
+        /// </summary>
+        private static readonly Dictionary<string, string> license_synonyms = new Dictionary<string, string> {
+            { "GPLv3", "GPL-3.0" }
+        };
+
         private string license;
 
         /// <summary>
@@ -49,7 +57,9 @@ namespace CKAN
         /// <param name="license">License.</param>
         public License(string license)
         {
-            if (! valid_licenses.Contains(license))
+            license = GetSynonymIfAvaliable(license);
+
+            if (!valid_licenses.Contains(license))
             {
                 throw new BadMetadataKraken(
                     null,
@@ -58,6 +68,21 @@ namespace CKAN
             }
 
             this.license = license;
+        }
+
+        /// <summary>
+        /// If a license has a valid synonym, this method returns it. If not, <paramref name="license"/> is returned.
+        /// </summary>
+        /// <param name="license">License to check for a valid synonym</param>
+        /// <returns>Valid synonym or <paramref name="license"/> if not found</returns>
+        private string GetSynonymIfAvaliable(string license)
+        {
+            if (license_synonyms.ContainsKey(license))
+            {
+                return license_synonyms[license];
+            }
+
+            return license;
         }
 
         /// <summary>

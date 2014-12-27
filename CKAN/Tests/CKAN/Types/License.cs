@@ -9,7 +9,6 @@ namespace CKANTests
         public void LicenseGood()
         {
             var license = new CKAN.License("GPL-3.0");
-            Assert.IsInstanceOf<CKAN.License>(license);
             Assert.AreEqual("GPL-3.0", license.ToString());
         }
 
@@ -18,9 +17,16 @@ namespace CKANTests
         {
             Assert.Throws<CKAN.BadMetadataKraken>(delegate
             {
-                // Not a valid license string, contains spaces.
-                new CKAN.License("GPL 3.0");
+                // Not a valid license string.
+                new CKAN.License("this is a really invalid license");
             });
+        }
+
+        [Test]
+        public void SynonymCheck()
+        {
+            var license = new CKAN.License("GPLv3");
+            Assert.AreEqual("GPL-3.0", license.ToString());
         }
     }
 }
