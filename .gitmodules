@@ -4,3 +4,6 @@
 [submodule "CKAN/GUI"]
 	path = CKAN/GUI
 	url = git://github.com/KSP-CKAN/CKAN-GUI.git
+[submodule "CKAN/CmdLine"]
+	path = CKAN/CmdLine
+	url = git://github.com/KSP-CKAN/CKAN-cmdline.git
