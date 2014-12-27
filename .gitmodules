@@ -1,3 +1,6 @@
 [submodule "CKAN/CKAN"]
 	path = CKAN/CKAN
 	url = git://github.com/KSP-CKAN/CKAN-core.git
+[submodule "CKAN/GUI"]
+	path = CKAN/GUI
+	url = git://github.com/KSP-CKAN/CKAN-GUI.git
