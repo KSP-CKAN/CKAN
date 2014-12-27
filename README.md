@@ -32,7 +32,7 @@ CKAN can download, install and update mods in just a few clicks. See the [User g
 
 If you are an author, you might want to provide metadata to ensure that your mod installs correctly. While CKAN can usually figure out most of the metadata by itself, you can add your own file to provide dependencies, recommendations and installation instructions.
 
-Check out the page about [adding a mod to the CKAN][4] on the wiki; you might also want to take a look at the [CKAN spec](Spec.md) and [CKAN schema](CKAN.schema), they can useful when writing your custom CKAN files. We also provide a useful shield to put on your project page to show your project is indexed by CKAN ![ckan-indexed](CKAN/assets/ckan-indexed.svg)
+Check out the page about [adding a mod to the CKAN][4] on the wiki; you might also want to take a look at the [CKAN spec](Spec.md) and [CKAN schema](CKAN.schema), they can useful when writing your custom CKAN files.
 
 ## Helping the development
 
