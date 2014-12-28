@@ -5,7 +5,7 @@ import os, sys
 import json
 from jsonschema import validate, ValidationError
 
-SCHEMA_PATH_REL = "../CKAN.schema"
+SCHEMA_PATH_REL = "CKAN.schema"
 
 def main():
     if len(sys.argv) == 1:
