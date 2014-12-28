@@ -772,24 +772,9 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<string> identifiers, NetAsyncDownloader netAsyncDownloader)
         {
-            List<CkanModule> upgrades = new List<CkanModule>();
-
-            foreach (string ident in identifiers)
-            {
-                CkanModule latest = registry_manager.registry.LatestAvailable(
-                                        ident, ksp.Version()
-                                    );
-
-                if (latest == null)
-                {
-                    throw new ModuleNotFoundKraken(
-                        ident,
-                        "Can't upgrade {0}, no modules available", ident
-                    );
-                }
-
-                upgrades.Add(latest);
-            }
+            var options = new RelationshipResolverOptions();
+            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.Version());
+            List<CkanModule> upgrades = resolver.ModList();
 
             Upgrade(upgrades, netAsyncDownloader);
         }
@@ -807,16 +792,21 @@ namespace CKAN
             foreach (CkanModule module in modules)
             {
                 string ident = module.identifier;
-                Module installed = registry_manager.registry.InstalledModule(ident).Module;
+                InstalledModule installed_mod = registry_manager.registry.InstalledModule(ident);
 
-                if (installed == null)
+                if (installed_mod == null)
                 {
+                    //Maybe ModuleNotInstalled ?
+                    if (registry_manager.registry.IsAutodetected(ident))
+                    {
+                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying to install it.",ident));
+                    }
                     throw new ModuleNotFoundKraken(
-                        ident,
-                        "Can't upgrade {0}, it is not installed", ident
+                        ident, module.version.ToString(),
+                        String.Format("Can't upgrade {0}, it is not installed", ident)
                     );
                 }
-
+                Module installed = installed_mod.Module;
                 if (installed.version.IsEqualTo(module.version))
                 {
                     log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);

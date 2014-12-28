@@ -296,13 +296,13 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
-                    throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, version {1} not available", ident, version));
+                    throw new ModuleNotFoundKraken(ident, version, string.Format("Cannot install {0}, version {1} not available", ident, version));
             }
             else
                 module = registry.LatestAvailable(mod, ksp_version);
 
             if (module == null)
-                throw new ModuleNotFoundKraken(string.Format("Cannot install {0}, module not available", mod));
+                throw new ModuleNotFoundKraken(mod, null, string.Format("Cannot install {0}, module not available", mod));
             else
                 return module;
         }
