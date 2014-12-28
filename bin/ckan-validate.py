@@ -5,15 +5,13 @@ import os, sys
 import json
 from jsonschema import validate, ValidationError
 
-SCHEMA_PATH_REL = "CKAN.schema"
+SCHEMA_PATH = "CKAN.schema"
 
 def main():
     if len(sys.argv) == 1:
         print 'Usage:'
         print sys.argv[0] + ' <.ckan files>'
         sys.exit(0)
-        
-    SCHEMA_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), SCHEMA_PATH_REL)
         
     if not os.path.exists(SCHEMA_PATH):
         print 'Cannot find JSON schema at %s' % SCHEMA_PATH
