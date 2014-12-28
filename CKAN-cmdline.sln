@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmdLine", "CmdLine.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-cmdline", "CKAN-cmdline.csproj", "{E97D81F6-85E2-4F1F-906D-BE21766602E5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A79F9D54-315C-472B-928F-713A5860B2BE} = {A79F9D54-315C-472B-928F-713A5860B2BE}
 	EndProjectSection
