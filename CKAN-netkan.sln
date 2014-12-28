@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetKAN", "NetKAN.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-netkan", "CKAN-netkan.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{92442BD6-F533-4BB8-8E04-9D93A038035E}"
 EndProject
