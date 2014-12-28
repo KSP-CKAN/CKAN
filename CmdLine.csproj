@@ -8,7 +8,7 @@
     <RootNamespace>CKAN.CmdLine</RootNamespace>
     <AssemblyName>CmdLine</AssemblyName>
     <StartupObject>CKAN.CmdLine.MainClass</StartupObject>
-    <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
+    <ApplicationIcon>assets\ckan.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -17,6 +17,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CKAN, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CKAN-GUI\bin\Debug\CKAN.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -43,11 +47,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\CKAN\CKAN.csproj">
-      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
-      <Name>CKAN</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
+    <ProjectReference Include="..\CKAN-GUI\CKAN-GUI.csproj">
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
