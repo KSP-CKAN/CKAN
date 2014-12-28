@@ -40,7 +40,7 @@
       <HintPath>..\CKAN-core\bin\Debug\CKAN.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\CKAN-core\bin\Debug\log4net.dll</HintPath>
+      <HintPath>..\CKAN-core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
