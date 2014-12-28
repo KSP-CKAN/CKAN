@@ -8,7 +8,7 @@ namespace CKAN
     {
 
         string AutoStartInstance { get; set; }
-        void SetRegistryToInstances(Dictionary<string, KSP> instances, string auto_start_instance);
+        void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance);
         IEnumerable<Tuple<string, string>> GetInstances();
     }
 
@@ -37,7 +37,7 @@ namespace CKAN
                 GetRegistryValue("KSPInstancePath_" + i, ""));
         }
 
-        public void SetRegistryToInstances(Dictionary<string, KSP> instances, string auto_start_instance)
+        public void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance)
         {
             SetAutoStartInstance(auto_start_instance ?? "");
             SetNumberOfInstances(instances.Count);
