@@ -1,0 +1,17 @@
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\Tests.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\Tests.pdb
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\CKAN.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\Newtonsoft.Json.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\nunit.framework.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\log4net.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\ChinhDo.Transactions.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\CKAN.pdb
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\nunit.framework.xml
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\Newtonsoft.Json.xml
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\ICSharpCode.SharpZipLib.xml
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\log4net.xml
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\bin\Debug\ChinhDo.Transactions.xml
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\obj\Debug\Tests.dll
+C:\Users\nlight\Documents\GitHub\CKAN-core\Tests\obj\Debug\Tests.pdb
