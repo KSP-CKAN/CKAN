@@ -76,7 +76,7 @@ namespace CKANTests
             }
 
         }
-
+/*
         [Test]
         [Category("Display")]
         public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
@@ -95,6 +95,6 @@ namespace CKANTests
                 Assert.That(modList, Has.Count.EqualTo(2));
             }
 
-        }
+        }*/
     }
 }
