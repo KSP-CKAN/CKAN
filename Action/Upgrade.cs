@@ -35,53 +35,54 @@ namespace CKAN.CmdLine
             }
 
             User.RaiseMessage("\nUpgrading modules...\n");
-            // TODO: These instances all need to go.
+
             try
             {
-            if (options.upgrade_all)
-            {
-                var installed = new Dictionary<string, Version>(ksp.Registry.Installed());
-                var to_upgrade = new List<CkanModule>();
-
-                foreach (KeyValuePair<string, Version> mod in installed)
+                if (options.upgrade_all)
                 {
-                    Version current_version = mod.Value;
+                    var installed = new Dictionary<string, Version>(ksp.Registry.Installed());
+                    var to_upgrade = new List<CkanModule>();
 
-                    if ((current_version is ProvidesVersion) || (current_version is DllVersion))
+                    foreach (KeyValuePair<string, Version> mod in installed)
                     {
-                        continue;
-                    }
-                    else
-                    {
-                        try
+                        Version current_version = mod.Value;
+
+                        if ((current_version is ProvidesVersion) || (current_version is DllVersion))
                         {
-                            // Check if upgrades are available
-                            CkanModule latest = ksp.Registry.LatestAvailable(mod.Key, ksp.Version());
-
-                            if (latest.version.IsGreaterThan(mod.Value))
+                            continue;
+                        }
+                        else
+                        {
+                            try
                             {
-                                // Upgradable
-                                log.InfoFormat("New version {0} found for {1}",
-                                    latest.version, latest.identifier);
-                                to_upgrade.Add(latest);
-                            }
+                                // Check if upgrades are available
+                                CkanModule latest = ksp.Registry.LatestAvailable(mod.Key, ksp.Version());
 
+                                if (latest.version.IsGreaterThan(mod.Value))
+                                {
+                                    // Upgradable
+                                    log.InfoFormat("New version {0} found for {1}",
+                                        latest.version, latest.identifier);
+                                    to_upgrade.Add(latest);
+                                }
+
+                            }
+                            catch (ModuleNotFoundKraken)
+                            {
+                                log.InfoFormat("{0} is installed, but no longer in the registry",
+                                    mod.Key);
+                            }
                         }
-                        catch (ModuleNotFoundKraken)
-                        {
-                            log.InfoFormat("{0} is installed, but no longer in the registry",
-                                mod.Key);
-                        }
+
                     }
 
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncDownloader(User));
                 }
-
-                ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncDownloader(User));
-            }
-            else
-            {
-                ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncDownloader(User));
-            }
+                else
+                {
+                    // TODO: These instances all need to go.
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncDownloader(User));
+                }
             }
             catch (ModuleNotFoundKraken kraken)
             {
