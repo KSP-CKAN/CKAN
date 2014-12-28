@@ -54,9 +54,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\NetKAN.csproj">
+    <ProjectReference Include="..\CKAN-netkan.csproj">
       <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
-      <Name>NetKAN</Name>
+      <Name>CKAN-netkan</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
