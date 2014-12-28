@@ -584,13 +584,20 @@ namespace CKAN
                 // overwite files, as it ensures deletiion on rollback.
                 file_transaction.Snapshot(fullPath);
 
-                // It's a file! Prepare the streams
-                using (Stream zipStream = zipfile.GetInputStream(entry))
-                using (FileStream writer = File.Create(fullPath))
+                try
                 {
-                    // 4k is the block size on practically every disk and OS.
-                    byte[] buffer = new byte[4096];
-                    StreamUtils.Copy(zipStream, writer, buffer);
+                    // It's a file! Prepare the streams
+                    using (Stream zipStream = zipfile.GetInputStream(entry))
+                    using (FileStream writer = File.Create(fullPath))
+                    {
+                        // 4k is the block size on practically every disk and OS.
+                        byte[] buffer = new byte[4096];
+                        StreamUtils.Copy(zipStream, writer, buffer);
+                    }
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    throw new DirectoryNotFoundKraken("", ex.Message, ex);
                 }
             }
         }
@@ -707,6 +714,12 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
+                        // Skip Ships/VAB ans Ships/SPH
+                        if (directory == KSPPathUtils.ToAbsolute("VAB", ksp.Ships())
+                            || directory == KSPPathUtils.ToAbsolute("SPH", ksp.Ships()))
+                        {
+                            continue;
+                        }
 
                         // We *don't* use our file_transaction to delete files here, because
                         // it fails if the system's temp directory is on a different device
