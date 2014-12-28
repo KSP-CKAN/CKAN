@@ -34,9 +34,9 @@ namespace CKAN
             }
         }
 
-        public Dictionary<string, KSP> Instances
+        public SortedList<string, KSP> Instances
         {
-            get { return new Dictionary<string, KSP>(instances); }            
+            get { return new SortedList<string, KSP>(instances); }            
         }
 
 
