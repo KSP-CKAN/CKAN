@@ -26,30 +26,36 @@ def main():
     repositories = sys.argv[1:]
     
     os.system('touch hashes')
+    os.system('touch urls')
     
     cwd = os.getcwd()
     
     for repo in repositories:
         os.chdir(os.path.join(cwd, repo))
         os.system('git rev-parse HEAD >> ../hashes')
+        os.system('git config --get remote.origin.url >> ../urls')
     
     os.chdir(cwd)
     
     hashes = {}
+    urls = {}
 
     with open('hashes', 'r') as hashes_file:
-        line_index = 0
+        with open('urls', 'r') as urls_file:
+            line_index = 0
+            url_lines = urls_file.readlines()
         
-        for line in hashes_file.readlines():
-            hashes[repositories[line_index]] = line.strip()[:-1]
-            line_index += 1
-    
+            for line in hashes_file.readlines():
+                hashes[repositories[line_index]] = line.strip()[:-1]
+                urls[repositories[line_index]] = url_lines[line_index]
+                line_index += 1
+                
     repo_msg = ''
     fetch_msg = ''
     
     for repo, commit_hash in hashes.iteritems():
         repo_msg += '* %s - %s\n' % (repo, commit_hash)
-        fetch_msg += 'git clone https://github.com/KSP-CKAN/%s; cd %s; git checkout %s; cd ..;\n' % (repo, repo, commit_hash)
+        fetch_msg += 'git clone %; cd %s; git checkout %s; cd ..;\n' % (urls[repo], repo, commit_hash)
         
     print BUILD_INFO_MESSAGE % (repo_msg, fetch_msg)
     
