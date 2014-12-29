@@ -191,17 +191,32 @@ namespace CKAN
         {
             if (urls != null)
             {
+                // spawn up to 3 dialogs
+                int errorDialogsLeft = 3;
+
                 for (int i = 0; i < errors.Length; i++)
                 {
                     if (errors[i] != null)
                     {
-                        User.RaiseError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                        if (errorDialogsLeft > 0)
+                        {
+                            User.RaiseError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
+                            errorDialogsLeft--;
+                        }
                     }
                     else
                     {
                         // Even if some of our downloads failed, we want to cache the
                         // ones which succeeded.
-                        cache.Store(urls[i], filenames[i], modules[i].StandardName());
+
+                        // This doesn't work :( 
+                        // for some reason the tmp files get deleted before we get here and we get a nasty exception
+                        // not only that but then we try _to install_ the rest of the mods and then CKAN crashes
+                        // and the user's registry gets corrupted forever
+                        // commenting out until this is resolved
+                        // ~ nlight
+
+                        //cache.Store(urls[i], filenames[i], modules[i].StandardName());
                     }
                 }
             }
