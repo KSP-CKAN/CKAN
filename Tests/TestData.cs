@@ -188,6 +188,12 @@ namespace Tests
             return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
         }
 
+		// Same as TestKAN above, just repacked as tar.gz.
+		public static Uri TestKANTarGz()
+		{
+			return new Uri("../../../Tests/DATA/CKAN-meta-testkan.tar.gz", UriKind.Relative);
+		}
+
         // A repo full of deliciously bad metadata...
         public static Uri BadKAN()
         {
