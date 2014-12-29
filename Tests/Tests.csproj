@@ -49,6 +49,7 @@
     <Compile Include="CKAN\Types\License.cs" />
     <Compile Include="CKAN\Types\ReleaseStatus.cs" />
     <Compile Include="CKAN\Registry\RegistryLive.cs" />
+    <Compile Include="CKAN\FileIdentifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -25,6 +25,17 @@ namespace CKANTests
             Assert.AreEqual("v0.14.3.2", far.version.ToString());
         }
 
+		[Test]
+		public void UpdateRegistryTarGz()
+		{
+			CKAN.Repo.UpdateRegistry(TestData.TestKANTarGz(), registry);
+
+			// Test we've got an expected module.
+			CKAN.CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new CKAN.KSPVersion("0.25.0"));
+
+			Assert.AreEqual("v0.14.3.2", far.version.ToString());
+		}
+
         [Test]
         public void BadKan()
         {
@@ -35,4 +46,3 @@ namespace CKANTests
         }
     }
 }
-
