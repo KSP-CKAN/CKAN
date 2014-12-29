@@ -216,7 +216,7 @@ namespace CKAN
                         // commenting out until this is resolved
                         // ~ nlight
 
-                        //cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                        cache.Store(urls[i], filenames[i], modules[i].StandardName());
                     }
                 }
             }
