@@ -47,7 +47,7 @@ def main():
         
             for line in hashes_file.readlines():
                 hashes[repositories[line_index]] = line.strip()[:-1]
-                urls[repositories[line_index]] = url_lines[line_index]
+                urls[repositories[line_index]] = url_lines[line_index].strip()[:-1]
                 line_index += 1
                 
     repo_msg = ''
