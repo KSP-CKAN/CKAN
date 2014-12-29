@@ -1,5 +1,9 @@
 # The Comprehensive Kerbal Archive Network (CKAN)
 
+[Click here to open a new CKAN issue](https://github.com/KSP-CKAN/CKAN-support/issues/new)
+
+[Click here to open a go to the CKAN wiki](https://github.com/KSP-CKAN/CKAN-support/wiki)
+
 **The CKAN Spec can be found [here](Spec.md)**.
 
 ## What's the CKAN?
