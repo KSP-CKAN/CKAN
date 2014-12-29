@@ -37,6 +37,12 @@ namespace CKAN.CmdLine
             Options cmdline;
             IUser user = null;
 
+            // If we're starting with no options then invoke the GUI instead.
+            if (args.Length == 0)
+            {
+                return Gui();
+            }
+
             try
             {
                 cmdline = new Options(args);
@@ -56,13 +62,6 @@ namespace CKAN.CmdLine
 
             user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
-
-            // If we're starting with no options then invoke the GUI instead.
-
-            if (args.Length == 0)
-            {
-                return Gui();
-            }
 
             if (options.Debug)
             {
