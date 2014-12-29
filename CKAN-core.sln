@@ -18,7 +18,7 @@ Global
 		{92442BD6-F533-4BB8-8E04-9D93A038035E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = CKAN\CKAN.csproj
+		StartupItem = CKAN\CKAN-core.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120
