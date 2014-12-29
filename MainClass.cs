@@ -28,7 +28,7 @@ namespace CKAN.NetKAN
         {
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Error;
-            var user = new ConsoleUser();
+            var user = new ConsoleUser(false);
 
             var options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, options);
