@@ -1,6 +1,8 @@
 build/
-/bin
-/obj
+bin
+obj
+Tests/bin
+Tests/obj
 test-results
 *.userprefs
 *.csproj.user
