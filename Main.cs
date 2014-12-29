@@ -35,6 +35,7 @@ namespace CKAN.CmdLine
             log.Debug("CKAN started");
 
             Options cmdline;
+            IUser user = null;
 
             try
             {
@@ -43,6 +44,7 @@ namespace CKAN.CmdLine
             catch (BadCommandKraken)
             {
                 // Our help screen will already be shown. Let's add some extra data.
+                user = new ConsoleUser(false);
                 user.RaiseMessage("You are using CKAN version {0}", Meta.Version());
 
                 return Exit.BADOPT;
@@ -52,7 +54,7 @@ namespace CKAN.CmdLine
 
             var options = (CommonOptions)cmdline.options;
 
-            IUser user = new ConsoleUser(options.Headless);
+            user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
 
             // If we're starting with no options then invoke the GUI instead.
