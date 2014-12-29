@@ -15,7 +15,10 @@ def main():
         
     if not os.path.exists(SCHEMA_PATH):
         print 'Cannot find JSON schema at %s' % SCHEMA_PATH
-        sys.exit(1)
+        SCHEMA_PATH = "../" + SCHEMA_PATH
+        if not os.path.exists(SCHEMA_PATH):
+            print 'Cannot find JSON schema at %s' % SCHEMA_PATH
+            sys.exit(1)
         
     schema = None
         
