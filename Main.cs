@@ -186,10 +186,16 @@ namespace CKAN.CmdLine
                 case "repair":
                     var repair = new Repair(manager.CurrentInstance,user);
                     return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+
                 case "ksp":
                     var ksp = new KSP(manager, user);
-                    return ksp.RunSubCommand((SubCommandOptions) cmdline.options);                    
-                default:
+                    return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+
+				case "repo":
+					var repo = new Repo (manager, user);
+                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
+
+				default:
                     user.RaiseMessage("Unknown command, try --help");
                     return Exit.BADOPT;
             }
