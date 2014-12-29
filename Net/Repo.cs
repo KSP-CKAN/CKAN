@@ -18,9 +18,8 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
         private static TxFileManager file_transaction = new TxFileManager();
 
-        // Right now we only use the default repo, but in the future we'll
-        // want to let users add their own.
-        public static readonly Uri default_ckan_repo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
+        // Forward to keep existing code compiling, will be removed soon.
+        public static readonly Uri default_ckan_repo = CKAN.Repository.default_ckan_repo_uri;
 
 		internal static void ProcessRegistryMetadataFromJSON(string metadata, Registry registry, string filename)
 		{
