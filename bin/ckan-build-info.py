@@ -55,7 +55,7 @@ def main():
     
     for repo, commit_hash in hashes.iteritems():
         repo_msg += '* %s - %s\n' % (repo, commit_hash)
-        fetch_msg += 'git clone %; cd %s; git checkout %s; cd ..;\n' % (urls[repo], repo, commit_hash)
+        fetch_msg += 'git clone %s; cd %s; git checkout %s; cd ..;\n' % (urls[repo], repo, commit_hash)
         
     print BUILD_INFO_MESSAGE % (repo_msg, fetch_msg)
     
