@@ -4,21 +4,17 @@ using System.Globalization;
 using System.IO;
 using CKAN;
 using Version = CKAN.Version;
-using log4net;
 
 namespace Tests
 {
     static public class TestData
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (TestData));
-
         public static string DataDir()
         {
             // TODO: Have this actually walk our directory structure and find
             // t/data. This means we can relocate our test executable and
             // things will still work.
             string current = Directory.GetCurrentDirectory();
-            log.Info("Current working directory is: " + current);
 
             return Path.Combine(current, "../../../t/data");
         }
