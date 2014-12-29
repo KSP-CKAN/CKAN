@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using log4net;
 
-namespace CKAN
+namespace CKAN.CmdLine
 {
     public class ConsoleUser : NullUser
     {
