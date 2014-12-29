@@ -39,7 +39,6 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />

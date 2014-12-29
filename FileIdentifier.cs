@@ -7,7 +7,7 @@ namespace CKAN
 {
 	public class FileIdentifier
 	{
-		private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUser));
+        private static readonly ILog log = LogManager.GetLogger(typeof(FileIdentifier));
 
 		/// <summary>
 		/// Checks if the file is of type ASCII.

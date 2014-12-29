@@ -32,7 +32,7 @@ namespace CKAN
 
         public static string Download(string url, string filename = null, IUser user = null)
         {
-            user = user ?? new ConsoleUser();
+            user = user ?? new NullUser();
             user.RaiseMessage("Downloading {0}", url);
 
             // Generate a temporary file if none is provided.
