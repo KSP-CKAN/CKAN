@@ -31,7 +31,10 @@ def main():
     cwd = os.getcwd()
     
     for repo in repositories:
-        os.chdir(os.path.join(cwd, repo))
+        repo_name = repo[:]
+        if repo[-1] == '|':
+            repo_name = repo[:-1]
+        os.chdir(os.path.join(cwd, repo_name))
         os.system('git rev-parse HEAD >> ../hashes')
         os.system('git config --get remote.origin.url >> ../urls')
     
@@ -54,8 +57,15 @@ def main():
     fetch_msg = ''
     
     for repo, commit_hash in hashes.iteritems():
-        repo_msg += '* %s - %s\n' % (repo, commit_hash)
-        fetch_msg += 'git clone %s; cd %s; git checkout %s; cd ..;\n' % (urls[repo], repo, commit_hash)
+        repo_name = repo[:]
+        if repo[-1] == '|':
+            repo_name = repo[:-1]
+            
+        repo_msg += '* %s - %s\n' % (repo_name, commit_hash)
+        rev_parse = ''
+        if repo[-1] == '|':
+            rev_parse = 'git fetch --tags --progress %s +refs/pull/*:refs/remotes/origin/pr/*; ' % urls[repo]
+        fetch_msg += 'git clone %s; cd %s; %sgit checkout -f %s; cd ..;\n' % (urls[repo], repo_name, rev_parse, commit_hash)
         
     print BUILD_INFO_MESSAGE % (repo_msg, fetch_msg)
     
