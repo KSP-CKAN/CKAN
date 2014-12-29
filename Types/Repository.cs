@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
@@ -9,6 +10,7 @@ namespace CKAN
 
         public string name;
         public Uri uri;
+        public Boolean ckan_mirror = false;
 
         public Repository()
         {
