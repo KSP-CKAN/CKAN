@@ -4,6 +4,9 @@ namespace CKAN
 {
     public class Repository
     {
+        [JsonIgnore] public static readonly Uri default_ckan_repo_name = new Uri("default");
+        [JsonIgnore] public static readonly Uri default_ckan_repo_uri = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
+
         public string name;
         public Uri uri;
 
