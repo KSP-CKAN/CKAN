@@ -69,6 +69,8 @@
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
     <Compile Include="Win32Registry.cs" />
+    <Compile Include="Types\FileType.cs" />
+    <Compile Include="FileIdentifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
