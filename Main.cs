@@ -34,17 +34,6 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
 
-            IUser user = new ConsoleUser();
-            CheckMonoVersion(user, 3, 1, 0);
-
-            // If we're starting with no options then invoke the GUI instead.
-
-            if (args.Length == 0)
-            {
-                return Gui();
-            }
-
-
             Options cmdline;
 
             try
@@ -61,7 +50,17 @@ namespace CKAN.CmdLine
 
             // Process commandline options.
 
-            var options = (CommonOptions) cmdline.options;
+            var options = (CommonOptions)cmdline.options;
+
+            IUser user = new ConsoleUser(options.Headless);
+            CheckMonoVersion(user, 3, 1, 0);
+
+            // If we're starting with no options then invoke the GUI instead.
+
+            if (args.Length == 0)
+            {
+                return Gui();
+            }
 
             if (options.Debug)
             {

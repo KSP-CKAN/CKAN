@@ -96,6 +96,9 @@ namespace CKAN.CmdLine
 
         [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
+
+        [Option("headless", DefaultValue = null, HelpText = "Set to disable all prompts")]
+        public string Headless { get; set; }
     }
 
     /// <summary>
