@@ -77,15 +77,24 @@ namespace CKAN
 		/// <param name="stream">Stream to the file.</param>
 		private static bool CheckTar(Stream stream)
 		{
-			// Rewind the stream to the origin of the file.
-			stream.Seek(0, SeekOrigin.Begin);
+			if (stream.CanSeek)
+			{
+				// Rewind the stream to the origin of the file.
+				stream.Seek (0, SeekOrigin.Begin);
+			}
 
 			// Define the buffer and magic types to compare against.
 			byte[] buffer = new byte[5];
 			byte[] tar_identifier = new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72 };
 
-			// Read 5 bytes with an offset of 257 bytes of the file into the buffer.
-			int bytes_read = stream.Read(buffer, 257, buffer.Length);
+			// Advance the stream position to offset 257. This method circumvents stream which can't seek.
+			for(int i = 0; i < 257; i++)
+			{
+				stream.ReadByte();
+			}
+
+			// Read 5 bytes into the buffer.
+			int bytes_read = stream.Read(buffer, 0, buffer.Length);
 
 			// Check if we reached EOF before reading enough bytes.
 			if (bytes_read != buffer.Length)
@@ -151,10 +160,17 @@ namespace CKAN
 				return type;
 			}
 
+			// Make sure the stream supports seeking.
+			if (!stream.CanSeek)
+			{
+				return type;
+			}
+
 			// Start performing checks.
 			if (CheckGZip(stream))
 			{
 				// This may contain a tar file inside, create a new stream and check.
+				stream.Seek (0, SeekOrigin.Begin);
 				using (ICSharpCode.SharpZipLib.GZip.GZipInputStream gz_stream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream (stream))
 				{
 					if (CheckTar(gz_stream))
