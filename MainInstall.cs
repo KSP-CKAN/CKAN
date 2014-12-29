@@ -353,6 +353,11 @@ namespace CKAN
                     // User notified in InstallList
                     return false;
                 }
+                catch (DirectoryNotFoundKraken kraken)
+                {
+                    GUI.user.RaiseMessage("\n{0}", kraken.Message);
+                    return false;
+                }
             }
 
             return true;
