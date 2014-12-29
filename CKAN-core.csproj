@@ -15,10 +15,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChinhDo.Transactions, Version=1.3.0.32, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\TxFileManager.1.3\lib\net20\ChinhDo.Transactions.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
@@ -37,6 +33,9 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Transactions" />
+    <Reference Include="ChinhDo.Transactions">
+      <HintPath>packages\TxFileManager.1.3\lib\net20\ChinhDo.Transactions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleUser.cs" />
