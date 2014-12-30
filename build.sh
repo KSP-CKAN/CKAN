@@ -1,4 +1,5 @@
-#!/bin/bash -x
+#!/bin/bash
+set -x
 
 xbuild /verbosity:minimal CKAN-cmdline.sln
 
