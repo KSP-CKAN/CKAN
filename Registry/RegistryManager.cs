@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using ChinhDo.Transactions;
@@ -95,6 +96,8 @@ namespace CKAN
                 Create();
                 Load();
             }
+
+            AscertainDefaultRepo();
         }
 
         private void Create()
@@ -102,6 +105,24 @@ namespace CKAN
             registry = Registry.Empty();
             log.DebugFormat("Creating new CKAN registry at {0}", path);
             Save();
+        }
+
+        private void AscertainDefaultRepo()
+        {
+            Dictionary<string, Uri> repositories = registry.Repositories;
+
+            if (repositories == null)
+            {
+                repositories = new Dictionary<string, Uri>();
+            }
+
+            // if (!(repositories.ContainsKey(Repository.default_ckan_repo_name)))
+            if (repositories.Count == 0)
+            {
+                repositories.Add(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri);
+            }
+
+            registry.Repositories = repositories;
         }
 
         private string Serialize()
