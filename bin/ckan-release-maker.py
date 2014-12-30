@@ -30,6 +30,11 @@ def make_github_get_request(url_path, username, password, payload):
     print '::make_github_get_request - %s' % url
     return requests.get(url, auth = (username, password), data = json.dumps(payload), verify=False)
 
+def make_github_put_request(url_path, username, password, payload):
+    url = urljoin(GITHUB_API, url_path)
+    print '::make_github_put_request - %s' % url
+    return requests.put(url, auth = (username, password), data = json.dumps(payload), verify=False)
+
 def make_github_post_request_raw(url_part, username, password, payload, content_type):
     url = urljoin(GITHUB_API, url_part)
     print '::make_github_post_request_raw - %s' % url
@@ -63,6 +68,7 @@ def push_github_file(username, password, repo, path, sha, content, branch='maste
     payload['content'] = base64.b64encode(content)
     payload['sha'] = sha
     payload['branch'] = branch
+    return make_github_put_request('/repos/%s/contents/%s' % (repo, path), username, password, payload)
 
 def main():
     parser = argparse.ArgumentParser(description='Create GitHub releases and upload build artifacts')
