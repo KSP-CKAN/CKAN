@@ -6,22 +6,23 @@ using System;
 
 namespace CKAN
 {
-    
+
     public delegate void DisplayMessage(string message, params object[] args);
     public delegate bool DisplayYesNoDialog(string message);
     public delegate void DisplayError(string message, params object[] args);
     public delegate void ReportProgress(string format, int percent);
     public delegate void DownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors);
-    
+
     public interface IUser
-    {       
+    {
         event DisplayYesNoDialog AskUser;
         event DisplayMessage Message;
         event DisplayError Error;
         event ReportProgress Progress;
         event DownloadsComplete DownloadsComplete;
         int WindowWidth { get; }
-        
+
+        bool Headless { get; }
 
         void RaiseMessage(string message, params object[] url);
         void RaiseProgress(string message, int percent);
@@ -30,7 +31,7 @@ namespace CKAN
         void RaiseDownloadsCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors);
     }
 
-    
+
     //Can be used in tests to supress output or as a base class for other types of user.
     //It supplies no opp event handlers so that subclasses can avoid null checks. 
     public class NullUser : IUser
@@ -51,6 +52,11 @@ namespace CKAN
         public event DisplayError Error;
         public event ReportProgress Progress;
         public event DownloadsComplete DownloadsComplete;
+
+        public virtual bool Headless
+        {
+            get { return false; }
+        }
 
         protected virtual bool DisplayYesNoDialog(string message)
         {
