@@ -200,7 +200,7 @@ namespace CKAN
 
                 User.RaiseProgress("Updating registry", 70);
 
-                registry_manager.Save();
+                registry_manager.Save(!options.without_enforce_consistency);
 
                 User.RaiseProgress("Commiting filesystem changes", 80);
 
