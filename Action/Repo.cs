@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using Newtonsoft.Json;
 using CommandLine;
 using CKAN;
 
@@ -13,8 +16,11 @@ namespace CKAN.CmdLine
 	{
         public KSPManager Manager { get; set; }
         public IUser User { get; set; }
-		public string option;
-		public object suboptions;
+        public string option;
+        public object suboptions;
+
+        // TODO Change the URL base to api.ksp-ckan.org
+        public static readonly Uri default_repo_master_list = new Uri("http://munich.ksp-ckan.org/repositories.json");
 
         public Repo(KSPManager manager, IUser user)
         {
@@ -131,8 +137,45 @@ namespace CKAN.CmdLine
             }
         }
 
+        public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        {
+            WebClient client = new WebClient();
+
+            if (master_uri == null)
+            {
+                master_uri = default_repo_master_list;
+            }
+
+            string json = client.DownloadString(master_uri);
+            return JsonConvert.DeserializeObject<RepositoryList>(json);
+        }
+
         private int AvailableRepositories()
         {
+            User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
+            RepositoryList repositories = new RepositoryList();
+
+            try
+            {
+                repositories = FetchMasterRepositoryList();
+            }
+            catch
+            {
+                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                return Exit.ERROR;
+            }
+
+            int maxNameLen = 0;
+            foreach (Repository repository in repositories.repositories)
+            {
+                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
+            }
+
+            foreach (Repository repository in repositories.repositories)
+            {
+                User.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
+            }
+
             return Exit.OK;
         }
 
