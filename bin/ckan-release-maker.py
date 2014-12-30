@@ -56,7 +56,7 @@ def main():
     parser.add_argument('--body', dest='body', action='store', help='Sets the body text of the release', required=True)
     parser.add_argument('--draft', type=bool, dest='draft', action='store', help='Sets the body text of the release', required=False, default=False)
     parser.add_argument('--prerelease', type=bool, dest='prerelease', action='store', help='Sets the body text of the release', required=True, default=False)
-    parser.add_argument('artifacts', metavar='file', type=string, nargs='+', help='build artifact')
+    parser.add_argument('artifacts', metavar='file', type=str, nargs='+', help='build artifact')
     args = parser.parse_args()
     
     if len(sys.argv) == 1:
