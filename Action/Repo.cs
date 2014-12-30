@@ -52,6 +52,22 @@ namespace CKAN.CmdLine
 
         internal class ListOptions : CommonOptions
         {
+            User.RaiseMessage("Listing all known repositories:");
+            RegistryManager manager = RegistryManager.Instance(CurrentInstance);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            int maxNameLen = 0;
+            foreach(KeyValuePair<string, Uri> repository in repositories)
+            {
+                maxNameLen = Math.Max(maxNameLen, repository.Key.Length);
+            }
+
+            foreach(KeyValuePair<string, Uri> repository in repositories)
+            {
+                User.RaiseMessage("  {0}: {1}", repository.Key.PadRight(maxNameLen), repository.Value);
+            }
+
+            return Exit.OK;
         }
 
         internal class AddOptions : CommonOptions
