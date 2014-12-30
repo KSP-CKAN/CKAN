@@ -53,7 +53,7 @@ namespace CKAN
         public event ReportProgress Progress;
         public event DownloadsComplete DownloadsComplete;
 
-        public bool Headless
+        public virtual bool Headless
         {
             get { return false; }
         }
