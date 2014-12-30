@@ -54,14 +54,23 @@ def main():
     parser.add_argument('--tag', dest='tag', action='store', help='Sets the name of the tag that will be created for the release', required=True)
     parser.add_argument('--name', dest='name', action='store', help='Sets the name of the release that will be created', required=True)
     parser.add_argument('--body', dest='body', action='store', help='Sets the body text of the release', required=True)
-    parser.add_argument('--draft', type=bool, dest='draft', action='store', help='Sets the body text of the release', required=False, default=False)
-    parser.add_argument('--prerelease', type=bool, dest='prerelease', action='store', help='Sets the body text of the release', required=True, default=False)
-    parser.add_argument('artifacts', metavar='file', type=string, nargs='+', help='build artifact')
+    parser.add_argument('--draft', type=bool, dest='draft', action='store', help='Sets the release as draft', required=False, default=False)
+    parser.add_argument('--prerelease', type=bool, dest='prerelease', action='store', help='Sets the release as a pre-release', required=False, default=False)
+    parser.add_argument('--push-build-tag-file', type=bool, dest='build_tag_file', action='store', help='Pushes a special build-tag file to the repository', required=False, default=False)
+    parser.add_argument('artifacts', metavar='file', type=str, nargs='+', help='build artifact')
     args = parser.parse_args()
     
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(0)
+
+    if args.build_tag_file:
+        response = push_github_file(args.user, args.token, args.repository, 'build-tag', response_json['id'])
+        if response.status_code == 201:
+            print 'Build-tag file pushed to repository!'
+        else:
+            print 'There was an issue pushing the build-tag file! - %s' % response.text
+            sys.exit(1)
 
     response = make_github_release(args.user, args.token, args.repository, args.tag, args.name, args.body, args.draft, args.prerelease)
     response_json = json.loads(response.text)
@@ -75,7 +84,7 @@ def main():
     upload_url = response_json['upload_url']
     
     for artifact in args.artifacts:
-        response = make_github_release_artifact(username, token, upload_url, artifact)
+        response = make_github_release_artifact(args.user, args.token, upload_url, artifact)
         if response.status_code == 201:
             print 'Asset successfully uploaded'
         else:
