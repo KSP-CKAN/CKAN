@@ -214,7 +214,10 @@ namespace CKAN
 
             User.RaiseProgress("Rescanning GameData", 90);
 
-            ksp.ScanGameData();
+            if (!options.without_enforce_consistency)
+            {
+                ksp.ScanGameData();
+            }
 
             User.RaiseProgress("Done!\n", 100);
         }
