@@ -14,6 +14,14 @@ namespace CKAN.CmdLine
             m_Headless = headless;
         }
 
+        public override bool Headless
+        {
+            get
+            {
+                return m_Headless;
+            }
+        }
+
         protected override bool DisplayYesNoDialog(string message)
         {
             if (m_Headless)

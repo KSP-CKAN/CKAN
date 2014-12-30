@@ -419,6 +419,12 @@ namespace CKAN.CmdLine
                 with_recommends = !options.no_recommends
             };
 
+            if (user.Headless)
+            {
+                install_ops.without_toomanyprovides_kraken = true;
+                install_ops.without_enforce_consistency = true;
+            }
+
             // Install everything requested. :)
             try
             {
