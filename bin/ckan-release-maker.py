@@ -85,7 +85,7 @@ def main():
 
     if args.build_tag_file:
         response = get_github_file(args.user, args.token, args.repository, 'build-tag')
-        if response.status_code != 201 and response.status_code != 304:
+        if response.status_code >= 400:
             print 'There was an issue fetching the build-tag file! - %s' % response.text
             sys.exit(1)
         
