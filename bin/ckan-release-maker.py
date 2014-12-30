@@ -75,7 +75,7 @@ def main():
     upload_url = response_json['upload_url']
     
     for artifact in args.artifacts:
-        response = make_github_release_artifact(username, token, upload_url, artifact)
+        response = make_github_release_artifact(args.user, args.token, upload_url, artifact)
         if response.status_code == 201:
             print 'Asset successfully uploaded'
         else:
