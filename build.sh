@@ -18,3 +18,5 @@ mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	bin/Debug/ICSharpCode.SharpZipLib.dll \
 	bin/Debug/log4net.dll \
 	bin/Debug/Newtonsoft.Json.dll
+
+mono ../ckan.exe --version
