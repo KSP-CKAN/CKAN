@@ -192,7 +192,7 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-            using (var transaction = new CkanTransaction())
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 var downloader = new NetAsyncDownloader(GUI.user);
                 cancelCallback = () =>
