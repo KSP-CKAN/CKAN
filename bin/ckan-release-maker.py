@@ -54,8 +54,8 @@ def main():
     parser.add_argument('--tag', dest='tag', action='store', help='Sets the name of the tag that will be created for the release', required=True)
     parser.add_argument('--name', dest='name', action='store', help='Sets the name of the release that will be created', required=True)
     parser.add_argument('--body', dest='body', action='store', help='Sets the body text of the release', required=True)
-    parser.add_argument('--draft', type=bool, dest='draft', action='store', help='Sets the body text of the release', required=False, default=False)
-    parser.add_argument('--prerelease', type=bool, dest='prerelease', action='store', help='Sets the body text of the release', required=False, default=False)
+    parser.add_argument('--draft', type=bool, dest='draft', action='store', help='Sets the release as draft', required=False, default=False)
+    parser.add_argument('--prerelease', type=bool, dest='prerelease', action='store', help='Sets the release as a pre-release', required=False, default=False)
     parser.add_argument('artifacts', metavar='file', type=str, nargs='+', help='build artifact')
     args = parser.parse_args()
     
