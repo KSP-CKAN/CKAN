@@ -23,7 +23,9 @@ namespace CKAN
     public class ModuleInstaller
     {
         public IUser User { get; set; }
-        private static ModuleInstaller _Instance;
+
+        // To allow the ModuleInstaller to work on multiple KSP instances, keep a list of each ModuleInstaller and return the correct one upon request.
+        private static SortedList<string, ModuleInstaller> instances = new SortedList<string, ModuleInstaller>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
         private static readonly TxFileManager file_transaction = new TxFileManager ();
@@ -51,13 +53,26 @@ namespace CKAN
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
         }
 
-        // TODO: It'd be really lovely if this wasn't a singleton. It prevents code that
-        // wishes to deal with multiple KSP installs.
-        //
-        // It would be totally fine to have this be an instance based upon KSP path, mind.
-        public static ModuleInstaller GetInstance(KSP current_instance, IUser user)
+        /// <summary>
+        /// Gets the ModuleInstaller instance associated with the passed KSP instance. Creates a new ModuleInstaller instance if none exists.
+        /// </summary>
+        /// <returns>The ModuleInstaller instance.</returns>
+        /// <param name="ksp_instance">Current KSP instance.</param>
+        /// <param name="user">IUser implementation.</param>
+        public static ModuleInstaller GetInstance(KSP ksp_instance, IUser user)
         {
-            return _Instance ?? (_Instance = new ModuleInstaller(current_instance, user));
+            ModuleInstaller instance = null;
+
+            // Check in the list of instances if we have already created a ModuleInstaller instance for this KSP instance.
+            if (!instances.TryGetValue(ksp_instance.GameDir().ToLower(), out instance))
+            {
+                // Create a new instance and insert it in the static list.
+                instance = new ModuleInstaller(ksp_instance, user);
+
+                instances.Add(ksp_instance.GameDir().ToLower(), instance);
+            }
+
+            return instance;
         }
 
         /// <summary>
