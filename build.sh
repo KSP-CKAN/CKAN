@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -x
 
 xbuild /verbosity:minimal CKAN-netkan.sln
 chmod a+x ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe
