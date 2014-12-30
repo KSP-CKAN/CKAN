@@ -19,4 +19,4 @@ mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	bin/Debug/log4net.dll \
 	bin/Debug/Newtonsoft.Json.dll
 
-mono ../ckan.exe --version
+mono ../ckan.exe version
