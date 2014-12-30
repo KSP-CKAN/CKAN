@@ -182,8 +182,7 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             User.RaiseMessage("Listing all known repositories:");
-            RegistryManager manager = RegistryManager.Instance(CurrentInstance);
-            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+			Dictionary<string, Uri> repositories = Manager.CurrentInstance.Registry.Repositories;
 
             int maxNameLen = 0;
             foreach(KeyValuePair<string, Uri> repository in repositories)
