@@ -98,7 +98,7 @@ def main():
         response_json = json.loads(response.text)
     
         response = push_github_file(args.user, args.token, args.repository, response_json['path'], response_json['sha'], str(datetime.datetime.now()))
-        if response.status_code == 201:
+        if response.status_code < 400:
             print 'Build-tag file pushed to repository!'
         else:
             print 'There was an issue pushing the build-tag file! - %s' % response.text
