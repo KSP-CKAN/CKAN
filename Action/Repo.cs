@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
 using CKAN;
+using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -14,6 +15,8 @@ namespace CKAN.CmdLine
 
 	public class Repo : ISubCommand
 	{
+        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+
         public KSPManager Manager { get; set; }
         public IUser User { get; set; }
         public string option;
@@ -200,11 +203,85 @@ namespace CKAN.CmdLine
 
         private int AddRepository(AddOptions options)
         {
+            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+
+            if (options.name == null)
+            {
+                User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
+                return Exit.BADOPT;
+            }
+
+            if (options.uri == null)
+            {
+                RepositoryList repositoryList = new RepositoryList();
+
+                try
+                {
+                    repositoryList = FetchMasterRepositoryList();
+                }
+                catch
+                {
+                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                    return Exit.ERROR;
+                }
+
+                foreach (Repository repository in repositoryList.repositories)
+                {
+                    if (String.Equals(repository.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        options.name = repository.name;
+                        options.uri = repository.uri.ToString();
+                    }
+                }
+
+                // Nothing found in the master list?
+                if (options.uri == null)
+                {
+                    User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
+                    return Exit.BADOPT;
+                }
+            }
+
+            log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            if (repositories.ContainsKey(options.name))
+            {
+                User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
+                return Exit.BADOPT;
+            }
+
+            repositories.Add(options.name, new System.Uri(options.uri));
+			User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
+            manager.Save();
+
             return Exit.OK;
         }
 
         private int ForgetRepository(ForgetOptions options)
         {
+            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+
+            if (options.name == null)
+            {
+                User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
+                return Exit.BADOPT;
+            }
+
+            log.DebugFormat("About to forget repository '{0}'", options.name);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            // TODO make forgetting case insensitive, too
+            if (!(repositories.ContainsKey(options.name)))
+            {
+                User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                return Exit.BADOPT;
+            }
+
+            repositories.Remove(options.name);
+            User.RaiseMessage("Successfully removed \"{0}\"", options.name);
+            manager.Save();
+
             return Exit.OK;
         }
 
