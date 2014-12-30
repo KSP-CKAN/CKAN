@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -205,7 +206,7 @@ namespace CKAN
                         }
                     }
                     else
-                    {
+                    {   
                         // Even if some of our downloads failed, we want to cache the
                         // ones which succeeded.
 
@@ -216,7 +217,14 @@ namespace CKAN
                         // commenting out until this is resolved
                         // ~ nlight
 
-                        cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                        try
+                        {
+                            cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using log4net;
 
 namespace CKAN
@@ -306,7 +307,7 @@ namespace CKAN
         // TODO: This would likely be better in the Registry class itself.
         public void ScanGameData()
         {
-            using (CkanTransaction tx = new CkanTransaction())
+            using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
                 Registry.ClearDlls();
 
