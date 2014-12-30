@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CKAN;
+using Version = CKAN.Version;
 using NUnit.Framework;
 
 namespace Tests.CKAN.Relationships
@@ -48,6 +49,203 @@ namespace Tests.CKAN.Relationships
             AddToRegistry(mod_a, mod_b);
 
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        public void Constructor_WithConflictingModulesVersion_Throws()
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule();
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, version=mod_a.version.ToString()}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "0.5")]
+        [TestCase("1.0", "1.0")]
+        public void Constructor_WithConflictingModulesVersionMin_Throws(string ver, string conf_min)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=conf_min}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0")]
+        [TestCase("1.0", "1.0")]
+        public void Constructor_WithConflictingModulesVersionMax_Throws(string ver, string conf_max)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, max_version=conf_max}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "0.5", "2.0")]
+        [TestCase("1.0", "1.0", "2.0")]
+        [TestCase("1.0", "0.5", "1.0")]
+        public void Constructor_WithConflictingModulesVersionMinMax_Throws(string ver, string conf_min, string conf_max)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=conf_min, max_version=conf_max}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "0.5")]
+        [TestCase("1.0", "2.0")]
+        public void Constructor_WithNonConflictingModulesVersion_DoesNotThrows(string ver, string conf)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, version=conf}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.DoesNotThrow(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0")]
+        public void Constructor_WithConflictingModulesVersionMin_DoesNotThrows(string ver, string conf_min)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, min_version="2.0"}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.DoesNotThrow(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0")]
+        public void Constructor_WithConflictingModulesVersionMax_DoesNotThrows(string ver, string conf_max)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, max_version=conf_max}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.DoesNotThrow(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0", "3.0")]
+        [TestCase("4.0", "2.0", "3.0")]
+        public void Constructor_WithConflictingModulesVersionMinMax_DoesNotThrows(string ver, string conf_min, string conf_max)
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=conf_min, max_version=conf_max}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+
+            Assert.DoesNotThrow(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -184,6 +382,7 @@ namespace Tests.CKAN.Relationships
                 registry,
                 null));
         }
+
         [Test]
         public void Constructor_WithSuggests_HasSugestedInModlist()
         {
@@ -249,7 +448,227 @@ namespace Tests.CKAN.Relationships
         }
 
         [Test]
-        public void Constructor_WithRegisteryThatHasRequiredModuleRemoved_Throws()
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0")]
+        [TestCase("1.0", "0.2")]
+        [TestCase("0", "0.2")]
+        [TestCase("1.0", "0")]
+        public void Constructor_WithMissingDependantsVersion_Throws(string ver, string dep)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, version = dep}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            AddToRegistry(depender, dependant);
+
+            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0")]
+        public void Constructor_WithMissingDependantsVersionMin_Throws(string ver, string dep_min)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, min_version = dep_min}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            AddToRegistry(depender, dependant);
+
+            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "0.5")]
+        public void Constructor_WithMissingDependantsVersionMax_Throws(string ver, string dep_max)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, max_version = dep_max}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            AddToRegistry(depender, dependant);
+
+            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "2.0", "3.0")]
+        [TestCase("4.0", "2.0", "3.0")]
+        public void Constructor_WithMissingDependantsVersionMinMax_Throws(string ver, string dep_min, string dep_max)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, min_version = dep_max}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            AddToRegistry(depender, dependant);
+
+            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+                list,
+                options,
+                registry,
+                null));
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("1.0", "1.0", "2.0")]
+        [TestCase("1.0", "1.0", "0.5")]//what to do if a mod is present twice with the same version ?
+        public void Constructor_WithDependantVersion_ChooseCorrectly(string ver, string dep, string other)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, version = dep}
+            });
+
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            list.Add(other_dependant.identifier);
+            AddToRegistry(depender, dependant, other_dependant);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
+            {
+                dependant,
+                depender
+            });
+            
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("2.0", "1.0", "0.5")]
+        [TestCase("2.0", "1.0", "1.5")]
+        [TestCase("2.0", "2.0", "0.5")]
+        public void Constructor_WithDependantVersionMin_ChooseCorrectly(string ver, string dep_min, string other)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, min_version = dep_min}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            list.Add(other_dependant.identifier);
+            AddToRegistry(depender, dependant, other_dependant);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
+            {
+                dependant,
+                depender
+            });
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("2.0", "2.0", "0.5")]
+        [TestCase("2.0", "3.0", "0.5")]
+        [TestCase("2.0", "3.0", "4.0")]
+        public void Constructor_WithDependantVersionMax_ChooseCorrectly(string ver, string dep_max, string other)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, max_version = dep_max}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            list.Add(other_dependant.identifier);
+            AddToRegistry(depender, dependant, other_dependant);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
+            {
+                dependant,
+                depender
+            });
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
+        [TestCase("2.0", "1.0", "3.0", "0.5")]
+        [TestCase("2.0", "1.0", "3.0", "1.5")]
+        [TestCase("2.0", "1.0", "3.0", "3.5")]
+        public void Constructor_WithDependantVersionMinMax_ChooseCorrectly(string ver, string dep_min, string dep_max, string other)
+        {
+            var list = new List<string>();
+            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+
+            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = dependant.identifier, min_version = dep_min, max_version = dep_max}
+            });
+            list.Add(depender.identifier);
+            list.Add(dependant.identifier);
+            list.Add(other_dependant.identifier);
+            AddToRegistry(depender, dependant, other_dependant);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
+            {
+                dependant,
+                depender
+            });
+
+        }
+
+        [Test]
+        public void Constructor_WithRegistryThatHasRequiredModuleRemoved_Throws()
         {
             var list = new List<string>();
             var mod = generator.GeneratorRandomModule();
