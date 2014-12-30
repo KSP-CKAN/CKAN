@@ -192,83 +192,78 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-            using (var transaction = CkanTransaction.CreateTransactionScope())
+            
+            var downloader = new NetAsyncDownloader(GUI.user);
+            cancelCallback = () =>
             {
-                var downloader = new NetAsyncDownloader(GUI.user);
-                cancelCallback = () =>
+                downloader.CancelDownload();
+                installCanceled = true;
+            };
+
+
+            SetDescription("Uninstalling selected mods");
+            installer.UninstallList(toUninstall);
+            if (installCanceled) return;
+
+            SetDescription("Updating selected mods");
+            installer.Upgrade(toUpgrade, downloader);
+
+
+            // TODO: We should be able to resolve all our provisioning conflicts
+            // before we start installing anything. CKAN.SanityChecker can be used to
+            // pre-check if our changes are going to be consistent.
+
+            bool resolvedAllProvidedMods = false;
+
+            while (!resolvedAllProvidedMods)
+            {
+                if (installCanceled)
                 {
-                    downloader.CancelDownload();
-                    installCanceled = true;
-                };
-
-
-                SetDescription("Uninstalling selected mods");
-                installer.UninstallList(toUninstall);
-                if (installCanceled) return;
-
-                SetDescription("Updating selected mods");
-                installer.Upgrade(toUpgrade, downloader);
-
-
-                // TODO: We should be able to resolve all our provisioning conflicts
-                // before we start installing anything. CKAN.SanityChecker can be used to
-                // pre-check if our changes are going to be consistent.
-
-                bool resolvedAllProvidedMods = false;
-
-                while (!resolvedAllProvidedMods)
+                    e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
+                        opts.Key);
+                    return;
+                }
+                try
                 {
-                    if (installCanceled)
+                    var ret = InstallList(toInstall, opts.Value, downloader);
+                    if (!ret)
                     {
+                        // install failed for some reason, error message is already displayed to the user                    
                         e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
                             opts.Key);
                         return;
                     }
-                    try
-                    {
-                        var ret = InstallList(toInstall, opts.Value, downloader);
-                        if (!ret)
-                        {
-                            // install failed for some reason, error message is already displayed to the user                    
-                            e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                                opts.Key);
-                            return;
-                        }
-                        resolvedAllProvidedMods = true;
-                    }
-                    catch (TooManyModsProvideKraken tooManyProvides)
-                    {
-                        Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
-
-                        m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                        m_TabController.SetTabLock(true);
-
-                        lock (this)
-                        {
-                            Monitor.Wait(this);
-                        }
-
-                        m_TabController.SetTabLock(false);
-
-                        m_TabController.HideTab("ChooseProvidedModsTabPage");
-
-                        if (installCanceled)
-                        {
-                            m_TabController.HideTab("WaitTabPage");
-                            m_TabController.ShowTab("ManageModsTabPage");
-                            e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                                opts.Key);
-                            return;
-                        }
-
-                        m_TabController.ShowTab("WaitTabPage");
-                    }
+                    resolvedAllProvidedMods = true;
                 }
-                if (!installCanceled)
+                catch (TooManyModsProvideKraken tooManyProvides)
                 {
-                    transaction.Complete();
+                    Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
+
+                    m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                    m_TabController.SetTabLock(true);
+
+                    lock (this)
+                    {
+                        Monitor.Wait(this);
+                    }
+
+                    m_TabController.SetTabLock(false);
+
+                    m_TabController.HideTab("ChooseProvidedModsTabPage");
+
+                    if (installCanceled)
+                    {
+                        m_TabController.HideTab("WaitTabPage");
+                        m_TabController.ShowTab("ManageModsTabPage");
+                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
+                            opts.Key);
+                        return;
+                    }
+
+                    m_TabController.ShowTab("WaitTabPage");
                 }
             }
+
             e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(true, opts.Key);
         }
 
