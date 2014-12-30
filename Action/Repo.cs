@@ -287,8 +287,28 @@ namespace CKAN.CmdLine
 
         private int DefaultRepository(DefaultOptions options)
         {
+            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+
+            if (options.uri == null)
+            {
+                User.RaiseMessage("default <uri> - argument missing, perhaps you forgot it?");
+                return Exit.BADOPT;
+            }
+
+            log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
+            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+
+            if (repositories.ContainsKey (Repository.default_ckan_repo_name))
+            {
+                repositories.Remove (Repository.default_ckan_repo_name);
+            }
+
+            repositories.Add(Repository.default_ckan_repo_name, new System.Uri(options.uri));
+            User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
+            manager.Save();
+
             return Exit.OK;
         }
-	}
+    }
 }
 
