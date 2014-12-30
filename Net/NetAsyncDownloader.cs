@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -35,7 +36,7 @@ namespace CKAN
             public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
             {
                 this.url = url;
-                this.path = path ?? file_transaction.GetTempFileName();
+                this.path = path ?? Path.GetTempFileName();
                 lastProgressUpdateTime = DateTime.Now;
 
                 agent.Headers.Add("user-agent", Net.UserAgentString);
@@ -43,7 +44,6 @@ namespace CKAN
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
-        private static readonly TxFileManager file_transaction = new TxFileManager();
 
         private List<NetAsyncDownloaderDownloadPart> downloads;
         private List<CkanModule> modules;
@@ -97,9 +97,6 @@ namespace CKAN
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
-
-                // Snapshot whatever was in that location, in case we need to roll-back.
-                file_transaction.Snapshot(downloads[i].path);
 
                 // Bytes ahoy!
                 downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
@@ -205,7 +202,7 @@ namespace CKAN
                         }
                     }
                     else
-                    {
+                    {   
                         // Even if some of our downloads failed, we want to cache the
                         // ones which succeeded.
 
@@ -216,7 +213,14 @@ namespace CKAN
                         // commenting out until this is resolved
                         // ~ nlight
 
-                        cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                        try
+                        {
+                            cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
+                        }
                     }
                 }
             }
@@ -232,7 +236,7 @@ namespace CKAN
                 foreach (string tmpfile in filenames)
                 {
                     log.DebugFormat("Cleaning up {0}", tmpfile);
-                    file_transaction.Delete(tmpfile);
+                    File.Delete(tmpfile);
                 }
             }
 

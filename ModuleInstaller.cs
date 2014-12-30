@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -201,7 +202,7 @@ namespace CKAN
             }
 
             // We're about to install all our mods; so begin our transaction.
-            using (CkanTransaction transaction = new CkanTransaction())
+            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
             {
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
@@ -298,7 +299,7 @@ namespace CKAN
             // We'll need our registry to record which files we've installed.
             Registry registry = registry_manager.registry;
 
-            using (var transaction = new CkanTransaction())
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 // Install all the things!
                 IEnumerable<string> files = InstallModule(module, filename);
@@ -652,7 +653,7 @@ namespace CKAN
                 return;
             }
 
-            using (var transaction = new CkanTransaction())
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 foreach (string mod in goners)
                 {
@@ -682,7 +683,7 @@ namespace CKAN
          
         private void Uninstall(string modName)
         {
-            using (var transaction = new CkanTransaction())
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 InstalledModule mod = registry_manager.registry.InstalledModule(modName);
 
@@ -777,7 +778,7 @@ namespace CKAN
 
             // TODO: Download our files.
 
-            using (var tx = new CkanTransaction())
+            using (var tx = CkanTransaction.CreateTransactionScope())
             {
 
                 foreach (string identifier in remove)
