@@ -15,12 +15,20 @@ import urllib
 import requests
 from urlparse import urljoin
 
+import datetime
+import base64
+
 import json
 
 def make_github_post_request(url_part, username, password, payload):
     url = urljoin(GITHUB_API, url_part)
     print '::make_github_post_request - %s' % url
     return requests.post(url, auth = (username, password), data = json.dumps(payload), verify=False)
+
+def make_github_get_request(url_path, username, password, payload):
+    url = urljoin(GITHUB_API, url_path)
+    print '::make_github_get_request - %s' % url
+    return requests.get(url, auth = (username, password), data = json.dumps(payload), verify=False)
 
 def make_github_post_request_raw(url_part, username, password, payload, content_type):
     url = urljoin(GITHUB_API, url_part)
@@ -45,6 +53,17 @@ def make_github_release_artifact(username, password, upload_url, filepath, conte
     payload = file(filepath, 'r').read()
     return make_github_post_request_raw(url, username, password, payload, content_type)
 
+def get_github_file(username, password, repo, path):
+    return make_github_get_request('/repos/%s/contents/%s' % (repo, path), username, password, {})
+
+def push_github_file(username, password, repo, path, sha, content, branch='master'):
+    payload = {}
+    payload['path'] = path
+    payload['message'] = 'Updating build-tag'
+    payload['content'] = base64.b64encode(content)
+    payload['sha'] = sha
+    payload['branch'] = branch
+
 def main():
     parser = argparse.ArgumentParser(description='Create GitHub releases and upload build artifacts')
 
@@ -65,7 +84,14 @@ def main():
         sys.exit(0)
 
     if args.build_tag_file:
-        response = push_github_file(args.user, args.token, args.repository, 'build-tag', response_json['id'])
+        response = get_github_file(args.user, args.token, args.repository, 'build-tag')
+        if response.status.code != 201:
+            print 'There was an issue fetching the build-tag file! - %s' % response.text
+            sys.exit(1)
+        
+        response_json = json.loads(response.text)
+    
+        response = push_github_file(args.user, args.token, args.repository, response_json['path'], response_json['sha'], str(datetime.datetime.now()))
         if response.status_code == 201:
             print 'Build-tag file pushed to repository!'
         else:
