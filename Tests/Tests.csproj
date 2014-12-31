@@ -50,6 +50,7 @@
     <Compile Include="CKAN\Types\ReleaseStatus.cs" />
     <Compile Include="CKAN\Registry\RegistryLive.cs" />
     <Compile Include="CKAN\FileIdentifier.cs" />
+    <Compile Include="CKAN\Registry\RegistryMultipleRepos.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
