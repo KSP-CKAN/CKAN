@@ -15,6 +15,9 @@ namespace CKAN.NetKAN
 
         // Right now we only support KSP versioning info.
 
+        [JsonConverter(typeof(JsonAvcToVersion))]
+        public Version version;
+
         [JsonConverter(typeof (JsonAvcToKspVersion))]
         public KSPVersion ksp_version;
 
@@ -28,11 +31,11 @@ namespace CKAN.NetKAN
         /// Locates a version file in the zipfile specified, and returns an AVC object.
         /// This requires a module object as we *only* search files we might install.
         /// </summary>
-        public static AVC FromZipFile(CkanModule module, string filename)
+        public static AVC FromZipFile(CkanModule module, string filename, string remote = "")
         {
             using (ZipFile zipfile = new ZipFile(filename))
             {
-                return FromZipFile(module, zipfile);
+                return FromZipFile(module, zipfile, remote);
             }
         }
 
@@ -44,7 +47,7 @@ namespace CKAN.NetKAN
         /// Returns null if no version is found.
         /// Throws a Kraken if too many versions are found.
         /// </summary>
-        public static AVC FromZipFile(CkanModule module, ZipFile zipfile)
+        public static AVC FromZipFile(CkanModule module, ZipFile zipfile, string remote = "")
         {
             log.DebugFormat("Finding AVC .version file for {0}", module);
 
@@ -69,17 +72,44 @@ namespace CKAN.NetKAN
                 }
             }
 
-            if (files.Count > 1)
+            int remoteIndex = 0;
+
+            if (remote != "")
+            {
+                remoteIndex = -1;
+
+                for (int i = 0; i < files.Count; i++)
+                {
+                    if (files[i].Name == remote)
+                    {
+                        remoteIndex = i;
+                        break;
+                    }
+                }
+
+                if (remoteIndex == -1)
+                {
+                    var remotes = "";
+                    foreach (var file in files)
+                    {
+                        remotes += file.Name + ", ";
+                    }
+
+                    throw new Kraken(
+                    string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}", remote, remotes));
+                }
+            }
+            else if (files.Count > 1)
             {
                 throw new Kraken(
                     string.Format("Too may .version files located: {0}",
                               string.Join(", ",files.Select(x => x.Name))));
             }
 
-            log.DebugFormat("Using AVC data from {0}", files[0].Name);
+            log.DebugFormat("Using AVC data from {0}", files[remoteIndex].Name);
 
             // Hooray, found our entry. Extract and return it.
-            using (var zipstream = zipfile.GetInputStream(files[0]))
+            using (var zipstream = zipfile.GetInputStream(files[remoteIndex]))
             using (StreamReader stream = new StreamReader(zipstream))
             {
                 string json = stream.ReadToEnd();

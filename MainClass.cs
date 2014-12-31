@@ -74,6 +74,9 @@ namespace CKAN.NetKAN
 
                     metadata = GitHub(json, remote.id, options.PreRelease, cache);
                     break;
+                case "http":
+                    metadata = HTTP(json, remote.id, cache, user);
+                    break;
                 default:
                     log.FatalFormat("Unknown remote source: {0}", remote.source);
                     return EXIT_ERROR;
@@ -121,12 +124,15 @@ namespace CKAN.NetKAN
             // tell if there's been an override of the version fields or not.
 
             // TODO: Remove magic string "#/ckan/ksp-avc"
-            if (metadata[version_token] != null && (string) metadata[version_token] == "#/ckan/ksp-avc")
+            if (remote.source != "http") // HTTP has already included the KSP-AVC data as it needs it earlier in the process
+            if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
             {
+                var versionRemote = FindVersionRemote(metadata);
+
                 metadata.Remove(version_token);
 
                 try {
-                    AVC avc = AVC.FromZipFile(mod, file);
+                    AVC avc = AVC.FromZipFile(mod, file, versionRemote.id);
                     avc.InflateMetadata(metadata, null, null);
                 }
                 catch (JsonReaderException)
@@ -220,7 +226,58 @@ namespace CKAN.NetKAN
             }
 
             return metadata;
+        }
 
+        internal static JObject HTTP(JObject orig_metadata, string remote_id, NetFileCache cache, IUser user)
+        {
+            var metadata = orig_metadata;
+
+            // Check if we should auto-inflate.
+            string kref = (string)metadata[expand_token];
+
+            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/http")
+            {
+                log.InfoFormat("Inflating from HTTP download... {0}", metadata[expand_token]);
+                metadata["download"] = remote_id;
+                metadata["version"] = "0.0.0"; // add a dummy version that will be replaced by the KSP-AVC parser later
+                metadata.Remove(expand_token);
+
+                var remote_uri = new Uri(remote_id);
+                var downloaded_file = Net.Download(remote_uri);
+                var module = CkanModule.FromJson(metadata.ToString());
+
+                if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
+                {
+                    var versionRemote = FindVersionRemote(metadata);
+
+                    metadata.Remove(version_token);
+
+                    try
+                    {
+                        AVC avc = AVC.FromZipFile(module, downloaded_file, versionRemote.id);
+                        avc.InflateMetadata(metadata, null, null);
+                        metadata["version"] = avc.version.ToString();
+                        module.version = avc.version;
+                    }
+                    catch (JsonReaderException)
+                    {
+                        user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", module);
+                        return null;
+                    }
+
+                    // If we've done this, we need to re-inflate our mod, too.
+                    module = CkanModule.FromJson(metadata.ToString());
+                }
+
+                
+                ModuleInstaller.CachedOrDownload(module.identifier, module.version, module.download, cache);
+            }
+            else
+            {
+                log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
+            }
+
+            return orig_metadata;
         }
 
         /// <summary>
@@ -290,6 +347,20 @@ namespace CKAN.NetKAN
             Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
 
             if (! match.Success)
+            {
+                // TODO: Have a proper kraken class!
+                throw new Kraken("Cannot find remote and ID in kref: " + kref);
+            }
+
+            return new NetKanRemote(source: match.Groups[1].ToString(), id: match.Groups[2].ToString());
+        }
+
+        internal static NetKanRemote FindVersionRemote(JObject json)
+        {
+            string kref = (string)json[version_token];
+            Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
+
+            if (!match.Success)
             {
                 // TODO: Have a proper kraken class!
                 throw new Kraken("Cannot find remote and ID in kref: " + kref);
