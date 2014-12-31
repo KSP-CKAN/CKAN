@@ -266,7 +266,10 @@ namespace CKAN.NetKAN
                     // If we've done this, we need to re-inflate our mod, too.
                     module = CkanModule.FromJson(metadata.ToString());
                 }
-
+                else
+                {
+                    throw new Kraken("No $vref specified, $kref HTTP method requires it, bailing out..");
+                }
                 
                 ModuleInstaller.CachedOrDownload(module.identifier, module.version, module.download, cache);
             }
