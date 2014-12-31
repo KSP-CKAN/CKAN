@@ -150,6 +150,9 @@ namespace CKAN.CmdLine
         [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
 
+        [Option("all", HelpText = "Upgrade all available updated modules")]
+        public bool upgrade_all { get; set; }
+
         // TODO: How do we provide helptext on this?
         [ValueList(typeof (List<string>))]
         public List<string> modules { get; set; }
