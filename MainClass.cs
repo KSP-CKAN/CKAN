@@ -128,7 +128,6 @@ namespace CKAN.NetKAN
             if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
             {
                 var versionRemote = FindVersionRemote(metadata);
-
                 metadata.Remove(version_token);
 
                 try {
@@ -249,7 +248,6 @@ namespace CKAN.NetKAN
                 if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
                 {
                     var versionRemote = FindVersionRemote(metadata);
-
                     metadata.Remove(version_token);
 
                     try
@@ -358,6 +356,11 @@ namespace CKAN.NetKAN
         internal static NetKanRemote FindVersionRemote(JObject json)
         {
             string kref = (string)json[version_token];
+            if (kref == "#/ckan/ksp-avc")
+            {
+                return new NetKanRemote(source: "ksp-avc", id: "");
+            }
+
             Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
 
             if (!match.Success)
