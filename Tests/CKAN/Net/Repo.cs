@@ -7,17 +7,23 @@ namespace CKANTests
     public class Repo
     {
         private CKAN.Registry registry;
+        private DisposableKSP ksp;
 
         [SetUp]
         public void Setup()
         {
-            registry = CKAN.Registry.Empty();
+            ksp = new DisposableKSP();
+            registry = ksp.KSP.Registry;
+
+            registry.ClearAvailable();
+            registry.ClearDlls();
+            registry.Installed().Clear();
         }
 
         [Test]
         public void UpdateRegistry()
         {
-            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry);
+            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP);
 
             // Test we've got an expected module.
             CKAN.CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new CKAN.KSPVersion("0.25.0"));
@@ -28,7 +34,7 @@ namespace CKANTests
 		[Test]
 		public void UpdateRegistryTarGz()
 		{
-			CKAN.Repo.UpdateRegistry(TestData.TestKANTarGz(), registry);
+            CKAN.Repo.UpdateRegistry(TestData.TestKANTarGz(), registry, ksp.KSP);
 
 			// Test we've got an expected module.
 			CKAN.CkanModule far = registry.LatestAvailable("FerramAerospaceResearch", new CKAN.KSPVersion("0.25.0"));
@@ -41,7 +47,7 @@ namespace CKANTests
         {
             Assert.DoesNotThrow(delegate
             {
-                CKAN.Repo.UpdateRegistry(TestData.BadKAN(), registry);
+                CKAN.Repo.UpdateRegistry(TestData.BadKAN(), registry, ksp.KSP);
             });
         }
     }

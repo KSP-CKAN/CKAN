@@ -106,8 +106,8 @@ namespace CKAN
             string normalised_path = path.Replace('\\', '/');
 
             // Make sure our internal state is consistent. Is there a better way of doing this?
-            filter = filter ?? new List<string> ();
-            filter_regexp = filter_regexp ?? new List<string> ();
+             filter = filter ?? new List<string> ();
+             filter_regexp = filter_regexp ?? new List<string> ();
 
             // We want everthing that matches our 'file', either as an exact match,
             // or as a path leading up to it.
@@ -135,7 +135,18 @@ namespace CKAN
             }
 
             // Finally, check our filter regexpes.
-            return filter_regexp.All(regexp => !Regex.IsMatch(normalised_path, regexp));
+            var result = filter_regexp.All(regexp => !Regex.IsMatch(normalised_path, regexp));
+            if (!filter.Any())
+            {
+                filter = null;
+            }
+
+            if (!filter_regexp.Any())
+            {
+                filter_regexp = null;
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -14,12 +14,19 @@ namespace CKANTests
     public class SanityChecker
     {
         private CKAN.Registry registry;
+        private DisposableKSP ksp;
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            registry = CKAN.Registry.Empty();
-            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry);
+            ksp = new DisposableKSP();
+
+            registry = ksp.KSP.Registry;
+            registry.ClearAvailable();
+            registry.ClearDlls();
+            registry.Installed().Clear();
+
+            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP);
         }
 
         [Test]

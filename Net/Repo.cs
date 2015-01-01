@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using ChinhDo.Transactions;
@@ -7,6 +9,7 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using NUnit.Framework;
 
 namespace CKAN
 {
@@ -75,7 +78,7 @@ namespace CKAN
         ///     Optionally takes a URL to the zipfile repo to download.
         ///     Returns the number of unique modules updated.
         /// </summary>
-        public static int Update(RegistryManager registry_manager, KSPVersion ksp_version, Uri repo = null)
+        public static int Update(RegistryManager registry_manager, KSP ksp, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -83,23 +86,23 @@ namespace CKAN
                 repo = default_ckan_repo;
             }
 
-            UpdateRegistry(repo, registry_manager.registry);
+            UpdateRegistry(repo, registry_manager.registry, ksp);
 
             // Save our changes!
             registry_manager.Save();
 
             // Return how many we got!
-            return registry_manager.registry.Available(ksp_version).Count;
+            return registry_manager.registry.Available(ksp.Version()).Count;
         }
 
-        public static int Update(RegistryManager registry_manager, KSPVersion ksp_version, string repo = null)
+        public static int Update(RegistryManager registry_manager, KSP ksp, string repo = null)
         {
             if (repo == null)
             {
-                return Update(registry_manager, ksp_version, (Uri) null);
+                return Update(registry_manager, ksp, (Uri)null);
             }
 
-            return Update(registry_manager, ksp_version, new Uri(repo));
+            return Update(registry_manager, ksp, new Uri(repo));
         }
 
         /// <summary>
@@ -107,14 +110,19 @@ namespace CKAN
         /// This will *clear* the registry of available modules first.
         /// This does not *save* the registry. For that, you probably want Repo.Update
         /// </summary>
-        internal static void UpdateRegistry(Uri repo, Registry registry)
+        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp)
         {
             log.InfoFormat("Downloading {0}", repo);
 
             string repo_file = Net.Download(repo);
 
+            // Clear our list of known modules.
+            var old_available = registry.available_modules;
+            registry.ClearAvailable();
+
 			// Check the filetype.
 			FileType type = FileIdentifier.IdentifyFile(repo_file);
+
 
 			switch (type)
 			{
@@ -127,6 +135,38 @@ namespace CKAN
 			default:
 				break;
 			}
+
+            List<CkanModule> toReinstall = new List<CkanModule>();
+
+            foreach (var identifierModulePair in old_available)
+            {
+                var identifier = identifierModulePair.Key;
+
+                if (registry.IsInstalled(identifier))
+                {
+                    var installedVersion = registry.InstalledVersion(identifier);
+                    if (!registry.available_modules[identifier].module_version.ContainsKey(installedVersion))
+                    {
+                        continue;
+                    }
+                    
+                    // if the mod is installed and the metadata is different we have to reinstall it
+                    var metadata =
+                        CkanModule.ToJson(registry.available_modules[identifier].module_version[installedVersion]);
+                    var oldMetadata = CkanModule.ToJson(old_available[identifier].module_version[installedVersion]);
+
+                    if (metadata != oldMetadata)
+                    {
+                        toReinstall.Add(registry.available_modules[identifier].module_version[installedVersion]);
+                    }
+                }
+            }
+
+            if (toReinstall.Any())
+            {
+                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
+                installer.Upgrade(toReinstall, new NetAsyncDownloader(new NullUser()));                
+            }
 
             // Remove our downloaded meta-data now we've processed it.
             // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
@@ -213,9 +253,6 @@ namespace CKAN
 
 			using (var zipfile = new ZipFile(path))
 			{
-				// Clear our list of known modules.
-				registry.ClearAvailable();
-
 				// Walk the archive, looking for .ckan files.
 				const string filter = @"\.ckan$";
 
