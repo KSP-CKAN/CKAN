@@ -255,7 +255,7 @@ namespace CKAN.CmdLine
 
             try
             {
-                int updated = Repo.Update(registry_manager, current_instance.Version(), options.repo);
+                int updated = Repo.Update(registry_manager, current_instance, options.repo);
                 user.RaiseMessage("Updated information on {0} available modules", updated);
             }
             catch (MissingCertificateKraken kraken)
