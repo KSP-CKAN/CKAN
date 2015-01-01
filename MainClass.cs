@@ -278,7 +278,8 @@ namespace CKAN.NetKAN
                 log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
             }
 
-            return orig_metadata;
+            metadata["download"] = metadata["download"].ToString() + '#' + metadata["version"].ToString();
+            return metadata;
         }
 
         /// <summary>
