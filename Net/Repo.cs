@@ -9,7 +9,6 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using NUnit.Framework;
 
 namespace CKAN
 {
