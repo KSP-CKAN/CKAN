@@ -1,8 +1,9 @@
 build/
-/bin
-/obj
+bin/
+obj/
 test-results
 *.userprefs
+*.user
 *.csproj.user
 TestResult.xml
 StyleCop.Cache
