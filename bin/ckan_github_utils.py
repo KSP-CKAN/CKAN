@@ -10,6 +10,46 @@ import datetime
 import base64
 
 import json
+import shutil
+
+def run_git_clone(repo, commit_hash):
+    if os.path.isdir(repo):
+        shutil.rmtree(repo)
+    
+    cwd = os.getcwd()
+    if os.system('git clone git@github.com:KSP-CKAN/%s' % repo) != 0:
+        sys.exit(1)
+        
+    os.chdir(os.path.join(cwd, repo))
+    if os.system('git checkout -f %s' % commit_hash) != 0:
+        sys.exit(1)
+        
+    os.chdir(cwd)
+
+def build_repo(repo):
+    cwd = os.getcwd()
+    os.chdir(os.path.join(cwd, repo))
+
+    if os.system('sh build.sh') != 0:
+        sys.exit(1)
+
+    os.chdir(cwd)
+    
+def build_ckan(core_hash, gui_hash, cmdline_hash):
+    print 'Building CKAN from the following commit hashes:'
+    print 'CKAN-core: %s' % args.core_hash
+    print 'CKAN-GUI: %s' % args.gui_hash
+    print 'CKAN-cmdline: %s' % args.cmdline_hash
+    
+    run_git_clone('CKAN-core', args.core_hash)
+    run_git_clone('CKAN-GUI', args.gui_hash)
+    run_git_clone('CKAN-cmdline', args.cmdline_hash)
+    
+    build_repo('CKAN-core')
+    build_repo('CKAN-GUI')
+    build_repo('CKAN-cmdline')
+    
+    print 'Done!'
 
 def make_github_post_request(url_part, username, password, payload):
     url = urljoin(GITHUB_API, url_part)
