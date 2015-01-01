@@ -2,9 +2,8 @@
 using System.Linq;
 using CKAN;
 using NUnit.Framework;
-using Tests;
 
-namespace CKANTests
+namespace Tests.GUI
 {
     [TestFixture]
     public class GUIModTests
@@ -16,10 +15,10 @@ namespace CKANTests
             using (var tidy = new DisposableKSP())
             {
                 KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
-                var registry = CKAN.Registry.Empty();
-                var ckanMod = TestData.kOS_014_module();
-                registry.AddAvailable(ckanMod);
-                var mod = new GUIMod(ckanMod, registry, manager.CurrentInstance.Version());
+                var registry = Registry.Empty();
+                var ckan_mod = TestData.kOS_014_module();
+                registry.AddAvailable(ckan_mod);
+                var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version());
                 Assert.False(mod.IsUpgradeChecked);
             }            
         }
@@ -28,17 +27,15 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var generatror = new RandomModuleGenerator(new Random(0451));
-                var oldVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"), kspVersion: tidy.KSP.Version());
-                var newVersion = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"), kspVersion: tidy.KSP.Version(),
-                    identifier:oldVersion.identifier);
-                var registry = CKAN.Registry.Empty();
-                registry.RegisterModule(oldVersion, Enumerable.Empty<string>(), null);
-                registry.AddAvailable(newVersion);
+                var old_version = generatror.GeneratorRandomModule(version: new CKAN.Version("0.24"), kspVersion: tidy.KSP.Version());
+                var new_version = generatror.GeneratorRandomModule(version: new CKAN.Version("0.25"), kspVersion: tidy.KSP.Version(),
+                    identifier:old_version.identifier);
+                var registry = Registry.Empty();
+                registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);
+                registry.AddAvailable(new_version);
                 
-                var mod = new GUIMod(oldVersion, registry, tidy.KSP.Version());
+                var mod = new GUIMod(old_version, registry, tidy.KSP.Version());
                 Assert.True(mod.HasUpdate);
             }
         }

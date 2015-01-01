@@ -29,16 +29,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CKAN\Cache.cs" />
-    <Compile Include="CKAN\KSP.cs" />
-    <Compile Include="CKAN\KSPManager.cs" />
-    <Compile Include="CKAN\KSPPathUtils.cs" />
-    <Compile Include="CKAN\Meta.cs" />
-    <Compile Include="CKAN\ModuleInstaller.cs" />
+    <Compile Include="FakeWin32Registry.cs" />
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="ZipLib.cs" />
     <Compile Include="DisposableKSP.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
