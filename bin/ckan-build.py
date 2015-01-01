@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+from ckan_github_utils import * 
+
 import os, sys
 import argparse
-
 
 def main():
     parser = argparse.ArgumentParser(description='Builds CKAN from a list of commit hashes')

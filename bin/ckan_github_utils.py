@@ -4,6 +4,8 @@ CKAN_CORE_VERSION_STRING_TARGET = 'private readonly static string BUILD_VERSION 
 
 # ---* DO NOT EDIT BELOW THIS LINE *---
 
+import os, sys
+
 import urllib
 import requests
 from urlparse import urljoin
@@ -46,11 +48,11 @@ def stamp_ckan_version(version):
     with open('Meta.cs', 'r') as meta_file:
         meta_contents = meta_file.read()
     
-    if meta_contents = None:
+    if meta_contents == None:
         print 'Error reading Meta.cs'
         sys.exit(1)
     
-    meta_contents.replace(CKAN_CORE_VERSION_STRING, CKAN_CORE_VERSION_STRING_TARGET % version)
+    meta_contents = meta_contents.replace(CKAN_CORE_VERSION_STRING, CKAN_CORE_VERSION_STRING_TARGET % version)
     
     with open("Meta.cs", "w") as meta_file:
         meta_file.write(meta_contents)
@@ -59,13 +61,13 @@ def stamp_ckan_version(version):
     
 def build_ckan(core_hash, gui_hash, cmdline_hash, release_version):
     print 'Building CKAN from the following commit hashes:'
-    print 'CKAN-core: %s' % args.core_hash
-    print 'CKAN-GUI: %s' % args.gui_hash
-    print 'CKAN-cmdline: %s' % args.cmdline_hash
+    print 'CKAN-core: %s' % core_hash
+    print 'CKAN-GUI: %s' % gui_hash
+    print 'CKAN-cmdline: %s' % cmdline_hash
     
-    run_git_clone('CKAN-core', args.core_hash)
-    run_git_clone('CKAN-GUI', args.gui_hash)
-    run_git_clone('CKAN-cmdline', args.cmdline_hash)
+    run_git_clone('CKAN-core', core_hash)
+    run_git_clone('CKAN-GUI', gui_hash)
+    run_git_clone('CKAN-cmdline', cmdline_hash)
     
     if release_version != None:
         stamp_ckan_version(release_version)
