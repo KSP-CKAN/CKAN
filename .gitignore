@@ -18,3 +18,4 @@ netkan.exe
 *~
 *.ncrunchproject
 *.ncrunchsolution
+*.pyc
