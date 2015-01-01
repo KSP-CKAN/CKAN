@@ -54,7 +54,10 @@ def main():
     
     build_ckan(core_hash, gui_hash, cmdline_hash, args.release_version + '-0-g0000000')
     os.system('mono ckan.exe --version')
-        
+    
+    release_diff = ''
+    
+    
     response = push_github_file(args.user, args.token, args.repository, 'build-tag', build_tag)
     if response.status_code < 400:
         print 'Build-tag file pushed to repository!'
@@ -62,14 +65,15 @@ def main():
         print 'There was an issue pushing the build-tag file! - %s' % response.text
         sys.exit(1)
         
-    body_text = """
-    Promoted from [%s](%s)
-    * CKAN-core - %s
-    * CKAN-GUI - %s
-    * CKAN-cmdline - %s
+    body_text = """Promoted from [%s](%s)
+* CKAN-core - %s
+* CKAN-GUI - %s
+* CKAN-cmdline - %s
     
-    ---
-    """ % (args.jenkins_build, args.jenkins_build, core_hash, gui_hash, cmdline_hash)
+---
+Changes since last version:
+%s
+""" % (args.jenkins_build, args.jenkins_build, core_hash, gui_hash, cmdline_hash, release_diff)
         
     response = make_github_release(args.user, args.token, args.repository, args.release_version, args.name, body_text, args.draft, args.prerelease)
     response_json = json.loads(response.text)
