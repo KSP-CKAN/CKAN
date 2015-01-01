@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using CKAN;
 using NUnit.Framework;
-using Tests;
 
-namespace CKANTests
+namespace Tests.GUI
 {
     [TestFixture]
     public class MainModListTests
@@ -20,24 +18,24 @@ namespace CKANTests
         [Test]
         public void OnModTextFilterChanges_CallsEventHandler()
         {
-            var calledN = 0;
-            var item = new MainModList(delegate { calledN++; });
-            Assert.That(calledN == 1);
+            var called_n = 0;
+            var item = new MainModList(delegate { called_n++; });
+            Assert.That(called_n == 1);
             item.ModNameFilter = "randomString";
-            Assert.That(calledN == 2);
+            Assert.That(called_n == 2);
             item.ModNameFilter = "randomString";
-            Assert.That(calledN == 2);
+            Assert.That(called_n == 2);
         }
         [Test]
         public void OnModTypeFilterChanges_CallsEventHandler()
         {
-            var calledN = 0;
-            var item = new MainModList(delegate { calledN++; });
-            Assert.That(calledN == 1);
+            var called_n = 0;
+            var item = new MainModList(delegate { called_n++; });
+            Assert.That(called_n == 1);
             item.ModFilter = GUIModFilter.Installed;
-            Assert.That(calledN == 2);
+            Assert.That(called_n == 2);
             item.ModFilter = GUIModFilter.Installed;
-            Assert.That(calledN == 2);
+            Assert.That(called_n == 2);
         }
 
         [Test]
@@ -45,9 +43,9 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var item = new MainModList(delegate { });
-                Assert.That(item.ComputeChangeSetFromModList(CKAN.Registry.Empty(), manager.CurrentInstance), Is.Empty);
+                Assert.That(item.ComputeChangeSetFromModList(Registry.Empty(), manager.CurrentInstance), Is.Empty);
             }
         }
 
@@ -56,13 +54,13 @@ namespace CKANTests
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
 
-                var ckanMod = TestData.FireSpitterModule();
-                var registry = CKAN.Registry.Empty();
-                registry.AddAvailable(ckanMod);
+                var ckan_mod = TestData.FireSpitterModule();
+                var registry = Registry.Empty();
+                registry.AddAvailable(ckan_mod);
                 var item = new MainModList(delegate { });
-                Assert.That(item.IsVisible(new GUIMod(ckanMod, registry, manager.CurrentInstance.Version())));
+                Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version())));
             }
         }
 
@@ -76,15 +74,16 @@ namespace CKANTests
             }
 
         }
-/*
+        // TODO Ask nlight/hakan42 if the Xvfb Plugin for jenkins fixes this test
+        /*
         [Test]
         [Category("Display")]
         public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
         {
             using (var tidy = new DisposableKSP())
             {
-                CKAN.KSPManager manager = new CKAN.KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
-                var registry = CKAN.Registry.Empty();
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
+                var registry = Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
                 var modList = MainModList.ConstructModList(new List<GUIMod>
@@ -94,7 +93,7 @@ namespace CKANTests
                 });
                 Assert.That(modList, Has.Count.EqualTo(2));
             }
-
-        }*/
+        }
+        */
     }
 }
