@@ -25,8 +25,10 @@ def run_git_clone(repo, commit_hash):
         sys.exit(1)
         
     os.chdir(os.path.join(cwd, repo))
-    if os.system('git checkout -f %s' % commit_hash) != 0:
-        sys.exit(1)
+    
+    if commit_hash != 'master':
+        if os.system('git checkout -f %s' % commit_hash) != 0:
+            sys.exit(1)
         
     os.chdir(cwd)
 
@@ -60,6 +62,13 @@ def stamp_ckan_version(version):
     os.chdir(cwd)
     
 def build_ckan(core_hash, gui_hash, cmdline_hash, release_version):
+    if core_hash == None:
+        core_hash = 'master'
+    if gui_hash == None:
+        gui_hash = 'master'
+    if cmdline_hash == None:
+        cmdline_hash = 'master'
+    
     print 'Building CKAN from the following commit hashes:'
     print 'CKAN-core: %s' % core_hash
     print 'CKAN-GUI: %s' % gui_hash
