@@ -1,4 +1,6 @@
 GITHUB_API = 'https://api.github.com'
+CKAN_CORE_VERSION_STRING = 'private readonly static string BUILD_VERSION = null;'
+CKAN_CORE_VERSION_STRING_TARGET = 'private readonly static string BUILD_VERSION = "%s";'
 
 # ---* DO NOT EDIT BELOW THIS LINE *---
 
@@ -35,7 +37,27 @@ def build_repo(repo):
 
     os.chdir(cwd)
     
-def build_ckan(core_hash, gui_hash, cmdline_hash):
+def stamp_ckan_version(version):
+    cwd = os.getcwd()
+    os.chdir(os.path.join(cwd, 'CKAN-core'))
+    
+    meta_contents = None
+    
+    with open('Meta.cs', 'r') as meta_file:
+        meta_contents = meta_file.read()
+    
+    if meta_contents = None:
+        print 'Error reading Meta.cs'
+        sys.exit(1)
+    
+    meta_contents.replace(CKAN_CORE_VERSION_STRING, CKAN_CORE_VERSION_STRING_TARGET % version)
+    
+    with open("Meta.cs", "w") as meta_file:
+        meta_file.write(meta_contents)
+        
+    os.chdir(cwd)
+    
+def build_ckan(core_hash, gui_hash, cmdline_hash, release_version):
     print 'Building CKAN from the following commit hashes:'
     print 'CKAN-core: %s' % args.core_hash
     print 'CKAN-GUI: %s' % args.gui_hash
@@ -44,6 +66,9 @@ def build_ckan(core_hash, gui_hash, cmdline_hash):
     run_git_clone('CKAN-core', args.core_hash)
     run_git_clone('CKAN-GUI', args.gui_hash)
     run_git_clone('CKAN-cmdline', args.cmdline_hash)
+    
+    if release_version != None:
+        stamp_ckan_version(release_version)
     
     build_repo('CKAN-core')
     build_repo('CKAN-GUI')
