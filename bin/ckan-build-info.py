@@ -3,6 +3,7 @@
 import os, sys
 
 BUILD_INFO_MESSAGE = """
+>BUILD_TAG %s
 *************************************************************
 *************************************************************
 *************************************************************
@@ -55,19 +56,21 @@ def main():
                 
     repo_msg = ''
     fetch_msg = ''
+    build_tag = ''
     
     for repo, commit_hash in hashes.iteritems():
         repo_name = repo[:]
         if repo[-1] == '.':
             repo_name = repo[:-1]
-            
+    
+        build_tag += '%s+%s|'
         repo_msg += '* %s - %s\n' % (repo_name, commit_hash)
         rev_parse = ''
         if repo[-1] == '.':
             rev_parse = 'git fetch --tags --progress %s +refs/pull/*:refs/remotes/origin/pr/*; ' % urls[repo]
         fetch_msg += 'git clone %s; cd %s; %sgit checkout -f %s; cd ..;\n' % (urls[repo], repo_name, rev_parse, commit_hash)
         
-    print BUILD_INFO_MESSAGE % (repo_msg, fetch_msg)
+    print BUILD_INFO_MESSAGE % (build_tag, repo_msg, fetch_msg)
     
 if __name__ == "__main__":
     main()
