@@ -1,0 +1,2 @@
+python-requests
+python-jsonschema
