@@ -8,9 +8,9 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description='Builds CKAN from a list of commit hashes')
 
-    parser.add_argument('--ckan-core-hash', dest='core_hash', action='store', help='The commit hash for CKAN-core', required=True)
-    parser.add_argument('--ckan-gui-hash', dest='gui_hash', action='store', help='The commit hash for CKAN-GUI', required=True)
-    parser.add_argument('--ckan-cmdline-hash', dest='cmdline_hash', action='store', help='The commit hash for CKAN-cmdline', required=True)
+    parser.add_argument('--ckan-core-hash', dest='core_hash', action='store', help='The commit hash for CKAN-core', required=False)
+    parser.add_argument('--ckan-gui-hash', dest='gui_hash', action='store', help='The commit hash for CKAN-GUI', required=False)
+    parser.add_argument('--ckan-cmdline-hash', dest='cmdline_hash', action='store', help='The commit hash for CKAN-cmdline', required=False)
     parser.add_argument('--ckan-release-version', dest='release_version', action='store', help='The version with which to stamp ckan.exe', required=False)
     args = parser.parse_args()
     
