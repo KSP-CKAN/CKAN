@@ -105,10 +105,6 @@ namespace CKAN
             // Make sure our path always uses slashes we expect.
             string normalised_path = path.Replace('\\', '/');
 
-            // Make sure our internal state is consistent. Is there a better way of doing this?
-            filter = filter ?? new List<string> ();
-            filter_regexp = filter_regexp ?? new List<string> ();
-
             // We want everthing that matches our 'file', either as an exact match,
             // or as a path leading up to it.
             string wanted_filter = "^" + Regex.Escape(file) + "(/|$)";
@@ -129,9 +125,19 @@ namespace CKAN
             // All these comparisons are case insensitive.
             var path_segments = new List<string>(normalised_path.ToLower().Split('/'));
 
+            if (filter == null)
+            {
+                return true;
+            }
+
             if (filter.Any(filter_text => path_segments.Contains(filter_text.ToLower())))
             {
                 return false;
+            }
+
+            if (filter_regexp == null)
+            {
+                return true;
             }
 
             // Finally, check our filter regexpes.
