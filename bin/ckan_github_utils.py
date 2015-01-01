@@ -119,7 +119,7 @@ def make_github_release_artifact(username, password, upload_url, filepath, conte
 def get_github_file(username, password, repo, path):
     return make_github_get_request('/repos/%s/contents/%s' % (repo, path), username, password, {})
 
-def push_github_file(username, password, repo, path, sha, content, branch='master'):
+def push_github_file_sha(username, password, repo, path, sha, content, branch='master'):
     payload = {}
     payload['path'] = path
     payload['message'] = 'Updating build-tag'
@@ -127,3 +127,12 @@ def push_github_file(username, password, repo, path, sha, content, branch='maste
     payload['sha'] = sha
     payload['branch'] = branch
     return make_github_put_request('/repos/%s/contents/%s' % (repo, path), username, password, payload)
+
+def push_github_file(username, password, repo, path, content, branch='master'):
+    response = get_github_file(username, password, repo, path)
+    if response.status_code >= 400:
+        print 'There was an issue fetching "%s"! Status: %s - %s' % (path, str(response.status_code), response.text)
+        sys.exit(1)
+        
+    response_json = json.loads(response.text)
+    return push_github_file(username, password, repo, response_json['path'], response_json['sha'], str(datetime.datetime.now()))

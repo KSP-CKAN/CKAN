@@ -63,7 +63,7 @@ def main():
         if repo[-1] == '.':
             repo_name = repo[:-1]
     
-        build_tag += '%s+%s|'
+        build_tag += '%s+%s|' % (repo_name, commit_hash)
         repo_msg += '* %s - %s\n' % (repo_name, commit_hash)
         rev_parse = ''
         if repo[-1] == '.':

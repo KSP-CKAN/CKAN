@@ -31,14 +31,7 @@ def main():
         sys.exit(0)
 
     if args.build_tag_file:
-        response = get_github_file(args.user, args.token, args.repository, 'build-tag')
-        if response.status_code >= 400:
-            print 'There was an issue fetching the build-tag file! Status: %s - %s' % (str(response.status_code), response.text)
-            sys.exit(1)
-        
-        response_json = json.loads(response.text)
-    
-        response = push_github_file(args.user, args.token, args.repository, response_json['path'], response_json['sha'], str(datetime.datetime.now()))
+        response = push_github_file(args.user, args.token, args.repository, 'build_tag', str(datetime.datetime.now()))
         if response.status_code < 400:
             print 'Build-tag file pushed to repository!'
         else:
