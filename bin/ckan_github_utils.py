@@ -135,4 +135,4 @@ def push_github_file(username, password, repo, path, content, branch='master'):
         sys.exit(1)
         
     response_json = json.loads(response.text)
-    return push_github_file(username, password, repo, response_json['path'], response_json['sha'], str(datetime.datetime.now()))
+    return push_github_file_sha(username, password, repo, response_json['path'], response_json['sha'], str(datetime.datetime.now()))
