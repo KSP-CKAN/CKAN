@@ -31,7 +31,7 @@ def main():
         sys.exit(0)
 
     if args.build_tag_file:
-        response = push_github_file(args.user, args.token, args.repository, 'build_tag', str(datetime.datetime.now()))
+        response = push_github_file(args.user, args.token, args.repository, 'build-tag', str(datetime.datetime.now()))
         if response.status_code < 400:
             print 'Build-tag file pushed to repository!'
         else:
