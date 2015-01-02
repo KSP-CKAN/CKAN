@@ -166,7 +166,7 @@ namespace CKAN
                 string mods = "";
                 for (int i = 0; i < metadataChanges.Count; i++)
                 {
-                    mods += metadataChanges[i].identifier + ((i < metadataChanges.Count-1) ? "," : "");
+                    mods += metadataChanges[i].identifier + " " + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count-1) ? "," : "");
                 }
 
                 if(user.RaiseYesNoDialog(
