@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -7,12 +8,12 @@ namespace CKAN
 
         private ErrorDialog m_ErrorDialog;
         private SettingsDialog m_SettingsDialog;
-       // private YesNoDialog m_YesNoDialog = null;
+        private YesNoDialog m_YesNoDialog = null;
 
         public void RecreateDialogs()
         {
             m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
-          //  m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
         }
 
         public void AddStatusMessage(string text, params object[] args)
@@ -24,6 +25,11 @@ namespace CKAN
         public void ErrorDialog(string text, params object[] args)
         {
             m_ErrorDialog.ShowErrorDialog(String.Format(text, args));
-        }        
+        }
+
+        public bool YesNoDialog(string text)
+        {
+            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.OK;
+        }
     }
 }

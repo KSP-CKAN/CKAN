@@ -59,6 +59,7 @@ namespace CKAN
 
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
+            User.displayYesNo = YesNoDialog;
 
             controlFactory = new ControlFactory();
             Instance = this;
@@ -586,14 +587,17 @@ namespace CKAN
     }
 
     public class GUIUser : NullUser
-    {        
+    {
+        public delegate bool DisplayYesNo(string message);
+
         public Action<string, object[]> displayMessage;
         public Action<string, object[]> displayError;
+        public DisplayYesNo displayYesNo;
        
         
         protected override bool DisplayYesNoDialog(string message)
         {
-            return true;
+            return displayYesNo(message);
         }
 
         protected override void DisplayMessage(string message, params object[] args)
