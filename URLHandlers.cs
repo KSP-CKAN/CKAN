@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using IniParser;
 using IniParser.Exceptions;
@@ -11,15 +12,49 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
 
-        public static void RegisterURLHandler()
+        public static void RegisterURLHandler(Configuration config, IUser user)
         {
-            if (Util.IsLinux)
+            try
             {
-                RegisterURLHandler_Linux();
+                if (Util.IsLinux)
+                {
+                    RegisterURLHandler_Linux();
+                }
+                else
+                {
+                    try
+                    {
+                       RegisterURLHandler_Win32();
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        if (config.URLHandlerNoNag)
+                        {
+                            return;
+                        }
+
+                        if (user.RaiseYesNoDialog(@"CKAN requires permission to add a handler for ckan:// URLs.
+Do you want to allow CKAN to do this? If you click no you won't see this message again."))
+                        {
+                            // we need elevation to write to the registry
+                            ProcessStartInfo startInfo = new ProcessStartInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
+                            startInfo.Verb = "runas"; // trigger a UAC prompt (if UAC is enabled)
+                            Process.Start(startInfo);
+                            Environment.Exit(0);
+                        }
+                        else
+                        {
+                            config.URLHandlerNoNag = true;
+                            config.Save();
+                        }
+                        
+                        throw;
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                RegisterURLHandler_Win32();
+                log.ErrorFormat("There was an error while registering the URL handler for ckan:// - {0}", ex.Message);
             }
         }
 
@@ -31,6 +66,25 @@ namespace CKAN
 
             if (root.OpenSubKey("ckan") != null)
             {
+                try
+                {
+                    var path =
+                        (string)root.OpenSubKey("ckan")
+                            .OpenSubKey("shell")
+                            .OpenSubKey("open")
+                            .OpenSubKey("command")
+                            .GetValue("");
+
+                    if (path == (System.Reflection.Assembly.GetExecutingAssembly().Location + " gui %1"))
+                    {
+                        log.InfoFormat("URL handler already exists with the same path");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+
                 root.DeleteSubKeyTree("ckan");
             }
 

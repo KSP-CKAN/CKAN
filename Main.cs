@@ -149,7 +149,9 @@ namespace CKAN
 
             UpdateModsList();
 
-            URLHandlers.RegisterURLHandler();
+            m_User.displayYesNo = YesNoDialog;
+            URLHandlers.RegisterURLHandler(m_Configuration, m_User);
+            m_User.displayYesNo = null;
 
             ApplyToolButton.Enabled = false;
 

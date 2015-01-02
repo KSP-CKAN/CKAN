@@ -9,6 +9,7 @@ namespace CKAN
         public string Repository = "";
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
+        public bool URLHandlerNoNag = false;
 
         private string m_Path = "";
 
