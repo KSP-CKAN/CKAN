@@ -26,7 +26,7 @@ namespace CKANTests
             registry.ClearDlls();
             registry.Installed().Clear();
 
-            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP);
+            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP, new NullUser());
         }
 
         [Test]

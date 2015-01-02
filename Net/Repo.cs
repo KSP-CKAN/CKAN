@@ -77,7 +77,7 @@ namespace CKAN
         ///     Optionally takes a URL to the zipfile repo to download.
         ///     Returns the number of unique modules updated.
         /// </summary>
-        public static int Update(RegistryManager registry_manager, KSP ksp, Uri repo = null)
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -85,7 +85,7 @@ namespace CKAN
                 repo = default_ckan_repo;
             }
 
-            UpdateRegistry(repo, registry_manager.registry, ksp);
+            UpdateRegistry(repo, registry_manager.registry, ksp, user);
 
             // Save our changes!
             registry_manager.Save();
@@ -94,14 +94,14 @@ namespace CKAN
             return registry_manager.registry.Available(ksp.Version()).Count;
         }
 
-        public static int Update(RegistryManager registry_manager, KSP ksp, string repo = null)
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
         {
             if (repo == null)
             {
-                return Update(registry_manager, ksp, (Uri)null);
+                return Update(registry_manager, ksp, user, (Uri)null);
             }
 
-            return Update(registry_manager, ksp, new Uri(repo));
+            return Update(registry_manager, ksp, user, new Uri(repo));
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace CKAN
         /// This will *clear* the registry of available modules first.
         /// This does not *save* the registry. For that, you probably want Repo.Update
         /// </summary>
-        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp)
+        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp, IUser user)
         {
             log.InfoFormat("Downloading {0}", repo);
 
@@ -135,7 +135,7 @@ namespace CKAN
 				break;
 			}
 
-            List<CkanModule> toReinstall = new List<CkanModule>();
+            List<CkanModule> metadataChanges = new List<CkanModule>();
 
             foreach (var identifierModulePair in old_available)
             {
@@ -156,15 +156,26 @@ namespace CKAN
 
                     if (metadata != oldMetadata)
                     {
-                        toReinstall.Add(registry.available_modules[identifier].module_version[installedVersion]);
+                        metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
                     }
                 }
             }
 
-            if (toReinstall.Any())
+            if (metadataChanges.Any())
             {
-                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
-                installer.Upgrade(toReinstall, new NetAsyncDownloader(new NullUser()));                
+                string mods = "";
+                for (int i = 0; i < metadataChanges.Count; i++)
+                {
+                    mods += metadataChanges[i].identifier + ((i < metadataChanges.Count-1) ? "," : "");
+                }
+
+                if(user.RaiseYesNoDialog(
+                    @"The following mods have had their metadata changed since last update - %s.
+It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?"))
+                {
+                    ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
+                    installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));         
+                }
             }
 
             // Remove our downloaded meta-data now we've processed it.
