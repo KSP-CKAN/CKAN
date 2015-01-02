@@ -158,6 +158,19 @@ namespace CKAN
             if (m_CommandLineArgs.Length >= 2)
             {
                 var identifier = m_CommandLineArgs[1];
+                if (identifier.StartsWith("//"))
+                {
+                    identifier = identifier.Substring(2);
+                }
+                else if (identifier.StartsWith("ckan://"))
+                {
+                    identifier = identifier.Substring(7);
+                }
+
+                if (identifier.EndsWith("/"))
+                {
+                    identifier = identifier.Substring(0, identifier.Length - 1);
+                }
 
                 int i = 0;
                 foreach(DataGridViewRow row in ModList.Rows)
