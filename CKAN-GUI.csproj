@@ -39,6 +39,9 @@
     <Reference Include="CKAN">
       <HintPath>..\CKAN-core\bin\Debug\CKAN.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\CKAN-core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -100,6 +103,7 @@
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TabController.cs" />
+    <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -168,6 +172,8 @@
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="LICENSE" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

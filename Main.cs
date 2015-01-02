@@ -94,8 +94,6 @@ namespace CKAN
 
             m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
-            
-            
 
             RecreateDialogs();
 
@@ -144,6 +142,8 @@ namespace CKAN
             m_InstallWorker.DoWork += InstallMods;
 
             UpdateModsList();
+
+            URLHandlers.RegisterURLHandler();
 
             ApplyToolButton.Enabled = false;
 
