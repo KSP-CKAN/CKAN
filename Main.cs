@@ -263,7 +263,7 @@ namespace CKAN.CmdLine
             {
                 if (options.update_all)
                 {
-                    int updated = CKAN.Repo.UpdateAllRepositories(registry_manager, current_instance.Version(), options.repo);
+                    int updated = CKAN.Repo.UpdateAllRepositories(registry_manager, current_instance.Version());
                     user.RaiseMessage("Updated information on {0} available modules", updated);
                 }
                 else
