@@ -40,7 +40,7 @@ namespace CKAN.CmdLine
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
             {
-                return Gui();
+                return Gui(args);
             }
 
             try
@@ -148,7 +148,7 @@ namespace CKAN.CmdLine
             switch (cmdline.action)
             {
                 case "gui":
-                    return Gui();
+                    return Gui(args);
 
                 case "version":
                     return Version(user);
@@ -238,12 +238,12 @@ namespace CKAN.CmdLine
             }
         }
 
-        private static int Gui()
+        private static int Gui(string[] args)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            GUI.Main();
+            GUI.Main(args);
 
             return Exit.OK;
         }
