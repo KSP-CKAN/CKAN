@@ -166,12 +166,13 @@ namespace CKAN
                 string mods = "";
                 for (int i = 0; i < metadataChanges.Count; i++)
                 {
-                    mods += metadataChanges[i].identifier + " " + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count-1) ? "," : "");
+                    mods += metadataChanges[i].identifier + " "
+                        + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count-1) ? "," : "");
                 }
 
-                if(user.RaiseYesNoDialog(
-                    @"The following mods have had their metadata changed since last update - %s.
-It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?"))
+                if(user.RaiseYesNoDialog(String.Format(
+                    @"The following mods have had their metadata changed since last update - {0}.
+It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?", mods)))
                 {
                     ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
                     installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));         
