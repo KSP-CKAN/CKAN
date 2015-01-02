@@ -77,7 +77,23 @@ namespace CKAN
         ///     Optionally takes a URL to the zipfile repo to download.
         ///     Returns the number of unique modules updated.
         /// </summary>
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
+        public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, IUser user)
+        {
+            Dictionary<string, Uri> repositories = registry_manager.registry.Repositories;
+
+            // If we handle multiple repositories, we will call ClearRegistry() ourselves...
+            registry_manager.registry.ClearAvailable();
+            foreach (KeyValuePair<string, Uri> entry in repositories)
+            {
+                log.InfoFormat("About to update {0}", entry.Value);
+                UpdateRegistry(entry.Value, registry_manager.registry, ksp, user, false);
+            }
+
+            // Return how many we got!
+            return registry_manager.registry.Available(ksp.Version()).Count;
+        }
+
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -85,7 +101,7 @@ namespace CKAN
                 repo = default_ckan_repo;
             }
 
-            UpdateRegistry(repo, registry_manager.registry, ksp, user);
+            UpdateRegistry(repo, registry_manager.registry, ksp, user, clear);
 
             // Save our changes!
             registry_manager.Save();
@@ -94,22 +110,21 @@ namespace CKAN
             return registry_manager.registry.Available(ksp.Version()).Count;
         }
 
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, string repo = null)
         {
             if (repo == null)
             {
-                return Update(registry_manager, ksp, user, (Uri)null);
+                return Update(registry_manager, ksp, user, clear, (Uri)null);
             }
 
-            return Update(registry_manager, ksp, user, new Uri(repo));
+            return Update(registry_manager, ksp, user, clear, new Uri(repo));
         }
 
         /// <summary>
         /// Updates the supplied registry from the URL given.
-        /// This will *clear* the registry of available modules first.
         /// This does not *save* the registry. For that, you probably want Repo.Update
         /// </summary>
-        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp, IUser user)
+        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp, IUser user, Boolean clear = true)
         {
             log.InfoFormat("Downloading {0}", repo);
 
@@ -117,7 +132,10 @@ namespace CKAN
 
             // Clear our list of known modules.
             var old_available = registry.available_modules;
-            registry.ClearAvailable();
+            if (clear)
+            {
+                registry.ClearAvailable();
+            }
 
 			// Check the filetype.
 			FileType type = FileIdentifier.IdentifyFile(repo_file);
