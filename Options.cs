@@ -187,6 +187,9 @@ namespace CKAN.CmdLine
         // This option is really meant for devs testing their CKAN-meta forks.
         [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
         public string repo { get; set; }
+
+        [Option("all", HelpText = "Upgrade all available updated modules")]
+        public bool upgrade_all { get; set; }
     }
 
     internal class RemoveOptions : CommonOptions
