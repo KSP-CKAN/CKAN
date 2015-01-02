@@ -10,6 +10,8 @@ namespace CKAN
 
         public void UpdateRepo()
         {
+            m_User.displayYesNo = YesNoDialog;
+
             m_TabController.RenameTab("WaitTabPage", "Updating repository");
 
             CurrentInstance.ScanGameData();
@@ -42,6 +44,8 @@ namespace CKAN
             {
                 m_ErrorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
             }
+
+            m_User.displayYesNo = null;
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
