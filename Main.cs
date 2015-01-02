@@ -53,13 +53,15 @@ namespace CKAN
 
         private string[] m_CommandLineArgs = null;
 
+        private GUIUser m_User = null;
+
         public Main(string[] cmdlineArgs, GUIUser User)
         {
             m_CommandLineArgs = cmdlineArgs;
+            m_User = User;
 
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
-            User.displayYesNo = YesNoDialog;
 
             controlFactory = new ControlFactory();
             Instance = this;
@@ -597,6 +599,11 @@ namespace CKAN
         
         protected override bool DisplayYesNoDialog(string message)
         {
+            if (displayYesNo == null)
+            {
+                return true;
+            }
+
             return displayYesNo(message);
         }
 
