@@ -151,6 +151,13 @@ namespace CKAN
                     
                     // if the mod is installed and the metadata is different we have to reinstall it
                     var metadata = registry.available_modules[identifier].module_version[installedVersion];
+
+                    if (!old_available.ContainsKey(identifier) ||
+                        !old_available[identifier].module_version.ContainsKey(installedVersion))
+                    {
+                        continue;
+                    }
+
                     var oldMetadata = old_available[identifier].module_version[installedVersion];
 
                     bool same = true;
