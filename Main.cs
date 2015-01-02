@@ -51,8 +51,12 @@ namespace CKAN
 
         public MainModList mainModList { get; private set; }
 
-        public Main(GUIUser User)
-        {            
+        private string[] m_CommandLineArgs = null;
+
+        public Main(string[] cmdlineArgs, GUIUser User)
+        {
+            m_CommandLineArgs = cmdlineArgs;
+
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
 
@@ -101,7 +105,6 @@ namespace CKAN
             // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
             Util.HideConsoleWindow();
             Application.Run(this);
-            
         }
 
         void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -151,6 +154,25 @@ namespace CKAN
 
             Text = String.Format("CKAN {0} - KSP {1}", Meta.Version(), CurrentInstance.Version());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
+
+            if (m_CommandLineArgs.Length >= 2)
+            {
+                var identifier = m_CommandLineArgs[1];
+
+                int i = 0;
+                foreach(DataGridViewRow row in ModList.Rows)
+                {
+                    var module = ((GUIMod) row.Tag).ToCkanModule();
+                    if (identifier == module.identifier)
+                    {
+                        ModList.FirstDisplayedScrollingRowIndex = i;
+                        row.Selected = true;
+                        break;
+                    }
+
+                    i++;
+                }
+            }
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)

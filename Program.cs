@@ -11,12 +11,12 @@ namespace CKAN
         ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        public static void Main()
+        public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            new Main(user);
+            new Main(args, user);
         }
 
         public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)

@@ -62,6 +62,11 @@ namespace CKAN
                 return;
             }
 
+            if (data == null)
+            {
+                return;
+            }
+
             data["Added Associations"].RemoveKey("x-scheme-handler/ckan");
             data["Added Associations"].AddKey("x-scheme-handler/ckan", HandlerFileName);
 
