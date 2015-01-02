@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-xbuild /verbosity:minimal CKAN-cmdline.sln
+xbuild /verbosity:minimal /property:win32icon=assets/ckan.ico CKAN-cmdline.sln
 
 #Run the GUI build.sh
 cd ../CKAN-GUI
