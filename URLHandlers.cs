@@ -3,11 +3,13 @@ using System.IO;
 using IniParser;
 using IniParser.Exceptions;
 using IniParser.Model;
+using log4net;
 
 namespace CKAN
 {
     public static class URLHandlers
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
 
         public static void RegisterURLHandler()
         {
@@ -23,6 +25,8 @@ namespace CKAN
 
         private static void RegisterURLHandler_Win32()
         {
+            log.InfoFormat("Adding URL handler to registry");
+
             var root = Microsoft.Win32.Registry.ClassesRoot;
 
             if (root.OpenSubKey("ckan") != null)
@@ -45,25 +49,25 @@ namespace CKAN
             var parser = new FileIniDataParser();
             IniData data = null;
 
+            log.InfoFormat("Trying to register URL handler");
+
             try
             {
                 data = parser.ReadFile(MimeAppsListPath); //();
             }
-            catch (DirectoryNotFoundException)
+            catch (DirectoryNotFoundException ex)
             {
+                log.ErrorFormat("Error: {0}", ex.Message);
                 return;
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException ex)
             {
+                log.ErrorFormat("Error: {0}", ex.Message);
                 return;
             }
-            catch (ParsingException)
+            catch (ParsingException ex)
             {
-                return;
-            }
-
-            if (data == null)
-            {
+                log.ErrorFormat("Error: {0}", ex.Message);
                 return;
             }
 
@@ -73,6 +77,13 @@ namespace CKAN
             parser.WriteFile(MimeAppsListPath, data);
 
             var handlerPath = Path.Combine(ApplicationsPath, HandlerFileName);
+            var handlerDirectory = Path.GetDirectoryName(handlerPath);
+
+            if (handlerDirectory == null || !Directory.Exists(handlerDirectory))
+            {
+                log.ErrorFormat("Error: {0} doesn't exist", handlerDirectory);
+                return;
+            }
 
             if (File.Exists(handlerPath))
             {
