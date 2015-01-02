@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using IniParser;
 using IniParser.Exceptions;
@@ -11,7 +12,7 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
 
-        public static void RegisterURLHandler()
+        public static void RegisterURLHandler(Configuration config, IUser user)
         {
             try
             {
@@ -21,7 +22,34 @@ namespace CKAN
                 }
                 else
                 {
-                    RegisterURLHandler_Win32();
+                    try
+                    {
+                       RegisterURLHandler_Win32();
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        if (config.URLHandlerNoNag)
+                        {
+                            return;
+                        }
+
+                        if (user.RaiseYesNoDialog(@"CKAN requires permission to add a handler for ckan:// URLs.
+Do you want to allow CKAN to do this? If you click no you won't see this message again."))
+                        {
+                            // we need elevation to write to the registry
+                            ProcessStartInfo startInfo = new ProcessStartInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
+                            startInfo.Verb = "runas"; // trigger a UAC prompt (if UAC is enabled)
+                            Process.Start(startInfo);
+                            Environment.Exit(0);
+                        }
+                        else
+                        {
+                            config.URLHandlerNoNag = true;
+                            config.Save();
+                        }
+                        
+                        throw;
+                    }
                 }
             }
             catch (Exception ex)
