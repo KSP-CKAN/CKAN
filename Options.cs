@@ -189,7 +189,7 @@ namespace CKAN.CmdLine
         public string repo { get; set; }
 
         [Option("all", HelpText = "Upgrade all available updated modules")]
-        public bool upgrade_all { get; set; }
+        public bool update_all { get; set; }
     }
 
     internal class RemoveOptions : CommonOptions
