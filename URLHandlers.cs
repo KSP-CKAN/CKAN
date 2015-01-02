@@ -13,13 +13,20 @@ namespace CKAN
 
         public static void RegisterURLHandler()
         {
-            if (Util.IsLinux)
+            try
             {
-                RegisterURLHandler_Linux();
+                if (Util.IsLinux)
+                {
+                    RegisterURLHandler_Linux();
+                }
+                else
+                {
+                    RegisterURLHandler_Win32();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                RegisterURLHandler_Win32();
+                log.ErrorFormat("There was an error while registering the URL handler for ckan:// - {0}", ex.Message);
             }
         }
 
