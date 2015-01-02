@@ -170,7 +170,8 @@ namespace CKAN
                 }
 
                 if(user.RaiseYesNoDialog(
-                    "The following mods have had their metadata changed since last update - %s. It is advisable that you reinstall them in order to preserve consistency with the repository."))
+                    @"The following mods have had their metadata changed since last update - %s.
+It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?"))
                 {
                     ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
                     installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));         
