@@ -15,8 +15,8 @@
                 },
                 {
                     "type"        : "string",
-                    "description" : "A x.x string",
-                    "pattern"     : "^[0-9]+\\.[0-9]+$"
+                    "description" : "A vx.x string",
+                    "pattern"     : "^v[0-9]+\\.[0-9]+$"
                 }
             ]
         },
