@@ -150,11 +150,61 @@ namespace CKAN
                     }
                     
                     // if the mod is installed and the metadata is different we have to reinstall it
-                    var metadata =
-                        CkanModule.ToJson(registry.available_modules[identifier].module_version[installedVersion]);
-                    var oldMetadata = CkanModule.ToJson(old_available[identifier].module_version[installedVersion]);
+                    var metadata = registry.available_modules[identifier].module_version[installedVersion];
+                    var oldMetadata = old_available[identifier].module_version[installedVersion];
 
-                    if (metadata != oldMetadata)
+                    bool same = true;
+                    if ((metadata.install == null) != (oldMetadata.install == null) ||
+                        (metadata.install != null && metadata.install.Length != oldMetadata.install.Length))
+                    {
+                        same = false;
+                    }
+                    else
+                    {
+                        if(metadata.install != null)
+                        for (int i = 0; i < metadata.install.Length; i++)
+                        {
+                            if (metadata.install[i].file != oldMetadata.install[i].file)
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if(metadata.install[i].filter != null)
+                            if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if(metadata.install[i].filter_regexp != null)
+                            if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
+                            {
+                                same = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!same)
                     {
                         metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
                     }
