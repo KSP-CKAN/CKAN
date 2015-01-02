@@ -66,6 +66,25 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 
             if (root.OpenSubKey("ckan") != null)
             {
+                try
+                {
+                    var path =
+                        (string)root.OpenSubKey("ckan")
+                            .OpenSubKey("shell")
+                            .OpenSubKey("open")
+                            .OpenSubKey("command")
+                            .GetValue("");
+
+                    if (path == (System.Reflection.Assembly.GetExecutingAssembly().Location + " gui %1"))
+                    {
+                        log.InfoFormat("URL handler already exists with the same path");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                }
+
                 root.DeleteSubKeyTree("ckan");
             }
 
