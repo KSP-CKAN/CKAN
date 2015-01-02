@@ -38,7 +38,7 @@ namespace CKAN
             key.SetValue("", "URL: ckan Protocol");
             key.SetValue("URL Protocol", "");
             key.CreateSubKey("shell").CreateSubKey("open").CreateSubKey("command").SetValue
-                ("", System.Reflection.Assembly.GetExecutingAssembly().Location + "gui %u");
+                ("", System.Reflection.Assembly.GetExecutingAssembly().Location + " gui %1");
         }
 
         private const string MimeAppsListPath = "~/.local/share/applications/mimeapps.list";
