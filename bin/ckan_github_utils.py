@@ -21,7 +21,7 @@ def run_git_clone(repo, commit_hash):
         shutil.rmtree(repo)
     
     cwd = os.getcwd()
-    if os.system('git clone git@github.com:KSP-CKAN/%s' % repo) != 0:
+    if os.system('git clone https://github.com/KSP-CKAN/%s.git' % repo) != 0:
         sys.exit(1)
         
     os.chdir(os.path.join(cwd, repo))
