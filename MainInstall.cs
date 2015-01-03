@@ -502,6 +502,14 @@ namespace CKAN
 
                 try
                 {
+                    var opts = new RelationshipResolverOptions();
+                    var resolver = new RelationshipResolver(new List<string>() {pair.Key}, opts,
+                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
+                    if (!resolver.ModList().Any())
+                    {
+                        continue;
+                    }
+
                     module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key, CurrentInstance.Version());
                 }
                 catch
