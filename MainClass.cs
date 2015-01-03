@@ -67,6 +67,9 @@ namespace CKAN.NetKAN
                 case "kerbalstuff":
                     metadata = KerbalStuff(json, remote.id, cache);
                     break;
+                case "jenkins":
+                    metadata = Jenkins(json, remote.id, cache);
+                    break;
                 case "github":
                     if (options.GitHubToken != null)
                     {
@@ -204,6 +207,16 @@ namespace CKAN.NetKAN
             }
 
             return metadata;
+        }
+
+        /// <summary>
+        /// Fetch Metadata from (successful) Jenkins builds
+        /// Returns a JObject that should be a fully formed CKAN file.
+        /// </summary>
+        internal static JObject Jenkins(JObject orig_metadata, string remote_id, NetFileCache cache)
+        {
+            log.ErrorFomat("Asked to inflate {0} but code not implemented yet", repo);
+            return null;
         }
 
         /// <summary>
