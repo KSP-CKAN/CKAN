@@ -215,7 +215,7 @@ namespace CKAN.NetKAN
         /// </summary>
         internal static JObject Jenkins(JObject orig_metadata, string remote_id, NetFileCache cache)
         {
-            log.ErrorFomat("Asked to inflate {0} but code not implemented yet", repo);
+            log.FatalFormat("Asked to inflate {0} but code not implemented yet", repo);
             return null;
         }
 
