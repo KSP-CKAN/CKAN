@@ -41,7 +41,18 @@ namespace CKAN.NetKAN
             Uri url = new Uri (api_base, path);
             log.DebugFormat("Calling {0}", url);
 
-            return web.DownloadString(url);
+            string result = "";
+            try
+            {
+                result = web.DownloadString(url);
+            }
+            catch(WebException webEx)
+            {
+                log.ErrorFormat ("WebException while accessing {0}: {1}", url, webEx);
+                throw webEx;
+            }
+
+            return result;
         }
 
         /// <summary>
