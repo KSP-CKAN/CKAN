@@ -215,8 +215,44 @@ namespace CKAN.NetKAN
         /// </summary>
         internal static JObject Jenkins(JObject orig_metadata, string remote_id, NetFileCache cache)
         {
-            log.FatalFormat("Asked to inflate {0} but code not implemented yet", remote_id);
-            return null;
+            JObject resources = (JObject) orig_metadata ["resources"];
+            log.DebugFormat ("resources: {0}", resources);
+
+            string baseUri = (string) resources ["ci"];
+            if (baseUri == null)
+            {
+                // Fallback, we don't have the defined resource 'ci' in the schema yet...
+                baseUri = (string) resources ["x_ci"];
+            }
+
+            log.DebugFormat ("baseUri: {0}", baseUri);
+
+            JenkinsBuild build = JenkinsAPI.GetLatestBuild (baseUri, true);
+
+            Version version = build.version;
+
+            log.DebugFormat("Mod: {0} {1}", remote_id, version);
+
+            // Find the latest download.
+            string filename = build.Download((string) orig_metadata["identifier"], cache);
+
+            JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
+
+            // Check if we should auto-inflate.
+            string kref = (string)metadata[expand_token];
+
+            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
+            {
+                log.InfoFormat("Inflating from Jenkins... {0}", metadata[expand_token]);
+                build.InflateMetadata(metadata, filename, null);
+                metadata.Remove(expand_token);
+            }
+            else
+            {
+                log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
+            }
+
+            return metadata;
         }
 
         /// <summary>
