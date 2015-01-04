@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using CommandLine;
 using ICSharpCode.SharpZipLib.Zip;
@@ -149,7 +150,21 @@ namespace CKAN.NetKAN
             string final_path = Path.Combine(options.OutputDir, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
-            File.WriteAllText(final_path, metadata.ToString());
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            {
+                writer.Formatting = Formatting.Indented;
+                writer.Indentation = 4;
+                writer.IndentChar = ' ';
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(writer, metadata);
+            }
+
+            File.WriteAllText(final_path, sw.ToString() + Environment.NewLine);
 
             return EXIT_OK;
         }
