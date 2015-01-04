@@ -149,7 +149,8 @@ namespace CKAN.NetKAN
             string final_path = Path.Combine(options.OutputDir, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
-            File.WriteAllText(final_path, metadata.ToString());
+            string data = metadata.ToString() + Environment.NewLine;
+            File.WriteAllText(final_path, data);
 
             return EXIT_OK;
         }
