@@ -125,7 +125,7 @@ namespace CKAN
             // All these comparisons are case insensitive.
             var path_segments = new List<string>(normalised_path.ToLower().Split('/'));
 
-            if (filter == null)
+            if (filter == null && filter_regexp == null)
             {
                 return true;
             }
