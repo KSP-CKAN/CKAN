@@ -125,12 +125,7 @@ namespace CKAN
             // All these comparisons are case insensitive.
             var path_segments = new List<string>(normalised_path.ToLower().Split('/'));
 
-            if (filter == null && filter_regexp == null)
-            {
-                return true;
-            }
-
-            if (filter.Any(filter_text => path_segments.Contains(filter_text.ToLower())))
+            if (filter != null && filter.Any(filter_text => path_segments.Contains(filter_text.ToLower())))
             {
                 return false;
             }
