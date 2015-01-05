@@ -215,6 +215,9 @@ namespace CKAN.NetKAN
         /// </summary>
         internal static JObject Jenkins(JObject orig_metadata, string remote_id, NetFileCache cache)
         {
+            string versionBase = (string) orig_metadata ["x_ci_version_base"];
+            log.DebugFormat ("versionBase: {0}", versionBase);
+
             JObject resources = (JObject) orig_metadata ["resources"];
             log.DebugFormat ("resources: {0}", resources);
 
@@ -227,7 +230,7 @@ namespace CKAN.NetKAN
 
             log.DebugFormat ("baseUri: {0}", baseUri);
 
-            JenkinsBuild build = JenkinsAPI.GetLatestBuild (baseUri, true);
+            JenkinsBuild build = JenkinsAPI.GetLatestBuild (baseUri, versionBase, true);
 
             Version version = build.version;
 
