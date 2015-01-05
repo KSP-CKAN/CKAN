@@ -38,15 +38,21 @@ namespace CKAN.NetKAN
             return result;
         }
 
-        public static JenkinsBuild GetLatestBuild(string baseUri, bool stable = true)
+        public static JenkinsBuild GetLatestBuild(string baseUri, string versionBase, bool stable = true)
         {
             JenkinsBuild result = null;
+            if (!(baseUri.EndsWith ("/")))
+            {
+                baseUri = baseUri + "/";
+            }
 
             // http://jenkins.mumech.com/job/MechJeb2/lastStableBuild/api/json
-            string json = Call (baseUri + "/lastStableBuild/api/json");
+            string json = Call (baseUri + "lastStableBuild/api/json");
             JObject build = JObject.Parse (json);
             if (build != null) 
             {
+                string buildNumber = (string) build ["number"];
+
                 JArray artifacts = (JArray) build ["artifacts"];
                 log.DebugFormat("  Parsing artifacts from {0}", artifacts);
                 foreach (JObject artifact in artifacts.Children())
@@ -54,12 +60,11 @@ namespace CKAN.NetKAN
                     log.DebugFormat("    Parsing artifact from {0}", artifact);
 
                     string fileName = (string) artifact ["fileName"];
-                    string relativePath = (string) artifact ["relativePath"];
 
                     // TODO - filtering of artifacts, for now hardcoded for zip files.
                     if (fileName.EndsWith (".zip"))
                     {
-                        result = new JenkinsBuild (artifact);
+                        result = new JenkinsBuild (artifact, versionBase, buildNumber, baseUri, stable);
                     }
                 }
             }
