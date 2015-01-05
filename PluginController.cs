@@ -13,7 +13,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(PluginController));
 
         private string m_PluginsPath = "";
-        
+
         public PluginController(string path, bool doActivate = true)
         {
             m_PluginsPath = path;
@@ -42,7 +42,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-                log.WarnFormat("Failed to load assembly \"{0}\" - {1}", assembly.FullName, ex.Message);
+                log.WarnFormat("Failed to load assembly \"{0}\" - {1}", dll, ex.Message);
                 return;
             }
 
@@ -107,12 +107,19 @@ namespace CKAN
             var targetPath = Path.Combine(m_PluginsPath, Path.GetFileName(path));
             if (File.Exists(targetPath))
             {
-                log.ErrorFormat("Cannot copy plugin to {0}, because it already exists..", targetPath);
-                return;
+                try
+                {
+                    File.Delete(targetPath);
+                }
+                catch (Exception)
+                {
+                    log.ErrorFormat("Cannot copy plugin to {0}, because it already exists and is open..", targetPath);
+                    return;
+                }
             }
 
             File.Copy(path, targetPath);
-            LoadAssembly(path);
+            LoadAssembly(targetPath);
         }
 
         public void ActivatePlugin(IGUIPlugin plugin)
@@ -179,7 +186,7 @@ namespace CKAN
         }
 
         private HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
-        private HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>(); 
+        private HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
 
     }
 
