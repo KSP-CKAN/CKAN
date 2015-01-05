@@ -55,6 +55,8 @@
     <Compile Include="KS\KSMod.cs" />
     <Compile Include="Github\GithubAPI.cs" />
     <Compile Include="Github\GithubRelease.cs" />
+    <Compile Include="Jenkins\JenkinsAPI.cs" />
+    <Compile Include="Jenkins\JenkinsBuild.cs" />
     <Compile Include="CkanInflator.cs" />
     <Compile Include="CmdLineOptions.cs" />
     <Compile Include="AVC\AVC.cs" />

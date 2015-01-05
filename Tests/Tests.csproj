@@ -48,6 +48,7 @@
     <Compile Include="TestData.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\GitHubTests.cs" />
+    <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="ZipLib.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="DisposableKSP.cs" />
