@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace CKAN
 {
 
-    class TabController
+    public class TabController
     {
 
         public TabController(TabControl control)
@@ -142,7 +142,7 @@ namespace CKAN
 
         private bool m_TabLock;
 
-        private Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
+        public Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
 
     }
 

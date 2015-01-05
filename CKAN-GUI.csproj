@@ -69,6 +69,9 @@
     <Compile Include="ChooseKSPInstance.Designer.cs">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="IGUIPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Configuration.cs" />
     <Compile Include="ControlFactory.cs" />
     <Compile Include="ErrorDialog.cs">
@@ -96,11 +99,18 @@
     <Compile Include="MainWait.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PluginController.cs" />
     <Compile Include="RenameInstanceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="RenameInstanceDialog.Designer.cs">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PluginsDialog.Designer.cs">
+      <DependentUpon>PluginsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TabController.cs" />
     <Compile Include="URLHandlers.cs" />
@@ -165,6 +175,9 @@
     </Compile>
     <EmbeddedResource Include="RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginsDialog.resx">
+      <DependentUpon>PluginsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
