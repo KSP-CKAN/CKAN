@@ -42,7 +42,7 @@ namespace Tests
             return Instances[i];
         }
 
-        public void SetRegistryToInstances(Dictionary<string, KSP> instances, string auto_start_instance)
+        public void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance)
         {
             Instances =
                 instances.Select(kvpair => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
