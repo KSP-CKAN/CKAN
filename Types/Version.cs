@@ -198,8 +198,18 @@ namespace CKAN {
                 minimumLength2++;
             }
 
-            int integer1 = int.Parse(v1.Substring(0, minimumLength1));
-            int integer2 = int.Parse(v2.Substring(0, minimumLength2));
+            int integer1;
+            int integer2;
+
+            if (!int.TryParse(v1.Substring(0, minimumLength1), out integer1))
+            {
+                integer1 = 0;
+            }
+
+            if (!int.TryParse(v2.Substring(0, minimumLength2), out integer2))
+            {
+                integer2 = 0;
+            }
 
             comp.compare_to = integer1.CompareTo(integer2);
             return comp;
