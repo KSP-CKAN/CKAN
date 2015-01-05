@@ -43,8 +43,7 @@ namespace CKAN.NetKAN
             JenkinsBuild result = null;
 
             // http://jenkins.mumech.com/job/MechJeb2/lastStableBuild/api/json
-            string json = Call (baseUri + "lastStableBuild/api/json");
-            log.DebugFormat("Parsing JSON from {0}", json);
+            string json = Call (baseUri + "/lastStableBuild/api/json");
             JObject build = JObject.Parse (json);
             if (build != null) 
             {
@@ -57,22 +56,12 @@ namespace CKAN.NetKAN
                     string fileName = (string) artifact ["fileName"];
                     string relativePath = (string) artifact ["relativePath"];
 
+                    // TODO - filtering of artifacts, for now hardcoded for zip files.
                     if (fileName.EndsWith (".zip"))
                     {
                         result = new JenkinsBuild (artifact);
                     }
-
-                    // new GithubRelease(final_releases.Cast<JObject>().First());
                 }
-                // string releaseType = prerelease ? "pre-" : "stable";
-                // log.Debug("Parsed, finding most recent " + releaseType + " release");
-
-                // Finding the most recent *stable* release means filtering
-                // out on pre-releases.
-
-                // var final_releases = releases.Where(x => (bool) x["prerelease"] == prerelease);
-
-                // return !final_releases.Any() ? null : new GithubRelease(final_releases.Cast<JObject>().First());
             }
 
             return result;
