@@ -142,7 +142,7 @@ namespace CKAN
 
         private bool m_TabLock;
 
-        private Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
+        public Dictionary<string, TabPage> m_TabPages = new Dictionary<string, TabPage>();
 
     }
 
