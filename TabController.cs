@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace CKAN
 {
 
-    class TabController
+    public class TabController
     {
 
         public TabController(TabControl control)

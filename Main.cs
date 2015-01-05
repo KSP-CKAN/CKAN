@@ -35,15 +35,17 @@ namespace CKAN
         public ControlFactory controlFactory;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
-        private TabController m_TabController;
-        private volatile KSPManager manager;
+        public TabController m_TabController;
+        public volatile KSPManager manager;
 
-        internal KSP CurrentInstance
+        public PluginController m_PluginController = null;
+
+        public KSP CurrentInstance
         {
             get { return manager.CurrentInstance; }            
         }
 
-        internal KSPManager Manager
+        public KSPManager Manager
         {
             get { return manager; }
             set { manager = value; }
@@ -51,9 +53,9 @@ namespace CKAN
 
         public MainModList mainModList { get; private set; }
 
-        private string[] m_CommandLineArgs = null;
+        public string[] m_CommandLineArgs = null;
 
-        private GUIUser m_User = null;
+        public GUIUser m_User = null;
 
         public Main(string[] cmdlineArgs, GUIUser User)
         {
@@ -190,6 +192,12 @@ namespace CKAN
 
                     i++;
                 }
+            }
+
+            var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
+            if (Directory.Exists(pluginsPath))
+            {
+                m_PluginController = new PluginController(pluginsPath, true);
             }
         }
 
@@ -585,6 +593,13 @@ namespace CKAN
             // Flipping enabled here hides the main form itself.
             Enabled = false;
             m_SettingsDialog.ShowDialog();
+            Enabled = true;
+        }
+
+        private void pluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            m_PluginsDialog.ShowDialog();
             Enabled = true;
         }
 
