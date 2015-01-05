@@ -195,10 +195,12 @@ namespace CKAN
             }
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
-            if (Directory.Exists(pluginsPath))
+            if (!Directory.Exists(pluginsPath))
             {
-                m_PluginController = new PluginController(pluginsPath, true);
+                Directory.CreateDirectory(pluginsPath);
             }
+            
+            m_PluginController = new PluginController(pluginsPath, true);
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
