@@ -19,7 +19,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (KSPManager));
 
-        private readonly Dictionary<string, KSP> instances = new Dictionary<string, KSP>();
+        private readonly SortedList<string, KSP> instances = new SortedList<string, KSP>();
 
         internal string AutoStartInstance
         {
@@ -34,9 +34,9 @@ namespace CKAN
             }
         }
 
-        public Dictionary<string, KSP> Instances
+        public SortedList<string, KSP> Instances
         {
-            get { return new Dictionary<string, KSP>(instances); }            
+            get { return new SortedList<string, KSP>(instances); }            
         }
 
 

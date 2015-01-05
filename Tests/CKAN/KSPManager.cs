@@ -195,7 +195,7 @@ namespace CKANTests
             return Instances[i];
         }
 
-        public void SetRegistryToInstances(Dictionary<string, CKAN.KSP> instances, string auto_start_instance)
+        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances, string auto_start_instance)
         {
             Instances =
                 instances.Select((kvpair) => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
