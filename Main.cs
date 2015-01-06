@@ -180,7 +180,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return Scan(manager.CurrentInstance);
 
                 case "list":
-                    return List(user, manager.CurrentInstance);
+                    return List((ListOptions)cmdline.options, manager.CurrentInstance, user);
 
                 case "show":
                     return Show((ShowOptions)cmdline.options, manager.CurrentInstance, user);
@@ -319,16 +319,19 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             return Exit.OK;
         }
 
-        private static int List(IUser user, CKAN.KSP current_instance)
+        private static int List(ListOptions options, CKAN.KSP current_instance, IUser user)
         {
             CKAN.KSP ksp = current_instance;
 
-            user.RaiseMessage("\nKSP found at {0}\n", ksp.GameDir());
-            user.RaiseMessage("KSP Version: {0}\n", ksp.Version());
-
             Registry registry = RegistryManager.Instance(ksp).registry;
 
-            user.RaiseMessage("Installed Modules:\n");
+            if (!(options.raw))
+            {
+                user.RaiseMessage("\nKSP found at {0}\n", ksp.GameDir());
+                user.RaiseMessage("KSP Version: {0}\n", ksp.Version());
+
+                user.RaiseMessage("Installed Modules:\n");
+            }
 
             var installed = new SortedDictionary<string, Version>(registry.Installed());
 
@@ -372,12 +375,10 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                             // Upgradable
                             bullet = "^";
                         }
-
                     }
-                    catch (ModuleNotFoundKraken) {
-                        log.InfoFormat("{0} is installed, but no longer in the registry",
-                            mod.Key);
-
+                    catch (ModuleNotFoundKraken)
+                    {
+                        log.InfoFormat("{0} is installed, but no longer in the registry", mod.Key);
                         bullet = "?";
                     }
                 }
@@ -385,7 +386,10 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
+            if (!(options.raw))
+            {
+                user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
+            }
 
             return Exit.OK;
         }
