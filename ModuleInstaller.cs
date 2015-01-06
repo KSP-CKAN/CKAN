@@ -806,7 +806,7 @@ namespace CKAN
         {
             var options = new RelationshipResolverOptions();
 
-            // We do not wish to pull in any suggested or recommends mods.
+            // We do not wish to pull in any suggested or recommended mods.
             options.with_recommends = false;
             options.with_suggests = false;
 
