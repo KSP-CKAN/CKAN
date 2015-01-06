@@ -30,6 +30,10 @@ namespace CKAN
 
     public partial class Main
     {
+        public delegate void ModChangedCallback(CkanModule module, GUIModChangeType change);
+
+        public static event ModChangedCallback modChangedCallback;
+
         public Configuration m_Configuration;
 
         public ControlFactory controlFactory;
