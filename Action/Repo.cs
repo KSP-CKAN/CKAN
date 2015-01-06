@@ -22,8 +22,6 @@ namespace CKAN.CmdLine
         public string option;
         public object suboptions;
 
-        // TODO Change the URL base to api.ksp-ckan.org
-        public static readonly Uri default_repo_master_list = new Uri("http://munich.ksp-ckan.org/repositories.json");
 
         public Repo(KSPManager manager, IUser user)
         {
@@ -146,7 +144,7 @@ namespace CKAN.CmdLine
 
             if (master_uri == null)
             {
-                master_uri = default_repo_master_list;
+                master_uri = Repository.default_repo_master_list;
             }
 
             string json = client.DownloadString(master_uri);
@@ -164,7 +162,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
                 return Exit.ERROR;
             }
 
@@ -221,7 +219,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repo.default_repo_master_list.ToString());
+                    User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
                     return Exit.ERROR;
                 }
 
