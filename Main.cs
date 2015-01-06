@@ -68,6 +68,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseError(@"You are trying to run CKAN as root. 
 This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
+                    return Exit.ERROR;
                 }
                 else
                 {
