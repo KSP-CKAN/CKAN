@@ -167,6 +167,8 @@ namespace CKAN.CmdLine
 
     internal class ListOptions : CommonOptions
     {
+        [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
+        public bool porcelain { get; set; }
     }
 
     internal class VersionOptions : CommonOptions
