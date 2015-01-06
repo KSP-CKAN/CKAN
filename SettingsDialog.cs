@@ -103,17 +103,24 @@ namespace CKAN
             var dialog = new NewRepoDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                var repo = dialog.RepoUrlTextBox.Text.Split('|');
-                var name = repo[0].Trim();
-                var url = repo[1].Trim();
-
-                if (Main.Instance.CurrentInstance.Registry.Repositories.ContainsKey(name))
+                try
                 {
-                    Main.Instance.CurrentInstance.Registry.Repositories.Remove(name);
-                }
+                    var repo = dialog.RepoUrlTextBox.Text.Split('|');
+                    var name = repo[0].Trim();
+                    var url = repo[1].Trim();
 
-                Main.Instance.CurrentInstance.Registry.Repositories.Add(name, new Uri(url));
-                RefreshReposListBox();
+                    if (Main.Instance.CurrentInstance.Registry.Repositories.ContainsKey(name))
+                    {
+                        Main.Instance.CurrentInstance.Registry.Repositories.Remove(name);
+                    }
+
+                    Main.Instance.CurrentInstance.Registry.Repositories.Add(name, new Uri(url));
+                    RefreshReposListBox();
+                }
+                catch (Exception ex)
+                {
+                    Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
+                }
             }
         }
 
