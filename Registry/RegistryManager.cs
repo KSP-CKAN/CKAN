@@ -5,6 +5,7 @@ using System.Text;
 using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
@@ -144,6 +145,27 @@ namespace CKAN
             return sw.ToString() + Environment.NewLine;
         }
 
+        private string SerializeCurrentInstall()
+        {
+            JObject installed = new JObject ();
+            installed ["foo"] = "bar";
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            {
+                writer.Formatting = Formatting.Indented;
+                writer.Indentation = 4;
+                writer.IndentChar = ' ';
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(writer, installed);
+            }
+
+            return sw.ToString() + Environment.NewLine;
+        }
+
         public void Save(bool enforceConsistency = true)
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
@@ -168,6 +190,11 @@ namespace CKAN
             }
 
             file_transaction.WriteAllText(path, Serialize());
+
+            // TODO how do we obtain the name of the current KSP instance?
+            string kspInstanceName = "default";
+            string installedModsPath = Path.Combine (directoryPath, "installed-" + kspInstanceName + ".ckan");
+            file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall());
         }
     }
 }
