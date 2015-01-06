@@ -24,4 +24,3 @@ mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	bin/Debug/Newtonsoft.Json.dll \
 	bin/Debug/INIFileParser.dll
 
-mono ../ckan.exe version
