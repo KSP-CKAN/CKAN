@@ -1176,7 +1176,6 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
-        private System.Windows.Forms.DataGridView ModList;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
@@ -1259,6 +1258,7 @@ namespace CKAN
         private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
+        public DataGridView ModList;
     }
 }
 
