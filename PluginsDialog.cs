@@ -123,6 +123,7 @@ namespace CKAN
             {
                 var path = m_AddNewPluginDialog.FileName;
                 Main.Instance.m_PluginController.AddNewAssemblyToPluginsPath(path);
+                RefreshDormantPlugins();
             }
         }
 
