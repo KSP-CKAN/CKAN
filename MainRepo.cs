@@ -1,18 +1,39 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
+    public struct RepositoryList
+    {
+        public Repository[] repositories;
+    }
+
+
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
+        
+        public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        {
+            WebClient client = new WebClient();
+
+            if (master_uri == null)
+            {
+                master_uri = Repository.default_repo_master_list;
+            }
+
+            string json = client.DownloadString(master_uri);
+            return JsonConvert.DeserializeObject<RepositoryList>(json);
+        }
 
         public void UpdateRepo()
         {
             m_User.displayYesNo = YesNoDialog;
 
-            m_TabController.RenameTab("WaitTabPage", "Updating repository");
+            m_TabController.RenameTab("WaitTabPage", "Updating repositories");
 
             CurrentInstance.ScanGameData();
 
@@ -30,7 +51,7 @@ namespace CKAN
             try
             {
                 KSP current_instance1 = CurrentInstance;
-                Repo.Update(RegistryManager.Instance(CurrentInstance), current_instance1, GUI.user, true, new Uri(m_Configuration.Repository));
+                Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance1, GUI.user);
             }
             catch (UriFormatException ex)
             {
