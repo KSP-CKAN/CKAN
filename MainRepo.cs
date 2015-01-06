@@ -15,8 +15,6 @@ namespace CKAN
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
-
-        public static readonly Uri default_repo_master_list = new Uri("http://api.ksp-ckan.org/mirrors");
         
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
@@ -24,7 +22,7 @@ namespace CKAN
 
             if (master_uri == null)
             {
-                master_uri = default_repo_master_list;
+                master_uri = Repository.default_repo_master_list;
             }
 
             string json = client.DownloadString(master_uri);
