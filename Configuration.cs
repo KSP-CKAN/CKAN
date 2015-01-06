@@ -6,7 +6,6 @@ namespace CKAN
 
     public class Configuration
     {
-        public string Repository = "";
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
         public bool URLHandlerNoNag = false;
@@ -24,7 +23,6 @@ namespace CKAN
             {
                 var configuration = new Configuration
                 {
-                    Repository = defaultRepo,
                     m_Path = path,
                     CommandLineArguments = Util.IsLinux ? "./KSP.x86_64" : "KSP.exe"
                 };

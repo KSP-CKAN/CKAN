@@ -45,6 +45,10 @@
     <Reference Include="log4net">
       <HintPath>..\CKAN-core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CKAN-core\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -112,6 +116,12 @@
     <Compile Include="PluginsDialog.Designer.cs">
       <DependentUpon>PluginsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewRepoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewRepoDialog.Designer.cs">
+      <DependentUpon>NewRepoDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TabController.cs" />
     <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
@@ -178,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PluginsDialog.resx">
       <DependentUpon>PluginsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewRepoDialog.resx">
+      <DependentUpon>NewRepoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>

@@ -15,10 +15,22 @@ namespace CKAN
 
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
-            CKANRepositoryTextBox.Text = Main.Instance.m_Configuration.Repository;
-            KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
+            RefreshReposListBox();
 
+            KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
             UpdateCacheInfo();
+        }
+
+        private void RefreshReposListBox()
+        {
+            ReposListBox.Items.Clear();
+
+            foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
+            {
+                var name = item.Key;
+                var url = item.Value;
+                ReposListBox.Items.Add(String.Format("{0} | {1}", name, url));
+            }
         }
 
         private void UpdateCacheInfo()
@@ -40,22 +52,6 @@ namespace CKAN
                 count,
                 cacheSize / 1024 / 1024
             );
-        }
-
-        private void CKANRepositoryApplyButton_Click(object sender, EventArgs e)
-        {
-            Main.Instance.m_Configuration.Repository = CKANRepositoryTextBox.Text;
-            Main.Instance.UpdateRepo();
-            Main.Instance.m_Configuration.Save();
-            Close();
-        }
-
-        private void CKANRepositoryDefaultButton_Click(object sender, EventArgs e)
-        {
-            Main.Instance.m_Configuration.Repository = Repo.default_ckan_repo.ToString();
-            Main.Instance.UpdateRepo();
-            Main.Instance.m_Configuration.Save();
-            Close();
         }
 
         private void ClearCKANCacheButton_Click(object sender, EventArgs e)
@@ -81,6 +77,44 @@ namespace CKAN
 
             Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Application.Exit();
+        }
+
+        private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DeleteRepoButton.Enabled = ReposListBox.SelectedItem != null;
+        }
+
+        private void DeleteRepoButton_Click(object sender, EventArgs e)
+        {
+            if (ReposListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            var item = (string)ReposListBox.SelectedItem;
+            var repo = item.Split('|')[0].Trim();
+            Main.Instance.CurrentInstance.Registry.Repositories.Remove(repo);
+            RefreshReposListBox();
+            DeleteRepoButton.Enabled = false;
+        }
+
+        private void NewRepoButton_Click(object sender, EventArgs e)
+        {
+            var dialog = new NewRepoDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                var repo = dialog.RepoUrlTextBox.Text.Split('|');
+                var name = repo[0].Trim();
+                var url = repo[1].Trim();
+
+                if (Main.Instance.CurrentInstance.Registry.Repositories.ContainsKey(name))
+                {
+                    Main.Instance.CurrentInstance.Registry.Repositories.Remove(name);
+                }
+
+                Main.Instance.CurrentInstance.Registry.Repositories.Add(name, new Uri(url));
+                RefreshReposListBox();
+            }
         }
 
     }
