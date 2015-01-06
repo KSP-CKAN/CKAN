@@ -805,6 +805,11 @@ namespace CKAN
         public void Upgrade(IEnumerable<string> identifiers, NetAsyncDownloader netAsyncDownloader)
         {
             var options = new RelationshipResolverOptions();
+
+            // We do not wish to pull in any suggested or recommended mods.
+            options.with_recommends = false;
+            options.with_suggests = false;
+
             var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.Version());
             List<CkanModule> upgrades = resolver.ModList();
 
