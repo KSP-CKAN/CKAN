@@ -372,6 +372,14 @@ namespace CKAN
 
             if (result.Key)
             {
+                if (modChangedCallback != null)
+                {
+                    foreach (var mod in result.Value)
+                    {
+                        modChangedCallback(mod.Key, mod.Value);
+                    }
+                }
+
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
