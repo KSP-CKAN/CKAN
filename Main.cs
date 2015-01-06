@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using log4net;
@@ -29,7 +30,6 @@ namespace CKAN.CmdLine
         [STAThread]
         public static int Main(string[] args)
         {
-
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
@@ -59,6 +59,19 @@ namespace CKAN.CmdLine
             // Process commandline options.
 
             var options = (CommonOptions)cmdline.options;
+
+            if (CmdLineUtil.IsLinux && CmdLineUtil.GetUID() == 0)
+            {
+                if (!options.AsRoot)
+                {
+                    user.RaiseError(@"You are trying to run CKAN as root. 
+This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
+                }
+                else
+                {
+                    user.RaiseMessage("Warning: Running CKAN as root!");
+                }
+            }
 
             user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
@@ -691,5 +704,38 @@ namespace CKAN.CmdLine
             if (!string.IsNullOrEmpty(dep.max_version)) sb.Append(", max: " + dep.version);
             return sb.ToString();
         }
+    }
+
+    public class CmdLineUtil
+    {
+        public static bool IsLinux
+        {
+            get
+            {
+                // Magic numbers ahoy! This arcane incantation was found
+                // in a Unity help-page, which was found on a scroll,
+                // which was found in an urn that dated back to Mono 2.0.
+                // It documents singular numbers of great power.
+                //
+                // "And lo! 'pon the 4, 6, and 128 the penguin shall
+                // come, and it infiltrate dominate from the smallest phone to
+                // the largest cloud."
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
+
+        public static uint GetUID()
+        {
+            if (IsLinux)
+            {
+                return getuid();
+            }
+
+            return 1;
+        }
+
+        [DllImport("libc")]
+        private static extern uint getuid();
     }
 }
