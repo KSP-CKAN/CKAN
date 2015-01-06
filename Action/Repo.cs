@@ -22,8 +22,7 @@ namespace CKAN.CmdLine
         public string option;
         public object suboptions;
 
-        // TODO Change the URL base to api.ksp-ckan.org
-        public static readonly Uri default_repo_master_list = new Uri("http://munich.ksp-ckan.org/repositories.json");
+        public static readonly Uri default_repo_master_list = new Uri("http://api.ksp-ckan.org/mirrors");
 
         public Repo(KSPManager manager, IUser user)
         {
