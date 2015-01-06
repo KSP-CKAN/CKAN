@@ -59,6 +59,8 @@ namespace CKAN.CmdLine
             // Process commandline options.
 
             var options = (CommonOptions)cmdline.options;
+            user = new ConsoleUser(options.Headless);
+            CheckMonoVersion(user, 3, 1, 0);
 
             if (CmdLineUtil.IsLinux && CmdLineUtil.GetUID() == 0)
             {
@@ -72,9 +74,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     user.RaiseMessage("Warning: Running CKAN as root!");
                 }
             }
-
-            user = new ConsoleUser(options.Headless);
-            CheckMonoVersion(user, 3, 1, 0);
 
             if (options.Debug)
             {
