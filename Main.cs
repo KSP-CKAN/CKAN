@@ -325,7 +325,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             Registry registry = RegistryManager.Instance(ksp).registry;
 
-            if (!(options.raw))
+            if (!(options.porcelain))
             {
                 user.RaiseMessage("\nKSP found at {0}\n", ksp.GameDir());
                 user.RaiseMessage("KSP Version: {0}\n", ksp.Version());
@@ -386,7 +386,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
             }
 
-            if (!(options.raw))
+            if (!(options.porcelain))
             {
                 user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
             }
