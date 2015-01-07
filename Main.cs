@@ -61,7 +61,7 @@ namespace CKAN
 
         public GUIUser m_User = null;
 
-        public Main(string[] cmdlineArgs, GUIUser User)
+        public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
             m_CommandLineArgs = cmdlineArgs;
             m_User = User;
@@ -110,9 +110,11 @@ namespace CKAN
 
             RecreateDialogs();
 
-            // We should run application only when we really sure.
-            // System.Threading.Thread.CurrentThread.SetApartmentState(System.Threading.ApartmentState.STA);
-            Util.HideConsoleWindow();
+            if (!showConsole)
+            {
+                Util.HideConsoleWindow();
+            }
+
             Application.Run(this);
         }
 

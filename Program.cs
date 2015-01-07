@@ -13,10 +13,15 @@ namespace CKAN
         [STAThread]
         public static void Main(string[] args)
         {
+            Main_(args);
+        }
+
+        public static void Main_(string[] args, bool showConsole = false)
+        {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            new Main(args, user);
+            new Main(args, user, showConsole);
         }
 
         public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
