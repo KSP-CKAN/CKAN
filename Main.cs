@@ -185,6 +185,10 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "show":
                     return Show((ShowOptions)cmdline.options, manager.CurrentInstance, user);
 
+                case "search":
+                    var search = new Search(user);
+                    return search.RunCommand(manager.CurrentInstance, options);
+
                 case "remove":
                     return Remove((RemoveOptions)cmdline.options, manager.CurrentInstance, user);
 

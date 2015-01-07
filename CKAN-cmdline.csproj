@@ -49,6 +49,7 @@
     <Compile Include="Action\Upgrade.cs" />
     <Compile Include="Action\Repo.cs" />
     <Compile Include="Action\ICommand.cs" />
+    <Compile Include="Action\Search.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

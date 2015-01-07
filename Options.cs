@@ -44,6 +44,9 @@ namespace CKAN.CmdLine
         [VerbOption("gui-with-console", HelpText = "Start the CKAN GUI with the console visible")]
         public GuiOptions GuiConsoleOptions { get; set; }
 
+        [VerbOption("search", HelpText = "Search for mods")]
+        public SearchOptions SearchOptions { get; set; }
+
         [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
         public UpgradeOptions Upgrade { get; set; }
 
@@ -217,5 +220,10 @@ namespace CKAN.CmdLine
     internal class ClearCacheOptions : CommonOptions
     {
     }
-}
 
+    internal class SearchOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string search_term { get; set; }
+    }
+}
