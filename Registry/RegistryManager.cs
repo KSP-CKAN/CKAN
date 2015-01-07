@@ -5,6 +5,7 @@ using System.Text;
 using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
@@ -144,6 +145,53 @@ namespace CKAN
             return sw.ToString() + Environment.NewLine;
         }
 
+        private string SerializeCurrentInstall()
+        {
+            // TODO how do we obtain the name of the current KSP instance?
+            string kspInstanceName = "default";
+            string name = "installed-" + kspInstanceName;
+
+            JObject installed = new JObject ();
+            installed["spec_version"] = "1";
+            installed["identifier"] = name;
+            installed["version"] =  DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
+
+            installed["license"] = "unknown";
+            installed["name"] = name;
+            installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
+            installed["download"] = "http://munich.ksp-ckan.org/empty-0.0.0.zip";
+
+            JArray depends = new JArray ();
+            installed["depends"] = depends;
+
+            foreach(KeyValuePair<string, CKAN.Version> module in registry.Installed())
+            {
+                if (!(CKAN.Version.AutodetectedDllString.Equals(module.Value.ToString())))
+                {
+                    JObject moduleJson = new JObject();
+                    moduleJson["name"] = module.Key;
+                    moduleJson["version"] = module.Value.ToString();
+
+                    depends.Add(moduleJson);
+                }
+            }
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            {
+                writer.Formatting = Formatting.Indented;
+                writer.Indentation = 4;
+                writer.IndentChar = ' ';
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(writer, installed);
+            }
+
+            return sw.ToString() + Environment.NewLine;
+        }
+
         public void Save(bool enforceConsistency = true)
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
@@ -168,6 +216,11 @@ namespace CKAN
             }
 
             file_transaction.WriteAllText(path, Serialize());
+
+            // TODO how do we obtain the name of the current KSP instance?
+            string kspInstanceName = "default";
+            string installedModsPath = Path.Combine (directoryPath, "installed-" + kspInstanceName + ".ckan");
+            file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall());
         }
     }
 }
