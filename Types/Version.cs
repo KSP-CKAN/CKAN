@@ -7,6 +7,7 @@ namespace CKAN {
     /// Version comparison utilities.
     /// </summary>
 
+    [Serializable]
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
         private int epoch;
