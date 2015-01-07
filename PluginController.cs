@@ -40,7 +40,7 @@ namespace CKAN
 
             try
             {
-                assembly = Assembly.LoadFile(dll);
+                assembly = Assembly.UnsafeLoadFrom(dll);
             }
             catch (Exception ex)
             {
