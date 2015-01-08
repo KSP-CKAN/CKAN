@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +12,7 @@ namespace CKAN.NetKAN
 {
     public static class GithubAPI
     {
-
+        private static readonly string asset_match = "/asset_match/";
         private static readonly Uri api_base = new Uri("https://api.github.com/");
         private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
         private static readonly WebClient web = new WebClient();
@@ -60,6 +61,15 @@ namespace CKAN.NetKAN
         /// </summary>
         public static GithubRelease GetLatestRelease( string repository, bool prerelease )
         {
+            string assetFilter = ".zip";
+
+            int asset_match_index = repository.IndexOf (asset_match);
+            if (asset_match_index > -1) {
+                assetFilter = repository.Substring (asset_match_index + asset_match.Length);
+                repository = repository.Substring (0, asset_match_index);
+                log.DebugFormat ("Asset Filter: '{0}'", assetFilter);
+            }
+
             string json = Call ("repos/" + repository + "/releases");
             log.Debug("Parsing JSON...");
             JArray releases = JArray.Parse(json);
@@ -68,12 +78,29 @@ namespace CKAN.NetKAN
 
             // Finding the most recent *stable* release means filtering
             // out on pre-releases.
+            GithubRelease result = null;
 
-            var final_releases = releases.Where(x => (bool) x["prerelease"] == prerelease);
+            foreach (JObject release in releases)
+            {
+                // First, check for prerelease status...
+                if (prerelease == (bool)release ["prerelease"])
+                {
+                    JArray assets = (JArray) release ["assets"];
+                    foreach (JObject asset in assets)
+                    {
+                        // Then, check against the regex, which might default to ".zip"
+                        if (Regex.IsMatch ((string) asset ["name"], assetFilter, RegexOptions.IgnoreCase))
+                        {
+                            log.DebugFormat ("Hit on {0}", asset.ToString ());
+                            result = new GithubRelease (release, asset);
+                            return result;
+                        }
+                    }
+                }
+            }
 
-            return !final_releases.Any() ? null : new GithubRelease(final_releases.Cast<JObject>().First());
+            return result;
         }
-
     }
 }
 
