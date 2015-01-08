@@ -96,10 +96,10 @@
             "description" : "Optional list of recommended, but not essential mods",
             "$ref"        : "#/definitions/relationship"
         },
-	"supports" : {
+    "supports" : {
             "description" : "Optional list of supported mods",
             "$ref"        : "#/definitions/relationship"
-	},
+    },
         "conflicts" : {
             "description" : "Optional list of conflicting mods",
             "$ref"        : "#/definitions/relationship"
@@ -131,6 +131,11 @@
                 },
                 "repository" : {
                     "description" : "Mod repository",
+                    "type" : "string",
+                    "format" : "uri"
+                },
+                "ci" : {
+                    "description" : "Continuous Integration",
                     "type" : "string",
                     "format" : "uri"
                 },
