@@ -19,7 +19,7 @@ namespace CKAN.NetKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (GithubRelease));
 
-        public GithubRelease (JObject parsed_json)
+        public GithubRelease (JObject parsed_json, JObject asset)
         {
             version  = new Version( parsed_json["tag_name"].ToString() );
             author   = parsed_json["author"]["login"].ToString();
@@ -27,21 +27,20 @@ namespace CKAN.NetKAN
             // GH #290, we need to look for the first asset which is a zip, otherwise we
             // end up picking up manuals, pictures of cats, and all sorts of other things.
 
-            JToken asset = parsed_json["assets"].Children().FirstOrDefault(
-                asset_info => asset_info["content_type"].ToString() == "application/x-zip-compressed" ||
-                    asset_info["content_type"].ToString() == "application/zip" ||
-                    asset_info["name"].ToString().EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
+            if (("application/x-zip-compressed".Equals (asset ["content_type"])) ||
+                ("application/zip".Equals (asset ["content_type"])) ||
+                (asset ["name"].ToString ().EndsWith (".zip", StringComparison.OrdinalIgnoreCase)))
+            {
+                size     = (long) asset["size"];
+                download = new Uri( asset["browser_download_url"].ToString() );
 
-            if (asset == null)
+                log.DebugFormat("Download {0} is {1} bytes", download, size);
+            }
+            else
             {
                 // TODO: A proper kraken, please!
                 throw new Kraken("Cannot find download");
             }
-
-            size     = (long) asset["size"];
-            download = new Uri( asset["browser_download_url"].ToString() );
-
-            log.DebugFormat("Download {0} is {1} bytes", download, size);
         }
 
         override public void InflateMetadata(JObject metadata, string filename, object context)
