@@ -677,10 +677,17 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             #endregion
 
             user.RaiseMessage("\nResources:");
-            if (module.Module.resources.bugtracker != null) user.RaiseMessage("- bugtracker: {0}", module.Module.resources.bugtracker.ToString());
-            if (module.Module.resources.homepage != null) user.RaiseMessage("- homepage: {0}", module.Module.resources.homepage.ToString());
-            if (module.Module.resources.kerbalstuff != null) user.RaiseMessage("- kerbalstuff: {0}", module.Module.resources.kerbalstuff.ToString());
-            if (module.Module.resources.repository != null) user.RaiseMessage("- repository: {0}", module.Module.resources.repository.ToString());
+            if (module.Module.resources != null)
+            {
+                if (module.Module.resources.bugtracker != null)
+                    user.RaiseMessage("- bugtracker: {0}", module.Module.resources.bugtracker.ToString());
+                if (module.Module.resources.homepage != null)
+                    user.RaiseMessage("- homepage: {0}", module.Module.resources.homepage.ToString());
+                if (module.Module.resources.kerbalstuff != null)
+                    user.RaiseMessage("- kerbalstuff: {0}", module.Module.resources.kerbalstuff.ToString());
+                if (module.Module.resources.repository != null)
+                    user.RaiseMessage("- repository: {0}", module.Module.resources.repository.ToString());
+            }
             
 
             ICollection<string> files = module.Files as ICollection<string>;
