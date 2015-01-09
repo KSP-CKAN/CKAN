@@ -183,17 +183,17 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             User.RaiseMessage("Listing all known repositories:");
-			Dictionary<string, Uri> repositories = Manager.CurrentInstance.Registry.Repositories;
+            SortedDictionary<string, Repository> repositories = Manager.CurrentInstance.Registry.Repositories;
 
             int maxNameLen = 0;
-            foreach(KeyValuePair<string, Uri> repository in repositories)
+            foreach(Repository repository in repositories.Values)
             {
-                maxNameLen = Math.Max(maxNameLen, repository.Key.Length);
+                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
             }
 
-            foreach(KeyValuePair<string, Uri> repository in repositories)
+            foreach(Repository repository in repositories.Values)
             {
-                User.RaiseMessage("  {0}: {1}", repository.Key.PadRight(maxNameLen), repository.Value);
+                User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
             }
 
             return Exit.OK;
@@ -223,12 +223,12 @@ namespace CKAN.CmdLine
                     return Exit.ERROR;
                 }
 
-                foreach (Repository repository in repositoryList.repositories)
+                foreach (Repository candidate in repositoryList.repositories)
                 {
-                    if (String.Equals(repository.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
                     {
-                        options.name = repository.name;
-                        options.uri = repository.uri.ToString();
+                        options.name = candidate.name;
+                        options.uri = candidate.uri.ToString();
                     }
                 }
 
@@ -241,7 +241,7 @@ namespace CKAN.CmdLine
             }
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
-            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey(options.name))
             {
@@ -249,7 +249,8 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            repositories.Add(options.name, new System.Uri(options.uri));
+            repositories.Add(options.name, new Repository(options.name, options.uri));
+
 			User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
             manager.Save();
 
@@ -267,7 +268,7 @@ namespace CKAN.CmdLine
             }
 
             log.DebugFormat("About to forget repository '{0}'", options.name);
-            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             // TODO make forgetting case insensitive, too
             if (!(repositories.ContainsKey(options.name)))
@@ -294,14 +295,15 @@ namespace CKAN.CmdLine
             }
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
-            Dictionary<string, Uri> repositories = manager.registry.Repositories;
+            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             if (repositories.ContainsKey (Repository.default_ckan_repo_name))
             {
                 repositories.Remove (Repository.default_ckan_repo_name);
             }
 
-            repositories.Add(Repository.default_ckan_repo_name, new System.Uri(options.uri));
+            repositories.Add(Repository.default_ckan_repo_name, new Repository(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri));
+
             User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
             manager.Save();
 
