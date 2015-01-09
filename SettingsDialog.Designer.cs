@@ -39,6 +39,8 @@
             this.KSPInstallPathLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.ResetAutoStartChoice = new System.Windows.Forms.Button();
+            this.UpRepoButton = new System.Windows.Forms.Button();
+            this.DownRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -57,6 +59,8 @@
             // 
             // RepositoryGroupBox
             // 
+            this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
+            this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
             this.RepositoryGroupBox.Controls.Add(this.NewRepoButton);
@@ -162,6 +166,30 @@
             this.ResetAutoStartChoice.UseVisualStyleBackColor = true;
             this.ResetAutoStartChoice.Click += new System.EventHandler(this.ResetAutoStartChoice_Click);
             // 
+            // UpRepoButton
+            // 
+            this.UpRepoButton.Enabled = false;
+            this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
+            this.UpRepoButton.Name = "UpRepoButton";
+            this.UpRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.UpRepoButton.TabIndex = 10;
+            this.UpRepoButton.Text = "Up";
+            this.UpRepoButton.UseVisualStyleBackColor = true;
+            this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
+            // 
+            // DownRepoButton
+            // 
+            this.DownRepoButton.Enabled = false;
+            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
+            this.DownRepoButton.Name = "DownRepoButton";
+            this.DownRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.DownRepoButton.TabIndex = 11;
+            this.DownRepoButton.Text = "Down";
+            this.DownRepoButton.UseVisualStyleBackColor = true;
+            this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -196,5 +224,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.ListBox ReposListBox;
+        private System.Windows.Forms.Button UpRepoButton;
+        private System.Windows.Forms.Button DownRepoButton;
     }
 }
