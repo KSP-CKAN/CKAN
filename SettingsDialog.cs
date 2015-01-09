@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -27,8 +28,8 @@ namespace CKAN
 
             foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
             {
-                var name = item.Key;
-                var url = item.Value;
+                var name = item.Value.name;
+                var url = item.Value.uri;
                 ReposListBox.Items.Add(String.Format("{0} | {1}", name, url));
             }
         }
@@ -93,7 +94,7 @@ namespace CKAN
 
             var item = (string)ReposListBox.SelectedItem;
             var repo = item.Split('|')[0].Trim();
-            Main.Instance.CurrentInstance.Registry.Repositories.Remove(repo);
+            // Main.Instance.CurrentInstance.Registry.Repositories.Remove(repo);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
@@ -109,12 +110,15 @@ namespace CKAN
                     var name = repo[0].Trim();
                     var url = repo[1].Trim();
 
-                    if (Main.Instance.CurrentInstance.Registry.Repositories.ContainsKey(name))
+                    SortedDictionary<string, Repository> repositories = Main.Instance.CurrentInstance.Registry.Repositories;
+                    if (repositories.ContainsKey(name))
                     {
-                        Main.Instance.CurrentInstance.Registry.Repositories.Remove(name);
+                        repositories.Remove(name);
                     }
 
-                    Main.Instance.CurrentInstance.Registry.Repositories.Add(name, new Uri(url));
+                    repositories.Add(name, new Repository(name, url));
+                    Main.Instance.CurrentInstance.Registry.Repositories = repositories;
+
                     RefreshReposListBox();
                 }
                 catch (Exception ex)
