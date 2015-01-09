@@ -16,6 +16,16 @@ namespace CKAN {
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
+        public int EpochPart
+        {
+            get { return epoch; }
+        }
+
+        public string VersionPart
+        {
+            get { return version; }
+        }
+
         public struct Comparison {
             public int compare_to;
             public string remainder1;
