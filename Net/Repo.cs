@@ -79,14 +79,14 @@ namespace CKAN
         /// </summary>
         public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, IUser user)
         {
-            Dictionary<string, Uri> repositories = registry_manager.registry.Repositories;
-
             // If we handle multiple repositories, we will call ClearRegistry() ourselves...
             registry_manager.registry.ClearAvailable();
-            foreach (KeyValuePair<string, Uri> entry in repositories)
+            // TODO this should already give us a pre-sorted list
+            SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+            foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
-                log.InfoFormat("About to update {0}", entry.Value);
-                UpdateRegistry(entry.Value, registry_manager.registry, ksp, user, false);
+                log.InfoFormat("About to update {0}", repository.Value.name);
+                UpdateRegistry(repository.Value.uri, registry_manager.registry, ksp, user, false);
             }
 
             // Return how many we got!

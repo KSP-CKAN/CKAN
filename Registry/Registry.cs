@@ -26,7 +26,11 @@ namespace CKAN
 
         [JsonProperty] private int registry_version;
 
-        [JsonProperty] private Dictionary<string, Uri> repositories; // name => uri
+        // TODO the unsorted repositories are a legacy object for the old format, to be removed after a few releases
+        [JsonProperty("repositories")]
+        private Dictionary<string, Uri> unsortedRepositories; // name => uri
+        [JsonProperty("sorted_repositories")]
+        private SortedDictionary<string, Repository> repositories; // name => Repository
 
         // TODO: These may be good as custom types, especially those which process
         // paths (and flip from absolute to relative, and vice-versa).
@@ -38,9 +42,9 @@ namespace CKAN
         [JsonIgnore] private string transaction_backup;
 
         /// <summary>
-        /// Returns all the activated registries
+        /// Returns all the activated registries, sorted by priority and name
         /// </summary>
-        [JsonIgnore] public Dictionary<string, Uri> Repositories
+        [JsonIgnore] public SortedDictionary<string, Repository> Repositories
         {
             get { return this.repositories; }
 
@@ -163,7 +167,7 @@ namespace CKAN
             Dictionary<string, string> installed_dlls,
             Dictionary<string, AvailableModule> available_modules,
             Dictionary<string, string> installed_files,
-            Dictionary<string, Uri> repositories
+            SortedDictionary<string, Repository> repositories
             )
         {
             // Is there a better way of writing constructors than this? Srsly?
@@ -190,7 +194,7 @@ namespace CKAN
                 new Dictionary<string, string>(),
                 new Dictionary<string, AvailableModule>(),
                 new Dictionary<string, string>(),
-                new Dictionary<string, Uri>()
+                new SortedDictionary<string, Repository>()
                 );
         }
 
