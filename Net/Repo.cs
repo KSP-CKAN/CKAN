@@ -140,7 +140,6 @@ namespace CKAN
 			// Check the filetype.
 			FileType type = FileIdentifier.IdentifyFile(repo_file);
 
-
 			switch (type)
 			{
 			case FileType.TarGz:
@@ -162,11 +161,17 @@ namespace CKAN
                 if (registry.IsInstalled(identifier))
                 {
                     var installedVersion = registry.InstalledVersion(identifier);
+                    if (!(registry.available_modules.ContainsKey(identifier)))
+                    {
+                        log.InfoFormat("UpdateRegistry, module {0}, version {1} not in repository ({2})", identifier, installedVersion, repo);
+                        continue;
+                    }
+
                     if (!registry.available_modules[identifier].module_version.ContainsKey(installedVersion))
                     {
                         continue;
                     }
-                    
+
                     // if the mod is installed and the metadata is different we have to reinstall it
                     var metadata = registry.available_modules[identifier].module_version[installedVersion];
 
