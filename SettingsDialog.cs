@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,14 +25,21 @@ namespace CKAN
 
         private void RefreshReposListBox()
         {
-            ReposListBox.Items.Clear();
-
+            List<Repository> sortedRepos = new List<Repository>();
             foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
             {
-                var name = item.Value.name;
-                var url = item.Value.uri;
-                ReposListBox.Items.Add(String.Format("{0} | {1}", name, url));
+                sortedRepos.Add(item.Value);
             }
+
+            sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
+
+            ReposListBox.Items.Clear();
+            foreach (var item in sortedRepos)
+            {
+                ReposListBox.Items.Add(item);
+            }
+
+            Main.Instance.CurrentInstance.RegistryManager.Save();
         }
 
         private void UpdateCacheInfo()
@@ -83,6 +91,24 @@ namespace CKAN
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             DeleteRepoButton.Enabled = ReposListBox.SelectedItem != null;
+
+            if (ReposListBox.SelectedIndex > 0 && ReposListBox.SelectedIndex < ReposListBox.Items.Count)
+            {
+                UpRepoButton.Enabled = true;
+            }
+            else
+            {
+                UpRepoButton.Enabled = false;
+            }
+
+            if (ReposListBox.SelectedIndex  < ReposListBox.Items.Count - 1 && ReposListBox.SelectedIndex >= 0)
+            {
+                DownRepoButton.Enabled = true;
+            }
+            else
+            {
+                DownRepoButton.Enabled = false;
+            }
         }
 
         private void DeleteRepoButton_Click(object sender, EventArgs e)
@@ -92,9 +118,8 @@ namespace CKAN
                 return;
             }
 
-            var item = (string)ReposListBox.SelectedItem;
-            var repo = item.Split('|')[0].Trim();
-            // Main.Instance.CurrentInstance.Registry.Repositories.Remove(repo);
+            var item = (Repository)ReposListBox.SelectedItem;
+//            Main.Instance.CurrentInstance.Registry.Repositories.Remove()
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
@@ -126,6 +151,42 @@ namespace CKAN
                     Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
             }
+        }
+
+        private void UpRepoButton_Click(object sender, EventArgs e)
+        {
+            if (ReposListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            if (ReposListBox.SelectedIndex == 0)
+            {
+                return;
+            }
+
+            var item = (Repository)ReposListBox.SelectedItem;
+            var aboveItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex - 1];
+            item.priority = aboveItem.priority - 1;
+            RefreshReposListBox();
+        }
+
+        private void DownRepoButton_Click(object sender, EventArgs e)
+        {
+            if (ReposListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            if (ReposListBox.SelectedIndex == ReposListBox.Items.Count - 1)
+            {
+                return;
+            }
+
+            var item = (Repository)ReposListBox.SelectedItem;
+            var belowItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex + 1];
+            item.priority = belowItem.priority + 1;
+            RefreshReposListBox();
         }
 
     }
