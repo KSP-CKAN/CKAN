@@ -111,17 +111,18 @@ namespace CKAN
 
         private void AscertainDefaultRepo()
         {
-            Dictionary<string, Uri> repositories = registry.Repositories;
+            SortedDictionary<string, Repository> repositories = registry.Repositories;
 
             if (repositories == null)
             {
-                repositories = new Dictionary<string, Uri>();
+                repositories = new SortedDictionary<string, Repository>();
             }
 
             // if (!(repositories.ContainsKey(Repository.default_ckan_repo_name)))
             if (repositories.Count == 0)
             {
-                repositories.Add(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri);
+                repositories.Add(Repository.default_ckan_repo_name,
+                    new Repository(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri));
             }
 
             registry.Repositories = repositories;

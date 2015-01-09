@@ -11,15 +11,28 @@ namespace CKAN
 
         public string name;
         public Uri uri;
+        public int priority = 0;
         public Boolean ckan_mirror = false;
 
         public Repository()
         {
         }
 
+        public Repository(string name, string uri)
+        {
+            this.name = name;
+            this.uri = new Uri(uri);
+        }
+
+        public Repository(string name, Uri uri)
+        {
+            this.name = name;
+            this.uri = uri;
+        }
+
         public override string ToString()
         {
-            return String.Format("{0} ({1})", name, uri.DnsSafeHost);
+            return String.Format("{0} ({1}, {2})", name, priority, uri.ToString());
         }
     }
 
