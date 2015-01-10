@@ -21,14 +21,17 @@ namespace CKAN.CmdLine
         {
             InstallOptions options = (InstallOptions) raw_options;
 
-            if (options.ckan_file != null)
+            if (options.ckan_files != null)
             {
                 // Oooh! We're installing from a CKAN file.
-                log.InfoFormat("Installing from CKAN file {0}", options.ckan_file);
-                options.modules.Add(LoadCkanFromFile(ksp, options.ckan_file).identifier);
+                foreach (string ckan_file in options.ckan_files)
+                {
+                    log.InfoFormat("Installing from CKAN file {0}", ckan_file);
+                    options.modules.Add(LoadCkanFromFile(ksp, ckan_file).identifier);
+                }
                 // At times RunCommand() calls itself recursively - in this case we do
                 // not want to be doing this again, so "consume" the option
-                options.ckan_file = null;
+                options.ckan_files = null;
             }
 
             if (options.modules.Count == 0)
