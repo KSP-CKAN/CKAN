@@ -399,6 +399,7 @@ are described. Unless specified otherwise, these are URLs:
 - `bugtracker` : The mod's bugtracker if it exists.
 - `license` : The mod's license.
 - `repository` : The repository where the module source can be found.
+- `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
 - `kerbalstuff` : The mod on KerbalStuff.
 - `manual` : The mod's manual, if it exists.
 
@@ -408,6 +409,7 @@ Example resources:
         "homepage"     : "http://tinyurl.com/DogeCoinFlag",
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
         "repository"   : "http://github.com/pjf/DogeCoinFlag",
+        "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
         "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
     }
 
