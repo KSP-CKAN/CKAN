@@ -23,7 +23,7 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {                
-                options.modules.Add(MainClass.LoadCkanFromFile(ksp, options.ckan_file).identifier);
+                options.modules.Add(LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
             if (options.modules.Count == 0 && ! options.upgrade_all)
@@ -90,8 +90,24 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
             User.RaiseMessage("\nDone!\n");
-            return Exit.OK;
 
+            return Exit.OK;
+        }
+
+        internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)
+        {
+            CkanModule module = CkanModule.FromFile(ckan_file);
+
+            // We'll need to make some registry changes to do this.
+            RegistryManager registry_manager = RegistryManager.Instance(current_instance);
+
+            // Remove this version of the module in the registry, if it exists.
+            registry_manager.registry.RemoveAvailable(module);
+
+            // Sneakily add our version in...
+            registry_manager.registry.AddAvailable(module);
+
+            return module;
         }
     }
 }

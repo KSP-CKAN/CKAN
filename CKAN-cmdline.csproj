@@ -41,15 +41,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="Action\KSP.cs" />
     <Compile Include="Exit.cs" />
     <Compile Include="ProgressReporter.cs" />
-    <Compile Include="Action\Repair.cs" />
-    <Compile Include="Action\ISubCommand.cs" />
-    <Compile Include="Action\Upgrade.cs" />
-    <Compile Include="Action\Repo.cs" />
     <Compile Include="Action\ICommand.cs" />
+    <Compile Include="Action\ISubCommand.cs" />
+    <Compile Include="Action\Install.cs" />
+    <Compile Include="Action\KSP.cs" />
+    <Compile Include="Action\List.cs" />
+    <Compile Include="Action\Remove.cs" />
+    <Compile Include="Action\Repair.cs" />
+    <Compile Include="Action\Repo.cs" />
     <Compile Include="Action\Search.cs" />
+    <Compile Include="Action\Show.cs" />
+    <Compile Include="Action\Update.cs" />
+    <Compile Include="Action\Upgrade.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
