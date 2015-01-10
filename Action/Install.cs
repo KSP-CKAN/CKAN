@@ -26,6 +26,9 @@ namespace CKAN.CmdLine
                 // Oooh! We're installing from a CKAN file.
                 log.InfoFormat("Installing from CKAN file {0}", options.ckan_file);
                 options.modules.Add(LoadCkanFromFile(ksp, options.ckan_file).identifier);
+                // At times RunCommand() calls itself recursively - in this case we do
+                // not want to be doing this again, so "consume" the option
+                options.ckan_file = null;
             }
 
             if (options.modules.Count == 0)
