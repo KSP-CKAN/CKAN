@@ -40,7 +40,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
                             // we need elevation to write to the registry
                             ProcessStartInfo startInfo = new ProcessStartInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
                             startInfo.Verb = "runas"; // trigger a UAC prompt (if UAC is enabled)
-                            startInfo.Arguments = UrlRegistrationArgument;
+                            startInfo.Arguments = "gui " + UrlRegistrationArgument;
                             Process.Start(startInfo);
                         }
                         else
