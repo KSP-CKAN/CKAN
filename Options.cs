@@ -128,8 +128,8 @@ namespace CKAN.CmdLine
 
     internal class InstallOptions : CommonOptions
     {
-        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
+        [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files to process")]
+        public string[] ckan_files { get; set; }
 
         [Option("no-recommends", HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
