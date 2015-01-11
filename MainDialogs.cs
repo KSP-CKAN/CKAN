@@ -31,7 +31,7 @@ namespace CKAN
 
         public bool YesNoDialog(string text)
         {
-            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.OK;
+            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
     }
 }
