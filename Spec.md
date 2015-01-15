@@ -271,7 +271,7 @@ Optionally, one or more filter directives *may* be provided:
   file name or directory. Examples of filters may be `Thumbs.db`,
   or `Source`. Filters are considered case-insensitive.
 - `filter_regexp` : A string, or list of strings, which are treated as
-  case-sensitive C# regular expressions whch are matched against the
+  case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
   expression, it is not installed.
 
@@ -503,7 +503,7 @@ When used, the following fields will be auto-filled if not already present:
 - resources/kerbalstuff
 - ksp_version
 
-###### #/ckan/github/:user/:repo
+###### #/ckan/github/:user/:repo[/asset_match/:filter_regexp]
 
 Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
@@ -514,6 +514,16 @@ When used, the following fields will be auto-filled if not already present:
 - download
 - download_size
 - resources/repository
+
+Optionally, one asset `:filter_regexp` directive *may* be provided:
+
+- `filter_regexp` : A string which is treated as
+  case-sensitive C# regular expressions which are matched against the
+  name of the released artifact. An example for this may be found
+  in the netkan files for the Active Texture Management and
+  Environmental Visual Enhancements addons where multiple zip
+  files are uploaded for each version and netkan has to identify
+  the correct one.
 
 ###### #/ckan/jenkins/:buildname
 
