@@ -515,7 +515,7 @@ When used, the following fields will be auto-filled if not already present:
 - download_size
 - resources/repository
 
-Optionally, one asset filter directives *may* be provided:
+Optionally, one asset filter directive *may* be provided:
 
 - `filter_regexp` : A string which is treated as
   case-sensitive C# regular expressions which are matched against the
