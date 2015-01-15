@@ -503,7 +503,7 @@ When used, the following fields will be auto-filled if not already present:
 - resources/kerbalstuff
 - ksp_version
 
-###### #/ckan/github/:user/:repo[/asset_match/filter_regexp]
+###### #/ckan/github/:user/:repo[/asset_match/:filter_regexp]
 
 Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
@@ -515,7 +515,7 @@ When used, the following fields will be auto-filled if not already present:
 - download_size
 - resources/repository
 
-Optionally, one asset filter directive *may* be provided:
+Optionally, one asset `:filter_regexp` directive *may* be provided:
 
 - `filter_regexp` : A string which is treated as
   case-sensitive C# regular expressions which are matched against the
