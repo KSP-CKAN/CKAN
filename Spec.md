@@ -515,6 +515,23 @@ When used, the following fields will be auto-filled if not already present:
 - download_size
 - resources/repository
 
+###### #/ckan/jenkins/:buildname
+
+Indicates data should be fetched from a Jenkins server, using the `:buildname` provided. For example: `#/ckan/jenkins/CrewManifest`.
+
+When used, the resource field `ci` must exist as well, with a fallback to `x_ci`.
+Both pieces of information will be used to create an URL to the json documents describing
+the build on the target jenkins server.
+
+When used, the following fields will be auto-filled if not already present:
+
+- download
+- download_size
+
+When clients are adapted to v1.6, the following field will be auto-filled if not already present:
+
+- resources/ci
+
 ##### $vref
 
 The `$vref` field is a special use field that indicates that version
