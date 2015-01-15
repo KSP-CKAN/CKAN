@@ -542,6 +542,20 @@ When clients are adapted to v1.6, the following field will be auto-filled if not
 
 - resources/ci
 
+###### #/ckan/http/:url
+
+Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
+
+When used, the following fields will be auto-filled if not already present:
+
+- download
+- download_size
+
+This method depends on the existence of an AVC file in the download file
+to determine:
+
+- version
+
 ##### $vref
 
 The `$vref` field is a special use field that indicates that version
