@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -106,6 +107,13 @@ namespace CKAN.NetKAN
 
             escaped = escaped.Replace("[",Uri.HexEscape('['));
             escaped = escaped.Replace("]",Uri.HexEscape(']'));
+
+			// Make sure we have a "http://" or "https://" start.
+			if (!Regex.IsMatch(escaped, "(?i)^(http|https)://"))
+			{
+				// Prepend "http://", as we do not know if the site supports https.
+				escaped = "http://" + escaped;
+			}
 
             return escaped;
         }
