@@ -18,8 +18,6 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        // TODO: We should have a command (probably this one) that shows
-        // info about uninstalled modules.
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
             ShowOptions options = (ShowOptions) raw_options;
@@ -50,7 +48,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("Looking for close matches.");
 
                 Search search = new Search(user);
-                List<CkanModule> matches = search.PerformSearch(ksp, options.Modname.ToLower());
+                List<CkanModule> matches = search.PerformSearch(ksp, options.Modname);
 
                 if (matches.Count == 0)
                 {
@@ -104,6 +102,11 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        /// <summary>
+        /// Shows information about the mod.
+        /// </summary>
+        /// <returns>Success status.</returns>
+        /// <param name="module">The module to show.</param>
         public int ShowMod(InstalledModule module)
         {
             // Display the basic info.
@@ -122,6 +125,11 @@ namespace CKAN.CmdLine
             return return_value;
         }
 
+        /// <summary>
+        /// Shows information about the mod.
+        /// </summary>
+        /// <returns>Success status.</returns>
+        /// <param name="module">The module to show.</param>
         public int ShowMod(Module module)
         {
             #region Abstract and description

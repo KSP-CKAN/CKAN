@@ -52,14 +52,20 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        /// <summary>
+        /// Searches for the term in the list of available modules for the ksp instance. Looks in name, identifier and description fields.
+        /// </summary>
+        /// <returns>List of mathcing modules.</returns>
+        /// <param name="ksp">The KSP instance to perform the search for.</param>
+        /// <param name="term">The search term. Case insensitive.</param>
         public List<CkanModule> PerformSearch(CKAN.KSP ksp, string term)
         {
-            // Get a list of available mods.
-            List<CkanModule> available_mods = ksp.Registry.Available(ksp.Version());
             List<CkanModule> matching_mods = new List<CkanModule>();
 
+            // Get a list of available mods.
+            List<CkanModule> available_mods = ksp.Registry.Available(ksp.Version());
+
             // Look for the search term in the list.
-            // TODO: Could use some parallism here to speed up the search.
             foreach (CkanModule mod in available_mods)
             {
                 // Extract the description. This is an optional field and may be null.
