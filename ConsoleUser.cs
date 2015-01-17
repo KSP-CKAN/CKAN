@@ -152,7 +152,15 @@ namespace CKAN.CmdLine
             while (!valid)
             {
                 // Wait for input from the command line.
-                string input = Console.ReadLine().Trim().ToLower();
+                string input = Console.In.ReadLine();
+
+                if (input == null)
+                {
+                    // No console present, cancel the process.
+                    return return_cancel;
+                }
+
+                input = input.Trim().ToLower();
 
                 // Check for default selection.
                 if (String.IsNullOrEmpty(input))
