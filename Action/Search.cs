@@ -29,9 +29,6 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            // Convert to lowercase for easier comparison.
-            options.search_term = options.search_term.ToLower();
-
             List<CkanModule> matching_mods = PerformSearch(ksp, options.search_term);
 
             // Show how many matches we have.
@@ -77,7 +74,7 @@ namespace CKAN.CmdLine
                 }
 
                 // Look for a match in each string.
-                if (mod.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > 0 || mod.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > 0 || mod_description.IndexOf(term, StringComparison.OrdinalIgnoreCase) > 0)
+                if (mod.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || mod.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || mod_description.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
                 {
                     matching_mods.Add(mod);
                 }
