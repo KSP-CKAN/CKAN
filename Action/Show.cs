@@ -18,8 +18,6 @@ namespace CKAN.CmdLine
             this.user = user;
         }
 
-        // TODO: We should have a command (probably this one) that shows
-        // info about uninstalled modules.
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
             ShowOptions options = (ShowOptions) raw_options;
@@ -31,33 +29,132 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            RegistryManager registry_manager = RegistryManager.Instance(ksp);
-            InstalledModule module = registry_manager.registry.InstalledModule(options.Modname);
+            // Look for the module in the registry.
+            List<CkanModule> modules = ksp.Registry.Available(ksp.Version());
+            CkanModule module = null;
 
+            foreach (CkanModule mod in modules)
+            {
+                if (mod.name == options.Modname)
+                {
+                    module = mod;
+                }
+            }
+                
             if (module == null)
             {
-                user.RaiseMessage("{0} not installed.", options.Modname);
-                user.RaiseMessage("Try `ckan list` to show installed modules");
-                return Exit.BADOPT;
+                // No exact match found. Try to look for a close match.
+                user.RaiseMessage("{0} not found.", options.Modname);
+                user.RaiseMessage("Looking for close matches.");
+
+                Search search = new Search(user);
+                List<CkanModule> matches = search.PerformSearch(ksp, options.Modname);
+
+                if (matches.Count == 0)
+                {
+                    user.RaiseMessage("No close matches found.");
+                    return Exit.BADOPT;
+                }
+                else if (matches.Count == 1)
+                {
+                    // If there is only 1 match, display it.
+                    user.RaiseMessage("Found 1 close match: {0}", matches[0].name);
+                    user.RaiseMessage("");
+
+                    module = matches[0];
+                }
+                else
+                {
+                    // Display the found close matches.
+                    string[] strings_matches = new string[matches.Count];
+
+                    for (int i = 0; i < matches.Count; i++)
+                    {
+                        strings_matches[i] = matches[i].name;
+                    }
+
+                    string message = "Close matches";
+
+                    int selection = user.RaiseSelectionDialog(message, strings_matches);
+
+                    if (selection < 0)
+                    {
+                        return Exit.BADOPT;
+                    }
+
+                    // Mark the selection as the one to show.
+                    module = matches[selection];
+                }
             }
 
-            #region Abstract and description
-            if (!string.IsNullOrEmpty(module.Module.@abstract))
-                user.RaiseMessage("{0}: {1}", module.Module.name, module.Module.@abstract);
-            else
-                user.RaiseMessage("{0}", module.Module.name);
+            // Is the selected module already installed?
+            InstalledModule installed_module = ksp.Registry.InstalledModule(module.identifier);
 
-            if (!string.IsNullOrEmpty(module.Module.description))
-                user.RaiseMessage("\n{0}\n", module.Module.description);
+            if (installed_module != null)
+            {
+                ShowMod(installed_module);
+            }
+            else
+            {
+                ShowMod(module);
+            }
+
+            return Exit.OK;
+        }
+
+        /// <summary>
+        /// Shows information about the mod.
+        /// </summary>
+        /// <returns>Success status.</returns>
+        /// <param name="module">The module to show.</param>
+        public int ShowMod(InstalledModule module)
+        {
+            // Display the basic info.
+            int return_value = ShowMod(module.Module);
+
+            // Display InstalledModule specific information.
+            ICollection<string> files = module.Files as ICollection<string>;
+            if (files == null) throw new InvalidCastException();
+
+            user.RaiseMessage("\nShowing {0} installed files:", files.Count);
+            foreach (string file in files)
+            {
+                user.RaiseMessage("- {0}", file);
+            }
+
+            return return_value;
+        }
+
+        /// <summary>
+        /// Shows information about the mod.
+        /// </summary>
+        /// <returns>Success status.</returns>
+        /// <param name="module">The module to show.</param>
+        public int ShowMod(Module module)
+        {
+            #region Abstract and description
+            if (!string.IsNullOrEmpty(module.@abstract))
+            {
+                user.RaiseMessage("{0}: {1}", module.name, module.@abstract);
+            }
+            else
+            {
+                user.RaiseMessage("{0}", module.name);
+            }
+
+            if (!string.IsNullOrEmpty(module.description))
+            {
+                user.RaiseMessage("\n{0}\n", module.description);
+            }
             #endregion
 
             #region General info (author, version...)
             user.RaiseMessage("\nModule info:");
-            user.RaiseMessage("- version:\t{0}", module.Module.version);
+            user.RaiseMessage("- version:\t{0}", module.version);
 
-            if (module.Module.author != null)
+            if (module.author != null)
             {
-                user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.Module.author));
+                user.RaiseMessage("- authors:\t{0}", string.Join(", ", module.author));
             }
             else
             {
@@ -66,61 +163,51 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("- authors:\tUNKNOWN");
             }
 
-            user.RaiseMessage("- status:\t{0}", module.Module.release_status);
-            user.RaiseMessage("- license:\t{0}", module.Module.license); 
+            user.RaiseMessage("- status:\t{0}", module.release_status);
+            user.RaiseMessage("- license:\t{0}", module.license); 
             #endregion
 
             #region Relationships
-            if (module.Module.depends != null && module.Module.depends.Count > 0)
+            if (module.depends != null && module.depends.Count > 0)
             {
                 user.RaiseMessage("\nDepends:");
-                foreach (RelationshipDescriptor dep in module.Module.depends)
+                foreach (RelationshipDescriptor dep in module.depends)
                     user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
             }
 
-            if (module.Module.recommends != null && module.Module.recommends.Count > 0)
+            if (module.recommends != null && module.recommends.Count > 0)
             {
                 user.RaiseMessage("\nRecommends:");
-                foreach (RelationshipDescriptor dep in module.Module.recommends)
+                foreach (RelationshipDescriptor dep in module.recommends)
                     user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
             }
 
-            if (module.Module.suggests != null && module.Module.suggests.Count > 0)
+            if (module.suggests != null && module.suggests.Count > 0)
             {
                 user.RaiseMessage("\nSuggests:");
-                foreach (RelationshipDescriptor dep in module.Module.suggests)
+                foreach (RelationshipDescriptor dep in module.suggests)
                     user.RaiseMessage("- {0}", RelationshipToPrintableString(dep));
             }
 
-            if (module.Module.ProvidesList != null && module.Module.ProvidesList.Count > 0)
+            if (module.ProvidesList != null && module.ProvidesList.Count > 0)
             {
                 user.RaiseMessage("\nProvides:");
-                foreach (string prov in module.Module.ProvidesList)
+                foreach (string prov in module.ProvidesList)
                     user.RaiseMessage("- {0}", prov);
             } 
             #endregion
 
             user.RaiseMessage("\nResources:");
-            if (module.Module.resources != null)
+            if (module.resources != null)
             {
-                if (module.Module.resources.bugtracker != null)
-                    user.RaiseMessage("- bugtracker: {0}", module.Module.resources.bugtracker.ToString());
-                if (module.Module.resources.homepage != null)
-                    user.RaiseMessage("- homepage: {0}", module.Module.resources.homepage.ToString());
-                if (module.Module.resources.kerbalstuff != null)
-                    user.RaiseMessage("- kerbalstuff: {0}", module.Module.resources.kerbalstuff.ToString());
-                if (module.Module.resources.repository != null)
-                    user.RaiseMessage("- repository: {0}", module.Module.resources.repository.ToString());
-            }
-            
-
-            ICollection<string> files = module.Files as ICollection<string>;
-            if (files == null) throw new InvalidCastException();
-
-            user.RaiseMessage("\nShowing {0} installed files:", files.Count);
-            foreach (string file in files)
-            {
-                user.RaiseMessage("- {0}", file);
+                if (module.resources.bugtracker != null)
+                    user.RaiseMessage("- bugtracker: {0}", module.resources.bugtracker.ToString());
+                if (module.resources.homepage != null)
+                    user.RaiseMessage("- homepage: {0}", module.resources.homepage.ToString());
+                if (module.resources.kerbalstuff != null)
+                    user.RaiseMessage("- kerbalstuff: {0}", module.resources.kerbalstuff.ToString());
+                if (module.resources.repository != null)
+                    user.RaiseMessage("- repository: {0}", module.resources.repository.ToString());
             }
 
             return Exit.OK;

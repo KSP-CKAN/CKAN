@@ -66,6 +66,15 @@ namespace CKAN.CmdLine
 
         protected override int DisplaySelectionDialog(string message, params object[] args)
         {
+            const int return_cancel = -1;
+
+            // Check for the headless flag.
+            if (m_Headless)
+            {
+                // Return that the user cancelled the selection process.
+                return return_cancel;
+            }
+
             // Validate input.
             if (String.IsNullOrWhiteSpace(message))
             {
@@ -143,7 +152,15 @@ namespace CKAN.CmdLine
             while (!valid)
             {
                 // Wait for input from the command line.
-                string input = Console.ReadLine().Trim().ToLower();
+                string input = Console.In.ReadLine();
+
+                if (input == null)
+                {
+                    // No console present, cancel the process.
+                    return return_cancel;
+                }
+
+                input = input.Trim().ToLower();
 
                 // Check for default selection.
                 if (String.IsNullOrEmpty(input))
@@ -159,7 +176,7 @@ namespace CKAN.CmdLine
                 {
                     RaiseMessage("Selection cancelled.");
 
-                    return -1;
+                    return return_cancel;
                 }
 
                 // Attempt to parse the input.
