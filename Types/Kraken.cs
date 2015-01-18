@@ -141,8 +141,9 @@ namespace CKAN
 
         public string InconsistenciesPretty
         {
-            get {
-                const string message = "The following inconsistecies were found:\n";
+            get
+            {
+                const string message = "The following inconsistencies were found:\n";
                 return message + String.Join("\n * ", inconsistencies);
             }
         }
