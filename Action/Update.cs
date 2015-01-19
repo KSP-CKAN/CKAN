@@ -98,17 +98,17 @@ namespace CKAN.CmdLine
 
             if (added.Count > 0)
             {
-                PrintModules("New modules:", added);
+                PrintModules("New modules [Name (CKAN identifier)]:", added);
             }
 
             if (removed.Count > 0)
             {
-                PrintModules("Removed modules:", removed);
+                PrintModules("Removed modules [Name (CKAN identifier)]:", removed);
             }
 
             if (updated.Count > 0)
             {
-                PrintModules("Updated modules:", updated);
+                PrintModules("Updated modules [Name (CKAN identifier)]:", updated);
             }
         }
 
