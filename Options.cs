@@ -203,6 +203,9 @@ namespace CKAN.CmdLine
 
         [Option("all", HelpText = "Upgrade all available updated modules")]
         public bool update_all { get; set; }
+
+        [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
+        public bool list_changes { get; set; }
     }
 
     internal class RemoveOptions : CommonOptions
