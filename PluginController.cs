@@ -34,7 +34,7 @@ namespace CKAN
 
         private void LoadAssembly(string dll)
         {
-            dll = dll.Replace("/", "\\");
+            //dll = dll.Replace("/", "\\");
 
             Assembly assembly = null;
 
