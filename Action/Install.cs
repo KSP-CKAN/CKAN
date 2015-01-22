@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
@@ -26,9 +27,48 @@ namespace CKAN.CmdLine
                 // Oooh! We're installing from a CKAN file.
                 foreach (string ckan_file in options.ckan_files)
                 {
-                    log.InfoFormat("Installing from CKAN file {0}", ckan_file);
-                    options.modules.Add(LoadCkanFromFile(ksp, ckan_file).identifier);
+                    Uri ckan_uri = null;
+
+                    // Check if the argument if a wellformatted Uri.
+                    if (!Uri.IsWellFormedUriString(ckan_file, UriKind.Absolute))
+                    {
+                        // Assume it is a local file, check if the file exists.
+                        if (File.Exists(ckan_file))
+                        {
+                            // Get the full path of the file.
+                            ckan_uri = new Uri(Path.GetFullPath(ckan_file));
+                        }
+                        else
+                        {
+                            // We have no further ideas as what we can do with this Uri, tell the user.
+                            user.RaiseError("Could not determine if \"{0}\" is a local or a remote file.", ckan_file);
+                        }
+                    }
+                    else
+                    {
+                        ckan_uri = new Uri(ckan_file);
+                    }
+
+                    string filename = String.Empty;
+
+                    // If it is a local file, we already know the filename. If it is remote, create a temporary file and download the remote resource.
+                    if (ckan_uri.IsFile)
+                    {
+                        log.InfoFormat("Installing from local CKAN file \"{0}\"", filename);
+                        filename = ckan_uri.LocalPath;
+                    }
+                    else
+                    {
+                        log.InfoFormat("Installing from remote CKAN file \"{0}\"", ckan_uri);
+                        filename = Net.Download(ckan_uri, null, user);
+
+                        log.DebugFormat("Temporary file for \"{0}\" is at \"{1}\".", ckan_uri, filename);
+                    }
+
+                    // Parse the JSON file.
+                    options.modules.Add(LoadCkanFromFile(ksp, filename).identifier);
                 }
+
                 // At times RunCommand() calls itself recursively - in this case we do
                 // not want to be doing this again, so "consume" the option
                 options.ckan_files = null;
