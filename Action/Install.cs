@@ -54,15 +54,15 @@ namespace CKAN.CmdLine
                     // If it is a local file, we already know the filename. If it is remote, create a temporary file and download the remote resource.
                     if (ckan_uri.IsFile)
                     {
-                        log.InfoFormat("Installing from local CKAN file {0}", filename);
+                        log.InfoFormat("Installing from local CKAN file \"{0}\"", filename);
                         filename = ckan_uri.LocalPath;
                     }
                     else
                     {
-                        log.InfoFormat("Installing from remote CKAN file {0}", ckan_uri);
+                        log.InfoFormat("Installing from remote CKAN file \"{0}\"", ckan_uri);
                         filename = Net.Download(ckan_uri, null, user);
 
-                        log.DebugFormat("Temporary file for {0} is at {1}.", ckan_uri, filename);
+                        log.DebugFormat("Temporary file for \"{0}\" is at \"{1}\".", ckan_uri, filename);
                     }
 
                     // Parse the JSON file.
