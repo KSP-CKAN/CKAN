@@ -388,6 +388,11 @@ namespace CKAN
                                     break;
                                 }
                             }
+                            catch (KeyNotFoundException e)
+                            {
+                                log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                                throw e;
+                            }
                             catch (ModuleNotFoundKraken)
                             {
                                 failedDepedency = true;
