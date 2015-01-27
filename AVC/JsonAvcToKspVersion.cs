@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 namespace CKAN.NetKAN
 {
@@ -9,6 +10,8 @@ namespace CKAN.NetKAN
     /// </summary>
     public class JsonAvcToKspVersion : JsonConverter
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof (JsonAvcToKspVersion));
+
         public override bool CanConvert(Type object_type)
         {
             // We trust you only to call this on things we can convert, okay?
@@ -18,6 +21,7 @@ namespace CKAN.NetKAN
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
+            log.DebugFormat ("Read Token: {0}, {1}", new Object[] { token.Type, token.ToString() });
             if (token.Type != JTokenType.Object)
             {
                 throw new InvalidCastException ("Trying to convert non-JSON object to KSP version object");
@@ -46,6 +50,8 @@ namespace CKAN.NetKAN
     /// </summary>
     public class JsonAvcToVersion : JsonConverter
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof (JsonAvcToKspVersion));
+
         public override bool CanConvert(Type object_type)
         {
             // We trust you only to call this on things we can convert, okay?
@@ -55,6 +61,7 @@ namespace CKAN.NetKAN
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
+            log.DebugFormat ("Read Token: {0}, {1}", new Object[] { token.Type, token.ToString() });
             if (token.Type != JTokenType.Object)
             {
                 throw new InvalidCastException("Trying to convert non-JSON object to Version object");
