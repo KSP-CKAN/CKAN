@@ -20,17 +20,47 @@ namespace CKAN.NetKAN
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            string major = "0";
+            string minor = "0";
+            string patch = "0";
+
             JToken token = JToken.Load(reader);
             log.DebugFormat ("Read Token: {0}, {1}", new Object[] { token.Type, token.ToString() });
-            if (token.Type != JTokenType.Object)
+            if (token.Type == JTokenType.String)
             {
-                throw new InvalidCastException ("Trying to convert non-JSON object to KSP version object");
+                string[] tokenArray = token.ToString ().Split ('.');
+
+                if (tokenArray.Length >= 0)
+                {
+                    major = tokenArray [0];
+                }
+
+                if (tokenArray.Length >= 1)
+                {
+                    minor = tokenArray [1];
+                }
+
+                if (tokenArray.Length >= 2)
+                {
+                    patch = tokenArray [2];
+                }
+            }
+            else if (token.Type == JTokenType.Object)
+            {
+                major = (string) token ["MAJOR"];
+                minor = (string) token ["MINOR"];
+                patch = (string) token ["PATCH"];
+            }
+            else
+            {
+                throw new InvalidCastException("Trying to convert non-JSON object to Version object");
             }
 
-            // This gives us something like "0.25.0"
-            string version = string.Join (".", token ["MAJOR"], token ["MINOR"], token ["PATCH"]);
-
-            return new KSPVersion (version);
+            string version = string.Join(".", major, minor, patch);
+            log.DebugFormat ("  extracted version: {0}", version);
+            KSPVersion result = new KSPVersion(version);
+            log.DebugFormat ("  generated result: {0}", result.ToString());
+            return result;
         }
 
         public override bool CanWrite
@@ -60,17 +90,47 @@ namespace CKAN.NetKAN
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            string major = "0";
+            string minor = "0";
+            string patch = "0";
+
             JToken token = JToken.Load(reader);
             log.DebugFormat ("Read Token: {0}, {1}", new Object[] { token.Type, token.ToString() });
-            if (token.Type != JTokenType.Object)
+            if (token.Type == JTokenType.String)
+            {
+                string[] tokenArray = token.ToString ().Split ('.');
+
+                if (tokenArray.Length >= 0)
+                {
+                    major = tokenArray [0];
+                }
+
+                if (tokenArray.Length >= 1)
+                {
+                    minor = tokenArray [1];
+                }
+
+                if (tokenArray.Length >= 2)
+                {
+                    patch = tokenArray [2];
+                }
+            }
+            else if (token.Type == JTokenType.Object)
+            {
+                major = (string) token ["MAJOR"];
+                minor = (string) token ["MINOR"];
+                patch = (string) token ["PATCH"];
+            }
+            else
             {
                 throw new InvalidCastException("Trying to convert non-JSON object to Version object");
             }
 
-            // This gives us something like "0.25.0"
-            string version = string.Join(".", token["MAJOR"], token["MINOR"], token["PATCH"]);
-
-            return new Version(version);
+            string version = string.Join(".", major, minor, patch);
+            log.DebugFormat ("  extracted version: {0}", version);
+            Version result = new Version(version);
+            log.DebugFormat ("  generated result: {0}", result.ToString());
+            return result;
         }
 
         public override bool CanWrite

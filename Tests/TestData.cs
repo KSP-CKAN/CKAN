@@ -262,6 +262,11 @@ namespace Tests
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
 
+        public static string KspAvcJsonOneLineVersion()
+        {
+            return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));
+        }
+
         public static CkanModule ModuleManagerModule()
         {
             return CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
