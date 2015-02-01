@@ -84,8 +84,11 @@ namespace CKAN
         {
             Main.Instance.Manager.ClearAutoStart();
 
-            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Application.Exit();
+            ProcessStartInfo sinfo = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            sinfo.UseShellExecute = false;
+
+            Process.Start(sinfo);
+            Environment.Exit(0);
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
