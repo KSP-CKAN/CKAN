@@ -58,7 +58,17 @@ namespace CKAN.NetKAN
             Inflate(metadata, "license", license);
             Inflate(metadata, "abstract", short_description);
             Inflate(metadata, "author", author);
-            Inflate(metadata, "version", version.friendly_version.ToString());
+
+            if (version.friendly_version.EpochPart == 0 && metadata["x_netkan_force_epoch"] != null)
+            {
+                var epoch = int.Parse(metadata["x_netkan_force_epoch"].ToString());
+                Inflate(metadata, "version", String.Format("{0}:{1}", epoch, version.ToString()));
+            }
+            else
+            {
+                Inflate(metadata, "version", version.friendly_version.ToString());
+            }
+
             Inflate(metadata, "download", Escape(version.download_path));
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
