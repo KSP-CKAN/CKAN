@@ -377,6 +377,9 @@ namespace CKAN
 
                 if (value == null)
                 {
+                    // Metapackages are allowed to have no download field
+                    if (field == "download" && newModule.IsMetapackage) continue;
+
                     string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
 
                     log.Error(error);
