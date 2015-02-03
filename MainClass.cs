@@ -1,6 +1,7 @@
-// KerbalStuff to CKAN generator.
+// KerbalStuff / Github / Jenkins to CKAN generator.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -126,26 +127,36 @@ namespace CKAN.NetKAN
             // Now inflate our original metadata from AVC, if we have it.
             // The reason we inflate our metadata and not the module is that in the module we can't
             // tell if there's been an override of the version fields or not.
-
-            // TODO: Remove magic string "#/ckan/ksp-avc"
-            if (remote.source != "http") // HTTP has already included the KSP-AVC data as it needs it earlier in the process
-            if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
+            foreach (string vref in vrefs(metadata))
             {
-                var versionRemote = FindVersionRemote(metadata);
-                metadata.Remove(version_token);
+                log.DebugFormat ("Expanding vref {0}", vref);
 
-                try {
-                    AVC avc = AVC.FromZipFile(mod, file, versionRemote.id);
-                    avc.InflateMetadata(metadata, null, null);
-                }
-                catch (JsonReaderException)
-                {                    
-                    user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
-                    return EXIT_ERROR;
-                }
+                if (vref.StartsWith ("#/ckan/ksp-avc"))
+                {
+                    // HTTP has already included the KSP-AVC data as it needs it earlier in the process
+                    if (remote.source != "http")
+                    {
+                        var versionRemote = FindVersionRemote (metadata, vref);
 
-                // If we've done this, we need to re-inflate our mod, too.
-                mod = CkanModule.FromJson(metadata.ToString());
+                        try
+                        {
+                            AVC avc = AVC.FromZipFile (mod, file, versionRemote.id);
+                            // TODO check why the AVC file can be null...
+                            if (avc != null)
+                            {
+                                avc.InflateMetadata (metadata, null, null);
+                            }
+                        }
+                        catch (JsonReaderException)
+                        {
+                            user.RaiseMessage ("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                            return EXIT_ERROR;
+                        }
+
+                        // If we've done this, we need to re-inflate our mod, too.
+                        mod = CkanModule.FromJson (metadata.ToString ());
+                    }
+                }
             }
 
             // All done! Write it out!
@@ -170,6 +181,39 @@ namespace CKAN.NetKAN
             File.WriteAllText(final_path, sw.ToString() + Environment.NewLine);
 
             return EXIT_OK;
+        }
+
+        /// <summary>
+        /// (safely) load all vrefs from file.
+        /// Returns a list of vref strings.
+        /// </summary>
+        internal static List<string> vrefs (JObject orig_metadata)
+        {
+            List<string> result = new List<string> ();
+
+            JToken vref = orig_metadata [version_token];
+            // none: null
+            // single: Newtonsoft.Json.Linq.JValue
+            // multiple: Newtonsoft.Json.Linq.JArray
+            if (vref != null)
+            {
+                if (vref is JValue)
+                {
+                    result.Add (vref.ToString());
+                }
+                else if (vref is JArray)
+                {
+                    foreach (string innerVref in vref.ToArray())
+                    {
+                        result.Add (innerVref);
+                    }
+                }
+
+                // Remove $vref from the resulting ckan
+                orig_metadata.Remove (version_token);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -314,7 +358,8 @@ namespace CKAN.NetKAN
 
                 if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
                 {
-                    var versionRemote = FindVersionRemote(metadata);
+                    // TODO pass the correct vref here...
+                    var versionRemote = FindVersionRemote(metadata, "TODO-REPAIR-ME");
                     metadata.Remove(version_token);
 
                     try
@@ -424,20 +469,19 @@ namespace CKAN.NetKAN
             return new NetKanRemote(source: match.Groups[1].ToString(), id: match.Groups[2].ToString());
         }
 
-        internal static NetKanRemote FindVersionRemote(JObject json)
+        internal static NetKanRemote FindVersionRemote(JObject json, string vref)
         {
-            string kref = (string)json[version_token];
-            if (kref == "#/ckan/ksp-avc")
+            if (vref == "#/ckan/ksp-avc")
             {
                 return new NetKanRemote(source: "ksp-avc", id: "");
             }
 
-            Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
+            Match match = Regex.Match(vref, @"^#/ckan/([^/]+)/(.+)");
 
             if (!match.Success)
             {
                 // TODO: Have a proper kraken class!
-                throw new Kraken("Cannot find remote and ID in kref: " + kref);
+                throw new Kraken("Cannot find remote and ID in vref: " + vref);
             }
 
             return new NetKanRemote(source: match.Groups[1].ToString(), id: match.Groups[2].ToString());
