@@ -275,6 +275,8 @@ namespace CKAN
 
         private void Install(CkanModule module, string filename = null)
         {
+            CheckMetapackageInstallationKraken(module);
+
             Version version = registry_manager.registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
@@ -321,6 +323,18 @@ namespace CKAN
             }
 
         }
+
+        /// <summary>
+        /// Check if the given module is a metapackage:
+        /// if it is, throws a BadCommandKraken.
+        /// </summary>
+        private static void CheckMetapackageInstallationKraken(CkanModule module)
+        {
+            if (module.IsMetapackage)
+            {
+                throw new BadCommandKraken("Metapackages can not be installed!");
+            }
+        }
             
         /// <summary>
         /// Installs the module from the zipfile provided.
@@ -330,6 +344,8 @@ namespace CKAN
         /// </summary>
         private IEnumerable<string> InstallModule(CkanModule module, string zip_filename)
         {
+            CheckMetapackageInstallationKraken(module);
+
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 IEnumerable<InstallableFile> files = FindInstallableFiles(module, zipfile, ksp);

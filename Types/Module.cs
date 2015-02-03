@@ -47,6 +47,10 @@ namespace CKAN
         [JsonProperty("description")]
         public string description;
 
+        // Package type: in spec v1.6 can be either "package" or "metapackage"
+        [JsonProperty("kind")]
+        public string kind;
+
         [JsonProperty("author")]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> author;
@@ -224,6 +228,15 @@ namespace CKAN
         {
             return this.identifier == identifier || provides.Contains(identifier);
         }
+
+        public bool IsMetapackage
+        {
+            get
+            {
+                return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage");
+            }
+        }
+
     }
 
     public class CkanModule : Module
