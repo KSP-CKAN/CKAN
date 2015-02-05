@@ -29,19 +29,15 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            // Look for the module in the registry.
-            List<CkanModule> modules = ksp.Registry.Available(ksp.Version());
-            CkanModule module = null;
-
-            foreach (CkanModule mod in modules)
-            {
-                if (mod.name == options.Modname)
-                {
-                    module = mod;
-                }
-            }
+            // Find the module: either by "name" (the user-friendly display name) or by identifier
+            CkanModule moduleToShow = ksp.Registry                  
+                                      .Available(ksp.Version())
+                                      .SingleOrDefault(
+                                            mod => mod.name == options.Modname
+                                                || mod.identifier == options.Modname
+                                      );
                 
-            if (module == null)
+            if (moduleToShow == null)
             {
                 // No exact match found. Try to look for a close match.
                 user.RaiseMessage("{0} not found.", options.Modname);
@@ -61,7 +57,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("Found 1 close match: {0}", matches[0].name);
                     user.RaiseMessage("");
 
-                    module = matches[0];
+                    moduleToShow = matches[0];
                 }
                 else
                 {
@@ -83,21 +79,11 @@ namespace CKAN.CmdLine
                     }
 
                     // Mark the selection as the one to show.
-                    module = matches[selection];
+                    moduleToShow = matches[selection];
                 }
             }
 
-            // Is the selected module already installed?
-            InstalledModule installed_module = ksp.Registry.InstalledModule(module.identifier);
-
-            if (installed_module != null)
-            {
-                ShowMod(installed_module);
-            }
-            else
-            {
-                ShowMod(module);
-            }
+            ShowMod(moduleToShow);
 
             return Exit.OK;
         }
