@@ -240,6 +240,9 @@ namespace CKAN
         /// </summary>
         private void Add(CkanModule module)
         {
+            if (module.IsMetapackage)
+                return;
+
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
             if (modlist.ContainsKey(module.identifier))
