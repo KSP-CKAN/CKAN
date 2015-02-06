@@ -153,14 +153,14 @@ namespace CKAN
             string name = "installed-" + kspInstanceName;
 
             JObject installed = new JObject ();
-            installed["spec_version"] = "1";
+            installed["spec_version"] = "v1.6";
             installed["identifier"] = name;
             installed["version"] =  DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
 
             installed["license"] = "unknown";
             installed["name"] = name;
             installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
-            installed["download"] = "http://munich.ksp-ckan.org/empty-0.0.0.zip";
+            installed["kind"] = "metapackage";
 
             JArray depends = new JArray ();
             installed["depends"] = depends;
