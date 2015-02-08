@@ -28,6 +28,10 @@
             "description" : "Unique identifier for this mod.",
             "$ref"        : "#/definitions/identifier"
         },
+		"kind" : {
+			"description" : "Package type.",
+            "enum" : [ "package", "metapackage" ]
+		},
         "abstract" : {
             "description" : "Short description of the mod",
             "type"        : "string"
@@ -96,10 +100,10 @@
             "description" : "Optional list of recommended, but not essential mods",
             "$ref"        : "#/definitions/relationship"
         },
-    "supports" : {
-            "description" : "Optional list of supported mods",
-            "$ref"        : "#/definitions/relationship"
-    },
+		"supports" : {
+				"description" : "Optional list of supported mods",
+				"$ref"        : "#/definitions/relationship"
+		},
         "conflicts" : {
             "description" : "Optional list of conflicting mods",
             "$ref"        : "#/definitions/relationship"
