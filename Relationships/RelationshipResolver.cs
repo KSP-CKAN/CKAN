@@ -37,12 +37,21 @@ namespace CKAN
         private Registry registry;
         private KSPVersion kspversion;
 
+        
+        public RelationshipResolver(ICollection<string> moduleNames, RelationshipResolverOptions options, Registry registry, KSPVersion kspversion):
+            this (moduleNames.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
+                  options,
+                  registry,
+                  kspversion)
+        {
+            // Does nothing, just calles the other overloaded constructor
+        }
+
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        public RelationshipResolver(ICollection<string> modules, RelationshipResolverOptions options, Registry registry, KSPVersion kspversion)
+        public RelationshipResolver(ICollection<CkanModule> modules, RelationshipResolverOptions options, Registry registry, KSPVersion kspversion)
         {
-
             this.registry = registry;
             this.kspversion = kspversion;
 
@@ -55,20 +64,17 @@ namespace CKAN
 
             log.DebugFormat("Processing relationships for {0} modules", modules.Count);
 
-            foreach (string module in modules)
+            foreach (CkanModule module in modules)
             {
-                // Throws ModuleNotFoundKraken if it can't be found
-                CkanModule mod = CkanModule.FromIDandVersion(registry, module, kspversion);
+                log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
-                log.DebugFormat("Preparing to resolve relationships for {0} {1}", mod.identifier, mod.version);
-
-                foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(mod)))
+                foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(module)))
                 {
-                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", mod, listed_mod));
+                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module, listed_mod));
                 }
 
-                user_requested_mods.Add(mod);
-                Add(mod);
+                user_requested_mods.Add(module);
+                Add(module);
             }
 
             // Now that we've already pre-populated modlist, we can resolve
