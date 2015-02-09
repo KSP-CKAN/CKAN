@@ -144,6 +144,20 @@ namespace CKAN
             return full_path;
         }
 
+        
+
+        public void InstallList(
+            List<string> modules,
+            RelationshipResolverOptions options,
+            NetAsyncDownloader downloader = null
+        )
+        {
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
+            List<CkanModule> modsToInstall = resolver.ModList();
+
+            InstallList(modsToInstall, options, downloader = null);
+        }
+
         /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
@@ -155,7 +169,7 @@ namespace CKAN
         //
         // TODO: Break this up into smaller pieces! It's huge!
         public void InstallList(
-            List<string> modules,
+            ICollection<CkanModule> modules,
             RelationshipResolverOptions options,
             NetAsyncDownloader downloader = null
         )
