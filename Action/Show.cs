@@ -87,7 +87,12 @@ namespace CKAN.CmdLine
             InstalledModule installedModuleToShow = ksp.Registry.InstalledModule(moduleToShow.identifier);
 
             // If the module is installed (not null), show it. Else, show the generic information.
-            return ShowMod(installedModuleToShow ?? moduleToShow);
+            if (installedModuleToShow != null)
+            {
+                return ShowMod(installedModuleToShow);
+            }
+
+            return ShowMod(moduleToShow);
         }
 
         /// <summary>
