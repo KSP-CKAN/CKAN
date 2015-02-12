@@ -8,7 +8,6 @@ if [ -d "./bin/Debug/CKAN.app/" ]; then
 fi
 macpack -m:1 -o:bin/Debug/ \
   -i:assets/ckan.icns \
-  -r:/Library/Frameworks/Mono.framework/Versions/Current/lib/ \
   -r:bin/Debug/CKAN.dll \
   -r:bin/Debug/ChinhDo.Transactions.dll \
   -r:bin/Debug/ICSharpCode.SharpZipLib.dll \
