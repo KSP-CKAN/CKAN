@@ -163,7 +163,22 @@ namespace CKAN
             if (ksp_version.IsNotAny() && (ksp_version_max.IsNotAny() || ksp_version_min.IsNotAny()))
             {
                 // KSP version mixed with min/max.
-                throw new InvalidModuleAttributesException("ksp_version mixed wtih ksp_version_(min|max)", this);
+                throw new InvalidModuleAttributesException("ksp_version mixed with ksp_version_(min|max)", this);
+            }
+
+            if (license == null)
+            {
+                license = new License ("unknown");
+            }
+
+            if (@abstract == null)
+            {
+                @abstract = "";
+            }
+
+            if (name == null)
+            {
+                name = "";
             }
         }
 
