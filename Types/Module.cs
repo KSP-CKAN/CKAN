@@ -78,7 +78,7 @@ namespace CKAN
         [JsonProperty("ksp_version_min")]
         public KSPVersion ksp_version_min;
 
-        [JsonProperty("license", Required = Required.Always)]
+        [JsonProperty("license")]
         public License license;
 
         [JsonProperty("name")]
