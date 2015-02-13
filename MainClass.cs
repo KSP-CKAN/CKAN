@@ -152,11 +152,42 @@ namespace CKAN.NetKAN
                             user.RaiseMessage ("Bad embedded KSP-AVC file for {0}, halting.", mod);
                             return EXIT_ERROR;
                         }
-
-                        // If we've done this, we need to re-inflate our mod, too.
-                        mod = CkanModule.FromJson (metadata.ToString ());
                     }
                 }
+
+                if (vref.StartsWith ("#/ckan/kerbalstuff"))
+                {
+                    log.DebugFormat("Kerbalstuff vref: {0}", vref);
+                    Match match = Regex.Match(vref, @"^#/ckan/([^/]+)/(.+)");
+
+                    if (!match.Success)
+                    {
+                        // TODO: Have a proper kraken class!
+                        user.RaiseMessage ("Cannot find remote and ID in vref: {0}, halting.", vref);
+                        return EXIT_ERROR;
+                    }
+
+                    string remote_id = match.Groups [2].ToString ();
+                    log.DebugFormat("Kerbalstuff id  : {0}", remote_id);
+                    try
+                    {
+                        KSMod ks = KSAPI.Mod(Convert.ToInt32(remote_id));
+                        if (ks != null)
+                        {
+                            KSVersion version = new KSVersion();
+                            version.friendly_version = mod.version;
+                            ks.InflateMetadata (metadata, file, version);
+                        }
+                    }
+                    catch (JsonReaderException)
+                    {
+                        user.RaiseMessage ("Cannot find remote and ID in vref: {0}, halting.", vref);
+                        return EXIT_ERROR;
+                    }
+                }
+
+                // If we've done this, we need to re-inflate our mod, too.
+                mod = CkanModule.FromJson (metadata.ToString ());
             }
 
             // All done! Write it out!
