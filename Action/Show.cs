@@ -46,8 +46,10 @@ namespace CKAN.CmdLine
                 Search search = new Search(user);
                 List<CkanModule> matches = search.PerformSearch(ksp, options.Modname);
 
+                // Display the results of the search.
                 if (matches.Count == 0)
                 {
+                    // No matches found.
                     user.RaiseMessage("No close matches found.");
                     return Exit.BADOPT;
                 }
@@ -69,9 +71,7 @@ namespace CKAN.CmdLine
                         strings_matches[i] = matches[i].name;
                     }
 
-                    string message = "Close matches";
-
-                    int selection = user.RaiseSelectionDialog(message, strings_matches);
+                    int selection = user.RaiseSelectionDialog("Close matches", strings_matches);
 
                     if (selection < 0)
                     {
@@ -83,9 +83,16 @@ namespace CKAN.CmdLine
                 }
             }
 
-            ShowMod(moduleToShow);
+            // If the selected module is installed, we have additional data to show. First, check if the module is installed.
+            InstalledModule installedModuleToShow = ksp.Registry.InstalledModule(moduleToShow.identifier);
 
-            return Exit.OK;
+            // If the module is installed (not null), show it. Else, show the generic information.
+            if (installedModuleToShow != null)
+            {
+                return ShowMod(installedModuleToShow);
+            }
+
+            return ShowMod(moduleToShow);
         }
 
         /// <summary>
