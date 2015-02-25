@@ -402,6 +402,33 @@ namespace Tests.CKAN.Relationships
         }
 
         [Test]
+        public void Constructor_ContainsSugestedOfSugested_When_With_all_suggests()
+        {
+            options.with_all_suggests = true;
+            var list = new List<string>();
+            var sugested2 = generator.GeneratorRandomModule();
+            var sugested = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = sugested2.identifier}
+            });
+            var sugester = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name = sugested.identifier}
+            });
+
+            list.Add(sugester.identifier);
+            AddToRegistry(sugester, sugested, sugested2);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.Contains(relationship_resolver.ModList(), sugested2);
+
+            options.with_all_suggests = false;
+
+            relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            CollectionAssert.DoesNotContain(relationship_resolver.ModList(), sugested2);
+        }
+
+        [Test]
         public void Constructor_ProvidesSatisfyDependencies()
         {
             var list = new List<string>();

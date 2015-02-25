@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using log4net;
 
 namespace CKAN
@@ -12,6 +13,7 @@ namespace CKAN
         public bool with_suggests;
         public bool without_toomanyprovides_kraken = false;
         public bool without_enforce_consistency = false;
+        public bool procede_with_inconsistencies = false;
         public object Clone()
         {
             return MemberwiseClone();
@@ -70,7 +72,10 @@ namespace CKAN
 
                 foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(module)))
                 {
-                    throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module, listed_mod));
+                    if (options.procede_with_inconsistencies)                   
+                        ; //TODO Add Handling                    
+                    else                    
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module, listed_mod));                                     
                 }
 
                 user_requested_mods.Add(module);
@@ -195,42 +200,27 @@ namespace CKAN
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
 
-                var fixed_mods =
-                    new HashSet<Module>(modlist.Values);
-
+                var fixed_mods = new HashSet<Module>(modlist.Values);
                 fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
-                foreach (Module mod in fixed_mods)
-                {
-                    if (mod.ConflictsWith(candidate))
-                    {
-                        if (soft_resolve)
-                        {
-                            log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
-
-                            // I want labeled loops please, so I don't have to set this to null,
-                            // break, and then look at it at the end. o_O
-                            candidate = null;
-                            break;
-                        }
-                        var this_is_why_we_cant_have_nice_things = new List<string> {
-                            string.Format(
-                                "{0} and {1} conflict with each other, yet we require them both!",
-                                candidate, mod)
-                        };
-
-                        throw new InconsistentKraken(this_is_why_we_cant_have_nice_things);
-                    }
-                }
-
-                // Our candidate may have been set to null if it was vetoed by our
-                // sanity check above.
-                if (candidate != null)
+                var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
+                if (conflicting_mod == null)
                 {
                     // Okay, looks like we want this one. Adding.
                     Add(candidate);
                     Resolve(candidate, options);
                 }
+                else if (soft_resolve)
+                {
+                    log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
+                }
+                else
+                {
+                    throw new InconsistentKraken(
+                        string.Format("{0} and {1} conflict with each other, yet we require them both!",
+                            candidate, conflicting_mod)
+                        );
+                }                
             }
         }
 
