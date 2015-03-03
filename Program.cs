@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -21,7 +22,18 @@ namespace CKAN
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            new Main(args, user, showConsole);
+
+            if (args.Contains(URLHandlers.UrlRegistrationArgument))
+            {
+                //Passing in null will cause a NullRefrenceException if it tries to show the dialog 
+                //asking for elevation permission, but we want that to happen. Doing that keeps us 
+                //from getting in to a infinite loop of trying to register.
+                URLHandlers.RegisterURLHandler(null, null); 
+            }
+            else
+            {
+                new Main(args, user, showConsole);
+            }
         }
 
         public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
