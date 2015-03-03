@@ -17,12 +17,21 @@ namespace CKAN
         private void _UpdateFilters()
         {
             if (ModList == null) return;
-            foreach (DataGridViewRow row in ModList.Rows)
+
+            // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
+            // To make the filtering process faster, Copy the list of rows. Make all row changes then add it back to the DataGridView.
+            var rows = new DataGridViewRow[ModList.Rows.Count];
+            ModList.Rows.CopyTo(rows, 0);
+            ModList.Rows.Clear();
+
+            foreach (DataGridViewRow row in rows)
             {
-                var mod = ((GUIMod) row.Tag);
+                var mod = ((GUIMod)row.Tag);
                 var isVisible = mainModList.IsVisible(mod);
                 row.Visible = isVisible;
             }
+
+            ModList.Rows.AddRange(rows);
         }
 
         private void UpdateModsList()
