@@ -122,7 +122,7 @@ namespace CKAN
             }
 
             var item = (Repository)ReposListBox.SelectedItem;
-//            Main.Instance.CurrentInstance.Registry.Repositories.Remove()
+            Main.Instance.CurrentInstance.Registry.Repositories.Remove(item.name);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
