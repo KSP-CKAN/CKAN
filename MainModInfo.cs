@@ -10,7 +10,8 @@ namespace CKAN
         Depends = 0,
         Recommends = 1,
         Suggests = 2,
-        Supports = 3
+        Supports = 3,
+        Conflicts = 4
     }
 
     public partial class Main : Form
@@ -106,6 +107,9 @@ namespace CKAN
                     break;
                 case RelationshipType.Supports:
                     relationships = module.supports;
+                    break;
+                case RelationshipType.Conflicts:
+                    relationships = module.conflicts;
                     break;
             }
 
