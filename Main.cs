@@ -611,6 +611,60 @@ namespace CKAN
             Enabled = true;
         }
 
+        private OpenFileDialog m_OpenFileDialog = new OpenFileDialog();
+
+        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            m_OpenFileDialog.Filter = "CKAN metadata (*.ckan)|*.ckan";
+
+            if(m_OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                var path = m_OpenFileDialog.FileName;
+                CkanModule module = null;
+
+                try
+                {
+                    module = CkanModule.FromFile(path);
+                }
+                catch(Kraken kraken)
+                {
+                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
+                    return;
+                }
+                catch(Exception ex)
+                {
+                    m_User.RaiseError(ex.Message);
+                    return;
+                }
+
+                // We'll need to make some registry changes to do this.
+                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+
+                // Remove this version of the module in the registry, if it exists.
+                registry_manager.registry.RemoveAvailable(module);
+
+                // Sneakily add our version in...
+                registry_manager.registry.AddAvailable(module);
+
+                var changeset = new List<KeyValuePair<CkanModule, GUIModChangeType>>();
+                changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(module, GUIModChangeType.Install));
+
+                menuStrip1.Enabled = false;
+
+                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
+                install_ops.with_recommends = false;
+
+                m_InstallWorker.RunWorkerAsync(
+                    new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
+                        changeset, install_ops));
+                m_Changeset = null;
+
+                UpdateChangesDialog(null, m_InstallWorker);
+                ShowWaitDialog();
+
+            }
+        }
+
     }
 
     public class GUIUser : NullUser
