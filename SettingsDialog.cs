@@ -91,7 +91,7 @@ namespace CKAN
                 string command = string.Format("+x \"{0}\"", System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
-                permsinfo.UseShellExecute = true;
+                permsinfo.UseShellExecute = false;
 
                 // Execute the command.
                 Process permsprocess = Process.Start(permsinfo);
