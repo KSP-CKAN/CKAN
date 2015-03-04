@@ -335,7 +335,7 @@ namespace CKAN
                 User.RaiseProgress(
                     String.Format("{0} kbps - downloading - {1} MiB left",
                         totalBytesPerSecond/1024,
-                        totalBytesLeft/1024/1024),
+                        (totalBytesLeft-totalBytesDownloaded)/1024/1024),
                     totalPercentage);
             }
         }
