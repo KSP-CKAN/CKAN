@@ -390,7 +390,7 @@ namespace CKAN.NetKAN
                 if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
                 {
                     // TODO pass the correct vref here...
-                    var versionRemote = FindVersionRemote(metadata, "TODO-REPAIR-ME");
+                    var versionRemote = FindVersionRemote(metadata, metadata[version_token].ToString());
                     metadata.Remove(version_token);
 
                     try
