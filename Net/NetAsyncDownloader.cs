@@ -33,10 +33,11 @@ namespace CKAN
             public Exception error;
             public int lastProgressUpdateSize;
 
-            public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
+            public NetAsyncDownloaderDownloadPart(Uri url, long expectedSize, string path = null)
             {
                 this.url = url;
                 this.path = path ?? Path.GetTempFileName();
+                this.bytesLeft = expectedSize == 0 ? -1 : expectedSize;
                 lastProgressUpdateTime = DateTime.Now;
 
                 agent.Headers.Add("user-agent", Net.UserAgentString);
@@ -71,11 +72,12 @@ namespace CKAN
 
         /// <summary>
         /// Downloads our files, returning an array of filenames that we're writing to.
+        /// The sole argument is a collection of KeyValuePair(s) containing the download URL and the expected download size
         /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        public string[] Download(ICollection<Uri> urls)
+        public string[] Download(ICollection<KeyValuePair<Uri, long>> urls)
         {
-            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url)))
+            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url.Key, url.Value)))
             {
                 downloads.Add(download);
             }
@@ -127,13 +129,22 @@ namespace CKAN
                 unique_downloads[module.download] = module;
             }
             this.modules.AddRange(unique_downloads.Values);
+
             // Attach our progress report, if requested.            
             onCompleted =
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
 
+            // retrieve the expected download size for each mod
+            List<KeyValuePair<Uri, long>> downloads_with_size = new List<KeyValuePair<Uri, long>>();
+
+            foreach(var item in unique_downloads)
+            {
+                downloads_with_size.Add(new KeyValuePair<Uri, long>(item.Key, item.Value.download_size));
+            }
+
             // Start the download!
-            Download(unique_downloads.Keys);
+            Download(downloads_with_size);
 
             // The Monitor.Wait function releases a lock, and then waits until it can re-acquire it.
             // Elsewhere, our downloading callback pulses the lock, which causes us to wake up and
@@ -292,7 +303,11 @@ namespace CKAN
                 download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
             }
 
-            download.bytesLeft = bytesLeft;
+            if (download.bytesLeft == -1)
+            {
+                download.bytesLeft = bytesLeft;
+            }
+
             download.bytesDownloaded = bytesDownloaded;
             downloads[index] = download;
 
