@@ -46,7 +46,7 @@ namespace CKAN
 
         public KSP CurrentInstance
         {
-            get { return manager.CurrentInstance; }            
+            get { return manager.CurrentInstance; }
         }
 
         public KSPManager Manager
@@ -71,7 +71,7 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             Instance = this;
-            mainModList = new MainModList(source => UpdateFilters(this));            
+            mainModList = new MainModList(source => UpdateFilters(this));
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
@@ -79,7 +79,7 @@ namespace CKAN
 
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
-            Manager = new KSPManager(User);            
+            Manager = new KSPManager(User);
             if (CurrentInstance == null && manager.GetPreferredInstance() == null)
             {
                 Hide();
@@ -119,7 +119,7 @@ namespace CKAN
         }
 
         void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {   
+        {
             ModList_CellContentClick(sender, null);
         }
 
@@ -132,7 +132,7 @@ namespace CKAN
                     return true;
                 case (Keys.Control | Keys.S):
                     var registry = RegistryManager.Instance(CurrentInstance).registry;
-                    if (mainModList.ComputeChangeSetFromModList(registry,CurrentInstance).Any())
+                    if (mainModList.ComputeChangeSetFromModList(registry, CurrentInstance).Any())
                     {
                         ApplyToolButton_Click(null, null);
                     }
@@ -145,13 +145,34 @@ namespace CKAN
 
         public static Main Instance { get; private set; }
 
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.MainWindowPos = this.Location;
+
+            // Copy window size to app settings
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.MainWindowSize = this.Size;
+            }
+            else
+            {
+                Properties.Settings.Default.MainWindowSize = this.RestoreBounds.Size;
+            }
+
+            // Save settings
+            Properties.Settings.Default.Save();
+        }
+
         private void Main_Load(object sender, EventArgs e)
         {
-            m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
+            this.Location = Properties.Settings.Default.MainWindowPos;
+            this.Size = Properties.Settings.Default.MainWindowSize;
+
+            m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
@@ -186,9 +207,9 @@ namespace CKAN
                 }
 
                 int i = 0;
-                foreach(DataGridViewRow row in ModList.Rows)
+                foreach (DataGridViewRow row in ModList.Rows)
                 {
-                    var module = ((GUIMod) row.Tag).ToCkanModule();
+                    var module = ((GUIMod)row.Tag).ToCkanModule();
                     if (identifier == module.identifier)
                     {
                         ModList.FirstDisplayedScrollingRowIndex = i;
@@ -205,7 +226,7 @@ namespace CKAN
             {
                 Directory.CreateDirectory(pluginsPath);
             }
-            
+
             m_PluginController = new PluginController(pluginsPath, true);
         }
 
@@ -218,7 +239,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod) row.Tag).ToCkanModule();
+                var mod = ((GUIMod)row.Tag).ToCkanModule();
                 var registry = RegistryManager.Instance(CurrentInstance).registry;
                 if (!registry.IsInstalled(mod.identifier))
                 {
@@ -255,7 +276,7 @@ namespace CKAN
                 return;
             }
 
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
+            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -286,20 +307,20 @@ namespace CKAN
         /// with name begining with the key pressed. 
         /// </summary>        
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
-        {            
-            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row=>row.Visible);
-            var does_name_begin_with_char = new Func<DataGridViewRow,bool>(row => 
-            { 
-                var modname = ((GUIMod) row.Tag).ToCkanModule().name;
+        {
+            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
+            var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
+            {
+                var modname = ((GUIMod)row.Tag).ToCkanModule().name;
                 var key = e.KeyChar.ToString();
                 return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             });
             ModList.ClearSelection();
             DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
             if (match != null)
-            {                
+            {
                 match.Selected = true;
-                
+
                 if (Util.IsLinux)
                 {
                     try
@@ -312,11 +333,11 @@ namespace CKAN
                         var safe_set_method = vertical_scroll_bar.GetType().GetMethod("SafeValueSet",
                             BindingFlags.NonPublic | BindingFlags.Instance);
 
-                        first_row_index.SetValue(ModList, match.Index);                        
+                        first_row_index.SetValue(ModList, match.Index);
                         safe_set_method.Invoke(vertical_scroll_bar,
-                            new object[] {match.Index*match.Height});
+                            new object[] { match.Index * match.Height });
                     }
-                    catch 
+                    catch
                     {
                         //Compared to crashing ignoring the keypress is fine.
                     }
@@ -327,10 +348,10 @@ namespace CKAN
                 {
                     //Not the best of names. Why not FirstVisableRowIndex?
                     ModList.FirstDisplayedScrollingRowIndex = match.Index;
-                }                                
-            }   
-            
-            
+                }
+            }
+
+
         }
 
         /// <summary>
@@ -339,7 +360,7 @@ namespace CKAN
         /// </summary>
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
@@ -356,10 +377,10 @@ namespace CKAN
             if (columnIndex < 2)
             {
                 var checkbox = (DataGridViewCheckBoxCell)gridViewCell;
-                
-                if (columnIndex==0)
+
+                if (columnIndex == 0)
                 {
-                    ((GUIMod) row.Tag).IsInstallChecked = (bool) checkbox.Value;
+                    ((GUIMod)row.Tag).IsInstallChecked = (bool)checkbox.Value;
                 }
                 else if (columnIndex == 1)
                 {
@@ -386,7 +407,7 @@ namespace CKAN
                 return;
             }
 
-            
+
             if (gridViewCell is DataGridViewLinkCell)
             {
                 var cell = gridViewCell as DataGridViewLinkCell;
@@ -445,7 +466,7 @@ namespace CKAN
                 return;
             }
 
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
+            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -563,17 +584,17 @@ namespace CKAN
             string binary = lst[0];
             string args = String.Empty;
 
-            for(int i = 1; i < lst.Length; i++)
+            for (int i = 1; i < lst.Length; i++)
             {
                 args += lst[i] + " ";
             }
-            
+
             try
             {
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
                 Process.Start(binary, args);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 GUI.user.RaiseError("Couldn't start KSP. {0}.", exception.Message);
             }
@@ -617,7 +638,7 @@ namespace CKAN
         {
             m_OpenFileDialog.Filter = "CKAN metadata (*.ckan)|*.ckan";
 
-            if(m_OpenFileDialog.ShowDialog() == DialogResult.OK)
+            if (m_OpenFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var path = m_OpenFileDialog.FileName;
                 CkanModule module = null;
@@ -626,12 +647,12 @@ namespace CKAN
                 {
                     module = CkanModule.FromFile(path);
                 }
-                catch(Kraken kraken)
+                catch (Kraken kraken)
                 {
                     m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
                     return;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     m_User.RaiseError(ex.Message);
                     return;
@@ -674,8 +695,8 @@ namespace CKAN
         public Action<string, object[]> displayMessage;
         public Action<string, object[]> displayError;
         public DisplayYesNo displayYesNo;
-       
-        
+
+
         protected override bool DisplayYesNoDialog(string message)
         {
             if (displayYesNo == null)
@@ -707,6 +728,6 @@ namespace CKAN
             get { return -1; }
         }
 
-        
+
     }
 }
