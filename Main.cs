@@ -19,7 +19,7 @@ namespace AutoUpdater
     {
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length != 4)
             {
                 return;
             }
@@ -27,6 +27,7 @@ namespace AutoUpdater
             var pid = int.Parse(args[0]);
             var local_path = args[1];
             var updated_path = args[2];
+            var launch = args[3];
 
             if (!File.Exists(updated_path))
             {
@@ -54,8 +55,11 @@ namespace AutoUpdater
             // replace ckan.exe
             File.Move(updated_path, local_path);
 
-            //Start CKAN
-            Process.Start(local_path);
+            if (args[3] == "launch")
+            {
+                //Start CKAN
+                Process.Start(local_path);    
+            }
         }
 
         public static bool IsLinux
