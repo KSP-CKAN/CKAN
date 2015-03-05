@@ -79,7 +79,7 @@ namespace CKAN
 
             manager.SetCurrentInstance(instance);
             Hide();    
-            main.Show();
+         //   main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
