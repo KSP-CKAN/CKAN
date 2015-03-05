@@ -51,12 +51,7 @@ namespace CKAN
             // run updater
             var args = String.Format("{0} \"{1}\" \"{2}\"", pid, path, ckanFilename);
 
-            if (IsLinux)
-            {
-                args = "mono " + args;
-            }
-
-            var process = Process.Start(updaterFilename, args);
+            Process.Start(new ProcessStartInfo(updaterFilename, args) {UseShellExecute = false});
 
             // exit this ckan instance
             Environment.Exit(0);
