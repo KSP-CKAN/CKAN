@@ -22,6 +22,9 @@ namespace CKAN
             KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
 
             LocalVersionLabel.Text = Meta.Version();
+
+            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
+
             UpdateCacheInfo();
         }
 
@@ -244,5 +247,10 @@ namespace CKAN
             AutoUpdate.StartUpdateProcess();
         }
 
+        private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            Main.Instance.m_Configuration.Save();
+        }
     }
 }

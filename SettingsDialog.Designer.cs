@@ -42,12 +42,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ResetAutoStartChoice = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
+            this.InstallUpdateButton = new System.Windows.Forms.Button();
+            this.LatestVersionLabel = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.LocalVersionLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
-            this.LocalVersionLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.LatestVersionLabel = new System.Windows.Forms.Label();
-            this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -140,7 +141,7 @@
             // ClearCKANCacheButton
             // 
             this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearCKANCacheButton.Location = new System.Drawing.Point(328, 16);
+            this.ClearCKANCacheButton.Location = new System.Drawing.Point(341, 16);
             this.ClearCKANCacheButton.Name = "ClearCKANCacheButton";
             this.ClearCKANCacheButton.Size = new System.Drawing.Size(129, 23);
             this.ClearCKANCacheButton.TabIndex = 1;
@@ -190,7 +191,7 @@
             // ResetAutoStartChoice
             // 
             this.ResetAutoStartChoice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetAutoStartChoice.Location = new System.Drawing.Point(296, 64);
+            this.ResetAutoStartChoice.Location = new System.Drawing.Point(309, 64);
             this.ResetAutoStartChoice.Name = "ResetAutoStartChoice";
             this.ResetAutoStartChoice.Size = new System.Drawing.Size(161, 23);
             this.ResetAutoStartChoice.TabIndex = 0;
@@ -200,6 +201,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
             this.groupBox2.Controls.Add(this.InstallUpdateButton);
             this.groupBox2.Controls.Add(this.LatestVersionLabel);
             this.groupBox2.Controls.Add(this.label4);
@@ -213,6 +215,56 @@
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CKAN auto-update";
+            // 
+            // CheckUpdateOnLaunchCheckbox
+            // 
+            this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
+            this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(275, 16);
+            this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
+            this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.CheckUpdateOnLaunchCheckbox.TabIndex = 6;
+            this.CheckUpdateOnLaunchCheckbox.Text = "Check for CKAN updates on launch";
+            this.CheckUpdateOnLaunchCheckbox.UseVisualStyleBackColor = true;
+            this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
+            // 
+            // InstallUpdateButton
+            // 
+            this.InstallUpdateButton.Enabled = false;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.Location = new System.Drawing.Point(116, 76);
+            this.InstallUpdateButton.Name = "InstallUpdateButton";
+            this.InstallUpdateButton.Size = new System.Drawing.Size(104, 23);
+            this.InstallUpdateButton.TabIndex = 5;
+            this.InstallUpdateButton.Text = "Install update";
+            this.InstallUpdateButton.UseVisualStyleBackColor = true;
+            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
+            // 
+            // LatestVersionLabel
+            // 
+            this.LatestVersionLabel.AutoSize = true;
+            this.LatestVersionLabel.Location = new System.Drawing.Point(86, 43);
+            this.LatestVersionLabel.Name = "LatestVersionLabel";
+            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
+            this.LatestVersionLabel.TabIndex = 4;
+            this.LatestVersionLabel.Text = "???";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 43);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(76, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Latest version:";
+            // 
+            // LocalVersionLabel
+            // 
+            this.LocalVersionLabel.AutoSize = true;
+            this.LocalVersionLabel.Location = new System.Drawing.Point(86, 20);
+            this.LocalVersionLabel.Name = "LocalVersionLabel";
+            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
+            this.LocalVersionLabel.TabIndex = 2;
+            this.LocalVersionLabel.Text = "v0.0.0";
             // 
             // label3
             // 
@@ -233,45 +285,6 @@
             this.CheckForUpdatesButton.Text = "Check for updates";
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
-            // 
-            // LocalVersionLabel
-            // 
-            this.LocalVersionLabel.AutoSize = true;
-            this.LocalVersionLabel.Location = new System.Drawing.Point(86, 20);
-            this.LocalVersionLabel.Name = "LocalVersionLabel";
-            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
-            this.LocalVersionLabel.TabIndex = 2;
-            this.LocalVersionLabel.Text = "v0.0.0";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 43);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Latest version:";
-            // 
-            // LatestVersionLabel
-            // 
-            this.LatestVersionLabel.AutoSize = true;
-            this.LatestVersionLabel.Location = new System.Drawing.Point(86, 43);
-            this.LatestVersionLabel.Name = "LatestVersionLabel";
-            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
-            this.LatestVersionLabel.TabIndex = 4;
-            this.LatestVersionLabel.Text = "???";
-            // 
-            // InstallUpdateButton
-            // 
-            this.InstallUpdateButton.Enabled = false;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallUpdateButton.Location = new System.Drawing.Point(116, 76);
-            this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(104, 23);
-            this.InstallUpdateButton.TabIndex = 5;
-            this.InstallUpdateButton.Text = "Install update";
-            this.InstallUpdateButton.UseVisualStyleBackColor = true;
-            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
             // 
             // SettingsDialog
             // 
@@ -319,5 +332,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
+        private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
     }
 }

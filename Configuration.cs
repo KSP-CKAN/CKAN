@@ -10,6 +10,9 @@ namespace CKAN
         public bool AutoCloseWaitDialog = false;
         public bool URLHandlerNoNag = false;
 
+        public bool CheckForUpdatesOnLaunch = false;
+        public bool CheckForUpdatesOnLaunchNoNag = false;
+
         private string m_Path = "";
 
         public void Save()
