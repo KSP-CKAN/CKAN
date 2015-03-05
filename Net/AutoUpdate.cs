@@ -50,10 +50,33 @@ namespace CKAN
 
             // run updater
             var args = String.Format("{0} \"{1}\" \"{2}\"", pid, path, ckanFilename);
+
+            if (IsLinux)
+            {
+                args = "mono " + args;
+            }
+
             var process = Process.Start(updaterFilename, args);
 
             // exit this ckan instance
             Environment.Exit(0);
+        }
+
+        public static bool IsLinux
+        {
+            get
+            {
+                // Magic numbers ahoy! This arcane incantation was found
+                // in a Unity help-page, which was found on a scroll,
+                // which was found in an urn that dated back to Mono 2.0.
+                // It documents singular numbers of great power.
+                //
+                // "And lo! 'pon the 4, 6, and 128 the penguin shall
+                // come, and it infiltrate dominate from the smallest phone to
+                // the largest cloud."
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
         }
 
         private static Uri FetchUpdaterUrl()
