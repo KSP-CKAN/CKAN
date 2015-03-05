@@ -187,7 +187,7 @@ namespace CKAN
                     var dialog = new NewUpdateDialog(latestVersion.ToString(), releaseNotes);
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        AutoUpdate.StartUpdateProcess();
+                        AutoUpdate.StartUpdateProcess(true);
                     }
                 }
             }

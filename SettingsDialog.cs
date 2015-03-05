@@ -244,7 +244,7 @@ namespace CKAN
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            AutoUpdate.StartUpdateProcess();
+            AutoUpdate.StartUpdateProcess(true);
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
