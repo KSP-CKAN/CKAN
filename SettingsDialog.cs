@@ -20,6 +20,8 @@ namespace CKAN
             RefreshReposListBox();
 
             KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
+
+            LocalVersionLabel.Text = Meta.Version();
             UpdateCacheInfo();
         }
 
@@ -212,6 +214,34 @@ namespace CKAN
             var belowItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex + 1];
             item.priority = belowItem.priority + 1;
             RefreshReposListBox();
+        }
+
+        private void CheckForUpdatesButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+
+                if (latestVersion.IsGreaterThan(new Version(Meta.Version())))
+                {
+                    InstallUpdateButton.Enabled = true;
+                }
+                else
+                {
+                    InstallUpdateButton.Enabled = false;
+                }
+
+                LatestVersionLabel.Text = latestVersion.ToString();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void InstallUpdateButton_Click(object sender, EventArgs e)
+        {
+            AutoUpdate.StartUpdateProcess();
         }
 
     }
