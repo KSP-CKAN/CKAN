@@ -51,7 +51,7 @@ namespace CKAN.CmdLine
                     if (User.RaiseYesNoDialog("Proceed with install?"))
                     {
                         User.RaiseMessage("Upgrading CKAN, please wait..");
-                        AutoUpdate.StartUpdateProcess();
+                        AutoUpdate.StartUpdateProcess(false);
                     }
                 }
                 else
