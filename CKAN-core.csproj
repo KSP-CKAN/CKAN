@@ -38,6 +38,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
