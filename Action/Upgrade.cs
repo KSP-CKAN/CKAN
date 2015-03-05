@@ -54,6 +54,10 @@ namespace CKAN.CmdLine
                         AutoUpdate.StartUpdateProcess();
                     }
                 }
+                else
+                {
+                    User.RaiseMessage("You already have the latest version.");
+                }
 
                 return Exit.OK;
             }
