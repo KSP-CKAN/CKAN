@@ -63,7 +63,12 @@ namespace CKAN
 
             var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch");
 
-            Process.Start(new ProcessStartInfo(updaterFilename, args) {UseShellExecute = false});
+            ProcessStartInfo processInfo = new ProcessStartInfo();
+            processInfo.Verb = "runas";
+            processInfo.FileName = updaterFilename;
+            processInfo.Arguments = args;
+            processInfo.UseShellExecute = false;
+            Process.Start(processInfo);
 
             // exit this ckan instance
             Environment.Exit(0);
