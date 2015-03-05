@@ -54,16 +54,10 @@ namespace AutoUpdater
             // replace ckan.exe
             File.Move(updated_path, local_path);
 
-            if (IsLinux)
-            {
-                Process.Start("mono "  + local_path);
-            }
-            else
-            {
-                // Start CKAN
-                Process.Start(local_path);
-            }
+            //Start CKAN
+            Process.Start(local_path);
         }
+
         public static bool IsLinux
         {
             get
