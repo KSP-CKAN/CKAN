@@ -24,6 +24,13 @@ namespace CKAN
             return new Version(response.tag_name.ToString());
         }
 
+        public static string FetchLatestCkanVersionReleaseNotes()
+        {
+            var response = MakeRequest(latestCKANReleaseApiUrl);
+            string body = response.body.ToString();
+            return body.Split(new string[] {"\r\n---\r\n"}, StringSplitOptions.None)[1];
+        }
+
         public static void StartUpdateProcess()
         {
             var pid = Process.GetCurrentProcess().Id;
