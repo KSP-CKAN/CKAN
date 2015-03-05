@@ -31,7 +31,7 @@ namespace CKAN
             return body.Split(new string[] {"\r\n---\r\n"}, StringSplitOptions.None)[1];
         }
 
-        public static void StartUpdateProcess()
+        public static void StartUpdateProcess(bool launchCKANAfterUpdate)
         {
             var pid = Process.GetCurrentProcess().Id;
             
@@ -60,8 +60,8 @@ namespace CKAN
                 Process permsprocess = Process.Start(permsinfo);
                 permsprocess.WaitForExit();
             }
-            
-            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, path, ckanFilename);
+
+            var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch");
 
             Process.Start(new ProcessStartInfo(updaterFilename, args) {UseShellExecute = false});
 
