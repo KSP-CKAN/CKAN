@@ -31,7 +31,35 @@ namespace CKAN.CmdLine
                 // What? No files specified?
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 User.RaiseMessage("  or   ckan upgrade --all");
+                User.RaiseMessage("  or   ckan upgrade ckan");
                 return Exit.BADOPT;
+            }
+
+            if (!options.upgrade_all && options.modules[0] == "ckan")
+            {
+                User.RaiseMessage("Querying the latest CKAN version");
+                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+                var currentVersion = new Version(Meta.Version());
+
+                if (latestVersion.IsGreaterThan(currentVersion))
+                {
+                    User.RaiseMessage("New CKAN version available - " + latestVersion.ToString());
+                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                    User.RaiseMessage(releaseNotes);
+                    User.RaiseMessage("\n");
+
+                    if (User.RaiseYesNoDialog("Proceed with install?"))
+                    {
+                        User.RaiseMessage("Upgrading CKAN, please wait..");
+                        AutoUpdate.StartUpdateProcess();
+                    }
+                }
+                else
+                {
+                    User.RaiseMessage("You already have the latest version.");
+                }
+
+                return Exit.OK;
             }
 
             User.RaiseMessage("\nUpgrading modules...\n");
