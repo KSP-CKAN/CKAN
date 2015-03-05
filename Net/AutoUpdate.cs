@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace CKAN
 {
 
-    class AutoUpdate
+    public class AutoUpdate
     {
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
@@ -18,35 +18,54 @@ namespace CKAN
         private static readonly Uri latestUpdaterReleaseApiUrl = new Uri(
             "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
 
-        private static readonly WebClient web = new WebClient();
-
         public static Version FetchLatestCkanVersion()
         {
-            return new Version(MakeRequest(latestCKANReleaseApiUrl).tag_name);
+            var response = MakeRequest(latestCKANReleaseApiUrl);
+            return new Version(response.tag_name.ToString());
         }
 
-        public static void StartUpdateProcess(string new_ckan_exe)
+        public static void StartUpdateProcess()
         {
             var pid = Process.GetCurrentProcess().Id;
             
             // download updater app
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+
+            var web = new WebClient();
+            web.Headers.Add("user-agent", Net.UserAgentString);
             web.DownloadFile(FetchUpdaterUrl(), updaterFilename);
 
+            // download new ckan.exe
+            string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            web.DownloadFile(FetchCkanUrl(), ckanFilename);
+
             // run updater
-            Process.Start(updaterFilename, String.Format("{0} \"{1}\" \"{2}\"", pid, Assembly.GetExecutingAssembly().Location, new_ckan_exe));
+            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, Assembly.GetExecutingAssembly().Location, ckanFilename);
+            Process.Start(updaterFilename, args);
 
             // exit this ckan instance
-            System.Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         private static Uri FetchUpdaterUrl()
         {
-            return new Uri(MakeRequest(latestUpdaterReleaseApiUrl).assets[0].browser_download_url);
+            var response = MakeRequest(latestUpdaterReleaseApiUrl);
+            var assets = response.assets[0];
+            return new Uri(assets.browser_download_url.ToString());
+        }
+
+        private static Uri FetchCkanUrl()
+        {
+            var response = MakeRequest(latestCKANReleaseApiUrl);
+            var assets = response.assets[0];
+            return new Uri(assets.browser_download_url.ToString());
         }
 
         private static dynamic MakeRequest(Uri url)
         {
+            var web = new WebClient();
+            web.Headers.Add("user-agent", Net.UserAgentString);
+
             string result = "";
             try
             {
