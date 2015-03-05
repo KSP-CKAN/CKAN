@@ -30,6 +30,8 @@
         {
             this.NewRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
+            this.DownRepoButton = new System.Windows.Forms.Button();
+            this.UpRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.ReposListBox = new System.Windows.Forms.ListBox();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
@@ -39,11 +41,17 @@
             this.KSPInstallPathLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.ResetAutoStartChoice = new System.Windows.Forms.Button();
-            this.UpRepoButton = new System.Windows.Forms.Button();
-            this.DownRepoButton = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.CheckForUpdatesButton = new System.Windows.Forms.Button();
+            this.LocalVersionLabel = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.LatestVersionLabel = new System.Windows.Forms.Label();
+            this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // NewRepoButton
@@ -71,6 +79,30 @@
             this.RepositoryGroupBox.TabIndex = 8;
             this.RepositoryGroupBox.TabStop = false;
             this.RepositoryGroupBox.Text = "Metadata repositories";
+            // 
+            // DownRepoButton
+            // 
+            this.DownRepoButton.Enabled = false;
+            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
+            this.DownRepoButton.Name = "DownRepoButton";
+            this.DownRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.DownRepoButton.TabIndex = 11;
+            this.DownRepoButton.Text = "Down";
+            this.DownRepoButton.UseVisualStyleBackColor = true;
+            this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
+            // 
+            // UpRepoButton
+            // 
+            this.UpRepoButton.Enabled = false;
+            this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
+            this.UpRepoButton.Name = "UpRepoButton";
+            this.UpRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.UpRepoButton.TabIndex = 10;
+            this.UpRepoButton.Text = "Up";
+            this.UpRepoButton.UseVisualStyleBackColor = true;
+            this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
             // 
             // DeleteRepoButton
             // 
@@ -166,35 +198,87 @@
             this.ResetAutoStartChoice.UseVisualStyleBackColor = true;
             this.ResetAutoStartChoice.Click += new System.EventHandler(this.ResetAutoStartChoice_Click);
             // 
-            // UpRepoButton
+            // groupBox2
             // 
-            this.UpRepoButton.Enabled = false;
-            this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
-            this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(56, 26);
-            this.UpRepoButton.TabIndex = 10;
-            this.UpRepoButton.Text = "Up";
-            this.UpRepoButton.UseVisualStyleBackColor = true;
-            this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
+            this.groupBox2.Controls.Add(this.InstallUpdateButton);
+            this.groupBox2.Controls.Add(this.LatestVersionLabel);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.LocalVersionLabel);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox2.Location = new System.Drawing.Point(12, 433);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(476, 105);
+            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "CKAN auto-update";
             // 
-            // DownRepoButton
+            // label3
             // 
-            this.DownRepoButton.Enabled = false;
-            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
-            this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(56, 26);
-            this.DownRepoButton.TabIndex = 11;
-            this.DownRepoButton.Text = "Down";
-            this.DownRepoButton.UseVisualStyleBackColor = true;
-            this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Local version:";
+            // 
+            // CheckForUpdatesButton
+            // 
+            this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CheckForUpdatesButton.Location = new System.Drawing.Point(6, 76);
+            this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(104, 23);
+            this.CheckForUpdatesButton.TabIndex = 0;
+            this.CheckForUpdatesButton.Text = "Check for updates";
+            this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
+            this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
+            // 
+            // LocalVersionLabel
+            // 
+            this.LocalVersionLabel.AutoSize = true;
+            this.LocalVersionLabel.Location = new System.Drawing.Point(86, 20);
+            this.LocalVersionLabel.Name = "LocalVersionLabel";
+            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
+            this.LocalVersionLabel.TabIndex = 2;
+            this.LocalVersionLabel.Text = "v0.0.0";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 43);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(76, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Latest version:";
+            // 
+            // LatestVersionLabel
+            // 
+            this.LatestVersionLabel.AutoSize = true;
+            this.LatestVersionLabel.Location = new System.Drawing.Point(86, 43);
+            this.LatestVersionLabel.Name = "LatestVersionLabel";
+            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
+            this.LatestVersionLabel.TabIndex = 4;
+            this.LatestVersionLabel.Text = "???";
+            // 
+            // InstallUpdateButton
+            // 
+            this.InstallUpdateButton.Enabled = false;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.Location = new System.Drawing.Point(116, 76);
+            this.InstallUpdateButton.Name = "InstallUpdateButton";
+            this.InstallUpdateButton.Size = new System.Drawing.Size(104, 23);
+            this.InstallUpdateButton.TabIndex = 5;
+            this.InstallUpdateButton.Text = "Install update";
+            this.InstallUpdateButton.UseVisualStyleBackColor = true;
+            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 434);
+            this.ClientSize = new System.Drawing.Size(495, 542);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
@@ -207,6 +291,8 @@
             this.CacheGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -226,5 +312,12 @@
         private System.Windows.Forms.ListBox ReposListBox;
         private System.Windows.Forms.Button UpRepoButton;
         private System.Windows.Forms.Button DownRepoButton;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label LatestVersionLabel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label LocalVersionLabel;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button CheckForUpdatesButton;
+        private System.Windows.Forms.Button InstallUpdateButton;
     }
 }
