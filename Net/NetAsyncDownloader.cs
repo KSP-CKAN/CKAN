@@ -27,8 +27,8 @@ namespace CKAN
             public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
-            public long bytesDownloaded;
             public long bytesLeft;
+            public long size;
             public int bytesPerSecond;
             public Exception error;
             public int lastProgressUpdateSize;
@@ -37,7 +37,8 @@ namespace CKAN
             {
                 this.url = url;
                 this.path = path ?? Path.GetTempFileName();
-                this.bytesLeft = expectedSize == 0 ? -1 : expectedSize;
+                bytesLeft = expectedSize;
+                size = expectedSize;
                 lastProgressUpdateTime = DateTime.Now;
 
                 agent.Headers.Add("user-agent", Net.UserAgentString);
@@ -95,7 +96,7 @@ namespace CKAN
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
                         FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                            args.TotalBytesToReceive - args.BytesReceived);
+                            args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
@@ -284,7 +285,7 @@ namespace CKAN
         /// Generates a download progress reports, and sends it to
         /// onProgressReport if it's set.
         /// </summary>
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
+        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
         {
             if (downloadCanceled)
             {
@@ -303,19 +304,14 @@ namespace CKAN
                 download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
             }
 
-            if (download.bytesLeft == -1)
-            {
-                download.bytesLeft = bytesLeft;
-            }
-
-            download.bytesDownloaded = bytesDownloaded;
+            download.size = bytesToDownload;
+            download.bytesLeft = download.size - bytesDownloaded;
             downloads[index] = download;
-
 
             int totalPercentage = 0;
             int totalBytesPerSecond = 0;
             long totalBytesLeft = 0;
-            long totalBytesDownloaded = 0;
+            long totalSize = 0;
 
             foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
             {
@@ -325,17 +321,16 @@ namespace CKAN
                 }
 
                 totalBytesLeft += t.bytesLeft;
-                totalBytesDownloaded += t.bytesDownloaded;
-                totalBytesLeft += t.bytesLeft;
+                totalSize += t.size;
             }
-            totalPercentage = (int) ((totalBytesDownloaded*100)/(totalBytesLeft + totalBytesDownloaded + 1));
+            totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
 
             if (!downloadCanceled)
             {
                 User.RaiseProgress(
                     String.Format("{0} kbps - downloading - {1} MiB left",
                         totalBytesPerSecond/1024,
-                        (totalBytesLeft-totalBytesDownloaded)/1024/1024),
+                        (totalBytesLeft)/1024/1024),
                     totalPercentage);
             }
         }
