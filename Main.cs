@@ -27,9 +27,20 @@ namespace AutoUpdater
             var local_path = args[1];
             var updated_path = args[2];
 
+            if (!File.Exists(updated_path))
+            {
+                return;
+            }
+
             // wait for CKAN to close
             Process.GetProcessById(pid).WaitForExit();
 
+            if (File.Exists(local_path))
+            {
+                // delete the old ckan.exe
+                File.Delete(local_path);
+            }
+           
             // replace ckan.exe
             File.Move(updated_path, local_path);
 
