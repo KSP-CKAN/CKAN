@@ -22,8 +22,7 @@ namespace CKAN
 
         public static Version FetchLatestCkanVersion()
         {
-            dynamic response = JsonConvert.DeserializeObject(MakeRequest(latestCKANReleaseApiUrl));
-            return new Version(response.tag_name);
+            return new Version(MakeRequest(latestCKANReleaseApiUrl).tag_name);
         }
 
         public static void StartUpdateProcess(string new_ckan_exe)
@@ -43,11 +42,10 @@ namespace CKAN
 
         private static Uri FetchUpdaterUrl()
         {
-            dynamic response = JsonConvert.DeserializeObject(MakeRequest(latestUpdaterReleaseApiUrl));
-            return new Uri(response.assets[0].browser_download_url);
+            return new Uri(MakeRequest(latestUpdaterReleaseApiUrl).assets[0].browser_download_url);
         }
 
-        private static string MakeRequest(Uri url)
+        private static dynamic MakeRequest(Uri url)
         {
             string result = "";
             try
@@ -60,7 +58,7 @@ namespace CKAN
                 throw;
             }
 
-            return result;
+            return JsonConvert.DeserializeObject(result);
         }
 
 
