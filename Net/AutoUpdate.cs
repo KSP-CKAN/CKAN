@@ -49,6 +49,18 @@ namespace CKAN
             var path = Assembly.GetEntryAssembly().Location;
 
             // run updater
+            
+            // mark as executable if on linux
+            if (IsLinux)
+            {
+                string command = string.Format("+x \"{0}\"", updaterFilename);
+
+                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
+                permsinfo.UseShellExecute = false;
+                Process permsprocess = Process.Start(permsinfo);
+                permsprocess.WaitForExit();
+            }
+            
             var args = String.Format("{0} \"{1}\" \"{2}\"", pid, path, ckanFilename);
 
             Process.Start(new ProcessStartInfo(updaterFilename, args) {UseShellExecute = false});
