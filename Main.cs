@@ -33,7 +33,7 @@ namespace AutoUpdater
             // replace ckan.exe
             File.Move(updated_path, local_path);
 
-            // Start CKANn
+            // Start CKAN
             Process.Start(local_path);
         }
     }
