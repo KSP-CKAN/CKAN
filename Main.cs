@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -33,7 +34,16 @@ namespace AutoUpdater
             }
 
             // wait for CKAN to close
-            Process.GetProcessById(pid).WaitForExit();
+            try
+            {
+                var process = Process.GetProcessById(pid);
+
+                if (!process.HasExited)
+                {
+                    process.WaitForExit();
+                }
+            }
+            catch (Exception) {}
 
             if (File.Exists(local_path))
             {
