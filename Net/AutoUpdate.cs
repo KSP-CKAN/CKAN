@@ -40,7 +40,7 @@ namespace CKAN
             web.DownloadFile(FetchCkanUrl(), ckanFilename);
 
             // run updater
-            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, Assembly.GetExecutingAssembly().Location, ckanFilename);
+            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, Assembly.GetEntryAssembly().Location, ckanFilename);
             Process.Start(updaterFilename, args);
 
             // exit this ckan instance
