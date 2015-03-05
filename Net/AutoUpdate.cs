@@ -39,9 +39,11 @@ namespace CKAN
             string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             web.DownloadFile(FetchCkanUrl(), ckanFilename);
 
+            var path = Assembly.GetEntryAssembly().Location;
+
             // run updater
-            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, Assembly.GetEntryAssembly().Location, ckanFilename);
-            Process.Start(updaterFilename, args);
+            var args = String.Format("{0} \"{1}\" \"{2}\"", pid, path, ckanFilename);
+            var process = Process.Start(updaterFilename, args);
 
             // exit this ckan instance
             Environment.Exit(0);
@@ -69,7 +71,7 @@ namespace CKAN
             string result = "";
             try
             {
-                result = web.DownloadString(latestCKANReleaseApiUrl);
+                result = web.DownloadString(url);
             }
             catch (WebException webEx)
             {
@@ -79,7 +81,6 @@ namespace CKAN
 
             return JsonConvert.DeserializeObject(result);
         }
-
 
     }
 
