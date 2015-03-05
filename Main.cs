@@ -147,6 +147,22 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
+            if (m_Configuration.CheckForUpdatesOnLaunch)
+            {
+                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+                var currentVersion = new Version(Meta.Version());
+
+                if (latestVersion.IsGreaterThan(currentVersion))
+                {
+                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                    var dialog = new NewUpdateDialog(latestVersion.ToString(), releaseNotes);
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        AutoUpdate.StartUpdateProcess();
+                    }
+                }
+            }
+
             m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
