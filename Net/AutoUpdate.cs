@@ -109,7 +109,7 @@ namespace CKAN
         {
             var web = new WebClient();
             web.Headers.Add("user-agent", Net.UserAgentString);
-
+            web.Headers.Add("Authorization", String.Format("token {0}", "b0dc75815795c82a4bc8f295371868331fdb1555"));
             string result = "";
             try
             {
