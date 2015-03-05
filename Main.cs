@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * CKAN AUTO-UPDATE TOOL
@@ -46,10 +47,25 @@ namespace AutoUpdater
             }
             catch (Exception) {}
 
-            if (File.Exists(local_path))
+            int retries = 8;
+
+            while (File.Exists(local_path))
             {
-                // delete the old ckan.exe
-                File.Delete(local_path);
+                try
+                {
+                    // delete the old ckan.exe
+                    File.Delete(local_path);
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                retries--;
+                if (retries == 0)
+                {
+                    return;
+                }
             }
            
             // replace ckan.exe
