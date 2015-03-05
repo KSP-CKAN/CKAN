@@ -67,6 +67,12 @@
     <Compile Include="AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="AskUserForAutoUpdatesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AskUserForAutoUpdatesDialog.Designer.cs">
+      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChooseKSPInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +171,9 @@
     </Compile>
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AskUserForAutoUpdatesDialog.resx">
+      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
