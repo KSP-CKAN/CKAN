@@ -165,6 +165,17 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
+            if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
+            {
+                if (new AskUserForAutoUpdatesDialog().ShowDialog() == DialogResult.OK)
+                {
+                    m_Configuration.CheckForUpdatesOnLaunch = true;
+                }
+
+                m_Configuration.CheckForUpdatesOnLaunchNoNag = true;
+                m_Configuration.Save();
+            }
+
             if (m_Configuration.CheckForUpdatesOnLaunch)
             {
                 var latestVersion = AutoUpdate.FetchLatestCkanVersion();
