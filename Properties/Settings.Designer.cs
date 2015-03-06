@@ -22,29 +22,5 @@ namespace CKAN.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Point MainWindowPos {
-            get {
-                return ((global::System.Drawing.Point)(this["MainWindowPos"]));
-            }
-            set {
-                this["MainWindowPos"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1024, 500")]
-        public global::System.Drawing.Size MainWindowSize {
-            get {
-                return ((global::System.Drawing.Size)(this["MainWindowSize"]));
-            }
-            set {
-                this["MainWindowSize"] = value;
-            }
-        }
     }
 }
