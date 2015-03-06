@@ -147,20 +147,20 @@ namespace CKAN
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Properties.Settings.Default.MainWindowPos = this.Location;
+            m_Configuration.WindowLoc = this.Location;
 
             // Copy window size to app settings
             if (this.WindowState == FormWindowState.Normal)
             {
-                Properties.Settings.Default.MainWindowSize = this.Size;
+               m_Configuration.WindowSize = this.Size;
             }
             else
             {
-                Properties.Settings.Default.MainWindowSize = this.RestoreBounds.Size;
+                m_Configuration.WindowSize = this.RestoreBounds.Size;
             }
 
             // Save settings
-            Properties.Settings.Default.Save();
+            m_Configuration.Save();
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -192,8 +192,8 @@ namespace CKAN
                 }
             }
 
-            this.Location = Properties.Settings.Default.MainWindowPos;
-            this.Size = Properties.Settings.Default.MainWindowSize;
+            this.Location = m_Configuration.WindowLoc;
+            this.Size = m_Configuration.WindowSize;
 
             m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
 
