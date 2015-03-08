@@ -690,7 +690,7 @@ namespace CKAN
         /// This includes DLLs, which will have a version type of `DllVersion`.
         /// This includes Provides, which will have a version of `ProvidesVersion`.
         /// </summary>
-        public Dictionary<string, Version> Installed()
+        public Dictionary<string, Version> Installed(bool withProvides = true)
         {
             var installed = new Dictionary<string, Version>();
 
@@ -701,9 +701,12 @@ namespace CKAN
             }
 
             // Index our provides list, so users can see virtual packages
-            foreach (var provided in Provided())
+            if (withProvides)
             {
-                installed[provided.Key] = provided.Value;
+                foreach (var provided in Provided())
+                {
+                    installed[provided.Key] = provided.Value;
+                }
             }
 
             // Index our installed modules (which may overwrite the installed DLLs and provides)
