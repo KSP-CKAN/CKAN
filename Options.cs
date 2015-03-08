@@ -210,6 +210,9 @@ namespace CKAN.CmdLine
 
     internal class RemoveOptions : CommonOptions
     {
+        [Option("re", HelpText = "Parse arguments as regular expressions")]
+        public bool regex { get; set; }
+
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
     }
