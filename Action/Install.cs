@@ -78,7 +78,7 @@ namespace CKAN.CmdLine
             {
                 // What? No files specified?
                 user.RaiseMessage(
-                    "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] Mod [Mod2, ...]");
+                    "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] [--headless] Mod [Mod2, ...]");
                 return Exit.BADOPT;
             }
 
