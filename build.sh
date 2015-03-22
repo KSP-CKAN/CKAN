@@ -19,9 +19,9 @@ check_nunit () {
 xbuild /verbosity:minimal CKAN-core.sln
 
 # Find a suitable version of nunit.
-declare -a VERSIONS=("nunit-console" "nunit-console4")
+declare -a NUNIT_VERSIONS=("nunit-console" "nunit-console4")
 
-for i in "${VERSIONS[@]}"
+for i in "${NUNIT_VERSIONS[@]}"
 do
     echo "Checking if $i is available..."
     command -v "$i" >/dev/null 2>&1 && check_nunit $i
