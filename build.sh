@@ -18,6 +18,7 @@ check_nunit () {
 
 xbuild /verbosity:minimal CKAN-core.sln
 
+# Find a suitable version of nunit.
 echo "Checking if nunit-console is available..."
 command -v "nunit-console" >/dev/null 2>&1 && check_nunit "nunit-console"
 
