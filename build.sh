@@ -19,13 +19,11 @@ check_nunit () {
 xbuild /verbosity:minimal CKAN-GUI.sln
 
 # Find a suitable version of nunit.
-declare -a NUNIT_VERSIONS=("nunit-console" "nunit-console4")
+echo "Checking if nunit-console is available..."
+command -v "nunit-console" >/dev/null 2>&1 && check_nunit "nunit-console"
 
-for i in "${NUNIT_VERSIONS[@]}"
-do
-    echo "Checking if $i is available..."
-    command -v "$i" >/dev/null 2>&1 && check_nunit $i
-done
+echo "Checking if nunit-console4 is available..."
+command -v "nunit-console4" >/dev/null 2>&1 && check_nunit "nunit-console4"
 
 # If we found a suitable nunit binary, continue with the testing.
 if [ "$NUNIT_BINARY" != "" ]
