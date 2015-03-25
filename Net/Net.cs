@@ -1,8 +1,10 @@
 using System;
 using System.Net;
+using System.IO;
 using System.Text.RegularExpressions;
 using ChinhDo.Transactions;
 using log4net;
+using CurlSharp;
 
 namespace CKAN
 {
@@ -52,6 +54,41 @@ namespace CKAN
             }
             catch (Exception ex)
             {
+
+                log.InfoFormat("Download failed, trying with curlsharp...");
+
+                try
+                {
+                    Curl.GlobalInit(CurlInitFlag.All);
+
+                    using(var curl = new CurlEasy())
+                    using (FileStream stream = File.OpenWrite(filename))
+                    {
+                        curl.Url = url;
+                        curl.WriteData = null; // Can we give it a C#-ish file here?
+                        curl.WriteFunction = delegate(byte[] buf, int size, int nmemb, object extraData) {
+                            stream.Write(buf, 0, size*nmemb);
+                            return size*nmemb;
+                        };
+                        CurlCode result = curl.Perform();
+                        if (result != CurlCode.Ok)
+                        {
+                            throw new Kraken("curl download of " + url + " failed with CurlCode " + result);
+                        }
+                        else
+                        {
+                            log.Debug("curlsharp download successful");
+                        }
+                    }
+
+                    Curl.GlobalCleanup();
+                    return filename;
+                }
+                catch
+                {
+                    // D'oh, failed again. Fall through to clean-up handling.
+                }
+
                 // Clean up our file, it's unlikely to be complete.
                 // We do this even though we're using transactional files, as we may not be in a transaction.
                 // It's okay if this fails.
