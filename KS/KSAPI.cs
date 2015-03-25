@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
+using CurlSharp;
 
 namespace CKAN.NetKAN
 {
@@ -12,11 +13,9 @@ namespace CKAN.NetKAN
         private static readonly Uri kerbalstuff = new Uri("https://kerbalstuff.com/");
         private static readonly Uri kerbalstuff_api = new Uri(kerbalstuff, "/api/");
         private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
-        private static readonly WebClient web = new WebClient();
 
         public KSAPI()
         {
-            web.Headers.Add("user-agent", Net.UserAgentString);
         }
 
         public static string Call(string path)
@@ -32,18 +31,10 @@ namespace CKAN.NetKAN
 
             log.DebugFormat("Calling {0}", url);
 
-            string result = "";
-            try
-            {
-                result = web.DownloadString(url);
-            }
-            catch(WebException webEx)
-            {
-                log.ErrorFormat ("WebException while accessing {0}: {1}", url, webEx);
-                throw webEx;
-            }
-
-            return result;
+			using(var web = new Web())
+			{
+				return web.DownloadString(url);
+			}
         }
 
         /// <summary>

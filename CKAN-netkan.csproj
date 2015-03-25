@@ -39,6 +39,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="CurlSharp">
+      <HintPath>..\CKAN-core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleUser.cs">
@@ -57,6 +60,7 @@
     <Compile Include="CmdLineOptions.cs" />
     <Compile Include="AVC\AVC.cs" />
     <Compile Include="AVC\JsonAvcToKspVersion.cs" />
+    <Compile Include="Web.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
