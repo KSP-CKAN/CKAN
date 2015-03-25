@@ -22,5 +22,6 @@ mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	bin/Debug/ICSharpCode.SharpZipLib.dll \
 	bin/Debug/log4net.dll \
 	bin/Debug/Newtonsoft.Json.dll \
-	bin/Debug/INIFileParser.dll
+	bin/Debug/INIFileParser.dll \
+        bin/Debug/CurlSharp.dll
 
