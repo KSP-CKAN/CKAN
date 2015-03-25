@@ -42,5 +42,15 @@ namespace CKANTests
             Assert.That(File.Exists(downloaded));
             File.Delete(downloaded);
         }
+
+        [Test]
+        [Category("Online")]
+        public void KerbalStuffSSL()
+        {
+            Assert.DoesNotThrow(delegate
+            {
+                CKAN.Net.Download("https://kerbalstuff.com/mod/646/Contract%20Reward%20Modifier/download/1.2");
+            });
+        }
     }
 }
