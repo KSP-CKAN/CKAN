@@ -23,5 +23,5 @@ mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	bin/Debug/log4net.dll \
 	bin/Debug/Newtonsoft.Json.dll \
 	bin/Debug/INIFileParser.dll \
-        ../CKAN-core/packages/curlsharp-v0.5.1-2-gd2d5699/CurlSharp.dll
+        bin/Debug/CurlSharp.dll
 
