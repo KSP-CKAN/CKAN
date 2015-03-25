@@ -75,6 +75,10 @@ namespace CKAN
                         {
                             throw new Kraken("curl download of " + url + " failed with CurlCode " + result);
                         }
+                        else
+                        {
+                            log.Debug("curlsharp download successful");
+                        }
                     }
 
                     Curl.GlobalCleanup();

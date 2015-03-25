@@ -76,7 +76,7 @@ namespace CKAN
         /// The sole argument is a collection of KeyValuePair(s) containing the download URL and the expected download size
         /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        public string[] Download(ICollection<KeyValuePair<Uri, long>> urls)
+        private string[] Download(ICollection<KeyValuePair<Uri, long>> urls)
         {
             foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url.Key, url.Value)))
             {
@@ -366,6 +366,31 @@ namespace CKAN
 
                 for (int i = 0; i < downloads.Count; i++)
                 {
+                    // XXX TOTAL HAXXX
+                    // If we had failures, then try again using the simple downloader,
+                    // which falls back to curlsharp. This works around
+                    // KSP-CKAN/CKAN-Support#107 until we can properly use curlsharp
+                    // for everything.
+                    // XXXX TOTAL HAXXX
+
+                    if (downloads[i].error != null)
+                    {
+                        log.Info("Failed async download of " + downloads[i].url + " attempting hacky fallback");
+                        try
+                        {
+                            downloads[i].path = Net.Download(downloads[i].url);
+
+                            // OMG, if we're here we made it. Clear the error!
+                            downloads[i].error = null;
+                        }
+                        catch (Exception ex)
+                        {
+                            // If we fail, there's nothing to do, it's the same as before.
+                            log.Info("Hacky fallback failed - {0}", ex);
+                        }
+                    }
+
+
                     fileUrls[i] = downloads[i].url;
                     filePaths[i] = downloads[i].path;
                     errors[i] = downloads[i].error;

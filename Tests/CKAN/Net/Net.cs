@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -49,7 +50,11 @@ namespace CKANTests
         {
             Assert.DoesNotThrow(delegate
             {
-                CKAN.Net.Download("https://kerbalstuff.com/mod/646/Contract%20Reward%20Modifier/download/1.2");
+                string file = CKAN.Net.Download("https://kerbalstuff.com/mod/646/Contract%20Reward%20Modifier/download/1.2");
+                if (!File.Exists(file))
+                {
+                    throw new Exception("File not downloaded");
+                }
             });
         }
     }
