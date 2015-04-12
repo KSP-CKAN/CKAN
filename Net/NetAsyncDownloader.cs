@@ -221,11 +221,13 @@ namespace CKAN
             }
             else
             {
-                // TODO: Proper kraken, please!
-                // TODO: Proper handling of curlcode.
+                // The CurlCode result expands to a human-friendly string, so we can just
+                // throw a kraken containing it and nothing else. The FileDownloadComplete
+                // code collects these into a larger DownloadErrorsKraken aggregate.
+
                 FileDownloadComplete(
                     index,
-                    new Kraken("curl download of " + easy.Url + " failed with CurlCode " + result)
+                    new Kraken(result.ToString())
                 );
             }
         }
