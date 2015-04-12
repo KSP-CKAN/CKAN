@@ -61,6 +61,7 @@ namespace CKAN
             easy.WriteData = null;
             easy.WriteFunction = wf;
             easy.Encoding = "deflate, gzip";
+            easy.FollowLocation = true; // Follow redirects
             return easy;
         }
 

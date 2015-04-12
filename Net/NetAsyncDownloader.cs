@@ -130,7 +130,11 @@ namespace CKAN
         private void DownloadCurl()
         {
             log.Debug("Curlsharp async downloader engaged");
-            
+
+            // Make sure our environment is set up.
+
+            Curl.Init();
+
             // We'd *like* to use CurlMulti, but it just hangs when I try to retrieve
             // messages from it. So we're spawning a thread for each curleasy that does
             // the same thing. Ends up this is a little easier in handling, anyway.
@@ -177,12 +181,6 @@ namespace CKAN
                     return 0;
                 };
 
-                #if SINGLECURL
-
-                CurlWatchThread(index, easy, stream);
-
-                #else
-
                 // Download, little curl, fulfill your destiny!
                 Thread thread = new Thread(new ThreadStart(delegate
                 {
@@ -193,9 +191,6 @@ namespace CKAN
                 // about joining it, etc.
 
                 thread.Start();
-
-                #endif
-
             }
 
             return;
@@ -459,7 +454,9 @@ namespace CKAN
         }
 
         /// <summary>
-        /// This method gets called back by `WebClient` when a download is completed.
+        /// This method gets called back by `WebClient` or our
+        /// curl downloader when a download is completed. It in turn
+        /// calls the onCompleted hook when *all* downloads are finished.
         /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {
@@ -489,31 +486,6 @@ namespace CKAN
 
                 for (int i = 0; i < downloads.Count; i++)
                 {
-                    // XXX TOTAL HAXXX
-                    // If we had failures, then try again using the simple downloader,
-                    // which falls back to curlsharp. This works around
-                    // KSP-CKAN/CKAN-Support#107 until we can properly use curlsharp
-                    // for everything.
-                    // XXXX TOTAL HAXXX
-
-                    if (downloads[i].error != null)
-                    {
-                        log.Info("Failed async download of " + downloads[i].url + " attempting hacky fallback");
-                        try
-                        {
-                            downloads[i].path = Net.Download(downloads[i].url);
-
-                            // OMG, if we're here we made it. Clear the error!
-                            downloads[i].error = null;
-                        }
-                        catch (Exception ex)
-                        {
-                            // If we fail, there's nothing to do, it's the same as before.
-                            log.Info("Hacky fallback failed - {0}", ex);
-                        }
-                    }
-
-
                     fileUrls[i] = downloads[i].url;
                     filePaths[i] = downloads[i].path;
                     errors[i] = downloads[i].error;
