@@ -49,12 +49,12 @@ namespace CKANTests
         [Test]
         [Category("Online")]
         [Category("NetAsyncDownloader")]
-        // [Explicit]
+        [Explicit]
         public void SingleDownload()
         {
             // Force log4net on.
-            BasicConfigurator.Configure();
-            LogManager.GetRepository().Threshold = Level.Debug;
+            // BasicConfigurator.Configure();
+            // LogManager.GetRepository().Threshold = Level.Debug;
             log.Info("Performing single download test.");
 
             var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
@@ -71,13 +71,11 @@ namespace CKANTests
             // Make sure we don't alread have kOS somehow.
             Assert.IsFalse(ksp.KSP.Cache.IsCached(kOS.download));
 
-            Console.WriteLine("About to download modules...");
             // Download our module.
             async.DownloadModules(
                 ksp.KSP.Cache,
                 modules
             );
-            Console.WriteLine("Download complete.");
 
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(kOS.download));
@@ -86,6 +84,7 @@ namespace CKANTests
         [Test]
         [Category("Online")]
         [Category("NetAsyncDownloader")]
+        [Explicit]
         public void MultiDownload()
         {
             var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
