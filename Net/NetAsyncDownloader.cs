@@ -209,6 +209,12 @@ namespace CKAN
 
             log.Debug("Curlsharp download complete");
 
+            // Dispose of all our disposables.
+            // We have to do this *BEFORE* we call FileDownloadComplete, as it
+            // ensure we've written everything out to disk.
+            stream.Dispose();
+            easy.Dispose();
+
             if (result == CurlCode.Ok)
             {
                 FileDownloadComplete(index, null);
@@ -222,11 +228,6 @@ namespace CKAN
                     new Kraken("curl download of " + easy.Url + " failed with CurlCode " + result)
                 );
             }
-
-            // Dispose of all our disposables.
-            easy.Dispose();
-            stream.Dispose();
-
         }
 
         /// <summary>
