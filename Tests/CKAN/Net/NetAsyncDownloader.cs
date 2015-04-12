@@ -82,6 +82,23 @@ namespace CKANTests
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(kOS.download));
         }
+
+        [Test]
+        [Category("Online")]
+        [Category("NetAsyncDownloader")]
+        public void MultiDownload()
+        {
+            var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
+            var modules = new List<CKAN.CkanModule>();
+
+            modules.Add(registry.LatestAvailable("kOS", null));
+            modules.Add(registry.LatestAvailable("QuickRevert", null));
+
+            async.DownloadModules(ksp.KSP.Cache, modules);
+
+            // TODO: Verify in cache.
+        }
+
     }
 }
 
