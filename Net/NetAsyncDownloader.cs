@@ -7,11 +7,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using ChinhDo.Transactions;
 using log4net;
+using CurlSharp;
 
 namespace CKAN
-{  
-    
-
+{      
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
@@ -76,15 +75,34 @@ namespace CKAN
         /// The sole argument is a collection of KeyValuePair(s) containing the download URL and the expected download size
         /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        private string[] Download(ICollection<KeyValuePair<Uri, long>> urls)
+        private void Download(ICollection<KeyValuePair<Uri, long>> urls)
         {
             foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url.Key, url.Value)))
             {
                 downloads.Add(download);
             }
+                
+            if (Platform.IsWindows)
+            {
+                DownloadNative();
+            }
+            else
+            {
+                DownloadCurl();
+            }
 
-            var filePaths = new string[downloads.Count];
+            // The user hasn't cancelled us yet. :)
+            downloadCanceled = false;
 
+            return;
+        }
+
+        /// <summary>
+        /// Download all our files using the native .NET hanlders.
+        /// </summary>
+        /// <returns>The native.</returns>
+        private void DownloadNative()
+        {
             for (int i = 0; i < downloads.Count; i++)
             {
                 User.RaiseMessage("Downloading \"{0}\"", downloads[i].url);
@@ -95,20 +113,153 @@ namespace CKAN
                 // Schedule for us to get back progress reports.
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
-                        FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                            args.TotalBytesToReceive);
+                    FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
+                        args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
 
-                // Bytes ahoy!
+                // Start the download!
                 downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
+        }
 
-            // The user hasn't cancelled us yet. :)
-            downloadCanceled = false;
+        /// <summary>
+        /// Use curlsharp to handle our downloads.
+        /// </summary>
+        private void DownloadCurl()
+        {
+            log.Debug("Curlsharp async downloader engaged");
+            
+            var easy_handles = new List<CurlEasy>();
 
-            return filePaths;
+            var multi = new CurlMulti();
+
+            for (int i = 0; i < downloads.Count; i++)
+            {
+                log.DebugFormat("Downloading {0}", downloads[i].url);
+                User.RaiseMessage("Downloading \"{0}\" (libcurl)", downloads[i].url);
+
+                // Open our file, and add each easy obect to our multi object.
+                FileStream stream = File.OpenWrite(downloads[i].path);
+                CurlEasy easy = Curl.CreateEasy(downloads[i].url, stream);
+
+                // We need a separate variable for our closure, this is it.
+                int index = i;
+
+                // Stash our index number on the easy object, we'll need it later
+                // when we signal completion.
+                easy.ProgressData = index;
+
+                // Curl recommends xferinfofunction, but this doesn't seem to
+                // be supported by curlsharp, so we use the progress function
+                // instead.
+                easy.ProgressFunction = delegate(object extraData, double dlTotal, double dlNow, double ulTotal, double ulNow)
+                {
+                    FileProgressReport(
+                        index,
+                        Convert.ToInt32(dlNow * 100 / dlTotal),
+                        Convert.ToInt64(dlNow),
+                        Convert.ToInt64(dlTotal)
+                    );
+
+                    // Return 0 means we want to continue the download.
+                    return 0;
+                };
+
+                easy_handles.Add(easy);
+                multi.AddHandle(Curl.CreateEasy(downloads[i].url, stream));
+            }
+
+            // Start our watch thread.
+         
+            Thread thread = new Thread(new ThreadStart(delegate
+            {
+                CurlWatchThread(multi, easy_handles);
+            }));
+
+            thread.Start();
+
+            // Our thread will clean up the multi and easy handles, so we can now
+            // just return happily.
+
+            return;
+        }
+
+        /// <summary>
+        /// Starts a thread to watch download progress. Invoked by DownloadCUrl. Not for
+        /// public consumption.
+        /// </summary>
+        private void CurlWatchThread(CurlMulti multi, IEnumerable<CurlEasy> easy_handles)
+        {
+            log.Debug("Curlsharp download thread started");
+
+            int running_objects = 0;
+            multi.Perform(ref running_objects);
+
+            // This loops us over while we've got downloads in progress.
+            while (running_objects != 0)
+            {
+                log.DebugFormat("Selecting from {0} running objects", running_objects);
+
+                // Refresh our list of file descriptors that may need attention.
+                // Yes, we need to do this every loop.
+                multi.FdSet();
+
+                int select = multi.Select(1000); // Look for work to do, 1 second timeout
+                log.DebugFormat("Select finished with value {0}",select);
+
+                switch (select)
+                {
+                    case -1:
+                        // Aww no, something went wrong.
+                        log.Info("Uh oh, something went wrong with curlsharp downloads");
+                        throw new Kraken("Internal error: curl multi-select returned -1");
+
+                    default:
+                        log.Debug("Re-entering multi.Perform");
+                        multi.Perform(ref running_objects);
+                        break;
+                }
+            }
+
+            // Process any and all messages.
+            // In theory, we can call multi.InfoRead to get this. In practice,
+            // that just hangs and I don't know why.
+            //
+            // Instead, we all through all our curlEasy obects, and see what they
+            // think is going on.
+
+            log.Debug("Fetching messages...");
+
+            var info = multi.InfoRead();
+
+            log.Debug("Processing messages...");
+
+            foreach(CurlMultiInfo message in info)
+            {
+                log.Debug("Curlsharp message received");
+                if (message.Result == CurlCode.Ok)
+                {
+                    // Download complete!
+                    FileDownloadComplete((int) message.CurlEasyHandle.ProgressData,null);
+                }
+            }
+
+
+
+            // Yay! We're all done!
+            log.Debug("No more curlsharp downloads, doing cleanup...");
+
+            // Cleanup
+            foreach (CurlEasy handle in easy_handles)
+            {
+                handle.Dispose();
+            }
+
+            multi.Dispose();
+
+            // XXX - Do we need to signal all downloads are complete?
         }
 
         /// <summary>
@@ -131,7 +282,7 @@ namespace CKAN
             }
             this.modules.AddRange(unique_downloads.Values);
 
-            // Attach our progress report, if requested.            
+            // Schedule us to process our modules on completion.            
             onCompleted =
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
@@ -237,8 +388,6 @@ namespace CKAN
                 }
             }
 
-            // TODO: If we've had our download cancelled, how do we clean our tmpfiles?
-
             if (filenames != null)
             {
                 // Finally, remove all our temp files.
@@ -283,7 +432,9 @@ namespace CKAN
 
         /// <summary>
         /// Generates a download progress reports, and sends it to
-        /// onProgressReport if it's set.
+        /// onProgressReport if it's set. This takes the index of the file
+        /// being downloaded, the percent complete, the bytes downloaded,
+        /// and the total amount of bytes we expect to download.
         /// </summary>
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
         {

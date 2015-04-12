@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Tests;
+using log4net;
+using log4net.Core;
+using log4net.Config;
 
 namespace CKANTests
 {
@@ -16,6 +19,7 @@ namespace CKANTests
         private CKAN.Registry registry;
         private DisposableKSP ksp;
 
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         [SetUp]
         public void Setup()
@@ -44,9 +48,14 @@ namespace CKANTests
 
         [Test]
         [Category("Online")]
-        [Explicit]
+        // [Explicit]
         public void SingleDownload()
         {
+            // Force log4net on.
+            BasicConfigurator.Configure();
+            LogManager.GetRepository().Threshold = Level.Debug;
+            log.Info("Performing single download test.");
+
             var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
 
             // We know kOS is in the TestKAN data, and hosted in KS. Let's get it.
@@ -61,11 +70,13 @@ namespace CKANTests
             // Make sure we don't alread have kOS somehow.
             Assert.IsFalse(ksp.KSP.Cache.IsCached(kOS.download));
 
+            Console.WriteLine("About to download modules...");
             // Download our module.
             async.DownloadModules(
                 ksp.KSP.Cache,
                 modules
             );
+            Console.WriteLine("Download complete.");
 
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(kOS.download));

@@ -39,6 +39,8 @@ namespace CKAN
             init_complete = false;
         }
 
+
+
         /// <summary>
         /// Creates a CurlEasy object that calls the given writeback function
         /// when data is received.
@@ -73,6 +75,11 @@ namespace CKAN
                 stream.Write(buf, 0, size * nmemb);
                 return size * nmemb;
             });
+        }
+
+        public static CurlEasy CreateEasy(Uri url, FileStream stream)
+        {
+            return CreateEasy(url.ToString(), stream);
         }
     }
 }
