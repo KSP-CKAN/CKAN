@@ -75,6 +75,7 @@
     <Compile Include="FileIdentifier.cs" />
     <Compile Include="Types\Repository.cs" />
     <Compile Include="Platform.cs" />
+    <Compile Include="Net\Curl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
