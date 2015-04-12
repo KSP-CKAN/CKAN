@@ -52,13 +52,17 @@ namespace CKAN
 
         private Object download_complete_lock = new Object();
 
-        private bool downloadCanceled;
+        private volatile bool downloadCanceled;
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
         // Can be set by ourself in the DownloadModules method.
         private delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
         private NetAsyncCompleted onCompleted;
+
+        // When using the curlsharp downloader, this contains all the threads
+        // that are working for us.
+        private List<Thread> curl_threads = new List<Thread> ();
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -177,7 +181,15 @@ namespace CKAN
                         Convert.ToInt64(dlTotal)
                     );
 
-                    // Return 0 means we want to continue the download.
+                    // If the user has told us to cancel, then bail out now.
+                    if (downloadCanceled)
+                    {
+                        log.InfoFormat("Bailing out of download {0} at user request", index);
+                        // Bail out!
+                        return 1;
+                    }
+
+                    // Returning 0 means we want to continue the download.
                     return 0;
                 };
 
@@ -187,9 +199,13 @@ namespace CKAN
                     CurlWatchThread(index, easy, stream);
                 }));
 
-                // TODO: Mark as background thread so we don't have to worry
-                // about joining it, etc.
+                // Keep track of our threads so we can clean them up later.
+                curl_threads.Add(thread);
 
+                // Background threads will mostly look after themselves.
+                thread.IsBackground = true;
+
+                // Let's go!
                 thread.Start();
             }
 
@@ -278,13 +294,23 @@ namespace CKAN
             }
 
             // If the user cancelled our progress, then signal that.
+            // This *should* be harmless if we're using the curlsharp downloader,
+            // which watches for downloadCanceled all by itself. :)
             if (downloadCanceled)
             {
+                // Abort all our traditional downloads, if there are any.
                 foreach (var download in downloads)
                 {
                     download.agent.CancelAsync();
                 }
 
+                // Abort all our curl downloads, if there are any.
+                foreach (Thread thread in curl_threads)
+                {
+                    thread.Abort();
+                }
+
+                // Signal to the caller that the user cancelled the download.
                 throw new CancelledActionKraken("Download cancelled by user");
             }
 
@@ -385,7 +411,7 @@ namespace CKAN
         /// </summary>
         public void CancelDownload()
         {
-            log.Debug("Cancelling download");
+            log.Info("Cancelling download");
 
             downloadCanceled = true;
 
