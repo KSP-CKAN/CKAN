@@ -51,12 +51,13 @@
     <Compile Include="CKAN\Registry\RegistryLive.cs" />
     <Compile Include="CKAN\FileIdentifier.cs" />
     <Compile Include="CKAN\Registry\RegistryMultipleRepos.cs" />
+    <Compile Include="CKAN\Net\NetAsyncDownloader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CKAN-core.csproj">
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
-      <Name>CKAN</Name>
+      <Name>CKAN-core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
