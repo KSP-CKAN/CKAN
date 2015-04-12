@@ -11,7 +11,7 @@ namespace CKAN
     public class AutoUpdate
     {
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
         private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
