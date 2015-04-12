@@ -48,6 +48,7 @@ namespace CKANTests
 
         [Test]
         [Category("Online")]
+        [Category("NetAsyncDownloader")]
         // [Explicit]
         public void SingleDownload()
         {
