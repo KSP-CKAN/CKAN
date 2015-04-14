@@ -81,7 +81,10 @@ namespace CKAN
 
         public static CurlEasy CreateEasy(Uri url, FileStream stream)
         {
-            return CreateEasy(url.ToString(), stream);
+            // Curl interacts poorly with KS for some (but not all) modules unless
+            // the original string is used, hence .OriginalString rather than .ToString
+            // here.
+            return CreateEasy(url.OriginalString, stream);
         }
     }
 }
