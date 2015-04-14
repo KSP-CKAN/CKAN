@@ -18,6 +18,8 @@ namespace CKANTests
 
         private CKAN.Registry registry;
         private DisposableKSP ksp;
+        private CKAN.NetAsyncDownloader async;
+        private CKAN.NetFileCache cache;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
@@ -37,6 +39,12 @@ namespace CKANTests
 
             // Make sure we have a registry we can use.
             CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP, new CKAN.NullUser());
+
+            // Ready our downloader.
+            async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
+
+            // General shortcuts
+            cache = ksp.KSP.Cache;
         }
 
         [TearDown]
@@ -57,8 +65,6 @@ namespace CKANTests
             // LogManager.GetRepository().Threshold = Level.Debug;
             log.Info("Performing single download test.");
 
-            var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
-
             // We know kOS is in the TestKAN data, and hosted in KS. Let's get it.
 
             var modules = new List<CKAN.CkanModule>();
@@ -69,7 +75,10 @@ namespace CKANTests
             modules.Add(kOS);
 
             // Make sure we don't alread have kOS somehow.
-            Assert.IsFalse(ksp.KSP.Cache.IsCached(kOS.download));
+            Assert.IsFalse(cache.IsCached(kOS.download));
+
+            //
+            log.InfoFormat("Downloading kOS from {0}",kOS.download);
 
             // Download our module.
             async.DownloadModules(
@@ -78,7 +87,7 @@ namespace CKANTests
             );
 
             // Assert that we have it, and it passes zip validation.
-            Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(kOS.download));
+            Assert.IsTrue(cache.IsCachedZip(kOS.download));
         }
 
         [Test]
@@ -87,15 +96,40 @@ namespace CKANTests
         [Explicit]
         public void MultiDownload()
         {
-            var async = new CKAN.NetAsyncDownloader(new CKAN.NullUser());
             var modules = new List<CKAN.CkanModule>();
 
-            modules.Add(registry.LatestAvailable("kOS", null));
-            modules.Add(registry.LatestAvailable("QuickRevert", null));
+            CKAN.CkanModule kOS = registry.LatestAvailable("kOS", null);
+            CKAN.CkanModule QuickRevert = registry.LatestAvailable("QuickRevert", null);
 
-            async.DownloadModules(ksp.KSP.Cache, modules);
+            modules.Add(kOS);
+            modules.Add(QuickRevert);
 
-            // TODO: Verify in cache.
+            Assert.IsFalse(cache.IsCachedZip(kOS.download));
+            Assert.IsFalse(cache.IsCachedZip(QuickRevert.download));
+
+            async.DownloadModules(cache, modules);
+
+            Assert.IsTrue(cache.IsCachedZip(kOS.download));
+            Assert.IsTrue(cache.IsCachedZip(QuickRevert.download));
+        }
+
+        [Test]
+        [Category("Online")]
+        [Category("NetAsyncDownloader")]
+        [Explicit]
+        public void RandSdownload()
+        {
+            var modules = new List<CKAN.CkanModule>();
+
+            var rAndS = TestData.RandSCapsuleDyneModule();
+
+            modules.Add(rAndS);
+
+            Assert.IsFalse(cache.IsCachedZip(rAndS.download), "Module not yet downloaded");
+
+            async.DownloadModules(cache, modules);
+
+            Assert.IsTrue(cache.IsCachedZip(rAndS.download),"Module download successful");
         }
 
     }

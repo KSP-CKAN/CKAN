@@ -32,6 +32,19 @@ namespace CKANTests
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
         }
 
+        /// <summary>
+        /// There's a condition where some mods won't download if the server is presented with
+        /// an unescaped string, but *will* if passed an escaped string. This isn't the case with
+        /// all servers and mods, but in any case we check that our original string is always
+        /// available after Url-ification so we can use it.
+        /// </summary>
+        [Test]
+        public void SpacesPreservedInDownload()
+        {
+            CkanModule module = CkanModule.FromJson(TestData.DogeCoinFlag_101());
+            Assert.AreEqual("https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01", module.download.OriginalString);
+        }
+
         [Test]
         public void FilterRead()
         {
