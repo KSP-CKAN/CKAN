@@ -113,17 +113,17 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             }
             catch (DirectoryNotFoundException ex)
             {
-                log.ErrorFormat("Error: {0}", ex.Message);
+                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (FileNotFoundException ex)
             {
-                log.ErrorFormat("Error: {0}", ex.Message);
+                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (ParsingException ex)
             {
-                log.ErrorFormat("Error: {0}", ex.Message);
+                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
 
