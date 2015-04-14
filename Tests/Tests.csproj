@@ -27,6 +27,9 @@
       <HintPath>..\packages\SharpZipLib.0.86.0-pjf-ckan_gh221\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CKAN\Relationships\RelationshipResolver.cs" />
@@ -51,12 +54,13 @@
     <Compile Include="CKAN\Registry\RegistryLive.cs" />
     <Compile Include="CKAN\FileIdentifier.cs" />
     <Compile Include="CKAN\Registry\RegistryMultipleRepos.cs" />
+    <Compile Include="CKAN\Net\NetAsyncDownloader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CKAN-core.csproj">
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
-      <Name>CKAN</Name>
+      <Name>CKAN-core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

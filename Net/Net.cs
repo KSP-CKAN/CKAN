@@ -59,17 +59,11 @@ namespace CKAN
 
                 try
                 {
-                    Curl.GlobalInit(CurlInitFlag.All);
+                    Curl.Init();
 
-                    using(var curl = new CurlEasy())
                     using (FileStream stream = File.OpenWrite(filename))
+                    using (var curl = Curl.CreateEasy(url, stream))
                     {
-                        curl.Url = url;
-                        curl.WriteData = null; // Can we give it a C#-ish file here?
-                        curl.WriteFunction = delegate(byte[] buf, int size, int nmemb, object extraData) {
-                            stream.Write(buf, 0, size*nmemb);
-                            return size*nmemb;
-                        };
                         CurlCode result = curl.Perform();
                         if (result != CurlCode.Ok)
                         {
@@ -81,7 +75,7 @@ namespace CKAN
                         }
                     }
 
-                    Curl.GlobalCleanup();
+                    Curl.CleanUp();
                     return filename;
                 }
                 catch
