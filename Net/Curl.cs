@@ -63,10 +63,17 @@ namespace CKAN
             easy.Encoding = "deflate, gzip";
             easy.FollowLocation = true; // Follow redirects
             easy.UserAgent = Net.UserAgentString;
+            easy.SslVerifyPeer = true;
 
-            // At least ksp.sarbian.com uses a SSL cert that libcurl can't
-            // verify, so we skip verification. Yeah, that sucks, I know.
-            easy.SslVerifyPeer = false;
+            // ksp.sarbian.com uses a SSL cert that libcurl can't
+            // verify, so we skip verification. Yeah, that sucks, I know,
+            // but this sucks less than our previous solution that disabled
+            // SSL checking entirely.
+
+            if (url.StartsWith("https://ksp.sarbian.com/"))
+            {
+                easy.SslVerifyPeer = false;
+            }
 
             return easy;
         }
