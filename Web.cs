@@ -19,7 +19,7 @@ namespace CKAN.NetKAN
 		{
 			if (!init_complete)
 			{
-				Curl.GlobalInit(CurlInitFlag.All);
+				CurlSharp.Curl.GlobalInit(CurlInitFlag.All);
 				init_complete = true;
 			}
 
@@ -66,7 +66,7 @@ namespace CKAN.NetKAN
 		/// collector can reclaim the memory that the <see cref="CKAN.NetKAN.Web"/> was occupying.</remarks>
 		public void Dispose()
 		{
-			Curl.GlobalCleanup();
+			CurlSharp.Curl.GlobalCleanup();
 			easy.Dispose();
 		}
 	}
