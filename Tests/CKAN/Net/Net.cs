@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using NUnit.Framework;
+using CurlSharp;
 
 namespace CKANTests
 {
@@ -57,5 +58,14 @@ namespace CKANTests
                 }
             });
         }
+            
+        [Test]
+        [Category("Security")]
+        public void SSLenforced()
+        {
+            var curl = CKAN.Curl.CreateEasy("https://example.com", (FileStream) null);
+            Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
+        }
+
     }
 }
