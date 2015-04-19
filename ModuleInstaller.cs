@@ -847,7 +847,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Upgrades the mods listed to the specified versions for the user's KSP.
+        /// Upgrades or installs the mods listed to the specified versions for the user's KSP.
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
@@ -856,6 +856,13 @@ namespace CKAN
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
 
+            // Our upgrade involves removing everything that's currently installed, then
+            // adding everything that needs installing (which may involve new mods to
+            // satisfy dependencies). We always know the list passed in is what we need to
+            // install, but we need to calculate what needs to be removed.
+            var to_remove = new List<string>();
+
+            // Let's discover what we need to do with each module!
             foreach (CkanModule module in modules)
             {
                 string ident = module.identifier;
@@ -866,31 +873,35 @@ namespace CKAN
                     //Maybe ModuleNotInstalled ?
                     if (registry_manager.registry.IsAutodetected(ident))
                     {
-                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying to install it.",ident));
+                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying to install it.", ident));
                     }
-                    throw new ModuleNotFoundKraken(
-                        ident, module.version.ToString(),
-                        String.Format("Can't upgrade {0}, it is not installed", ident)
-                    );
-                }
-                Module installed = installed_mod.Module;
-                if (installed.version.IsEqualTo(module.version))
-                {
-                    log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
-                }
-                else if (installed.version.IsGreaterThan(module.version))
-                {
-                    log.WarnFormat("Downgrading {0} from {1} to {2}", ident, installed.version, module.version);
+
+                    User.RaiseMessage("Installing previously uninstalled mod {0}", ident);
                 }
                 else
                 {
-                    log.InfoFormat("Upgrading {0} to {1}", ident, module.version);
+                    // Module already installed. We'll need to remove it first.
+                    to_remove.Add(module.identifier);
+
+                    Module installed = installed_mod.Module;
+                    if (installed.version.IsEqualTo(module.version))
+                    {
+                        log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
+                    }
+                    else if (installed.version.IsGreaterThan(module.version))
+                    {
+                        log.WarnFormat("Downgrading {0} from {1} to {2}", ident, installed.version, module.version);
+                    }
+                    else
+                    {
+                        log.InfoFormat("Upgrading {0} to {1}", ident, module.version);
+                    }
                 }
             }
 
             AddRemove(
                 modules,
-                modules.Select(x => x.identifier)
+                to_remove
             );
         }
 
