@@ -57,11 +57,21 @@ namespace CKAN.NetKAN
         /// <summary>
         ///     Returns the route with the KerbalStuff URI (not the API URI) pre-pended.
         /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="route">Route.</param>
         public static Uri ExpandPath(string route)
         {
-            return new Uri(kerbalstuff, route);
+            log.DebugFormat("Expanding {0} to full KS URL", route);
+
+            // Alas, this isn't as simple as it may sound. For some reason
+            // some—but not all—KS mods don't work the same way if the path provided
+            // is escaped or un-escaped. Since our curl implementation preserves the
+            // "original" string used to download a mod, we need to jump through some
+            // hoops to make sure this is escaped.
+
+            var url = new Uri (kerbalstuff,route);
+            var url_fixed = new Uri (Uri.EscapeUriString(url.ToString()));
+
+            log.DebugFormat ("Expanded URL is {0}", url_fixed.OriginalString);
+            return url_fixed;
         }
     }
 }
