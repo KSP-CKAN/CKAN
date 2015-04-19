@@ -21,14 +21,11 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 1;
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 2;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] private int registry_version;
 
-        // TODO the unsorted repositories are a legacy object for the old format, to be removed after a few releases
-        [JsonProperty("repositories")]
-        private Dictionary<string, Uri> unsortedRepositories; // name => uri
         [JsonProperty("sorted_repositories")]
         private SortedDictionary<string, Repository> repositories; // name => Repository
 
@@ -73,6 +70,10 @@ namespace CKAN
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
+            // Our context is our KSP install.
+            KSP ksp = (KSP) context.Context;
+
+
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
 
@@ -86,13 +87,6 @@ namespace CKAN
             // We would check for a null here, but ints *can't* be null.
             if (registry_version == 0)
             {
-                KSP ksp = (KSP)context.Context;
-
-                if (ksp == null)
-                {
-                    throw new Kraken("Internal bug: No KSP instance provided on registry deserialisation");
-                }
-
                 log.Warn("Older registry format detected, normalising paths...");
 
                 var normalised_installed_files = new Dictionary<string,string>();
@@ -127,6 +121,46 @@ namespace CKAN
                 // because that needs a registry, and we chicken-egg.)
 
                 log.Warn("Registry upgrade complete");
+            }
+
+            // Fix control lock, which previously was indexed with an invalid identifier.
+            if (registry_version < 2)
+            {
+                InstalledModule control_lock_entry;
+                const string old_ident = "001ControlLock";
+                const string new_ident = "ControlLock";
+
+                if (installed_modules.TryGetValue("001ControlLock", out control_lock_entry))
+                {
+                    if (ksp == null)
+                    {
+                        throw new Kraken("Internal bug: No KSP instance provided on registry deserialisation");
+                    }
+
+                    log.WarnFormat("Older registry detected. Reindexing {0} as {1}. This may take a moment.", old_ident, new_ident);
+
+                    // Remove old record.
+                    installed_modules.Remove(old_ident);
+
+                    // Extract the old module metadata
+                    Module control_lock_mod = control_lock_entry.Module;
+
+                    // Change to the correct ident.
+                    control_lock_mod.identifier = new_ident;
+
+                    // Prepare to re-index.
+                    var new_control_lock_installed = new InstalledModule(
+                        ksp,
+                        control_lock_mod,
+                        control_lock_entry.Files
+                    );
+
+                    // Re-insert into registry.
+                    installed_modules[new_control_lock_installed.identifier] = new_control_lock_installed;
+
+                    // Re-index files.
+                    ReindexInstalled();
+                }
             }
 
             registry_version = LATEST_REGISTRY_VERSION;
