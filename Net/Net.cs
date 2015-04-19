@@ -29,7 +29,7 @@ namespace CKAN
         /// </summary>
         public static string Download(Uri url, string filename = null, IUser user = null)
         {
-            return Download(url.ToString(), filename, user);
+            return Download(url.OriginalString, filename, user);
         }
 
         public static string Download(string url, string filename = null, IUser user = null)
