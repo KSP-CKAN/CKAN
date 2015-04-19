@@ -26,9 +26,6 @@ namespace CKAN
 
         [JsonProperty] private int registry_version;
 
-        // TODO the unsorted repositories are a legacy object for the old format, to be removed after a few releases
-        [JsonProperty("repositories")]
-        private Dictionary<string, Uri> unsortedRepositories; // name => uri
         [JsonProperty("sorted_repositories")]
         private SortedDictionary<string, Repository> repositories; // name => Repository
 
