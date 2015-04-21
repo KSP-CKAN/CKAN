@@ -1,5 +1,7 @@
+using System;
 using System.IO;
 using NUnit.Framework;
+using CurlSharp;
 
 namespace CKANTests
 {
@@ -42,5 +44,28 @@ namespace CKANTests
             Assert.That(File.Exists(downloaded));
             File.Delete(downloaded);
         }
+
+        [Test]
+        [Category("Online")]
+        public void KerbalStuffSSL()
+        {
+            Assert.DoesNotThrow(delegate
+            {
+                string file = CKAN.Net.Download("https://kerbalstuff.com/mod/646/Contract%20Reward%20Modifier/download/1.2");
+                if (!File.Exists(file))
+                {
+                    throw new Exception("File not downloaded");
+                }
+            });
+        }
+            
+        [Test]
+        [Category("Security")]
+        public void SSLenforced()
+        {
+            var curl = CKAN.Curl.CreateEasy("https://example.com", (FileStream) null);
+            Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
+        }
+
     }
 }

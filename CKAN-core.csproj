@@ -36,8 +36,12 @@
     <Reference Include="ChinhDo.Transactions">
       <HintPath>packages\TxFileManager.1.3\lib\net20\ChinhDo.Transactions.dll</HintPath>
     </Reference>
+    <Reference Include="CurlSharp">
+      <HintPath>packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
@@ -70,6 +74,8 @@
     <Compile Include="Types\FileType.cs" />
     <Compile Include="FileIdentifier.cs" />
     <Compile Include="Types\Repository.cs" />
+    <Compile Include="Platform.cs" />
+    <Compile Include="Net\Curl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

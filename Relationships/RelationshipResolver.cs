@@ -182,16 +182,10 @@ namespace CKAN
                     log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
                     continue;
                 }
-                if (candidates.Count > 1)
+                // Only throw TooManyModsProvideKraken if too many candidates and 
+                // if we actually care that there are too many candidates
+                if (candidates.Count > 1 && !options.without_toomanyprovides_kraken)
                 {
-                    // Oh no, too many to pick from!
-                    // TODO: It would be great if instead we picked the one with the
-                    // most recommendations.
-                    if (options.without_toomanyprovides_kraken)
-                    {
-                        continue;
-                    }
-
                     throw new TooManyModsProvideKraken(dep_name, candidates);
                 }
 

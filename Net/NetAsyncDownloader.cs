@@ -7,11 +7,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using ChinhDo.Transactions;
 using log4net;
+using CurlSharp;
 
 namespace CKAN
-{  
-    
-
+{      
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
@@ -27,16 +26,18 @@ namespace CKAN
             public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
-            public long bytesDownloaded;
             public long bytesLeft;
+            public long size;
             public int bytesPerSecond;
             public Exception error;
             public int lastProgressUpdateSize;
 
-            public NetAsyncDownloaderDownloadPart(Uri url, string path = null)
+            public NetAsyncDownloaderDownloadPart(Uri url, long expectedSize, string path = null)
             {
                 this.url = url;
                 this.path = path ?? Path.GetTempFileName();
+                bytesLeft = expectedSize;
+                size = expectedSize;
                 lastProgressUpdateTime = DateTime.Now;
 
                 agent.Headers.Add("user-agent", Net.UserAgentString);
@@ -51,13 +52,17 @@ namespace CKAN
 
         private Object download_complete_lock = new Object();
 
-        private bool downloadCanceled;
+        private volatile bool downloadCanceled;
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
         // Can be set by ourself in the DownloadModules method.
         private delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
         private NetAsyncCompleted onCompleted;
+
+        // When using the curlsharp downloader, this contains all the threads
+        // that are working for us.
+        private List<Thread> curl_threads = new List<Thread> ();
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -71,17 +76,37 @@ namespace CKAN
 
         /// <summary>
         /// Downloads our files, returning an array of filenames that we're writing to.
+        /// The sole argument is a collection of KeyValuePair(s) containing the download URL and the expected download size
         /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        public string[] Download(ICollection<Uri> urls)
+        private void Download(ICollection<KeyValuePair<Uri, long>> urls)
         {
-            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url)))
+            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url.Key, url.Value)))
             {
                 downloads.Add(download);
             }
+                
+            if (Platform.IsWindows)
+            {
+                DownloadNative();
+            }
+            else
+            {
+                DownloadCurl();
+            }
 
-            var filePaths = new string[downloads.Count];
+            // The user hasn't cancelled us yet. :)
+            downloadCanceled = false;
 
+            return;
+        }
+
+        /// <summary>
+        /// Download all our files using the native .NET hanlders.
+        /// </summary>
+        /// <returns>The native.</returns>
+        private void DownloadNative()
+        {
             for (int i = 0; i < downloads.Count; i++)
             {
                 User.RaiseMessage("Downloading \"{0}\"", downloads[i].url);
@@ -92,20 +117,135 @@ namespace CKAN
                 // Schedule for us to get back progress reports.
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
-                        FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                            args.TotalBytesToReceive - args.BytesReceived);
+                    FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
+                        args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
 
-                // Bytes ahoy!
+                // Start the download!
                 downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
             }
+        }
 
-            // The user hasn't cancelled us yet. :)
-            downloadCanceled = false;
+        /// <summary>
+        /// Use curlsharp to handle our downloads.
+        /// </summary>
+        private void DownloadCurl()
+        {
+            log.Debug("Curlsharp async downloader engaged");
 
-            return filePaths;
+            // Make sure our environment is set up.
+
+            Curl.Init();
+
+            // We'd *like* to use CurlMulti, but it just hangs when I try to retrieve
+            // messages from it. So we're spawning a thread for each curleasy that does
+            // the same thing. Ends up this is a little easier in handling, anyway.
+
+            for (int i = 0; i < downloads.Count; i++)
+            {
+                log.DebugFormat("Downloading {0}", downloads[i].url);
+                User.RaiseMessage("Downloading \"{0}\" (libcurl)", downloads[i].url);
+
+                // Open our file, and make an easy object...
+                FileStream stream = File.OpenWrite(downloads[i].path);
+                CurlEasy easy = Curl.CreateEasy(downloads[i].url, stream);
+
+                // We need a separate variable for our closure, this is it.
+                int index = i;
+
+                // Curl recommends xferinfofunction, but this doesn't seem to
+                // be supported by curlsharp, so we use the progress function
+                // instead.
+                easy.ProgressFunction = delegate(object extraData, double dlTotal, double dlNow, double ulTotal, double ulNow)
+                {
+                    log.DebugFormat("Progress function called... {0}/{1}", dlNow,dlTotal);
+
+                    int percent = 0;
+
+                    if (dlTotal > 0)
+                    {
+                        percent = (int) dlNow * 100 / (int) dlTotal;
+                    }
+                    else
+                    {
+                        log.Debug("Unknown download size, skipping progress..");
+                        return 0;
+                    }
+
+                    FileProgressReport(
+                        index,
+                        percent,
+                        Convert.ToInt64(dlNow),
+                        Convert.ToInt64(dlTotal)
+                    );
+
+                    // If the user has told us to cancel, then bail out now.
+                    if (downloadCanceled)
+                    {
+                        log.InfoFormat("Bailing out of download {0} at user request", index);
+                        // Bail out!
+                        return 1;
+                    }
+
+                    // Returning 0 means we want to continue the download.
+                    return 0;
+                };
+
+                // Download, little curl, fulfill your destiny!
+                Thread thread = new Thread(new ThreadStart(delegate
+                {
+                    CurlWatchThread(index, easy, stream);
+                }));
+
+                // Keep track of our threads so we can clean them up later.
+                curl_threads.Add(thread);
+
+                // Background threads will mostly look after themselves.
+                thread.IsBackground = true;
+
+                // Let's go!
+                thread.Start();
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Starts a thread to watch download progress. Invoked by DownloadCUrl. Not for
+        /// public consumption.
+        /// </summary>
+        private void CurlWatchThread(int index, CurlEasy easy, FileStream stream)
+        {
+            log.Debug("Curlsharp download thread started");
+
+            // This should run until completion or failture.
+            CurlCode result = easy.Perform();
+
+            log.Debug("Curlsharp download complete");
+
+            // Dispose of all our disposables.
+            // We have to do this *BEFORE* we call FileDownloadComplete, as it
+            // ensure we've written everything out to disk.
+            stream.Dispose();
+            easy.Dispose();
+
+            if (result == CurlCode.Ok)
+            {
+                FileDownloadComplete(index, null);
+            }
+            else
+            {
+                // The CurlCode result expands to a human-friendly string, so we can just
+                // throw a kraken containing it and nothing else. The FileDownloadComplete
+                // code collects these into a larger DownloadErrorsKraken aggregate.
+
+                FileDownloadComplete(
+                    index,
+                    new Kraken(result.ToString())
+                );
+            }
         }
 
         /// <summary>
@@ -127,13 +267,22 @@ namespace CKAN
                 unique_downloads[module.download] = module;
             }
             this.modules.AddRange(unique_downloads.Values);
-            // Attach our progress report, if requested.            
+
+            // Schedule us to process our modules on completion.            
             onCompleted =
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
 
+            // retrieve the expected download size for each mod
+            List<KeyValuePair<Uri, long>> downloads_with_size = new List<KeyValuePair<Uri, long>>();
+
+            foreach(var item in unique_downloads)
+            {
+                downloads_with_size.Add(new KeyValuePair<Uri, long>(item.Key, item.Value.download_size));
+            }
+
             // Start the download!
-            Download(unique_downloads.Keys);
+            Download(downloads_with_size);
 
             // The Monitor.Wait function releases a lock, and then waits until it can re-acquire it.
             // Elsewhere, our downloading callback pulses the lock, which causes us to wake up and
@@ -145,13 +294,23 @@ namespace CKAN
             }
 
             // If the user cancelled our progress, then signal that.
+            // This *should* be harmless if we're using the curlsharp downloader,
+            // which watches for downloadCanceled all by itself. :)
             if (downloadCanceled)
             {
+                // Abort all our traditional downloads, if there are any.
                 foreach (var download in downloads)
                 {
                     download.agent.CancelAsync();
                 }
 
+                // Abort all our curl downloads, if there are any.
+                foreach (Thread thread in curl_threads)
+                {
+                    thread.Abort();
+                }
+
+                // Signal to the caller that the user cancelled the download.
                 throw new CancelledActionKraken("Download cancelled by user");
             }
 
@@ -225,8 +384,6 @@ namespace CKAN
                 }
             }
 
-            // TODO: If we've had our download cancelled, how do we clean our tmpfiles?
-
             if (filenames != null)
             {
                 // Finally, remove all our temp files.
@@ -254,7 +411,7 @@ namespace CKAN
         /// </summary>
         public void CancelDownload()
         {
-            log.Debug("Cancelling download");
+            log.Info("Cancelling download");
 
             downloadCanceled = true;
 
@@ -271,9 +428,11 @@ namespace CKAN
 
         /// <summary>
         /// Generates a download progress reports, and sends it to
-        /// onProgressReport if it's set.
+        /// onProgressReport if it's set. This takes the index of the file
+        /// being downloaded, the percent complete, the bytes downloaded,
+        /// and the total amount of bytes we expect to download.
         /// </summary>
-        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesLeft)
+        private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
         {
             if (downloadCanceled)
             {
@@ -292,15 +451,14 @@ namespace CKAN
                 download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
             }
 
-            download.bytesLeft = bytesLeft;
-            download.bytesDownloaded = bytesDownloaded;
+            download.size = bytesToDownload;
+            download.bytesLeft = download.size - bytesDownloaded;
             downloads[index] = download;
-
 
             int totalPercentage = 0;
             int totalBytesPerSecond = 0;
             long totalBytesLeft = 0;
-            long totalBytesDownloaded = 0;
+            long totalSize = 0;
 
             foreach (NetAsyncDownloaderDownloadPart t in downloads.ToList())
             {
@@ -310,23 +468,24 @@ namespace CKAN
                 }
 
                 totalBytesLeft += t.bytesLeft;
-                totalBytesDownloaded += t.bytesDownloaded;
-                totalBytesLeft += t.bytesLeft;
+                totalSize += t.size;
             }
-            totalPercentage = (int) ((totalBytesDownloaded*100)/(totalBytesLeft + totalBytesDownloaded + 1));
+            totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
 
             if (!downloadCanceled)
             {
                 User.RaiseProgress(
                     String.Format("{0} kbps - downloading - {1} MiB left",
                         totalBytesPerSecond/1024,
-                        totalBytesLeft/1024/1024),
+                        (totalBytesLeft)/1024/1024),
                     totalPercentage);
             }
         }
 
         /// <summary>
-        /// This method gets called back by `WebClient` when a download is completed.
+        /// This method gets called back by `WebClient` or our
+        /// curl downloader when a download is completed. It in turn
+        /// calls the onCompleted hook when *all* downloads are finished.
         /// </summary>
         private void FileDownloadComplete(int index, Exception error)
         {

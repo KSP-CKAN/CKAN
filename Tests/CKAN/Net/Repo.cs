@@ -21,6 +21,12 @@ namespace CKANTests
             registry.Installed().Clear();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            ksp.Dispose();
+        }
+
         [Test]
         public void UpdateRegistry()
         {

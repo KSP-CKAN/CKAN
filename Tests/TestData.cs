@@ -183,6 +183,49 @@ namespace Tests
             ";
         }
 
+        /// <summary>
+        /// Taurus HCV pod, which seems to cause weird KS errors when the unescaped
+        /// download string is used.
+        /// </summary>
+        public static string RandSCapsuleDyne()
+        {
+            return @"
+                {
+                    ""spec_version"": 1,
+                    ""name"": ""Taurus HCV - 3.75 m Stock-ish Crew Pod"",
+                    ""identifier"": ""RandSCapsuledyne"",
+                    ""license"": ""CC-BY-SA-3.0"",
+                    ""install"": [
+                        {
+                            ""file"": ""GameData/R&SCapsuledyne"",
+                            ""install_to"": ""GameData""
+                        }
+                    ],
+                    ""depends"": [
+                        {
+                            ""name"": ""BDAnimationModules""
+                        }
+                    ],
+                    ""resources"": {
+                        ""homepage"": ""http://forum.kerbalspaceprogram.com/threads/75074-Taurus-HCV-3-75-m-Stock-ish-Crew-Pod-v-b0-5-April-4-2014?p=1064792#post1064792"",
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/13/Taurus%20HCV%20-%203.75%20m%20Stock-ish%20Crew%20Pod""
+                    },
+                    ""ksp_version"": ""0.90"",
+                    ""abstract"": ""0.90.0 COMPATIBLE! The Taurus High Capacity Vehicle is a 7 kerbal, 3.75-m cockpit designed to integrate well with the stock game. "",
+                    ""author"": ""jnrobinson"",
+                    ""version"": ""1.4.0"",
+                    ""download"": ""https://kerbalstuff.com/mod/13/Taurus%20HCV%20-%203.75%20m%20Stock-ish%20Crew%20Pod/download/1.4.0"",
+                    ""x_generated_by"": ""netkan"",
+                    ""download_size"": 8351916
+                }
+            ";
+        }
+
+        public static CkanModule RandSCapsuleDyneModule()
+        {
+            return CkanModule.FromJson(RandSCapsuleDyne());
+        }
+
         public static Uri TestKAN()
         {
             return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
