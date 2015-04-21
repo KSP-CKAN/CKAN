@@ -20,6 +20,11 @@ namespace CKAN
             RefreshReposListBox();
 
             KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
+
+            LocalVersionLabel.Text = Meta.Version();
+
+            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
+
             UpdateCacheInfo();
         }
 
@@ -84,8 +89,33 @@ namespace CKAN
         {
             Main.Instance.Manager.ClearAutoStart();
 
-            Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Application.Exit();
+            // Mono throws an uninformative error if the file we try to run is not flagged as executable, mark it as such.
+            if (Util.IsLinux)
+            {
+                // Create the command with the filename of the currently running assembly.
+                string command = string.Format("+x \"{0}\"", System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
+                permsinfo.UseShellExecute = false;
+
+                // Execute the command.
+                Process permsprocess = Process.Start(permsinfo);
+
+                // Wait for chmod to finish and check the exit code.
+                permsprocess.WaitForExit();
+
+                // chmod returns 0 for successfull operation.
+                if (permsprocess.ExitCode != 0)
+                {
+                    throw new Kraken("Could not mark CKAN as executable.");
+                }
+            }
+
+            ProcessStartInfo sinfo = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            sinfo.UseShellExecute = false;
+
+            Process.Start(sinfo);
+            Environment.Exit(0);
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -119,7 +149,7 @@ namespace CKAN
             }
 
             var item = (Repository)ReposListBox.SelectedItem;
-//            Main.Instance.CurrentInstance.Registry.Repositories.Remove()
+            Main.Instance.CurrentInstance.Registry.Repositories.Remove(item.name);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
@@ -189,5 +219,38 @@ namespace CKAN
             RefreshReposListBox();
         }
 
+        private void CheckForUpdatesButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+
+                if (latestVersion.IsGreaterThan(new Version(Meta.Version())))
+                {
+                    InstallUpdateButton.Enabled = true;
+                }
+                else
+                {
+                    InstallUpdateButton.Enabled = false;
+                }
+
+                LatestVersionLabel.Text = latestVersion.ToString();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void InstallUpdateButton_Click(object sender, EventArgs e)
+        {
+            AutoUpdate.StartUpdateProcess(true);
+        }
+
+        private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            Main.Instance.m_Configuration.Save();
+        }
     }
 }

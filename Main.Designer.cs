@@ -33,6 +33,7 @@ namespace CKAN
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -158,15 +159,23 @@ namespace CKAN
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.installFromckanToolStripMenuItem,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // installFromckanToolStripMenuItem
+            // 
+            this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
+            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
+            this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
+            // 
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(92, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(165, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
@@ -691,7 +700,8 @@ namespace CKAN
             "Depends",
             "Recommends",
             "Suggests",
-            "Supports"});
+            "Supports",
+            "Conflicts"});
             this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
             this.ModuleRelationshipType.Name = "ModuleRelationshipType";
             this.ModuleRelationshipType.Size = new System.Drawing.Size(340, 21);
@@ -1133,6 +1143,7 @@ namespace CKAN
             this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
+            this.FormClosing += Main_FormClosing;
             this.Load += new System.EventHandler(this.Main_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1259,6 +1270,7 @@ namespace CKAN
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
         public DataGridView ModList;
+        private ToolStripMenuItem installFromckanToolStripMenuItem;
     }
 }
 

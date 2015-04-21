@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace CKAN
@@ -10,7 +11,13 @@ namespace CKAN
         public bool AutoCloseWaitDialog = false;
         public bool URLHandlerNoNag = false;
 
+        public bool CheckForUpdatesOnLaunch = false;
+        public bool CheckForUpdatesOnLaunchNoNag = false;
+
         private string m_Path = "";
+
+        public Point WindowLoc = new Point(0, 0);
+        public Size WindowSize = new Size(1024, 500);
 
         public void Save()
         {
