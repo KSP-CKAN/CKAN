@@ -6,417 +6,420 @@ using log4net;
 
 namespace CKAN
 {
-	public class RelationshipResolverOptions : ICloneable
-	{
-		public bool with_recommends = true;
+    public class RelationshipResolverOptions : ICloneable
+    {
+        public bool with_recommends = true;
 
-		public bool with_suggests;
-		//Recursively add suggests.
-		public bool with_all_suggests;
+        public bool with_suggests;
+        //Recursively add suggests.
+        public bool with_all_suggests;
 
-		public bool without_toomanyprovides_kraken = false;
-		public bool without_enforce_consistency = false;
-		public bool procede_with_inconsistencies = false;
+        public bool without_toomanyprovides_kraken = false;
+        public bool without_enforce_consistency = false;
+        public bool procede_with_inconsistencies = false;
 
-		public object Clone()
-		{
-			return MemberwiseClone();
-		}
-	}
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+    }
 
-	// TODO: RR currently conducts a depth-first resolution of requirements. While we do the
-	// right thing in processing all depdenencies first, then recommends, and then suggests,
-	// we could find that a recommendation many layers deep prevents a recommendation in the
-	// original mod's recommends list.
-	//
-	// If we resolved in things breadth-first order, we're less likely to encounter surprises
-	// where a nth-deep recommend blocks a top-level recommend.
+    // TODO: RR currently conducts a depth-first resolution of requirements. While we do the
+    // right thing in processing all depdenencies first, then recommends, and then suggests,
+    // we could find that a recommendation many layers deep prevents a recommendation in the
+    // original mod's recommends list.
+    //
+    // If we resolved in things breadth-first order, we're less likely to encounter surprises
+    // where a nth-deep recommend blocks a top-level recommend.
 
-	// TODO: Add mechanism so that clients can add mods with relationshup other than UserAdded. 
-	// Currently only made to support the with_{} options. 
-	public class RelationshipResolver
-	{
-		// A list of all the mods we're going to install.
-		private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
-		private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
+    // TODO: Add mechanism so that clients can add mods with relationshup other than UserAdded. 
+    // Currently only made to support the with_{} options. 
+    public class RelationshipResolver
+    {
+        // A list of all the mods we're going to install.
+        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
 
-		private readonly List<KeyValuePair<Module, Module>> conflicts =
-			new List<KeyValuePair<Module, Module>>();
+        private readonly List<KeyValuePair<Module, Module>> conflicts =
+            new List<KeyValuePair<Module, Module>>();
 
-		private readonly Dictionary<Module, Relationship> reasons = new Dictionary<Module, Relationship>();
-		private readonly Registry registry;
-		private readonly KSPVersion kspversion;
+        private readonly Dictionary<Module, Relationship> reasons = new Dictionary<Module, Relationship>();
+        private readonly Registry registry;
+        private readonly KSPVersion kspversion;
 
 
-        public RelationshipResolver(ICollection<string> moduleNames, RelationshipResolverOptions options, Registry registry, KSPVersion kspversion):
-            this(moduleNames.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
-				options,
-				registry,
-				kspversion)
-		{
-			// Does nothing, just calles the other overloaded constructor
-		}
+        public RelationshipResolver(ICollection<string> moduleNames, RelationshipResolverOptions options, Registry registry,
+            KSPVersion kspversion) :
+                this(moduleNames.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
+                    options,
+                    registry,
+                    kspversion)
+        {
+            // Does nothing, just calles the other overloaded constructor
+        }
 
-		/// <summary>
-		/// Creates a new resolver that will find a way to install all the modules specified.
-		/// </summary>
-		public RelationshipResolver(ICollection<CkanModule> modules, RelationshipResolverOptions options, Registry registry,
-			KSPVersion kspversion)
-		{
-			this.registry = registry;
-			this.kspversion = kspversion;
+        /// <summary>
+        /// Creates a new resolver that will find a way to install all the modules specified.
+        /// </summary>
+        public RelationshipResolver(ICollection<CkanModule> modules, RelationshipResolverOptions options, Registry registry,
+            KSPVersion kspversion)
+        {
+            this.registry = registry;
+            this.kspversion = kspversion;
 
-			// Start by figuring out what versions we're installing, and then
-			// adding them to the list. This *must* be pre-populated with all
-			// user-specified modules, as they may be supplying things that provide
-			// virtual packages.
+            // Start by figuring out what versions we're installing, and then
+            // adding them to the list. This *must* be pre-populated with all
+            // user-specified modules, as they may be supplying things that provide
+            // virtual packages.
 
-			var user_requested_mods = new List<CkanModule>();
+            var user_requested_mods = new List<CkanModule>();
 
-			log.DebugFormat("Processing relationships for {0} modules", modules.Count);
+            log.DebugFormat("Processing relationships for {0} modules", modules.Count);
 
-			foreach (CkanModule module in modules)
-			{
-				log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
+            foreach (CkanModule module in modules)
+            {
+                log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
-				var module1 = module; //Silence a warning re. closures over foreach var. 
-				foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(module1)))
-				{
-					if (options.procede_with_inconsistencies)
-					{
-						conflicts.Add(new KeyValuePair<Module, Module>(listed_mod, module));
-						conflicts.Add(new KeyValuePair<Module, Module>(module, listed_mod));
-					}
-					else
-					{
-						throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module,
-							listed_mod));
-					}
-				}
+                var module1 = module; //Silence a warning re. closures over foreach var. 
+                foreach (CkanModule listed_mod in modlist.Values.Where(listed_mod => listed_mod.ConflictsWith(module1)))
+                {
+                    if (options.procede_with_inconsistencies)
+                    {
+                        conflicts.Add(new KeyValuePair<Module, Module>(listed_mod, module));
+                        conflicts.Add(new KeyValuePair<Module, Module>(module, listed_mod));
+                    }
+                    else
+                    {
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module,
+                            listed_mod));
+                    }
+                }
 
-				user_requested_mods.Add(module);
-				Add(module, new Relationship.UserRequested());
-			}
+                user_requested_mods.Add(module);
+                Add(module, new Relationship.UserRequested());
+            }
 
-			// Now that we've already pre-populated modlist, we can resolve
-			// the rest of our dependencies.
+            // Now that we've already pre-populated modlist, we can resolve
+            // the rest of our dependencies.
 
-			foreach (CkanModule module in user_requested_mods)
-			{
-				log.InfoFormat("Resolving relationships for {0}", module.identifier);
-				Resolve(module, options);
-			}
+            foreach (CkanModule module in user_requested_mods)
+            {
+                log.InfoFormat("Resolving relationships for {0}", module.identifier);
+                Resolve(module, options);
+            }
 
-			var final_modules = new List<Module>(modlist.Values);
-			final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
+            var final_modules = new List<Module>(modlist.Values);
+            final_modules.AddRange(registry.InstalledModules.Select(x => x.Module));
 
-			if (!options.without_enforce_consistency)
-			{
-				// Finally, let's do a sanity check that our solution is actually sane.
-				SanityChecker.EnforceConsistency(
-					final_modules,
-					registry.InstalledDlls
-					);
-			}
-		}
+            if (!options.without_enforce_consistency)
+            {
+                // Finally, let's do a sanity check that our solution is actually sane.
+                SanityChecker.EnforceConsistency(
+                    final_modules,
+                    registry.InstalledDlls
+                    );
+            }
+        }
 
-		/// <summary>
-		///     Returns the default options for relationship resolution.
-		/// </summary>
-		public static RelationshipResolverOptions DefaultOpts()
-		{
-			var opts = new RelationshipResolverOptions
-			{
-				with_recommends = true,
-				with_suggests = false,
-				with_all_suggests = false
-			};
+        /// <summary>
+        ///     Returns the default options for relationship resolution.
+        /// </summary>
+        public static RelationshipResolverOptions DefaultOpts()
+        {
+            var opts = new RelationshipResolverOptions
+            {
+                with_recommends = true,
+                with_suggests = false,
+                with_all_suggests = false
+            };
 
-			return opts;
-		}
+            return opts;
+        }
 
-		/// <summary>
-		/// Resolves all relationships for a module.
-		/// May recurse to ResolveStanza, which may add additional modules to be installed.
-		/// </summary>
-		private void Resolve(CkanModule module, RelationshipResolverOptions options)
-		{
-			// Even though we may resolve top-level suggests for our module,
-			// we don't install suggestions all the down unless with_all_suggests
-			// is true.
-			var sub_options = (RelationshipResolverOptions) options.Clone();
-			sub_options.with_suggests = false;
+        /// <summary>
+        /// Resolves all relationships for a module.
+        /// May recurse to ResolveStanza, which may add additional modules to be installed.
+        /// </summary>
+        private void Resolve(CkanModule module, RelationshipResolverOptions options)
+        {
+            // Even though we may resolve top-level suggests for our module,
+            // we don't install suggestions all the down unless with_all_suggests
+            // is true.
+            var sub_options = (RelationshipResolverOptions) options.Clone();
+            sub_options.with_suggests = false;
 
-			log.DebugFormat("Resolving dependencies for {0}", module.identifier);
-			ResolveStanza(module.depends, new Relationship.Depends(module), sub_options);
+            log.DebugFormat("Resolving dependencies for {0}", module.identifier);
+            ResolveStanza(module.depends, new Relationship.Depends(module), sub_options);
 
-			if (options.with_recommends)
-			{
-				log.DebugFormat("Resolving recommends for {0}", module.identifier);
-				ResolveStanza(module.recommends, new Relationship.Recommended(module), sub_options, true);
-			}
+            if (options.with_recommends)
+            {
+                log.DebugFormat("Resolving recommends for {0}", module.identifier);
+                ResolveStanza(module.recommends, new Relationship.Recommended(module), sub_options, true);
+            }
 
-			if (options.with_suggests || options.with_all_suggests)
-			{
-				log.DebugFormat("Resolving suggests for {0}", module.identifier);
-				ResolveStanza(module.suggests, new Relationship.Suggested(module), sub_options, true);
-			}
-		}
+            if (options.with_suggests || options.with_all_suggests)
+            {
+                log.DebugFormat("Resolving suggests for {0}", module.identifier);
+                ResolveStanza(module.suggests, new Relationship.Suggested(module), sub_options, true);
+            }
+        }
 
-		/// <summary>
-		/// Resolve a relationship stanza (a list of relationships).
-		/// This will add modules to be installed, if required.
-		/// May recurse back to Resolve for those new modules.
-		/// 
-		/// If `soft_resolve` is true, we warn rather than throw exceptions on mods we cannot find.
-		/// If `soft_resolve` is false (default), we throw a ModuleNotFoundKraken if we can't find a dependency.
-		/// 
-		/// Throws a TooManyModsProvideKraken if we have too many choices.
-		/// </summary>
-		private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, Relationship reason,
-			RelationshipResolverOptions options, bool soft_resolve = false)
-		{
-			if (stanza == null)
-			{
-				return;
-			}
+        /// <summary>
+        /// Resolve a relationship stanza (a list of relationships).
+        /// This will add modules to be installed, if required.
+        /// May recurse back to Resolve for those new modules.
+        /// 
+        /// If `soft_resolve` is true, we warn rather than throw exceptions on mods we cannot find.
+        /// If `soft_resolve` is false (default), we throw a ModuleNotFoundKraken if we can't find a dependency.
+        /// 
+        /// Throws a TooManyModsProvideKraken if we have too many choices.
+        /// </summary>
+        private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, Relationship reason,
+            RelationshipResolverOptions options, bool soft_resolve = false)
+        {
+            if (stanza == null)
+            {
+                return;
+            }
 
-			foreach (string dep_name in stanza.Select(dep => dep.name))
-			{
-				log.DebugFormat("Considering {0}", dep_name);
+            foreach (string dep_name in stanza.Select(dep => dep.name))
+            {
+                log.DebugFormat("Considering {0}", dep_name);
 
-				// If we already have this dependency covered, skip.
-				// If it's already installed, skip.
-				if (modlist.ContainsKey(dep_name) || registry.IsInstalled(dep_name))
-				{
-					continue;
-				}
+                // If we already have this dependency covered, skip.
+                // If it's already installed, skip.
+                if (modlist.ContainsKey(dep_name) || registry.IsInstalled(dep_name))
+                {
+                    continue;
+                }
 
-				List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion);
+                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion);
 
-				if (candidates.Count == 0)
-				{
-					if (!soft_resolve)
-					{
-						log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
-						throw new ModuleNotFoundKraken(dep_name);
-					}
-					log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
-					continue;
-				}
+                if (candidates.Count == 0)
+                {
+                    if (!soft_resolve)
+                    {
+                        log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
+                        throw new ModuleNotFoundKraken(dep_name);
+                    }
+                    log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                    continue;
+                }
                 // Only throw TooManyModsProvideKraken if too many candidates and 
                 // if we actually care that there are too many candidates
                 if (candidates.Count > 1 && !options.without_toomanyprovides_kraken)
-				{
-					throw new TooManyModsProvideKraken(dep_name, candidates);
-				}
+                {
+                    throw new TooManyModsProvideKraken(dep_name, candidates);
+                }
 
-				CkanModule candidate = candidates[0];
+                CkanModule candidate = candidates[0];
 
-				// Finally, check our candidate against everything which might object
-				// to it being installed; that's all the mods which are fixed in our
-				// list thus far, as well as everything on the system.
+                // Finally, check our candidate against everything which might object
+                // to it being installed; that's all the mods which are fixed in our
+                // list thus far, as well as everything on the system.
 
-				var fixed_mods = new HashSet<Module>(modlist.Values);
-				fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
+                var fixed_mods = new HashSet<Module>(modlist.Values);
+                fixed_mods.UnionWith(registry.InstalledModules.Select(x => x.Module));
 
-				var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
-				if (conflicting_mod == null)
-				{
-					// Okay, looks like we want this one. Adding.
-					Add(candidate, reason);
-					Resolve(candidate, options);
-				}
-				else if (soft_resolve)
-				{
-					log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
-				}
-				else
-				{
-					if (options.procede_with_inconsistencies)
-					{
-						Add(candidate, reason);
-						conflicts.Add(new KeyValuePair<Module, Module>(conflicting_mod, candidate));
-						conflicts.Add(new KeyValuePair<Module, Module>(candidate, conflicting_mod));
-					}
-					else
-					{
-						throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", conflicting_mod,
-							candidate));
-					}
-				}
-			}
-		}
+                var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
+                if (conflicting_mod == null)
+                {
+                    // Okay, looks like we want this one. Adding.
+                    Add(candidate, reason);
+                    Resolve(candidate, options);
+                }
+                else if (soft_resolve)
+                {
+                    log.InfoFormat("{0} would cause conflicts, excluding it from consideration", candidate);
+                }
+                else
+                {
+                    if (options.procede_with_inconsistencies)
+                    {
+                        Add(candidate, reason);
+                        conflicts.Add(new KeyValuePair<Module, Module>(conflicting_mod, candidate));
+                        conflicts.Add(new KeyValuePair<Module, Module>(candidate, conflicting_mod));
+                    }
+                    else
+                    {
+                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", conflicting_mod,
+                            candidate));
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		/// Adds the specified module to the list of modules we're installing.
-		/// This also adds its provides list to what we have available.
-		/// </summary>
-		private void Add(CkanModule module, Relationship reason)
-		{
-			if (module.IsMetapackage)
-				return;
+        /// <summary>
+        /// Adds the specified module to the list of modules we're installing.
+        /// This also adds its provides list to what we have available.
+        /// </summary>
+        private void Add(CkanModule module, Relationship reason)
+        {
+            if (module.IsMetapackage)
+                return;
 
-			log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
+            log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
-			if (modlist.ContainsKey(module.identifier))
-			{
-				// We should never be adding something twice!
-				log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
-				throw new ArgumentException("Already contains module:" + module.identifier);
-			}
-			modlist.Add(module.identifier, module);
-			reasons.Add(module, reason);
+            if (modlist.ContainsKey(module.identifier))
+            {
+                // We should never be adding something twice!
+                log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
+                throw new ArgumentException("Already contains module:" + module.identifier);
+            }
+            modlist.Add(module.identifier, module);
+            reasons.Add(module, reason);
 
-			log.DebugFormat("Added {0}", module.identifier);
-			// Stop here if it doesn't have any provide aliases.
-			if (module.provides == null)
-			{
-				return;
-			}
+            log.DebugFormat("Added {0}", module.identifier);
+            // Stop here if it doesn't have any provide aliases.
+            if (module.provides == null)
+            {
+                return;
+            }
 
-			// Handle provides/aliases if it does.
+            // Handle provides/aliases if it does.
 
-			// It's okay if there's already a key for one of our aliases
-			// in the resolution list. In which case, we don't do anything.
-			var aliases = module.provides.Where(alias => !modlist.ContainsKey(alias));
-			foreach (string alias in aliases)
-			{
-				log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
-				modlist.Add(alias, module);
-			}
-		}
+            // It's okay if there's already a key for one of our aliases
+            // in the resolution list. In which case, we don't do anything.
+            var aliases = module.provides.Where(alias => !modlist.ContainsKey(alias));
+            foreach (string alias in aliases)
+            {
+                log.DebugFormat("Adding {0} providing {1}", module.identifier, alias);
+                modlist.Add(alias, module);
+            }
+        }
 
-		/// <summary>
-		/// Returns a list of all modules to install to satisify the changes required.
-		/// </summary>
-		public List<CkanModule> ModList()
-		{
-			var modules = new HashSet<CkanModule>(modlist.Values);
-			return modules.ToList();
-		}
+        /// <summary>
+        /// Returns a list of all modules to install to satisify the changes required.
+        /// </summary>
+        public List<CkanModule> ModList()
+        {
+            var modules = new HashSet<CkanModule>(modlist.Values);
+            return modules.ToList();
+        }
 
-		/// <summary>
-		///  Returns a IList consisting of keyValuePairs containing conflicting mods.
-		/// Note: (a,b) in the list should imply that (b,a) is in the list. 
-		/// </summary>
-		public Dictionary<Module, String> ConflictList {
-			get
-			{
-				var dict = new Dictionary<Module, String>();
-				foreach (var conflict in conflicts)
-				{
-					var module = conflict.Key;
-					dict[module] = string.Format("{0} conflicts with {1}\n\n{0}:\n{2}\n{1}:\n{3}",
-						module.identifier, conflict.Value.identifier,
-						ReasonStringFor(module), ReasonStringFor(conflict.Value)); ;
-				}
-				return dict;
-				
-			} }
+        /// <summary>
+        ///  Returns a IList consisting of keyValuePairs containing conflicting mods.
+        /// Note: (a,b) in the list should imply that (b,a) is in the list. 
+        /// </summary>
+        public Dictionary<Module, String> ConflictList
+        {
+            get
+            {
+                var dict = new Dictionary<Module, String>();
+                foreach (var conflict in conflicts)
+                {
+                    var module = conflict.Key;
+                    dict[module] = string.Format("{0} conflicts with {1}\n\n{0}:\n{2}\n{1}:\n{3}",
+                        module.identifier, conflict.Value.identifier,
+                        ReasonStringFor(module), ReasonStringFor(conflict.Value));
+                    ;
+                }
+                return dict;
+            }
+        }
 
-		public bool IsConsistant => conflicts.Any();
+        public bool IsConsistant => conflicts.Any();
 
-		internal Relationship ReasonFor(CkanModule mod)
-		{
-			if (!ModList().Contains(mod))
-			{
-				throw new ArgumentException("Mod " + mod.StandardName() + " is not in the list");
-			}
-			return reasons[mod];
-		}
+        internal Relationship ReasonFor(CkanModule mod)
+        {
+            if (!ModList().Contains(mod))
+            {
+                throw new ArgumentException("Mod " + mod.StandardName() + " is not in the list");
+            }
+            return reasons[mod];
+        }
 
-		/// <summary>
-		/// Displays a user readable string explaining why the mod was chosen.
-		/// </summary>
-		/// <param name="mod">A Mod in the resolvers modlist. Must not be null</param>
-		/// <returns></returns>
-		public string ReasonStringFor(Module mod)
-		{
-			if (mod == null) throw new ArgumentNullException();
-			if (!ModList().Contains(mod))
-			{
-				throw new ArgumentException("Mod " + mod.identifier + " is not in the list");
-			}
+        /// <summary>
+        /// Displays a user readable string explaining why the mod was chosen.
+        /// </summary>
+        /// <param name="mod">A Mod in the resolvers modlist. Must not be null</param>
+        /// <returns></returns>
+        public string ReasonStringFor(Module mod)
+        {
+            if (mod == null) throw new ArgumentNullException();
+            if (!ModList().Contains(mod))
+            {
+                throw new ArgumentException("Mod " + mod.identifier + " is not in the list");
+            }
 
-			var reason = reasons[mod];
-			return reason.GetType() == typeof (Relationship.UserRequested)
-				? reason.Reason
-				: reason.Reason + ReasonStringFor(reason.Parent);
-		}
-	}
+            var reason = reasons[mod];
+            return reason.GetType() == typeof (Relationship.UserRequested)
+                ? reason.Reason
+                : reason.Reason + ReasonStringFor(reason.Parent);
+        }
+    }
 
-	/// <summary>
-	/// Used to keep track of the relationships between modules in the resolver. 
-	/// Intended to be used for displaying messages to the user. 	
-	/// </summary>
-	internal abstract class Relationship
-	{
-		//Currently assumed to exist for any relationship other than useradded
-		public virtual CkanModule Parent { get; protected set; }
-		//Should contain a newline at the end of the string. 
-		public abstract String Reason { get; }
+    /// <summary>
+    /// Used to keep track of the relationships between modules in the resolver. 
+    /// Intended to be used for displaying messages to the user.     
+    /// </summary>
+    internal abstract class Relationship
+    {
+        //Currently assumed to exist for any relationship other than useradded
+        public virtual CkanModule Parent { get; protected set; }
+        //Should contain a newline at the end of the string. 
+        public abstract String Reason { get; }
 
 
-		public class UserRequested : Relationship
-		{
-			private readonly Module module;
+        public class UserRequested : Relationship
+        {
+            private readonly Module module;
 
-			public override CkanModule Parent
-			{
-				get
-				{
-					Debug.Assert(false);
-					throw new Exception("Should never be called on UserRequested");
-				}
-			}
+            public override CkanModule Parent
+            {
+                get
+                {
+                    Debug.Assert(false);
+                    throw new Exception("Should never be called on UserRequested");
+                }
+            }
 
-			public override string Reason
-			{
-				get { return "  Was installed or requested by user.\n"; }
-			}
-		}
+            public override string Reason
+            {
+                get { return "  Was installed or requested by user.\n"; }
+            }
+        }
 
-		public sealed class Suggested : Relationship
-		{
-			public Suggested(CkanModule module)
-			{
-				if (module == null) throw new ArgumentNullException();
-				Parent = module;
-			}
+        public sealed class Suggested : Relationship
+        {
+            public Suggested(CkanModule module)
+            {
+                if (module == null) throw new ArgumentNullException();
+                Parent = module;
+            }
 
-			public override string Reason
-			{
-				get { return "  Suggested by " + Parent.identifier + ".\n"; }
-			}
-		}
+            public override string Reason
+            {
+                get { return "  Suggested by " + Parent.identifier + ".\n"; }
+            }
+        }
 
-		public sealed class Depends : Relationship
-		{
-			public Depends(CkanModule module)
-			{
-				if (module == null) throw new ArgumentNullException();
-				Parent = module;
-			}
+        public sealed class Depends : Relationship
+        {
+            public Depends(CkanModule module)
+            {
+                if (module == null) throw new ArgumentNullException();
+                Parent = module;
+            }
 
-			public override string Reason
-			{
-				get { return "  To satisfy dependancy from " + Parent.identifier + ".\n"; }
-			}
-		}
+            public override string Reason
+            {
+                get { return "  To satisfy dependancy from " + Parent.identifier + ".\n"; }
+            }
+        }
 
-		public sealed class Recommended : Relationship
-		{
-			public Recommended(CkanModule module)
-			{
-				if (module == null) throw new ArgumentNullException();
-				Parent = module;
-			}
+        public sealed class Recommended : Relationship
+        {
+            public Recommended(CkanModule module)
+            {
+                if (module == null) throw new ArgumentNullException();
+                Parent = module;
+            }
 
-			public override string Reason
-			{
-				get { return "  Recommended by " + Parent.identifier + ".\n"; }
-			}
-		}
-	}
+            public override string Reason
+            {
+                get { return "  Recommended by " + Parent.identifier + ".\n"; }
+            }
+        }
+    }
 }
