@@ -45,7 +45,7 @@ namespace CKAN
 
             Abstract = mod.@abstract;
             Homepage = mod.resources != null && mod.resources.homepage != null
-                ? (object)mod.resources.homepage
+                ? (object) mod.resources.homepage
                 : "N/A";
 
             Identifier = mod.identifier;
@@ -55,37 +55,38 @@ namespace CKAN
         {
             return Mod;
         }
-		public KeyValuePair<CkanModule, GUIModChangeType>? GetRequestedChange()
-		{
-			if (IsInstalled ^ IsInstallChecked)
-			{
-				var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
-				return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, change_type);
-			}
-			if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
-			{
-				return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
-			}
-			return null;
-		}
-		public static implicit operator CkanModule(GUIMod mod)
-		{
-			return mod.ToCkanModule();
-		}
-		public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
-		{
-			//Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
-			var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-			bool value = (setvalueto.HasValue ? setvalueto.Value : (bool)update_cell.Value);
-			IsUpgradeChecked = value;
-			update_cell.Value = value;
-		}
-		public void SetInstallChecked(DataGridViewRow row)
-		{
-			//Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
-			var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-			IsInstallChecked = (bool)install_cell.Value;
-		}
 
-	}
+        public KeyValuePair<CkanModule, GUIModChangeType>? GetRequestedChange()
+        {
+            if (IsInstalled ^ IsInstallChecked)
+            {
+                var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
+                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, change_type);
+            }
+            if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
+            {
+                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
+            }
+            return null;
+        }
+        public static implicit operator CkanModule(GUIMod mod)
+        {
+            return mod.ToCkanModule();
+        }
+        public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
+        {
+            //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
+            var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
+            bool value = (setvalueto.HasValue ? setvalueto.Value : (bool)update_cell.Value);
+            IsUpgradeChecked = value;
+            update_cell.Value = value;
+        }
+        public void SetInstallChecked(DataGridViewRow row)
+        {
+            //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
+            var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
+            IsInstallChecked = (bool)install_cell.Value;
+        }
+
+    }
 }

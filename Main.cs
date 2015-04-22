@@ -62,71 +62,71 @@ namespace CKAN
 
         public GUIUser m_User = null;
 
-		private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
-		private Dictionary<Module, string> conflicts;
-		private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ChangeSet
-		{
-			get { return change_set; }
-			set
-			{
-				change_set = value;
-				ChangeSetUpdated();
-			}
-		}
-		private Dictionary<Module, string> Conflicts
-		{
-			get { return conflicts; }
-			set
-			{
-				conflicts = value;
-				ConflictsUpdated();
-			}
-		}		
-		private void ConflictsUpdated()
-		{
+        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
+        private Dictionary<Module, string> conflicts;
+        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ChangeSet
+        {
+            get { return change_set; }
+            set
+            {
+                change_set = value;
+                ChangeSetUpdated();
+            }
+        }
+        private Dictionary<Module, string> Conflicts
+        {
+            get { return conflicts; }
+            set
+            {
+                conflicts = value;
+                ConflictsUpdated();
+            }
+        }        
+        private void ConflictsUpdated()
+        {
 
-				foreach (DataGridViewRow row in ModList.Rows)
-				{
-				var module = ((GUIMod)row.Tag).ToCkanModule();
-				string value;
+                foreach (DataGridViewRow row in ModList.Rows)
+                {
+                var module = ((GUIMod)row.Tag).ToCkanModule();
+                string value;
 
-					if (Conflicts!=null && Conflicts.TryGetValue(module, out value))
-					{						
-						var conflict_text = value;
-						foreach (DataGridViewCell cell in row.Cells)
-						{
-							cell.ToolTipText = conflict_text;
-						}
-						row.DefaultCellStyle.BackColor = Color.LightCoral;
-					}
-					else
-					{
-					foreach (DataGridViewCell cell in row.Cells)
-					{
-						cell.ToolTipText = null;
-					}
-					
-						row.DefaultCellStyle.BackColor = Color.White;
-				}
-				
-			}							
-		}
-		private void ChangeSetUpdated()
-		{
-			if (ChangeSet != null && ChangeSet.Any())
-			{
-				UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
-				m_TabController.ShowTab("ChangesetTabPage", 1, false);
-				ApplyToolButton.Enabled = true;
-			}
-			else
-			{
-				m_TabController.HideTab("ChangesetTabPage");
-				ApplyToolButton.Enabled = false;
-			}
-		}
+                    if (Conflicts!=null && Conflicts.TryGetValue(module, out value))
+                    {                        
+                        var conflict_text = value;
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            cell.ToolTipText = conflict_text;
+                        }
+                        row.DefaultCellStyle.BackColor = Color.LightCoral;
+                    }
+                    else
+                    {
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.ToolTipText = null;
+                    }
+                    
+                        row.DefaultCellStyle.BackColor = Color.White;
+                }
+                
+            }                            
+        }
+        private void ChangeSetUpdated()
+        {
+            if (ChangeSet != null && ChangeSet.Any())
+            {
+                UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
+                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                ApplyToolButton.Enabled = true;
+            }
+            else
+            {
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
+        }
 
-		public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
+        public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
             m_CommandLineArgs = cmdlineArgs;
             m_User = User;
@@ -196,7 +196,7 @@ namespace CKAN
                     ActiveControl = FilterByNameTextBox;
                     return true;
                 case (Keys.Control | Keys.S):                    
-                    if (ChangeSet!=null && ChangeSet.Any())						
+                    if (ChangeSet!=null && ChangeSet.Any())                        
                     {
                         ApplyToolButton_Click(null, null);
                     }
@@ -331,11 +331,11 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-				var mod = ((GUIMod)row.Tag);
-				if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell) {
-					mod.SetUpgradeChecked(row, true);
-					ApplyToolButton.Enabled = true;
-				}
+                var mod = ((GUIMod)row.Tag);
+                if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell) {
+                    mod.SetUpgradeChecked(row, true);
+                    ApplyToolButton.Enabled = true;
+                }
             }
 
             ModList.Refresh();
@@ -442,72 +442,72 @@ namespace CKAN
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-	    private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-	    {
-		    if (mainModList.ModFilter == GUIModFilter.Incompatible)
-		    {
-			    return;
-		    }
-			var row_index = e.RowIndex;
-			var columnIndex = e.ColumnIndex;
-		    
-		    if (row_index < 0 || columnIndex < 0)
-		    {
-			    return;
-		    }
-		    var registry_manager = RegistryManager.Instance(CurrentInstance);
+        private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (mainModList.ModFilter == GUIModFilter.Incompatible)
+            {
+                return;
+            }
+            var row_index = e.RowIndex;
+            var columnIndex = e.ColumnIndex;
+            
+            if (row_index < 0 || columnIndex < 0)
+            {
+                return;
+            }
+            var registry_manager = RegistryManager.Instance(CurrentInstance);
 
-			var grid = sender as DataGridView;
+            var grid = sender as DataGridView;
 
-			var row = grid.Rows[row_index];
-		    var grid_view_cell = row.Cells[columnIndex];
+            var row = grid.Rows[row_index];
+            var grid_view_cell = row.Cells[columnIndex];
 
-		    if (grid_view_cell is DataGridViewLinkCell)
-		    {
-			    var cell = grid_view_cell as DataGridViewLinkCell;
-			    Process.Start(cell.Value.ToString());
-		    }
-		    else if (columnIndex < 2)
-		    {
-			    var gui_mod = ((GUIMod) row.Tag);
-			    switch (columnIndex)
-			    {
-				    case 0:
-					    gui_mod.SetInstallChecked(row);
-					    break;
-				    case 1:
-					    gui_mod.SetUpgradeChecked(row);
-					    break;
-			    }
+            if (grid_view_cell is DataGridViewLinkCell)
+            {
+                var cell = grid_view_cell as DataGridViewLinkCell;
+                Process.Start(cell.Value.ToString());
+            }
+            else if (columnIndex < 2)
+            {
+                var gui_mod = ((GUIMod) row.Tag);
+                switch (columnIndex)
+                {
+                    case 0:
+                        gui_mod.SetInstallChecked(row);
+                        break;
+                    case 1:
+                        gui_mod.SetUpgradeChecked(row);
+                        break;
+                }
 
-			    var registry = registry_manager.registry;
-			    UpdateChangeSetAndConflicts(registry);
-		    }
-		    ModList.EndEdit();
-	    }
+                var registry = registry_manager.registry;
+                UpdateChangeSetAndConflicts(registry);
+            }
+            ModList.EndEdit();
+        }
 
-		private void UpdateChangeSetAndConflicts(Registry registry)
-		{
-			IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
-			Dictionary<Module, string> conflicts;
+        private void UpdateChangeSetAndConflicts(Registry registry)
+        {
+            IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
+            Dictionary<Module, string> conflicts;
 
-			var user_change_set = mainModList.ComputeUserChangeSet();
-			try
-			{
-				var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-				full_change_set = MainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.Version());
-				conflicts = null;
-			}
-			catch (InconsistentKraken)
-			{
-				conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
-				full_change_set = null;
-			}
+            var user_change_set = mainModList.ComputeUserChangeSet();
+            try
+            {
+                var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                full_change_set = MainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.Version());
+                conflicts = null;
+            }
+            catch (InconsistentKraken)
+            {
+                conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+                full_change_set = null;
+            }
 
-			Conflicts = conflicts;
-			ChangeSet = full_change_set;
-		}
-		private void FilterAllButton_Click(object sender, EventArgs e)
+            Conflicts = conflicts;
+            ChangeSet = full_change_set;
+        }
+        private void FilterAllButton_Click(object sender, EventArgs e)
         {
             mainModList.ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";
