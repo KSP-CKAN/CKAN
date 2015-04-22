@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CKAN;
 using Version = CKAN.Version;
 using NUnit.Framework;
@@ -35,7 +36,7 @@ namespace Tests.CKAN.Relationships
         }
 
         [Test]
-        public void Constructor_WithConflictingModules_Throws()
+        public void Constructor_WithConflictingModules()
         {
             var list = new List<string>();
             var mod_a = generator.GeneratorRandomModule();
@@ -47,12 +48,22 @@ namespace Tests.CKAN.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-
+            
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
                 null));
+
+
+            options.procede_with_inconsistencies = true;
+            var resolver = new RelationshipResolver(list, options, registry, null);
+	        var a = resolver.ConflictList.First();
+			var b = resolver.ConflictList.First();
+
+	        Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_a)));
+			Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_b)));
+			Assert.That(resolver.ConflictList, Has.Count.EqualTo(2));
         }
 
         [Test]
@@ -709,8 +720,86 @@ namespace Tests.CKAN.Relationships
                 options,
                 registry,
                 null));
-
         }
+
+
+        [Test]
+        public void ReasonFor_WithModsNotInList_ThrowsArgumentException()
+        {
+            var list = new List<string>();
+            var mod = generator.GeneratorRandomModule();
+            list.Add(mod.identifier);
+            registry.AddAvailable(mod);
+            AddToRegistry(mod);
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+
+            var mod_not_in_resolver_list = generator.GeneratorRandomModule();
+            CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);            
+            Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonFor(mod_not_in_resolver_list));
+            
+        }
+
+        [Test]
+        public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
+        {
+            var list = new List<string>();
+            var mod = generator.GeneratorRandomModule();                        
+            list.Add(mod.identifier);
+            registry.AddAvailable(mod);
+            AddToRegistry(mod);
+
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            var reason = relationship_resolver.ReasonFor(mod);
+            Assert.That(reason,Is.AssignableTo<Relationship.UserRequested>());
+        }
+
+        [Test]
+        public void ReasonFor_WithSugestedMods_GivesCorrectParent()
+        {
+            var list = new List<string>();
+            var sugested = generator.GeneratorRandomModule();
+            var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>() {new RelationshipDescriptor() { name = sugested.identifier } } );                        
+            list.Add(mod.identifier);            
+            AddToRegistry(mod,sugested);
+
+            options.with_all_suggests = true;
+            var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+            var reason = relationship_resolver.ReasonFor(sugested);
+            Assert.That(reason, Is.AssignableTo<Relationship.Suggested>());
+			Assert.That(reason.Parent,Is.EqualTo(mod));
+        }
+
+		[Test]
+		public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
+		{
+			var list = new List<string>();			
+			var sugested = generator.GeneratorRandomModule();
+			var recommendedA = generator.GeneratorRandomModule();
+			var recommendedB = generator.GeneratorRandomModule();
+			var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor> { new RelationshipDescriptor { name = sugested.identifier}});
+			list.Add(mod.identifier);
+			sugested.recommends = new List<RelationshipDescriptor>
+			{ new RelationshipDescriptor {name=recommendedA.identifier},
+			  new RelationshipDescriptor { name = recommendedB.identifier}};
+
+			AddToRegistry(mod, sugested,recommendedA,recommendedB);
+
+
+			options.with_all_suggests = true;
+			options.with_recommends = true;
+			var relationship_resolver = new RelationshipResolver(list, options, registry, null);
+			var reason = relationship_resolver.ReasonFor(recommendedA);
+			Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+			Assert.That(reason.Parent, Is.EqualTo(sugested));
+
+			reason = relationship_resolver.ReasonFor(recommendedB);
+			Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+			Assert.That(reason.Parent, Is.EqualTo(sugested));
+		}
+
+
+
+
 
 
 
