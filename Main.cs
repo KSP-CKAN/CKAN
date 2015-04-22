@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace CKAN
 {
@@ -61,7 +62,71 @@ namespace CKAN
 
         public GUIUser m_User = null;
 
-        public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
+		private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
+		private Dictionary<Module, string> conflicts;
+		private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ChangeSet
+		{
+			get { return change_set; }
+			set
+			{
+				change_set = value;
+				ChangeSetUpdated();
+			}
+		}
+		private Dictionary<Module, string> Conflicts
+		{
+			get { return conflicts; }
+			set
+			{
+				conflicts = value;
+				ConflictsUpdated();
+			}
+		}		
+		private void ConflictsUpdated()
+		{
+
+				foreach (DataGridViewRow row in ModList.Rows)
+				{
+				var module = ((GUIMod)row.Tag).ToCkanModule();
+				string value;
+
+					if (Conflicts!=null && Conflicts.TryGetValue(module, out value))
+					{						
+						var conflict_text = value;
+						foreach (DataGridViewCell cell in row.Cells)
+						{
+							cell.ToolTipText = conflict_text;
+						}
+						row.DefaultCellStyle.BackColor = Color.LightCoral;
+					}
+					else
+					{
+					foreach (DataGridViewCell cell in row.Cells)
+					{
+						cell.ToolTipText = null;
+					}
+					
+						row.DefaultCellStyle.BackColor = Color.White;
+				}
+				
+			}							
+		}
+		private void ChangeSetUpdated()
+		{
+			if (ChangeSet != null && ChangeSet.Any())
+			{
+				UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
+				m_TabController.ShowTab("ChangesetTabPage", 1, false);
+				ApplyToolButton.Enabled = true;
+			}
+			else
+			{
+				m_TabController.HideTab("ChangesetTabPage");
+				ApplyToolButton.Enabled = false;
+			}
+		}
+
+		public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
             m_CommandLineArgs = cmdlineArgs;
             m_User = User;
@@ -130,9 +195,8 @@ namespace CKAN
                 case (Keys.Control | Keys.F):
                     ActiveControl = FilterByNameTextBox;
                     return true;
-                case (Keys.Control | Keys.S):
-                    var registry = RegistryManager.Instance(CurrentInstance).registry;
-                    if (mainModList.ComputeChangeSetFromModList(registry, CurrentInstance).Any())
+                case (Keys.Control | Keys.S):                    
+                    if (ChangeSet!=null && ChangeSet.Any())						
                     {
                         ApplyToolButton_Click(null, null);
                     }
@@ -267,25 +331,11 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod)row.Tag).ToCkanModule();
-                var registry = RegistryManager.Instance(CurrentInstance).registry;
-                if (!registry.IsInstalled(mod.identifier))
-                {
-                    continue;
-                }
-
-                bool isUpToDate =
-                    !registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
-                if (!isUpToDate)
-                {
-                    var cell = row.Cells[1] as DataGridViewCheckBoxCell;
-                    if (cell != null)
-                    {
-                        var updateCell = cell;
-                        updateCell.Value = true;
-                        ApplyToolButton.Enabled = true;
-                    }
-                }
+				var mod = ((GUIMod)row.Tag);
+				if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell) {
+					mod.SetUpgradeChecked(row, true);
+					ApplyToolButton.Enabled = true;
+				}
             }
 
             ModList.Refresh();
@@ -392,60 +442,72 @@ namespace CKAN
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (mainModList.ModFilter == GUIModFilter.Incompatible)
-            {
-                return;
-            }
-            var grid = sender as DataGridView;
-            var row = grid.Rows[e.RowIndex];
-            var columnIndex = e.ColumnIndex;
-            var gridViewCell = row.Cells[columnIndex];
-            if (columnIndex < 2)
-            {
-                var checkbox = (DataGridViewCheckBoxCell)gridViewCell;
+	    private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+	    {
+		    if (mainModList.ModFilter == GUIModFilter.Incompatible)
+		    {
+			    return;
+		    }
+			var row_index = e.RowIndex;
+			var columnIndex = e.ColumnIndex;
+		    
+		    if (row_index < 0 || columnIndex < 0)
+		    {
+			    return;
+		    }
+		    var registry_manager = RegistryManager.Instance(CurrentInstance);
 
-                if (columnIndex == 0)
-                {
-                    ((GUIMod)row.Tag).IsInstallChecked = (bool)checkbox.Value;
-                }
-                else if (columnIndex == 1)
-                {
-                    ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
-                }
-            }
-            var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance);
+			var grid = sender as DataGridView;
 
+			var row = grid.Rows[row_index];
+		    var grid_view_cell = row.Cells[columnIndex];
 
-            if (changeset != null && changeset.Any())
-            {
-                UpdateChangesDialog(changeset, m_InstallWorker);
-                m_TabController.ShowTab("ChangesetTabPage", 1, false);
-                ApplyToolButton.Enabled = true;
-            }
-            else
-            {
-                m_TabController.HideTab("ChangesetTabPage");
-                ApplyToolButton.Enabled = false;
-            }
+		    if (grid_view_cell is DataGridViewLinkCell)
+		    {
+			    var cell = grid_view_cell as DataGridViewLinkCell;
+			    Process.Start(cell.Value.ToString());
+		    }
+		    else if (columnIndex < 2)
+		    {
+			    var gui_mod = ((GUIMod) row.Tag);
+			    switch (columnIndex)
+			    {
+				    case 0:
+					    gui_mod.SetInstallChecked(row);
+					    break;
+				    case 1:
+					    gui_mod.SetUpgradeChecked(row);
+					    break;
+			    }
 
-            if (e.RowIndex < 0 || columnIndex < 0)
-            {
-                return;
-            }
+			    var registry = registry_manager.registry;
+			    UpdateChangeSetAndConflicts(registry);
+		    }
+		    ModList.EndEdit();
+	    }
 
+		private void UpdateChangeSetAndConflicts(Registry registry)
+		{
+			IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
+			Dictionary<Module, string> conflicts;
 
-            if (gridViewCell is DataGridViewLinkCell)
-            {
-                var cell = gridViewCell as DataGridViewLinkCell;
-                Process.Start(cell.Value.ToString());
-            }
+			var user_change_set = mainModList.ComputeUserChangeSet();
+			try
+			{
+				var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+				full_change_set = MainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.Version());
+				conflicts = null;
+			}
+			catch (InconsistentKraken)
+			{
+				conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+				full_change_set = null;
+			}
 
-            ModList.EndEdit();
-        }
-
-        private void FilterAllButton_Click(object sender, EventArgs e)
+			Conflicts = conflicts;
+			ChangeSet = full_change_set;
+		}
+		private void FilterAllButton_Click(object sender, EventArgs e)
         {
             mainModList.ModFilter = GUIModFilter.All;
             FilterToolButton.Text = "Filter (All)";

@@ -111,210 +111,250 @@ namespace CKAN
         }
     }
 
-    public class MainModList
-    {
+	public class MainModList
+	{
 
-        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
-        {
-            Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            ModFiltersUpdated += onModFiltersUpdated;
-            ModFiltersUpdated(this);
-        }
+		public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
+		{
+			Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
+			ModFiltersUpdated += onModFiltersUpdated;
+			ModFiltersUpdated(this);
+		}
 
-        public delegate void ModFiltersUpdatedEvent(MainModList source);
+		public delegate void ModFiltersUpdatedEvent(MainModList source);
 
-        public event ModFiltersUpdatedEvent ModFiltersUpdated;
-        public ReadOnlyCollection<GUIMod> Modules { get; set; }
+		public event ModFiltersUpdatedEvent ModFiltersUpdated;
+		public ReadOnlyCollection<GUIMod> Modules { get; set; }
 
-        public GUIModFilter ModFilter
-        {
-            get { return _modFilter; }
-            set
-            {
-                var old = _modFilter;
-                _modFilter = value;
-                if (!old.Equals(value)) ModFiltersUpdated(this);
-            }
-        }
+		public GUIModFilter ModFilter
+		{
+			get { return _modFilter; }
+			set
+			{
+				var old = _modFilter;
+				_modFilter = value;
+				if (!old.Equals(value)) ModFiltersUpdated(this);
+			}
+		}
 
-        public string ModNameFilter
-        {
-            get { return _modNameFilter; }
-            set
-            {
-                var old = _modNameFilter;
-                _modNameFilter = value;
-                if (!old.Equals(value)) ModFiltersUpdated(this);
-            }
-        }
+		public string ModNameFilter
+		{
+			get { return _modNameFilter; }
+			set
+			{
+				var old = _modNameFilter;
+				_modNameFilter = value;
+				if (!old.Equals(value)) ModFiltersUpdated(this);
+			}
+		}
 
-        private GUIModFilter _modFilter = GUIModFilter.All;
-        private string _modNameFilter = String.Empty;
+		private GUIModFilter _modFilter = GUIModFilter.All;
+		private string _modNameFilter = String.Empty;
 
-        /// <summary>
-        /// This function returns a changeset based on the selections of the user. 
-        /// Currently returns null if a conflict is detected.        
-        /// </summary>
-        /// <param name="registry"></param>
-        /// <param name="current_instance"></param>
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, KSP current_instance)
-        {
-            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
-            var modulesToInstall = new HashSet<string>();
-            var modulesToRemove = new HashSet<string>();
+		/// <summary>
+		/// This function returns a changeset based on the selections of the user. 
+		/// Currently returns null if a conflict is detected.        
+		/// </summary>
+		/// <param name="registry"></param>
+		/// <param name="current_instance"></param>
+		public static IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, ModuleInstaller installer, KSPVersion version)
+		{
 
-            foreach (var mod in Modules.Where(mod => mod.IsInstallable()))
-            {
-                if (mod.IsInstalled)
-                {
-                    if (!mod.IsInstallChecked)
-                    {
-                        modulesToRemove.Add(mod.Identifier);
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Remove));
-                    }
-                    else if (mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
-                    {
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Update));
-                    }
-                }
-                else if (mod.IsInstallChecked)
-                {
-                    modulesToInstall.Add(mod.Identifier);
-                }
-            }
+			var modules_to_install = new HashSet<string>();
+			var modules_to_remove = new HashSet<string>();
+			var options = new RelationshipResolverOptions()
+			{
+				without_toomanyprovides_kraken = true,
+				with_recommends = false
+			};
 
-            RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
-            options.with_recommends = false;
-            options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = true;
+			foreach (var change in changeSet)
 
-            RelationshipResolver resolver;
-            try
-            {
-                resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry, current_instance.Version());
-            }
-            catch (Exception)
-            {
-                //TODO FIX this so the UI reacts.
-                return null;
-            }
+			{
+				switch (change.Value)
+				{
+					case GUIModChangeType.None:
+						break;
+					case GUIModChangeType.Install:
+						modules_to_install.Add(change.Key.identifier);
+						break;
+					case GUIModChangeType.Remove:
+						modules_to_remove.Add(change.Key.identifier);
+						break;
+					case GUIModChangeType.Update:
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
 
-            changeset.UnionWith(
-                resolver.ModList()
-                    .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+			//May throw InconsistentKraken
+			var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry,version);
+			changeSet.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+
+			foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
+			{
+				//TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
+				var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, version));
+				changeSet.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
+			}
+		    return changeSet;
+
+		
+	}
+
+		public bool IsVisible(GUIMod mod)
+		{
+
+			var nameMatchesFilter = IsNameInNameFilter(mod);
+			var modMatchesType = IsModInFilter(mod);
+			var isVisible = nameMatchesFilter && modMatchesType;
+			return isVisible;
+		}
 
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(current_instance, GUI.user);
 
-            foreach (var reverseDependencies in modulesToRemove.Select(mod => installer.FindReverseDependencies(mod)))
-            {
-                //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep, current_instance.Version()));
-                changeset.UnionWith(
-                    modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
-            }
+		public int CountModsByFilter(GUIModFilter filter)
+		{
 
-            return changeset.ToList();
-        }
+			switch (filter)
+			{
+				case GUIModFilter.All:
+					return Modules.Count(m => !m.IsIncompatible);
+				case GUIModFilter.Installed:
+					return Modules.Count(m => m.IsInstalled);
+				case GUIModFilter.InstalledUpdateAvailable:
+					return Modules.Count(m => m.HasUpdate);
+				case GUIModFilter.NewInRepository:
+					return Modules.Count();
+				case GUIModFilter.NotInstalled:
+					return Modules.Count(m => !m.IsInstalled);
+				case GUIModFilter.Incompatible:
+					return Modules.Count(m => m.IsIncompatible);
+			}
+			throw new Kraken("Unknown filter type in CountModsByFilter");
+		}
 
-        public bool IsVisible(GUIMod mod)
-        {
+		public static IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
+		{
+			var output = new List<DataGridViewRow>();
+			foreach (var mod in modules)
+			{
+				var item = new DataGridViewRow {Tag = mod};
 
-            var nameMatchesFilter = IsNameInNameFilter(mod);
-            var modMatchesType = IsModInFilter(mod);
-            var isVisible = nameMatchesFilter && modMatchesType;
-            return isVisible;
-        }
+				var installedCell = mod.IsInstallable()
+					? (DataGridViewCell) new DataGridViewCheckBoxCell()
+					: new DataGridViewTextBoxCell();
+				installedCell.Value = mod.IsIncompatible
+					? "-"
+					: (!mod.IsAutodetected ? (object) mod.IsInstalled : "AD");
 
-   
+				var updateCell = !mod.IsInstallable() || !mod.HasUpdate
+					? (DataGridViewCell) new DataGridViewTextBoxCell()
+					: new DataGridViewCheckBoxCell();
+				updateCell.Value = !mod.IsInstallable() || !mod.HasUpdate
+					? "-"
+					: (object) false;
 
-        public int CountModsByFilter(GUIModFilter filter)
-        {
+				var nameCell = new DataGridViewTextBoxCell {Value = mod.Name};
+				var authorCell = new DataGridViewTextBoxCell {Value = mod.Authors};
+				var installedVersionCell = new DataGridViewTextBoxCell {Value = mod.InstalledVersion};
+				var latestVersionCell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
+				var descriptionCell = new DataGridViewTextBoxCell {Value = mod.Abstract};
+				var homepageCell = new DataGridViewLinkCell {Value = mod.Homepage};
 
-            switch (filter)
-            {
-                case GUIModFilter.All:
-                    return Modules.Count(m => !m.IsIncompatible);
-                case GUIModFilter.Installed:
-                    return Modules.Count(m => m.IsInstalled);
-                case GUIModFilter.InstalledUpdateAvailable:
-                    return Modules.Count(m => m.HasUpdate);
-                case GUIModFilter.NewInRepository:
-                    return Modules.Count();
-                case GUIModFilter.NotInstalled:
-                    return Modules.Count(m => !m.IsInstalled);
-                case GUIModFilter.Incompatible:
-                    return Modules.Count(m => m.IsIncompatible);            
-            }
-            throw new Kraken("Unknown filter type in CountModsByFilter");
-        }
+				item.Cells.AddRange(installedCell, updateCell,
+					nameCell, authorCell,
+					installedVersionCell, latestVersionCell,
+					descriptionCell, homepageCell);
 
-        public static IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
-        {
-            var output = new List<DataGridViewRow>();
-            foreach (var mod in modules)
-            {
-                var item = new DataGridViewRow {Tag = mod};
+				installedCell.ReadOnly = !mod.IsInstallable();
+				updateCell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                var installedCell = mod.IsInstallable()
-                    ? (DataGridViewCell) new DataGridViewCheckBoxCell()
-                    : new DataGridViewTextBoxCell();
-                installedCell.Value = mod.IsIncompatible
-                    ? "-"
-                    : (!mod.IsAutodetected ? (object) mod.IsInstalled : "AD");
+				output.Add(item);
+			}
+			return output;
+		}
 
-                var updateCell = !mod.IsInstallable() || !mod.HasUpdate
-                    ? (DataGridViewCell) new DataGridViewTextBoxCell()
-                    : new DataGridViewCheckBoxCell();
-                updateCell.Value = !mod.IsInstallable() || !mod.HasUpdate
-                    ? "-"
-                    : (object) false;
+		private bool IsNameInNameFilter(GUIMod mod)
+		{
+			return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+		}
 
-                var nameCell = new DataGridViewTextBoxCell {Value = mod.Name};
-                var authorCell = new DataGridViewTextBoxCell {Value = mod.Authors};
-                var installedVersionCell = new DataGridViewTextBoxCell {Value = mod.InstalledVersion};
-                var latestVersionCell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
-                var descriptionCell = new DataGridViewTextBoxCell {Value = mod.Abstract};
-                var homepageCell = new DataGridViewLinkCell {Value = mod.Homepage};
+		private bool IsModInFilter(GUIMod m)
+		{
+			switch (ModFilter)
+			{
+				case GUIModFilter.All:
+					return !m.IsIncompatible;
+				case GUIModFilter.Installed:
+					return m.IsInstalled;
+				case GUIModFilter.InstalledUpdateAvailable:
+					return m.IsInstalled && m.HasUpdate;
+				case GUIModFilter.NewInRepository:
+					return true;
+				case GUIModFilter.NotInstalled:
+					return !m.IsInstalled;
+				case GUIModFilter.Incompatible:
+					return m.IsIncompatible;
+			}
+			throw new Kraken("Unknown filter type in IsModInFilter");
+		}
 
-                item.Cells.AddRange(installedCell, updateCell,
-                    nameCell, authorCell,
-                    installedVersionCell, latestVersionCell, 
-                    descriptionCell, homepageCell);
 
-                installedCell.ReadOnly = !mod.IsInstallable();
-                updateCell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                output.Add(item);
-            }
-            return output;
-        }
 
-        private bool IsNameInNameFilter(GUIMod mod)
-        {
-            return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
-        }
 
-        private bool IsModInFilter(GUIMod m)
-        {     
-            switch (ModFilter)
-            {
-                case GUIModFilter.All:
-                    return !m.IsIncompatible;
-                case GUIModFilter.Installed:
-                    return m.IsInstalled;
-                case GUIModFilter.InstalledUpdateAvailable:
-                    return m.IsInstalled && m.HasUpdate;
-                case GUIModFilter.NewInRepository:
-                    return true;
-                case GUIModFilter.NotInstalled:
-                    return !m.IsInstalled;
-                case GUIModFilter.Incompatible:
-                    return m.IsIncompatible;
-            }
-            throw new Kraken("Unknown filter type in IsModInFilter");
-        }
-    }
+
+
+		public static Dictionary<Module, string> ComputeConflictsFromModList(Registry registry, IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, KSPVersion ksp_version)
+		{
+			var modules_to_install = new HashSet<string>();
+			var modules_to_remove = new HashSet<string>();
+			var options = new RelationshipResolverOptions
+			{
+				without_toomanyprovides_kraken = true,
+				procede_with_inconsistencies = true,
+				without_enforce_consistency = true,
+				with_recommends = false
+			};
+
+			foreach (var change in changeSet)
+			{
+				switch (change.Value)
+				{
+					case GUIModChangeType.None:
+						break;
+					case GUIModChangeType.Install:
+						modules_to_install.Add(change.Key.identifier);
+						break;
+					case GUIModChangeType.Remove:
+						modules_to_remove.Add(change.Key.identifier);
+						break;
+					case GUIModChangeType.Update:
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+
+			var installed =
+				registry.Installed()
+					.Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
+					.Select(pair => pair.Key);
+
+			//We wish to only check mods that would exist after the changes are made. 
+			var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);			
+			var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);			
+			return resolver.ConflictList;
+		}
+		public HashSet<KeyValuePair<CkanModule, GUIModChangeType>> ComputeUserChangeSet()
+		{
+			var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
+			var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>(
+				changes.Where(change => change.HasValue).Select(change => change.Value)
+				);
+			return changeset;
+		}
+	}
 }
