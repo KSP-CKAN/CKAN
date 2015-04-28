@@ -115,6 +115,9 @@ namespace CKAN
                 Util.HideConsoleWindow();
             }
 
+            // Disable the modinfo controls until a mod has been choosen.
+            this.ModInfoTabControl.Enabled = false;
+
             Application.Run(this);
         }
 
@@ -295,20 +298,32 @@ namespace CKAN
         {
             if (ModList.SelectedRows.Count == 0)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
 
             DataGridViewRow selectedItem = ModList.SelectedRows[0];
             if (selectedItem == null)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
 
             var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
+
+            // We are sure we have a valid module object, enable the ModInfoTabControl.
+            this.ModInfoTabControl.Enabled = true;
 
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
