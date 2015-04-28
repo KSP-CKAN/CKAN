@@ -70,6 +70,17 @@ namespace NetKAN.KerbalStuffTests
             Assert.AreEqual(711, mod.Latest().id, "GH #214 - Select default_version_id");
         }
 
+        [Test]
+        // GH #816: Ensure URLs with & are encoded correctly.
+        public void KS_URL_encode_816()
+        {
+            Assert.AreEqual(
+                CKAN.NetKAN.KSAPI.ExpandPath("/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93").OriginalString,
+                "https://kerbalstuff.com/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93"
+            );
+        }
+
+
         public CKAN.NetKAN.KSMod test_ksmod()
         {
             var ksmod = new CKAN.NetKAN.KSMod
