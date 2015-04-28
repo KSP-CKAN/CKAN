@@ -1,10 +1,36 @@
-#!/bin/bash
-set -x
+#!/bin/sh
+
+NUNIT_BINARY=""
+
+check_nunit () {
+    # Extract the CLR version of nunit-console.
+    NUNIT_TEXT=$($1 -help)
+    NUNIT_VERSION=$(echo "$NUNIT_TEXT" | awk '$1 ~ /CLR/ {print substr($3,1,1)}')
+    
+    if [ $NUNIT_VERSION -eq 4 ]
+    then
+        NUNIT_BINARY=$1
+    fi
+    
+    echo "Found $1 with CLR version $NUNIT_VERSION."
+}
 
 xbuild /verbosity:minimal CKAN-netkan.sln
 chmod a+x ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe
 
 mono ../CKAN-core/packages/ILRepack.1.25.0/tools/ILRepack.exe /target:exe /out:../netkan.exe bin/Debug/NetKAN.exe bin/Debug/log4net.dll bin/Debug/Newtonsoft.Json.dll bin/Debug/ICSharpCode.SharpZipLib.dll bin/Debug/ChinhDo.Transactions.dll bin/Debug/CKAN.dll bin/Debug/CommandLine.dll bin/Debug/nunit.framework.dll bin/Debug/CurlSharp.dll
 
-nunit-console --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
-# prove
+# Find a suitable version of nunit.
+echo "Checking if nunit-console is available..."
+command -v "nunit-console" >/dev/null 2>&1 && check_nunit "nunit-console"
+
+echo "Checking if nunit-console4 is available..."
+command -v "nunit-console4" >/dev/null 2>&1 && check_nunit "nunit-console4"
+
+# If we found a suitable nunit binary, continue with the testing.
+if [ "$NUNIT_BINARY" != "" ]
+then
+    command $NUNIT_BINARY --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
+else
+    echo "Could not find a suitable version of nunit-console to run the tests. Skipping test execution."
+fi
