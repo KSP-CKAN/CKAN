@@ -67,9 +67,21 @@ namespace CKAN.NetKAN
             // "original" string used to download a mod, we need to jump through some
             // hoops to make sure this is escaped.
 
-            var url = new Uri (kerbalstuff,route);
-            var url_fixed = new Uri (Uri.EscapeUriString(url.ToString()));
+            // Update: The Uri class under mono doesn't un-escape everything when
+            // .ToString() is called, even though the .NET documentation says that it
+            // should. Rather than using it and going through escaping hell, we'll simply
+            // concat our strings together and preserve escaping that way. If KS ever
+            // start returning fully qualified URLs then we should see everyting break
+            // pretty quickly, and we can rejoice because we won't need any of this code
+            // again. -- PJF, KSP-CKAN/CKAN#816.
 
+            // Step 1: Escape any spaces present. KS seems to escape everything else fine.
+            route = Regex.Replace(route," ","%20");
+
+            // Step 2: Trim leading slashes and prepend the KS host
+            Uri url_fixed = new Uri(kerbalstuff + route.TrimStart('/'));
+
+            // Step 3: Profit!
             log.DebugFormat ("Expanded URL is {0}", url_fixed.OriginalString);
             return url_fixed;
         }

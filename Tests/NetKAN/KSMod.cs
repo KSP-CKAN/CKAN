@@ -70,6 +70,17 @@ namespace NetKAN.KerbalStuffTests
             Assert.AreEqual(711, mod.Latest().id, "GH #214 - Select default_version_id");
         }
 
+        [Test]
+        [TestCase("/mod/42/Example/download/1.23", Result="https://kerbalstuff.com/mod/42/Example/download/1.23")]
+        [TestCase("/mod/42/Example%20With%20Spaces/download/1.23", Result="https://kerbalstuff.com/mod/42/Example%20With%20Spaces/download/1.23")]
+        [TestCase("/mod/42/Example With Spaces/download/1.23", Result="https://kerbalstuff.com/mod/42/Example%20With%20Spaces/download/1.23")]
+        [TestCase("/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93",Result="https://kerbalstuff.com/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93")]
+        // GH #816: Ensure URLs with & are encoded correctly.
+        public string KS_URL_encode_816(string path)
+        {
+            return CKAN.NetKAN.KSAPI.ExpandPath(path).OriginalString;
+        }
+
         public CKAN.NetKAN.KSMod test_ksmod()
         {
             var ksmod = new CKAN.NetKAN.KSMod
