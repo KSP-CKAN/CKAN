@@ -107,6 +107,8 @@ namespace CKAN.NetKAN
                 return null;
             }
 
+            log.DebugFormat("Escaping {0}", url);
+
             string escaped = Uri.EscapeUriString(url.ToString());
 
             // Square brackets are "reserved characters" that should not appear
@@ -118,12 +120,14 @@ namespace CKAN.NetKAN
             escaped = escaped.Replace("[",Uri.HexEscape('['));
             escaped = escaped.Replace("]",Uri.HexEscape(']'));
 
-			// Make sure we have a "http://" or "https://" start.
-			if (!Regex.IsMatch(escaped, "(?i)^(http|https)://"))
-			{
-				// Prepend "http://", as we do not know if the site supports https.
-				escaped = "http://" + escaped;
-			}
+            // Make sure we have a "http://" or "https://" start.
+            if (!Regex.IsMatch(escaped, "(?i)^(http|https)://"))
+            {
+                // Prepend "http://", as we do not know if the site supports https.
+                escaped = "http://" + escaped;
+            }
+
+            log.DebugFormat("Escaped to {0}", escaped);
 
             return escaped;
         }
