@@ -347,10 +347,29 @@ namespace CKAN
 
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
-        /// with name begining with the key pressed. 
+        /// with name begining with the key pressed. If space is pressed, the checkbox
+        /// at the current row is toggled.
         /// </summary>        
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
+            // Check the key. If it is space, mark the current mod as selected.
+            if (e.KeyChar.ToString() == " ")
+            {
+                var selectedRow = ModList.CurrentRow;
+
+                if (selectedRow != null)
+                {
+                    // Get the checkbox.
+                    var selectedRowCheckBox = (DataGridViewCheckBoxCell)selectedRow.Cells["Installed"];
+
+                    // Invert the value.
+                    bool selectedValue = (bool)selectedRowCheckBox.Value;
+                    selectedRowCheckBox.Value = !selectedValue;
+                }
+
+                return;
+            }
+
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
             var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
             {
