@@ -194,13 +194,13 @@ namespace CKAN.CmdLine
             if (module.resources != null)
             {
                 if (module.resources.bugtracker != null)
-                    user.RaiseMessage("- bugtracker: {0}", module.resources.bugtracker.ToString());
+                    user.RaiseMessage("- bugtracker: {0}", Uri.EscapeUriString(module.resources.bugtracker.ToString()));
                 if (module.resources.homepage != null)
-                    user.RaiseMessage("- homepage: {0}", module.resources.homepage.ToString());
+                    user.RaiseMessage("- homepage: {0}", Uri.EscapeUriString(module.resources.homepage.ToString()));
                 if (module.resources.kerbalstuff != null)
-                    user.RaiseMessage("- kerbalstuff: {0}", module.resources.kerbalstuff.ToString());
+                    user.RaiseMessage("- kerbalstuff: {0}", Uri.EscapeUriString(module.resources.kerbalstuff.ToString()));
                 if (module.resources.repository != null)
-                    user.RaiseMessage("- repository: {0}", module.resources.repository.ToString());
+                    user.RaiseMessage("- repository: {0}", Uri.EscapeUriString(module.resources.repository.ToString()));
             }
 
             return Exit.OK;
