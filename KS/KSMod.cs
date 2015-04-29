@@ -69,7 +69,7 @@ namespace CKAN.NetKAN
                 Inflate(metadata, "version", version.friendly_version.ToString());
             }
 
-            Inflate(metadata, "download", Escape(version.download_path));
+            Inflate(metadata, "download", version.download_path.OriginalString);
             Inflate(metadata, "x_generated_by", "netkan");
             Inflate(metadata, "download_size", download_size);
 
@@ -78,7 +78,7 @@ namespace CKAN.NetKAN
                 Inflate((JObject)metadata["resources"], "homepage", Escape(website));
             }
 
-            Inflate((JObject) metadata["resources"], "kerbalstuff", Escape(KSHome()));
+            Inflate((JObject) metadata["resources"], "kerbalstuff", KSHome().OriginalString);
         }
 
         internal KSVersion Latest()
