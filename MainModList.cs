@@ -148,8 +148,20 @@ namespace CKAN
             }
         }
 
+        public string ModAuthorFilter
+        {
+            get { return _modAuthorFilter; }
+            set
+            {
+                var old = _modAuthorFilter;
+                _modAuthorFilter = value;
+                if (!old.Equals(value)) ModFiltersUpdated(this);
+            }
+        }
+
         private GUIModFilter _modFilter = GUIModFilter.All;
         private string _modNameFilter = String.Empty;
+        private string _modAuthorFilter = String.Empty;
 
         /// <summary>
         /// This function returns a changeset based on the selections of the user. 
@@ -223,8 +235,9 @@ namespace CKAN
         {
 
             var nameMatchesFilter = IsNameInNameFilter(mod);
+            var authorMatchesFilter = IsAuthorInauthorFilter(mod);
             var modMatchesType = IsModInFilter(mod);
-            var isVisible = nameMatchesFilter && modMatchesType;
+            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter;
             return isVisible;
         }
 
@@ -296,6 +309,12 @@ namespace CKAN
         {
             return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
+
+        private bool IsAuthorInauthorFilter(GUIMod mod)
+        {
+            return mod.Authors.IndexOf(ModAuthorFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+        }
+        
 
         private bool IsModInFilter(GUIMod m)
         {     

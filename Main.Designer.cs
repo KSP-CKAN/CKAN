@@ -93,6 +93,8 @@ namespace CKAN
             this.StatusLabel = new System.Windows.Forms.Label();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
+            this.FilterByAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByAuthorLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
@@ -797,6 +799,8 @@ namespace CKAN
             // ManageModsTabPage
             // 
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
+            this.ManageModsTabPage.Controls.Add(this.FilterByAuthorLabel);
             this.ManageModsTabPage.Controls.Add(this.KSPVersionLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameTextBox);
@@ -809,11 +813,30 @@ namespace CKAN
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             // 
+            // FilterByAuthorTextBox
+            // 
+            this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(445, 48);
+            this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
+            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(124, 20);
+            this.FilterByAuthorTextBox.TabIndex = 10;
+            this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
+            // 
+            // FilterByAuthorLabel
+            // 
+            this.FilterByAuthorLabel.AutoSize = true;
+            this.FilterByAuthorLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByAuthorLabel.Location = new System.Drawing.Point(331, 50);
+            this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
+            this.FilterByAuthorLabel.Size = new System.Drawing.Size(108, 13);
+            this.FilterByAuthorLabel.TabIndex = 11;
+            this.FilterByAuthorLabel.Text = "Filter by author name:";
+            // 
             // KSPVersionLabel
             // 
             this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(867, 52);
+            this.KSPVersionLabel.Location = new System.Drawing.Point(862, 50);
             this.KSPVersionLabel.Name = "KSPVersionLabel";
             this.KSPVersionLabel.Size = new System.Drawing.Size(146, 13);
             this.KSPVersionLabel.TabIndex = 8;
@@ -825,14 +848,14 @@ namespace CKAN
             this.FilterByNameLabel.BackColor = System.Drawing.Color.Transparent;
             this.FilterByNameLabel.Location = new System.Drawing.Point(7, 50);
             this.FilterByNameLabel.Name = "FilterByNameLabel";
-            this.FilterByNameLabel.Size = new System.Drawing.Size(75, 13);
+            this.FilterByNameLabel.Size = new System.Drawing.Size(98, 13);
             this.FilterByNameLabel.TabIndex = 10;
-            this.FilterByNameLabel.Text = "Filter by name:";
+            this.FilterByNameLabel.Text = "Filter by mod name:";
             // 
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(88, 47);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(111, 48);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 9;
@@ -1271,6 +1294,8 @@ namespace CKAN
         public ToolStripMenuItem settingsToolStripMenuItem;
         public DataGridView ModList;
         private ToolStripMenuItem installFromckanToolStripMenuItem;
+        private TextBox FilterByAuthorTextBox;
+        private Label FilterByAuthorLabel;
     }
 }
 
