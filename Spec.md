@@ -7,6 +7,11 @@ send pull requests to patch this document and associated files.
 This document, and all associated files, are licensed under the MIT/Expat
 license.
 
+The key words "*must*", "*must not*", "*required*", "*shall*", 
+"*shall not*", "*should*", "*should not*", "*recommended*", "*may*" and 
+"*optional*" in this document are to be interpreted as described in 
+[RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
+
 ## Introduction
 
 There have been many comprehensive archive networks for various
