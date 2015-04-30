@@ -345,6 +345,11 @@ namespace CKAN
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
         }
 
+        private void FilterByAuthorTextBox_TextChanged(object sender, EventArgs e)
+        {
+            mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+        }
+
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
         /// with name begining with the key pressed. If space is pressed, the checkbox
@@ -747,7 +752,6 @@ namespace CKAN
 
             }
         }
-
     }
 
     public class GUIUser : NullUser
