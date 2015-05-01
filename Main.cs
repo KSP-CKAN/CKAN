@@ -181,22 +181,29 @@ namespace CKAN
 
             if (m_Configuration.CheckForUpdatesOnLaunch)
             {
-                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
-                var currentVersion = new Version(Meta.Version());
-
-                if (latestVersion.IsGreaterThan(currentVersion))
+                try
                 {
-                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
-                    var dialog = new NewUpdateDialog(latestVersion.ToString(), releaseNotes);
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                    var latest_version = AutoUpdate.FetchLatestCkanVersion();
+                    var current_version = new Version(Meta.Version());
+
+                    if (latest_version.IsGreaterThan(current_version))
                     {
-                        AutoUpdate.StartUpdateProcess(true);
+                        var release_notes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                        var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            AutoUpdate.StartUpdateProcess(true);
+                        }
                     }
                 }
+                catch (Exception exception)
+                {
+                    m_User.RaiseError("Error in autoupdate: \n\t"+exception.Message +"");                    
+                }      
             }
 
-            this.Location = m_Configuration.WindowLoc;
-            this.Size = m_Configuration.WindowSize;
+            Location = m_Configuration.WindowLoc;
+            Size = m_Configuration.WindowSize;
 
             m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
 
