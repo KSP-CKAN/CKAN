@@ -500,7 +500,7 @@ namespace CKAN
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             mainModList.ModFilter = GUIModFilter.InstalledUpdateAvailable;
-            FilterToolButton.Text = "Filter (Updated)";
+            FilterToolButton.Text = "Filter (Upgradeable)";
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)

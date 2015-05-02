@@ -76,7 +76,7 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.Compatible));
             FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Installed));
-            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
+            FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
             FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
