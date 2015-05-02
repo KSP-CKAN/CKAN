@@ -34,20 +34,38 @@ namespace CKAN
             ModList.Rows.AddRange(rows);
         }
 
-        private void UpdateModsList()
+        private void UpdateModsList(Boolean repo_updated=false)
         {
-            Util.Invoke(this, _UpdateModsList);
+            Util.Invoke(this, ()=>_UpdateModsList(repo_updated));
         }
 
 
-        private void _UpdateModsList()
+        private void _UpdateModsList(bool repo_updated)
         {
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
-
+            
             var ckanModules = registry.Available(CurrentInstance.Version()).Concat(
                 registry.Incompatible(CurrentInstance.Version())).ToList();
-            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())).ToList();
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
+            var gui_mods = new HashSet<GUIMod>(ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
+
+            var old_modules = new HashSet<GUIMod>(mainModList.Modules);
+            if (repo_updated)
+            {
+                foreach (var gui_mod in gui_mods.Where(m => !old_modules.Contains(m)))
+                {
+                    gui_mod.IsNew = true;
+                }
+            }
+            else
+            {
+                //Copy the new mod flag from the old list.
+                var old_new_mods = new HashSet<GUIMod>(old_modules.Where(m => m.IsNew));
+                foreach (var gui_mod in gui_mods.Where(m => old_new_mods.Contains(m)))
+                {
+                    gui_mod.IsNew = true;
+                }
+            }
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
             var rows = MainModList.ConstructModList(mainModList.Modules);
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
@@ -257,7 +275,7 @@ namespace CKAN
                 case GUIModFilter.InstalledUpdateAvailable:
                     return Modules.Count(m => m.HasUpdate);
                 case GUIModFilter.NewInRepository:
-                    return Modules.Count();
+                    return Modules.Count(m=>m.IsNew);
                 case GUIModFilter.NotInstalled:
                     return Modules.Count(m => !m.IsInstalled);
                 case GUIModFilter.Incompatible:
@@ -329,7 +347,7 @@ namespace CKAN
                 case GUIModFilter.InstalledUpdateAvailable:
                     return m.IsInstalled && m.HasUpdate;
                 case GUIModFilter.NewInRepository:
-                    return true;
+                    return m.IsNew;
                 case GUIModFilter.NotInstalled:
                     return !m.IsInstalled;
                 case GUIModFilter.Incompatible:
