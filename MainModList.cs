@@ -72,8 +72,8 @@ namespace CKAN
             ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
 
             //TODO Consider using smart enum patten so stuff like this is easier
-            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.All));
+            FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Compatible));
             FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Installed));
             FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
@@ -84,6 +84,8 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
             FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+            FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.All));
 
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
@@ -177,7 +179,7 @@ namespace CKAN
             }
         }
 
-        private GUIModFilter _modFilter = GUIModFilter.All;
+        private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
 
@@ -268,7 +270,7 @@ namespace CKAN
 
             switch (filter)
             {
-                case GUIModFilter.All:
+                case GUIModFilter.Compatible:
                     return Modules.Count(m => !m.IsIncompatible);
                 case GUIModFilter.Installed:
                     return Modules.Count(m => m.IsInstalled);
@@ -280,6 +282,8 @@ namespace CKAN
                     return Modules.Count(m => !m.IsInstalled);
                 case GUIModFilter.Incompatible:
                     return Modules.Count(m => m.IsIncompatible);            
+                case GUIModFilter.All:
+                    return Modules.Count();
             }
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
@@ -340,7 +344,7 @@ namespace CKAN
         {     
             switch (ModFilter)
             {
-                case GUIModFilter.All:
+                case GUIModFilter.Compatible:
                     return !m.IsIncompatible;
                 case GUIModFilter.Installed:
                     return m.IsInstalled;
@@ -352,6 +356,8 @@ namespace CKAN
                     return !m.IsInstalled;
                 case GUIModFilter.Incompatible:
                     return m.IsIncompatible;
+                case GUIModFilter.All:
+                    return true;
             }
             throw new Kraken("Unknown filter type in IsModInFilter");
         }

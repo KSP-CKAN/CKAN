@@ -48,12 +48,13 @@ namespace CKAN
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterCompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -292,24 +293,25 @@ namespace CKAN
             // FilterToolButton
             // 
             this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FilterAllButton,
+            this.FilterCompatibleButton,
             this.FilterInstalledButton,
             this.FilterInstalledUpdateButton,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
-            this.FilterIncompatibleButton});
+            this.FilterIncompatibleButton,
+            this.FilterAllButton});
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
-            this.FilterToolButton.Size = new System.Drawing.Size(102, 36);
-            this.FilterToolButton.Text = "Filter (All)";
+            this.FilterToolButton.Size = new System.Drawing.Size(150, 36);
+            this.FilterToolButton.Text = "Filter (Compatible)";
             // 
-            // FilterAllButton
+            // FilterCompatibleButton
             // 
-            this.FilterAllButton.Name = "FilterAllButton";
-            this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
-            this.FilterAllButton.Text = "All";
-            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            this.FilterCompatibleButton.Name = "FilterCompatibleButton";
+            this.FilterCompatibleButton.Size = new System.Drawing.Size(215, 22);
+            this.FilterCompatibleButton.Text = "Compatible";
+            this.FilterCompatibleButton.Click += new System.EventHandler(this.FilterCompatibleButton_Click);
             // 
             // FilterInstalledButton
             // 
@@ -345,6 +347,13 @@ namespace CKAN
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(215, 22);
             this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
+            // 
+            // FilterAllButton
+            // 
+            this.FilterAllButton.Name = "FilterAllButton";
+            this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
+            this.FilterAllButton.Text = "All";
+            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
             // ModList
             // 
@@ -1207,7 +1216,7 @@ namespace CKAN
         private Panel StatusPanel;
         private Label StatusLabel;
         private ToolStripMenuItem FilterToolButton;
-        private ToolStripMenuItem FilterAllButton;
+        private ToolStripMenuItem FilterCompatibleButton;
         private ToolStripMenuItem FilterInstalledButton;
         private ToolStripMenuItem FilterInstalledUpdateButton;
         private ToolStripMenuItem FilterNewButton;
@@ -1287,6 +1296,7 @@ namespace CKAN
         private ToolStripMenuItem installFromckanToolStripMenuItem;
         private TextBox FilterByAuthorTextBox;
         private Label FilterByAuthorLabel;
+        private ToolStripMenuItem FilterAllButton;
     }
 }
 
