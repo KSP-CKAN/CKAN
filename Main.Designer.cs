@@ -54,7 +54,6 @@ namespace CKAN
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -298,8 +297,7 @@ namespace CKAN
             this.FilterInstalledUpdateButton,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
-            this.FilterIncompatibleButton,
-            this.customToolStripMenuItem});
+            this.FilterIncompatibleButton});
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
@@ -347,12 +345,6 @@ namespace CKAN
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(215, 22);
             this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
-            // 
-            // customToolStripMenuItem
-            // 
-            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
-            this.customToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.customToolStripMenuItem.Text = "Custom";
             // 
             // ModList
             // 
@@ -1228,7 +1220,6 @@ namespace CKAN
         private Label NotCachedLabel;
         private TreeView ContentsPreviewTree;
         private Button ContentsDownloadButton;
-        private ToolStripMenuItem customToolStripMenuItem;
         private TabPage MetadataTabPage;
         private TableLayoutPanel MetadataLayoutPanel;
         private Label VersionLabel;
