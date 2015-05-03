@@ -379,7 +379,6 @@ namespace CKAN
                     bool selectedValue = (bool)selectedRowCheckBox.Value;
                     selectedRowCheckBox.Value = !selectedValue;
                 }
-
                 return;
             }
 
@@ -395,38 +394,8 @@ namespace CKAN
             if (match != null)
             {
                 match.Selected = true;
-                //Assume that no one is running via mono on windows
-                if (!Platform.IsWindows)
-                {
-                    try
-                    {
-
-                        var first_row_index = ModList.GetType().GetField("first_row_index",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-                        var vertical_scroll_bar = ModList.GetType().GetField("verticalScrollBar",
-                            BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ModList);
-                        var safe_set_method = vertical_scroll_bar.GetType().GetMethod("SafeValueSet",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        first_row_index.SetValue(ModList, match.Index);
-                        safe_set_method.Invoke(vertical_scroll_bar,
-                            new object[] { match.Index * match.Height });
-                    }
-                    catch
-                    {
-                        //Compared to crashing ignoring the keypress is fine.
-                    }
-                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
-                    ModList.Refresh();
-                }
-                else
-                {
-                    //Not the best of names. Why not FirstVisableRowIndex?
-                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
-                }
-            }
-
-
+                ModList.CurrentCell = match.Cells[0];            
+            }                                        
         }
 
         /// <summary>
