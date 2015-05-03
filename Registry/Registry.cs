@@ -803,7 +803,7 @@ namespace CKAN
         ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
-        public Version InstalledVersion(string modIdentifier)
+        public Version InstalledVersion(string modIdentifier, bool withProvides=true)
         {
             InstalledModule installedModule;
             if (installed_modules.TryGetValue(modIdentifier, out installedModule))
@@ -815,6 +815,8 @@ namespace CKAN
                 return new DllVersion();
             }
 
+            if (!withProvides) return null;
+
             var provided = Provided();
 
             ProvidesVersion version;
@@ -825,13 +827,9 @@ namespace CKAN
         ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
         /// </summary>
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
-        public bool IsInstalled(string modName)
+        public bool IsInstalled(string modName, bool withProvides = true)
         {
-            if (InstalledVersion(modName) == null)
-            {
-                return false;
-            }
-            return true;
+            return InstalledVersion(modName, withProvides) != null;
         }
 
         /// <summary>
