@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
+    /** WARNING **/
+    // Much of this file does not correctly use Util.Invoke. Never call from a thread other than the UI
+    /** WARNING **/
     public partial class Main
     {
         private BackgroundWorker m_InstallWorker;
@@ -54,7 +57,6 @@ namespace CKAN
             }
 
             // Now work on satisifying dependencies.
-
             var recommended = new Dictionary<string, List<string>>();
             var suggested = new Dictionary<string, List<string>>();
 
@@ -64,103 +66,24 @@ namespace CKAN
                 {
                     var registry = RegistryManager.Instance(manager.CurrentInstance).registry;
                     var ksp_version = manager.CurrentInstance.Version();
-                    if (change.Key.recommends != null)
-                    {
-                        foreach (RelationshipDescriptor mod in change.Key.recommends)
-                        {
-                            try
-                            {
-                                // if the mod is available for the current KSP version _and_
-                                // the mod is not installed _and_
-                                // the mod is not already in the install list
-                                if (registry.LatestAvailable(mod.name, ksp_version) != null &&
-                                    !registry.IsInstalled(mod.name) &&
-                                    !toInstall.Contains(mod.name))
-                                {
-                                    // add it to the list of recommended mods we display to the user
-                                    recommended.AppendItemOrAddNewList(mod.name, change.Key.identifier);                                    
-                                    }
-                                    }
-                                // XXX - Don't ignore all krakens! Those things are important!
-                            catch (Kraken)
-                            {
-                            }
-                        }
-                    }
 
-                    if (change.Key.suggests != null)
-                    {
-                        foreach (RelationshipDescriptor mod in change.Key.suggests)
-                        {
-                            try
-                            {
-                                if (registry.LatestAvailable(mod.name, ksp_version) != null &&
-                                    !registry.IsInstalled(mod.name) &&
-                                    !toInstall.Contains(mod.name))
-                                {
-                                    suggested.AppendItemOrAddNewList(mod.name,change.Key.identifier);                                    
+                    var ckan_module = change.Key;
+                    AddInstallableModsToDict(registry, ksp_version, recommended, ckan_module.recommends, ckan_module.identifier);
+                    AddInstallableModsToDict(registry, ksp_version, suggested, ckan_module.suggests, ckan_module.identifier);                   
                                 }
                             }
-                                // XXX - Don't ignore all krakens! Those things are important!
-                            catch (Kraken)
-                            {
-                            }
-                        }
-                    }
-                }
-            }
 
             // If we're going to install something anyway, then don't list it in the
             // recommended list, since they can't de-select it anyway.
             foreach (var item in toInstall)
             {
                 recommended.Remove(item);
-            }
-
-            // If there are any mods that would be recommended, prompt the user to make
-            // selections.
-            if (recommended.Any())
-            {
-                Util.Invoke(this, () => UpdateRecommendedDialog(recommended));
-
-                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
-                m_TabController.SetTabLock(true);
-
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
-
-                m_TabController.SetTabLock(false);
-            }
-
-            m_TabController.HideTab("ChooseRecommendedModsTabPage");
-
-            // And now on to suggestions. Again, we don't show anything that's scheduled to
-            // be installed on our suggest list.
-            foreach (var item in toInstall)
-            {
                 suggested.Remove(item);
             }
 
-            if (suggested.Any())
-            {
-                Util.Invoke(this, () => UpdateRecommendedDialog(suggested, true));
+            DisplayModSelectionTab(recommended, "Choose recommended mods");
+            DisplayModSelectionTab(suggested, "Choose suggested mods");
 
-                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
-                m_TabController.SetTabLock(true);
-
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
-
-                m_TabController.SetTabLock(false);
-            }
-
-            m_TabController.HideTab("ChooseRecommendedModsTabPage");
 
             if (installCanceled)
             {
@@ -221,11 +144,61 @@ namespace CKAN
             e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(true, opts.Key);
         }
 
+        private void DisplayModSelectionTab(Dictionary<string, List<string>> modlist, string tab_name)
+        {
+            // If there are any mods that would be recommended, prompt the user to make
+            // selections.
+            if (modlist.Any())
+            {
+                Util.Invoke(this, () => UpdateRecommendedDialog(modlist));
+
+                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                m_TabController.RenameTab("ChooseRecommendedModsTabPage", tab_name);
+                m_TabController.SetTabLock(true);
+
+                lock (this)
+                {
+                    Monitor.Wait(this);
+                }
+
+                m_TabController.SetTabLock(false);
+            }
+
+            m_TabController.HideTab("ChooseRecommendedModsTabPage");
+        }
+
+        private void AddInstallableModsToDict(Registry registry, KSPVersion ksp_version, Dictionary<string, List<string>> recommended, List<RelationshipDescriptor> candidates, string endorser)
+        {            
+            if (candidates == null) return;
+            
+
+            foreach (var mod in candidates)
+            {
+                try
+                {
+                    // if the mod is available for the current KSP version _and_
+                    // the mod is not installed _and_
+                    // the mod is not already in the install list
+                    if (registry.LatestAvailable(mod.name, ksp_version) != null &&
+                        !registry.IsInstalled(mod.name) &&
+                        !toInstall.Contains(mod.name))
+                    {
+                        // add it to the list of mods we display to the user                                    
+                        recommended.AppendItemOrAddNewList(mod.name, endorser);
+                    }
+                }
+                    // XXX - Don't ignore all krakens! Those things are important!
+                catch (Kraken)
+                {
+                }
+            }
+        }
+
         private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options,
             NetAsyncDownloader downloader)
         {
-            if (toInstall.Any())
-            {
+            if (!toInstall.Any()) return true;
+
                 // actual magic happens here, we run the installer with our mod list
                 ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).onReportModInstalled = OnModInstalled;
                 cancelCallback = downloader.CancelDownload;
@@ -309,7 +282,6 @@ namespace CKAN
                     GUI.user.RaiseMessage("\n{0}", kraken.Message);
                     return false;
                 }
-            }
 
             return true;
         }
