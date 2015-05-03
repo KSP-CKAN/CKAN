@@ -480,8 +480,6 @@ namespace CKAN
                 var cell = gridViewCell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
-
-            ModList.EndEdit();
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
