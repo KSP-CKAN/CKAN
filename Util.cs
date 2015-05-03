@@ -7,27 +7,9 @@ namespace CKAN
     using System.Windows.Forms;
 
     public static class Util
-    {
-        
-        public static bool IsLinux
-        {
-            get
-            {
-                // Magic numbers ahoy! This arcane incantation was found
-                // in a Unity help-page, which was found on a scroll,
-                // which was found in an urn that dated back to Mono 2.0.
-                // It documents singular numbers of great power.
-                //
-                // "And lo! 'pon the 4, 6, and 128 the penguin shall
-                // come, and it infiltrate dominate from the smallest phone to
-                // the largest cloud."
-                int p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
-
+    {                
         /// <summary>
-        /// Invokes an actin on the UI thread, or directly if we're
+        /// Invokes an action on the UI thread, or directly if we're
         /// on the UI thread.
         /// </summary>
         public static void Invoke<T>(T obj, Action action) where T : Control
@@ -71,7 +53,7 @@ namespace CKAN
 
         public static void HideConsoleWindow()
         {
-            if (!IsLinux)
+            if (Platform.IsWindows)
             {
                 ShowWindow(GetConsoleWindow(), 0);
             }

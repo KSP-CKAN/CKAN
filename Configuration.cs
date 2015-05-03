@@ -31,7 +31,9 @@ namespace CKAN
                 var configuration = new Configuration
                 {
                     m_Path = path,
-                    CommandLineArguments = Util.IsLinux ? "./KSP.x86_64" : "KSP.exe"
+                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64" :
+                                           Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
+                                                             "KSP.exe"
                 };
 
                 SaveConfiguration(configuration, path);

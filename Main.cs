@@ -387,8 +387,8 @@ namespace CKAN
             if (match != null)
             {
                 match.Selected = true;
-
-                if (Util.IsLinux)
+                //Assume that no one is running via mono on windows
+                if (!Platform.IsWindows)
                 {
                     try
                     {
