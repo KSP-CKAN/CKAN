@@ -272,7 +272,7 @@ namespace CKAN
             // TODO: Should we save to disk at the end of a Tx?
             // TODO: If so, we should abort if we find a save that's while a Tx is in progress?
             //
-            // In either case, do we want the registry_manager to be Tx aware? 
+            // In either case, do we want the registry_manager to be Tx aware?
         }
 
         public void Rollback(Enlistment enlistment)
@@ -302,11 +302,11 @@ namespace CKAN
 
         /// <summary>
         /// "Pardon me, but I couldn't help but overhear you're in a Transaction..."
-        /// 
+        ///
         /// Adds our registry to the current transaction. This should be called whenever we
         /// do anything which may dirty the registry.
         /// </summary>
-        // 
+        //
         // http://wondermark.com/1k62/
         private void SealionTransaction()
         {
@@ -393,14 +393,14 @@ namespace CKAN
         /// </summary>
         // TODO: This name is misleading. It's more a LatestAvailable's'
         public List<CkanModule> Available(KSPVersion ksp_version)
-        {            
+        {
             var candidates = new List<string>(available_modules.Keys);
             var compatible = new List<CkanModule>();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
-            //Cache 
+            //Cache
             AvailableModule[] modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
@@ -452,7 +452,7 @@ namespace CKAN
         ///     the specified version of KSP (installed version by default)
         /// </summary>
         public List<CkanModule> Incompatible(KSPVersion ksp_version)
-        {           
+        {
             var candidates = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
 
@@ -472,7 +472,7 @@ namespace CKAN
 
             return incompatible;
         }
-        
+
 
         /// <summary>
         ///     Returns the latest available version of a module that
@@ -481,7 +481,7 @@ namespace CKAN
         ///     Returns null if there's simply no compatible version for this system.
         ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
         /// </summary>
-         
+
         // TODO: Consider making this internal, because practically everything should
         // be calling LatestAvailableWithProvides()
         public CkanModule LatestAvailable(string module, KSPVersion ksp_version)
@@ -613,7 +613,7 @@ namespace CKAN
                 if (installed_files.TryGetValue(file, out owner))
                 {
                     // Woah! Registering an already owned file? Not cool!
-                    // (Although if it existed, we should have thrown a kraken well before this.)                    
+                    // (Although if it existed, we should have thrown a kraken well before this.)
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
                             mod.identifier, file, owner
@@ -647,7 +647,7 @@ namespace CKAN
         /// <summary>
         /// Deregister a module, which must already have its files removed, thereby
         /// forgetting abouts its metadata and files.
-        /// 
+        ///
         /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
         public void DeregisterModule(KSP ksp, string module)
@@ -660,7 +660,7 @@ namespace CKAN
             // Note, this checks to see if a *file* exists; it doesn't
             // trigger on directories, which we allow to still be present
             // (they may be shared by multiple mods.
-                
+
             foreach (var absolute_file in absolute_files.Where(File.Exists))
             {
                 inconsistencies.Add(string.Format(
@@ -687,7 +687,7 @@ namespace CKAN
         /// <summary>
         /// Registers the given DLL as having been installed. This provides some support
         /// for pre-CKAN modules.
-        /// 
+        ///
         /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
         public void RegisterDll(KSP ksp, string absolute_path)
@@ -706,7 +706,7 @@ namespace CKAN
                 );
                 return;
             }
-                
+
             // http://xkcd.com/208/
             // This regex works great for things like GameData/Foo/Foo-1.2.dll
             Match match = Regex.Match(
@@ -790,7 +790,7 @@ namespace CKAN
             InstalledModule installedModule;
             return installed_modules.TryGetValue(module, out installedModule) ? installedModule : null;
         }
-            
+
         /// <summary>
         /// Returns a dictionary of provided (virtual) modules, and a
         /// ProvidesVersion indicating what provides them.
@@ -870,7 +870,7 @@ namespace CKAN
         /// </summary>
         /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
         public bool IsAutodetected(string identifier)
-        {            
+        {
             return IsInstalled(identifier) && InstalledVersion(identifier).ToString().Equals("autodetected dll");
         }
 
@@ -940,7 +940,7 @@ namespace CKAN
 
                 // If nothing else would break, it's just the list of modules we're removing.
                 HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
-                
+
                 if (to_remove.IsSupersetOf(broken))
                 {
                     log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
@@ -967,5 +967,18 @@ namespace CKAN
             var set = new HashSet<string> {module};
             return FindReverseDependencies(set);
         }
+
+        /// <summary>
+        /// Checks whether the mod specified by string ID is compatible with the specified KSP version.
+        /// </summary>
+        /// <param name="module">String ID of the mod (name).</param>
+        /// <param name="ksp_version">KSP version to check against.</param>
+        /// <returns></returns>
+        public bool IsModCompatible(string module, KSPVersion ksp_version)
+        {
+            CkanModule mod = available_modules[module].Latest(ksp_version);
+            return (mod != null);
+        }
+
     }
 }
