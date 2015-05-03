@@ -127,5 +127,18 @@ namespace CKAN
             if(mod==null) throw new ArgumentNullException();
             return !(mod.IsAutodetected || mod.IsIncompatible) || (!mod.IsAutodetected && mod.IsInstalled);
         }
+
+        public static void AppendItemOrAddNewList<K, T>(this Dictionary<K, List<T>> dict, K key, T item)
+        {
+            if (dict.ContainsKey(key))
+            {
+                dict[key].Add(item);
+            }
+            else
+            {
+                dict.Add(key, new List<T> { item });
+            }
+        }
     }
+    
 }
