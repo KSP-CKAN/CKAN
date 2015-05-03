@@ -46,7 +46,7 @@ namespace Tests.GUI
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
             using (new DisposableKSP())
-            {                
+            {
                 var item = new MainModList(delegate { });
                 Assert.That(item.ComputeUserChangeSet(), Is.Empty);
             }
@@ -101,7 +101,7 @@ namespace Tests.GUI
             }
 
         }
-        
+
         [Test]
         [Category("Display")]
         public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
@@ -120,6 +120,6 @@ namespace Tests.GUI
                 });
                 Assert.That(mod_list, Has.Count.EqualTo(2));
             }
-        }        
+        }
     }
 }
