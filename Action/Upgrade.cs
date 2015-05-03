@@ -86,6 +86,10 @@ namespace CKAN.CmdLine
                                 // Check if upgrades are available
                                 CkanModule latest = ksp.Registry.LatestAvailable(mod.Key, ksp.Version());
 
+                                // This may be an unindexed mod. If so,
+                                // skip rather than crash. See KSP-CKAN/CKAN#841.
+                                if(latest==null) continue;
+
                                 if (latest.version.IsGreaterThan(mod.Value))
                                 {
                                     // Upgradable
