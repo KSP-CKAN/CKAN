@@ -81,7 +81,7 @@ namespace CKAN
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleAbstractLabel = new System.Windows.Forms.TextBox();
+            this.MetadataModuleAbstractLabel = new System.Windows.Forms.RichTextBox();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
@@ -446,6 +446,7 @@ namespace CKAN
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(0, 72);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -1281,7 +1282,7 @@ namespace CKAN
         private Button ChooseProvidedModsContinueButton;
         private ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
-        private TextBox MetadataModuleAbstractLabel;
+        private RichTextBox MetadataModuleAbstractLabel;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
