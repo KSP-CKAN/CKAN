@@ -11,7 +11,7 @@ namespace CKAN
 
         public void ApplyFormCompatibilityFixes()
         {
-            if (Util.IsLinux)
+            if (!Platform.IsWindows)
             {
                 ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
             }

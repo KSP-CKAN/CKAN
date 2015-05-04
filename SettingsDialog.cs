@@ -90,7 +90,7 @@ namespace CKAN
             Main.Instance.Manager.ClearAutoStart();
 
             // Mono throws an uninformative error if the file we try to run is not flagged as executable, mark it as such.
-            if (Util.IsLinux)
+            if (!Platform.IsWindows)
             {
                 // Create the command with the filename of the currently running assembly.
                 string command = string.Format("+x \"{0}\"", System.Reflection.Assembly.GetExecutingAssembly().Location);
