@@ -74,14 +74,14 @@ namespace CKAN
             SetDescription("Scanning for manually installed mods");
             CurrentInstance.ScanGameData();
 
-            UpdateModsList();
+            UpdateModsList(repo_updated: true);
 
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
 
             Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
             Util.Invoke(this, () => Enabled = true);
-            Util.Invoke(this, () => RecreateDialogs());
+            Util.Invoke(this, RecreateDialogs);
         }
     }
 }

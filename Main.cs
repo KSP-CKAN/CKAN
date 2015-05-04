@@ -12,12 +12,13 @@ namespace CKAN
 {
     public enum GUIModFilter
     {
-        All = 0,
+        Compatible = 0,
         Installed = 1,
         InstalledUpdateAvailable = 2,
         NewInRepository = 3,
         NotInstalled = 4,
-        Incompatible = 5
+        Incompatible = 5,
+        All = 6
     }
 
     public enum GUIModChangeType
@@ -484,10 +485,10 @@ namespace CKAN
             ModList.EndEdit();
         }
 
-        private void FilterAllButton_Click(object sender, EventArgs e)
+        private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.All;
-            FilterToolButton.Text = "Filter (All)";
+            mainModList.ModFilter = GUIModFilter.Compatible;
+            FilterToolButton.Text = "Filter (Compatible)";
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
@@ -499,7 +500,7 @@ namespace CKAN
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             mainModList.ModFilter = GUIModFilter.InstalledUpdateAvailable;
-            FilterToolButton.Text = "Filter (Updated)";
+            FilterToolButton.Text = "Filter (Upgradeable)";
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
@@ -518,6 +519,12 @@ namespace CKAN
         {
             mainModList.ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
+        }
+
+        private void FilterAllButton_Click(object sender, EventArgs e)
+        {
+            mainModList.ModFilter = GUIModFilter.All;
+            FilterToolButton.Text = "Filter (All)";
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)

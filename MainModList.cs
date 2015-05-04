@@ -34,31 +34,49 @@ namespace CKAN
             ModList.Rows.AddRange(rows);
         }
 
-        private void UpdateModsList()
+        private void UpdateModsList(Boolean repo_updated=false)
         {
-            Util.Invoke(this, _UpdateModsList);
+            Util.Invoke(this, ()=>_UpdateModsList(repo_updated));
         }
 
 
-        private void _UpdateModsList()
+        private void _UpdateModsList(bool repo_updated)
         {
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
-
+            
             var ckanModules = registry.Available(CurrentInstance.Version()).Concat(
                 registry.Incompatible(CurrentInstance.Version())).ToList();
-            var gui_mods = ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())).ToList();
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods);
+            var gui_mods = new HashSet<GUIMod>(ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
+
+            var old_modules = new HashSet<GUIMod>(mainModList.Modules);
+            if (repo_updated)
+            {
+                foreach (var gui_mod in gui_mods.Where(m => !old_modules.Contains(m)))
+                {
+                    gui_mod.IsNew = true;
+                }
+            }
+            else
+            {
+                //Copy the new mod flag from the old list.
+                var old_new_mods = new HashSet<GUIMod>(old_modules.Where(m => m.IsNew));
+                foreach (var gui_mod in gui_mods.Where(m => old_new_mods.Contains(m)))
+                {
+                    gui_mod.IsNew = true;
+                }
+            }
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
             var rows = MainModList.ConstructModList(mainModList.Modules);
             ModList.Rows.Clear();
             ModList.Rows.AddRange(rows.ToArray());
             ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
 
             //TODO Consider using smart enum patten so stuff like this is easier
-            FilterToolButton.DropDownItems[0].Text = String.Format("All ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.All));
+            FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Compatible));
             FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Installed));
-            FilterToolButton.DropDownItems[2].Text = String.Format("Updated ({0})",
+            FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
             FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
@@ -66,6 +84,8 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
             FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+            FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.All));
 
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
@@ -159,7 +179,7 @@ namespace CKAN
             }
         }
 
-        private GUIModFilter _modFilter = GUIModFilter.All;
+        private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
 
@@ -250,18 +270,20 @@ namespace CKAN
 
             switch (filter)
             {
-                case GUIModFilter.All:
+                case GUIModFilter.Compatible:
                     return Modules.Count(m => !m.IsIncompatible);
                 case GUIModFilter.Installed:
                     return Modules.Count(m => m.IsInstalled);
                 case GUIModFilter.InstalledUpdateAvailable:
                     return Modules.Count(m => m.HasUpdate);
                 case GUIModFilter.NewInRepository:
-                    return Modules.Count();
+                    return Modules.Count(m=>m.IsNew);
                 case GUIModFilter.NotInstalled:
                     return Modules.Count(m => !m.IsInstalled);
                 case GUIModFilter.Incompatible:
                     return Modules.Count(m => m.IsIncompatible);            
+                case GUIModFilter.All:
+                    return Modules.Count();
             }
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
@@ -322,18 +344,20 @@ namespace CKAN
         {     
             switch (ModFilter)
             {
-                case GUIModFilter.All:
+                case GUIModFilter.Compatible:
                     return !m.IsIncompatible;
                 case GUIModFilter.Installed:
                     return m.IsInstalled;
                 case GUIModFilter.InstalledUpdateAvailable:
                     return m.IsInstalled && m.HasUpdate;
                 case GUIModFilter.NewInRepository:
-                    return true;
+                    return m.IsNew;
                 case GUIModFilter.NotInstalled:
                     return !m.IsInstalled;
                 case GUIModFilter.Incompatible:
                     return m.IsIncompatible;
+                case GUIModFilter.All:
+                    return true;
             }
             throw new Kraken("Unknown filter type in IsModInFilter");
         }
