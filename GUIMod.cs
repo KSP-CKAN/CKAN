@@ -19,6 +19,7 @@ namespace CKAN
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
         public bool IsUpgradeChecked { get; set; }
+        public bool IsNew { get; set; }
 
 
         public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
@@ -52,6 +53,24 @@ namespace CKAN
         public CkanModule ToCkanModule()
         {
             return Mod;
+        }
+
+        protected bool Equals(GUIMod other)
+        {
+            return Equals(Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((GUIMod) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Name != null ? Name.GetHashCode() : 0);
         }
     }
 }
