@@ -15,8 +15,24 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
         private string m_Path = "";
-
-        public Point WindowLoc = new Point(0, 0);
+        private Point m_window_loc = new Point(0,0);
+        //Workaround for bug which miss-sets the window location.
+        // Here instead of in Main_FormClosing due to the misstaken 
+        // value possibly being written out to config file. After some time
+        // it should be save to move. RLake 2015/05
+        public Point WindowLoc
+        {
+            get
+            {
+                if (m_window_loc.X < 0 && m_window_loc.Y < 0)
+                {
+                    m_window_loc = new Point(0, 0);
+                }
+                return m_window_loc;
+            }
+            set { m_window_loc = value; }
+        }
+        
         public Size WindowSize = new Size(1024, 500);
 
         public void Save()
