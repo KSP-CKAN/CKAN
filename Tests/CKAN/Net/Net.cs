@@ -64,7 +64,10 @@ namespace CKANTests
         [Category("Security")]
         public void SSLenforced()
         {
+            // We don't use curl on Windows, and so we just skip
+            // this test on that platform.
             if (Platform.IsWindows) return;
+
             var curl = CKAN.Curl.CreateEasy("https://example.com", (FileStream) null);
             Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
         }
