@@ -11,8 +11,8 @@ namespace Tests.GUI
         public void OnCreation_HasDefaultFilters()
         {
             var item = new MainModList(delegate { });
-            Assert.That(item.ModFilter.Equals(GUIModFilter.All));
-            Assert.That(item.ModNameFilter.Equals(String.Empty));
+            Assert.AreEqual(GUIModFilter.All, item.ModFilter, "ModFilter");
+            Assert.AreEqual(String.Empty, item.ModNameFilter, "ModNameFilter");
         }
 
         [Test]
