@@ -25,14 +25,14 @@ namespace CKAN
             mainModList.FullListOfModRows.CopyTo(rows, 0);
             ModList.Rows.Clear();
 
-            foreach (DataGridViewRow row in rows)
+            foreach (var row in rows)
             {
                 var mod = ((GUIMod)row.Tag);
-                var isVisible = mainModList.IsVisible(mod);
-                row.Visible = isVisible;
+                row.Visible = mainModList.IsVisible(mod);
             }
-
-            ModList.Rows.AddRange(rows.Where(row=>row.Visible).ToArray());
+            
+            ModList.Rows.AddRange(rows.Where(row=>row.Visible).OrderBy(row=>((GUIMod)row.Tag).Name).ToArray());
+            
         }
 
         private void UpdateModsList(Boolean repo_updated=false)
