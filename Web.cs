@@ -23,8 +23,11 @@ namespace CKAN.NetKAN
 				init_complete = true;
 			}
 
-			easy = new CurlEasy ();
-			easy.UserAgent = Net.UserAgentString;
+		    easy = new CurlEasy
+		    {
+		        UserAgent = Net.UserAgentString,
+		        CaInfo = "./curl-ca-bundle.crt"
+		    };
 		}
 
 		/// <summary>
