@@ -221,7 +221,7 @@ namespace CKAN
             RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
             options.with_recommends = false;
             options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = true;
+            options.without_enforce_consistency = false;
 
             RelationshipResolver resolver;
             try
