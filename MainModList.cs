@@ -138,7 +138,7 @@ namespace CKAN
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            ModFiltersUpdated += onModFiltersUpdated;
+            ModFiltersUpdated += onModFiltersUpdated!=null? onModFiltersUpdated : (source) => { };
             ModFiltersUpdated(this);
         }
 
@@ -221,21 +221,24 @@ namespace CKAN
             RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
             options.with_recommends = false;
             options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = false;
+            options.without_enforce_consistency = true;
 
             RelationshipResolver resolver;
+            var installed_modules = new HashSet<string>(registry.InstalledModules.Select(m => m.identifier));
             try
-            {
-                resolver = new RelationshipResolver(modulesToInstall.ToList(), options, registry, current_instance.Version());
+            {                
+                modulesToInstall.UnionWith(installed_modules);
+                var modules = modulesToInstall.Where(m => !modulesToRemove.Contains(m)).ToList();
+                resolver = new RelationshipResolver(modules, options, registry, current_instance.Version());
             }
             catch (Exception)
             {
                 //TODO FIX this so the UI reacts.
                 return null;
             }
-
+            var install_or_installed = resolver.ModList();
             changeset.UnionWith(
-                resolver.ModList()
+                install_or_installed.Where(m=>!installed_modules.Contains(m.identifier))
                     .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
 
