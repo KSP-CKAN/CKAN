@@ -203,6 +203,12 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("- repository: {0}", module.resources.repository.ToString());
             }
 
+            // Compute the CKAN filename.
+            string file_uri_hash = NetFileCache.CreateURLHash(module.download);
+            string file_name = CkanModule.StandardName(module.identifier, module.version);
+
+            user.RaiseMessage("\nFilename: {0}", file_uri_hash + "-" + file_name);
+
             return Exit.OK;
         }
 
