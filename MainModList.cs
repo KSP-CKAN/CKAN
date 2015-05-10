@@ -228,7 +228,8 @@ namespace CKAN
             foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, version));
+                //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset. 
+                var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, null));                
                 changeSet.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
             }
             return changeSet;
