@@ -58,8 +58,6 @@ namespace Tests.CKAN.Relationships
 
             options.procede_with_inconsistencies = true;
             var resolver = new RelationshipResolver(list, options, registry, null);
-            var a = resolver.ConflictList.First();
-            var b = resolver.ConflictList.First();
 
             Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_a)));
             Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_b)));
