@@ -499,7 +499,6 @@ namespace CKAN
                 var registry = registry_manager.registry;
                 UpdateChangeSetAndConflicts(registry);
             }
-            ModList.EndEdit();
         }
 
         private void UpdateChangeSetAndConflicts(Registry registry)
