@@ -28,10 +28,10 @@
             "description" : "Unique identifier for this mod.",
             "$ref"        : "#/definitions/identifier"
         },
-		"kind" : {
-			"description" : "Package type.",
+        "kind" : {
+            "description" : "Package type, defaults to package.",
             "enum" : [ "package", "metapackage" ]
-		},
+        },
         "abstract" : {
             "description" : "Short description of the mod",
             "type"        : "string"
