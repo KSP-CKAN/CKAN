@@ -405,8 +405,6 @@ namespace CKAN
 
         public class UserRequested : Relationship
         {
-            private readonly Module module;
-
             public override CkanModule Parent
             {
                 get
