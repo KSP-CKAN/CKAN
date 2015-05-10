@@ -10,9 +10,9 @@ namespace CKAN {
     [Serializable]
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class Version : IComparable<Version> {
-        private int epoch;
-        private string version;
-        private string orig_string;
+        private readonly int epoch;
+        private readonly string version;
+        private readonly string orig_string;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
@@ -73,11 +73,9 @@ namespace CKAN {
             }
  
             // Compare epochs first.
-            if (epoch < that.epoch) {
-                return -1;
-            } else if (epoch > that.epoch) {
-                return 1;
-            }
+            if (epoch != that.epoch) {
+                return epoch > that.epoch ?1:-1;
+            }                                  
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
@@ -173,7 +171,7 @@ namespace CKAN {
 
             // Then compare the two strings, and return our comparison state.
 
-            comp.compare_to = String.Compare(str1, str2);
+            comp.compare_to = String.CompareOrdinal(str1, str2);
             return comp;
         }
 
@@ -185,39 +183,39 @@ namespace CKAN {
         {
             var comp = new Comparison {remainder1 = "", remainder2 = ""};
 
-            int minimumLength1 = 0;
+            int minimum_length1 = 0;
             for (int i = 0; i < v1.Length; i++)
             {
-                if (!Char.IsNumber(v1[i]))
+                if (!char.IsNumber(v1[i]))
                 {
                     comp.remainder1 = v1.Substring(i);
                     break;
                 }
 
-                minimumLength1++;
+                minimum_length1++;
             }
 
-            int minimumLength2 = 0;
+            int minimum_length2 = 0;
             for (int i = 0; i < v2.Length; i++)
             {
-                if (!Char.IsNumber(v2[i]))
+                if (!char.IsNumber(v2[i]))
                 {
                     comp.remainder2 = v2.Substring(i);
                     break;
                 }
 
-                minimumLength2++;
+                minimum_length2++;
             }
 
             int integer1;
             int integer2;
 
-            if (!int.TryParse(v1.Substring(0, minimumLength1), out integer1))
+            if (!int.TryParse(v1.Substring(0, minimum_length1), out integer1))
             {
                 integer1 = 0;
             }
 
-            if (!int.TryParse(v2.Substring(0, minimumLength2), out integer2))
+            if (!int.TryParse(v2.Substring(0, minimum_length2), out integer2))
             {
                 integer2 = 0;
             }
@@ -247,7 +245,7 @@ namespace CKAN {
     /// another module.
     /// </summary>
     public class ProvidesVersion : Version {
-        internal string provided_by;
+        internal readonly string provided_by;
 
         public ProvidesVersion(string provided_by) :base("0")
         {
