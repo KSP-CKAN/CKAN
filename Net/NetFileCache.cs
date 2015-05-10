@@ -183,7 +183,7 @@ namespace CKAN
         }
 
         // returns the 8-byte hash for a given url
-        private static string CreateURLHash(Uri url)
+        public static string CreateURLHash(Uri url)
         {
             using (var sha1 = new SHA1Managed())
             {
