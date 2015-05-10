@@ -108,12 +108,13 @@ namespace CKAN
                 }
                 else
                 {
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        cell.ToolTipText = null;
-                    }
                     if (row.DefaultCellStyle.BackColor != Color.White)
                     {
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            cell.ToolTipText = null;
+                        }
+
                         row.DefaultCellStyle.BackColor = Color.White;
                         ModList.InvalidateRow(row.Index);
                     }                                           
