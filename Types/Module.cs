@@ -403,7 +403,20 @@ namespace CKAN
             }
             // All good! Return module
             return newModule;
-        }            
+        }
+        public override bool Equals(object obj)
+        {
+            var other = obj as Module;
+            return other != null
+            ? identifier.Equals(other.identifier) && version.Equals(other.version)
+            : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return identifier.GetHashCode() ^ version.GetHashCode();
+        }
+
 
         public static string ToJson(CkanModule module)
         {

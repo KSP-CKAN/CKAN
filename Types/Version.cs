@@ -65,7 +65,6 @@ namespace CKAN {
         /// Returns +1 if this is greater than that
         /// Returns  0 if equal.
         /// </summary>
-
         public int CompareTo(Version that) {
 
             if (that.epoch == epoch && that.version == version) {
@@ -222,6 +221,20 @@ namespace CKAN {
 
             comp.compare_to = integer1.CompareTo(integer2);
             return comp;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Version;
+            return other != null ? IsEqualTo(other) : base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return version.GetHashCode();
+        }
+        int IComparable<Version>.CompareTo(Version other)
+        {
+            return CompareTo(other);
         }
     }
 
