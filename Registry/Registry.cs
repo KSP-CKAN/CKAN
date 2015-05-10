@@ -400,6 +400,8 @@ namespace CKAN
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
+            //Cache 
+            var modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
             {
@@ -416,7 +418,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name, ksp_version).Count == 0)
+                                if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
                                 {
                                     failedDepedency = true;
                                     break;
@@ -507,6 +509,13 @@ namespace CKAN
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version)
         {
+            return LatestAvailableWithProvides(module, ksp_version,
+                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null));
+        }
+
+        private List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version,
+            IEnumerable<AvailableModule> available_for_current_version)
+        {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
@@ -530,19 +539,18 @@ namespace CKAN
             // Walk through all our available modules, and see if anything
             // provides what we need.
 
-            // Skip this module if not available for our system.
-            var available_for_system = available_modules.Values.Where(pair=>pair.Latest(ksp_version)!=null);
-            foreach (var available_module in available_for_system)
+            // Skip this module if not available for our system.            
+            foreach (var available_module in available_for_current_version)
             {
                 var provides = available_module.Latest(ksp_version).provides;
                 if (provides != null && provides.Any(provided => provided == module))
                 {
-                    modules.Add(available_module.Latest(ksp_version));                    
+                    modules.Add(available_module.Latest(ksp_version));
                 }
             }
-
             return modules;
         }
+
 
         public CkanModule GetModuleByVersion(string ident, string version)
         {
