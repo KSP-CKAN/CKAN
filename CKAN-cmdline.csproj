@@ -19,9 +19,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
-    <Reference Include="CKAN">
-      <HintPath>..\CKAN-GUI\bin\Debug\CKAN.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\CKAN-core\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
@@ -33,6 +30,9 @@
     </Reference>
     <Reference Include="CurlSharp">
       <HintPath>..\CKAN-core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CKAN">
+      <HintPath>..\CKAN-core\bin\Debug\CKAN.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
