@@ -138,7 +138,7 @@ namespace CKAN
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
         {
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            ModFiltersUpdated += onModFiltersUpdated;
+            ModFiltersUpdated += onModFiltersUpdated!=null? onModFiltersUpdated : (source) => { };
             ModFiltersUpdated(this);
         }
 
@@ -202,7 +202,6 @@ namespace CKAN
             };
 
             foreach (var change in changeSet)
-
             {
                 switch (change.Value)
                 {
@@ -224,6 +223,7 @@ namespace CKAN
             //May throw InconsistentKraken
             var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry,version);
             changeSet.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+
 
             foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
