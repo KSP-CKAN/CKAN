@@ -6,16 +6,47 @@ using log4net;
 
 namespace CKAN
 {
+
+    // TODO: It would be lovely to get rid of the `without` fields,
+    // and replace them with `with` fields. Humans suck at inverting
+    // cases in their heads.
     public class RelationshipResolverOptions : ICloneable
     {
+        /// <summary>
+        /// If true, add recommended mods, and their recommendations.
+        /// </summary>
         public bool with_recommends = true;
 
-        public bool with_suggests;
-        //Recursively add suggests.
-        public bool with_all_suggests;
+        /// <summary>
+        /// If true, add suggests, but not suggested suggests. :)
+        /// </summary>
+        public bool with_suggests = false;
 
+        /// <summary>
+        /// If true, add suggested modules, and *their* suggested modules, too!
+        /// </summary>
+        public bool with_all_suggests = false;
+
+        /// <summary>
+        /// If true, surpresses the TooManyProvides kraken when resolving
+        /// relationships. Otherwise, we just pick the first.
+        /// </summary>
         public bool without_toomanyprovides_kraken = false;
+
+        /// <summary>
+        /// If true, we skip our sanity check at the end of our relationship
+        /// resolution. Note that non-sane resolutions can't actually be
+        /// installed, so this is mostly useful for giving the user feedback
+        /// on failed resolutions.
+        /// </summary>
         public bool without_enforce_consistency = false;
+
+        /// <summary>
+        /// If true, we'll populate the `conflicts` field, rather than immediately
+        /// throwing a kraken when inconsistencies are detected. Again, these
+        /// solutions are non-installable, so mostly of use to provide user
+        /// feedback when things go wrong.
+        /// </summary>
         public bool procede_with_inconsistencies = false;
 
         public object Clone()
@@ -124,6 +155,9 @@ namespace CKAN
         /// <summary>
         ///     Returns the default options for relationship resolution.
         /// </summary>
+        
+        // TODO: This should just be able to return a new RelationshipResolverOptions
+        // and the defaults in the class definition should do the right thing.
         public static RelationshipResolverOptions DefaultOpts()
         {
             var opts = new RelationshipResolverOptions
@@ -172,8 +206,13 @@ namespace CKAN
         /// If `soft_resolve` is true, we warn rather than throw exceptions on mods we cannot find.
         /// If `soft_resolve` is false (default), we throw a ModuleNotFoundKraken if we can't find a dependency.
         /// 
-        /// Throws a TooManyModsProvideKraken if we have too many choices.
+        /// Throws a TooManyModsProvideKraken if we have too many choices and
+        /// options.without_toomanyprovides_kraken is not set.
+        ///
+        /// See RelationshipResolverOptions for further adjustments that can be made.
+        ///
         /// </summary>
+
         private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, Relationship reason,
             RelationshipResolverOptions options, bool soft_resolve = false)
         {
