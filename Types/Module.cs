@@ -414,7 +414,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return identifier.GetHashCode();
+            return identifier.GetHashCode() ^ version.GetHashCode();
         }
 
 
