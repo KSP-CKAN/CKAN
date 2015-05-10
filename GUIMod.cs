@@ -21,6 +21,7 @@ namespace CKAN
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
         public bool IsUpgradeChecked { get; set; }
+        public bool IsNew { get; set; }
 
 
         public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
@@ -69,10 +70,12 @@ namespace CKAN
             }
             return null;
         }
+
         public static implicit operator CkanModule(GUIMod mod)
         {
             return mod.ToCkanModule();
         }
+
         public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
@@ -81,6 +84,7 @@ namespace CKAN
             IsUpgradeChecked = value;
             update_cell.Value = value;
         }
+
         public void SetInstallChecked(DataGridViewRow row)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
@@ -88,5 +92,22 @@ namespace CKAN
             IsInstallChecked = (bool)install_cell.Value;
         }
 
+        protected bool Equals(GUIMod other)
+        {
+            return Equals(Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((GUIMod) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Name != null ? Name.GetHashCode() : 0);
+        }
     }
 }

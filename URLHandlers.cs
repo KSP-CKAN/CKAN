@@ -17,11 +17,11 @@ namespace CKAN
         {
             try
             {
-                if (Util.IsLinux)
+                if (Platform.IsUnix)
                 {
                     RegisterURLHandler_Linux();
                 }
-                else
+                else if(Platform.IsWindows)
                 {
                     try
                     {
@@ -51,6 +51,8 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
                         
                         throw;
                     }
+                } else if (Platform.IsMac) {
+                    //TODO
                 }
             }
             catch (Exception ex)

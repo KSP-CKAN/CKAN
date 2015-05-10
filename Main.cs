@@ -13,12 +13,13 @@ namespace CKAN
 {
     public enum GUIModFilter
     {
-        All = 0,
+        Compatible = 0,
         Installed = 1,
         InstalledUpdateAvailable = 2,
         NewInRepository = 3,
         NotInstalled = 4,
-        Incompatible = 5
+        Incompatible = 5,
+        All = 6
     }
 
     public enum GUIModChangeType
@@ -180,6 +181,9 @@ namespace CKAN
                 Util.HideConsoleWindow();
             }
 
+            // Disable the modinfo controls until a mod has been choosen.
+            this.ModInfoTabControl.Enabled = false;
+
             Application.Run(this);
         }
 
@@ -242,22 +246,29 @@ namespace CKAN
 
             if (m_Configuration.CheckForUpdatesOnLaunch)
             {
-                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
-                var currentVersion = new Version(Meta.Version());
-
-                if (latestVersion.IsGreaterThan(currentVersion))
+                try
                 {
-                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
-                    var dialog = new NewUpdateDialog(latestVersion.ToString(), releaseNotes);
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                    var latest_version = AutoUpdate.FetchLatestCkanVersion();
+                    var current_version = new Version(Meta.Version());
+
+                    if (latest_version.IsGreaterThan(current_version))
                     {
-                        AutoUpdate.StartUpdateProcess(true);
+                        var release_notes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                        var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            AutoUpdate.StartUpdateProcess(true);
+                        }
                     }
                 }
+                catch (Exception exception)
+                {
+                    m_User.RaiseError("Error in autoupdate: \n\t"+exception.Message +"");                    
+                }      
             }
 
-            this.Location = m_Configuration.WindowLoc;
-            this.Size = m_Configuration.WindowSize;
+            Location = m_Configuration.WindowLoc;
+            Size = m_Configuration.WindowSize;
 
             m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
 
@@ -345,20 +356,32 @@ namespace CKAN
         {
             if (ModList.SelectedRows.Count == 0)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
 
             DataGridViewRow selectedItem = ModList.SelectedRows[0];
             if (selectedItem == null)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
 
             var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
+                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
+                this.ModInfoTabControl.Enabled = false;
+
                 return;
             }
+
+            // We are sure we have a valid module object, enable the ModInfoTabControl.
+            this.ModInfoTabControl.Enabled = true;
 
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
@@ -380,12 +403,35 @@ namespace CKAN
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
         }
 
+        private void FilterByAuthorTextBox_TextChanged(object sender, EventArgs e)
+        {
+            mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+        }
+
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
-        /// with name begining with the key pressed. 
+        /// with name begining with the key pressed. If space is pressed, the checkbox
+        /// at the current row is toggled.
         /// </summary>        
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
+            // Check the key. If it is space, mark the current mod as selected.
+            if (e.KeyChar.ToString() == " ")
+            {
+                var selectedRow = ModList.CurrentRow;
+
+                if (selectedRow != null)
+                {
+                    // Get the checkbox.
+                    var selectedRowCheckBox = (DataGridViewCheckBoxCell)selectedRow.Cells["Installed"];
+
+                    // Invert the value.
+                    bool selectedValue = (bool)selectedRowCheckBox.Value;
+                    selectedRowCheckBox.Value = !selectedValue;
+                }
+                return;
+            }
+
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
             var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
             {
@@ -398,38 +444,8 @@ namespace CKAN
             if (match != null)
             {
                 match.Selected = true;
-
-                if (Util.IsLinux)
-                {
-                    try
-                    {
-
-                        var first_row_index = ModList.GetType().GetField("first_row_index",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-                        var vertical_scroll_bar = ModList.GetType().GetField("verticalScrollBar",
-                            BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ModList);
-                        var safe_set_method = vertical_scroll_bar.GetType().GetMethod("SafeValueSet",
-                            BindingFlags.NonPublic | BindingFlags.Instance);
-
-                        first_row_index.SetValue(ModList, match.Index);
-                        safe_set_method.Invoke(vertical_scroll_bar,
-                            new object[] { match.Index * match.Height });
-                    }
-                    catch
-                    {
-                        //Compared to crashing ignoring the keypress is fine.
-                    }
-                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
-                    ModList.Refresh();
-                }
-                else
-                {
-                    //Not the best of names. Why not FirstVisableRowIndex?
-                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
-                }
-            }
-
-
+                ModList.CurrentCell = match.Cells[0];            
+            }                                        
         }
 
         /// <summary>
@@ -507,10 +523,11 @@ namespace CKAN
             Conflicts = conflicts;
             ChangeSet = full_change_set;
         }
-        private void FilterAllButton_Click(object sender, EventArgs e)
+
+        private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.All;
-            FilterToolButton.Text = "Filter (All)";
+            mainModList.ModFilter = GUIModFilter.Compatible;
+            FilterToolButton.Text = "Filter (Compatible)";
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
@@ -522,7 +539,7 @@ namespace CKAN
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
             mainModList.ModFilter = GUIModFilter.InstalledUpdateAvailable;
-            FilterToolButton.Text = "Filter (Updated)";
+            FilterToolButton.Text = "Filter (Upgradeable)";
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
@@ -541,6 +558,12 @@ namespace CKAN
         {
             mainModList.ModFilter = GUIModFilter.Incompatible;
             FilterToolButton.Text = "Filter (Incompatible)";
+        }
+
+        private void FilterAllButton_Click(object sender, EventArgs e)
+        {
+            mainModList.ModFilter = GUIModFilter.All;
+            FilterToolButton.Text = "Filter (All)";
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
@@ -775,7 +798,6 @@ namespace CKAN
 
             }
         }
-
     }
 
     public class GUIUser : NullUser

@@ -48,13 +48,13 @@ namespace CKAN
             this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterCompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.customToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new System.Windows.Forms.DataGridView();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -81,7 +81,7 @@ namespace CKAN
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleAbstractLabel = new System.Windows.Forms.TextBox();
+            this.MetadataModuleAbstractLabel = new System.Windows.Forms.RichTextBox();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
@@ -93,6 +93,8 @@ namespace CKAN
             this.StatusLabel = new System.Windows.Forms.Label();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
+            this.FilterByAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByAuthorLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
@@ -291,25 +293,25 @@ namespace CKAN
             // FilterToolButton
             // 
             this.FilterToolButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FilterAllButton,
+            this.FilterCompatibleButton,
             this.FilterInstalledButton,
             this.FilterInstalledUpdateButton,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
-            this.customToolStripMenuItem});
+            this.FilterAllButton});
             this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
-            this.FilterToolButton.Size = new System.Drawing.Size(102, 36);
-            this.FilterToolButton.Text = "Filter (All)";
+            this.FilterToolButton.Size = new System.Drawing.Size(150, 36);
+            this.FilterToolButton.Text = "Filter (Compatible)";
             // 
-            // FilterAllButton
+            // FilterCompatibleButton
             // 
-            this.FilterAllButton.Name = "FilterAllButton";
-            this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
-            this.FilterAllButton.Text = "All";
-            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            this.FilterCompatibleButton.Name = "FilterCompatibleButton";
+            this.FilterCompatibleButton.Size = new System.Drawing.Size(215, 22);
+            this.FilterCompatibleButton.Text = "Compatible";
+            this.FilterCompatibleButton.Click += new System.EventHandler(this.FilterCompatibleButton_Click);
             // 
             // FilterInstalledButton
             // 
@@ -346,11 +348,12 @@ namespace CKAN
             this.FilterIncompatibleButton.Text = "Incompatible";
             this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
             // 
-            // customToolStripMenuItem
+            // FilterAllButton
             // 
-            this.customToolStripMenuItem.Name = "customToolStripMenuItem";
-            this.customToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.customToolStripMenuItem.Text = "Custom";
+            this.FilterAllButton.Name = "FilterAllButton";
+            this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
+            this.FilterAllButton.Text = "All";
+            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
             // ModList
             // 
@@ -443,6 +446,7 @@ namespace CKAN
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.Location = new System.Drawing.Point(0, 72);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -797,6 +801,8 @@ namespace CKAN
             // ManageModsTabPage
             // 
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
+            this.ManageModsTabPage.Controls.Add(this.FilterByAuthorLabel);
             this.ManageModsTabPage.Controls.Add(this.KSPVersionLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameTextBox);
@@ -809,11 +815,30 @@ namespace CKAN
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             // 
+            // FilterByAuthorTextBox
+            // 
+            this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(445, 48);
+            this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
+            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(124, 20);
+            this.FilterByAuthorTextBox.TabIndex = 10;
+            this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
+            // 
+            // FilterByAuthorLabel
+            // 
+            this.FilterByAuthorLabel.AutoSize = true;
+            this.FilterByAuthorLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByAuthorLabel.Location = new System.Drawing.Point(331, 50);
+            this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
+            this.FilterByAuthorLabel.Size = new System.Drawing.Size(108, 13);
+            this.FilterByAuthorLabel.TabIndex = 11;
+            this.FilterByAuthorLabel.Text = "Filter by author name:";
+            // 
             // KSPVersionLabel
             // 
             this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(867, 52);
+            this.KSPVersionLabel.Location = new System.Drawing.Point(862, 50);
             this.KSPVersionLabel.Name = "KSPVersionLabel";
             this.KSPVersionLabel.Size = new System.Drawing.Size(146, 13);
             this.KSPVersionLabel.TabIndex = 8;
@@ -825,14 +850,14 @@ namespace CKAN
             this.FilterByNameLabel.BackColor = System.Drawing.Color.Transparent;
             this.FilterByNameLabel.Location = new System.Drawing.Point(7, 50);
             this.FilterByNameLabel.Name = "FilterByNameLabel";
-            this.FilterByNameLabel.Size = new System.Drawing.Size(75, 13);
+            this.FilterByNameLabel.Size = new System.Drawing.Size(98, 13);
             this.FilterByNameLabel.TabIndex = 10;
-            this.FilterByNameLabel.Text = "Filter by name:";
+            this.FilterByNameLabel.Text = "Filter by mod name:";
             // 
             // FilterByNameTextBox
             // 
             this.FilterByNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByNameTextBox.Location = new System.Drawing.Point(88, 47);
+            this.FilterByNameTextBox.Location = new System.Drawing.Point(111, 48);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 9;
@@ -1192,7 +1217,7 @@ namespace CKAN
         private Panel StatusPanel;
         private Label StatusLabel;
         private ToolStripMenuItem FilterToolButton;
-        private ToolStripMenuItem FilterAllButton;
+        private ToolStripMenuItem FilterCompatibleButton;
         private ToolStripMenuItem FilterInstalledButton;
         private ToolStripMenuItem FilterInstalledUpdateButton;
         private ToolStripMenuItem FilterNewButton;
@@ -1205,7 +1230,6 @@ namespace CKAN
         private Label NotCachedLabel;
         private TreeView ContentsPreviewTree;
         private Button ContentsDownloadButton;
-        private ToolStripMenuItem customToolStripMenuItem;
         private TabPage MetadataTabPage;
         private TableLayoutPanel MetadataLayoutPanel;
         private Label VersionLabel;
@@ -1258,7 +1282,7 @@ namespace CKAN
         private Button ChooseProvidedModsContinueButton;
         private ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
-        private TextBox MetadataModuleAbstractLabel;
+        private RichTextBox MetadataModuleAbstractLabel;
         private DataGridViewCheckBoxColumn Installed;
         private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
@@ -1271,6 +1295,9 @@ namespace CKAN
         public ToolStripMenuItem settingsToolStripMenuItem;
         public DataGridView ModList;
         private ToolStripMenuItem installFromckanToolStripMenuItem;
+        private TextBox FilterByAuthorTextBox;
+        private Label FilterByAuthorLabel;
+        private ToolStripMenuItem FilterAllButton;
     }
 }
 

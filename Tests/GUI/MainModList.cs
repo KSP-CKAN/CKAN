@@ -11,8 +11,8 @@ namespace Tests.GUI
         public void OnCreation_HasDefaultFilters()
         {
             var item = new MainModList(delegate { });
-            Assert.That(item.ModFilter.Equals(GUIModFilter.All));
-            Assert.That(item.ModNameFilter.Equals(String.Empty));
+            Assert.AreEqual(GUIModFilter.Compatible, item.ModFilter, "ModFilter");
+            Assert.AreEqual(String.Empty, item.ModNameFilter, "ModNameFilter");
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace Tests.GUI
             {
                 KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var item = new MainModList(delegate { });
-                Assert.That(item.ComputeChangeSetFromModList(Registry.Empty(), manager.CurrentInstance), Is.Empty);
+                Assert.That(item.ComputeUserChangeSet(), Is.Empty);
             }
         }
 
