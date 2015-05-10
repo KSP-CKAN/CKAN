@@ -531,14 +531,13 @@ namespace CKAN
             // provides what we need.
 
             // Skip this module if not available for our system.
-            var available_for_system = available_modules.Where(pair=>pair.Value.Latest(ksp_version)!=null);
-            foreach (var pair in available_for_system)
+            var available_for_system = available_modules.Values.Where(pair=>pair.Latest(ksp_version)!=null);
+            foreach (var available_module in available_for_system)
             {
-                List<string> provides = pair.Value.Latest(ksp_version).provides;
-                if (provides != null)
+                var provides = available_module.Latest(ksp_version).provides;
+                if (provides != null && provides.Any(provided => provided == module))
                 {
-                    var matches = provides.Where(provided => module == provided);
-                    modules.AddRange(matches.Select(provided => pair.Value.Latest(ksp_version)));
+                    modules.Add(available_module.Latest(ksp_version));                    
                 }
             }
 
