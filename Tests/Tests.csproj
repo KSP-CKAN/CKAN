@@ -52,6 +52,7 @@
     <Compile Include="ZipLib.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="DisposableKSP.cs" />
+    <Compile Include="NetKAN\MainClass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -186,9 +186,14 @@ namespace CKAN.NetKAN
                     }
                 }
 
-                // If we've done this, we need to re-inflate our mod, too.
-                mod = CkanModule.FromJson (metadata.ToString ());
             }
+
+            // Fix our version string, if required.
+            metadata = FixVersionStrings(metadata);
+
+            // Re-inflate our mod, in case our vref or FixVersionString routines have
+            // altered it at all.
+            mod = CkanModule.FromJson (metadata.ToString ());
 
             // All done! Write it out!
 
@@ -550,6 +555,37 @@ namespace CKAN.NetKAN
 
             return new NetFileCache(tempdir);
         }
+
+        /// <summary>
+        /// Fixes version strings. Currently this adds a 'v' if
+        /// 'x_netkan_force_v' is set, and the version string does not
+        /// already begin with a 'v'.
+        /// </summary>
+        internal static JObject FixVersionStrings(JObject metadata)
+        {
+            log.Debug("Fixing version strings (if required)...");
+
+            JToken force_v;
+            if (metadata.TryGetValue("x_netkan_force_v", out force_v) && (bool) force_v)
+            {
+                // Force a 'v' in front of the version string if it's not there
+                // already.
+
+                string version = (string) metadata.GetValue("version");
+
+                if (!version.StartsWith("v"))
+                {
+                    log.DebugFormat("Force-adding 'v' to start of {0}", version);
+                    version = "v" + version;
+                    metadata["version"] = version;
+                }
+            }
+
+            return metadata;
+
+        }
+
+
     }
 
     internal class NetKanRemote
