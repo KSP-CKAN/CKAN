@@ -190,72 +190,52 @@ namespace CKAN
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="current_instance"></param>
-        public List<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, KSP current_instance)
+        public static IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(Registry registry, HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, ModuleInstaller installer, KSPVersion version)
         {
-            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>();
-            var modulesToInstall = new HashSet<string>();
-            var modulesToRemove = new HashSet<string>();
 
-            foreach (var mod in Modules.Where(mod => mod.IsInstallable()))
+            var modules_to_install = new HashSet<string>();
+            var modules_to_remove = new HashSet<string>();
+            var options = new RelationshipResolverOptions()
             {
-                if (mod.IsInstalled)
-                {
-                    if (!mod.IsInstallChecked)
-                    {
-                        modulesToRemove.Add(mod.Identifier);
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Remove));
-                    }
-                    else if (mod.IsInstallChecked && mod.HasUpdate && mod.IsUpgradeChecked)
-                    {
-                        changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(mod.ToCkanModule(),
-                            GUIModChangeType.Update));
-                    }
-                }
-                else if (mod.IsInstallChecked)
-                {
-                    modulesToInstall.Add(mod.Identifier);
-                }
-            }
+                without_toomanyprovides_kraken = true,
+                with_recommends = false
+            };
 
-            RelationshipResolverOptions options = RelationshipResolver.DefaultOpts();
-            options.with_recommends = false;
-            options.without_toomanyprovides_kraken = true;
-            options.without_enforce_consistency = true;
-
-            RelationshipResolver resolver;
-            var installed_modules = new HashSet<string>(registry.InstalledModules.Select(m => m.identifier));
-            try
-            {                
-                modulesToInstall.UnionWith(installed_modules);
-                var modules = modulesToInstall.Where(m => !modulesToRemove.Contains(m)).ToList();
-                resolver = new RelationshipResolver(modules, options, registry, current_instance.Version());
-            }
-            catch (Exception)
+            foreach (var change in changeSet)
             {
-                //TODO FIX this so the UI reacts.
-                return null;
+                switch (change.Value)
+                {
+                    case GUIModChangeType.None:
+                        break;
+                    case GUIModChangeType.Install:
+                        modules_to_install.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Remove:
+                        modules_to_remove.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Update:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
-            var install_or_installed = resolver.ModList();
-            changeset.UnionWith(
-                install_or_installed.Where(m=>!installed_modules.Contains(m.identifier))
-                    .Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
+
+            //May throw InconsistentKraken
+            var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry,version);
+            changeSet.UnionWith(resolver.ModList().Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Install)));
 
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(current_instance, GUI.user);
-
-            foreach (var reverseDependencies in modulesToRemove.Select(mod => installer.FindReverseDependencies(mod)))
+            foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-
                 //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset. 
-                var modules = reverseDependencies.Select(rDep => registry.LatestAvailable(rDep, null));
-                changeset.UnionWith(
-                    modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
+                var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, null));                
+                changeSet.UnionWith(modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
             }
+            return changeSet;
 
-            return changeset.ToList();
-        }
+        
+    }
 
         public bool IsVisible(GUIMod mod)
         {
@@ -267,7 +247,7 @@ namespace CKAN
             return isVisible;
         }
 
-   
+
 
         public int CountModsByFilter(GUIModFilter filter)
         {
@@ -285,7 +265,7 @@ namespace CKAN
                 case GUIModFilter.NotInstalled:
                     return Modules.Count(m => !m.IsInstalled);
                 case GUIModFilter.Incompatible:
-                    return Modules.Count(m => m.IsIncompatible);            
+                    return Modules.Count(m => m.IsIncompatible);
                 case GUIModFilter.All:
                     return Modules.Count();
             }
@@ -322,7 +302,7 @@ namespace CKAN
 
                 item.Cells.AddRange(installedCell, updateCell,
                     nameCell, authorCell,
-                    installedVersionCell, latestVersionCell, 
+                    installedVersionCell, latestVersionCell,
                     descriptionCell, homepageCell);
 
                 installedCell.ReadOnly = !mod.IsInstallable();
@@ -345,7 +325,7 @@ namespace CKAN
         
 
         private bool IsModInFilter(GUIMod m)
-        {     
+        {
             switch (ModFilter)
             {
                 case GUIModFilter.Compatible:
@@ -364,6 +344,62 @@ namespace CKAN
                     return true;
             }
             throw new Kraken("Unknown filter type in IsModInFilter");
+        }
+
+
+
+
+
+
+
+        public static Dictionary<Module, string> ComputeConflictsFromModList(Registry registry, IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, KSPVersion ksp_version)
+        {
+            var modules_to_install = new HashSet<string>();
+            var modules_to_remove = new HashSet<string>();
+            var options = new RelationshipResolverOptions
+            {
+                without_toomanyprovides_kraken = true,
+                procede_with_inconsistencies = true,
+                without_enforce_consistency = true,
+                with_recommends = false
+            };
+
+            foreach (var change in changeSet)
+            {
+                switch (change.Value)
+                {
+                    case GUIModChangeType.None:
+                        break;
+                    case GUIModChangeType.Install:
+                        modules_to_install.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Remove:
+                        modules_to_remove.Add(change.Key.identifier);
+                        break;
+                    case GUIModChangeType.Update:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            var installed =
+                registry.Installed()
+                    .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
+                    .Select(pair => pair.Key);
+
+            //We wish to only check mods that would exist after the changes are made. 
+            var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);            
+            var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);            
+            return resolver.ConflictList;
+        }
+        public HashSet<KeyValuePair<CkanModule, GUIModChangeType>> ComputeUserChangeSet()
+        {
+            var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
+            var changeset = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>(
+                changes.Where(change => change.HasValue).Select(change => change.Value)
+                );
+            return changeset;
         }
     }
 }

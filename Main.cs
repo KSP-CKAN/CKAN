@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace CKAN
 {
@@ -39,7 +40,7 @@ namespace CKAN
 
         public ControlFactory controlFactory;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(Main));
+        private static readonly ILog log = LogManager.GetLogger(typeof (Main));
         public TabController m_TabController;
         public volatile KSPManager manager;
 
@@ -61,6 +62,80 @@ namespace CKAN
         public string[] m_CommandLineArgs = null;
 
         public GUIUser m_User = null;
+
+        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
+        private Dictionary<Module, string> conflicts;
+
+        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ChangeSet
+        {
+            get { return change_set; }
+            set
+            {
+                change_set = value;
+                ChangeSetUpdated();
+            }
+        }
+
+        private Dictionary<Module, string> Conflicts
+        {
+            get { return conflicts; }
+            set
+            {
+                conflicts = value;
+                ConflictsUpdated();
+            }
+        }
+
+        private void ConflictsUpdated()
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var module = ((GUIMod) row.Tag).ToCkanModule();
+                string value;
+
+                if (Conflicts != null && Conflicts.TryGetValue(module, out value))
+                {
+                    var conflict_text = value;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.ToolTipText = conflict_text;
+                    }
+                    if (row.DefaultCellStyle.BackColor != Color.LightCoral)
+                    {
+                        row.DefaultCellStyle.BackColor = Color.LightCoral;
+                        ModList.InvalidateRow(row.Index);
+                    }
+                }
+                else
+                {
+                    if (row.DefaultCellStyle.BackColor != Color.White)
+                    {
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            cell.ToolTipText = null;
+                        }
+
+                        row.DefaultCellStyle.BackColor = Color.White;
+                        ModList.InvalidateRow(row.Index);
+                    }                                           
+                }
+            }
+        }
+
+        private void ChangeSetUpdated()
+        {
+            if (ChangeSet != null && ChangeSet.Any())
+            {
+                UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
+                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                ApplyToolButton.Enabled = true;
+            }
+            else
+            {
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
+        }
 
         public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
@@ -94,10 +169,10 @@ namespace CKAN
             }
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
-            (
-                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
-                Repo.default_ckan_repo.ToString()
-            );
+                (
+                    Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                    Repo.default_ckan_repo.ToString()
+                );
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
@@ -122,7 +197,7 @@ namespace CKAN
             Application.Run(this);
         }
 
-        void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             ModList_CellContentClick(sender, null);
         }
@@ -135,8 +210,7 @@ namespace CKAN
                     ActiveControl = FilterByNameTextBox;
                     return true;
                 case (Keys.Control | Keys.S):
-                    var registry = RegistryManager.Instance(CurrentInstance).registry;
-                    if (mainModList.ComputeChangeSetFromModList(registry, CurrentInstance).Any())
+                    if (ChangeSet != null && ChangeSet.Any())
                     {
                         ApplyToolButton_Click(null, null);
                     }
@@ -156,7 +230,7 @@ namespace CKAN
             // Copy window size to app settings
             if (this.WindowState == FormWindowState.Normal)
             {
-               m_Configuration.WindowSize = this.Size;
+                m_Configuration.WindowSize = this.Size;
             }
             else
             {
@@ -199,8 +273,8 @@ namespace CKAN
                 }
                 catch (Exception exception)
                 {
-                    m_User.RaiseError("Error in autoupdate: \n\t"+exception.Message +"");                    
-                }      
+                    m_User.RaiseError("Error in autoupdate: \n\t" + exception.Message + "");
+                }
             }
 
             Location = m_Configuration.WindowLoc;
@@ -211,7 +285,7 @@ namespace CKAN
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
@@ -248,7 +322,7 @@ namespace CKAN
                 int i = 0;
                 foreach (DataGridViewRow row in ModList.Rows)
                 {
-                    var module = ((GUIMod)row.Tag).ToCkanModule();
+                    var module = ((GUIMod) row.Tag).ToCkanModule();
                     if (identifier == module.identifier)
                     {
                         ModList.FirstDisplayedScrollingRowIndex = i;
@@ -278,24 +352,11 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod)row.Tag).ToCkanModule();
-                var registry = RegistryManager.Instance(CurrentInstance).registry;
-                if (!registry.IsInstalled(mod.identifier))
+                var mod = ((GUIMod) row.Tag);
+                if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
                 {
-                    continue;
-                }
-
-                bool isUpToDate =
-                    !registry.InstalledVersion(mod.identifier).IsLessThan(mod.version);
-                if (!isUpToDate)
-                {
-                    var cell = row.Cells[1] as DataGridViewCheckBoxCell;
-                    if (cell != null)
-                    {
-                        var updateCell = cell;
-                        updateCell.Value = true;
-                        ApplyToolButton.Enabled = true;
-                    }
+                    mod.SetUpgradeChecked(row, true);
+                    ApplyToolButton.Enabled = true;
                 }
             }
 
@@ -321,7 +382,7 @@ namespace CKAN
                 return;
             }
 
-            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
+            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
@@ -373,10 +434,10 @@ namespace CKAN
                 if (selectedRow != null)
                 {
                     // Get the checkbox.
-                    var selectedRowCheckBox = (DataGridViewCheckBoxCell)selectedRow.Cells["Installed"];
+                    var selectedRowCheckBox = (DataGridViewCheckBoxCell) selectedRow.Cells["Installed"];
 
                     // Invert the value.
-                    bool selectedValue = (bool)selectedRowCheckBox.Value;
+                    bool selectedValue = (bool) selectedRowCheckBox.Value;
                     selectedRowCheckBox.Value = !selectedValue;
                 }
                 return;
@@ -385,7 +446,7 @@ namespace CKAN
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
             var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
             {
-                var modname = ((GUIMod)row.Tag).ToCkanModule().name;
+                var modname = ((GUIMod) row.Tag).ToCkanModule().name;
                 var key = e.KeyChar.ToString();
                 return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             });
@@ -394,8 +455,8 @@ namespace CKAN
             if (match != null)
             {
                 match.Selected = true;
-                ModList.CurrentCell = match.Cells[0];            
-            }                                        
+                ModList.CurrentCell = match.Cells[0];
+            }
         }
 
         /// <summary>
@@ -404,7 +465,6 @@ namespace CKAN
         /// </summary>
         private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
@@ -414,49 +474,64 @@ namespace CKAN
             {
                 return;
             }
-            var grid = sender as DataGridView;
-            var row = grid.Rows[e.RowIndex];
+            var row_index = e.RowIndex;
             var columnIndex = e.ColumnIndex;
-            var gridViewCell = row.Cells[columnIndex];
-            if (columnIndex < 2)
-            {
-                var checkbox = (DataGridViewCheckBoxCell)gridViewCell;
 
-                if (columnIndex == 0)
-                {
-                    ((GUIMod)row.Tag).IsInstallChecked = (bool)checkbox.Value;
-                }
-                else if (columnIndex == 1)
-                {
-                    ((GUIMod)row.Tag).IsUpgradeChecked = (bool)checkbox.Value;
-                }
-            }
-            var changeset = mainModList.ComputeChangeSetFromModList(RegistryManager.Instance(CurrentInstance).registry, CurrentInstance);
-
-
-            if (changeset != null && changeset.Any())
-            {
-                UpdateChangesDialog(changeset, m_InstallWorker);
-                m_TabController.ShowTab("ChangesetTabPage", 1, false);
-                ApplyToolButton.Enabled = true;
-            }
-            else
-            {
-                m_TabController.HideTab("ChangesetTabPage");
-                ApplyToolButton.Enabled = false;
-            }
-
-            if (e.RowIndex < 0 || columnIndex < 0)
+            if (row_index < 0 || columnIndex < 0)
             {
                 return;
             }
+            var registry_manager = RegistryManager.Instance(CurrentInstance);
 
+            var grid = sender as DataGridView;
 
-            if (gridViewCell is DataGridViewLinkCell)
+            var row = grid.Rows[row_index];
+            var grid_view_cell = row.Cells[columnIndex];
+
+            if (grid_view_cell is DataGridViewLinkCell)
             {
-                var cell = gridViewCell as DataGridViewLinkCell;
+                var cell = grid_view_cell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
+            else if (columnIndex < 2)
+            {
+                var gui_mod = ((GUIMod) row.Tag);
+                switch (columnIndex)
+                {
+                    case 0:
+                        gui_mod.SetInstallChecked(row);
+                        break;
+                    case 1:
+                        gui_mod.SetUpgradeChecked(row);
+                        break;
+                }
+
+                var registry = registry_manager.registry;
+                UpdateChangeSetAndConflicts(registry);
+            }
+        }
+
+        private void UpdateChangeSetAndConflicts(Registry registry)
+        {
+            IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
+            Dictionary<Module, string> conflicts;
+
+            var user_change_set = mainModList.ComputeUserChangeSet();
+            try
+            {
+                var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                full_change_set = MainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
+                    CurrentInstance.Version());
+                conflicts = null;
+            }
+            catch (InconsistentKraken)
+            {
+                conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+                full_change_set = null;
+            }
+
+            Conflicts = conflicts;
+            ChangeSet = full_change_set;
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
@@ -514,7 +589,7 @@ namespace CKAN
                 return;
             }
 
-            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
+            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -553,11 +628,11 @@ namespace CKAN
         /// Tries to open an url using the default application.
         /// If it fails, it tries again by prepending each prefix before the url before it gives up.
         /// </summary>
-        static bool TryOpenWebPage(string url, IEnumerable<string> prefixes = null)
+        private static bool TryOpenWebPage(string url, IEnumerable<string> prefixes = null)
         {
             // Default prefixes to try if not provided
             if (prefixes == null)
-                prefixes = new string[] { "http://", "https:// " };
+                prefixes = new string[] {"http://", "https:// "};
 
             try // opening the page normally
             {
@@ -611,7 +686,7 @@ namespace CKAN
                 return;
             }
 
-            var module = ((GUIMod)selectedItem.Tag).ToCkanModule();
+            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
             if (module == null)
             {
                 return;
@@ -730,7 +805,6 @@ namespace CKAN
 
                 UpdateChangesDialog(null, m_InstallWorker);
                 ShowWaitDialog();
-
             }
         }
     }
@@ -774,7 +848,5 @@ namespace CKAN
         {
             get { return -1; }
         }
-
-
     }
 }

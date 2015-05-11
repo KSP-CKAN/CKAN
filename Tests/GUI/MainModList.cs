@@ -47,13 +47,13 @@ namespace Tests.GUI
             {
                 KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var item = new MainModList(delegate { });
-                Assert.That(item.ComputeChangeSetFromModList(Registry.Empty(), manager.CurrentInstance), Is.Empty);
+                Assert.That(item.ComputeUserChangeSet(), Is.Empty);
             }
         }
 
         [Test]
         [Category("Display")]
-        public void ComputeChangeSetFromModList_WithConflictingMods_HasEmptyChangeSet()
+        public void ComputeChangeSetFromModList_WithConflictingMods_ThrowsInconsistentKraken()
         {
             using (var tidy = new DisposableKSP())
             {
@@ -76,7 +76,7 @@ namespace Tests.GUI
                     mod,
                     mod2
                 });
-                Assert.That(main_mod_list.ComputeChangeSetFromModList(registry, tidy.KSP), Is.Null);
+                Assert.Throws<InconsistentKraken>(()=>MainModList.ComputeChangeSetFromModList(registry,main_mod_list.ComputeUserChangeSet(),null, tidy.KSP.Version()));
             }
         }
 
