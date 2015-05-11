@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -71,14 +72,15 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
-        private readonly List<KeyValuePair<Module, Module>> conflicts =
+        private readonly List<KeyValuePair<Module, Module>> conflicts = 
             new List<KeyValuePair<Module, Module>>();
-        private readonly Dictionary<Module, Relationship> reasons = new Dictionary<Module, Relationship>(new Module.IdentifierEqualilty());
+        private readonly Dictionary<Module, Relationship> reasons = 
+            new Dictionary<Module, Relationship>(new Module.IdentifierEqualilty());
 
         private readonly Registry registry;
         private readonly KSPVersion kspversion;
         private readonly RelationshipResolverOptions options;
-        private IEnumerable<Module> installed;
+        private readonly HashSet<Module> installed_modules;
 
 
         public RelationshipResolver(RelationshipResolverOptions options, Registry registry, KSPVersion kspversion)
@@ -86,6 +88,13 @@ namespace CKAN
             this.registry = registry;
             this.kspversion = kspversion;
             this.options = options;
+
+            installed_modules = new HashSet<Module>(registry.InstalledModules.Select(i_module => i_module.Module));
+            var installed_relationship = new Relationship.Installed();
+            foreach (var module in installed_modules)
+            {
+                reasons.Add(module, installed_relationship);
+            }
         }
 
         public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, Registry registry,
@@ -132,18 +141,8 @@ namespace CKAN
         /// </summary>
         /// <param name="modules">Modules to checkattempt to install</param>
         /// <param name="installed_modules">Currently installed modules to consider</param>
-        public void AddModulesToInstall(IEnumerable<CkanModule> modules, IEnumerable<Module> installed_modules = null)
+        public void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {                        
-            if (installed_modules == null)
-            {
-                installed = installed_modules = registry.InstalledModules.Select(i_module => i_module.Module).ToArray();
-            }
-
-            var installed_relationship = new Relationship.Installed();
-            foreach (var module in installed_modules)
-            {
-                reasons.Add(module, installed_relationship);
-            }
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
             log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
@@ -196,6 +195,19 @@ namespace CKAN
                     final_modules,
                     registry.InstalledDlls
                     );
+            }
+        }
+
+        /// <summary>
+        /// Removes mods from the list of installed modules. Intended to be used for cases 
+        /// in which the mod is to be uninstalled.
+        /// </summary>
+        /// <param name="mods">The mods to remove.</param>
+        public void RemoveModsFromInstalledList(IEnumerable<Module> mods)
+        {
+            foreach (var module in mods)
+            {
+                installed_modules.Remove(module);
             }
         }
 
@@ -294,7 +306,7 @@ namespace CKAN
                 // list thus far, as well as everything on the system.
 
                 var fixed_mods = new HashSet<Module>(modlist.Values);
-                fixed_mods.UnionWith(installed);
+                fixed_mods.UnionWith(installed_modules);
 
                 var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
                 if (conflicting_mod == null)

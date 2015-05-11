@@ -48,7 +48,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-
+            
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
@@ -64,7 +64,32 @@ namespace Tests.Core.Relationships
             Assert.That(resolver.ConflictList, Has.Count.EqualTo(2));
         }
 
-        [Test, Category("Version"), Explicit("Versions relationships not implemented")]
+        [Test]
+        public void RemoveModsFromInstalledList_RemovedModsDoNotConflict()
+        {
+            var list = new List<string>();
+            var mod_a = generator.GeneratorRandomModule();
+            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            {
+                new RelationshipDescriptor {name=mod_a.identifier}
+            });
+
+            list.Add(mod_a.identifier);
+            list.Add(mod_b.identifier);
+            AddToRegistry(mod_a, mod_b);
+            registry.RegisterModule(mod_a,new string[]{},null);
+
+
+            var resolver = new RelationshipResolver(options, registry, null);
+            resolver.RemoveModsFromInstalledList(new[] {mod_a});
+            resolver.AddModulesToInstall(new[] { mod_b} );
+            Assert.IsTrue(resolver.IsConsistant);
+
+        }
+
+        [Test]
+        [Category("Version")]
+        [Explicit("Versions relationships not implemented")]
         public void Constructor_WithConflictingModulesVersion_Throws()
         {
             var list = new List<string>();
@@ -729,7 +754,7 @@ namespace Tests.Core.Relationships
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
             var list = new List<string>();
-            var mod = generator.GeneratorRandomModule();
+            var mod = generator.GeneratorRandomModule();                        
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             AddToRegistry(mod);
@@ -747,7 +772,7 @@ namespace Tests.Core.Relationships
             var mod =
                 generator.GeneratorRandomModule(sugests:
                     new List<RelationshipDescriptor> {new RelationshipDescriptor {name = sugested.identifier}});
-            list.Add(mod.identifier);
+            list.Add(mod.identifier);            
             AddToRegistry(mod, sugested);
 
             options.with_all_suggests = true;
@@ -760,7 +785,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var list = new List<string>();
+            var list = new List<string>();            
             var sugested = generator.GeneratorRandomModule();
             var recommendedA = generator.GeneratorRandomModule();
             var recommendedB = generator.GeneratorRandomModule();
