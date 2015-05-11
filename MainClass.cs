@@ -186,11 +186,14 @@ namespace CKAN.NetKAN
                     }
                 }
 
-                metadata = FixVersionStrings(metadata);
-
-                // If we've got this far, we need to re-inflate our mod, too.
-                mod = CkanModule.FromJson (metadata.ToString ());
             }
+
+            // Fix our version string, if required.
+            metadata = FixVersionStrings(metadata);
+
+            // Re-inflate our mod, in case our vref or FixVersionString routines have
+            // altered it at all.
+            mod = CkanModule.FromJson (metadata.ToString ());
 
             // All done! Write it out!
 
@@ -560,6 +563,7 @@ namespace CKAN.NetKAN
         /// </summary>
         internal static JObject FixVersionStrings(JObject metadata)
         {
+            log.Debug("Fixing version strings (if required)...");
 
             JToken force_v;
             if (metadata.TryGetValue("x_netkan_force_v", out force_v) && (bool) force_v)
