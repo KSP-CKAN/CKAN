@@ -80,9 +80,11 @@ namespace CKAN
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            bool value = (setvalueto.HasValue ? setvalueto.Value : (bool)update_cell.Value);
+            var old_value = (bool)update_cell.Value;
+
+            bool value = (setvalueto.HasValue ? setvalueto.Value : old_value);
             IsUpgradeChecked = value;
-            update_cell.Value = value;
+            if(old_value != value) update_cell.Value = value;
         }
 
         public void SetInstallChecked(DataGridViewRow row)
