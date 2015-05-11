@@ -187,6 +187,7 @@ namespace CKAN
         /// </summary>
         public bool ConflictsWith(Module module)
         {
+            if(Equals(module)) return false;
             return UniConflicts(this, module) || UniConflicts(module, this);
         }
 
