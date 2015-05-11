@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
@@ -60,12 +61,14 @@ namespace CKAN {
             return new Version (v);
         }
 
+
+        private Dictionary<Tuple<Version,Version>, int> cache = new Dictionary<Tuple<Version, Version>, int>();
         /// <summary>
         /// Returns -1 if this is less than that
         /// Returns +1 if this is greater than that
         /// Returns  0 if equal.
         /// </summary>
-        public int CompareTo(Version that) {
+        public int CompareTo(Version that) {            
 
             if (that.epoch == epoch && that.version == version) {
                 return 0;
@@ -74,10 +77,16 @@ namespace CKAN {
             // Compare epochs first.
             if (epoch != that.epoch) {
                 return epoch > that.epoch ?1:-1;
-            }                                  
+            }
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
+            int ret;
+            var tuple = new Tuple<Version, Version>(this, that);
+            if (cache.TryGetValue(tuple, out ret))
+            {
+                return ret;
+            }
 
             Comparison comp;
             comp.remainder1 = version;
@@ -91,6 +100,7 @@ namespace CKAN {
 
                 // If we've found a difference, return it.
                 if (comp.compare_to != 0) {
+                    cache.Add(tuple, comp.compare_to);
                     return comp.compare_to;
                 }
 
@@ -102,6 +112,7 @@ namespace CKAN {
 
                 // Again, return difference if found.
                 if (comp.compare_to != 0) {
+                    cache.Add(tuple, comp.compare_to);
                     return comp.compare_to;
                 }
             }
@@ -111,9 +122,10 @@ namespace CKAN {
             // So, whichever version is empty first is the smallest. (1.2 < 1.2.3)
 
             if (comp.remainder1.Length == 0) {
+                cache.Add(tuple, -1);
                 return -1;
             }
-
+            cache.Add(tuple, 1);
             return 1;
 
         }
