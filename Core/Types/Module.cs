@@ -468,7 +468,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-                return base.GetHashCode();
+            return base.GetHashCode();
         }
 
 
