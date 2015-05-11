@@ -80,7 +80,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
-        private readonly List<KeyValuePair<Module, Module>> conflicts = 
+        private readonly List<KeyValuePair<Module, Module>> conflicts =
             new List<KeyValuePair<Module, Module>>();
         private readonly Dictionary<Module, SelectionReason> reasons = 
             new Dictionary<Module, SelectionReason>(new Module.IdentifierEqualilty());
@@ -126,7 +126,7 @@ namespace CKAN
         {
             // Does nothing, just calls the other overloaded constructor
         }
-       
+
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
@@ -204,7 +204,7 @@ namespace CKAN
             }
 
             var final_modules = new List<Module>(modlist.Values);
-            
+
 
             if (!options.without_enforce_consistency)
             {
@@ -500,7 +500,7 @@ namespace CKAN
         //Currently assumed to exist for any relationship other than useradded or installed
         public virtual CkanModule Parent { get; protected set; }
         //Should contain a newline at the end of the string. 
-        public abstract String Reason { get; }       
+        public abstract String Reason { get; }
 
 
         public class Installed : SelectionReason
