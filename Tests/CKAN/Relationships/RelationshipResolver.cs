@@ -756,7 +756,7 @@ namespace Tests.CKAN.Relationships
         {
             var list = new List<string>();
             var sugested = generator.GeneratorRandomModule();
-            var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor>() {new RelationshipDescriptor() { name = sugested.identifier } } );                        
+            var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor> {new RelationshipDescriptor() { name = sugested.identifier } } );                        
             list.Add(mod.identifier);            
             AddToRegistry(mod,sugested);
 

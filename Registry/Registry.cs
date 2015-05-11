@@ -400,6 +400,8 @@ namespace CKAN
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
+            //Cache 
+            AvailableModule[] modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
             {
@@ -416,7 +418,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name, ksp_version).Count == 0)
+                                if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
                                 {
                                     failedDepedency = true;
                                     break;
@@ -507,6 +509,22 @@ namespace CKAN
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version)
         {
+            // This public interface calcultes a cache of modules which
+            // are compatible with the current version of KSP, and then
+            // calls the private version below for heavy lifting.
+            return LatestAvailableWithProvides(module, ksp_version,
+                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null));
+        }
+
+        /// <summary>
+        /// Returns the latest version of a module that can be installed for
+        /// the given KSP version. This is a *private* method that assumes
+        /// the `available_for_current_version` list has been correctly
+        /// calculated. Not for direct public consumption. ;)
+        /// </summary>
+        private List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version,
+            IEnumerable<AvailableModule> available_for_current_version)
+        {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 
             // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
@@ -530,20 +548,26 @@ namespace CKAN
             // Walk through all our available modules, and see if anything
             // provides what we need.
 
-            // Skip this module if not available for our system.
-            var available_for_system = available_modules.Where(pair=>pair.Value.Latest(ksp_version)!=null);
-            foreach (var pair in available_for_system)
+            foreach (AvailableModule available_module in available_for_current_version)
             {
-                List<string> provides = pair.Value.Latest(ksp_version).provides;
-                if (provides != null)
+                // Get our candidate module. We can assume this is non-null, as
+                // if it *is* null then available_for_current_version is corrupted,
+                // and something is terribly wrong.
+                CkanModule candidate = available_module.Latest(ksp_version);
+
+                // Find everything this module provides (for our version of KSP)
+                List<string> provides = candidate.provides;
+
+                // If the module has provides, and any of them are what we're looking
+                // for, the add it to our list.
+                if (provides != null && provides.Any(provided => provided == module))
                 {
-                    var matches = provides.Where(provided => module == provided);
-                    modules.AddRange(matches.Select(provided => pair.Value.Latest(ksp_version)));
+                    modules.Add(candidate);
                 }
             }
-
             return modules;
         }
+
 
         public CkanModule GetModuleByVersion(string ident, string version)
         {
