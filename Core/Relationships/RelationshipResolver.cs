@@ -208,6 +208,7 @@ namespace CKAN
             foreach (var module in mods)
             {
                 installed_modules.Remove(module);
+                conflicts.RemoveAll(kvp => kvp.Key.Equals(module) || kvp.Value.Equals(module));
             }
         }
 
