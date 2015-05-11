@@ -14,7 +14,7 @@ namespace CKAN
     {
         public string max_version;
         public string min_version;
-        //Why is the identifier called name?
+        //Why is the identifier called name? 
         public /* required */ string name;
         public string version;
     }
@@ -301,21 +301,21 @@ namespace CKAN
     }
 
     public class CkanModule : Module
-        {
+    {
             private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
-            private static readonly string[] required_fields =
-            {
-                "spec_version",
-                "name",
-                "abstract",
-                "identifier",
-                "download",
-                "license",
-                "version"
-            };
+        private static readonly string[] required_fields =
+        {
+            "spec_version",
+            "name",
+            "abstract",
+            "identifier",
+            "download",
+            "license",
+            "version"
+        };
 
-            // Only CKAN modules can have install and bundle instructions.
+        // Only CKAN modules can have install and bundle instructions.
 
             [JsonProperty("install")]
             public ModuleInstallDescriptor[] install;
@@ -323,216 +323,216 @@ namespace CKAN
             [JsonProperty("spec_version", Required = Required.Always)]
             public Version spec_version;
 
-            private static bool validate_json_against_schema(string json)
+        private static bool validate_json_against_schema(string json)
+        {
+
+            log.Debug("In-client JSON schema validation unimplemented.");
+            return true;
+            // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
+
+            //            if (metadata_schema == null)
+            //            {
+            //                string schema = "";
+            //
+            //                try
+            //                {
+            //                    schema = File.ReadAllText(metadata_schema_path);
+            //                }
+            //                catch (Exception)
+            //                {
+            //                    if (!metadata_schema_missing_warning_fired)
+            //                    {
+            //                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
+            //                            metadata_schema_path);
+            //                        metadata_schema_missing_warning_fired = true;
+            //                    }
+            //
+            //                    return true;
+            //                }
+            //
+            //                metadata_schema = JsonSchema.Parse(schema);
+            //            }
+            //
+            //            JObject obj = JObject.Parse(json);
+            //            return obj.IsValid(metadata_schema);
+        }
+
+        /// <summary>
+        /// Tries to parse an identifier in the format Modname=version
+        /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
+        /// </summary>
+        public static CkanModule FromIDandVersion(Registry registry, string mod, KSPVersion ksp_version)
+        {
+            CkanModule module;
+
+            Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+
+            if (match.Success)
             {
+                string ident = match.Groups["mod"].Value;
+                string version = match.Groups["version"].Value;
 
-                log.Debug("In-client JSON schema validation unimplemented.");
-                return true;
-                // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
-
-                //            if (metadata_schema == null)
-                //            {
-                //                string schema = "";
-                //
-                //                try
-                //                {
-                //                    schema = File.ReadAllText(metadata_schema_path);
-                //                }
-                //                catch (Exception)
-                //                {
-                //                    if (!metadata_schema_missing_warning_fired)
-                //                    {
-                //                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-                //                            metadata_schema_path);
-                //                        metadata_schema_missing_warning_fired = true;
-                //                    }
-                //
-                //                    return true;
-                //                }
-                //
-                //                metadata_schema = JsonSchema.Parse(schema);
-                //            }
-                //
-                //            JObject obj = JObject.Parse(json);
-                //            return obj.IsValid(metadata_schema);
-            }
-
-            /// <summary>
-            /// Tries to parse an identifier in the format Modname=version
-            /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
-            /// </summary>
-            public static CkanModule FromIDandVersion(Registry registry, string mod, KSPVersion ksp_version)
-            {
-                CkanModule module;
-
-                Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
-
-                if (match.Success)
-                {
-                    string ident = match.Groups["mod"].Value;
-                    string version = match.Groups["version"].Value;
-
-                    module = registry.GetModuleByVersion(ident, version);
-
-                    if (module == null)
-                        throw new ModuleNotFoundKraken(ident, version,
-                            string.Format("Cannot install {0}, version {1} not available", ident, version));
-                }
-                else
-                    module = registry.LatestAvailable(mod, ksp_version);
+                module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
+                        throw new ModuleNotFoundKraken(ident, version,
+                            string.Format("Cannot install {0}, version {1} not available", ident, version));
+            }
+            else
+                module = registry.LatestAvailable(mod, ksp_version);
+
+            if (module == null)
                     throw new ModuleNotFoundKraken(mod, null,
                         string.Format("Cannot install {0}, module not available", mod));
-                else
-                    return module;
-            }
-
-            /// <summary> Generates a CKAN.Meta object given a filename</summary>
-            public static CkanModule FromFile(string filename)
-            {
-                string json = File.ReadAllText(filename);
-                return FromJson(json);
-            }
-
-            public static void ToFile(CkanModule module, string filename)
-            {
-                var json = ToJson(module);
-                File.WriteAllText(filename, json);
-            }
-
-            /// <summary>
-            /// Generates a CKAN.META object from a string.
-            /// Also validates that all required fields are present.
-            /// Throws a BadMetaDataKraken if any fields are missing.
-            /// </summary>
-            public static CkanModule FromJson(string json)
-            {
-                if (!validate_json_against_schema(json))
-                {
-                    throw new BadMetadataKraken(null, "Validation against spec failed");
-                }
-
-                CkanModule newModule;
-
-                try
-                {
-                    newModule = JsonConvert.DeserializeObject<CkanModule>(json);
-                }
-                catch (JsonException ex)
-                {
-                    throw new BadMetadataKraken(null, "JSON deserialization error", ex);
-                }
-
-                // NOTE: Many of these tests may be better inour Deserialisation handler.
-                if (!newModule.IsSpecSupported())
-                {
-                    throw new UnsupportedKraken(
-                        String.Format(
-                            "{0} requires CKAN {1}, we can't read it.",
-                            newModule,
-                            newModule.spec_version
-                            )
-                        );
-                }
-
-                // Check everything in the spec if defined.
-                // TODO: This *can* and *should* be done with JSON attributes!
-
-                foreach (string field in required_fields)
-                {
-                    object value = newModule.GetType().GetField(field).GetValue(newModule);
-
-                    if (value == null)
-                    {
-                        // Metapackages are allowed to have no download field
-                        if (field == "download" && newModule.IsMetapackage) continue;
-
-                        string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
-
-                        log.Error(error);
-                        throw new BadMetadataKraken(null, error);
-                    }
-                }
-                // All good! Return module
-                return newModule;
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = obj as Module;
-                return other != null
-                    ? identifier.Equals(other.identifier) && version.Equals(other.version)
-                    : base.Equals(obj);
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
-
-
-            public static string ToJson(CkanModule module)
-            {
-                return JsonConvert.SerializeObject(module);
-            }
-
-            /// <summary>
-            /// Returns true if we support at least spec_version of the CKAN spec.
-            /// </summary>
-            internal static bool IsSpecSupported(Version spec_vesion)
-            {
-                // This could be a read-only state variable; do we have those in C#?
-                Version release = Meta.ReleaseNumber();
-
-                return release == null || release.IsGreaterThan(spec_vesion);
-            }
-
-            /// <summary>
-            /// Returns true if we support the CKAN spec used by this module.
-            /// </summary>
-            private bool IsSpecSupported()
-            {
-                return IsSpecSupported(spec_version);
-            }
-
-            /// <summary>
-            ///     Returns a standardised name for this module, in the form
-            ///     "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
-            /// </summary>
-            public string StandardName()
-            {
-                return StandardName(identifier, version);
-            }
-
-            public static string StandardName(string identifier, Version version)
-            {
-                return identifier + "-" + version + ".zip";
-            }
+            else
+                return module;
         }
 
-        public class InvalidModuleAttributesException : Exception
+        /// <summary> Generates a CKAN.Meta object given a filename</summary>
+        public static CkanModule FromFile(string filename)
         {
-            private readonly Module module;
-            private readonly string why;
+            string json = File.ReadAllText(filename);
+            return FromJson(json);
+        }
 
-            public InvalidModuleAttributesException(string why, Module module = null)
+        public static void ToFile(CkanModule module, string filename)
+        {
+            var json = ToJson(module);
+            File.WriteAllText(filename, json);
+        }
+
+        /// <summary>
+        /// Generates a CKAN.META object from a string.
+        /// Also validates that all required fields are present.
+        /// Throws a BadMetaDataKraken if any fields are missing.
+        /// </summary>
+        public static CkanModule FromJson(string json)
+        {
+            if (!validate_json_against_schema(json))
             {
-                this.why = why;
-                this.module = module;
+                throw new BadMetadataKraken(null, "Validation against spec failed");
             }
 
-            public override string ToString()
-            {
-                string modname = "unknown";
+            CkanModule newModule;
 
-                if (module != null)
+            try
+            {
+                newModule = JsonConvert.DeserializeObject<CkanModule>(json);
+            }
+            catch (JsonException ex)
+            {
+                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
+            }
+
+            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            if (!newModule.IsSpecSupported())
+            {
+                throw new UnsupportedKraken(
+                    String.Format(
+                        "{0} requires CKAN {1}, we can't read it.",
+                        newModule,
+                        newModule.spec_version
+                    )
+                );
+            }
+
+            // Check everything in the spec if defined.
+            // TODO: This *can* and *should* be done with JSON attributes!
+
+            foreach (string field in required_fields)
+            {
+                object value = newModule.GetType().GetField(field).GetValue(newModule);
+
+                if (value == null)
                 {
-                    modname = module.identifier;
-                }
+                    // Metapackages are allowed to have no download field
+                    if (field == "download" && newModule.IsMetapackage) continue;
 
-                return string.Format("[InvalidModuleAttributesException] {0} in {1}", why, modname);
+                    string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
+
+                    log.Error(error);
+                    throw new BadMetadataKraken(null, error);
+                }
             }
+            // All good! Return module
+            return newModule;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Module;
+            return other != null
+            ? identifier.Equals(other.identifier) && version.Equals(other.version)
+            : base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+                return base.GetHashCode();
+        }
+
+
+        public static string ToJson(CkanModule module)
+        {
+            return JsonConvert.SerializeObject(module);
+        }
+
+        /// <summary>
+        /// Returns true if we support at least spec_version of the CKAN spec.
+        /// </summary>
+        internal static bool IsSpecSupported(Version spec_vesion)
+        {
+            // This could be a read-only state variable; do we have those in C#?
+            Version release = Meta.ReleaseNumber();
+
+            return release == null || release.IsGreaterThan(spec_vesion);
+        }
+
+        /// <summary>
+        /// Returns true if we support the CKAN spec used by this module.
+        /// </summary>
+        private bool IsSpecSupported()
+        {
+            return IsSpecSupported(spec_version);
+        }
+
+        /// <summary>
+        ///     Returns a standardised name for this module, in the form
+        ///     "identifier-version.zip". For example, `RealSolarSystem-7.3.zip`
+        /// </summary>
+        public string StandardName()
+        {
+            return StandardName(identifier, version);
+        }
+
+        public static string StandardName(string identifier, Version version)
+        {
+            return identifier + "-" + version + ".zip";
         }
     }
+
+    public class InvalidModuleAttributesException : Exception
+    {
+        private readonly Module module;
+        private readonly string why;
+
+        public InvalidModuleAttributesException(string why, Module module = null)
+        {
+            this.why = why;
+            this.module = module;
+        }
+
+        public override string ToString()
+        {
+            string modname = "unknown";
+
+            if (module != null)
+            {
+                modname = module.identifier;
+            }
+
+            return string.Format("[InvalidModuleAttributesException] {0} in {1}", why, modname);
+        }
+    }
+}
 
