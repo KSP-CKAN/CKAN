@@ -784,7 +784,7 @@ namespace CKAN
                     }
                     else
                     {
-                        User.RaiseMessage("Not removing directory {0}, it's not empty", directory);
+                        log.InfoFormat("Not removing directory {0}, it's not empty", directory);
                     }
                 }
                 transaction.Complete();
