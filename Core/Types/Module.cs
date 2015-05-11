@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace CKAN
 {
@@ -35,7 +36,7 @@ namespace CKAN
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
-    public class Module
+    public class Module : IEquatable<Module>
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Module));
 
@@ -274,6 +275,11 @@ namespace CKAN
             }
         }
 
+        bool IEquatable<Module>.Equals(Module other)
+        {
+            return Equals(other);
+        }
+
         public class IdentifierEqualilty : EqualityComparer<Module>
         {
             public override bool Equals(Module x, Module y)
@@ -448,7 +454,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return identifier.GetHashCode() ^ version.GetHashCode();
+            return base.GetHashCode();
         }
 
 
