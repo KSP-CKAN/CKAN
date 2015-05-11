@@ -252,6 +252,39 @@ namespace CKAN
             }
         }
 
+        protected bool Equals(Module other)
+        {
+            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Module) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (identifier.GetHashCode()*397) ^ version.GetHashCode();
+            }
+        }
+
+        public class IdentifierEqualilty : EqualityComparer<Module>
+        {
+            public override bool Equals(Module x, Module y)
+            {
+                return x.identifier.Equals(y.identifier);
+            }
+
+            public override int GetHashCode(Module obj)
+            {
+                return obj.identifier.GetHashCode();
+            }
+        }
     }
 
     public class CkanModule : Module
