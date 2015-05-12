@@ -174,7 +174,6 @@ namespace CKANTests
             
         }
 
-
         public FakeWin32Registry(List<Tuple<string, string>> instances, string auto_start_instance = null)
         {
             Instances = instances;
@@ -188,7 +187,26 @@ namespace CKANTests
             get { return Instances.Count; }
             }
 
-        public string AutoStartInstance { get; set; }
+        // In the Win32Registry it is not possible to get null in autostart.
+        private string _AutoStartInstance;
+        public string AutoStartInstance
+        {
+            get
+            {
+                if (_AutoStartInstance != null)
+                {
+                    return _AutoStartInstance;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                _AutoStartInstance = value;
+            }
+        }
 
         public Tuple<string, string> GetInstance(int i)
         {
