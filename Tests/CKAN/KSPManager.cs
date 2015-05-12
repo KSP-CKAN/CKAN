@@ -44,7 +44,7 @@ namespace CKANTests
         [Test]
         public void SetAutoStart_VaildName_SetsAutoStart()
         {         
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(null));
+            Assert.That(manager.AutoStartInstance, Is.EqualTo(string.Empty));
 
             manager.SetAutoStart(nameInReg);
             Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
