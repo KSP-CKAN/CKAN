@@ -19,6 +19,24 @@ namespace CKAN
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
         public Version version;
+
+        public bool version_within_bounds(Version other_version)
+        {
+            if (version == null)
+            {
+                if (max_version == null && min_version == null)
+                    return true;
+                bool min_sat = min_version == null || min_version <= other_version;
+                bool max_sat = max_version == null || max_version >= other_version;
+                if (min_sat && max_sat) return true;
+            }
+            else
+            {
+                if (version.Equals(other_version))
+                    return true;
+            }
+            return false;
+        }
     }
 
     public class ResourcesDescriptor
