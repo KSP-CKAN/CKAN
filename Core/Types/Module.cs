@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
     public class RelationshipDescriptor
     {
-        public string max_version;
-        public string min_version;
-        //Why is the identifier called name?
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version max_version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version min_version;
+        //Why is the identifier called name? 
         public /* required */ string name;
-        public string version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
+        public Version version;
     }
 
     public class ResourcesDescriptor
