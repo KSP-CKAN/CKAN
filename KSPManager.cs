@@ -87,6 +87,11 @@ namespace CKAN
                 return new KSP(path, User);
             }
 
+            // If we only know of a single instance, return that.
+            if (instances.Count == 1)
+            {
+                return instances.First().Value;
+            }
 
             // Return the autostart, if we can find it.
             if (AutoStartInstance != null)
@@ -101,13 +106,6 @@ namespace CKAN
                 {
                     return instances[AutoStartInstance];
                 }
-            }
-
-           
-            // If we only know of a single instance, return that.
-            if (instances.Count == 1)
-            {
-                return instances.First().Value;
             }
 
             // If we know of no instances, try to find one.
