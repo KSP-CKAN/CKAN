@@ -55,7 +55,8 @@ namespace CKAN.CmdLine
                     // User pressed enter without any text, assuming default choice.
                     return true;
                 }
-                Console.Write("Invaild input. Please enter yes or no");
+
+                Console.Write("Invalid input. Please enter yes or no");
             }
         }
 
