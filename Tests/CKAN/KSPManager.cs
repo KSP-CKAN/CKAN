@@ -51,10 +51,10 @@ namespace CKANTests
         }
 
         [Test]
-        public void SetAutoStart_InvaildName_DoesNotChangeAutoStart()
+        public void SetAutoStart_InvalidName_DoesNotChangeAutoStart()
         {
             manager.SetAutoStart(nameInReg);
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetAutoStart("invaild"));
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetAutoStart("invalid"));
             Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
@@ -136,13 +136,13 @@ namespace CKANTests
         [Test]
         public void SetCurrentInstance_NameNotInRepo_Throws()
         {
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invaild"));
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invalid"));
         }
 
         [Test] //37a33
-        public void Ctor_InvaildAutoStart_DoesNotThrow()
+        public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP,"invaild")
+            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP, "invalid")
                 ));
         }
 
