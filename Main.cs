@@ -479,9 +479,9 @@ namespace CKAN
                 return;
             }
             var row_index = e.RowIndex;
-            var columnIndex = e.ColumnIndex;
+            var column_index = e.ColumnIndex;
 
-            if (row_index < 0 || columnIndex < 0)
+            if (row_index < 0 || column_index < 0)
             {
                 return;
             }
@@ -490,17 +490,17 @@ namespace CKAN
             var grid = sender as DataGridView;
 
             var row = grid.Rows[row_index];
-            var grid_view_cell = row.Cells[columnIndex];
+            var grid_view_cell = row.Cells[column_index];
 
             if (grid_view_cell is DataGridViewLinkCell)
             {
                 var cell = grid_view_cell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
-            else if (columnIndex < 2)
+            else if (column_index < 2)
             {
                 var gui_mod = ((GUIMod) row.Tag);
-                switch (columnIndex)
+                switch (column_index)
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
