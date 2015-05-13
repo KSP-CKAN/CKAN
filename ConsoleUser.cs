@@ -29,7 +29,7 @@ namespace CKAN.CmdLine
                 return true;
             }
 
-            Console.Write("{0} [Y/N] ", message);
+            Console.Write("{0} [Y/n] ", message);
             while (true)
             {
                 var input = Console.In.ReadLine();
@@ -50,7 +50,13 @@ namespace CKAN.CmdLine
                 {
                     return false;
                 }
-                Console.Write("Invaild input. Please enter yes or no");
+                if (input.Equals(string.Empty))
+                {
+                    // User pressed enter without any text, assuming default choice.
+                    return true;
+                }
+
+                Console.Write("Invalid input. Please enter yes or no");
             }
         }
 
