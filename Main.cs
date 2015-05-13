@@ -429,17 +429,21 @@ namespace CKAN
             // Check the key. If it is space, mark the current mod as selected.
             if (e.KeyChar.ToString() == " ")
             {
-                var selectedRow = ModList.CurrentRow;
+                var selected_row = ModList.CurrentRow;
 
-                if (selectedRow != null)
+                if (selected_row != null)
                 {
                     // Get the checkbox.
-                    var selectedRowCheckBox = (DataGridViewCheckBoxCell) selectedRow.Cells["Installed"];
+                    var selected_row_check_box = selected_row.Cells["Installed"] as DataGridViewCheckBoxCell;
 
                     // Invert the value.
-                    bool selectedValue = (bool) selectedRowCheckBox.Value;
-                    selectedRowCheckBox.Value = !selectedValue;
+                    if (selected_row_check_box != null)
+                    {
+                        bool selected_value = (bool)selected_row_check_box.Value;
+                        selected_row_check_box.Value = !selected_value;
+                    }                    
                 }
+                e.Handled = true;
                 return;
             }
 
