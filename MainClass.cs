@@ -392,6 +392,16 @@ namespace CKAN.NetKAN
                 var downloaded_file = Net.Download(remote_uri);
                 var module = CkanModule.FromJson(metadata.ToString());
 
+                // Check the type of the downloaded file.
+                FileType downloaded_file_type = FileIdentifier.IdentifyFile(downloaded_file);
+
+                if (downloaded_file_type != FileType.Zip)
+                {
+                    // We assume the downloaded file is a zip file later on.
+                    string error_message = String.Format("Downloaded file not identified as a zip. Got {0} instead.", downloaded_file_type.ToString());
+                    throw new Kraken(error_message);
+                }
+
                 if (metadata[version_token] != null && (metadata[version_token].ToString()).StartsWith("#/ckan/ksp-avc"))
                 {
                     // TODO pass the correct vref here...
