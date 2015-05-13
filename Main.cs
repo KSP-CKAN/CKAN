@@ -117,7 +117,7 @@ namespace CKAN
 
                         row.DefaultCellStyle.BackColor = Color.White;
                         ModList.InvalidateRow(row.Index);
-                    }                                           
+                    }
                 }
             }
         }
@@ -139,6 +139,7 @@ namespace CKAN
 
         public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
+            log.Info("Starting the GUI");
             m_CommandLineArgs = cmdlineArgs;
             m_User = User;
 
@@ -245,6 +246,7 @@ namespace CKAN
         {
             if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
             {
+                log.Debug("Asking user if they wish for autoupdates");
                 if (new AskUserForAutoUpdatesDialog().ShowDialog() == DialogResult.OK)
                 {
                     m_Configuration.CheckForUpdatesOnLaunch = true;
@@ -258,15 +260,18 @@ namespace CKAN
             {
                 try
                 {
+                    log.Info("Making autoupdate call");
                     var latest_version = AutoUpdate.FetchLatestCkanVersion();
                     var current_version = new Version(Meta.Version());
 
                     if (latest_version.IsGreaterThan(current_version))
                     {
+                        log.Debug("Found higher ckan version");
                         var release_notes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
+                            log.Info("Start ckan update");
                             AutoUpdate.StartUpdateProcess(true);
                         }
                     }
@@ -274,6 +279,7 @@ namespace CKAN
                 catch (Exception exception)
                 {
                     m_User.RaiseError("Error in autoupdate: \n\t" + exception.Message + "");
+                    log.Error("Error in autoupdate", exception);
                 }
             }
 
@@ -320,6 +326,7 @@ namespace CKAN
                 }
 
                 int i = 0;
+                log.Debug("Attempting to select mod from startup parameters");
                 foreach (DataGridViewRow row in ModList.Rows)
                 {
                     var module = ((GUIMod) row.Tag).ToCkanModule();
@@ -332,6 +339,7 @@ namespace CKAN
 
                     i++;
                 }
+                log.Debug("Failed to select mod from startup parameters");
             }
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
@@ -341,6 +349,8 @@ namespace CKAN
             }
 
             m_PluginController = new PluginController(pluginsPath, true);
+
+            log.Info("GUI started");
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)

@@ -43,6 +43,7 @@ namespace CKAN
 
         private void _UpdateModsList(bool repo_updated)
         {
+            log.Debug("Updating the mod list");
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
             
             var ckanModules = registry.Available(CurrentInstance.Version()).Concat(

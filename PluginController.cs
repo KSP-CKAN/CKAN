@@ -128,6 +128,7 @@ namespace CKAN
             {
                 try
                 {
+                    log.Debug("Initializing "+plugin.GetName());
                     plugin.Initialize();
                 }
                 catch (Exception ex)
@@ -148,6 +149,7 @@ namespace CKAN
             {
                 try
                 {
+                    log.Debug("Deinitialize " + plugin.GetName());
                     plugin.Deinitialize();
                 }
                 catch (Exception ex)
@@ -166,6 +168,7 @@ namespace CKAN
         {
             if (m_ActivePlugins.Contains(plugin))
             {
+                log.Debug("Deactivate " + plugin.GetName());
                 DeactivatePlugin(plugin);
             }
 
