@@ -439,17 +439,21 @@ namespace CKAN
             // Check the key. If it is space, mark the current mod as selected.
             if (e.KeyChar.ToString() == " ")
             {
-                var selectedRow = ModList.CurrentRow;
+                var selected_row = ModList.CurrentRow;
 
-                if (selectedRow != null)
+                if (selected_row != null)
                 {
                     // Get the checkbox.
-                    var selectedRowCheckBox = (DataGridViewCheckBoxCell) selectedRow.Cells["Installed"];
+                    var selected_row_check_box = selected_row.Cells["Installed"] as DataGridViewCheckBoxCell;
 
                     // Invert the value.
-                    bool selectedValue = (bool) selectedRowCheckBox.Value;
-                    selectedRowCheckBox.Value = !selectedValue;
+                    if (selected_row_check_box != null)
+                    {
+                        bool selected_value = (bool)selected_row_check_box.Value;
+                        selected_row_check_box.Value = !selected_value;
+                    }                    
                 }
+                e.Handled = true;
                 return;
             }
 
@@ -485,9 +489,9 @@ namespace CKAN
                 return;
             }
             var row_index = e.RowIndex;
-            var columnIndex = e.ColumnIndex;
+            var column_index = e.ColumnIndex;
 
-            if (row_index < 0 || columnIndex < 0)
+            if (row_index < 0 || column_index < 0)
             {
                 return;
             }
@@ -496,17 +500,17 @@ namespace CKAN
             var grid = sender as DataGridView;
 
             var row = grid.Rows[row_index];
-            var grid_view_cell = row.Cells[columnIndex];
+            var grid_view_cell = row.Cells[column_index];
 
             if (grid_view_cell is DataGridViewLinkCell)
             {
                 var cell = grid_view_cell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
-            else if (columnIndex < 2)
+            else if (column_index < 2)
             {
                 var gui_mod = ((GUIMod) row.Tag);
-                switch (columnIndex)
+                switch (column_index)
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
