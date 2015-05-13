@@ -27,27 +27,27 @@ namespace CKAN
 
             foreach (var row in rows)
             {
-                var mod = ((GUIMod)row.Tag);
+                var mod = ((GUIMod) row.Tag);
                 row.Visible = mainModList.IsVisible(mod);
             }
             
-            ModList.Rows.AddRange(rows.Where(row=>row.Visible).OrderBy(row=>((GUIMod)row.Tag).Name).ToArray());
-            
+            ModList.Rows.AddRange(rows.Where(row => row.Visible).OrderBy(row => ((GUIMod) row.Tag).Name).ToArray());
         }
 
-        private void UpdateModsList(Boolean repo_updated=false)
+        private void UpdateModsList(Boolean repo_updated = false)
         {
-            Util.Invoke(this, ()=>_UpdateModsList(repo_updated));
+            Util.Invoke(this, () => _UpdateModsList(repo_updated));
         }
 
 
         private void _UpdateModsList(bool repo_updated)
         {
             Registry registry = RegistryManager.Instance(CurrentInstance).registry;
-            
+
             var ckanModules = registry.Available(CurrentInstance.Version()).Concat(
                 registry.Incompatible(CurrentInstance.Version())).ToList();
-            var gui_mods = new HashSet<GUIMod>(ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())));            
+            var gui_mods =
+                new HashSet<GUIMod>(ckanModules.Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
             var old_modules = new HashSet<GUIMod>(mainModList.Modules);
             if (repo_updated)
             {
