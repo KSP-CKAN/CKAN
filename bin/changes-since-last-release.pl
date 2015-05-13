@@ -43,5 +43,5 @@ foreach my $repo (keys %last_release_commit) {
     system("git fetch origin") if $opts{f};
 
     # By piping to cat, we avoid git invoking the pager.
-    system("git log --no-merges --pretty=oneline --abbrev-commit $last_release_commit{$repo}..$opts{u}/master ");
+    system(qq{git log --no-merges --pretty="format:%h %s (%aN)" --abbrev-commit $last_release_commit{$repo}..$opts{u}/master});
 }
