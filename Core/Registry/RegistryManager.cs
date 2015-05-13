@@ -87,7 +87,7 @@ namespace CKAN
                 Context = new System.Runtime.Serialization.StreamingContext(
                     System.Runtime.Serialization.StreamingContextStates.Other,
                     ksp
-                    )
+                )
             };
 
             string json = File.ReadAllText(path);
