@@ -7,6 +7,15 @@ using CurlSharp;
 
 namespace CKAN.NetKAN
 {
+    /// <summary>
+    /// Internal class to read errors from KS.
+    /// </summary>
+    internal class KSError
+    {
+        public string reason;
+        public bool error;
+    }
+
     // KerbalStuff API
     public class KSAPI
     {
@@ -43,6 +52,16 @@ namespace CKAN.NetKAN
         public static KSMod Mod(int mod_id)
         {
             string json = Call("/mod/" + mod_id);
+
+            // Check if the mod has been removed from KS.
+            KSError error = JsonConvert.DeserializeObject<KSError>(json);
+
+            if (error.error)
+            {
+                string error_message = String.Format("Could not get the mod from KS, reason: {0}.", error.reason);
+                throw new Kraken(error_message);
+            }
+
             return Mod(json);
         }
 
