@@ -44,17 +44,17 @@ namespace CKANTests
         [Test]
         public void SetAutoStart_VaildName_SetsAutoStart()
         {         
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(null));
+            Assert.That(manager.AutoStartInstance, Is.EqualTo(string.Empty));
 
             manager.SetAutoStart(nameInReg);
             Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
         [Test]
-        public void SetAutoStart_InvaildName_DoesNotChangeAutoStart()
+        public void SetAutoStart_InvalidName_DoesNotChangeAutoStart()
         {
             manager.SetAutoStart(nameInReg);
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetAutoStart("invaild"));
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetAutoStart("invalid"));
             Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
@@ -136,13 +136,13 @@ namespace CKANTests
         [Test]
         public void SetCurrentInstance_NameNotInRepo_Throws()
         {
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invaild"));
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invalid"));
         }
 
         [Test] //37a33
-        public void Ctor_InvaildAutoStart_DoesNotThrow()
+        public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP,"invaild")
+            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP, "invalid")
                 ));
         }
 
@@ -174,7 +174,6 @@ namespace CKANTests
             
         }
 
-
         public FakeWin32Registry(List<Tuple<string, string>> instances, string auto_start_instance = null)
         {
             Instances = instances;
@@ -188,7 +187,26 @@ namespace CKANTests
             get { return Instances.Count; }
             }
 
-        public string AutoStartInstance { get; set; }
+        // In the Win32Registry it is not possible to get null in autostart.
+        private string _AutoStartInstance;
+        public string AutoStartInstance
+        {
+            get
+            {
+                if (_AutoStartInstance != null)
+                {
+                    return _AutoStartInstance;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                _AutoStartInstance = value;
+            }
+        }
 
         public Tuple<string, string> GetInstance(int i)
         {
