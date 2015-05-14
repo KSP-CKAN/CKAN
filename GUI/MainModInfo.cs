@@ -16,7 +16,7 @@ namespace CKAN
 
     public partial class Main : Form
     {
-        private void UpdateModInfo(CkanModule module)
+        private void UpdateModInfo(Module module)
         {
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
@@ -52,7 +52,7 @@ namespace CKAN
             }
         }
 
-        private void UpdateModInfoAuthor(CkanModule module)
+        private void UpdateModInfoAuthor(Module module)
         {
             var authors = "";
 
@@ -166,7 +166,7 @@ namespace CKAN
             return node;
         }
 
-        private void UpdateModDependencyGraph(CkanModule module)
+        private void UpdateModDependencyGraph(Module module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible. 
@@ -208,7 +208,7 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(CkanModule module)
+        private void UpdateModContentsTree(Module module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible. 

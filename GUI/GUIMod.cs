@@ -6,8 +6,13 @@ namespace CKAN
 {
     public class GUIMod
     {
-        private CkanModule Mod { get; set; }
-        public string Name { get { return Mod.name; } }
+        private Module Mod { get; set; }
+
+        public string Name
+        {
+            get { return Mod.name; }
+        }
+
         public bool IsInstalled { get; private set; }
         public bool HasUpdate { get; private set; }
         public bool IsIncompatible { get; private set; }
@@ -20,12 +25,13 @@ namespace CKAN
         public object Homepage { get; private set; }
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
-        public bool IsUpgradeChecked { get; set; }
+        public bool IsUpgradeChecked { get; private set; }
         public bool IsNew { get; set; }
+        public bool IsCKAN { get; private set; }
 
-
-        public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
+        public GUIMod(Module mod, Registry registry, KSPVersion current_ksp_version, bool is_ckan = false)
         {
+            IsCKAN = is_ckan;
             //Currently anything which could alter these causes a full reload of the modlist
             // If this is ever changed these could be moved into the properties
             Mod = mod;
@@ -52,46 +58,59 @@ namespace CKAN
             Identifier = mod.identifier;
         }
 
+        public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
+            : this(mod, registry, current_ksp_version, true)
+        {
+        }
+
         public CkanModule ToCkanModule()
+        {
+            if (!IsCKAN) throw new InvalidCastException("Method can not be called unless IsCKAN");
+            var mod = Mod as CkanModule;
+            return mod;
+        }
+
+        public Module ToModule()
         {
             return Mod;
         }
 
         public KeyValuePair<CkanModule, GUIModChangeType>? GetRequestedChange()
         {
+            if (!IsCKAN) throw new InvalidCastException("Method can not be called unless IsCKAN");
             if (IsInstalled ^ IsInstallChecked)
             {
                 var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
-                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, change_type);
+                return new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule) Mod, change_type);
             }
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                return new KeyValuePair<CkanModule, GUIModChangeType>(Mod, GUIModChangeType.Update);
+                return new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule) Mod, GUIModChangeType.Update);
             }
             return null;
         }
 
-        public static implicit operator CkanModule(GUIMod mod)
+        public static implicit operator Module(GUIMod mod)
         {
-            return mod.ToCkanModule();
+            return mod.ToModule();
         }
 
         public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            var old_value = (bool)update_cell.Value;
+            var old_value = (bool) update_cell.Value;
 
             bool value = (setvalueto.HasValue ? setvalueto.Value : old_value);
             IsUpgradeChecked = value;
-            if(old_value != value) update_cell.Value = value;
+            if (old_value != value) update_cell.Value = value;
         }
 
         public void SetInstallChecked(DataGridViewRow row)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            IsInstallChecked = (bool)install_cell.Value;
+            IsInstallChecked = (bool) install_cell.Value;
         }
 
         protected bool Equals(GUIMod other)
