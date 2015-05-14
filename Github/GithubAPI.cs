@@ -14,7 +14,7 @@ namespace CKAN.NetKAN
     {
         private static readonly string asset_match = "/asset_match/";
         private static readonly Uri api_base = new Uri("https://api.github.com/");
-        private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
+        private static readonly ILog log = LogManager.GetLogger(typeof(GithubAPI));
         private static readonly WebClient web = new WebClient();
         private static bool done_init;
 
