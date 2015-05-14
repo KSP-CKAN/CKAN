@@ -92,7 +92,7 @@ namespace CKAN
         }
 
         public KeyValuePair<GUIMod, GUIModChangeType>? GetRequestedChange()
-        {
+        {            
             if (IsInstalled ^ IsInstallChecked)
             {
                 var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
