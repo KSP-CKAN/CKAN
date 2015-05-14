@@ -138,28 +138,31 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 var generator = new RandomModuleGenerator(new Random(0451));
                 var provide_ident = "provide";
+                var ksp_version = tidy.KSP.Version();
                 var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>()
                 {
                     new RelationshipDescriptor() {name = provide_ident}
-                });
-                var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident });
-                var modb = generator.GeneratorRandomModule(provides: new List<string> { provide_ident });
+                },ksp_version:ksp_version);
+                var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
+                , ksp_version: ksp_version);
+                var modb = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
+                , ksp_version: ksp_version);
                 var choice_of_provide = modb;
                 registry.AddAvailable(mod);
                 registry.AddAvailable(moda);
                 registry.AddAvailable(modb);
                 var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
                 var main_mod_list = new MainModList(null, async kraken => choice_of_provide);
-                var a = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>()
+                var a = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>()
                 {
-                    new KeyValuePair<CkanModule, GUIModChangeType>(mod,GUIModChangeType.Install)
+                    new KeyValuePair<GUIMod, GUIModChangeType>(new GUIMod(mod,registry,ksp_version),GUIModChangeType.Install)
                 };
 
-                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, null);
+                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, ksp_version);
                 CollectionAssert.AreEquivalent(
                     new[] {
-                        new KeyValuePair<CkanModule,GUIModChangeType>(mod,GUIModChangeType.Install),
-                        new KeyValuePair<CkanModule,GUIModChangeType>(modb,GUIModChangeType.Install)}, mod_list);
+                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install),
+                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(modb,registry,ksp_version),GUIModChangeType.Install)}, mod_list);
 
             }
         }

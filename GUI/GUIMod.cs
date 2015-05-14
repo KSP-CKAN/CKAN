@@ -29,26 +29,42 @@ namespace CKAN
         public bool IsNew { get; set; }
         public bool IsCKAN { get; private set; }
 
-        public GUIMod(Module mod, Registry registry, KSPVersion current_ksp_version, bool is_ckan = false)
+        public string Version
         {
-            IsCKAN = is_ckan;
+            get { return InstalledVersion != null ? InstalledVersion : LatestVersion; }
+        }
+
+        public GUIMod(Module mod, Registry registry, KSPVersion current_ksp_version)
+        {
+            IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
             // If this is ever changed these could be moved into the properties
             Mod = mod;
-            IsInstalled = registry.IsInstalled(mod.identifier);
+            IsInstalled = registry.IsInstalled(mod.identifier, false);
             IsInstallChecked = IsInstalled;
             HasUpdate = registry.HasUpdate(mod.identifier, current_ksp_version);
             IsIncompatible = !mod.IsCompatibleKSP(current_ksp_version);
             IsAutodetected = registry.IsAutodetected(mod.identifier);
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
-            var installedVersion = registry.InstalledVersion(mod.identifier);
-            var latestVersion = registry.LatestAvailable(mod.identifier, current_ksp_version);
-            var kspVersion = mod.ksp_version;
+            var installed_version = registry.InstalledVersion(mod.identifier);
+            Version latest_version = null;
+            var ksp_version = mod.ksp_version;
+            try
+            {
+                var latest_available = registry.LatestAvailable(mod.identifier, current_ksp_version);
+                if (latest_available != null)
+                    latest_version = latest_available.version;
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                latest_version = installed_version;
+            }
 
-            InstalledVersion = installedVersion != null ? installedVersion.ToString() : "-";
-            LatestVersion = latestVersion != null ? latestVersion.version.ToString() : "-";
-            KSPversion = kspVersion != null ? kspVersion.ToString() : "-";
+
+            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
+            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
+            KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
             Abstract = mod.@abstract;
             Homepage = mod.resources != null && mod.resources.homepage != null
@@ -59,7 +75,7 @@ namespace CKAN
         }
 
         public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
-            : this(mod, registry, current_ksp_version, true)
+            : this((Module) mod, registry, current_ksp_version)
         {
         }
 
@@ -75,17 +91,16 @@ namespace CKAN
             return Mod;
         }
 
-        public KeyValuePair<CkanModule, GUIModChangeType>? GetRequestedChange()
+        public KeyValuePair<GUIMod, GUIModChangeType>? GetRequestedChange()
         {
-            if (!IsCKAN) throw new InvalidCastException("Method can not be called unless IsCKAN");
             if (IsInstalled ^ IsInstallChecked)
             {
                 var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
-                return new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule) Mod, change_type);
+                return new KeyValuePair<GUIMod, GUIModChangeType>(this, change_type);
             }
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
-                return new KeyValuePair<CkanModule, GUIModChangeType>((CkanModule) Mod, GUIModChangeType.Update);
+                return new KeyValuePair<GUIMod, GUIModChangeType>(this, GUIModChangeType.Update);
             }
             return null;
         }

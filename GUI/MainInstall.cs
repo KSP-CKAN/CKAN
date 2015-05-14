@@ -27,7 +27,7 @@ namespace CKAN
             ClearLog();
 
             var opts =
-                (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
+                (KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
@@ -37,18 +37,18 @@ namespace CKAN
             var toUpgrade = new HashSet<string>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
-            foreach (KeyValuePair<CkanModule, GUIModChangeType> change in opts.Key)
+            foreach (KeyValuePair<GUIMod, GUIModChangeType> change in opts.Key)
             {
                 switch (change.Value)
                 {
                     case GUIModChangeType.Remove:
-                        toUninstall.Add(change.Key.identifier);
+                        toUninstall.Add(change.Key.Identifier);
                         break;
                     case GUIModChangeType.Update:
-                        toUpgrade.Add(change.Key.identifier);
+                        toUpgrade.Add(change.Key.Identifier);
                         break;
                     case GUIModChangeType.Install:
-                        toInstall.Add(change.Key.identifier);
+                        toInstall.Add(change.Key.Identifier);
                         break;
                 }
             }
@@ -62,9 +62,9 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Install)
                 {
-                    if (change.Key.recommends != null)
+                    if (change.Key.ToModule().recommends != null)
                     {
-                        foreach (RelationshipDescriptor mod in change.Key.recommends)
+                        foreach (RelationshipDescriptor mod in change.Key.ToModule().recommends)
                         {
                             try
                             {
@@ -82,11 +82,11 @@ namespace CKAN
                                     // add it to the list of recommended mods we display to the user
                                     if (recommended.ContainsKey(mod.name))
                                     {
-                                        recommended[mod.name].Add(change.Key.identifier);
+                                        recommended[mod.name].Add(change.Key.Identifier);
                                     }
                                     else
                                     {
-                                        recommended.Add(mod.name, new List<string> {change.Key.identifier});
+                                        recommended.Add(mod.name, new List<string> {change.Key.Identifier});
                                     }
                                 }
                             }
@@ -97,9 +97,9 @@ namespace CKAN
                         }
                     }
 
-                    if (change.Key.suggests != null)
+                    if (change.Key.ToModule().suggests != null)
                     {
-                        foreach (RelationshipDescriptor mod in change.Key.suggests)
+                        foreach (RelationshipDescriptor mod in change.Key.ToModule().suggests)
                         {
                             try
                             {
@@ -111,11 +111,11 @@ namespace CKAN
                                 {
                                     if (suggested.ContainsKey(mod.name))
                                     {
-                                        suggested[mod.name].Add(change.Key.identifier);
+                                        suggested[mod.name].Add(change.Key.Identifier);
                                     }
                                     else
                                     {
-                                        suggested.Add(mod.name, new List<string> {change.Key.identifier});
+                                        suggested.Add(mod.name, new List<string> {change.Key.Identifier});
                                     }
                                 }
                             }
@@ -184,7 +184,7 @@ namespace CKAN
             {
                 m_TabController.HideTab("WaitTabPage");
                 m_TabController.ShowTab("ManageModsTabPage");
-                e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false, opts.Key);
+                e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false, opts.Key);
                 return;
             }
 
@@ -221,22 +221,22 @@ namespace CKAN
             {
                 if (installCanceled)
                 {
-                    e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
+                    e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false,
                         opts.Key);
                     return;
                 }
-                var ret = InstallList(toInstall, opts.Value, downloader);
-                if (!ret)
-                {
-                    // install failed for some reason, error message is already displayed to the user
-                    e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                        opts.Key);
-                    return;
+                    var ret = InstallList(toInstall, opts.Value, downloader);
+                    if (!ret)
+                    {
+                        // install failed for some reason, error message is already displayed to the user
+                        e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false,
+                            opts.Key);
+                        return;
+                    }
+                    resolvedAllProvidedMods = true;
                 }
-                resolvedAllProvidedMods = true;
-            }
 
-            e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(true, opts.Key);
+            e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(true, opts.Key);
         }
 
         private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options,
@@ -332,7 +332,7 @@ namespace CKAN
             return true;
         }
 
-        private void OnModInstalled(CkanModule mod)
+        private void OnModInstalled(Module mod)
         {
             AddStatusMessage("Module \"{0}\" successfully installed", mod.name);
         }
@@ -342,7 +342,7 @@ namespace CKAN
             UpdateModsList();
             m_TabController.SetTabLock(false);
 
-            var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>) e.Result;
+            var result = (KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>) e.Result;
 
             if (result.Key)
             {
@@ -371,18 +371,18 @@ namespace CKAN
 
                 var opts = result.Value;
 
-                foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
+                foreach (KeyValuePair<GUIMod, GUIModChangeType> opt in opts)
                 {
                     switch (opt.Value)
                     {
                         case GUIModChangeType.Install:
-                            MarkModForInstall(opt.Key.identifier);
+                            MarkModForInstall(opt.Key.Identifier);
                             break;
                         case GUIModChangeType.Update:
-                            MarkModForUpdate(opt.Key.identifier);
+                            MarkModForUpdate(opt.Key.Identifier);
                             break;
                         case GUIModChangeType.Remove:
-                            MarkModForInstall(opt.Key.identifier, true);
+                            MarkModForInstall(opt.Key.Identifier, true);
                             break;
                     }
                 }
@@ -405,7 +405,7 @@ namespace CKAN
 
             ChooseProvidedModsListView.ItemChecked += ChooseProvidedModsListView_ItemChecked;
 
-            foreach (CkanModule module in tooManyProvides.modules)
+            foreach (Module module in tooManyProvides.modules)
             {
                 ListViewItem item = new ListViewItem {Tag = module, Checked = false, Text = module.name};
 
@@ -432,9 +432,9 @@ namespace CKAN
 
             foreach (ListViewItem item in ChooseProvidedModsListView.Items.Cast<ListViewItem>()
                 .Where(item => item != e.Item && item.Checked))
-            {
-                item.Checked = false;
-            }
+                {
+                    item.Checked = false;
+                }
 
         }
 
@@ -450,7 +450,7 @@ namespace CKAN
                 if (item.Checked)
                 {
                     toomany_source.SetResult((CkanModule)item.Tag);
-                }
+            }
             }
         }
 
@@ -474,7 +474,7 @@ namespace CKAN
 
             foreach (var pair in mods)
             {
-                CkanModule module;
+                Module module;
 
                 try
                 {
@@ -487,7 +487,7 @@ namespace CKAN
                         without_toomanyprovides_kraken = true
                     };
 
-                    var resolver = new RelationshipResolver(new List<string>() {pair.Key}, opts,
+                    var resolver = new RelationshipResolver(new List<string> {pair.Key}, opts,
                         RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
                     if (!resolver.ModList().Any())
                     {
@@ -546,7 +546,7 @@ namespace CKAN
             {
                 if (item.Checked)
                 {
-                    var identifier = ((CkanModule) item.Tag).identifier;
+                    var identifier = ((Module) item.Tag).identifier;
                     toInstall.Add(identifier);
                 }
             }

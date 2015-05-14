@@ -8,9 +8,9 @@ namespace CKAN
     public partial class Main
     {
 
-        private List<KeyValuePair<CkanModule, GUIModChangeType>> m_Changeset;
+        private List<KeyValuePair<GUIMod, GUIModChangeType>> m_Changeset;
 
-        public void UpdateChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset, BackgroundWorker installWorker)
+        public void UpdateChangesDialog(List<KeyValuePair<GUIMod, GUIModChangeType>> changeset, BackgroundWorker installWorker)
         {
             m_Changeset = changeset;
             m_InstallWorker = installWorker;
@@ -28,11 +28,11 @@ namespace CKAN
                     continue;
                 }
 
-                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Key.name, change.Key.version)};
+                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Key.Name, change.Key.Version)};
 
-                var subChangeType = new ListViewItem.ListViewSubItem {Text = change.Value.ToString()};
+                var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.Value.ToString()};
 
-                item.SubItems.Add(subChangeType);
+                item.SubItems.Add(sub_change_type);
                 ChangesListView.Items.Add(item);
             }
         }
@@ -57,7 +57,7 @@ namespace CKAN
             install_ops.with_recommends = false;
             
             m_InstallWorker.RunWorkerAsync(
-                new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
+                new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
                     m_Changeset, install_ops));
             m_Changeset = null;
 
