@@ -87,7 +87,7 @@ namespace CKAN
             }
         }
 
-        private void UpdateModsList(Boolean repo_updated = false)
+        internal void UpdateModsList(Boolean repo_updated = false)
         {
             Util.Invoke(this, () => _UpdateModsList(repo_updated));
         }
@@ -140,6 +140,62 @@ namespace CKAN
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
+        }
+
+
+        private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
+        {
+            m_TabController.SetTabLock(false);
+            UpdateModsList();
+
+            var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>)e.Result;
+
+            if (result.Key)
+            {
+                if (Main.modChangedCallback != null)
+                {
+                    foreach (var mod in result.Value)
+                    {
+                        Main.modChangedCallback(mod.Key, mod.Value);
+                    }
+                }
+
+                // install successful
+                AddStatusMessage("Success!");
+                HideWaitDialog(true);
+                m_TabController.HideTab("ChangesetTabPage");
+                ApplyToolButton.Enabled = false;
+            }
+            else
+            {
+                // there was an error
+                // rollback user's choices but stay on the log dialog
+                AddStatusMessage("Error!");
+                SetDescription("An error occurred, check the log for information");
+                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
+                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+
+                var opts = result.Value;
+
+                foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
+                {
+                    switch (opt.Value)
+                    {
+                        case GUIModChangeType.Install:
+                            MarkModForInstall(opt.Key.identifier);
+                            break;
+                        case GUIModChangeType.Update:
+                            MarkModForUpdate(opt.Key.identifier);
+                            break;
+                        case GUIModChangeType.Remove:
+                            MarkModForInstall(opt.Key.identifier, true);
+                            break;
+                    }
+                }
+            }
+
+            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
         }
 
         public void MarkModForInstall(string identifier, bool uninstall = false)

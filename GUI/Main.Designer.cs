@@ -1056,8 +1056,7 @@ namespace CKAN
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(75, 23);
             this.RecommendedModsCancelButton.TabIndex = 8;
             this.RecommendedModsCancelButton.Text = "Cancel";
-            this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;
-            this.RecommendedModsCancelButton.Click += new System.EventHandler(this.RecommendedModsCancelButton_Click);
+            this.RecommendedModsCancelButton.UseVisualStyleBackColor = true;            
             // 
             // RecommendedModsContinueButton
             // 
@@ -1068,8 +1067,7 @@ namespace CKAN
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(75, 23);
             this.RecommendedModsContinueButton.TabIndex = 7;
             this.RecommendedModsContinueButton.Text = "Continue";
-            this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
-            this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
+            this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;            
             // 
             // RecommendedDialogLabel
             // 
@@ -1137,8 +1135,7 @@ namespace CKAN
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(75, 23);
             this.ChooseProvidedModsCancelButton.TabIndex = 10;
             this.ChooseProvidedModsCancelButton.Text = "Cancel";
-            this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;
-            this.ChooseProvidedModsCancelButton.Click += new System.EventHandler(this.ChooseProvidedModsCancelButton_Click);
+            this.ChooseProvidedModsCancelButton.UseVisualStyleBackColor = true;            
             // 
             // ChooseProvidedModsContinueButton
             // 
@@ -1149,8 +1146,7 @@ namespace CKAN
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(75, 23);
             this.ChooseProvidedModsContinueButton.TabIndex = 9;
             this.ChooseProvidedModsContinueButton.Text = "Continue";
-            this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;
-            this.ChooseProvidedModsContinueButton.Click += new System.EventHandler(this.ChooseProvidedModsContinueButton_Click);
+            this.ChooseProvidedModsContinueButton.UseVisualStyleBackColor = true;            
             // 
             // ChooseProvidedModsListView
             // 
@@ -1238,7 +1234,7 @@ namespace CKAN
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        internal System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolButton;
@@ -1246,7 +1242,7 @@ namespace CKAN
         private System.Windows.Forms.MenuStrip menuStrip2;
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
-        private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
+        internal System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
@@ -1290,7 +1286,7 @@ namespace CKAN
         private TabPage WaitTabPage;
         private Button CancelCurrentActionButton;
         private TextBox LogTextBox;
-        private ProgressBar DialogProgressBar;
+        internal ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
         private DataGridViewCheckBoxColumn UpdateCell;
         private TabPage ChangesetTabPage;
@@ -1301,20 +1297,20 @@ namespace CKAN
         private ColumnHeader ChangeType;
         private ColumnHeader columnHeader2;
         private TabPage ChooseRecommendedModsTabPage;
-        private Label RecommendedDialogLabel;
-        private ListView RecommendedModsListView;
+        internal Label RecommendedDialogLabel;
+        internal ListView RecommendedModsListView;
         private ColumnHeader columnHeader3;
         private ColumnHeader columnHeader4;
         private ColumnHeader columnHeader5;
         private Button RecommendedModsCancelButton;
         private Button RecommendedModsContinueButton;
         private TabPage ChooseProvidedModsTabPage;
-        private Label ChooseProvidedModsLabel;
-        private ListView ChooseProvidedModsListView;
+        internal Label ChooseProvidedModsLabel;
+        internal ListView ChooseProvidedModsListView;
         private ColumnHeader columnHeader6;
         private ColumnHeader columnHeader8;
         private Button ChooseProvidedModsCancelButton;
-        private Button ChooseProvidedModsContinueButton;
+        internal Button ChooseProvidedModsContinueButton;
         private ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private RichTextBox MetadataModuleAbstractLabel;

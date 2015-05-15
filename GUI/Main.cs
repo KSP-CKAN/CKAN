@@ -46,6 +46,8 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (Main));
         public TabController m_TabController;
         public volatile KSPManager manager;
+        private OpenFileDialog m_OpenFileDialog = new OpenFileDialog();
+        private MainInstallGUI main_install_gui;
 
         public PluginController m_PluginController;
 
@@ -92,7 +94,7 @@ namespace CKAN
             {
                 var orig = conflicts;
                 conflicts = value;
-                if(orig != value) ConflictsUpdated();
+                if(!ReferenceEquals(orig, value)) ConflictsUpdated();
             }
         }
 
@@ -136,7 +138,7 @@ namespace CKAN
         {
             if (ChangeSet != null && ChangeSet.Any())
             {
-                UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
+                UpdateChangesDialog(ChangeSet.ToList(), main_install_gui.m_InstallWorker);
                 m_TabController.ShowTab("ChangesetTabPage", 1, false);
                 ApplyToolButton.Enabled = true;
             }
@@ -184,6 +186,12 @@ namespace CKAN
                     Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                     Repo.default_ckan_repo.ToString()
                 );
+
+            main_install_gui = new MainInstallGUI(CurrentInstance,this);
+            RecommendedModsCancelButton.Click += main_install_gui.RecommendedModsCancelButton_Click;
+            RecommendedModsContinueButton.Click += main_install_gui.RecommendedModsContinueButton_Click;
+            ChooseProvidedModsCancelButton.Click += main_install_gui.ChooseProvidedModsCancelButton_Click;
+            ChooseProvidedModsContinueButton.Click += main_install_gui.ChooseProvidedModsContinueButton_Click;
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
@@ -296,9 +304,9 @@ namespace CKAN
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};            
-            m_InstallWorker.DoWork += InstallMods;
-            m_InstallWorker.RunWorkerCompleted += PostInstallMods;
+            main_install_gui.m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+            main_install_gui.m_InstallWorker.DoWork += main_install_gui.InstallMods;
+            main_install_gui.m_InstallWorker.RunWorkerCompleted += PostInstallMods;
 
             UpdateModsList();
 
@@ -702,7 +710,7 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set =
                     await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
-                        CurrentInstance.Version());
+                    CurrentInstance.Version());
             }
             catch (InconsistentKraken)
             {
@@ -866,8 +874,6 @@ namespace CKAN
             Enabled = true;
         }
 
-
-
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
@@ -909,12 +915,12 @@ namespace CKAN
                 RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
                 install_ops.with_recommends = false;
 
-                m_InstallWorker.RunWorkerAsync(
+                main_install_gui.m_InstallWorker.RunWorkerAsync(
                     new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 
-                UpdateChangesDialog(null, m_InstallWorker);
+                UpdateChangesDialog(null, main_install_gui.m_InstallWorker);
                 ShowWaitDialog();
             }
         }

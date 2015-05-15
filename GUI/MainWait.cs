@@ -3,13 +3,11 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-
-    internal delegate void MainCancelCallback();
+    public delegate void MainCancelCallback();
 
     public partial class Main
     {
-
-        private MainCancelCallback cancelCallback;
+        public MainCancelCallback cancelCallback;
 
         public void ShowWaitDialog(bool cancelable = true)
         {
