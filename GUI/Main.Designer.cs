@@ -990,8 +990,7 @@ namespace CKAN
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(75, 23);
             this.CancelCurrentActionButton.TabIndex = 9;
             this.CancelCurrentActionButton.Text = "Cancel";
-            this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
-            this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelCurrentActionButton_Click);
+            this.CancelCurrentActionButton.UseVisualStyleBackColor = true;            
             // 
             // LogTextBox
             // 

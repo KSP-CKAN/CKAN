@@ -13,7 +13,7 @@ namespace CKAN
         public void UpdateChangesDialog(List<KeyValuePair<CkanModule, GUIModChangeType>> changeset, BackgroundWorker installWorker)
         {
             m_Changeset = changeset;
-            main_install_gui.m_InstallWorker = installWorker;
+            main_install_gui.install_worker = installWorker;
             ChangesListView.Items.Clear();
 
             if (changeset == null)
@@ -40,7 +40,7 @@ namespace CKAN
         private void CancelChangesButton_Click(object sender, EventArgs e)
         {
             UpdateModsList();
-            UpdateChangesDialog(null, main_install_gui.m_InstallWorker);
+            UpdateChangesDialog(null, main_install_gui.install_worker);
             m_TabController.ShowTab("ManageModsTabPage");
             m_TabController.HideTab("ChangesetTabPage");
             ApplyToolButton.Enabled = false;
@@ -56,12 +56,12 @@ namespace CKAN
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
             install_ops.with_recommends = false;
 
-            main_install_gui.m_InstallWorker.RunWorkerAsync(
+            main_install_gui.install_worker.RunWorkerAsync(
                 new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                     m_Changeset, install_ops));
             m_Changeset = null;
 
-            UpdateChangesDialog(null, main_install_gui.m_InstallWorker);
+            UpdateChangesDialog(null, main_install_gui.install_worker);
             ShowWaitDialog();
         }
 

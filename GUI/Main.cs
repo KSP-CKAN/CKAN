@@ -138,7 +138,7 @@ namespace CKAN
         {
             if (ChangeSet != null && ChangeSet.Any())
             {
-                UpdateChangesDialog(ChangeSet.ToList(), main_install_gui.m_InstallWorker);
+                UpdateChangesDialog(ChangeSet.ToList(), main_install_gui.install_worker);
                 m_TabController.ShowTab("ChangesetTabPage", 1, false);
                 ApplyToolButton.Enabled = true;
             }
@@ -172,7 +172,6 @@ namespace CKAN
             if (CurrentInstance == null && manager.GetPreferredInstance() == null)
             {
                 Hide();
-
                 var result = new ChooseKSPInstance().ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
@@ -187,11 +186,16 @@ namespace CKAN
                     Repo.default_ckan_repo.ToString()
                 );
 
-            main_install_gui = new MainInstallGUI(CurrentInstance,this);
+            m_TabController = new TabController(MainTabControl);
+
+            main_install_gui = new MainInstallGUI(CurrentInstance, this, m_TabController);
+            main_install_gui.install_worker.RunWorkerCompleted += PostInstallMods;
+
             RecommendedModsCancelButton.Click += main_install_gui.RecommendedModsCancelButton_Click;
             RecommendedModsContinueButton.Click += main_install_gui.RecommendedModsContinueButton_Click;
             ChooseProvidedModsCancelButton.Click += main_install_gui.ChooseProvidedModsCancelButton_Click;
             ChooseProvidedModsContinueButton.Click += main_install_gui.ChooseProvidedModsContinueButton_Click;
+            CancelCurrentActionButton.Click += main_install_gui.CancelCurrentActionButton_Click;
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
@@ -200,7 +204,6 @@ namespace CKAN
             ModList.CurrentCellDirtyStateChanged += ModList_CurrentCellDirtyStateChanged;
             ModList.CellValueChanged += ModList_CellValueChanged;
 
-            m_TabController = new TabController(MainTabControl);
             m_TabController.ShowTab("ManageModsTabPage");
 
             RecreateDialogs();
@@ -303,10 +306,6 @@ namespace CKAN
 
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
-
-            main_install_gui.m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
-            main_install_gui.m_InstallWorker.DoWork += main_install_gui.InstallMods;
-            main_install_gui.m_InstallWorker.RunWorkerCompleted += PostInstallMods;
 
             UpdateModsList();
 
@@ -915,12 +914,12 @@ namespace CKAN
                 RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
                 install_ops.with_recommends = false;
 
-                main_install_gui.m_InstallWorker.RunWorkerAsync(
+                main_install_gui.install_worker.RunWorkerAsync(
                     new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 
-                UpdateChangesDialog(null, main_install_gui.m_InstallWorker);
+                UpdateChangesDialog(null, main_install_gui.install_worker);
                 ShowWaitDialog();
             }
         }
