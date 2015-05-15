@@ -144,9 +144,7 @@
     <Compile Include="MainDialogs.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainInstall.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="MainInstall.cs" />
     <Compile Include="MainModList.cs">
       <SubType>Form</SubType>
     </Compile>

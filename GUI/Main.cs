@@ -296,9 +296,9 @@ namespace CKAN
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            m_InstallWorker.RunWorkerCompleted += PostInstallMods;
+            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};            
             m_InstallWorker.DoWork += InstallMods;
+            m_InstallWorker.RunWorkerCompleted += PostInstallMods;
 
             UpdateModsList();
 
