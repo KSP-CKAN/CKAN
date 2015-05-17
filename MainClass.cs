@@ -567,9 +567,10 @@ namespace CKAN.NetKAN
         }
 
         /// <summary>
-        /// Fixes version strings. Currently this adds a 'v' if
-        /// 'x_netkan_force_v' is set, and the version string does not
+        /// Fixes version strings. 
+        /// This adds a 'v' if 'x_netkan_force_v' is set, and the version string does not
         /// already begin with a 'v'.
+        /// This adds the epoch if 'x_netkan_epoch' is set, and contains a positive int
         /// </summary>
         internal static JObject FixVersionStrings(JObject metadata)
         {
@@ -588,6 +589,23 @@ namespace CKAN.NetKAN
                     log.DebugFormat("Force-adding 'v' to start of {0}", version);
                     version = "v" + version;
                     metadata["version"] = version;
+                }
+            }
+
+            JToken epoch;
+            if (metadata.TryGetValue("x_netkan_epoch", out epoch))
+            {
+                int epoch_number;
+                if (int.TryParse(epoch.ToString(), out epoch_number) && epoch_number>=0)
+                {
+                    //Implicit if zero. No need to add
+                    if (epoch_number != 0)
+                        metadata["version"] = epoch_number + ":" + metadata["version"];
+                }
+                else
+                {
+                    log.Error("Invaild epoch: "+epoch);
+                    throw new BadMetadataKraken(null, "Invaild epoch: " + epoch + "In " + metadata["identifier"]);
                 }
             }
 
