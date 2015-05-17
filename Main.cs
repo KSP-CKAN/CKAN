@@ -423,17 +423,36 @@ namespace CKAN
 
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
-            RunFilterUpdateTimer();
+            if (Platform.IsMac)
+            {
+                // Delay updating to improve typing performance on OS X
+                RunFilterUpdateTimer();
+            }
+            else
+            {
+                mainModList.ModNameFilter = FilterByNameTextBox.Text;
+            }
         }
 
         private void FilterByAuthorTextBox_TextChanged(object sender, EventArgs e)
         {
-            RunFilterUpdateTimer();
+            if (Platform.IsMac)
+            {
+                // Delay updating to improve typing performance on OS X
+                RunFilterUpdateTimer();
+            }
+            else
+            {
+                mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+            }
         }
 
         /// <summary>
-        /// Start or updatea timer to update the filter after an interval 
-        /// since the last keypress.
+        /// Start or restart a timer to update the filter after an interval 
+        /// since the last keypress. On Mac OS X, this prevents the search 
+        /// field from locking up due to DataGridViews being slow and
+        /// key strokes being interpreted incorrectly when slowed down:
+        /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
         private void RunFilterUpdateTimer() {
             if (filterTimer == null)
@@ -452,10 +471,10 @@ namespace CKAN
 
         /// <summary>
         /// Updates the filter after an interval of time has passed since the 
-        /// last keypress. On Mac OS X, this prevents the search field from locking up.
+        /// last keypress.
         /// </summary>
-        /// <param name="source">Source.</param>
-        /// <param name="e">E.</param>
+        /// <param name="source">Source</param>
+        /// <param name="e">EventArgs</param>
         private void OnFilterUpdateTimer(Object source, EventArgs e)
         {
             mainModList.ModNameFilter = FilterByNameTextBox.Text;

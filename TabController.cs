@@ -100,7 +100,6 @@ namespace CKAN
             {
                 index = m_TabControl.TabPages.Count;
             }
-          
 
             m_TabControl.TabPages.Insert(index, m_TabPages[name]);
 
@@ -139,34 +138,37 @@ namespace CKAN
             {
                 args.Cancel = true;
             }
-            else if (args.Action == TabControlAction.Deselecting)
-            {
-                // Have to set visibility to false on children controls on hidden tabs because they don't 
-                // always heed parent visibility on Mac OS X https://bugzilla.xamarin.com/show_bug.cgi?id=3124
-                foreach (Control control in args.TabPage.Controls)
+            else if (Platform.IsMac)
+            { 
+                if (args.Action == TabControlAction.Deselecting)
                 {
-                    control.Visible = false;
-                }
-            }
-            else if (args.Action == TabControlAction.Selecting)
-            {
-                // Set children controls' visibility back to true
-                foreach (Control control in args.TabPage.Controls)
-                {
-                    control.Visible = true;
-
-                    // Have to specifically tell the mod list's panel to refresh
-                    // after things settle out because otherwise it doesn't 
-                    // when coming back to the mods tab from updating the repo
-                    if (control is SplitContainer)
+                    // Have to set visibility to false on children controls on hidden tabs because they don't 
+                    // always heed parent visibility on Mac OS X https://bugzilla.xamarin.com/show_bug.cgi?id=3124
+                    foreach (Control control in args.TabPage.Controls)
                     {
-                        Task.Factory.StartNew(
-                            () =>
-                            {
-                                Thread.Sleep(300);
+                        control.Visible = false;
+                    }
+                }
+                else if (args.Action == TabControlAction.Selecting)
+                {
+                    // Set children controls' visibility back to true
+                    foreach (Control control in args.TabPage.Controls)
+                    {
+                        control.Visible = true;
 
-                                ((SplitContainer)control).Panel1.Refresh();
-                            });
+                        // Have to specifically tell the mod list's panel to refresh
+                        // after things settle out because otherwise it doesn't 
+                        // when coming back to the mods tab from updating the repo
+                        if (control is SplitContainer)
+                        {
+                            Task.Factory.StartNew(
+                                () =>
+                                {
+                                    Thread.Sleep(300);
+
+                                    ((SplitContainer)control).Panel1.Refresh();
+                                });
+                        }
                     }
                 }
             }
