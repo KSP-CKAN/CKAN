@@ -63,6 +63,8 @@ namespace CKAN
 
         public GUIUser m_User = null;
 
+        private Timer filterTimer = null;
+
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
 
@@ -421,12 +423,44 @@ namespace CKAN
 
         private void FilterByNameTextBox_TextChanged(object sender, EventArgs e)
         {
-            mainModList.ModNameFilter = FilterByNameTextBox.Text;
+            RunFilterUpdateTimer();
         }
 
         private void FilterByAuthorTextBox_TextChanged(object sender, EventArgs e)
         {
+            RunFilterUpdateTimer();
+        }
+
+        /// <summary>
+        /// Start or updatea timer to update the filter after an interval 
+        /// since the last keypress.
+        /// </summary>
+        private void RunFilterUpdateTimer() {
+            if (filterTimer == null)
+            {
+                filterTimer = new Timer();
+                filterTimer.Tick += OnFilterUpdateTimer;
+                filterTimer.Interval = 700;
+                filterTimer.Start();
+            }
+            else
+            {
+                filterTimer.Stop();
+                filterTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// Updates the filter after an interval of time has passed since the 
+        /// last keypress. On Mac OS X, this prevents the search field from locking up.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="e">E.</param>
+        private void OnFilterUpdateTimer(Object source, EventArgs e)
+        {
+            mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+            filterTimer.Stop();
         }
 
         /// <summary>
