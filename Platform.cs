@@ -19,10 +19,10 @@ namespace CKAN
             IsMac = IsRunningOnMac();
         }
 
-        // From https://github.com/mono/monodevelop/blob/7c51ae11c323d429c10acd22169373927217198f/main/src/core/Mono.Texteditor/Mono.TextEditor/Platform.cs
-        // TODO: how to obey license for that?
+        // From https://github.com/mono/monodevelop/blob/master/main/src/core/Mono.Texteditor/Mono.TextEditor/Platform.cs
         // Environment.OSVersion.Platform returns Unix for Mac OS X as of Mono v4.0.0:
         // https://bugzilla.xamarin.com/show_bug.cgi?id=13345
+        // So we have to detect it another way
         static bool IsRunningOnMac ()
         {
             IntPtr buf = IntPtr.Zero;
