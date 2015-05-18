@@ -65,8 +65,15 @@ namespace CKAN
             Configuration configuration;
             using (var stream = new StreamReader(path))
             {
-                configuration = (Configuration) serializer.Deserialize(stream);
-                stream.Close();
+                try
+                {
+                    configuration = (Configuration) serializer.Deserialize(stream);
+                }
+                catch(System.Xml.XmlException)
+                {
+                    string message = string.Format("Error trying to parse \"{0}\". Try to move it out of the folder and restart CKAN.", path);
+                    throw new Kraken(message);
+                }
             }
 
             configuration.m_Path = path;
