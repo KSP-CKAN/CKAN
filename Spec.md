@@ -318,7 +318,7 @@ assumed.
 
 The version of KSP this mod is targetting. This may be the string "any",
 a number (eg: `0.23.5`) or may only contain the first two parts of
-the version string (eg: `0.25`). In the latter case, any realease
+the version string (eg: `0.25`). In the latter case, any release
 starting with the `ksp_version` is considered acceptable.
 
 If no KSP target version is included, a default of "any" is assumed.
