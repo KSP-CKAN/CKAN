@@ -140,7 +140,7 @@ namespace CKAN
             }
             else if (Platform.IsMac)
             { 
-                if (args.Action == TabControlAction.Deselecting)
+                if (args.Action == TabControlAction.Deselecting && args.TabPage != null)
                 {
                     // Have to set visibility to false on children controls on hidden tabs because they don't 
                     // always heed parent visibility on Mac OS X https://bugzilla.xamarin.com/show_bug.cgi?id=3124
@@ -149,7 +149,7 @@ namespace CKAN
                         control.Visible = false;
                     }
                 }
-                else if (args.Action == TabControlAction.Selecting)
+                else if (args.Action == TabControlAction.Selecting && args.TabPage != null)
                 {
                     // Set children controls' visibility back to true
                     foreach (Control control in args.TabPage.Controls)
