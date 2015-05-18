@@ -295,12 +295,11 @@ namespace CKAN
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
             m_User.displayYesNo = null;
 
-            ApplyToolButton.Enabled = false;
+            ApplyToolButton.Enabled = false;            
+
+            CurrentInstanceUpdated();
 
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-            Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.Version(), CurrentInstance.Version(), CurrentInstance.GameDir());
-            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
 
             if (m_CommandLineArgs.Length >= 2)
             {
@@ -341,6 +340,25 @@ namespace CKAN
             }
 
             m_PluginController = new PluginController(pluginsPath, true);
+        }
+
+        public void CurrentInstanceUpdated()
+        {
+            Util.Invoke(this, () =>
+            {
+                Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.Version(), CurrentInstance.Version(),
+                CurrentInstance.GameDir());
+                KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
+
+            });
+            m_Configuration = Configuration.LoadOrCreateConfiguration
+            (
+                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Repo.default_ckan_repo.ToString()
+            );
+            UpdateModsList();
+            ChangeSet = null;
+            Conflicts = null;
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)

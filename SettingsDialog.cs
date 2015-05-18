@@ -88,34 +88,10 @@ namespace CKAN
         private void ResetAutoStartChoice_Click(object sender, EventArgs e)
         {
             Main.Instance.Manager.ClearAutoStart();
-
-            // Mono throws an uninformative error if the file we try to run is not flagged as executable, mark it as such.
-            if (!Platform.IsWindows)
-            {
-                // Create the command with the filename of the currently running assembly.
-                string command = string.Format("+x \"{0}\"", System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
-                permsinfo.UseShellExecute = false;
-
-                // Execute the command.
-                Process permsprocess = Process.Start(permsinfo);
-
-                // Wait for chmod to finish and check the exit code.
-                permsprocess.WaitForExit();
-
-                // chmod returns 0 for successfull operation.
-                if (permsprocess.ExitCode != 0)
-                {
-                    throw new Kraken("Could not mark CKAN as executable.");
-                }
-            }
-
-            ProcessStartInfo sinfo = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            sinfo.UseShellExecute = false;
-
-            Process.Start(sinfo);
-            Environment.Exit(0);
+            var old_instance = Main.Instance.CurrentInstance;
+            var result = new ChooseKSPInstance().ShowDialog();
+            if(!Equals(old_instance, Main.Instance.CurrentInstance))
+                Main.Instance.CurrentInstanceUpdated();            
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
