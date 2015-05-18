@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using log4net;
 using System.Collections.Generic;
 using System.Drawing;
+using Newtonsoft.Json;
+using CKAN.Properties;
 
 namespace CKAN
 {
@@ -826,7 +828,7 @@ namespace CKAN
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            m_OpenFileDialog.Filter = "CKAN metadata (*.ckan)|*.ckan";
+            m_OpenFileDialog.Filter = Resources.CKANFileFilter;
 
             if (m_OpenFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -872,6 +874,26 @@ namespace CKAN
 
                 UpdateChangesDialog(null, m_InstallWorker);
                 ShowWaitDialog();
+            }
+        }
+
+        /// <summary>
+        /// Exports installed mods to a .ckan file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dlg = new SaveFileDialog();
+            dlg.Filter = Resources.CKANFileFilter;
+            dlg.Title = Resources.ExportInstalledModsDialogTitle;
+
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                // Save, just to be certain that the installed-*.ckan metapackage is generated
+                RegistryManager.Instance(CurrentInstance).Save();
+
+                // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
             }
         }
     }
