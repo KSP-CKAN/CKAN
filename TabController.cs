@@ -164,7 +164,7 @@ namespace CKAN
                             Task.Factory.StartNew(
                                 () =>
                                 {
-                                    Thread.Sleep(300);
+                                    Thread.Sleep(500);
 
                                     ((SplitContainer)control).Panel1.Refresh();
                                 });
