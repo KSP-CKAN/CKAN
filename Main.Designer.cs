@@ -34,6 +34,8 @@ namespace CKAN
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -162,6 +164,8 @@ namespace CKAN
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.installFromckanToolStripMenuItem,
+            this.exportModListToolStripMenuItem,
+            this.toolStripSeparator1,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -170,14 +174,26 @@ namespace CKAN
             // installFromckanToolStripMenuItem
             // 
             this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
-            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.installFromckanToolStripMenuItem.Text = "Install from .ckan";
+            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.installFromckanToolStripMenuItem.Text = "Install from .ckan...";
             this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
+            // 
+            // exportModListToolStripMenuItem
+            // 
+            this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
+            this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.exportModListToolStripMenuItem.Text = "&Export installed mods...";
+            this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(193, 6);
             // 
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.Size = new System.Drawing.Size(165, 22);
+            this.ExitToolButton.Size = new System.Drawing.Size(196, 22);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
             // 
@@ -676,11 +692,11 @@ namespace CKAN
             this.MetadataLayoutPanel.SetColumnSpan(this.MetadataModuleAbstractLabel, 2);
             this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 60);
-            this.MetadataModuleAbstractLabel.Multiline = true;
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
             this.MetadataModuleAbstractLabel.ReadOnly = true;
             this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(343, 48);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
+            this.MetadataModuleAbstractLabel.Text = "";
             // 
             // RelationshipTabPage
             // 
@@ -1168,7 +1184,6 @@ namespace CKAN
             this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
-            this.FormClosing += Main_FormClosing;
             this.Load += new System.EventHandler(this.Main_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1298,6 +1313,8 @@ namespace CKAN
         private TextBox FilterByAuthorTextBox;
         private Label FilterByAuthorLabel;
         private ToolStripMenuItem FilterAllButton;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem exportModListToolStripMenuItem;
     }
 }
 
