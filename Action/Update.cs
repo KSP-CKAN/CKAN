@@ -25,10 +25,13 @@ namespace CKAN.CmdLine
 
             user.RaiseMessage("Downloading updates...");
 
-            if (options.list_changes)
+            // If no repository is selected, select all.
+            if (options.repo == null)
             {
                 // Get a list of available modules prior to the update.
                 available_prior = ksp.Registry.Available(ksp.Version());
+
+                options.update_all = true;
             }
 
             try
@@ -149,8 +152,18 @@ namespace CKAN.CmdLine
         {
             RegistryManager registry_manager = RegistryManager.Instance(ksp);
 
-            // Update the repository/repositories.
-            int updated = CKAN.Repo.Update(registry_manager, ksp, user, true, repository);
+            int updated = 0;
+
+            if (repository == null)
+            {
+                // Update the repository/repositories.
+                updated = CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, user);
+            }
+            else
+            {
+                // Update the repository/repositories.
+                updated = CKAN.Repo.Update(registry_manager, ksp, user, true, repository);
+            }
 
             user.RaiseMessage("Updated information on {0} available modules", updated);
         }
