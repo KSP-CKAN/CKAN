@@ -58,9 +58,9 @@ ask questions.
 * Ask the authors of your favourite mods to join the CKAN: [adding a mod to the CKAN][4] is very easy and will only take a few minutes.
 
  [1]:https://github.com/KSP-CKAN/CKAN/commits/master
- [2]:https://github.com/KSP-CKAN/CKAN-support/wiki/User-guide
- [3]:https://github.com/KSP-CKAN/CKAN-support/wiki/Adding-a-mod-to-the-CKAN#testing-your-file
- [4]:https://github.com/KSP-CKAN/CKAN-support/wiki/Adding-a-mod-to-the-CKAN
- [5]:https://github.com/KSP-CKAN/CKAN-support/wiki
+ [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
+ [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#testing-your-file
+ [4]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN
+ [5]:https://github.com/KSP-CKAN/CKAN/wiki
  [6]:https://github.com/KSP-CKAN/CKAN/issues
  [7]:http://webchat.esper.net/?channels=ckan
