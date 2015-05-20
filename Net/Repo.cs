@@ -89,6 +89,9 @@ namespace CKAN
                 UpdateRegistry(repository.Value.uri, registry_manager.registry, ksp, user, false);
             }
 
+            // Save our changes.
+            registry_manager.Save();
+
             // Return how many we got!
             return registry_manager.registry.Available(ksp.Version()).Count;
         }
