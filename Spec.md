@@ -80,7 +80,7 @@ and the
         "ksp_version"    : "0.25",
         "resources" : {
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
-            "repository"   : "https://github.com/camlost2/AJE",
+            "repository"   : "https://github.com/camlost2/AJE"
         },
         "install" : [
             {
