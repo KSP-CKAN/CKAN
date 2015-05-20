@@ -84,7 +84,7 @@ and the
         },
         "install" : [
             {
-                "file"       : "AJE-1.6/GameData",
+                "file"       : "AJE-1.6",
                 "install_to" : "GameData"
             }
         ],
