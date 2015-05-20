@@ -28,6 +28,9 @@ namespace CKAN.CmdLine
             // If no repository is selected, select all.
             if (options.repo == null)
             {
+                // Get a list of available modules prior to the update.
+                available_prior = ksp.Registry.Available(ksp.Version());
+
                 options.update_all = true;
             }
 
