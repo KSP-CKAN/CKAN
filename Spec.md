@@ -113,7 +113,7 @@ A `vx.x` string (eg: `"v1.2"`), being the minimum version of the
 reference CKAN client that will read this file.
 
 For compatibility with pre-release clients, and the v1.0 client, the special
-*integer* '1' should be used.
+*integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.4'. Changes since spec `1`
 are marked with **v1.2** through to **v1.6** respectively. For maximum
