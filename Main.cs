@@ -199,7 +199,30 @@ namespace CKAN
             // Disable the modinfo controls until a mod has been choosen.
             this.ModInfoTabControl.Enabled = false;
 
+            // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
+            // making our download speeds really slow unless you move the mouse while 
+            // downloading. Yielding periodically addresses that.
+            // https://bugzilla.novell.com/show_bug.cgi?id=663433
+            if (Platform.IsMac)
+            {
+                System.Windows.Forms.Timer yieldTimer = new System.Windows.Forms.Timer();
+                yieldTimer.Interval = 2;
+                yieldTimer.Tick += YieldTimer_Tick;
+                yieldTimer.Start();
+            }
+
             Application.Run(this);
+        }
+
+        /// <summary>
+        /// Used above to fix the UI thread from hogging all the CPU on OS X,
+        /// slowing down downloads.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        void YieldTimer_Tick (object sender, EventArgs e)
+        {
+            System.Threading.Thread.Yield();
         }
 
         private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
