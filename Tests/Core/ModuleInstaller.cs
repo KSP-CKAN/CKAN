@@ -199,26 +199,11 @@ namespace Tests.Core
         [Test]
         public void No_Installable_Files()
         {
-            // This tests GH #93
-
             string dogezip = TestData.DogeCoinFlagZip();
-            CkanModule bugged_mod = TestData.DogeCoinFlag_101_bugged_module();
-
             Assert.Throws<BadMetadataKraken>(delegate
             {
-                CKAN.ModuleInstaller.FindInstallableFiles(bugged_mod, dogezip, null);
+                CkanModule bugged_mod = TestData.DogeCoinFlag_101_bugged_module();
             });
-
-            try
-            {
-                CKAN.ModuleInstaller.FindInstallableFiles(bugged_mod, dogezip, null);
-            }
-            catch (BadMetadataKraken ex)
-            {
-                // Make sure our module information is attached.
-                Assert.IsNotNull(ex.module);
-                Assert.AreEqual(bugged_mod.identifier, ex.module.identifier);
-            }
         }
 
 #pragma warning disable 0414

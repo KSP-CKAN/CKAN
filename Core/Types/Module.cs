@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using System.Transactions;
 
 namespace CKAN
@@ -16,7 +19,7 @@ namespace CKAN
         public Version max_version;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version min_version;
-        //Why is the identifier called name?
+        //Why is the identifier called name? 
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version version;
@@ -39,7 +42,7 @@ namespace CKAN
                 bool min_sat = min_version == null || min_version <= other_version;
                 bool max_sat = max_version == null || max_version >= other_version;
                 if (min_sat && max_sat) return true;
-            }
+    }
             else
             {
                 if (version.Equals(other_version))
@@ -331,14 +334,14 @@ namespace CKAN
         bool IEquatable<Module>.Equals(Module other)
         {
             return Equals(other);
-        }
+            }
 
         public class IdentifierEqualilty : EqualityComparer<Module>
         {
             public override bool Equals(Module x, Module y)
             {
                 return x.identifier.Equals(y.identifier);
-            }
+        }
 
             public override int GetHashCode(Module obj)
             {
@@ -349,7 +352,7 @@ namespace CKAN
 
     public class CkanModule : Module
     {
-            private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
         private static readonly string[] required_fields =
         {
@@ -370,38 +373,26 @@ namespace CKAN
             [JsonProperty("spec_version", Required = Required.Always)]
             public Version spec_version;
 
-        private static bool validate_json_against_schema(string json)
+        static CkanModule()
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(SchemaPath))
+            using (var reader = new StreamReader(stream))
+            {
+                var result = reader.ReadToEnd();
+                MetadataSchema = JSchema.Parse(result);
+            }
+        }
 
-            log.Debug("In-client JSON schema validation unimplemented.");
-            return true;
-            // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
+        private static readonly string SchemaPath = "CKAN.CKAN.schema";
+        private static readonly JSchema MetadataSchema;
 
-            //            if (metadata_schema == null)
-            //            {
-            //                string schema = "";
-            //
-            //                try
-            //                {
-            //                    schema = File.ReadAllText(metadata_schema_path);
-            //                }
-            //                catch (Exception)
-            //                {
-            //                    if (!metadata_schema_missing_warning_fired)
-            //                    {
-            //                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-            //                            metadata_schema_path);
-            //                        metadata_schema_missing_warning_fired = true;
-            //                    }
-            //
-            //                    return true;
-            //                }
-            //
-            //                metadata_schema = JsonSchema.Parse(schema);
-            //            }
-            //
-            //            JObject obj = JObject.Parse(json);
-            //            return obj.IsValid(metadata_schema);
+        private static IList<string> ValidateAgainstSchema(string json)
+        {
+            JObject obj = JObject.Parse(json);
+            IList<string> errors;
+            obj.IsValid(MetadataSchema, out errors);
+            return errors;
         }
 
         /// <summary>
@@ -422,8 +413,8 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
-                        throw new ModuleNotFoundKraken(ident, version,
-                            string.Format("Cannot install {0}, version {1} not available", ident, version));
+                    throw new ModuleNotFoundKraken(ident, version,
+                        string.Format("Cannot install {0}, version {1} not available", ident, version));
             }
             else
                 module = registry.LatestAvailable(mod, ksp_version);
@@ -455,10 +446,13 @@ namespace CKAN
         /// </summary>
         public static CkanModule FromJson(string json)
         {
-            if (!validate_json_against_schema(json))
+            var errors = ValidateAgainstSchema(json);
+            if (errors.Any())
             {
-                throw new BadMetadataKraken(null, "Validation against spec failed");
+                var message = "Vailation againt the schema failed.\n" + String.Join("\n  ", errors);
+                throw new BadMetadataKraken(null, message);
             }
+
 
             CkanModule newModule;
 
