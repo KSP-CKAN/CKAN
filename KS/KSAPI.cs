@@ -39,11 +39,32 @@ namespace CKAN.NetKAN
             string url = kerbalstuff_api + path;
 
             log.DebugFormat("Calling {0}", url);
-
-			using(var web = new Web())
-			{
-				return web.DownloadString(url);
-			}
+            try
+            {
+                using (var web = new Web())
+                {
+                    return web.DownloadString(url);
+                }
+            }
+            catch (DllNotFoundException exc)
+            {
+                //Curl is not installed. Curl is a workaround for a mono issue.
+                //TODO Richard - Once repos are merged go and check all Platform calls to see if they are mono checks
+                if (!Platform.IsWindows) throw;
+                //On mircrosft.net so try native code.
+                using (var web = new WebClient())
+                {
+                    try
+                    {
+                        return web.DownloadString(url);                            
+                    }
+                    catch (WebException web_ex)
+                    {
+                        log.ErrorFormat("WebException while accessing {0}: {1}", url, web_ex);
+                        throw;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -95,13 +116,13 @@ namespace CKAN.NetKAN
             // again. -- PJF, KSP-CKAN/CKAN#816.
 
             // Step 1: Escape any spaces present. KS seems to escape everything else fine.
-            route = Regex.Replace(route," ","%20");
+            route = Regex.Replace(route, " ", "%20");
 
             // Step 2: Trim leading slashes and prepend the KS host
             Uri url_fixed = new Uri(kerbalstuff + route.TrimStart('/'));
 
             // Step 3: Profit!
-            log.DebugFormat ("Expanded URL is {0}", url_fixed.OriginalString);
+            log.DebugFormat("Expanded URL is {0}", url_fixed.OriginalString);
             return url_fixed;
         }
     }

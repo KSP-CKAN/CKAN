@@ -9,7 +9,7 @@ namespace CKAN.NetKAN
 	public class Web :IDisposable
 	{
 		private static bool init_complete = false;
-		private CurlEasy easy;
+		private readonly CurlEasy easy;
 		private static readonly ILog log = LogManager.GetLogger(typeof (Web));
 
 		/// <summary>
@@ -22,9 +22,22 @@ namespace CKAN.NetKAN
 				CurlSharp.Curl.GlobalInit(CurlInitFlag.All);
 				init_complete = true;
 			}
-
-			easy = new CurlEasy ();
-			easy.UserAgent = Net.UserAgentString;
+		    var curl_ca_bundle_crt = "./curl-ca-bundle.crt";
+		    if (File.Exists(curl_ca_bundle_crt))
+		    {
+		        easy = new CurlEasy
+		        {
+		            UserAgent = Net.UserAgentString,
+		            CaInfo = curl_ca_bundle_crt
+		        };
+		    }
+		    else
+		    {
+		        easy = new CurlEasy
+		        {
+		            UserAgent = Net.UserAgentString,
+		        };
+		    }
 		}
 
 		/// <summary>
@@ -36,7 +49,7 @@ namespace CKAN.NetKAN
 		{
 			log.DebugFormat ("About to download {0}", url);
 
-			string content = "";
+			var content = string.Empty;
 
 			easy.Url = url;
 			easy.WriteData = null;
