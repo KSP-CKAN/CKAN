@@ -29,19 +29,29 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            // Find the module: either by "name" (the user-friendly display name) or by identifier
+            // Check installed modules for an exact match.
+            InstalledModule installedModuleToShow = ksp.Registry.InstalledModule(options.Modname);
+
+            if (installedModuleToShow != null)
+            {
+                // Show the installed module.
+                return ShowMod(installedModuleToShow);
+            }
+
+            // Module was not installed, look for an exact match in the available modules,
+            // either by "name" (the user-friendly display name) or by identifier
             CkanModule moduleToShow = ksp.Registry                  
                                       .Available(ksp.Version())
                                       .SingleOrDefault(
                                             mod => mod.name == options.Modname
                                                 || mod.identifier == options.Modname
                                       );
-                
+
             if (moduleToShow == null)
             {
-                // No exact match found. Try to look for a close match.
-                user.RaiseMessage("{0} not found.", options.Modname);
-                user.RaiseMessage("Looking for close matches.");
+                // No exact match found. Try to look for a close match for this KSP version.
+                user.RaiseMessage("{0} not found or installed.", options.Modname);
+                user.RaiseMessage("Looking for close matches in available mods for KSP {0}.", ksp.Version());
 
                 Search search = new Search(user);
                 List<CkanModule> matches = search.PerformSearch(ksp, options.Modname);
@@ -81,15 +91,6 @@ namespace CKAN.CmdLine
                     // Mark the selection as the one to show.
                     moduleToShow = matches[selection];
                 }
-            }
-
-            // If the selected module is installed, we have additional data to show. First, check if the module is installed.
-            InstalledModule installedModuleToShow = ksp.Registry.InstalledModule(moduleToShow.identifier);
-
-            // If the module is installed (not null), show it. Else, show the generic information.
-            if (installedModuleToShow != null)
-            {
-                return ShowMod(installedModuleToShow);
             }
 
             return ShowMod(moduleToShow);
