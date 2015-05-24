@@ -223,7 +223,7 @@ First the initial part of each string consisting entirely of non-digit
 characters is determined. These two parts (one of which may be empty) are
 compared lexically. If a difference is found it is returned. The lexical
 comparison is a comparison of ASCII values modified so that all the letters sort
-earlier than all the non-letters.
+earlier than all the non-letters, and so that case does not matter ("v" is equivalent to "V").
 
 Then the initial part of the remainder of each string which consists entirely of
 digit characters is determined. The numerical values of these two parts are
