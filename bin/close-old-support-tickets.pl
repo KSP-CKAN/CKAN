@@ -40,7 +40,7 @@ my @candidates = $issues->repos_issues({
 
 foreach my $candidate (@candidates) {
     my $id    = $candidate->{number};
-    my $title = "$candidate->{title} (#id)";
+    my $title = "$candidate->{title} (#$id)";
 
     if ($candidate->{comments} == 0) {
         say "Skipped (no comments)    : $title";
