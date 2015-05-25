@@ -80,11 +80,11 @@ and the
         "ksp_version"    : "0.25",
         "resources" : {
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
-            "repository"   : "https://github.com/camlost2/AJE",
+            "repository"   : "https://github.com/camlost2/AJE"
         },
         "install" : [
             {
-                "file"       : "AJE-1.6/GameData",
+                "file"       : "AJE-1.6",
                 "install_to" : "GameData"
             }
         ],
@@ -113,10 +113,10 @@ A `vx.x` string (eg: `"v1.2"`), being the minimum version of the
 reference CKAN client that will read this file.
 
 For compatibility with pre-release clients, and the v1.0 client, the special
-*integer* '1' should be used.
+*integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.4'. Changes since spec `1`
-are maked with **v1.2** through to **v1.4** respectively. For maximum
+are marked with **v1.2** through to **v1.6** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -134,7 +134,7 @@ A short, one line description of the mod and what it does.
 
 This is the gloablly unique identifier for the mod, and is how the mod
 will be referred to by other CKAN documents.  It may only consist of
-letters, numbers, underscores, and minus signs. Eg: "FAR" or
+letters, numbers and dashes. Eg: "FAR" or
 "RealSolarSystem". This is the identifier that will be used whenever
 the mod is referenced (by `depends`, `conflicts`, or elsewhere).
 
