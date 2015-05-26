@@ -15,17 +15,17 @@ namespace CKAN
         public Version max_version;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version min_version;
-        //Why is the identifier called name? 
+        //Why is the identifier called name?
         public /* required */ string name;
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version version;
 
 
         /// <summary>
-        /// Returns if the other version satisfies this RelationshipDescriptor. 
-        /// If the RelationshipDescriptor has version set it compares against that. 
-        /// Else it uses the {min,max}_version fields treating nulls as unbounded. 
-        /// Note: Uses inclusive inequalities. 
+        /// Returns if the other version satisfies this RelationshipDescriptor.
+        /// If the RelationshipDescriptor has version set it compares against that.
+        /// Else it uses the {min,max}_version fields treating nulls as unbounded.
+        /// Note: Uses inclusive inequalities.
         /// </summary>
         /// <param name="other_version"></param>
         /// <returns>True if other_version is within the bounds</returns>
@@ -56,10 +56,12 @@ namespace CKAN
             {
                 if (version != null)
                     return version.ToString();
-                return $"between {min_version?.ToString() ?? "any version"} and {max_version?.ToString() ?? "any version"} inclusive.";
+                return string.Format("between {0} and {1} inclusive.",
+                    min_version != null ?min_version.ToString() : "any version",
+                    max_version != null ? max_version.ToString() : "any version");
             }
         }
-        
+
     }
 
     public class ResourcesDescriptor
@@ -244,13 +246,7 @@ namespace CKAN
             {
                 return false;
             }
-            foreach (var conflict in mod1.conflicts)
-            {
-                if (!mod2.ProvidesList.Contains(conflict.name))
-                    continue;
-               if(conflict.version_within_bounds(mod2.version)) return true;
-            }
-            return false;
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
         }
 
         /// <summary>
