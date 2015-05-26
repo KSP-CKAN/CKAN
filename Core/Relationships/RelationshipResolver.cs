@@ -234,8 +234,11 @@ namespace CKAN
                     if (descriptor.version_within_bounds(modlist[dep_name].version))
                         continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
-                    throw new InconsistentKraken(string.Format("A certain version of {0} is needed. " +
-                                                               "However a incompatible version is in the resolver", dep_name));
+                    throw new InconsistentKraken(
+                        string.Format(
+                            "{0} requires a version {1}. However a incompatible version, {2}, is in the resolver",
+                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
+
                 }
 
                 if (registry.IsInstalled(dep_name))
@@ -243,9 +246,10 @@ namespace CKAN
                     if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
                     continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
-                    throw new InconsistentKraken(string.Format("A certain version of {0} is needed. " +
-                                                           "However a incompatible version is already installed", dep_name));
-
+                    throw new InconsistentKraken(
+                        string.Format(
+                            "{0} requires a version {1}. However a incompatible version, {2}, is already installed",
+                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
                 }
 
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)

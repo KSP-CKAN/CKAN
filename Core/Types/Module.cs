@@ -46,6 +46,20 @@ namespace CKAN
             }
             return false;
         }
+
+        /// <summary>
+        /// A user friendly message for what versions satisfies this descriptor.
+        /// </summary>
+        [JsonIgnore]
+        public string RequiredVersion {
+            get
+            {
+                if (version != null)
+                    return version.ToString();
+                return $"between {min_version?.ToString() ?? "any version"} and {max_version?.ToString() ?? "any version"} inclusive.";
+            }
+        }
+        
     }
 
     public class ResourcesDescriptor
