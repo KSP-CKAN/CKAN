@@ -20,6 +20,15 @@ namespace CKAN
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
         public Version version;
 
+
+        /// <summary>
+        /// Returns if the other version satisfies this RelationshipDescriptor. 
+        /// If the RelationshipDescriptor has version set it compares against that. 
+        /// Else it uses the {min,max}_version fields treating nulls as unbounded. 
+        /// Note: Uses inclusive inequalities. 
+        /// </summary>
+        /// <param name="other_version"></param>
+        /// <returns>True if other_version is within the bounds</returns>
         public bool version_within_bounds(Version other_version)
         {
             if (version == null)
