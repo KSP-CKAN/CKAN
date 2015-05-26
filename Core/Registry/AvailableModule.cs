@@ -39,11 +39,11 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Return the most recent release of a module.
-        ///     Optionally takes a KSP version number to target.
-        ///     If no KSP version is supplied, we return the latest release of that module for any KSP.
-        ///     Returns null if there are no compatible versions.
+        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy. 
         /// </summary>
+        /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
+        /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
+        /// <returns></returns>
         public CkanModule Latest(KSPVersion ksp_version = null, RelationshipDescriptor relationship=null)
         {            
             var available_versions = new List<Version>(module_version.Keys);
