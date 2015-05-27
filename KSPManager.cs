@@ -304,7 +304,7 @@ namespace CKAN
             }
         }
 
-        public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
+        public static readonly string steamKSP = Path.Combine("steamapps", "common", "Kerbal Space Program");
         }
 
 
