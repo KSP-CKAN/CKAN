@@ -54,16 +54,17 @@ namespace CKANTests
             FileAssert.AreEqual(file, cached_file);
         }
 
-        [Test]
-        public void NamingHints()
+        [Test, TestCase("cheesy.zip","cheesy.zip"), TestCase("Foo-1:2.3","Foo-1-2.3"),
+            TestCase("Foo-1:2:3","Foo-1-2-3"), TestCase("Foo/../etc/passwd","Foo-..-etc-passwd")]
+        public void NamingHints(string hint, string appendage)
         {
             Uri url = new Uri("http://example.com/");
             string file = Tests.TestData.DogeCoinFlagZip();
 
             Assert.IsFalse(cache.IsCached(url));
-            cache.Store(url, file, "cheesy.zip");
+            cache.Store(url, file, hint);
 
-            StringAssert.EndsWith("cheesy.zip", cache.GetCachedFilename(url));
+            StringAssert.EndsWith(appendage, cache.GetCachedFilename(url));
         }
 
         [Test]

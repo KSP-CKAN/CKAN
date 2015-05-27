@@ -51,6 +51,11 @@ namespace CKAN {
             this.version = match.Groups["version"].Value;
         }
 
+        /// <summary>
+        /// Returns the original string used to generate this version. Note this may *NOT* be
+        /// safe for use in filenames, as it may contain colons (for the epoch) and other
+        /// funny characters.
+        /// </summary>
         override public string ToString() {
             return orig_string;
         }
