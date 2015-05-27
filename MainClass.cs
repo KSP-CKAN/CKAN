@@ -197,7 +197,8 @@ namespace CKAN.NetKAN
 
             // All done! Write it out!
 
-            string final_path = Path.Combine(options.OutputDir, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
+            var version_filename = mod.version.ToString().Replace(':','-'); 
+            string final_path = Path.Combine(options.OutputDir, string.Format("{0}-{1}.ckan", mod.identifier, version_filename));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
 
@@ -214,7 +215,7 @@ namespace CKAN.NetKAN
                 serializer.Serialize(writer, metadata);
             }
 
-            File.WriteAllText(final_path, sw.ToString() + Environment.NewLine);
+            File.WriteAllText(final_path, sw + Environment.NewLine);
 
             return EXIT_OK;
         }
@@ -567,9 +568,10 @@ namespace CKAN.NetKAN
         }
 
         /// <summary>
-        /// Fixes version strings. Currently this adds a 'v' if
-        /// 'x_netkan_force_v' is set, and the version string does not
+        /// Fixes version strings. 
+        /// This adds a 'v' if 'x_netkan_force_v' is set, and the version string does not
         /// already begin with a 'v'.
+        /// This adds the epoch if 'x_netkan_epoch' is set, and contains a positive int
         /// </summary>
         internal static JObject FixVersionStrings(JObject metadata)
         {
@@ -588,6 +590,23 @@ namespace CKAN.NetKAN
                     log.DebugFormat("Force-adding 'v' to start of {0}", version);
                     version = "v" + version;
                     metadata["version"] = version;
+                }
+            }
+
+            JToken epoch;
+            if (metadata.TryGetValue("x_netkan_epoch", out epoch))
+            {
+                uint epoch_number;
+                if (uint.TryParse(epoch.ToString(), out epoch_number) && epoch_number>=0)
+                {
+                    //Implicit if zero. No need to add
+                    if (epoch_number != 0)
+                        metadata["version"] = epoch_number + ":" + metadata["version"];
+                }
+                else
+                {
+                    log.Error("Invaild epoch: "+epoch);
+                    throw new BadMetadataKraken(null, "Invaild epoch: " + epoch + "In " + metadata["identifier"]);
                 }
             }
 
