@@ -26,7 +26,7 @@ namespace CKAN
             {
                 if (m_window_loc.X < 0 && m_window_loc.Y < 0)
                 {
-                    m_window_loc = new Point(0, 0);
+                    m_window_loc = new Point(60, 30);
                 }
                 return m_window_loc;
             }
