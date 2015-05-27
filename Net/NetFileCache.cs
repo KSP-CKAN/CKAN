@@ -5,6 +5,7 @@ using System.Text;
 using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -129,7 +130,8 @@ namespace CKAN
 
         /// <summary>
         /// Stores the results of a given URL in the cache.
-        /// Description is appended to the file hash when saving. If not present, the filename will be used.
+        /// Description is adjusted to be filesystem-safe and then appended to the file hash when saving.
+        /// If not present, the filename will be used.
         /// If `move` is true, then the file will be moved; otherwise, it will be copied.
         /// 
         /// Returns a path to the newly cached file.
@@ -144,6 +146,16 @@ namespace CKAN
             Remove(url);
 
             string hash = CreateURLHash(url);
+
+            if (description != null)
+            {
+                // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
+                // slashes, and heaven knows what use mod authors try to smoosh into them.
+                // We'll reduce this down to "friendly" characters, replacing everything else with
+                // dashes. This doesn't change look-ups, as we use the hash prefix for that.
+
+                description = Regex.Replace(description, "[^A-Za-z0-9_.-]", "-");
+            }
 
             description = description ?? Path.GetFileName(path);
 
