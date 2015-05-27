@@ -100,7 +100,8 @@ namespace CKAN
                 // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
                 if (AutoStartInstance == "")
                 {
-                    return null;
+                    //return null;
+                    //break;
                 }
                 if (HasInstance(AutoStartInstance))
                 {
@@ -303,11 +304,6 @@ namespace CKAN
                 AutoStartInstance = null;
             }
         }
-
-        public static readonly string steamKSP = Path.Combine("steamapps", "common", "Kerbal Space Program");
-        }
-
-
     }
 
     public class KSPManagerKraken : Kraken
@@ -327,3 +323,4 @@ namespace CKAN
             this.instance = instance;
         }
     }
+}
