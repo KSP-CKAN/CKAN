@@ -1,4 +1,6 @@
-﻿namespace CKAN
+﻿using System.Windows.Forms;
+
+namespace CKAN
 {
     partial class NewUpdateDialog
     {
@@ -30,7 +32,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.VersionLabel = new System.Windows.Forms.Label();
-            this.ReleaseNotesTextbox = new System.Windows.Forms.TextBox();
+            this.ReleaseNotesTextbox = new System.Windows.Forms.RichTextBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.CancelUpdateButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -113,7 +115,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label VersionLabel;
-        private System.Windows.Forms.TextBox ReleaseNotesTextbox;
+        private RichTextBox ReleaseNotesTextbox;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.Button CancelUpdateButton;
     }
