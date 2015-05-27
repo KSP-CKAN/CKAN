@@ -17,6 +17,11 @@ namespace CKAN
 
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
+            UpdateDialog();
+        }
+
+        public void UpdateDialog()
+        {
             RefreshReposListBox();
 
             KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
