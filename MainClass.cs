@@ -198,7 +198,7 @@ namespace CKAN.NetKAN
             // All done! Write it out!
 
             var version_filename = mod.version.ToString().Replace(':','-'); 
-            string final_path = Path.Combine(options.OutputDir, $"{mod.identifier}-{version_filename}.ckan");
+            string final_path = Path.Combine(options.OutputDir, string.Format("{0}-{1}.ckan", mod.identifier, version_filename));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
 
@@ -596,8 +596,8 @@ namespace CKAN.NetKAN
             JToken epoch;
             if (metadata.TryGetValue("x_netkan_epoch", out epoch))
             {
-                int epoch_number;
-                if (int.TryParse(epoch.ToString(), out epoch_number) && epoch_number>=0)
+                uint epoch_number;
+                if (uint.TryParse(epoch.ToString(), out epoch_number) && epoch_number>=0)
                 {
                     //Implicit if zero. No need to add
                     if (epoch_number != 0)
