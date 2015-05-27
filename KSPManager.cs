@@ -100,8 +100,7 @@ namespace CKAN
                 // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
                 if (AutoStartInstance == "")
                 {
-                    //return null;
-                    //break;
+                    return null;
                 }
                 if (HasInstance(AutoStartInstance))
                 {
