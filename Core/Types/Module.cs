@@ -79,7 +79,8 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        public License license;
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        public List<License> license;
 
         [JsonProperty("name")]
         public string name;
@@ -168,7 +169,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new License ("unknown");
+                license = new List<License> {new License ("unknown")};
             }
 
             if (@abstract == null)
