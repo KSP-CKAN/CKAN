@@ -197,7 +197,8 @@ namespace CKAN.NetKAN
 
             // All done! Write it out!
 
-            string final_path = Path.Combine(options.OutputDir, String.Format ("{0}-{1}.ckan", mod.identifier, mod.version));
+            var version_filename = mod.version.ToString().Replace(':','-'); 
+            string final_path = Path.Combine(options.OutputDir, $"{mod.identifier}-{version_filename}.ckan");
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
 
@@ -214,7 +215,7 @@ namespace CKAN.NetKAN
                 serializer.Serialize(writer, metadata);
             }
 
-            File.WriteAllText(final_path, sw.ToString() + Environment.NewLine);
+            File.WriteAllText(final_path, sw + Environment.NewLine);
 
             return EXIT_OK;
         }
