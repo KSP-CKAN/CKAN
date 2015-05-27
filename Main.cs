@@ -386,8 +386,14 @@ namespace CKAN
                 Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
                 KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
-
             });
+
+            // Update the settings dialog to reflect the changes made.
+            Util.Invoke(this.m_SettingsDialog, () =>
+            {
+                this.m_SettingsDialog.UpdateDialog();
+            });
+
             m_Configuration = Configuration.LoadOrCreateConfiguration
             (
                 Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
