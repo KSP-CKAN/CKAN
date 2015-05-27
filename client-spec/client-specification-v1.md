@@ -44,29 +44,25 @@ and must not allow the user to install two modules with the same identifier.
 ### version
 
 A string defining the version of the module.
-The specification allows for any string to be used as a version.
-Since there is no standard regarding versioning schemes, a client should not assume any.
+The specification allows for any string to be used as a version:
+since there is no standard regarding versioning schemes,
+a client should not assume any.
 
-As a significant amount of metadata in the official repository
-is obtained automatically from github, leading 'v' characters are common:
-as such, version comparison according to [PEP 440](https://www.python.org/dev/peps/pep-0440/#version-scheme) is recommended.
-Simple alphabetical ordering will often lead to incorrect comparisons
-and is therefore discouraged.
+Clients must implement a version comparison algorithm
+compatible with the [debian versioning scheme](https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version).
 
 Clients must not allow the installation of multiple versions
 of the same module at the same time.
 
 ### download
 
-The download field contains an url where the module can be downloaded.
-This field can contain any url:
-clients must not assume this field to contain a direct link,
-but they must follow eventual redirects.
+The download field contains an url pointing to file
+that can be used to install the module.
+Redirects are allowed in this url.
 
-The download field will always point to a zip archive:
-therefore clients must be able to process zip archives.
-Clients may assume that the downloaded archive is a single-disk,
-unencrypted archive with no password protection.
+The downloaded file will usually be a zip archive;
+clients must support at least this format.
+Support for other types of archive is recommended.
 
 ### spec-version
 
@@ -150,11 +146,9 @@ This field may contain either:
 
 If the field contains the string `any`,
 clients must allow the installation of the module
-on any version of the game,
-unless the `ksp_version_min` and `ksp_version_max` are also present:
-in this case, the client must respect these constraints.
+on any version of the game.
 
-Otherwise, the client must only allow the installation of the mod
+Otherwise, the client must only allow the installation of the module
 into a copy of the game with a matching version number.
 
 ### ksp_version_min and ksp_version_max
@@ -162,13 +156,9 @@ into a copy of the game with a matching version number.
 Like the `ksp_version` field, these fields can contain either the string `any`
 or a version number.
 
-If `ksp_version` is `any` and either of these fields is defined,
-the client must enforce these constraints.
-
-If `ksp_version` contains a specific version number,
-these two fields should not be present.
-In this case, the client must disregard their value and only enforce
-the most specific version constraint.
+These fields are mutually exclusive with the `ksp_version` field.
+Clients should consider metadata files that contain both types of fields as invalid.
+In this case, it is suggested to enforce the most specific version constraint.
 
 
 ## install stanzas
@@ -177,6 +167,10 @@ Installation instructions are specified using the `install` field.
 This *optional* field contains an array of install directive
 (called "stanzas" in some of the documentation).
 Each stanza defines where to install a set of files.
+
+If no install sections are provided,
+a CKAN client must find the top-most directory in the archive that matches the module identifier,
+and install that with a target of `GameData`.
 
 ### Required: file and install_to
 
@@ -218,7 +212,7 @@ aborting the installation attempt.
 
 In case of any error during an installation,
 the client must be able to roll back any change
-restoring the state of the KSP installation
+restoring the state of the system
 prior to the installation attempt.
 
 Partial installations are not permitted:
