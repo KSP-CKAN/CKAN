@@ -32,13 +32,16 @@ namespace CKAN.NetKAN
         /// <summary>
         /// A simple helper class to prepend KerbalStuff URLs.
         /// </summary>
-        private class JsonConvertFromRelativeKsUri : JsonConverter
+        internal class JsonConvertFromRelativeKsUri : JsonConverter
         {
             public override object ReadJson(
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
             )
             {
-                return KSAPI.ExpandPath(reader.Value.ToString());
+                if(reader.Value!=null)
+                    return KSAPI.ExpandPath(reader.Value.ToString());
+                return null;
+
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

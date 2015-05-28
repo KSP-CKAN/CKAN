@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using log4net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]
@@ -22,6 +23,8 @@ namespace CKAN.NetKAN
         public KSVersion[] versions;
         public Uri website;
         public int default_version_id;
+        [JsonConverter(typeof(KSVersion.JsonConvertFromRelativeKsUri))]
+        public Uri background;
 
         public override string ToString()
         {
@@ -73,6 +76,7 @@ namespace CKAN.NetKAN
 
             Inflate(metadata, "download", version.download_path.OriginalString);
             Inflate(metadata, "x_generated_by", "netkan");
+            if(background!=null) Inflate(metadata, "x_screenshot", Escape(background));
             Inflate(metadata, "download_size", download_size);
 
             if (website != null)
