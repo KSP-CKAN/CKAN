@@ -658,7 +658,7 @@ namespace CKAN
             this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
-            this.MetadataModuleHomePageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MetadataModuleHomePageLinkLabel_LinkClicked);
+            this.MetadataModuleHomePageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
             // 
             // MetadataModuleGitHubLinkLabel
             // 
@@ -670,7 +670,7 @@ namespace CKAN
             this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
-            this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MetadataModuleGitHubLinkLabel_LinkClicked);
+            this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
             // 
             // MetadataModuleNameLabel
             // 

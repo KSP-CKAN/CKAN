@@ -682,14 +682,9 @@ namespace CKAN
             RecreateDialogs();
         }
 
-        private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Util.OpenLinkFromLinkLabel(sender as LinkLabel);
-        }
-
-        private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Util.OpenLinkFromLinkLabel(sender as LinkLabel);            
         }
 
         private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
