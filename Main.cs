@@ -251,25 +251,7 @@ namespace CKAN
 
         public static Main Instance { get; private set; }
 
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            m_Configuration.WindowLoc = this.Location;
-
-            // Copy window size to app settings
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                m_Configuration.WindowSize = this.Size;
-            }
-            else
-            {
-                m_Configuration.WindowSize = this.RestoreBounds.Size;
-            }
-
-            // Save settings
-            m_Configuration.Save();
-        }
-
-        private void Main_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             Location = m_Configuration.WindowLoc;
             Size = m_Configuration.WindowSize;
@@ -312,12 +294,12 @@ namespace CKAN
                 }
             }
 
-            m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
+            m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
 
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
@@ -327,7 +309,7 @@ namespace CKAN
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
             m_User.displayYesNo = null;
 
-            ApplyToolButton.Enabled = false;            
+            ApplyToolButton.Enabled = false;
 
             CurrentInstanceUpdated();
 
@@ -354,7 +336,7 @@ namespace CKAN
                 log.Debug("Attempting to select mod from startup parameters");
                 foreach (DataGridViewRow row in ModList.Rows)
                 {
-                    var module = ((GUIMod) row.Tag).ToCkanModule();
+                    var module = ((GUIMod)row.Tag).ToCkanModule();
                     if (identifier == module.identifier)
                     {
                         ModList.FirstDisplayedScrollingRowIndex = i;
@@ -376,6 +358,19 @@ namespace CKAN
             m_PluginController = new PluginController(pluginsPath, true);
 
             log.Info("GUI started");
+            base.OnLoad(e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            m_Configuration.WindowLoc = Location;
+
+            // Copy window size to app settings
+            m_Configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
+
+            // Save settings
+            m_Configuration.Save();
+            base.OnFormClosing(e);
         }
 
         public void CurrentInstanceUpdated()
