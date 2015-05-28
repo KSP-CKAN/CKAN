@@ -721,71 +721,12 @@ namespace CKAN
 
         private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (MetadataModuleHomePageLinkLabel.Text == "N/A")
-            {
-                return;
-            }
-
-            TryOpenWebPage(MetadataModuleHomePageLinkLabel.Text);
-        }
-
-        /// <summary>
-        /// Returns true if the string could be a valid http address.
-        /// DOES NOT ACTUALLY CHECK IF IT EXISTS, just the format.
-        /// </summary>
-        public static bool CheckURLValid(string source)
-        {
-            Uri uriResult;
-            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
-        }
-
-        /// <summary>
-        /// Tries to open an url using the default application.
-        /// If it fails, it tries again by prepending each prefix before the url before it gives up.
-        /// </summary>
-        private static bool TryOpenWebPage(string url, IEnumerable<string> prefixes = null)
-        {
-            // Default prefixes to try if not provided
-            if (prefixes == null)
-                prefixes = new string[] {"http://", "https:// "};
-
-            try // opening the page normally
-            {
-                Process.Start(url);
-                return true; // we did it! return true
-            }
-            catch (Exception) // something bad happened
-            {
-                foreach (string p in prefixes)
-                {
-                    try // with a new prefix
-                    {
-                        string tmp = p + url;
-                        if (CheckURLValid(tmp))
-                        {
-                            Process.Start(p + url);
-                            return true;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // move along to the next prefix
-                    }
-                }
-
-                // We tried all prefixes, and still no luck.
-                return false;
-            }
+            Util.OpenLinkFromLinkLabel(sender as LinkLabel);
         }
 
         private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (MetadataModuleGitHubLinkLabel.Text == "N/A")
-            {
-                return;
-            }
-
-            Process.Start(MetadataModuleGitHubLinkLabel.Text);
+            Util.OpenLinkFromLinkLabel(sender as LinkLabel);            
         }
 
         private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
