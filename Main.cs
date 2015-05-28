@@ -271,6 +271,8 @@ namespace CKAN
 
         private void Main_Load(object sender, EventArgs e)
         {
+            Location = m_Configuration.WindowLoc;
+            Size = m_Configuration.WindowSize;
             if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
             {
                 log.Debug("Asking user if they wish for autoupdates");
@@ -309,9 +311,6 @@ namespace CKAN
                     log.Error("Error in autoupdate", exception);
                 }
             }
-
-            Location = m_Configuration.WindowLoc;
-            Size = m_Configuration.WindowSize;
 
             m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
 
