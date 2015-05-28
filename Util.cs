@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 
 namespace CKAN
@@ -67,8 +68,8 @@ namespace CKAN
         /// </summary>
         public static bool CheckURLValid(string source)
         {
-            Uri uriResult;
-            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
+            Uri uri_result;
+            return Uri.TryCreate(source, UriKind.Absolute, out uri_result) && uri_result.Scheme == Uri.UriSchemeHttp;
         }
 
         public static void OpenLinkFromLinkLabel(LinkLabel link_label)
@@ -98,23 +99,18 @@ namespace CKAN
             }
             catch (Exception) // something bad happened
             {
-                foreach (string p in prefixes)
+                foreach (string prefixed_url in prefixes.Select(p=>p+url).Where(CheckURLValid))
                 {
                     try // with a new prefix
                     {
-                        string tmp = p + url;
-                        if (Util.CheckURLValid(tmp))
-                        {
-                            Process.Start(p + url);
-                            return true;
-                        }
+                        Process.Start(prefixed_url);
+                        return true;
                     }
                     catch (Exception)
                     {
                         // move along to the next prefix
                     }
                 }
-
                 // We tried all prefixes, and still no luck.
                 return false;
             }
@@ -123,7 +119,7 @@ namespace CKAN
 }
 
 namespace CKAN
-{
+{    
     public static class UtilWithoutWinForm
     {
         public static bool IsInstallable(this GUIMod mod)

@@ -719,20 +719,15 @@ namespace CKAN
 
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var lst = m_Configuration.CommandLineArguments.Split(' ');
-            if (lst.Length == 0)
+            var split = m_Configuration.CommandLineArguments.Split(' ');
+            if (split.Length == 0)
             {
                 return;
             }
 
-            string binary = lst[0];
-            string args = String.Empty;
-
-            for (int i = 1; i < lst.Length; i++)
-            {
-                args += lst[i] + " ";
-            }
-
+            var binary = split[0];
+            var args = string.Join(" ",split.Skip(1));
+            
             try
             {
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
@@ -746,8 +741,7 @@ namespace CKAN
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new AboutDialog();
-            dialog.ShowDialog();
+            new AboutDialog().ShowDialog();
         }
 
         private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -776,15 +770,15 @@ namespace CKAN
             Enabled = true;
         }
 
-        private OpenFileDialog m_OpenFileDialog = new OpenFileDialog();
+        
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            m_OpenFileDialog.Filter = Resources.CKANFileFilter;
+            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
 
-            if (m_OpenFileDialog.ShowDialog() == DialogResult.OK)
+            if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
-                var path = m_OpenFileDialog.FileName;
+                var path = open_file_dialog.FileName;
                 CkanModule module = null;
 
                 try
