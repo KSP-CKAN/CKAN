@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
-using log4net;
-using System.Collections.Generic;
-using System.Drawing;
-using Newtonsoft.Json;
 using CKAN.Properties;
+using log4net;
+using Timer = System.Windows.Forms.Timer;
 
 namespace CKAN
 {
@@ -46,7 +46,7 @@ namespace CKAN
         public TabController m_TabController;
         public volatile KSPManager manager;
 
-        public PluginController m_PluginController = null;
+        public PluginController m_PluginController;
 
         public KSP CurrentInstance
         {
@@ -59,13 +59,13 @@ namespace CKAN
             set { manager = value; }
         }
 
-        public MainModList mainModList { get; private set; }
+        public MainModList mainModList { get; }
 
-        public string[] m_CommandLineArgs = null;
+        public string[] m_CommandLineArgs;
 
-        public GUIUser m_User = null;
+        public GUIUser m_User;
 
-        private Timer filterTimer = null;
+        private Timer filterTimer;
 
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
@@ -197,7 +197,7 @@ namespace CKAN
             }
 
             // Disable the modinfo controls until a mod has been choosen.
-            this.ModInfoTabControl.Enabled = false;
+            ModInfoTabControl.Enabled = false;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while 
@@ -205,24 +205,14 @@ namespace CKAN
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                System.Windows.Forms.Timer yieldTimer = new System.Windows.Forms.Timer();
-                yieldTimer.Interval = 2;
-                yieldTimer.Tick += YieldTimer_Tick;
-                yieldTimer.Start();
+                var yield_timer = new Timer {Interval = 2};
+                yield_timer.Tick += (sender, e) => {
+                    Thread.Yield();
+                };
+                yield_timer.Start();
             }
 
             Application.Run(this);
-        }
-
-        /// <summary>
-        /// Used above to fix the UI thread from hogging all the CPU on OS X,
-        /// slowing down downloads.
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
-        void YieldTimer_Tick (object sender, EventArgs e)
-        {
-            System.Threading.Thread.Yield();
         }
 
         private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -255,6 +245,7 @@ namespace CKAN
         {
             Location = m_Configuration.WindowLoc;
             Size = m_Configuration.WindowSize;
+
             if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
             {
                 log.Debug("Asking user if they wish for autoupdates");
@@ -383,9 +374,9 @@ namespace CKAN
             });
 
             // Update the settings dialog to reflect the changes made.
-            Util.Invoke(this.m_SettingsDialog, () =>
+            Util.Invoke(m_SettingsDialog, () =>
             {
-                this.m_SettingsDialog.UpdateDialog();
+                m_SettingsDialog.UpdateDialog();
             });
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
@@ -422,10 +413,10 @@ namespace CKAN
         {
             var module = GetSelectedModule();
             
-            this.ModInfoTabControl.Enabled = module!=null;
+            ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
-            this.ModInfoTabControl.Enabled = true;
+            ModInfoTabControl.Enabled = true;
 
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
@@ -824,7 +815,7 @@ namespace CKAN
             dlg.Filter = Resources.CKANFileFilter;
             dlg.Title = Resources.ExportInstalledModsDialogTitle;
 
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+            if (dlg.ShowDialog() == DialogResult.OK) {
                 // Save, just to be certain that the installed-*.ckan metapackage is generated
                 RegistryManager.Instance(CurrentInstance).Save();
 
