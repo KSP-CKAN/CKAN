@@ -425,33 +425,11 @@ namespace CKAN
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ModList.SelectedRows.Count == 0)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
+            var module = GetSelectedModule();
+            
+            this.ModInfoTabControl.Enabled = module!=null;
+            if (module == null) return;
 
-                return;
-            }
-
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
-
-                return;
-            }
-
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
-
-                return;
-            }
-
-            // We are sure we have a valid module object, enable the ModInfoTabControl.
             this.ModInfoTabControl.Enabled = true;
 
             UpdateModInfo(module);
@@ -693,23 +671,8 @@ namespace CKAN
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
-            if (ModList.SelectedRows.Count == 0)
-            {
-                return;
-            }
-
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
-            {
-                return;
-            }
-
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                return;
-            }
-
+            var module = GetSelectedModule();
+            if (module == null) return;
             ResetProgress();
             ShowWaitDialog(false);
             ModuleInstaller.GetInstance(CurrentInstance, GUI.user).CachedOrDownload(module);
@@ -731,24 +694,26 @@ namespace CKAN
 
         private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            CkanModule module = GetSelectedModule();
+            if (module == null) return;
+            UpdateModDependencyGraph(module);
+        }
+
+        private CkanModule GetSelectedModule()
+        {
             if (ModList.SelectedRows.Count == 0)
             {
-                return;
+                return null;
             }
 
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
+            DataGridViewRow selected_item = ModList.SelectedRows[0];
+            if (selected_item == null)
             {
-                return;
+                return null;
             }
 
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                return;
-            }
-
-            UpdateModDependencyGraph(module);
+            var module = ((GUIMod) selected_item.Tag).ToCkanModule();            
+            return module;
         }
 
 
