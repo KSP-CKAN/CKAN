@@ -1,17 +1,40 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace CKAN {
     [JsonConverter(typeof(JsonSimpleStringConverter))]
-    public class KSPVersion : IComparable<KSPVersion> {
+    public class KSPVersion : IComparable<KSPVersion>
+    {
         private string version;
         private Version cachedVersionObject;
-
+        private bool is_short;        
+        private static readonly Dictionary<string, Tuple<string, bool>> NormalCache = new Dictionary<string, Tuple<string, bool>>();        
+        
         public KSPVersion (string v) {
-            version = Normalise(v);
-            version = AnyToNull(version);
-            Validate (); // Throws on error.
+            Tuple<string, bool> normalized;
+            
+            if (v!=null && NormalCache.TryGetValue(v, out normalized))
+            {
+                version = normalized.Item1;
+                is_short = version != null && normalized.Item2;                
+            }
+            else
+            {
+                version = Normalise(v);
+                version = AnyToNull(version);
+                is_short = version != null && Regex.IsMatch(version, @"^\d+\.\d+$");                
+                Validate(); // Throws on error.
+                if (v != null)
+                {
+                    NormalCache.Add(v, new Tuple<string, bool>(version,is_short));
+                }
+                    
+            }
+            
+
+
         }
 
         // Casting function
@@ -44,6 +67,7 @@ namespace CKAN {
             if (IsShortVersion()) {
                 version = version + ".0";
             }
+            is_short = false;
         }
 
         // 0.25 -> 0.25.99
@@ -51,17 +75,18 @@ namespace CKAN {
             if (IsShortVersion ()) {
                 version = version + ".99"; // Ugh, magic number.
             }
+            is_short = false;
         }
 
         // True for short version (eg: 0.25), false for long (eg: 0.25.2).
         public bool IsShortVersion()
         {
-            return version != null && Regex.IsMatch (version, @"^\d+\.\d+$");
+            return is_short;            
         }
 
         public bool IsLongVersion()
         {
-            return version != null && Regex.IsMatch (version, @"^\d+\.\d+\.\d+$");
+            return !is_short;
         }
 
         public bool IsAny() {
@@ -83,7 +108,15 @@ namespace CKAN {
             return cachedVersionObject ?? (cachedVersionObject = new Version(version));
         }
 
-        public int CompareTo(KSPVersion that) {
+        private static readonly Dictionary<Tuple<KSPVersion, KSPVersion>,int> CompareCache 
+            = new Dictionary<Tuple<KSPVersion, KSPVersion>,int>();
+        public int CompareTo(KSPVersion that)
+        {
+            int ret;
+            var tuple = new Tuple<KSPVersion, KSPVersion>(this, that);
+            if (CompareCache.TryGetValue(tuple, out ret))
+                return ret;
+
 
             // We need two long versions to be able to compare properly.
             if ((! IsLongVersion ()) && (! that.IsLongVersion ())) {
@@ -94,8 +127,9 @@ namespace CKAN {
 
             Version v1 = VersionObject();
             Version v2 = that.VersionObject();
-
-            return v1.CompareTo (v2);
+            ret = v1.CompareTo(v2);
+            CompareCache.Add(tuple,ret);
+            return ret;
 
         }
 
@@ -170,6 +204,23 @@ namespace CKAN {
             return Version();
         }
 
+        protected bool Equals(KSPVersion other)
+        {
+            return string.Equals(version, other.version);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((KSPVersion) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (version != null ? version.GetHashCode() : 0);
+        }
     }
 
     public class BadKSPVersionException : Exception {
