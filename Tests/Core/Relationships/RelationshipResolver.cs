@@ -48,7 +48,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-            
+
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
@@ -754,14 +754,14 @@ namespace Tests.Core.Relationships
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
             var list = new List<string>();
-            var mod = generator.GeneratorRandomModule();                        
+            var mod = generator.GeneratorRandomModule();
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             AddToRegistry(mod);
 
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(mod);
-            Assert.That(reason, Is.AssignableTo<Relationship.UserRequested>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.UserRequested>());
         }
 
         [Test]
@@ -772,20 +772,20 @@ namespace Tests.Core.Relationships
             var mod =
                 generator.GeneratorRandomModule(sugests:
                     new List<RelationshipDescriptor> {new RelationshipDescriptor {name = sugested.identifier}});
-            list.Add(mod.identifier);            
+            list.Add(mod.identifier);
             AddToRegistry(mod, sugested);
 
             options.with_all_suggests = true;
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(sugested);
-            Assert.That(reason, Is.AssignableTo<Relationship.Suggested>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Suggested>());
             Assert.That(reason.Parent, Is.EqualTo(mod));
         }
 
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var list = new List<string>();            
+            var list = new List<string>();
             var sugested = generator.GeneratorRandomModule();
             var recommendedA = generator.GeneratorRandomModule();
             var recommendedB = generator.GeneratorRandomModule();
@@ -806,11 +806,11 @@ namespace Tests.Core.Relationships
             options.with_recommends = true;
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(recommendedA);
-            Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
             Assert.That(reason.Parent, Is.EqualTo(sugested));
 
             reason = relationship_resolver.ReasonFor(recommendedB);
-            Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
             Assert.That(reason.Parent, Is.EqualTo(sugested));
         }
 
