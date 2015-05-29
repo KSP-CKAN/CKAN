@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
-using log4net;
-using System.Collections.Generic;
-using System.Drawing;
-using Newtonsoft.Json;
 using CKAN.Properties;
+using log4net;
+using Timer = System.Windows.Forms.Timer;
 
 namespace CKAN
 {
@@ -46,7 +46,7 @@ namespace CKAN
         public TabController m_TabController;
         public volatile KSPManager manager;
 
-        public PluginController m_PluginController = null;
+        public PluginController m_PluginController;
 
         public KSP CurrentInstance
         {
@@ -59,13 +59,13 @@ namespace CKAN
             set { manager = value; }
         }
 
-        public MainModList mainModList { get; private set; }
+        public MainModList mainModList { get; }
 
-        public string[] m_CommandLineArgs = null;
+        public string[] m_CommandLineArgs;
 
-        public GUIUser m_User = null;
+        public GUIUser m_User;
 
-        private Timer filterTimer = null;
+        private Timer filterTimer;
 
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
@@ -197,7 +197,7 @@ namespace CKAN
             }
 
             // Disable the modinfo controls until a mod has been choosen.
-            this.ModInfoTabControl.Enabled = false;
+            ModInfoTabControl.Enabled = false;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while 
@@ -205,24 +205,14 @@ namespace CKAN
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                System.Windows.Forms.Timer yieldTimer = new System.Windows.Forms.Timer();
-                yieldTimer.Interval = 2;
-                yieldTimer.Tick += YieldTimer_Tick;
-                yieldTimer.Start();
+                var yield_timer = new Timer {Interval = 2};
+                yield_timer.Tick += (sender, e) => {
+                    Thread.Yield();
+                };
+                yield_timer.Start();
             }
 
             Application.Run(this);
-        }
-
-        /// <summary>
-        /// Used above to fix the UI thread from hogging all the CPU on OS X,
-        /// slowing down downloads.
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
-        void YieldTimer_Tick (object sender, EventArgs e)
-        {
-            System.Threading.Thread.Yield();
         }
 
         private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -251,26 +241,11 @@ namespace CKAN
 
         public static Main Instance { get; private set; }
 
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            m_Configuration.WindowLoc = this.Location;
+            Location = m_Configuration.WindowLoc;
+            Size = m_Configuration.WindowSize;
 
-            // Copy window size to app settings
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                m_Configuration.WindowSize = this.Size;
-            }
-            else
-            {
-                m_Configuration.WindowSize = this.RestoreBounds.Size;
-            }
-
-            // Save settings
-            m_Configuration.Save();
-        }
-
-        private void Main_Load(object sender, EventArgs e)
-        {
             if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
             {
                 log.Debug("Asking user if they wish for autoupdates");
@@ -310,15 +285,12 @@ namespace CKAN
                 }
             }
 
-            Location = m_Configuration.WindowLoc;
-            Size = m_Configuration.WindowSize;
-
-            m_UpdateRepoWorker = new BackgroundWorker {WorkerReportsProgress = false, WorkerSupportsCancellation = true};
+            m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
 
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker {WorkerReportsProgress = true, WorkerSupportsCancellation = true};
+            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
@@ -328,7 +300,7 @@ namespace CKAN
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
             m_User.displayYesNo = null;
 
-            ApplyToolButton.Enabled = false;            
+            ApplyToolButton.Enabled = false;
 
             CurrentInstanceUpdated();
 
@@ -355,7 +327,7 @@ namespace CKAN
                 log.Debug("Attempting to select mod from startup parameters");
                 foreach (DataGridViewRow row in ModList.Rows)
                 {
-                    var module = ((GUIMod) row.Tag).ToCkanModule();
+                    var module = ((GUIMod)row.Tag).ToCkanModule();
                     if (identifier == module.identifier)
                     {
                         ModList.FirstDisplayedScrollingRowIndex = i;
@@ -377,6 +349,19 @@ namespace CKAN
             m_PluginController = new PluginController(pluginsPath, true);
 
             log.Info("GUI started");
+            base.OnLoad(e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            m_Configuration.WindowLoc = Location;
+
+            // Copy window size to app settings
+            m_Configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
+
+            // Save settings
+            m_Configuration.Save();
+            base.OnFormClosing(e);
         }
 
         public void CurrentInstanceUpdated()
@@ -389,9 +374,9 @@ namespace CKAN
             });
 
             // Update the settings dialog to reflect the changes made.
-            Util.Invoke(this.m_SettingsDialog, () =>
+            Util.Invoke(m_SettingsDialog, () =>
             {
-                this.m_SettingsDialog.UpdateDialog();
+                m_SettingsDialog.UpdateDialog();
             });
 
             m_Configuration = Configuration.LoadOrCreateConfiguration
@@ -426,34 +411,12 @@ namespace CKAN
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ModList.SelectedRows.Count == 0)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
+            var module = GetSelectedModule();
+            
+            ModInfoTabControl.Enabled = module!=null;
+            if (module == null) return;
 
-                return;
-            }
-
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
-
-                return;
-            }
-
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                // We have an invalid module object, disable the ModInfoTabControl to avoid errors.
-                this.ModInfoTabControl.Enabled = false;
-
-                return;
-            }
-
-            // We are sure we have a valid module object, enable the ModInfoTabControl.
-            this.ModInfoTabControl.Enabled = true;
+            ModInfoTabControl.Enabled = true;
 
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
@@ -694,23 +657,8 @@ namespace CKAN
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
-            if (ModList.SelectedRows.Count == 0)
-            {
-                return;
-            }
-
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
-            {
-                return;
-            }
-
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                return;
-            }
-
+            var module = GetSelectedModule();
+            if (module == null) return;
             ResetProgress();
             ShowWaitDialog(false);
             ModuleInstaller.GetInstance(CurrentInstance, GUI.user).CachedOrDownload(module);
@@ -720,114 +668,47 @@ namespace CKAN
             RecreateDialogs();
         }
 
-        private void MetadataModuleHomePageLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (MetadataModuleHomePageLinkLabel.Text == "N/A")
-            {
-                return;
-            }
-
-            TryOpenWebPage(MetadataModuleHomePageLinkLabel.Text);
-        }
-
-        /// <summary>
-        /// Returns true if the string could be a valid http address.
-        /// DOES NOT ACTUALLY CHECK IF IT EXISTS, just the format.
-        /// </summary>
-        public static bool CheckURLValid(string source)
-        {
-            Uri uriResult;
-            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
-        }
-
-        /// <summary>
-        /// Tries to open an url using the default application.
-        /// If it fails, it tries again by prepending each prefix before the url before it gives up.
-        /// </summary>
-        private static bool TryOpenWebPage(string url, IEnumerable<string> prefixes = null)
-        {
-            // Default prefixes to try if not provided
-            if (prefixes == null)
-                prefixes = new string[] {"http://", "https:// "};
-
-            try // opening the page normally
-            {
-                Process.Start(url);
-                return true; // we did it! return true
-            }
-            catch (Exception) // something bad happened
-            {
-                foreach (string p in prefixes)
-                {
-                    try // with a new prefix
-                    {
-                        string tmp = p + url;
-                        if (CheckURLValid(tmp))
-                        {
-                            Process.Start(p + url);
-                            return true;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // move along to the next prefix
-                    }
-                }
-
-                // We tried all prefixes, and still no luck.
-                return false;
-            }
-        }
-
-        private void MetadataModuleGitHubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (MetadataModuleGitHubLinkLabel.Text == "N/A")
-            {
-                return;
-            }
-
-            Process.Start(MetadataModuleGitHubLinkLabel.Text);
+            Util.OpenLinkFromLinkLabel(sender as LinkLabel);
         }
 
         private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            CkanModule module = GetSelectedModule();
+            if (module == null) return;
+            UpdateModDependencyGraph(module);
+        }
+
+        private CkanModule GetSelectedModule()
+        {
             if (ModList.SelectedRows.Count == 0)
             {
-                return;
+                return null;
             }
 
-            DataGridViewRow selectedItem = ModList.SelectedRows[0];
-            if (selectedItem == null)
+            DataGridViewRow selected_item = ModList.SelectedRows[0];
+            if (selected_item == null)
             {
-                return;
+                return null;
             }
 
-            var module = ((GUIMod) selectedItem.Tag).ToCkanModule();
-            if (module == null)
-            {
-                return;
-            }
-
-            UpdateModDependencyGraph(module);
+            var module = ((GUIMod) selected_item.Tag).ToCkanModule();            
+            return module;
         }
 
 
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var lst = m_Configuration.CommandLineArguments.Split(' ');
-            if (lst.Length == 0)
+            var split = m_Configuration.CommandLineArguments.Split(' ');
+            if (split.Length == 0)
             {
                 return;
             }
 
-            string binary = lst[0];
-            string args = String.Empty;
-
-            for (int i = 1; i < lst.Length; i++)
-            {
-                args += lst[i] + " ";
-            }
-
+            var binary = split[0];
+            var args = string.Join(" ",split.Skip(1));
+            
             try
             {
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
@@ -841,8 +722,7 @@ namespace CKAN
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new AboutDialog();
-            dialog.ShowDialog();
+            new AboutDialog().ShowDialog();
         }
 
         private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -871,15 +751,15 @@ namespace CKAN
             Enabled = true;
         }
 
-        private OpenFileDialog m_OpenFileDialog = new OpenFileDialog();
+        
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            m_OpenFileDialog.Filter = Resources.CKANFileFilter;
+            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
 
-            if (m_OpenFileDialog.ShowDialog() == DialogResult.OK)
+            if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
-                var path = m_OpenFileDialog.FileName;
+                var path = open_file_dialog.FileName;
                 CkanModule module = null;
 
                 try
@@ -935,7 +815,7 @@ namespace CKAN
             dlg.Filter = Resources.CKANFileFilter;
             dlg.Title = Resources.ExportInstalledModsDialogTitle;
 
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+            if (dlg.ShowDialog() == DialogResult.OK) {
                 // Save, just to be certain that the installed-*.ckan metapackage is generated
                 RegistryManager.Instance(CurrentInstance).Save();
 
