@@ -23,7 +23,7 @@ namespace CKAN
         // when deserialising, and *it* only needs it to do registry upgrades.
         // We could get rid of all of this if we declare we no longer wish to support
         // older registry formats.
-        private KSP ksp;
+        private readonly KSP ksp;
 
         public Registry registry;
 
@@ -63,6 +63,18 @@ namespace CKAN
             }
 
             return singleton[directory];
+        }
+
+        /// <summary>
+        /// Returns the currently installed modules in json format suitable for outputting to a ckan file.
+        /// Defaults to using depends and with version numbers. 
+        /// </summary>
+        /// <param name="recommmends">If the json should use a recommends field instead of depends</param>
+        /// <param name="with_versions">If version numbers should be included</param>
+        /// <returns>String containing a valid ckan file</returns>
+        public string CurrentInstallAsCKAN(bool recommmends, bool with_versions)
+        {
+            return SerializeCurrentInstall(recommmends, with_versions);
         }
 
         private void Load()
@@ -118,8 +130,7 @@ namespace CKAN
             {
                 repositories = new SortedDictionary<string, Repository>();
             }
-
-            // if (!(repositories.ContainsKey(Repository.default_ckan_repo_name)))
+            
             if (repositories.Count == 0)
             {
                 repositories.Add(Repository.default_ckan_repo_name,
@@ -137,23 +148,23 @@ namespace CKAN
             using (JsonTextWriter writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
-                writer.Indentation = 4;
-                writer.IndentChar = ' ';
+                writer.Indentation = 1;
+                writer.IndentChar = '\t';
 
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(writer, registry);
             }
 
-            return sw.ToString() + Environment.NewLine;
+            return sw + Environment.NewLine;
         }
 
-        private string SerializeCurrentInstall()
+        private string SerializeCurrentInstall(bool recommmends = false, bool with_versions = true)
         {
             // TODO how do we obtain the name of the current KSP instance?
             string kspInstanceName = "default";
             string name = "installed-" + kspInstanceName;
 
-            JObject installed = new JObject
+            var installed = new JObject
             {
                 ["spec_version"] = "v1.6",
                 ["identifier"] = name,
@@ -164,40 +175,38 @@ namespace CKAN
                 ["kind"] = "metapackage"
             };
 
-
-            var recommends = new JArray();
-            foreach (var module in registry.Installed().
-                Where(mod => !(mod.Value is ProvidesVersion) && !(mod.Value is DllVersion)).
-                Select(mod => new JObject
-                {
-                    ["name"] = mod.Key,
-                    ["version"] = mod.Value.ToString()
-                }))
+            var mods = new JArray();
+            foreach (var mod in registry.Installed()
+                .Where(mod => !(mod.Value is ProvidesVersion || mod.Value is DllVersion)))
             {
-                recommends.Add(module);
+                var module = new JObject {["name"] = mod.Key};
+                if (with_versions)
+                {
+                    module["version"] = mod.Value.ToString();
+                }
+                mods.Add(module);
             }
 
-            installed["recommends"] = recommends;
+            installed[recommmends ? "recommends" : "depends"] = mods;
 
             var sw = new StringWriter(new StringBuilder());
-            using (JsonTextWriter writer = new JsonTextWriter(sw))
+            using (var writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
-                writer.Indentation = 4;
-                writer.IndentChar = ' ';
+                writer.Indentation = 1;
+                writer.IndentChar = '\t';
 
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(writer, installed);
+                new JsonSerializer().Serialize(writer, installed);
             }
 
             return sw + Environment.NewLine;
         }
 
-        public void Save(bool enforceConsistency = true)
+        public void Save(bool enforce_consistency = true)
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
 
-            if (enforceConsistency)
+            if (enforce_consistency)
             {
                 // No saving the registry unless it's in a sane state.
                 registry.CheckSanity();
