@@ -48,7 +48,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-
+            
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
@@ -754,7 +754,7 @@ namespace Tests.Core.Relationships
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
             var list = new List<string>();
-            var mod = generator.GeneratorRandomModule();
+            var mod = generator.GeneratorRandomModule();                        
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             AddToRegistry(mod);
@@ -772,7 +772,7 @@ namespace Tests.Core.Relationships
             var mod =
                 generator.GeneratorRandomModule(sugests:
                     new List<RelationshipDescriptor> {new RelationshipDescriptor {name = sugested.identifier}});
-            list.Add(mod.identifier);
+            list.Add(mod.identifier);            
             AddToRegistry(mod, sugested);
 
             options.with_all_suggests = true;
@@ -785,7 +785,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var list = new List<string>();
+            var list = new List<string>();            
             var sugested = generator.GeneratorRandomModule();
             var recommendedA = generator.GeneratorRandomModule();
             var recommendedB = generator.GeneratorRandomModule();
