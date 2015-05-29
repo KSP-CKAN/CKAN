@@ -801,20 +801,27 @@ namespace CKAN
         ///     Returns the installed version of a given mod.
         ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
         ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
+        ///     If `withProvides` is to set to false, null will be returned instead of the ProvidesVersion type.
         ///     If the mod is not found, a null will be returned.
         /// </summary>
         public Version InstalledVersion(string modIdentifier, bool withProvides=true)
         {
             InstalledModule installedModule;
+
+            // If it's genuinely installed, return the details we have.
             if (installed_modules.TryGetValue(modIdentifier, out installedModule))
             {
                 return installedModule.Module.version;
             }
+
+            // If it's in our autodetected registry, return that.
             if (installed_dlls.ContainsKey(modIdentifier))
             {
                 return new DllVersion();
             }
 
+            // Finally we have our provided checks. We'll skip these if
+            // withProvides is false.
             if (!withProvides) return null;
 
             var provided = Provided();
@@ -825,6 +832,8 @@ namespace CKAN
 
         /// <summary>
         ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
+        ///     If withProvides is set to false then we skip the check for if the
+        ///     mod has been provided (rather than existing as a real mod).
         /// </summary>
         /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
         public bool IsInstalled(string modName, bool withProvides = true)
