@@ -155,7 +155,7 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             Instance = this;
-            mainModList = new MainModList(source => UpdateFilters(this));
+            mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide);
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
@@ -687,7 +687,7 @@ namespace CKAN
             }
         }
 
-        private void UpdateChangeSetAndConflicts(Registry registry)
+        private async void UpdateChangeSetAndConflicts(Registry registry)
         {
             IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
             Dictionary<Module, string> conflicts;
@@ -696,12 +696,14 @@ namespace CKAN
             try
             {
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-                full_change_set = MainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
+                full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
                     CurrentInstance.Version());
                 conflicts = null;
             }
             catch (InconsistentKraken)
             {
+                //Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                user_change_set = mainModList.ComputeUserChangeSet();
                 conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
                 full_change_set = null;
             }

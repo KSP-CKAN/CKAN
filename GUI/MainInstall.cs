@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -103,7 +104,8 @@ namespace CKAN
                             try
                             {
                                 if (
-                                    RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) != null &&
+                                    RegistryManager.Instance(manager.CurrentInstance)
+                                        .registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) != null &&
                                     !RegistryManager.Instance(manager.CurrentInstance).registry.IsInstalled(mod.name) &&
                                     !toInstall.Contains(mod.name))
                                 {
@@ -223,45 +225,15 @@ namespace CKAN
                         opts.Key);
                     return;
                 }
-                try
+                var ret = InstallList(toInstall, opts.Value, downloader);
+                if (!ret)
                 {
-                    var ret = InstallList(toInstall, opts.Value, downloader);
-                    if (!ret)
-                    {
-                        // install failed for some reason, error message is already displayed to the user                    
-                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                            opts.Key);
-                        return;
-                    }
-                    resolvedAllProvidedMods = true;
+                    // install failed for some reason, error message is already displayed to the user                    
+                    e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
+                        opts.Key);
+                    return;
                 }
-                catch (TooManyModsProvideKraken tooManyProvides)
-                {
-                    Util.Invoke(this, () => UpdateProvidedModsDialog(tooManyProvides));
-
-                    m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                    m_TabController.SetTabLock(true);
-
-                    lock (this)
-                    {
-                        Monitor.Wait(this);
-                    }
-
-                    m_TabController.SetTabLock(false);
-
-                    m_TabController.HideTab("ChooseProvidedModsTabPage");
-
-                    if (installCanceled)
-                    {
-                        m_TabController.HideTab("WaitTabPage");
-                        m_TabController.ShowTab("ManageModsTabPage");
-                        e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
-                            opts.Key);
-                        return;
-                    }
-
-                    m_TabController.ShowTab("WaitTabPage");
-                }
+                resolvedAllProvidedMods = true;
             }
 
             e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(true, opts.Key);
@@ -282,7 +254,9 @@ namespace CKAN
                 }
                 catch (ModuleNotFoundKraken ex)
                 {
-                    GUI.user.RaiseMessage("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
+                    GUI.user.RaiseMessage(
+                        "Module {0} required, but not listed in index, or not available for your version of KSP",
+                        ex.module);
                     return false;
                 }
                 catch (BadMetadataKraken ex)
@@ -418,8 +392,10 @@ namespace CKAN
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);
         }
 
-        private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides)
+        private TaskCompletionSource<CkanModule> toomany_source;
+        private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides, TaskCompletionSource<CkanModule> task)
         {
+            toomany_source = task;
             ChooseProvidedModsLabel.Text =
                 String.Format(
                     "Module {0} is provided by more than one available module, please choose one of the following mods:",
@@ -434,7 +410,7 @@ namespace CKAN
                 ListViewItem item = new ListViewItem {Tag = module, Checked = true, Text = module.name};
 
 
-                ListViewItem.ListViewSubItem description = 
+                ListViewItem.ListViewSubItem description =
                     new ListViewItem.ListViewSubItem {Text = module.@abstract};
 
                 item.SubItems.Add(description);
@@ -473,16 +449,9 @@ namespace CKAN
             foreach (ListViewItem item in ChooseProvidedModsListView.Items)
             {
                 if (item.Checked)
-                {
-                    var identifier = ((CkanModule) item.Tag).identifier;
-                    toInstall.Add(identifier);
-                    break;
+                {                    
+                    toomany_source.SetResult((CkanModule)item.Tag);                
                 }
-            }
-
-            lock (this)
-            {
-                Monitor.Pulse(this);
             }
         }
 
@@ -518,7 +487,7 @@ namespace CKAN
                         without_enforce_consistency = false,
                         without_toomanyprovides_kraken = true
                     };
-                    
+
                     var resolver = new RelationshipResolver(new List<string>() {pair.Key}, opts,
                         RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
                     if (!resolver.ModList().Any())
@@ -526,7 +495,8 @@ namespace CKAN
                         continue;
                     }
 
-                    module = RegistryManager.Instance(manager.CurrentInstance).registry.LatestAvailable(pair.Key, CurrentInstance.Version());
+                    module = RegistryManager.Instance(manager.CurrentInstance)
+                        .registry.LatestAvailable(pair.Key, CurrentInstance.Version());
                 }
                 catch
                 {
