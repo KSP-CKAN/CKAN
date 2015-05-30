@@ -407,7 +407,7 @@ namespace CKAN
 
             foreach (CkanModule module in tooManyProvides.modules)
             {
-                ListViewItem item = new ListViewItem {Tag = module, Checked = true, Text = module.name};
+                ListViewItem item = new ListViewItem {Tag = module, Checked = false, Text = module.name};
 
 
                 ListViewItem.ListViewSubItem description =
@@ -416,14 +416,17 @@ namespace CKAN
                 item.SubItems.Add(description);
                 ChooseProvidedModsListView.Items.Add(item);
             }
+            ChooseProvidedModsContinueButton.Enabled = false;
         }
 
         private void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (!e.Item.Checked)
             {
+                ChooseProvidedModsContinueButton.Enabled = false;
                 return;
             }
+            ChooseProvidedModsContinueButton.Enabled = true;
 
             foreach (ListViewItem item in ChooseProvidedModsListView.Items)
             {
@@ -432,6 +435,7 @@ namespace CKAN
                     item.Checked = false;
                 }
             }
+            
         }
 
         private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
