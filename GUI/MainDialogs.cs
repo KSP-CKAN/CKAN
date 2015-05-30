@@ -34,9 +34,15 @@ namespace CKAN
             return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
 
-        
-        private async Task<CkanModule> TooManyModsProvide(TooManyModsProvideKraken kraken)
-        {            
+        //Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop 
+        //over reason for to find a user requested mod. 
+        public CkanModule last_mod_to_have_install_toggled;
+        public async Task<CkanModule> TooManyModsProvide(TooManyModsProvideKraken kraken)
+        {
+            //We want LMtHIT to be the last user selection. If we alter this handling a too many provides
+            // it needs to be reset so a potential second too many provides doesn't use the wrong mod.
+            var old_backup = last_mod_to_have_install_toggled;
+
             TaskCompletionSource<CkanModule> task = new TaskCompletionSource<CkanModule>();
             Util.Invoke(this, () =>
             {
@@ -45,8 +51,11 @@ namespace CKAN
                 m_TabController.SetTabLock(true);
             });
             var module = await task.Task;
-            
 
+            if (module == null)
+            {                
+                MarkModForInstall(last_mod_to_have_install_toggled.identifier,uninstall:true);                
+            }
             Util.Invoke(this, () =>
             {
                 m_TabController.SetTabLock(false);
@@ -56,7 +65,9 @@ namespace CKAN
                 m_TabController.ShowTab("ManageModsTabPage");
             });
 
-            MarkModForInstall(module.identifier);
+            if(module!=null)
+                MarkModForInstall(module.identifier);
+            last_mod_to_have_install_toggled = old_backup;
             return module;
         }
     }

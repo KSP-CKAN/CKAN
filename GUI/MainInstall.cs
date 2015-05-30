@@ -436,12 +436,7 @@ namespace CKAN
 
         private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
         {
-            installCanceled = true;
-
-            lock (this)
-            {
-                Monitor.Pulse(this);
-            }
+            toomany_source.SetResult(null);
         }
 
         private void ChooseProvidedModsContinueButton_Click(object sender, EventArgs e)

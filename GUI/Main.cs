@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CKAN.Properties;
 using log4net;
@@ -78,8 +79,9 @@ namespace CKAN
             get { return change_set; }
             set
             {
+                var orig = change_set;
                 change_set = value;
-                ChangeSetUpdated();
+                if(!ReferenceEquals(orig, value)) ChangeSetUpdated();
             }
         }
 
@@ -88,8 +90,9 @@ namespace CKAN
             get { return conflicts; }
             set
             {
+                var orig = conflicts;
                 conflicts = value;
-                ConflictsUpdated();
+                if(orig != value) ConflictsUpdated();
             }
         }
 
@@ -405,6 +408,7 @@ namespace CKAN
                 var mod = ((GUIMod) row.Tag);
                 if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
                 {
+                    MarkModForUpdate(mod.Identifier);
                     mod.SetUpgradeChecked(row, true);
                     ApplyToolButton.Enabled = true;
                 }
@@ -557,13 +561,10 @@ namespace CKAN
             {
                 if (current_row != null && current_row.Selected)
                 {
-                    // Get the checkbox.
-                    var selected_row_check_box = current_row.Cells["Installed"] as DataGridViewCheckBoxCell;
-                    // Invert the value.
-                    if (selected_row_check_box != null)
+                    var gui_mod = ((GUIMod)current_row.Tag);
+                    if (gui_mod.IsInstallable())
                     {
-                        bool selected_value = (bool)selected_row_check_box.Value;
-                        selected_row_check_box.Value = !selected_value;
+                        MarkModForInstall(gui_mod.Identifier,uninstall:gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -644,7 +645,7 @@ namespace CKAN
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (mainModList.ModFilter == GUIModFilter.Incompatible)
             {
@@ -671,11 +672,12 @@ namespace CKAN
             }
             else if (column_index < 2)
             {
-                var gui_mod = ((GUIMod) row.Tag);
+                var gui_mod = ((GUIMod)row.Tag);
                 switch (column_index)
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
+                        last_mod_to_have_install_toggled = gui_mod.IsInstallChecked ? gui_mod : last_mod_to_have_install_toggled;
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
@@ -683,11 +685,11 @@ namespace CKAN
                 }
 
                 var registry = registry_manager.registry;
-                UpdateChangeSetAndConflicts(registry);
+                await UpdateChangeSetAndConflicts(registry);
             }
         }
 
-        private async void UpdateChangeSetAndConflicts(Registry registry)
+        private async Task UpdateChangeSetAndConflicts(Registry registry)
         {
             IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
             Dictionary<Module, string> conflicts;
@@ -696,8 +698,9 @@ namespace CKAN
             try
             {
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-                full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
-                    CurrentInstance.Version());
+                full_change_set =
+                    await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
+                        CurrentInstance.Version());
                 conflicts = null;
             }
             catch (InconsistentKraken)
@@ -706,6 +709,14 @@ namespace CKAN
                 user_change_set = mainModList.ComputeUserChangeSet();
                 conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
                 full_change_set = null;
+            }
+            catch (TooManyModsProvideKraken)
+            {
+                //Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
+                //We can just rerun it as the ModInfoTabControl has been removed.
+                await UpdateChangeSetAndConflicts(registry);
+                conflicts = Conflicts;
+                full_change_set = ChangeSet;
             }
 
             Conflicts = conflicts;
