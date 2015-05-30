@@ -36,18 +36,15 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CKAN">
-      <HintPath>..\CKAN-core\bin\Debug\CKAN.dll</HintPath>
-    </Reference>
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\CKAN-core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CKAN-core\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -277,5 +274,11 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <Project>{3b9aea22-fa3b-4e43-9283-eabdd81cf271}</Project>
+      <Name>CKAN-core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

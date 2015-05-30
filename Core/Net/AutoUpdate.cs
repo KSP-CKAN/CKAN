@@ -7,8 +7,10 @@ using Newtonsoft.Json;
 
 namespace CKAN
 {
+
     public class AutoUpdate
     {
+
         private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
         private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
@@ -33,59 +35,48 @@ namespace CKAN
         {
             var pid = Process.GetCurrentProcess().Id;
             
-            // Download updater app (See CKAN-autoupdate repo).
-            string updater_filename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            // download updater app
+            string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
 
             var web = new WebClient();
             web.Headers.Add("user-agent", Net.UserAgentString);
-            web.DownloadFile(FetchUpdaterUrl(), updater_filename);
+            web.DownloadFile(FetchUpdaterUrl(), updaterFilename);
 
-            // Download new ckan.exe.
-            string ckan_filename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            web.DownloadFile(FetchCkanUrl(), ckan_filename);
+            // download new ckan.exe
+            string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            web.DownloadFile(FetchCkanUrl(), ckanFilename);
 
             var path = Assembly.GetEntryAssembly().Location;
 
-            // Mark as executable if on Linux or Mac.
+            // run updater
+            
+            // mark as executable if on Linux or Mac
             if (Platform.IsUnix || Platform.IsMac)
             {
                 // TODO: It would be really lovely (and safer!) to use the native system
                 // call here: http://docs.go-mono.com/index.aspx?link=M:Mono.Unix.Native.Syscall.chmod
 
-                string command_updater = string.Format("+x \"{0}\"", updater_filename);
-                string command_ckan = string.Format("+x \"{0}\"", ckan_filename);
+                string command = string.Format("+x \"{0}\"", updaterFilename);
 
-                ProcessStartInfo permsinfo_updater = new ProcessStartInfo("chmod", command_updater);
-                permsinfo_updater.UseShellExecute = false;
-                Process permsprocess_updater = Process.Start(permsinfo_updater);
-                permsprocess_updater.WaitForExit();
-
-                ProcessStartInfo permsinfo_ckan = new ProcessStartInfo("chmod", command_ckan);
-                permsinfo_ckan.UseShellExecute = false;
-                Process permsprocess_ckan = Process.Start(permsinfo_ckan);
-                permsprocess_ckan.WaitForExit();
-
-                // Make sure we have the right exit status from both processes.
-                if (permsprocess_ckan.ExitCode != 0 || permsprocess_updater.ExitCode != 0)
-                {
-                    throw new Kraken("Could not set permissions properly.");
-                }
+                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
+                permsinfo.UseShellExecute = false;
+                Process permsprocess = Process.Start(permsinfo);
+                permsprocess.WaitForExit();
             }
 
-            // Run updater.
-            var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckan_filename, launchCKANAfterUpdate ? "launch" : "nolaunch");
+            var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch");
 
             ProcessStartInfo processInfo = new ProcessStartInfo();
             processInfo.Verb = "runas";
-            processInfo.FileName = updater_filename;
+            processInfo.FileName = updaterFilename;
             processInfo.Arguments = args;
             processInfo.UseShellExecute = false;
             Process.Start(processInfo);
 
-            // Exit this CKAN instance.
+            // exit this ckan instance
             Environment.Exit(0);
         }
-
+            
         private static Uri FetchUpdaterUrl()
         {
             var response = MakeRequest(latestUpdaterReleaseApiUrl);
@@ -118,5 +109,7 @@ namespace CKAN
 
             return JsonConvert.DeserializeObject(result);
         }
+
     }
+
 }

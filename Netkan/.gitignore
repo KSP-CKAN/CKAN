@@ -1,6 +1,6 @@
 build/
-CKAN/*/bin
-CKAN/*/obj
+bin/
+obj/
 test-results
 *.userprefs
 *.csproj.user
@@ -18,4 +18,3 @@ netkan.exe
 *~
 *.ncrunchproject
 *.ncrunchsolution
-*.pyc

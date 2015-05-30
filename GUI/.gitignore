@@ -1,8 +1,9 @@
 build/
-CKAN/*/bin
-CKAN/*/obj
+bin/
+obj/
 test-results
 *.userprefs
+*.user
 *.csproj.user
 TestResult.xml
 StyleCop.Cache
@@ -18,4 +19,3 @@ netkan.exe
 *~
 *.ncrunchproject
 *.ncrunchsolution
-*.pyc

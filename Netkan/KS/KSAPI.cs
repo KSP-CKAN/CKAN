@@ -3,7 +3,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
-using CurlSharp;
 
 namespace CKAN.NetKAN
 {

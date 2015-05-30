@@ -16,31 +16,23 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ChinhDo.Transactions">
-      <HintPath>..\CKAN-core\bin\Debug\ChinhDo.Transactions.dll</HintPath>
-    </Reference>
-    <Reference Include="CKAN">
-      <HintPath>..\CKAN-core\bin\Debug\CKAN.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
-      <HintPath>..\CKAN-core\bin\Debug\CommandLine.dll</HintPath>
+      <HintPath>..\Core\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\CKAN-core\bin\Debug\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\Core\packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\CKAN-core\bin\Debug\log4net.dll</HintPath>
+      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\CKAN-core\bin\Debug\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\CKAN-core\bin\Debug\nunit.framework.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="CurlSharp">
-      <HintPath>..\CKAN-core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
+      <HintPath>..\Core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -67,5 +59,12 @@
     <None Include="curl-ca-bundle.crt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
+      <Name>CKAN-core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
