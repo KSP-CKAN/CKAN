@@ -10,9 +10,9 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(KSPPathUtils));
 
         /// <summary>
-        ///     Finds Steam on the current machine.
+        /// Finds Steam on the current machine.
         /// </summary>
-        /// <returns>The path to steam, or null if not found</returns>
+        /// <returns>The path to Steam, or null if not found</returns>
         public static string SteamPath()
         {
             // First check the registry.
@@ -24,7 +24,7 @@ namespace CKAN
 
             var steam = (string)Microsoft.Win32.Registry.GetValue(reg_key, reg_value, null);
 
-            // If that directory exists, we've found steam!
+            // If that directory exists, we've found Steam!
             if (steam != null && Directory.Exists(steam))
             {
                 log.InfoFormat("Found Steam at {0}", steam);
@@ -34,11 +34,27 @@ namespace CKAN
             log.Debug("Couldn't find Steam via registry key, trying other locations...");
 
             // Not in the registry, or missing file, but that's cool. This should find it on Linux
-
             steam = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                ".steam", "steam"
-                );
+                ".local",
+                "share",
+                "Steam"
+            );
+
+            log.DebugFormat("Looking for Steam in {0}", steam);
+
+            if (Directory.Exists(steam))
+            {
+                log.InfoFormat("Found Steam at {0}", steam);
+                return steam;
+            }
+
+            // Try an alternative path.
+            steam = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                ".steam",
+                "steam"
+            );
 
             log.DebugFormat("Looking for Steam in {0}", steam);
 
@@ -64,6 +80,41 @@ namespace CKAN
             }
 
             log.Info("Steam not found on this system.");
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the KSP path under Steam. Returns null if the folder cannot be located.
+        /// </summary>
+        /// <returns>The KSP path.</returns>
+        public static string KSPSteamPath()
+        {
+            // Attempt to get the Steam path.
+            string steam_path = SteamPath();
+
+            if (steam_path == null)
+            {
+                return null;
+            }
+
+            // There are several possibilities for the path under Linux.
+            // Try with the uppercase version.
+            string ksp_path = Path.Combine(steam_path, "SteamApps", "common", "Kerbal Space Program");
+
+            if (Directory.Exists(ksp_path))
+            {
+                return ksp_path;
+            }
+
+            // Try with the lowercase version.
+            ksp_path = Path.Combine(steam_path, "steamapps", "common", "Kerbal Space Program");
+
+            if (Directory.Exists(ksp_path))
+            {
+                return ksp_path;
+            }
+
+            // Could not locate the folder.
             return null;
         }
 

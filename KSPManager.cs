@@ -303,11 +303,6 @@ namespace CKAN
                 AutoStartInstance = null;
             }
         }
-
-        public static readonly string steamKSP = Path.Combine("SteamApps", "common", "Kerbal Space Program");
-        }
-
-
     }
 
     public class KSPManagerKraken : Kraken
@@ -327,3 +322,4 @@ namespace CKAN
             this.instance = instance;
         }
     }
+}
