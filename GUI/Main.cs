@@ -59,7 +59,7 @@ namespace CKAN
             set { manager = value; }
         }
 
-        public MainModList mainModList { get; }
+        public MainModList mainModList { get; private set; }
 
         public string[] m_CommandLineArgs;
 
