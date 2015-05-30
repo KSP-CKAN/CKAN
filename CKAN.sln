@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-GUI", "GUI\CKAN-GUI.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKAN-netkan", "Netkan\CKAN-netkan.csproj", "{4336F356-33DB-442A-BF74-5E89AF47A5B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4F41255E-8BC1-465B-82D5-1C5665BC099A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{4336F356-33DB-442A-BF74-5E89AF47A5B9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{4F41255E-8BC1-465B-82D5-1C5665BC099A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F41255E-8BC1-465B-82D5-1C5665BC099A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F41255E-8BC1-465B-82D5-1C5665BC099A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F41255E-8BC1-465B-82D5-1C5665BC099A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

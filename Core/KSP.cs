@@ -2,12 +2,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using log4net;
 
+[assembly: InternalsVisibleTo("CKAN.Tests")]
+
 namespace CKAN
 {
+    
     /// <summary>
     ///     Everything for dealing with KSP itself.
     /// </summary>
