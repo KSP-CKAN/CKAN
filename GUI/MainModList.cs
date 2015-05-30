@@ -158,7 +158,7 @@ namespace CKAN
                     mod.IsInstallChecked = !uninstall;
                     //TODO Fix up MarkMod stuff when I commit the GUIConflict
                     (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
-                    if (!uninstall) last_mod_to_have_install_toggled = mod;
+                    if (!uninstall) last_mod_to_have_install_toggled.Push(mod);
                     break;
                 }
             }

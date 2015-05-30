@@ -677,7 +677,8 @@ namespace CKAN
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
-                        last_mod_to_have_install_toggled = gui_mod.IsInstallChecked ? gui_mod : last_mod_to_have_install_toggled;
+                        if(gui_mod.IsInstallChecked)
+                            last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
