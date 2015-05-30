@@ -83,6 +83,9 @@ namespace CKAN.CmdLine
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public SubCommandOptions Repo { get; set; }
 
+        [VerbOption("compare", HelpText = "Compare version strings")]
+        public CompareOptions Compare { get; set; }
+
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
     }
@@ -231,5 +234,14 @@ namespace CKAN.CmdLine
     {
         [ValueOption(0)]
         public string search_term { get; set; }
+    }
+
+    internal class CompareOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public string Left { get; set; }
+
+        [ValueOption(1)]
+        public string Right { get; set; }
     }
 }

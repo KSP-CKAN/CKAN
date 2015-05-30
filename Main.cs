@@ -210,6 +210,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     var repo = new Repo (manager, user);
                     return repo.RunSubCommand((SubCommandOptions) cmdline.options);
 
+                case "compare":
+                    return (new Compare()).RunCommand(manager.CurrentInstance, cmdline.options);
+
                 default:
                     user.RaiseMessage("Unknown command, try --help");
                     return Exit.BADOPT;
