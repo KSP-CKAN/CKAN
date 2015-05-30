@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CKAN;
 using NUnit.Framework;
@@ -47,8 +49,9 @@ namespace Tests.GUI
         [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
-            using (new DisposableKSP())
+            using (var tidy = new DisposableKSP())
             {
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var item = new MainModList(delegate { }, delegate { return null; });
                 Assert.That(item.ComputeUserChangeSet(), Is.Empty);
             }
@@ -64,17 +67,19 @@ namespace Tests.GUI
 
                 var registry = Registry.Empty();
                 var module = TestData.FireSpitterModule();
-                module.conflicts = new List<RelationshipDescriptor> { new RelationshipDescriptor { name = "kOS" }};
+                module.conflicts = new List<RelationshipDescriptor>() { new RelationshipDescriptor { name = "kOS" } };
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
-                registry.RegisterModule(module,Enumerable.Empty<string>(), tidy.KSP );
+                registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
 
                 var main_mod_list = new MainModList(null, null);
                 var mod = new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.Version());
                 var mod2 = new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version());
                 mod.IsInstallChecked = true;
                 mod2.IsInstallChecked = true;
-                Assert.Throws<InconsistentKraken>(async ()=>await main_mod_list.ComputeChangeSetFromModList(registry,main_mod_list.ComputeUserChangeSet(),null, tidy.KSP.Version()));
+
+                var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
+                await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
             }
         }
 
@@ -125,7 +130,8 @@ namespace Tests.GUI
         }
 
         [Test]
-        public void TooManyProvidesCallsHandler()
+        [Category("Display")]
+        public async Task TooManyProvidesCallsHandlers()
         {
             using (var tidy = new DisposableKSP())
             {
@@ -143,18 +149,20 @@ namespace Tests.GUI
                 registry.AddAvailable(moda);
                 registry.AddAvailable(modb);
                 var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
-                var main_mod_list = new MainModList(null,async kraken => choice_of_provide);
+                var main_mod_list = new MainModList(null, async kraken => choice_of_provide);
                 var a = new HashSet<KeyValuePair<CkanModule, GUIModChangeType>>()
                 {
                     new KeyValuePair<CkanModule, GUIModChangeType>(mod,GUIModChangeType.Install)
                 };
 
-                var mod_list = main_mod_list.ComputeChangeSetFromModList(registry, a, installer, null).Result;
+                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, null);
                 CollectionAssert.AreEquivalent(
-                    new [] {
+                    new[] {
                         new KeyValuePair<CkanModule,GUIModChangeType>(mod,GUIModChangeType.Install),
-                        new KeyValuePair<CkanModule,GUIModChangeType>(modb,GUIModChangeType.Install)},mod_list);
+                        new KeyValuePair<CkanModule,GUIModChangeType>(modb,GUIModChangeType.Install)}, mod_list);
+
             }
         }
+
     }
 }

@@ -137,6 +137,7 @@
     <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />
