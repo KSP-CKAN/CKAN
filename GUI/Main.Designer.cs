@@ -1153,7 +1153,9 @@ namespace CKAN
             this.ChooseProvidedModsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader6,
             this.columnHeader8});
+            this.ChooseProvidedModsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.ChooseProvidedModsListView.Location = new System.Drawing.Point(6, 28);
+            this.ChooseProvidedModsListView.MultiSelect = false;
             this.ChooseProvidedModsListView.Name = "ChooseProvidedModsListView";
             this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1007, 582);
             this.ChooseProvidedModsListView.TabIndex = 8;
@@ -1193,7 +1195,7 @@ namespace CKAN
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
-            this.Text = "CKAN-GUI";            
+            this.Text = "CKAN-GUI";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
