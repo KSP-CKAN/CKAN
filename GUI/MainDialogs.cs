@@ -36,8 +36,8 @@ namespace CKAN
             return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
 
-        //Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop 
-        //over reason for to find a user requested mod. Or, you know, pass in a handler to it. 
+        //Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop
+        //over reason for to find a user requested mod. Or, you know, pass in a handler to it.
         private readonly ConcurrentStack<GUIMod> last_mod_to_have_install_toggled = new ConcurrentStack<GUIMod>();
         public async Task<CkanModule> TooManyModsProvide(TooManyModsProvideKraken kraken)
         {
@@ -57,7 +57,7 @@ namespace CKAN
             if (module == null)
             {
                 last_mod_to_have_install_toggled.TryPeek(out mod);
-                MarkModForInstall(mod.Identifier,uninstall:true);                
+                MarkModForInstall(mod.Identifier,uninstall:true);
             }
             Util.Invoke(this, () =>
             {
@@ -70,7 +70,7 @@ namespace CKAN
 
             if(module!=null)
                 MarkModForInstall(module.identifier);
-            
+
             last_mod_to_have_install_toggled.TryPop(out mod);
             return module;
         }

@@ -158,7 +158,7 @@ namespace CKAN
 
             controlFactory = new ControlFactory();
             Instance = this;
-            mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide);
+            mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide, User);
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
