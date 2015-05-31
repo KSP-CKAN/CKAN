@@ -553,6 +553,11 @@ namespace CKAN
                 e.Handled = true;
                 return;
             }
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Don't try to search for newlines
+                return;
+            }
 
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
 
