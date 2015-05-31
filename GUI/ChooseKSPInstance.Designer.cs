@@ -64,6 +64,7 @@
             this.KSPInstancesListView.UseCompatibleStateImageBehavior = false;
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
             this.KSPInstancesListView.SelectedIndexChanged += new System.EventHandler(this.KSPInstancesListView_SelectedIndexChanged);
+            this.KSPInstancesListView.DoubleClick += new System.EventHandler(this.KSPInstancesListView_DoubleClick);
             // 
             // KSPInstallName
             // 

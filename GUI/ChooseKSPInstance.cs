@@ -70,6 +70,11 @@ namespace CKAN
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
+            UseSelectedInstance();
+        }
+
+        private void UseSelectedInstance()
+        {
             var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
 
             if (SetAsDefaultCheckbox.Checked)
@@ -86,6 +91,13 @@ namespace CKAN
         {
             var has_instance = KSPInstancesListView.SelectedItems.Count != 0;            
             SetButtonsEnabled(has_instance);
+        }
+
+        private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
+        {
+            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
+            if(has_instance)
+                UseSelectedInstance();
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
