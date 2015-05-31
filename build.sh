@@ -40,7 +40,7 @@ chmod a+x Core/packages/ILRepack.1.25.0/tools/ILRepack.exe
 
 mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	/target:exe \
-	/out:../ckan.exe \
+	/out:ckan.exe \
 	Cmdline/bin/Debug/CmdLine.exe \
 	Cmdline/bin/Debug/CKAN-GUI.exe \
 	Cmdline/bin/Debug/ChinhDo.Transactions.dll \
