@@ -30,7 +30,7 @@ namespace CKAN
                 var mod = ((GUIMod) row.Tag);
                 row.Visible = mainModList.IsVisible(mod);
             }
-            
+
             ModList.Rows.AddRange(rows.Where(row => row.Visible).OrderBy(row => ((GUIMod) row.Tag).Name).ToArray());
         }
 
@@ -181,13 +181,14 @@ namespace CKAN
             }
         }
 
+
         private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
 
         /// <summary>
-        /// This function returns a changeset based on the selections of the user. 
-        /// Currently returns null if a conflict is detected.        
+        /// This function returns a changeset based on the selections of the user.
+        /// Currently returns null if a conflict is detected.
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="current_instance"></param>
@@ -232,7 +233,7 @@ namespace CKAN
             foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset. 
+                //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset.
                 var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, null));
                 changeSet.UnionWith(
                     modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
@@ -307,7 +308,7 @@ namespace CKAN
                     installed_version_cell, latest_version_cell,
                     description_cell, homepage_cell);
 
-                installed_cell.ReadOnly = !mod.IsInstallable(); 
+                installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
                 FullListOfModRows.Add(item);
@@ -386,7 +387,7 @@ namespace CKAN
                     .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
                     .Select(pair => pair.Key);
 
-            //We wish to only check mods that would exist after the changes are made. 
+            //We wish to only check mods that would exist after the changes are made.
             var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);
             var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);
             return resolver.ConflictList;

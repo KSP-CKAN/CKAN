@@ -16,12 +16,13 @@ namespace CKAN
         // this may happen on the recommended/suggested mods dialogs
         private volatile bool installCanceled;
 
-        // this will be the final list of mods we want to install 
+        // this will be the final list of mods we want to install
         private HashSet<string> toInstall = new HashSet<string>();
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
             installCanceled = false;
+            Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
             ClearLog();
 
@@ -29,7 +30,7 @@ namespace CKAN
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-            // setup progress callback        
+            // setup progress callback
 
             toInstall = new HashSet<string>();
             var toUninstall = new HashSet<string>();
@@ -47,7 +48,13 @@ namespace CKAN
                         toUpgrade.Add(change.Key.identifier);
                         break;
                     case GUIModChangeType.Install:
-                        toInstall.Add(change.Key.identifier);
+                        // if the mod is compatible OR
+                        // if the mod is incompatible with current KSP version BUT the user still wants to install it,
+                        // add it to the install list
+                        if (InstallCompatibilityAcceptanceCheck(change.Key.identifier))
+                        {
+                            toInstall.Add(change.Key.identifier);
+                        }
                         break;
                 }
             }
@@ -67,16 +74,13 @@ namespace CKAN
                         {
                             try
                             {
-                                // if the mod is available for the current KSP version _and_
-                                // the mod is not installed _and_
-                                // the mod is not already in the install list
+                                // if the mod is not installed _and_
+                                // the mod is not already in the install list _and_
+                                // if the mod is available for the current KSP version OR the user still wants to install the mod
                                 if (
-                                    RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) !=
-                                    null &&
-                                    !RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.IsInstalled(mod.name) &&
-                                    !toInstall.Contains(mod.name))
+                                    !registry.IsInstalled(mod.name) &&
+                                    !toInstall.Contains(mod.name) &&
+                                    InstallCompatibilityAcceptanceCheck(mod.name))
                                 {
                                     // add it to the list of recommended mods we display to the user
                                     if (recommended.ContainsKey(mod.name))
@@ -192,7 +196,7 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-            
+
             var downloader = new NetAsyncDownloader(GUI.user);
             cancelCallback = () =>
             {
@@ -228,7 +232,7 @@ namespace CKAN
                     var ret = InstallList(toInstall, opts.Value, downloader);
                     if (!ret)
                     {
-                        // install failed for some reason, error message is already displayed to the user                    
+                        // install failed for some reason, error message is already displayed to the user
                         e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
                             opts.Key);
                         return;
@@ -434,7 +438,7 @@ namespace CKAN
                 ListViewItem item = new ListViewItem {Tag = module, Checked = true, Text = module.name};
 
 
-                ListViewItem.ListViewSubItem description = 
+                ListViewItem.ListViewSubItem description =
                     new ListViewItem.ListViewSubItem {Text = module.@abstract};
 
                 item.SubItems.Add(description);
@@ -518,7 +522,7 @@ namespace CKAN
                         without_enforce_consistency = false,
                         without_toomanyprovides_kraken = true
                     };
-                    
+
                     var resolver = new RelationshipResolver(new List<string>() {pair.Key}, opts,
                         RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
                     if (!resolver.ModList().Any())
@@ -596,6 +600,31 @@ namespace CKAN
             {
                 Monitor.Pulse(this);
             }
+        }
+
+        /// <summary>
+        /// Check if the mod selected is compatible with the current KSP version.  If it is compatible, do nothing.
+        /// If the mod is not compatible, pop up a dialog to verify that the user still wants to install the mod.
+        /// </summary>
+        /// <param name="mod">Mod ID string.</param>
+        /// <returns>true if mod should be installed; false otherwise</returns>
+        private bool InstallCompatibilityAcceptanceCheck(string mod)
+        {
+            Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+
+            if (!registry.IsModCompatible(mod, manager.CurrentInstance.Version()))
+            {
+                YesNoDialog doubleCheckAcceptance = new CKAN.YesNoDialog();
+
+                string question = String.Format("Mod '{0}' may not be compatible with KSP version {1},\nare you sure you wish to install it?",
+                    mod, manager.CurrentInstance.Version().ToString());
+
+                System.Windows.Forms.DialogResult result = doubleCheckAcceptance.ShowYesNoDialog(question);
+
+                return result == System.Windows.Forms.DialogResult.Yes;
+            }
+
+            return true;
         }
     }
 }

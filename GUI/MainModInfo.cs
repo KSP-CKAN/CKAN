@@ -20,6 +20,7 @@ namespace CKAN
         {
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
+            Util.Invoke(MetadataModuleKSPVersionLabel, () => MetadataModuleKSPVersionLabel.Text = module.ksp_version.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = module.license.ToString());
             Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
@@ -49,6 +50,18 @@ namespace CKAN
             if (module.release_status != null)
             {
                 Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
+            }
+
+            // adjust color of the KSP version label and string based on whether it is compatible
+            if (!module.ksp_version.Targets(CurrentInstance.Version()))
+            {
+                TargetKspVersionLabel.ForeColor = Color.Red;
+                MetadataModuleKSPVersionLabel.ForeColor = Color.Red;
+            }
+            else
+            {
+                TargetKspVersionLabel.ForeColor = VersionLabel.ForeColor;
+                MetadataModuleKSPVersionLabel.ForeColor = MetadataModuleVersionLabel.ForeColor;
             }
         }
 
