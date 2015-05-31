@@ -11,11 +11,11 @@ namespace Tests.Core.Types
         // to stop the compiler from giving us warnings.
         #pragma warning disable 0414
 
-        private static string[] GoodStatuses = {
+        private static readonly string[] GoodStatuses = {
             "stable", "testing", "development"
         };
 
-        private static string[] BadStatuses = {
+        private static readonly string[] BadStatuses = {
             "cheese", "some thing I wrote last night" , "",
             "yo dawg I heard you like tests",
             "42"
