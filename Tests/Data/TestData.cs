@@ -366,7 +366,7 @@ namespace Tests.Data
 
     public class RandomModuleGenerator
     {
-        public Random Generator { get; }
+        public Random Generator { get; set; }
 
         public RandomModuleGenerator(Random generator)
         {
