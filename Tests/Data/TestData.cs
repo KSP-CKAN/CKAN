@@ -228,7 +228,7 @@ namespace Tests.Data
 
         public static Uri TestKAN()
         {
-            return new Uri("../../../Tests/DATA/CKAN-meta-testkan.zip", UriKind.Relative);
+            return new Uri("../../../Tests/Data/CKAN-meta-testkan.zip", UriKind.Relative);
         }
 
         // Same as TestKAN above, just repacked as tar.gz.
