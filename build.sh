@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-xbuild /verbosity:minimal /property:win32icon=GUI/assets/ckan.ico CKAN.sln
+xbuild /verbosity:minimal CKAN.sln
 
 #prove
 NUNIT_BINARY=""
@@ -30,7 +30,7 @@ command -v "nunit-console4" >/dev/null 2>&1 && check_nunit "nunit-console4"
 # If we found a suitable nunit binary, continue with the testing.
 if [ "$NUNIT_BINARY" != "" ]
 then
-    command $NUNIT_BINARY --exclude=FlakyNetwork Tests/bin/Debug/Tests.dll
+    command $NUNIT_BINARY --exclude=FlakyNetwork Tests/bin/Debug/CKAN.Tests.dll
 else
     echo "Could not find a suitable version of nunit-console to run the tests. Skipping test execution."
 fi
@@ -40,7 +40,7 @@ chmod a+x Core/packages/ILRepack.1.25.0/tools/ILRepack.exe
 
 mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	/target:exe \
-	/out:../ckan.exe \
+	/out:ckan.exe \
 	Cmdline/bin/Debug/CmdLine.exe \
 	Cmdline/bin/Debug/CKAN-GUI.exe \
 	Cmdline/bin/Debug/ChinhDo.Transactions.dll \
