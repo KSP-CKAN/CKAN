@@ -1,9 +1,12 @@
 language: csharp
 
 mono:
+    - latest
     - 3.10.0
-    - 3.8.0
     - 3.2.8
+
+# Travis has problems with nunit on 3.8.0, dunno why.
+#    - 3.8.0
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
@@ -14,11 +17,10 @@ before_install:
 install:
     - sudo apt-get install mono-devel nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
-    - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 
 script:
     - bin/build
-    - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
+    - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
     - prove  # Run all the tests in t/
 
 deploy:
