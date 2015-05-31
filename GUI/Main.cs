@@ -67,6 +67,9 @@ namespace CKAN
 
         private Timer filterTimer;
 
+        private DateTime lastSearchTime;
+        private string lastSearchKey;
+
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
 
@@ -496,16 +499,19 @@ namespace CKAN
 
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
-        /// with name begining with the key pressed. If space is pressed, the checkbox
-        /// at the current row is toggled.
-        /// </summary>        
+        /// with name begining with the key pressed. If more than one unique keys are pressed
+        /// in under a second, it searches for the combination of the keys pressed.
+        /// If the same key is being pressed repeatedly, it cycles through mods names
+        /// beginnng with that key. If space is pressed, the checkbox at the current row is toggled.
+        /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Check the key. If it is space, mark the current mod as selected.
-            if (e.KeyChar.ToString() == " ")
-            {
-                var selected_row = ModList.CurrentRow;
+            var selected_row = ModList.CurrentRow;
+            var key = e.KeyChar.ToString();
 
+            // Check the key. If it is space, mark the current mod as selected.
+            if (key == " ")
+            {
                 if (selected_row != null)
                 {
                     // Get the checkbox.
@@ -523,14 +529,44 @@ namespace CKAN
             }
 
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-            var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
+
+            // Determine the number of seconds passed since last key press
+            TimeSpan interval = DateTime.Now - this.lastSearchTime;
+            if (interval.TotalSeconds < 1 && key != this.lastSearchKey) {
+                // Last keypress was < 1 sec ago and it was a different key, so combine the last and current keys
+                key = this.lastSearchKey + key;
+            }
+            // Remember the current time and key
+            this.lastSearchTime = DateTime.Now;
+            this.lastSearchKey = key;
+
+            var selected_name = ((GUIMod) selected_row.Tag).ToCkanModule().name;
+            var selected_match = selected_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            DataGridViewRow first_match = null;
+
+            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
                 var modname = ((GUIMod) row.Tag).ToCkanModule().name;
-                var key = e.KeyChar.ToString();
-                return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                if (row_match && first_match == null) {
+                 // Remember the first match to allow cycling back to it if necessary
+                    first_match = row;
+                }
+                if (row.Index == selected_row.Index || (selected_match && row.Index < selected_row.Index))
+                {
+                    // This row is already selected or a matching row is selected further down the list,
+                    // so the search should continue from there
+                    return false;
+                }
+                return row_match;
             });
             ModList.ClearSelection();
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            if (match == null && first_match != null)
+            {
+             // If there were no matches after the first match, cycle over to the beginning
+                match = first_match;
+            }
             if (match != null)
             {
                 match.Selected = true;
