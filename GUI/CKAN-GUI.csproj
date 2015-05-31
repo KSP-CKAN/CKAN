@@ -251,7 +251,7 @@
   </Target>
   -->
   <ItemGroup>
-    <None Include="Resources\ksp.jpg" />
+    <None Include="Resources\ksp.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
