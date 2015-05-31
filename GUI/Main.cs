@@ -67,6 +67,9 @@ namespace CKAN
 
         private Timer filterTimer;
 
+        private DateTime lastSearchTime;
+        private string lastSearchKey;
+
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
 
@@ -200,7 +203,7 @@ namespace CKAN
             ModInfoTabControl.Enabled = false;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
-            // making our download speeds really slow unless you move the mouse while 
+            // making our download speeds really slow unless you move the mouse while
             // downloading. Yielding periodically addresses that.
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
@@ -412,7 +415,7 @@ namespace CKAN
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-            
+
             ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
@@ -460,8 +463,8 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Start or restart a timer to update the filter after an interval 
-        /// since the last keypress. On Mac OS X, this prevents the search 
+        /// Start or restart a timer to update the filter after an interval
+        /// since the last keypress. On Mac OS X, this prevents the search
         /// field from locking up due to DataGridViews being slow and
         /// key strokes being interpreted incorrectly when slowed down:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
@@ -482,7 +485,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Updates the filter after an interval of time has passed since the 
+        /// Updates the filter after an interval of time has passed since the
         /// last keypress.
         /// </summary>
         /// <param name="source">Source</param>
@@ -495,42 +498,82 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Called on key press when the mod is focused. Scrolls to the first mod 
-        /// with name begining with the key pressed. If space is pressed, the checkbox
-        /// at the current row is toggled.
-        /// </summary>        
+        /// Called on key press when the mod is focused. Scrolls to the first mod
+        /// with name begining with the key pressed. If more than one unique keys are pressed
+        /// in under a second, it searches for the combination of the keys pressed.
+        /// If the same key is being pressed repeatedly, it cycles through mods names
+        /// beginnng with that key. If space is pressed, the checkbox at the current row is toggled.
+        /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Check the key. If it is space, mark the current mod as selected.
-            if (e.KeyChar.ToString() == " ")
-            {
-                var selected_row = ModList.CurrentRow;
+            var current_row = ModList.CurrentRow;
+            var key = e.KeyChar.ToString();
 
-                if (selected_row != null)
+            // Check the key. If it is space, mark the current mod as selected.
+            if (key == " ")
+            {
+                if (current_row != null && current_row.Selected)
                 {
                     // Get the checkbox.
-                    var selected_row_check_box = selected_row.Cells["Installed"] as DataGridViewCheckBoxCell;
+                    var selected_row_check_box = current_row.Cells["Installed"] as DataGridViewCheckBoxCell;
 
                     // Invert the value.
                     if (selected_row_check_box != null)
                     {
                         bool selected_value = (bool)selected_row_check_box.Value;
                         selected_row_check_box.Value = !selected_value;
-                    }                    
+                    }
                 }
                 e.Handled = true;
                 return;
             }
 
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-            var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
+
+            // Determine time passed since last key press
+            TimeSpan interval = DateTime.Now - lastSearchTime;
+            if (interval.TotalSeconds < 1) {
+                // Last keypress was < 1 sec ago, so combine the last and current keys
+                key = lastSearchKey + key;
+            }
+            // Remember the current time and key
+            lastSearchTime = DateTime.Now;
+            lastSearchKey = key;
+
+            if (key.Distinct().Count() == 1)
+            {
+                // It's the same key being pressed repeatedly, so use only that
+                key = key.Substring(0, 1);
+            }
+
+            var current_name = ((GUIMod) current_row.Tag).ToCkanModule().name;
+            var current_match = current_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            DataGridViewRow first_match = null;
+
+            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
                 var modname = ((GUIMod) row.Tag).ToCkanModule().name;
-                var key = e.KeyChar.ToString();
-                return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                if (row_match && first_match == null) {
+                    // Remember the first match to allow cycling back to it if necessary
+                    first_match = row;
+                }
+                if (row == current_row || (current_match && row.Index < current_row.Index))
+                {
+                    // This row is already selected or a matching row is selected further down the list,
+                    // so the search should continue from there
+                    return false;
+                }
+                return row_match;
             });
             ModList.ClearSelection();
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
+            current_row.Selected = false;
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            if (match == null && first_match != null)
+            {
+                // If there were no matches after the first match, cycle over to the beginning
+                match = first_match;
+            }
             if (match != null)
             {
                 match.Selected = true;
@@ -693,7 +736,7 @@ namespace CKAN
                 return null;
             }
 
-            var module = ((GUIMod) selected_item.Tag).ToCkanModule();            
+            var module = ((GUIMod) selected_item.Tag).ToCkanModule();
             return module;
         }
 
@@ -708,7 +751,7 @@ namespace CKAN
 
             var binary = split[0];
             var args = string.Join(" ",split.Skip(1));
-            
+
             try
             {
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
@@ -751,7 +794,7 @@ namespace CKAN
             Enabled = true;
         }
 
-        
+
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
