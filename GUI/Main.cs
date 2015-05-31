@@ -67,6 +67,9 @@ namespace CKAN
 
         private Timer filterTimer;
 
+        private DateTime lastSearchTime;
+        private string lastSearchKey;
+
         private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
         private Dictionary<Module, string> conflicts;
 
@@ -412,7 +415,9 @@ namespace CKAN
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-            
+
+            this.AddStatusMessage("");
+
             ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
@@ -496,21 +501,22 @@ namespace CKAN
 
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
-        /// with name begining with the key pressed. If space is pressed, the checkbox
-        /// at the current row is toggled.
-        /// </summary>        
+        /// with name begining with the key pressed. If more than one unique keys are pressed
+        /// in under a second, it searches for the combination of the keys pressed.
+        /// If the same key is being pressed repeatedly, it cycles through mods names
+        /// beginnng with that key. If space is pressed, the checkbox at the current row is toggled.
+        /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Check the key. If it is space, mark the current mod as selected.
-            if (e.KeyChar.ToString() == " ")
+            var current_row = ModList.CurrentRow;
+            var key = e.KeyChar.ToString();
+            // Check the key. If it is space and the current row is selected, mark the current mod as selected.
+            if (key == " ")
             {
-                var selected_row = ModList.CurrentRow;
-
-                if (selected_row != null)
+                if (current_row != null && current_row.Selected)
                 {
                     // Get the checkbox.
-                    var selected_row_check_box = selected_row.Cells["Installed"] as DataGridViewCheckBoxCell;
-
+                    var selected_row_check_box = current_row.Cells["Installed"] as DataGridViewCheckBoxCell;
                     // Invert the value.
                     if (selected_row_check_box != null)
                     {
@@ -523,18 +529,61 @@ namespace CKAN
             }
 
             var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-            var does_name_begin_with_char = new Func<DataGridViewRow, bool>(row =>
+
+            // Determine time passed since last key press
+            TimeSpan interval = DateTime.Now - this.lastSearchTime;
+            if (interval.TotalSeconds < 1)
+            {
+                // Last keypress was < 1 sec ago, so combine the last and current keys
+                key = this.lastSearchKey + key;
+            }
+            // Remember the current time and key
+            this.lastSearchTime = DateTime.Now;
+            this.lastSearchKey = key;
+
+            if (key.Distinct().Count() == 1)
+            {
+                // Treat repeating and single keypresses the same
+                key = key.Substring(0, 1);
+            }
+
+            var current_name = ((GUIMod) current_row.Tag).ToCkanModule().name;
+            var current_match = current_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            DataGridViewRow first_match = null;
+
+            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
                 var modname = ((GUIMod) row.Tag).ToCkanModule().name;
-                var key = e.KeyChar.ToString();
-                return modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                if (row_match && first_match == null)
+                {
+                    // Remember the first match to allow cycling back to it if necessary
+                    first_match = row;
+                }
+                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
+                {
+                    // Keep going forward if it's a single key match and not ahead of the current row
+                    return false;
+                }
+                return row_match;
             });
             ModList.ClearSelection();
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_char);
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            if (match == null && first_match != null)
+            {
+                // If there were no matches after the first match, cycle over to the beginning
+                match = first_match;
+            }
             if (match != null)
             {
                 match.Selected = true;
-                ModList.CurrentCell = match.Cells[0];
+                // Setting this to the Name cell prevents the checkbox from being toggled
+                // by pressing Space while the row is not indicated as active
+                ModList.CurrentCell = match.Cells[2];
+            }
+            else
+            {
+                this.AddStatusMessage("Not found");
             }
         }
 
