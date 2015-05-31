@@ -14,10 +14,11 @@ before_install:
 install:
     - sudo apt-get install mono-devel nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
+    - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 
 script:
     - bin/build
-    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
+    - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
     - prove  # Run all the tests in t/
 
 deploy:
