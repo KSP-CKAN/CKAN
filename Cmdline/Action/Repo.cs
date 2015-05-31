@@ -8,13 +8,13 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
-	public struct RepositoryList
-	{
-		public Repository[] repositories;
-	}
+    public struct RepositoryList
+    {
+        public Repository[] repositories;
+    }
 
-	public class Repo : ISubCommand
-	{
+    public class Repo : ISubCommand
+    {
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
 
         public KSPManager Manager { get; set; }
@@ -83,7 +83,7 @@ namespace CKAN.CmdLine
         }
 
         // This is required by ISubCommand
-		public int RunSubCommand(SubCommandOptions unparsed)
+        public int RunSubCommand(SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -251,7 +251,7 @@ namespace CKAN.CmdLine
 
             repositories.Add(options.name, new Repository(options.name, options.uri));
 
-			User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
+            User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
             manager.Save();
 
             return Exit.OK;
