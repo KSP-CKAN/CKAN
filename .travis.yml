@@ -20,7 +20,7 @@ install:
 
 script:
     - bin/build
-    - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+    - nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
     - prove  # Run all the tests in t/
 
 deploy:
