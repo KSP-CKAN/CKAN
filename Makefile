@@ -4,8 +4,8 @@
 
 all: build
 
-build:
-	xbuild CKAN.sln
+build: FORCE
+	bin/build
 
 clean:
 	rm -rf AutoUpdate/bin AutoUpdate/obj \
@@ -18,4 +18,6 @@ clean:
 	       netkan.exe     netkan.exe.mdb
 
 test: build
-	nunit-console --exclude=FlakyNetwork Tests/bin/Debug/CKAN.Tests.dll
+	nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
+
+FORCE:
