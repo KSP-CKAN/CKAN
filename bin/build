@@ -2126,25 +2126,31 @@ use Fcntl qw(SEEK_SET);
 
 # Simple script to build and repack
 
-my $REPACK  = "CKAN/packages/ILRepack.1.25.0/tools/ILRepack.exe";
+my $REPACK  = "Core/packages/ILRepack.1.25.0/tools/ILRepack.exe";
 my $TARGET  = "Debug";      # Even our releases contain debugging info
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
-my $SOURCE  = "$Bin/../CKAN";
-my $METACLASS = "build/CKAN/Meta.cs";
+my @SOURCE  = map { "$Bin/../$_"} qw(Core Cmdline GUI Netkan Tests AutoUpdate CKAN CKAN.sln);
+my $METACLASS = "build/Core/Meta.cs";
 
-my @PROJECTS = qw(CmdLine CKAN CKAN-GUI NetKAN Tests);
+my @PROJECTS = qw(Cmdline Core GUI Netkan AutoUpdate Tests);
 
 my @BUILD_OPTS = is_stable() ? "/p:DefineConstants=STABLE" : ();
 
+push @BUILD_OPTS, "/verbosity:minimal";
+
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
+mkdir($BUILD);
 
 # Copy our project files over.
-copy($SOURCE, $BUILD);
+foreach my $file (@SOURCE) {
+    copy($file, $BUILD);
+}
 
 # Remove any old build artifacts
 foreach my $project (@PROJECTS) {
+    -d "$project" or die "Can't find project $project in build dir";
     remove_tree(File::Spec->catdir($BUILD, "$project/bin"));
     remove_tree(File::Spec->catdir($BUILD, "$project/obj"));
 }
@@ -2168,7 +2174,7 @@ else {
 chdir($BUILD);
 
 # And build..
-system("xbuild", "/property:Configuration=$TARGET", @BUILD_OPTS, "/property:win32icon=../assets/ckan.ico", "CKAN.sln");
+system("xbuild", "/property:Configuration=$TARGET", @BUILD_OPTS, "/property:win32icon=../GUI/assets/ckan.ico", "CKAN.sln");
 
 say "\n\n=== Repacking ===\n\n";
 
@@ -2180,10 +2186,10 @@ my @cmd = (
     "mono",
     $REPACK,
     "--out:ckan.exe",
-    "--lib:build/CmdLine/bin/$TARGET",
-    "build/CmdLine/bin/$TARGET/CmdLine.exe",
-    glob("build/CmdLine/bin/$TARGET/*.dll"),
-    "build/CmdLine/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
+    "--lib:build/Cmdline/bin/$TARGET",
+    "build/Cmdline/bin/$TARGET/CmdLine.exe",
+    glob("build/Cmdline/bin/$TARGET/*.dll"),
+    "build/Cmdline/bin/$TARGET/CKAN-GUI.exe", # Yes, bundle the .exe as a .dll
 );
 
 system([0,1], qq{@cmd | grep -v "Duplicate Win32 resource"});
@@ -2194,18 +2200,12 @@ system([0,1], qq{@cmd | grep -v "Duplicate Win32 resource"});
     "mono",
     $REPACK,
     "--out:netkan.exe",
-    "--lib:build/NetKAN/bin/$TARGET",
-    "build/NetKAN/bin/$TARGET/NetKAN.exe",
-    glob("build/NetKAN/bin/$TARGET/*.dll"),
+    "--lib:build/Netkan/bin/$TARGET",
+    "build/Netkan/bin/$TARGET/NetKAN.exe",
+    glob("build/Netkan/bin/$TARGET/*.dll"),
 );
 
 system([0,1], qq{@cmd | grep -v "Duplicate Win32 resource"});
-
-say "\n\n=== Tidying up===\n\n";
-
-# We don't tidy up any more, these provide useful debugging.
-# unlink("$OUTNAME.mdb");
-# unlink("netkan.exe.mdb");
 
 say "Done!";
 
