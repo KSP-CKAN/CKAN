@@ -16,7 +16,6 @@ install:
     - mozroots --import --ask-remove
 
 script:
-    - ./t/test-sln.sh # Avoid VS Accidentally changing the project formatting
     - bin/build
     - nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
     - prove  # Run all the tests in t/
@@ -31,6 +30,7 @@ deploy:
     on:
         repo: KSP-CKAN/CKAN
         tags: true
+        mono: 3.10.0
         # all_branches needed as a workaround for travis-ci#1675
         all_branches: true
 
