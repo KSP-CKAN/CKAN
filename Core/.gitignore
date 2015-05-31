@@ -1,6 +1,6 @@
 build/
-CKAN/*/bin
-CKAN/*/obj
+bin
+obj
 Tests/bin
 Tests/obj
 test-results
@@ -20,4 +20,3 @@ netkan.exe
 *~
 *.ncrunchproject
 *.ncrunchsolution
-*.pyc

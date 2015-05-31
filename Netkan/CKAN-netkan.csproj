@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CKAN.NetKAN</RootNamespace>
+    <AssemblyName>NetKAN</AssemblyName>
+    <StartupObject>CKAN.NetKAN.MainClass</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\Core\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\Core\packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="CurlSharp">
+      <HintPath>..\Core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConsoleUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MainClass.cs" />
+    <Compile Include="KS\KSAPI.cs" />
+    <Compile Include="KS\KSVersion.cs" />
+    <Compile Include="KS\KSMod.cs" />
+    <Compile Include="Github\GithubAPI.cs" />
+    <Compile Include="Github\GithubRelease.cs" />
+    <Compile Include="Jenkins\JenkinsAPI.cs" />
+    <Compile Include="Jenkins\JenkinsBuild.cs" />
+    <Compile Include="CkanInflator.cs" />
+    <Compile Include="CmdLineOptions.cs" />
+    <Compile Include="AVC\AVC.cs" />
+    <Compile Include="AVC\JsonAvcToKspVersion.cs" />
+    <Compile Include="Web.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="curl-ca-bundle.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
+      <Name>CKAN-core</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
