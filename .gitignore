@@ -1,6 +1,8 @@
 build/
 CKAN/*/bin
 CKAN/*/obj
+Tests/bin
+Tests/obj
 test-results
 *.userprefs
 *.csproj.user
