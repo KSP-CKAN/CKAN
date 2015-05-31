@@ -24,6 +24,8 @@ my @PROJECTS = qw(Cmdline Core GUI Netkan AutoUpdate Tests);
 
 my @BUILD_OPTS = is_stable() ? "/p:DefineConstants=STABLE" : ();
 
+push @BUILD_OPTS, "/verbosity:minimal";
+
 # Make sure we clean any old build away first.
 remove_tree($BUILD);
 mkdir($BUILD);
