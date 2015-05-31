@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 xbuild /verbosity:minimal CKAN.sln
 
@@ -35,9 +34,6 @@ else
     echo "Could not find a suitable version of nunit-console to run the tests. Skipping test execution."
 fi
 
-
-chmod a+x Core/packages/ILRepack.1.25.0/tools/ILRepack.exe
-
 mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	/target:exe \
 	/out:ckan.exe \
@@ -50,5 +46,17 @@ mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	Cmdline/bin/Debug/log4net.dll \
 	Cmdline/bin/Debug/Newtonsoft.Json.dll \
 	Cmdline/bin/Debug/INIFileParser.dll \
-    Cmdline/bin/Debug/CurlSharp.dll
+        Cmdline/bin/Debug/CurlSharp.dll
 
+mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
+	/target:exe \
+	/out:netkan.exe \
+	Netkan/bin/Debug/NetKAN.exe \
+	Cmdline/bin/Debug/ChinhDo.Transactions.dll \
+	Cmdline/bin/Debug/CKAN.dll \
+	Cmdline/bin/Debug/CommandLine.dll \
+	Cmdline/bin/Debug/ICSharpCode.SharpZipLib.dll \
+	Cmdline/bin/Debug/log4net.dll \
+	Cmdline/bin/Debug/Newtonsoft.Json.dll \
+	Cmdline/bin/Debug/INIFileParser.dll \
+        Cmdline/bin/Debug/CurlSharp.dll
