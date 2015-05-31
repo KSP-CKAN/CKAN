@@ -1,0 +1,20 @@
+{
+    "NAME":"KSP-AVC",
+    "URL":"http://ksp-avc.cybutek.net/version.php?id=2",
+    "DOWNLOAD":"http://kerbal.curseforge.com/ksp-mods/220462-ksp-avc-add-on-version-checker",
+    "GITHUB":
+    {
+        "USERNAME":"YourGitHubUserName",
+        "REPOSITORY":"YourGitHubRepository",
+        "ALLOW_PRE_RELEASE":false,
+    },
+    "VERSION": "0.9.21",
+    "KSP_VERSION":
+    {
+        "MAJOR":0,
+        "MINOR":24,
+        "PATCH":2
+    },
+    "KSP_VERSION_MIN": "0.24.0",
+    "KSP_VERSION_MAX": "1.0.0"
+} 
