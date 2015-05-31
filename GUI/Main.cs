@@ -506,16 +506,16 @@ namespace CKAN
         /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var selected_row = ModList.CurrentRow;
+            var current_row = ModList.CurrentRow;
             var key = e.KeyChar.ToString();
 
             // Check the key. If it is space, mark the current mod as selected.
             if (key == " ")
             {
-                if (selected_row != null)
+                if (current_row != null && current_row.Selected)
                 {
                     // Get the checkbox.
-                    var selected_row_check_box = selected_row.Cells["Installed"] as DataGridViewCheckBoxCell;
+                    var selected_row_check_box = current_row.Cells["Installed"] as DataGridViewCheckBoxCell;
 
                     // Invert the value.
                     if (selected_row_check_box != null)
@@ -546,8 +546,8 @@ namespace CKAN
                 key = key.Substring(0, 1);
             }
 
-            var selected_name = ((GUIMod) selected_row.Tag).ToCkanModule().name;
-            var selected_match = selected_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            var current_name = ((GUIMod) current_row.Tag).ToCkanModule().name;
+            var current_match = current_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             DataGridViewRow first_match = null;
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
@@ -558,7 +558,7 @@ namespace CKAN
                     // Remember the first match to allow cycling back to it if necessary
                     first_match = row;
                 }
-                if (row.Index == selected_row.Index || (selected_match && row.Index < selected_row.Index))
+                if (row == current_row || (current_match && row.Index < current_row.Index))
                 {
                     // This row is already selected or a matching row is selected further down the list,
                     // so the search should continue from there
@@ -567,6 +567,7 @@ namespace CKAN
                 return row_match;
             });
             ModList.ClearSelection();
+            current_row.Selected = false;
             DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
             if (match == null && first_match != null)
             {
