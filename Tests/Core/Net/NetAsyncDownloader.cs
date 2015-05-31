@@ -36,7 +36,7 @@ namespace Tests.Core.Net
             registry.Installed().Clear();
 
             // Make sure we have a registry we can use.
-            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP, new NullUser());
+            CKAN.Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncDownloader(new NullUser());

@@ -226,22 +226,29 @@ namespace Tests.Data
             return CkanModule.FromJson(RandSCapsuleDyne());
         }
 
-        public static Uri TestKAN()
-        {
-            return new Uri("../../../Tests/Data/CKAN-meta-testkan.zip", UriKind.Relative);
-        }
-
-        // Same as TestKAN above, just repacked as tar.gz.
+        // TestKAN in tar.gz format.
         public static Uri TestKANTarGz()
         {
-            return new Uri("../../Data/CKAN-meta-testkan.tar.gz", UriKind.Relative);
+			return new Uri(DataDir("CKAN-meta-testkan.tar.gz"), UriKind.Relative);
         }
 
-        // A repo full of deliciously bad metadata...
-        public static Uri BadKAN()
+		// TestKAN in zip format.
+		public static Uri TestKANZip()
+		{
+			return new Uri(DataDir("CKAN-meta-testkan.zip"), UriKind.Relative);
+		}
+
+        // A repo full of deliciously bad metadata in tar.gz format.
+        public static Uri BadKANTarGz()
         {
-            return new Uri(DataDir("CKAN-meta-badkan.zip"));
+            return new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
         }
+
+		// A repo full of deliciously bad metadata in zip format.
+		public static Uri BadKANZip()
+		{
+			return new Uri(DataDir("CKAN-meta-badkan.zip"));
+		}
 
         public static string good_ksp_dir()
         {
