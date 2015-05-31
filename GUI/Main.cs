@@ -500,6 +500,32 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Called on key down when the mod list is focused.
+        /// Makes the Home/End keys go to the top/bottom of the list respectively.
+        /// </summary>
+        private void ModList_KeyDown(object sender, KeyEventArgs e)
+        {
+            DataGridViewCell cell = null;
+            switch (e.KeyCode)
+            {
+                case Keys.Home:
+                    // First row
+                    cell = ModList.Rows [0].Cells [2];
+                    break;
+                case Keys.End:
+                    // Last row
+                    cell = ModList.Rows [ModList.Rows.Count - 1].Cells [2];
+                    break;
+            }
+            if (cell != null)
+            {
+                e.Handled = true;
+                // Selects the top/bottom row and scrolls the list to it
+                ModList.CurrentCell = cell;
+            }
+        }
+
+        /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod 
         /// with name begining with the key pressed. If more than one unique keys are pressed
         /// in under a second, it searches for the combination of the keys pressed.
@@ -585,6 +611,7 @@ namespace CKAN
             {
                 this.AddStatusMessage("Not found");
             }
+            e.Handled = true;
         }
 
         /// <summary>
