@@ -1,5 +1,10 @@
 language: csharp
 
+mono:
+    - 3.10.0
+    - 3.8.0
+    - 3.2.8
+
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
 before_install:
@@ -7,7 +12,7 @@ before_install:
     - "sh -e /etc/init.d/xvfb start"
 
 install:
-    - sudo apt-get install mono-devel mono-gmcs nunit-console libtest-most-perl libipc-system-simple-perl
+    - sudo apt-get install mono-devel nunit-console libtest-most-perl libipc-system-simple-perl
     - mozroots --import --ask-remove
 
 script:
