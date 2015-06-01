@@ -407,12 +407,14 @@ namespace CKAN
             this.Installed.HeaderText = "Installed";
             this.Installed.Name = "Installed";
             this.Installed.Width = 50;
+            this.Installed.SortMode = DataGridViewColumnSortMode.Automatic;
             // 
             // Update
             // 
             this.Update.HeaderText = "Update";
             this.Update.Name = "Update";
             this.Update.Width = 46;
+            this.Update.SortMode = DataGridViewColumnSortMode.Automatic;
             // 
             // ModName
             // 
