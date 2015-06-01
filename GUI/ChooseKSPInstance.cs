@@ -16,7 +16,7 @@ namespace CKAN
             main = Main.Instance;
             manager = Main.Instance.Manager;
             InitializeComponent();
-            
+
             StartPosition = FormStartPosition.CenterScreen;
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
@@ -70,6 +70,11 @@ namespace CKAN
 
         private void SelectButton_Click(object sender, EventArgs e)
         {
+            UseSelectedInstance();
+        }
+
+        private void UseSelectedInstance()
+        {
             var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
 
             if (SetAsDefaultCheckbox.Checked)
@@ -78,14 +83,22 @@ namespace CKAN
             }
 
             manager.SetCurrentInstance(instance);
-            Hide();    
+            DialogResult = DialogResult.OK;
+            Close();
          //   main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;            
+            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
             SetButtonsEnabled(has_instance);
+        }
+
+        private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
+        {
+            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
+            if(has_instance)
+                UseSelectedInstance();
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
