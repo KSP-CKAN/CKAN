@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -83,7 +82,7 @@ namespace CKAN
         private readonly List<KeyValuePair<Module, Module>> conflicts =
             new List<KeyValuePair<Module, Module>>();
         private readonly Dictionary<Module, SelectionReason> reasons =
-            new Dictionary<Module, SelectionReason>(new Module.IdentifierEqualilty());
+            new Dictionary<Module, SelectionReason>(new NameComparer());
 
         private readonly Registry registry;
         private readonly KSPVersion kspversion;
