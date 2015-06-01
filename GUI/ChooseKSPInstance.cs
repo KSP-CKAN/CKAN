@@ -16,7 +16,7 @@ namespace CKAN
             main = Main.Instance;
             manager = Main.Instance.Manager;
             InitializeComponent();
-            
+
             StartPosition = FormStartPosition.CenterScreen;
 
             m_BrowseKSPFolder = new FolderBrowserDialog();
@@ -83,13 +83,14 @@ namespace CKAN
             }
 
             manager.SetCurrentInstance(instance);
-            Hide();    
+            DialogResult = DialogResult.OK;
+            Close();
          //   main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;            
+            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
             SetButtonsEnabled(has_instance);
         }
 
