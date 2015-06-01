@@ -92,7 +92,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 Net.UserAgentString = options.NetUserAgent;
             }
 
-            // TODO: Allow the user to specify just a directory.
             // User provided KSP instance
 
             if (options.KSPdir != null && options.KSP != null)
@@ -118,7 +117,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             else if (options.KSPdir != null)
             {
                 // Set a KSP directory by its path
-
                 manager.SetCurrentInstanceByPath(options.KSPdir);
             }
             else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
