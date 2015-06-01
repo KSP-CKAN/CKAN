@@ -148,7 +148,7 @@ namespace CKAN
 
         public void MarkModForInstall(string identifier, bool uninstall = false)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier,uninstall));
+            Util.Invoke(this, () => _MarkModForInstall(identifier, uninstall));
         }
 
         private void _MarkModForInstall(string identifier, bool uninstall)
@@ -190,7 +190,8 @@ namespace CKAN
     {
         internal List<DataGridViewRow> full_list_of_mod_rows;
 
-        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides, IUser user = null)
+        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
+            IUser user = null)
         {
             this.too_many_provides = too_many_provides;
             this.user = user ?? new NullUser();
@@ -243,6 +244,7 @@ namespace CKAN
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
         private IUser user;
+
         private readonly HandleTooManyProvides too_many_provides;
 
         /// <summary>
@@ -283,32 +285,40 @@ namespace CKAN
                 }
             }
 
-            //May throw InconsistentKraken
 
-            while (true)
+            bool handled_all_to_many_provides = false;
+            while (!handled_all_to_many_provides)
             {
+                //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
+                TooManyModsProvideKraken kraken = null;
                 try
                 {
                     new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
+                    handled_all_to_many_provides = true;
+                    continue;
                 }
-                catch (TooManyModsProvideKraken kraken)
+                catch (TooManyModsProvideKraken k)
                 {
-                    var mod = await too_many_provides(kraken);
-                    if (mod != null)
-                    {
-                        modules_to_install.Add(mod.identifier);
-                        continue;
-                    }
-                    throw;
+                    kraken = k;
                 }
-                catch (ModuleNotFoundKraken kraken)
+                catch (ModuleNotFoundKraken k)
                 {
                     //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
                     user.RaiseError("Module {0} has not been found. This may be because it is not compatible " +
-                                    "with the currently installed version of KSP", kraken.module);
+                                    "with the currently installed version of KSP", k.module);
                     return null;
                 }
-                break;
+                //Shouldn't get here unless there is a kraken.
+                var mod = await too_many_provides(kraken);
+                if (mod != null)
+                {
+                    modules_to_install.Add(mod.identifier);
+                }
+                else
+                {
+                    //TODO Is could be a new type of Kraken.
+                    throw kraken;
+                }
             }
 
             var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
@@ -372,7 +382,7 @@ namespace CKAN
                     : new DataGridViewTextBoxCell();
 
                 installed_cell.Value = mod.IsInstallable()
-                    ? (object)mod.IsInstalled
+                    ? (object) mod.IsInstalled
                     : (mod.IsAutodetected ? "AD" : "-");
 
                 var update_cell = mod.HasUpdate && !mod.IsAutodetected

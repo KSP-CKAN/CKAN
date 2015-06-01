@@ -547,10 +547,10 @@ namespace CKAN
 
         /// <summary>
         /// Called on key press when the mod is focused. Scrolls to the first mod
-        /// with name begining with the key pressed. If more than one unique keys are pressed
+        /// with name beginning with the key pressed. If more than one unique keys are pressed
         /// in under a second, it searches for the combination of the keys pressed.
         /// If the same key is being pressed repeatedly, it cycles through mods names
-        /// beginnng with that key. If space is pressed, the checkbox at the current row is toggled.
+        /// beginning with that key. If space is pressed, the checkbox at the current row is toggled.
         /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -692,9 +692,10 @@ namespace CKAN
 
         private async Task UpdateChangeSetAndConflicts(Registry registry)
         {
-            IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set;
-            Dictionary<Module, string> conflicts;
+            IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set = null;
+            Dictionary<Module, string> conflicts = null;
 
+            bool too_many_provides_thrown = false;
             var user_change_set = mainModList.ComputeUserChangeSet();
             try
             {
@@ -702,7 +703,6 @@ namespace CKAN
                 full_change_set =
                     await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
                         CurrentInstance.Version());
-                conflicts = null;
             }
             catch (InconsistentKraken)
             {
@@ -715,6 +715,10 @@ namespace CKAN
             {
                 //Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
                 //We can just rerun it as the ModInfoTabControl has been removed.
+                too_many_provides_thrown = true;
+            }
+            if (too_many_provides_thrown)
+            {
                 await UpdateChangeSetAndConflicts(registry);
                 conflicts = Conflicts;
                 full_change_set = ChangeSet;
