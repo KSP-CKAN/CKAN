@@ -24,8 +24,6 @@ namespace CKAN
         {
             RefreshReposListBox();
 
-            KSPInstallPathLabel.Text = Main.Instance.CurrentInstance.GameDir();
-
             LocalVersionLabel.Text = Meta.Version();
 
             CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
@@ -88,15 +86,6 @@ namespace CKAN
             }
 
             UpdateCacheInfo();
-        }
-
-        private void ResetAutoStartChoice_Click(object sender, EventArgs e)
-        {
-            Main.Instance.Manager.ClearAutoStart();
-            var old_instance = Main.Instance.CurrentInstance;
-            var result = new ChooseKSPInstance().ShowDialog();
-            if(!Equals(old_instance, Main.Instance.CurrentInstance))
-                Main.Instance.CurrentInstanceUpdated();            
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
