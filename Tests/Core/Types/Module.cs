@@ -1,3 +1,4 @@
+using System.Linq;
 using CKAN;
 using NUnit.Framework;
 using Tests.Data;
@@ -28,8 +29,21 @@ namespace Tests.Core.Types
         {
             CkanModule module = CkanModule.FromJson (TestData.kOS_014 ());
 
-            // TODO: Test all the metadata here!
+            Assert.AreEqual("kOS - Kerbal OS", module.name);
+            Assert.AreEqual("kOS", module.identifier);
+            Assert.AreEqual("A programming and automation environment for KSP craft.", module.@abstract);
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download.ToString());
+            Assert.AreEqual("GPL-3.0", module.license.ToString());
+            Assert.AreEqual("0.14", module.version.ToString());
+            Assert.AreEqual("stable", module.release_status.ToString());
+            Assert.AreEqual("0.24.2", module.ksp_version.ToString());
+
+            Assert.That(module.install.First().file, Is.EqualTo("GameData/kOS"));
+            Assert.That(module.install.First().install_to, Is.EqualTo("GameData"));
+
+            Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
         }
 
         /// <summary>
