@@ -58,6 +58,9 @@ namespace CKAN
             // rows in DataGridView.
             var rows = new DataGridViewRow[mainModList.FullListOfModRows.Count];
             mainModList.FullListOfModRows.CopyTo(rows, 0);
+            // Remember the current scroll position
+            var scroll_row = Math.Max(0, ModList.FirstDisplayedScrollingRowIndex);
+            var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
             ModList.Rows.Clear();
             foreach (var row in rows)
             {
@@ -68,6 +71,10 @@ namespace CKAN
             var sorted = this._SortRowsByColumn(rows.Where(row => row.Visible));
 
             ModList.Rows.AddRange(sorted.ToArray());
+            // Check if there's less rows now
+            scroll_row = Math.Min(scroll_row, ModList.Rows.Count - 1);
+            // Restore the scroll position
+            ModList.FirstDisplayedCell = ModList.Rows[scroll_row].Cells[scroll_col];
 
             ModList.Select();
         }
