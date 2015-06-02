@@ -14,6 +14,10 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
+        // Sort by the mod name (index = 2) column by default
+        public int sortByColumnIndex = 2;
+        public bool sortDescending = false;
+
         private string m_Path = "";
         private Point m_window_loc = new Point(0,0);
         //Workaround for bug which miss-sets the window location.
