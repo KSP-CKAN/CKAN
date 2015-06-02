@@ -568,7 +568,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier,uninstall:gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;

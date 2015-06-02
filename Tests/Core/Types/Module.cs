@@ -33,7 +33,7 @@ namespace Tests.Core.Types
             Assert.AreEqual("kOS", module.identifier);
             Assert.AreEqual("A programming and automation environment for KSP craft.", module.@abstract);
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download.ToString());
-            Assert.AreEqual("GPL-3.0", module.license.ToString());
+            Assert.AreEqual("GPL-3.0", module.license.First().ToString());
             Assert.AreEqual("0.14", module.version.ToString());
             Assert.AreEqual("stable", module.release_status.ToString());
             Assert.AreEqual("0.24.2", module.ksp_version.ToString());
