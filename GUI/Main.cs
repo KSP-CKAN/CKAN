@@ -500,6 +500,21 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Programmatic implementation of row sorting by columns.
+        /// </summary>
+        private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var new_sort_column = this.ModList.Columns[e.ColumnIndex];
+            var current_sort_column = this.ModList.Columns[this.sortByColumnIndex];
+            // Reverse the sort order if the current sorting column is clicked again
+            this.sortDescending = new_sort_column == current_sort_column ? !this.sortDescending : false;
+            // Reset the glyph
+            current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
+            this.sortByColumnIndex = new_sort_column.Index;
+            this.UpdateFilters(this);
+        }
+
+        /// <summary>
         /// Called on key down when the mod list is focused.
         /// Makes the Home/End keys go to the top/bottom of the list respectively.
         /// </summary>
