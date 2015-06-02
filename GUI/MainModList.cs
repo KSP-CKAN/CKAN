@@ -32,6 +32,8 @@ namespace CKAN
             }
             
             ModList.Rows.AddRange(rows.Where(row => row.Visible).OrderBy(row => ((GUIMod) row.Tag).Name).ToArray());
+
+            ModList.Select();
         }
 
         private void UpdateModsList(Boolean repo_updated = false)
