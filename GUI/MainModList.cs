@@ -79,16 +79,11 @@ namespace CKAN
             // Find and select the previously selected row
             if (selected_mod != null)
             {
-                int i = 0;
-                foreach (DataGridViewRow row in ModList.Rows)
+                var selected_row = ModList.Rows.Cast<DataGridViewRow>()
+                    .FirstOrDefault(row => selected_mod.identifier == ((GUIMod)row.Tag).ToCkanModule().identifier);
+                if (selected_row != null)
                 {
-                    if (selected_mod.identifier == ((GUIMod)row.Tag).ToCkanModule().identifier)
-                    {
-                        // XXX: mono doesn't appear to respect this and doesn't scroll the cell into view
-                        ModList.CurrentCell = row.Cells[scroll_col];
-                        break;
-                    }
-                    i++;
+                    ModList.CurrentCell = selected_row.Cells[scroll_col];
                 }
             }
         }
