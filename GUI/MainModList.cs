@@ -9,9 +9,44 @@ namespace CKAN
 {
     public partial class Main
     {
+        // Sort by the mod name (index = 2) column by default
+        private int sortByColumnIndex = 2;
+        private bool sortDescending = false;
+
         private void UpdateFilters(Main control)
         {
             Util.Invoke(control, _UpdateFilters);
+        }
+
+        private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
+        {
+            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
+            Func<DataGridViewRow, string> sort_fn;
+
+            // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
+            if (this.sortByColumnIndex < 2)
+            {
+                sort_fn = new Func<DataGridViewRow, string>(row => {
+                    var cell = row.Cells[this.sortByColumnIndex];
+                    if (cell.ValueType == typeof(bool)) {
+                        return (bool)cell.Value ? "a" : "b";
+                    }
+                    // It's a "-" cell so let it be ordered last
+                    return "c";
+                });
+            }
+            else
+            {
+                sort_fn = new Func<DataGridViewRow, string>(row => row.Cells[this.sortByColumnIndex].Value.ToString());
+            }
+            // Update the column sort glyph
+            this.ModList.Columns[this.sortByColumnIndex].HeaderCell.SortGlyphDirection = this.sortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            // The columns will be sorted by mod name in addition to whatever the current sorting column is
+            if (this.sortDescending)
+            {
+                return rows.OrderByDescending(sort_fn).ThenBy(get_row_mod_name);
+            }
+            return rows.OrderBy(sort_fn).ThenBy(get_row_mod_name);
         }
 
         private void _UpdateFilters()
@@ -23,15 +58,34 @@ namespace CKAN
             // rows in DataGridView.
             var rows = new DataGridViewRow[mainModList.FullListOfModRows.Count];
             mainModList.FullListOfModRows.CopyTo(rows, 0);
+            // Try to remember the current scroll position and selected mod
+            var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
+            CkanModule selected_mod = null;
+            if (ModList.CurrentRow != null)
+            {
+                selected_mod = ((GUIMod)ModList.CurrentRow.Tag).ToCkanModule();
+            }
             ModList.Rows.Clear();
-
             foreach (var row in rows)
             {
                 var mod = ((GUIMod) row.Tag);
                 row.Visible = mainModList.IsVisible(mod);
             }
-            
-            ModList.Rows.AddRange(rows.Where(row => row.Visible).OrderBy(row => ((GUIMod) row.Tag).Name).ToArray());
+
+            var sorted = this._SortRowsByColumn(rows.Where(row => row.Visible));
+
+            ModList.Rows.AddRange(sorted.ToArray());
+
+            // Find and select the previously selected row
+            if (selected_mod != null)
+            {
+                var selected_row = ModList.Rows.Cast<DataGridViewRow>()
+                    .FirstOrDefault(row => selected_mod.identifier == ((GUIMod)row.Tag).ToCkanModule().identifier);
+                if (selected_row != null)
+                {
+                    ModList.CurrentCell = selected_row.Cells[scroll_col];
+                }
+            }
 
             ModList.Select();
         }
@@ -69,10 +123,7 @@ namespace CKAN
                 }
             }
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
-            var rows = mainModList.ConstructModList(mainModList.Modules);
-            ModList.Rows.Clear();
-            ModList.Rows.AddRange(rows.ToArray());
-            ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
+            mainModList.ConstructModList(mainModList.Modules);
 
             //TODO Consider using smart enum patten so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
@@ -89,7 +140,6 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
             FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.All));
-
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);

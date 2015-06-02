@@ -401,18 +401,21 @@ namespace CKAN
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
             this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
             // 
             // Installed
             // 
             this.Installed.HeaderText = "Installed";
             this.Installed.Name = "Installed";
             this.Installed.Width = 50;
+            this.Installed.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // Update
             // 
             this.Update.HeaderText = "Update";
             this.Update.Name = "Update";
             this.Update.Width = 46;
+            this.Update.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // ModName
             // 
@@ -420,6 +423,7 @@ namespace CKAN
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
             this.ModName.Width = 58;
+            this.ModName.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // Author
             // 
@@ -427,6 +431,7 @@ namespace CKAN
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
             this.Author.Width = 61;
+            this.Author.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // InstalledVersion
             // 
@@ -434,6 +439,7 @@ namespace CKAN
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.Width = 97;
+            this.InstalledVersion.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // LatestVersion
             // 
@@ -441,6 +447,7 @@ namespace CKAN
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.Width = 88;
+            this.LatestVersion.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // Description
             // 
@@ -448,6 +455,7 @@ namespace CKAN
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.Width = 83;
+            this.Description.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // Homepage
             // 
@@ -457,6 +465,7 @@ namespace CKAN
             this.Homepage.Name = "Homepage";
             this.Homepage.ReadOnly = true;
             this.Homepage.Width = 65;
+            this.Homepage.SortMode = DataGridViewColumnSortMode.Programmatic;
             // 
             // splitContainer1
             // 
