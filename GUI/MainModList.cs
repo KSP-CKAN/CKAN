@@ -20,10 +20,10 @@ namespace CKAN
             Func<DataGridViewRow, string> sort_fn;
 
             // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
-            if (this.m_Configuration.sortByColumnIndex < 2)
+            if (this.m_Configuration.SortByColumnIndex < 2)
             {
                 sort_fn = new Func<DataGridViewRow, string>(row => {
-                    var cell = row.Cells[this.m_Configuration.sortByColumnIndex];
+                    var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
                     if (cell.ValueType == typeof(bool)) {
                         return (bool)cell.Value ? "a" : "b";
                     }
@@ -33,12 +33,12 @@ namespace CKAN
             }
             else
             {
-                sort_fn = new Func<DataGridViewRow, string>(row => row.Cells[this.m_Configuration.sortByColumnIndex].Value.ToString());
+                sort_fn = new Func<DataGridViewRow, string>(row => row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString());
             }
             // Update the column sort glyph
-            this.ModList.Columns[this.m_Configuration.sortByColumnIndex].HeaderCell.SortGlyphDirection = this.m_Configuration.sortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell.SortGlyphDirection = this.m_Configuration.SortDescending ? SortOrder.Descending : SortOrder.Ascending;
             // The columns will be sorted by mod name in addition to whatever the current sorting column is
-            if (this.m_Configuration.sortDescending)
+            if (this.m_Configuration.SortDescending)
             {
                 return rows.OrderByDescending(sort_fn).ThenBy(get_row_mod_name);
             }
