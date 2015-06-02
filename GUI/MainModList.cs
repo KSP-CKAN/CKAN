@@ -58,9 +58,13 @@ namespace CKAN
             // rows in DataGridView.
             var rows = new DataGridViewRow[mainModList.FullListOfModRows.Count];
             mainModList.FullListOfModRows.CopyTo(rows, 0);
-            // Remember the current scroll position
-            var scroll_row = Math.Max(0, ModList.FirstDisplayedScrollingRowIndex);
+            // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
+            CkanModule selected_mod = null;
+            if (ModList.CurrentRow != null)
+            {
+                selected_mod = ((GUIMod)ModList.CurrentRow.Tag).ToCkanModule();
+            }
             ModList.Rows.Clear();
             foreach (var row in rows)
             {
@@ -71,10 +75,22 @@ namespace CKAN
             var sorted = this._SortRowsByColumn(rows.Where(row => row.Visible));
 
             ModList.Rows.AddRange(sorted.ToArray());
-            // Check if there's less rows now
-            scroll_row = Math.Min(scroll_row, ModList.Rows.Count - 1);
-            // Restore the scroll position
-            ModList.FirstDisplayedCell = ModList.Rows[scroll_row].Cells[scroll_col];
+
+            // Find and select the previously selected row
+            if (selected_mod != null)
+            {
+                int i = 0;
+                foreach (DataGridViewRow row in ModList.Rows)
+                {
+                    if (selected_mod.identifier == ((GUIMod)row.Tag).ToCkanModule().identifier)
+                    {
+                        // XXX: mono doesn't appear to respect this and doesn't scroll the cell into view
+                        ModList.CurrentCell = row.Cells[scroll_col];
+                        break;
+                    }
+                    i++;
+                }
+            }
 
             ModList.Select();
         }
