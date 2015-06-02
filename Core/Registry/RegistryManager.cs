@@ -67,7 +67,7 @@ namespace CKAN
 
         /// <summary>
         /// Returns the currently installed modules in json format suitable for outputting to a ckan file.
-        /// Defaults to using depends and with version numbers. 
+        /// Defaults to using depends and with version numbers.
         /// </summary>
         /// <param name="recommmends">If the json should use a recommends field instead of depends</param>
         /// <param name="with_versions">If version numbers should be included</param>
@@ -130,7 +130,7 @@ namespace CKAN
             {
                 repositories = new SortedDictionary<string, Repository>();
             }
-            
+
             if (repositories.Count == 0)
             {
                 repositories.Add(Repository.default_ckan_repo_name,
@@ -164,22 +164,21 @@ namespace CKAN
             string kspInstanceName = "default";
             string name = "installed-" + kspInstanceName;
 
-            var installed = new JObject
-            {
-                ["spec_version"] = "v1.6",
-                ["identifier"] = name,
-                ["version"] = DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss"),
-                ["license"] = "unknown",
-                ["name"] = name,
-                ["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance",
-                ["kind"] = "metapackage"
-            };
+            var installed = new JObject();
+            installed["kind"] = "metapackage";
+            installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
+            installed["name"] = name;
+            installed["license"] = "unknown";
+            installed["version"] = DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
+            installed["identifier"] = name;
+            installed["spec_version"] = "v1.6";
 
             var mods = new JArray();
             foreach (var mod in registry.Installed()
                 .Where(mod => !(mod.Value is ProvidesVersion || mod.Value is DllVersion)))
             {
-                var module = new JObject {["name"] = mod.Key};
+                var module = new JObject();
+                module["name"] = mod.Key;
                 if (with_versions)
                 {
                     module["version"] = mod.Value.ToString();
