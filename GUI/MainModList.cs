@@ -86,8 +86,6 @@ namespace CKAN
                     ModList.CurrentCell = selected_row.Cells[scroll_col];
                 }
             }
-
-            ModList.Select();
         }
 
         private void UpdateModsList(Boolean repo_updated = false)
