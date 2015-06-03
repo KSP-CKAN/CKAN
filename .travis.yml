@@ -55,7 +55,7 @@ deploy:
     #    all_branches: true
 notifications:
   irc:
-	channels:
+    channels:
       - "irc.esper.net#ckan-ci"
     template:
       - "%{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
