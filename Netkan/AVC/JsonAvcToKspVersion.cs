@@ -60,23 +60,22 @@ namespace CKAN.NetKAN
             //AVC uses -1 to indicate a wildcard.
             int integer;
             string version;
-            if (int.TryParse(patch, out integer))
+            if (int.TryParse(major, out integer) && integer == AVC_WILDCARD)
             {
-                version = integer == AVC_WILDCARD
-                    ? string.Join(".", major, minor)
-                    : string.Join(".", major, minor, patch);
+                version = null;
             }
-            else if (int.TryParse(minor, out integer))
+            else if (int.TryParse(minor, out integer) && integer == AVC_WILDCARD)
             {
-                version = integer == AVC_WILDCARD
-                    ? string.Join(".", major)
-                    : string.Join(".", major, minor);
+                version = major;
+            }
+            else if (int.TryParse(patch, out integer) && integer == AVC_WILDCARD)
+            {
+                version = string.Join(".", major, minor);
             }
             else
             {
                 version = string.Join(".", major, minor, patch);
             }
-
 
             log.DebugFormat("  extracted version: {0}", version);
             KSPVersion result = new KSPVersion(version);
