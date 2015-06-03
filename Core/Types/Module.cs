@@ -13,7 +13,7 @@ namespace CKAN
     {
         public string max_version;
         public string min_version;
-        //Why is the identifier called name? 
+        //Why is the identifier called name?
         public /* required */ string name;
         public string version;
     }
@@ -142,7 +142,7 @@ namespace CKAN
             }
             else
             {
-                ksp_version_min.ToLongMin();
+                ksp_version_min = ksp_version_min.ToLongMin();
             }
 
             if (ksp_version_max == null)
@@ -151,7 +151,7 @@ namespace CKAN
             }
             else
             {
-                ksp_version_max.ToLongMax();
+                ksp_version_max = ksp_version_max.ToLongMax();
             }
 
             if (ksp_version == null)

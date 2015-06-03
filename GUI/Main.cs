@@ -203,7 +203,7 @@ namespace CKAN
             ModInfoTabControl.Enabled = false;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
-            // making our download speeds really slow unless you move the mouse while 
+            // making our download speeds really slow unless you move the mouse while
             // downloading. Yielding periodically addresses that.
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
@@ -352,6 +352,7 @@ namespace CKAN
             m_PluginController = new PluginController(pluginsPath, true);
 
             log.Info("GUI started");
+            ModList.Select();
             base.OnLoad(e);
         }
 
@@ -465,8 +466,8 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Start or restart a timer to update the filter after an interval 
-        /// since the last keypress. On Mac OS X, this prevents the search 
+        /// Start or restart a timer to update the filter after an interval
+        /// since the last keypress. On Mac OS X, this prevents the search
         /// field from locking up due to DataGridViews being slow and
         /// key strokes being interpreted incorrectly when slowed down:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
@@ -487,7 +488,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Updates the filter after an interval of time has passed since the 
+        /// Updates the filter after an interval of time has passed since the
         /// last keypress.
         /// </summary>
         /// <param name="source">Source</param>
@@ -497,6 +498,21 @@ namespace CKAN
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
             filterTimer.Stop();
+        }
+
+        /// <summary>
+        /// Programmatic implementation of row sorting by columns.
+        /// </summary>
+        private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var new_sort_column = this.ModList.Columns[e.ColumnIndex];
+            var current_sort_column = this.ModList.Columns[this.sortByColumnIndex];
+            // Reverse the sort order if the current sorting column is clicked again
+            this.sortDescending = new_sort_column == current_sort_column ? !this.sortDescending : false;
+            // Reset the glyph
+            current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
+            this.sortByColumnIndex = new_sort_column.Index;
+            this.UpdateFilters(this);
         }
 
         /// <summary>
@@ -526,7 +542,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Called on key press when the mod is focused. Scrolls to the first mod 
+        /// Called on key press when the mod is focused. Scrolls to the first mod
         /// with name begining with the key pressed. If more than one unique keys are pressed
         /// in under a second, it searches for the combination of the keys pressed.
         /// If the same key is being pressed repeatedly, it cycles through mods names
@@ -548,7 +564,7 @@ namespace CKAN
                     {
                         bool selected_value = (bool)selected_row_check_box.Value;
                         selected_row_check_box.Value = !selected_value;
-                    }                    
+                    }
                 }
                 e.Handled = true;
                 return;
@@ -774,7 +790,7 @@ namespace CKAN
                 return null;
             }
 
-            var module = ((GUIMod) selected_item.Tag).ToCkanModule();            
+            var module = ((GUIMod) selected_item.Tag).ToCkanModule();
             return module;
         }
 
@@ -789,7 +805,7 @@ namespace CKAN
 
             var binary = split[0];
             var args = string.Join(" ",split.Skip(1));
-            
+
             try
             {
                 Directory.SetCurrentDirectory(CurrentInstance.GameDir());
@@ -832,7 +848,7 @@ namespace CKAN
             Enabled = true;
         }
 
-        
+
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {

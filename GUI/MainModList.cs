@@ -9,9 +9,44 @@ namespace CKAN
 {
     public partial class Main
     {
+        // Sort by the mod name (index = 2) column by default
+        private int sortByColumnIndex = 2;
+        private bool sortDescending = false;
+
         private void UpdateFilters(Main control)
         {
             Util.Invoke(control, _UpdateFilters);
+        }
+
+        private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
+        {
+            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
+            Func<DataGridViewRow, string> sort_fn;
+
+            // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
+            if (this.sortByColumnIndex < 2)
+            {
+                sort_fn = new Func<DataGridViewRow, string>(row => {
+                    var cell = row.Cells[this.sortByColumnIndex];
+                    if (cell.ValueType == typeof(bool)) {
+                        return (bool)cell.Value ? "a" : "b";
+                    }
+                    // It's a "-" cell so let it be ordered last
+                    return "c";
+                });
+            }
+            else
+            {
+                sort_fn = new Func<DataGridViewRow, string>(row => row.Cells[this.sortByColumnIndex].Value.ToString());
+            }
+            // Update the column sort glyph
+            this.ModList.Columns[this.sortByColumnIndex].HeaderCell.SortGlyphDirection = this.sortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            // The columns will be sorted by mod name in addition to whatever the current sorting column is
+            if (this.sortDescending)
+            {
+                return rows.OrderByDescending(sort_fn).ThenBy(get_row_mod_name);
+            }
+            return rows.OrderBy(sort_fn).ThenBy(get_row_mod_name);
         }
 
         private void _UpdateFilters()
@@ -23,15 +58,34 @@ namespace CKAN
             // rows in DataGridView.
             var rows = new DataGridViewRow[mainModList.FullListOfModRows.Count];
             mainModList.FullListOfModRows.CopyTo(rows, 0);
+            // Try to remember the current scroll position and selected mod
+            var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
+            CkanModule selected_mod = null;
+            if (ModList.CurrentRow != null)
+            {
+                selected_mod = ((GUIMod)ModList.CurrentRow.Tag).ToCkanModule();
+            }
             ModList.Rows.Clear();
-
             foreach (var row in rows)
             {
                 var mod = ((GUIMod) row.Tag);
                 row.Visible = mainModList.IsVisible(mod);
             }
-            
-            ModList.Rows.AddRange(rows.Where(row => row.Visible).OrderBy(row => ((GUIMod) row.Tag).Name).ToArray());
+
+            var sorted = this._SortRowsByColumn(rows.Where(row => row.Visible));
+
+            ModList.Rows.AddRange(sorted.ToArray());
+
+            // Find and select the previously selected row
+            if (selected_mod != null)
+            {
+                var selected_row = ModList.Rows.Cast<DataGridViewRow>()
+                    .FirstOrDefault(row => selected_mod.identifier == ((GUIMod)row.Tag).ToCkanModule().identifier);
+                if (selected_row != null)
+                {
+                    ModList.CurrentCell = selected_row.Cells[scroll_col];
+                }
+            }
         }
 
         private void UpdateModsList(Boolean repo_updated = false)
@@ -67,10 +121,7 @@ namespace CKAN
                 }
             }
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
-            var rows = mainModList.ConstructModList(mainModList.Modules);
-            ModList.Rows.Clear();
-            ModList.Rows.AddRange(rows.ToArray());
-            ModList.Sort(ModList.Columns[2], ListSortDirection.Ascending);
+            mainModList.ConstructModList(mainModList.Modules);
 
             //TODO Consider using smart enum patten so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
@@ -87,7 +138,6 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
             FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.All));
-
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
@@ -186,8 +236,8 @@ namespace CKAN
         private string _modAuthorFilter = String.Empty;
 
         /// <summary>
-        /// This function returns a changeset based on the selections of the user. 
-        /// Currently returns null if a conflict is detected.        
+        /// This function returns a changeset based on the selections of the user.
+        /// Currently returns null if a conflict is detected.
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="current_instance"></param>
@@ -232,7 +282,7 @@ namespace CKAN
             foreach (var reverse_dependencies in modules_to_remove.Select(installer.FindReverseDependencies))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset. 
+                //TODO This currently gets the latest version. This may cause the displayed version to wrong in the changset.
                 var modules = reverse_dependencies.Select(rDep => registry.LatestAvailable(rDep, null));
                 changeSet.UnionWith(
                     modules.Select(mod => new KeyValuePair<CkanModule, GUIModChangeType>(mod, GUIModChangeType.Remove)));
@@ -307,7 +357,7 @@ namespace CKAN
                     installed_version_cell, latest_version_cell,
                     description_cell, homepage_cell);
 
-                installed_cell.ReadOnly = !mod.IsInstallable(); 
+                installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
                 FullListOfModRows.Add(item);
@@ -386,7 +436,7 @@ namespace CKAN
                     .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
                     .Select(pair => pair.Key);
 
-            //We wish to only check mods that would exist after the changes are made. 
+            //We wish to only check mods that would exist after the changes are made.
             var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);
             var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);
             return resolver.ConflictList;
