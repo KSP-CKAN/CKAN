@@ -17,7 +17,7 @@ namespace CKAN
         // this may happen on the recommended/suggested mods dialogs
         private volatile bool installCanceled;
 
-        // this will be the final list of mods we want to install 
+        // this will be the final list of mods we want to install
         private HashSet<string> toInstall = new HashSet<string>();
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
@@ -30,7 +30,7 @@ namespace CKAN
                 (KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
 
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-            // setup progress callback        
+            // setup progress callback
 
             toInstall = new HashSet<string>();
             var toUninstall = new HashSet<string>();
@@ -194,7 +194,7 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-            
+
             var downloader = new NetAsyncDownloader(GUI.user);
             cancelCallback = () =>
             {
@@ -228,7 +228,7 @@ namespace CKAN
                 var ret = InstallList(toInstall, opts.Value, downloader);
                 if (!ret)
                 {
-                    // install failed for some reason, error message is already displayed to the user                    
+                    // install failed for some reason, error message is already displayed to the user
                     e.Result = new KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>(false,
                         opts.Key);
                     return;
@@ -420,23 +420,22 @@ namespace CKAN
             ChooseProvidedModsContinueButton.Enabled = false;
         }
 
+
         private void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
+            var any_item_selected = ChooseProvidedModsListView.Items.Cast<ListViewItem>().Any(item => item.Checked);
+            ChooseProvidedModsContinueButton.Enabled = any_item_selected;
             if (!e.Item.Checked)
             {
-                ChooseProvidedModsContinueButton.Enabled = false;
                 return;
             }
-            ChooseProvidedModsContinueButton.Enabled = true;
 
-            foreach (ListViewItem item in ChooseProvidedModsListView.Items)
+            foreach (ListViewItem item in ChooseProvidedModsListView.Items.Cast<ListViewItem>()
+                .Where(item => item != e.Item && item.Checked))
             {
-                if (item != e.Item && item.Checked)
-                {
-                    item.Checked = false;
-                }
+                item.Checked = false;
             }
-            
+
         }
 
         private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
@@ -449,8 +448,8 @@ namespace CKAN
             foreach (ListViewItem item in ChooseProvidedModsListView.Items)
             {
                 if (item.Checked)
-                {                    
-                    toomany_source.SetResult((CkanModule)item.Tag);                
+                {
+                    toomany_source.SetResult((CkanModule)item.Tag);
                 }
             }
         }
