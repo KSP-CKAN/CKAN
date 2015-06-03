@@ -63,24 +63,43 @@ namespace CKAN
             return v;
         }
 
-        // 0.25 -> 0.25.0
+        /// <summary>
+        /// If our KSP version is already long (x.y.z) returns itself.  If our
+        /// KSP version is short (x.y) returns the minimum full release that
+        /// would match (x.y.0).
+        ///
+        /// It is a mistake to call this method without using its return value.
+        /// </summary>
         public KSPVersion ToLongMin()
         {
             return IsShortVersion() ? new KSPVersion(version + ".0") : this;
         }
 
-        // 0.25 -> 0.25.99
+        /// <summary>
+        /// If our KSP version is already long (x.y.z) returns itself. If our
+        /// KSP version is short (x.y) returns the maximum full release that
+        /// would match (x.y.99).
+        ///
+        /// It is a mistake to call this method without using its return value.
+        /// </summary>
         public KSPVersion ToLongMax()
         {
             return IsShortVersion() ? new KSPVersion(version + ".99") : this;
         }
 
-        // True for short version (eg: 0.25), false for long (eg: 0.25.2).
+        /// <summary>
+        /// Returns true if our version object is short (ie: missing a patch number,
+        /// such as `0.23`).
+        /// </summary>
         public bool IsShortVersion()
         {
             return is_short;
         }
 
+        /// <summary>
+        /// Returns true if our version is long (ie: includes a patch number, such
+        /// as `0.23.5`).
+        /// </summary>
         public bool IsLongVersion()
         {
             return !is_short;
