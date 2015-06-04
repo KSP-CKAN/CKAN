@@ -920,6 +920,15 @@ namespace CKAN
                 File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
             }
         }
+
+        private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
+        {
+            Main.Instance.Manager.ClearAutoStart();
+            var old_instance = Main.Instance.CurrentInstance;
+            var result = new ChooseKSPInstance().ShowDialog();
+            if (!Equals(old_instance, Main.Instance.CurrentInstance))
+                Main.Instance.CurrentInstanceUpdated();
+        }
     }
 
     public class GUIUser : NullUser
