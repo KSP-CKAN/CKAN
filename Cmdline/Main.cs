@@ -20,12 +20,12 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
         /*
-         * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
+         * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded.
          * Without getting into a huge discussion about COM and threading,
          * this attribute ensures the communication mechanism between the current thread an
          * other threads that may want to talk to it via COM.  When you're using Windows Forms,
          * depending on the feature you're using, it may be using COM interop in order to communicate with
-         * operating system components.  Good examples of this are the Clipboard and the File Dialogs. 
+         * operating system components.  Good examples of this are the Clipboard and the File Dialogs.
          */
         [STAThread]
         public static int Main(string[] args)
@@ -66,7 +66,7 @@ namespace CKAN.CmdLine
             {
                 if (!options.AsRoot)
                 {
-                    user.RaiseError(@"You are trying to run CKAN as root. 
+                    user.RaiseError(@"You are trying to run CKAN as root.
 This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
                     return Exit.ERROR;
                 }
@@ -151,10 +151,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "uninstall":
                     cmdline.action = "remove";
                     break;
-
                 default:
                     break;
-            } 
+            }
 
             #endregion
 
@@ -228,16 +227,16 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
                 MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (display_name != null)
-                {                    
+                {
                     var version_string = (string) display_name.Invoke(null, null);
                     var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
-                    
+
                     if (match.Success)
-                    {                        
+                    {
                         int major = Int32.Parse(match.Groups["major"].Value);
                         int minor = Int32.Parse(match.Groups["minor"].Value);
                         int patch = Int32.Parse(match.Groups["revision"].Value);
-                        
+
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
                             user.RaiseMessage(
