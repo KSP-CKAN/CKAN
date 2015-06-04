@@ -506,12 +506,12 @@ namespace CKAN
         private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             var new_sort_column = this.ModList.Columns[e.ColumnIndex];
-            var current_sort_column = this.ModList.Columns[this.sortByColumnIndex];
+            var current_sort_column = this.ModList.Columns[this.m_Configuration.SortByColumnIndex];
             // Reverse the sort order if the current sorting column is clicked again
-            this.sortDescending = new_sort_column == current_sort_column ? !this.sortDescending : false;
+            this.m_Configuration.SortDescending = new_sort_column == current_sort_column ? !this.m_Configuration.SortDescending : false;
             // Reset the glyph
             current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-            this.sortByColumnIndex = new_sort_column.Index;
+            this.m_Configuration.SortByColumnIndex = new_sort_column.Index;
             this.UpdateFilters(this);
         }
 
