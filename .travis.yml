@@ -53,3 +53,11 @@ deploy:
     #  on:
     #    repo: KSP-CKAN/CKAN
     #    all_branches: true
+notifications:
+  irc:
+    channels:
+      - "irc.esper.net#ckan-ci"
+    template:
+      - "%{repository_name}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+      - "Change view : %{compare_url}"
+      - "Build details : %{build_url}"
