@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.ErrorMessage = new System.Windows.Forms.Label();
+            this.ErrorMessage = new System.Windows.Forms.RichTextBox();
             this.DismissButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -50,7 +50,7 @@
             this.ErrorMessage.Size = new System.Drawing.Size(267, 117);
             this.ErrorMessage.TabIndex = 0;
             this.ErrorMessage.Text = "Error!";
-            this.ErrorMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ErrorMessage.ReadOnly = true;
             // 
             // DismissButton
             // 
@@ -82,7 +82,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label ErrorMessage;
+        private System.Windows.Forms.RichTextBox ErrorMessage;
         private System.Windows.Forms.Button DismissButton;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -52,15 +53,17 @@ namespace CKAN
             // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
             // To make the filtering process faster, Copy the list of rows. Filter out the hidden and replace t
             // rows in DataGridView.
-            var rows = new DataGridViewRow[mainModList.FullListOfModRows.Count];
-            mainModList.FullListOfModRows.CopyTo(rows, 0);
+
+            var rows = new DataGridViewRow[mainModList.full_list_of_mod_rows.Count];
+            mainModList.full_list_of_mod_rows.CopyTo(rows, 0);
             // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
             CkanModule selected_mod = null;
             if (ModList.CurrentRow != null)
             {
-                selected_mod = ((GUIMod)ModList.CurrentRow.Tag).ToCkanModule();
+                selected_mod = ((GUIMod) ModList.CurrentRow.Tag).ToCkanModule();
             }
+
             ModList.Rows.Clear();
             foreach (var row in rows)
             {
@@ -141,19 +144,20 @@ namespace CKAN
 
         public void MarkModForInstall(string identifier, bool uninstall = false)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier));
+            Util.Invoke(this, () => _MarkModForInstall(identifier, uninstall));
         }
 
-        private void _MarkModForInstall(string identifier, bool uninstall = false)
+        private void _MarkModForInstall(string identifier, bool uninstall)
         {
-            foreach (DataGridViewRow row in ModList.Rows)
+            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows)
             {
                 var mod = (GUIMod) row.Tag;
                 if (mod.Identifier == identifier)
                 {
-                    mod.IsInstallChecked = true;
+                    mod.IsInstallChecked = !uninstall;
                     //TODO Fix up MarkMod stuff when I commit the GUIConflict
                     (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
+                    if (!uninstall) last_mod_to_have_install_toggled.Push(mod);
                     break;
                 }
             }
@@ -180,16 +184,21 @@ namespace CKAN
 
     public class MainModList
     {
-        internal List<DataGridViewRow> FullListOfModRows;
+        internal List<DataGridViewRow> full_list_of_mod_rows;
 
-        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated)
+        public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
+            IUser user = null)
         {
+            this.too_many_provides = too_many_provides;
+            this.user = user ?? new NullUser();
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
-            ModFiltersUpdated += onModFiltersUpdated != null ? onModFiltersUpdated : (source) => { };
+            ModFiltersUpdated += onModFiltersUpdated ?? (source => { });
             ModFiltersUpdated(this);
         }
 
         public delegate void ModFiltersUpdatedEvent(MainModList source);
+        //TODO Move to relationship resolver and have it use this.
+        public delegate Task<CkanModule> HandleTooManyProvides(TooManyModsProvideKraken kraken);
 
         public event ModFiltersUpdatedEvent ModFiltersUpdated;
         public ReadOnlyCollection<GUIMod> Modules { get; set; }
@@ -230,6 +239,9 @@ namespace CKAN
         private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
+        private IUser user;
+
+        private readonly HandleTooManyProvides too_many_provides;
 
         /// <summary>
         /// This function returns a changeset based on the selections of the user.
@@ -237,15 +249,16 @@ namespace CKAN
         /// </summary>
         /// <param name="registry"></param>
         /// <param name="current_instance"></param>
-        public static IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ComputeChangeSetFromModList(
+
+        public async Task<IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>>> ComputeChangeSetFromModList(
             Registry registry, HashSet<KeyValuePair<CkanModule, GUIModChangeType>> changeSet, ModuleInstaller installer,
             KSPVersion version)
         {
             var modules_to_install = new HashSet<string>();
             var modules_to_remove = new HashSet<string>();
-            var options = new RelationshipResolverOptions()
+            var options = new RelationshipResolverOptions
             {
-                without_toomanyprovides_kraken = true,
+                without_toomanyprovides_kraken = false,
                 with_recommends = false
             };
 
@@ -268,7 +281,42 @@ namespace CKAN
                 }
             }
 
-            //May throw InconsistentKraken
+
+            bool handled_all_to_many_provides = false;
+            while (!handled_all_to_many_provides)
+            {
+                //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
+                TooManyModsProvideKraken kraken = null;
+                try
+                {
+                    new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
+                    handled_all_to_many_provides = true;
+                    continue;
+                }
+                catch (TooManyModsProvideKraken k)
+                {
+                    kraken = k;
+                }
+                catch (ModuleNotFoundKraken k)
+                {
+                    //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
+                    user.RaiseError("Module {0} has not been found. This may be because it is not compatible " +
+                                    "with the currently installed version of KSP", k.module);
+                    return null;
+                }
+                //Shouldn't get here unless there is a kraken.
+                var mod = await too_many_provides(kraken);
+                if (mod != null)
+                {
+                    modules_to_install.Add(mod.identifier);
+                }
+                else
+                {
+                    //TODO Is could be a new type of Kraken.
+                    throw kraken;
+                }
+            }
+
             var resolver = new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
@@ -320,7 +368,7 @@ namespace CKAN
 
         public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
         {
-            FullListOfModRows = new List<DataGridViewRow>();
+            full_list_of_mod_rows = new List<DataGridViewRow>();
             foreach (var mod in modules)
             {
                 var item = new DataGridViewRow {Tag = mod};
@@ -330,7 +378,7 @@ namespace CKAN
                     : new DataGridViewTextBoxCell();
 
                 installed_cell.Value = mod.IsInstallable()
-                    ? (object)mod.IsInstalled
+                    ? (object) mod.IsInstalled
                     : (mod.IsAutodetected ? "AD" : "-");
 
                 var update_cell = mod.HasUpdate && !mod.IsAutodetected
@@ -356,9 +404,9 @@ namespace CKAN
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                FullListOfModRows.Add(item);
+                full_list_of_mod_rows.Add(item);
             }
-            return FullListOfModRows;
+            return full_list_of_mod_rows;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
