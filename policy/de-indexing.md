@@ -1,3 +1,5 @@
+# De-indexing mods from the CKAN
+
 From time to time mod authors ask their works be removed from the CKAN. Whether or not we should do this is a matter of licensing and public good. Our policy is based on two simple principles:
 
 1. **The CKAN, like the legal system, takes licenses very seriously.**

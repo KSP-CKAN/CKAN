@@ -1,3 +1,5 @@
+# Changing our version comparsion routine
+
 (Originally posted as [issue #963](https://github.com/KSP-CKAN/CKAN/issues/963))
 
 It seems that a day doesn't go past when I don't have to explain why changing versions is *hard*, so I'm going to do that here. I'm also going to make us a nice policy folder where things like this can go, so we've got something that's easy to refer to, but also undergoes peer review before changing.
