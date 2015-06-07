@@ -151,7 +151,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "uninstall":
                     cmdline.action = "remove";
                     break;
-
                 default:
                     break;
             }
