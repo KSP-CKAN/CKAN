@@ -73,6 +73,7 @@ my @cmd = (
     "mono",
     $REPACK,
     "--out:ckan.exe",
+    "--targetplatform=v4",
     "--lib:build/Cmdline/bin/$TARGET",
     "build/Cmdline/bin/$TARGET/CmdLine.exe",
     glob("build/Cmdline/bin/$TARGET/*.dll"),
