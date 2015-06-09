@@ -21,6 +21,7 @@ namespace CKAN.NetKAN
         public string author;
         public KSVersion[] versions;
         public Uri website;
+        public Uri source_code;
         public int default_version_id;
 
         public override string ToString()
@@ -78,6 +79,11 @@ namespace CKAN.NetKAN
             if (website != null)
             {
                 Inflate((JObject)metadata["resources"], "homepage", Escape(website));
+            }
+
+            if (source_code != null)
+            {
+                Inflate((JObject)metadata["resources"], "repository", Escape(source_code));
             }
 
             Inflate((JObject) metadata["resources"], "kerbalstuff", KSHome().OriginalString);
