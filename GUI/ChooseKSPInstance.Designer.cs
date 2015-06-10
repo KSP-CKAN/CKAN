@@ -32,6 +32,7 @@
             "dsadsa",
             "",
             ""}, -1);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChooseKSPInstance));
             this.KSPInstancesListView = new System.Windows.Forms.ListView();
             this.KSPInstallName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.KSPInstallVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -129,7 +130,7 @@
             this.SetAsDefaultCheckbox.Text = "Set as default";
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
             // 
-            // Delete
+            // DeleteButton
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -153,6 +154,7 @@
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.KSPInstancesListView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChooseKSPInstance";
             this.Text = "Select KSP install";
             this.ResumeLayout(false);

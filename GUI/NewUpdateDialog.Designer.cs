@@ -30,6 +30,7 @@ namespace CKAN
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewUpdateDialog));
             this.label1 = new System.Windows.Forms.Label();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.ReleaseNotesTextbox = new System.Windows.Forms.RichTextBox();
@@ -103,6 +104,7 @@ namespace CKAN
             this.Controls.Add(this.ReleaseNotesTextbox);
             this.Controls.Add(this.VersionLabel);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(354, 245);
             this.Name = "NewUpdateDialog";
             this.Text = "A new version of CKAN is available";
