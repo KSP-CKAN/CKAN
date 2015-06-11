@@ -972,6 +972,7 @@ namespace CKAN
                             new MarkdownExporter().Export(registry, writer);
                             break;
                         case ExportFileType.BbCode:
+                            new BbCodeExporter().Export(registry, writer);
                             break;
                         case ExportFileType.Csv:
                             break;
