@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Exporters;
 using CKAN.Properties;
 using CKAN.Types;
 using log4net;
@@ -945,31 +946,37 @@ namespace CKAN
                 Title = Resources.ExportInstalledModsDialogTitle
             };
 
-            if (dlg.ShowDialog() == DialogResult.OK) {
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
 
-                var exportOption = exportOptions[dlg.FilterIndex];
-
-                switch (exportOption.ExportFileType)
+                using (var writer = new StreamWriter(new FileStream(dlg.FileName, FileMode.OpenOrCreate)))
                 {
-                    case ExportFileType.Ckan:
-                        // Save, just to be certain that the installed-*.ckan metapackage is generated
-                        RegistryManager.Instance(CurrentInstance).Save();
+                    var registry = RegistryManager.Instance(CurrentInstance).registry;
 
-                        // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                        File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
-                        break;
-                    case ExportFileType.PlainText:
-                        break;
-                    case ExportFileType.Markdown:
-                        break;
-                    case ExportFileType.BbCode:
-                        break;
-                    case ExportFileType.Csv:
-                        break;
-                    case ExportFileType.Tsv:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (exportOption.ExportFileType)
+                    {
+                        case ExportFileType.Ckan:
+                            // Save, just to be certain that the installed-*.ckan metapackage is generated
+                            RegistryManager.Instance(CurrentInstance).Save();
+
+                            // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                            File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+                            break;
+                        case ExportFileType.PlainText:
+                            new PlainTextExporter().Export(registry, writer);
+                            break;
+                        case ExportFileType.Markdown:
+                            break;
+                        case ExportFileType.BbCode:
+                            break;
+                        case ExportFileType.Csv:
+                            break;
+                        case ExportFileType.Tsv:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
         }
