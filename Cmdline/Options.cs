@@ -176,6 +176,9 @@ namespace CKAN.CmdLine
     {
         [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
         public bool porcelain { get; set; }
+
+        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
+        public string export { get; set; }
     }
 
     internal class VersionOptions : CommonOptions
