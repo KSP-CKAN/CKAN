@@ -975,8 +975,12 @@ namespace CKAN
                             new BbCodeExporter().Export(registry, writer);
                             break;
                         case ExportFileType.Csv:
+                            new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma)
+                                .Export(registry, writer);
                             break;
                         case ExportFileType.Tsv:
+                            new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab)
+                                .Export(registry, writer);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
