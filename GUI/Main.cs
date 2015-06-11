@@ -950,7 +950,9 @@ namespace CKAN
             {
                 var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
 
-                using (var writer = new StreamWriter(new FileStream(dlg.FileName, FileMode.OpenOrCreate)))
+                var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+
+                using (var writer = new StreamWriter(new FileStream(dlg.FileName, fileMode)))
                 {
                     var registry = RegistryManager.Instance(CurrentInstance).registry;
 
@@ -967,6 +969,7 @@ namespace CKAN
                             new PlainTextExporter().Export(registry, writer);
                             break;
                         case ExportFileType.Markdown:
+                            new MarkdownExporter().Export(registry, writer);
                             break;
                         case ExportFileType.BbCode:
                             break;

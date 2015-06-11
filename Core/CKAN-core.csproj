@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exporters\IExporter.cs" />
+    <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
