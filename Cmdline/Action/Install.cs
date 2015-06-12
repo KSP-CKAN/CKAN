@@ -41,7 +41,9 @@ namespace CKAN.CmdLine
                         else
                         {
                             // We have no further ideas as what we can do with this Uri, tell the user.
-                            user.RaiseError("Could not determine if \"{0}\" is a local or a remote file.", ckan_file);
+                            user.RaiseError("Can not find file \"{0}\".", ckan_file);
+                            user.RaiseError("Exiting.");
+                            return Exit.ERROR;
                         }
                     }
                     else
@@ -231,7 +233,7 @@ namespace CKAN.CmdLine
             registry_manager.registry.RemoveAvailable(module);
 
             // Sneakily add our version in...
-            registry_manager.registry.AddAvailable(module);            
+            registry_manager.registry.AddAvailable(module);
 
             return module;
         }
