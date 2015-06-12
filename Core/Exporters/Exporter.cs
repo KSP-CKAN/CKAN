@@ -4,6 +4,14 @@ using CKAN.Types;
 
 namespace CKAN.Exporters
 {
+    /// <summary>
+    /// An implementation of <see cref="IExporter"/> that knows how to export to the different types of
+    /// <see cref="ExportFileType"/>.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ExportFileType.Ckan"/> is currently unhandled as that requires use of the
+    /// <see cref="RegistryManager"/> rather than just the <see cref="Registry"/>.
+    /// </remarks>
     public sealed class Exporter : IExporter
     {
         private readonly IExporter _exporter;

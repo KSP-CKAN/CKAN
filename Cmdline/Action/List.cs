@@ -117,7 +117,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private ExportFileType? GetExportFileType(string export)
+        private static ExportFileType? GetExportFileType(string export)
         {
             export = export.ToLowerInvariant();
 
