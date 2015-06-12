@@ -5,14 +5,16 @@ namespace CKAN.Exporters
 {
     public sealed class PlainTextExporter : IExporter
     {
-        public void Export(Registry registry, TextWriter writer)
-        {
-            foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
-            {
-                writer.WriteLine(@"{0} ({1} {2})", mod.Module.name, mod.identifier, mod.Module.version);
-            }
 
-            writer.Flush();
+        public void Export(Registry registry, Stream stream)
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
+                {
+                    writer.WriteLine(@"{0} ({1} {2})", mod.Module.name, mod.identifier, mod.Module.version);
+                }
+            }
         }
     }
 }

@@ -27,56 +27,57 @@ namespace CKAN.Exporters
             }
         }
 
-        public void Export(Registry registry, TextWriter writer)
+        public void Export(Registry registry, Stream stream)
         {
-            writer.WriteLine(WritePattern,
-                _delimter,
-                "identifier",
-                "version",
-                "name",
-                "abstract",
-                "description",
-                "author",
-                "kind",
-                "download",
-                "download_size",
-                "ksp_version",
-                "ksp_version_min",
-                "ksp_version_max",
-                "license",
-                "release_status",
-                "repository",
-                "homepage",
-                "bugtracker",
-                "kerbalstuff"
-            );
-
-            foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
+            using (var writer = new StreamWriter(stream))
             {
                 writer.WriteLine(WritePattern,
                     _delimter,
-                    mod.Module.identifier,
-                    mod.Module.version,
-                    QuoteIfNecessary(mod.Module.name),
-                    QuoteIfNecessary(mod.Module.@abstract),
-                    QuoteIfNecessary(mod.Module.description),
-                    QuoteIfNecessary(string.Join(";", mod.Module.author)),
-                    QuoteIfNecessary(mod.Module.kind),
-                    WriteUri(mod.Module.download),
-                    mod.Module.download_size,
-                    mod.Module.ksp_version,
-                    mod.Module.ksp_version_min,
-                    mod.Module.ksp_version_max,
-                    mod.Module.license,
-                    mod.Module.release_status,
-                    WriteRepository(mod.Module.resources),
-                    WriteHomepage(mod.Module.resources),
-                    WriteBugtracker(mod.Module.resources),
-                    WriteKerbalStuff(mod.Module.resources)
+                    "identifier",
+                    "version",
+                    "name",
+                    "abstract",
+                    "description",
+                    "author",
+                    "kind",
+                    "download",
+                    "download_size",
+                    "ksp_version",
+                    "ksp_version_min",
+                    "ksp_version_max",
+                    "license",
+                    "release_status",
+                    "repository",
+                    "homepage",
+                    "bugtracker",
+                    "kerbalstuff"
                 );
-            }
 
-            writer.Flush();
+                foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
+                {
+                    writer.WriteLine(WritePattern,
+                        _delimter,
+                        mod.Module.identifier,
+                        mod.Module.version,
+                        QuoteIfNecessary(mod.Module.name),
+                        QuoteIfNecessary(mod.Module.@abstract),
+                        QuoteIfNecessary(mod.Module.description),
+                        QuoteIfNecessary(string.Join(";", mod.Module.author)),
+                        QuoteIfNecessary(mod.Module.kind),
+                        WriteUri(mod.Module.download),
+                        mod.Module.download_size,
+                        mod.Module.ksp_version,
+                        mod.Module.ksp_version_min,
+                        mod.Module.ksp_version_max,
+                        mod.Module.license,
+                        mod.Module.release_status,
+                        WriteRepository(mod.Module.resources),
+                        WriteHomepage(mod.Module.resources),
+                        WriteBugtracker(mod.Module.resources),
+                        WriteKerbalStuff(mod.Module.resources)
+                    );
+                }
+            }
         }
 
         private string WriteUri(Uri uri)
@@ -141,5 +142,7 @@ namespace CKAN.Exporters
             Comma,
             Tab
         }
+
+
     }
 }

@@ -5,14 +5,15 @@ namespace CKAN.Exporters
 {
     public sealed class MarkdownExporter : IExporter
     {
-        public void Export(Registry registry, TextWriter writer)
+        public void Export(Registry registry, Stream stream)
         {
-            foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
+            using (var writer = new StreamWriter(stream))
             {
-                writer.WriteLine(@"  - *{0}* `{1} {2}`", mod.Module.name, mod.identifier, mod.Module.version);
+                foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
+                {
+                    writer.WriteLine(@"  - *{0}* `{1} {2}`", mod.Module.name, mod.identifier, mod.Module.version);
+                }
             }
-
-            writer.Flush();
         }
     }
 }

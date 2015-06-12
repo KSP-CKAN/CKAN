@@ -952,7 +952,7 @@ namespace CKAN
 
                 var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
 
-                using (var writer = new StreamWriter(new FileStream(dlg.FileName, fileMode)))
+                using (var stream = new FileStream(dlg.FileName, fileMode))
                 {
                     var registry = RegistryManager.Instance(CurrentInstance).registry;
 
@@ -966,21 +966,21 @@ namespace CKAN
                             File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
                             break;
                         case ExportFileType.PlainText:
-                            new PlainTextExporter().Export(registry, writer);
+                            new PlainTextExporter().Export(registry, stream);
                             break;
                         case ExportFileType.Markdown:
-                            new MarkdownExporter().Export(registry, writer);
+                            new MarkdownExporter().Export(registry, stream);
                             break;
                         case ExportFileType.BbCode:
-                            new BbCodeExporter().Export(registry, writer);
+                            new BbCodeExporter().Export(registry, stream);
                             break;
                         case ExportFileType.Csv:
                             new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma)
-                                .Export(registry, writer);
+                                .Export(registry, stream);
                             break;
                         case ExportFileType.Tsv:
                             new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab)
-                                .Export(registry, writer);
+                                .Export(registry, stream);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
