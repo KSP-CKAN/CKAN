@@ -195,11 +195,12 @@ namespace CKAN.CmdLine
             {
                 // The prettiest Kraken formats itself for us.
                 user.RaiseMessage(ex.InconsistenciesPretty);
+                user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
                 return Exit.ERROR;
             }
             catch (CancelledActionKraken)
             {
-                user.RaiseMessage("Installation cancelled at user request.");
+                user.RaiseMessage("Installation canceled at user request.");
                 return Exit.ERROR;
             }
             catch (MissingCertificateKraken kraken)
