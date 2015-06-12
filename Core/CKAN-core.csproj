@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Exporters\BbCodeExporter.cs" />
     <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
+    <Compile Include="Exporters\Exporter.cs" />
     <Compile Include="Exporters\IExporter.cs" />
     <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />

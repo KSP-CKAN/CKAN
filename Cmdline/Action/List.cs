@@ -105,29 +105,8 @@ namespace CKAN.CmdLine
             else
             {
                 var stream = Console.OpenStandardOutput();
-
-                switch (exportFileType.Value)
-                {
-                    case ExportFileType.PlainText:
-                        new PlainTextExporter().Export(registry, stream);
-                        break;
-                    case ExportFileType.Markdown:
-                        new MarkdownExporter().Export(registry, stream);
-                        break;
-                    case ExportFileType.BbCode:
-                        new BbCodeExporter().Export(registry, stream);
-                        break;
-                    case ExportFileType.Csv:
-                        new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma)
-                            .Export(registry, stream);
-                        break;
-                    case ExportFileType.Tsv:
-                        new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab)
-                            .Export(registry, stream);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                new Exporter(exportFileType.Value).Export(registry, stream);
+                stream.Flush();
             }
 
             if (!(options.porcelain) && exportFileType == null)

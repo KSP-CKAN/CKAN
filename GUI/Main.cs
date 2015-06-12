@@ -930,12 +930,12 @@ namespace CKAN
         {
             var exportOptions = new List<ExportOption>
             {
-                new ExportOption(Types.ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
-                new ExportOption(Types.ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
-                new ExportOption(Types.ExportFileType.Markdown, "Markdown (*.md)", "md"),
-                new ExportOption(Types.ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(Types.ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
-                new ExportOption(Types.ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
+                new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
+                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
             };
 
             var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
@@ -950,40 +950,23 @@ namespace CKAN
             {
                 var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
 
-                var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
-
-                using (var stream = new FileStream(dlg.FileName, fileMode))
+                if (exportOption.ExportFileType == ExportFileType.Ckan)
                 {
-                    var registry = RegistryManager.Instance(CurrentInstance).registry;
+                    // Save, just to be certain that the installed-*.ckan metapackage is generated
+                    RegistryManager.Instance(CurrentInstance).Save();
 
-                    switch (exportOption.ExportFileType)
+                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+                }
+                else
+                {
+                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+
+                    using (var stream = new FileStream(dlg.FileName, fileMode))
                     {
-                        case ExportFileType.Ckan:
-                            // Save, just to be certain that the installed-*.ckan metapackage is generated
-                            RegistryManager.Instance(CurrentInstance).Save();
+                        var registry = RegistryManager.Instance(CurrentInstance).registry;
 
-                            // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                            File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
-                            break;
-                        case ExportFileType.PlainText:
-                            new PlainTextExporter().Export(registry, stream);
-                            break;
-                        case ExportFileType.Markdown:
-                            new MarkdownExporter().Export(registry, stream);
-                            break;
-                        case ExportFileType.BbCode:
-                            new BbCodeExporter().Export(registry, stream);
-                            break;
-                        case ExportFileType.Csv:
-                            new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma)
-                                .Export(registry, stream);
-                            break;
-                        case ExportFileType.Tsv:
-                            new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab)
-                                .Export(registry, stream);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
                     }
                 }
             }
