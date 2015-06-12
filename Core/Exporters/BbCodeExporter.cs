@@ -13,7 +13,7 @@ namespace CKAN.Exporters
 
                 foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
                 {
-                    writer.WriteLine(@"[*][I]{0}[/I] ({1} {2})", mod.Module.name, mod.identifier, mod.Module.version);
+                    writer.WriteLine(@"[*][B]{0}[/B] ({1} {2})", mod.Module.name, mod.identifier, mod.Module.version);
                 }
 
                 writer.WriteLine("[/LIST]");
