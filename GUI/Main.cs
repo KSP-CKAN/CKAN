@@ -704,7 +704,7 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set =
                     await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
-                    CurrentInstance.Version());
+                        CurrentInstance.Version());
             }
             catch (InconsistentKraken)
             {
@@ -897,17 +897,25 @@ namespace CKAN
                 }
 
                 // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+                var registry = RegistryManager.Instance(CurrentInstance).registry;
 
                 // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
+                registry.RemoveAvailable(module);
 
                 // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
+                registry.AddAvailable(module);
+                var current_ksp_version = CurrentInstance.Version();
                 var changeset = new List<KeyValuePair<GUIMod, GUIModChangeType>>();
                 changeset.Add(new KeyValuePair<GUIMod, GUIModChangeType>(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()), GUIModChangeType.Install));
+                    new GUIMod(module,registry,current_ksp_version), GUIModChangeType.Install));
+                if (module.IsMetapackage)
+                {
+                    changeset.AddRange(
+                        module.depends
+                        .Select(dep => CkanModule.FromIDandVersion(registry,dep.name,current_ksp_version))
+                        .Select(mod=>new GUIMod(mod,registry,current_ksp_version))
+                        .Select(gmod=> new KeyValuePair<GUIMod, GUIModChangeType>(gmod,GUIModChangeType.Install)));
+                }
 
                 menuStrip1.Enabled = false;
 
@@ -955,12 +963,12 @@ namespace CKAN
 
                 if (exportOption.ExportFileType == ExportFileType.Ckan)
                 {
-                    // Save, just to be certain that the installed-*.ckan metapackage is generated
-                    RegistryManager.Instance(CurrentInstance).Save();
+                // Save, just to be certain that the installed-*.ckan metapackage is generated
+                RegistryManager.Instance(CurrentInstance).Save();
 
-                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                // TODO: The core might eventually save as something other than 'installed-default.ckan'
                     File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
-                }
+            }
                 else
                 {
                     var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
@@ -970,7 +978,7 @@ namespace CKAN
                         var registry = RegistryManager.Instance(CurrentInstance).registry;
 
                         new Exporter(exportOption.ExportFileType).Export(registry, stream);
-                    }
+        }
                 }
             }
         }
