@@ -8,7 +8,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Exporters;
 using CKAN.Properties;
+using CKAN.Types;
 using log4net;
 using Timer = System.Windows.Forms.Timer;
 
@@ -926,16 +928,47 @@ namespace CKAN
         /// <param name="e"></param>
         private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dlg = new SaveFileDialog();
-            dlg.Filter = Resources.CKANFileFilter;
-            dlg.Title = Resources.ExportInstalledModsDialogTitle;
+            var exportOptions = new List<ExportOption>
+            {
+                new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
+                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
+            };
 
-            if (dlg.ShowDialog() == DialogResult.OK) {
-                // Save, just to be certain that the installed-*.ckan metapackage is generated
-                RegistryManager.Instance(CurrentInstance).Save();
+            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
 
-                // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+            var dlg = new SaveFileDialog
+            {
+                Filter = filter,
+                Title = Resources.ExportInstalledModsDialogTitle
+            };
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
+
+                if (exportOption.ExportFileType == ExportFileType.Ckan)
+                {
+                    // Save, just to be certain that the installed-*.ckan metapackage is generated
+                    RegistryManager.Instance(CurrentInstance).Save();
+
+                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+                }
+                else
+                {
+                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+
+                    using (var stream = new FileStream(dlg.FileName, fileMode))
+                    {
+                        var registry = RegistryManager.Instance(CurrentInstance).registry;
+
+                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
+                    }
+                }
             }
         }
 
