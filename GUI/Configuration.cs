@@ -73,9 +73,14 @@ namespace CKAN
                 {
                     configuration = (Configuration) serializer.Deserialize(stream);
                 }
-                catch (System.InvalidOperationException)
+                catch (System.InvalidOperationException e)
                 {
-                    string message = string.Format("Error trying to parse \"{0}\". Try to move it out of the folder and restart CKAN.", path);
+                    string additionalErrorData = "";
+
+                    if (e.InnerException != null)
+                        additionalErrorData = ": " + e.InnerException.Message;
+
+                    string message = string.Format("Error trying to parse \"{0}\"{1}. Try to move it out of the folder and restart CKAN.", path, additionalErrorData);
                     throw new Kraken(message);
                 }
             }
