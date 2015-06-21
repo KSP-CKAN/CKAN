@@ -64,6 +64,7 @@
             this.KSPInstancesListView.UseCompatibleStateImageBehavior = false;
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
             this.KSPInstancesListView.SelectedIndexChanged += new System.EventHandler(this.KSPInstancesListView_SelectedIndexChanged);
+            this.KSPInstancesListView.DoubleClick += new System.EventHandler(this.KSPInstancesListView_DoubleClick);
             // 
             // KSPInstallName
             // 
@@ -142,6 +143,7 @@
             // 
             // ChooseKSPInstance
             // 
+            this.AcceptButton = this.SelectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 355);

@@ -21,7 +21,7 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 2;
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] private int registry_version;
@@ -484,7 +484,10 @@ namespace CKAN
          
         // TODO: Consider making this internal, because practically everything should
         // be calling LatestAvailableWithProvides()
-        public CkanModule LatestAvailable(string module, KSPVersion ksp_version)
+        public CkanModule LatestAvailable(
+            string module,
+            KSPVersion ksp_version,
+            RelationshipDescriptor relationship_descriptor =null)
         {
             log.DebugFormat("Finding latest available for {0}", module);
 
@@ -492,7 +495,7 @@ namespace CKAN
 
             try
             {
-                return available_modules[module].Latest(ksp_version);
+                return available_modules[module].Latest(ksp_version,relationship_descriptor);
             }
             catch (KeyNotFoundException)
             {
@@ -500,20 +503,22 @@ namespace CKAN
             }
         }
 
+        
+
         /// <summary>
-        ///     Returns the latest available version of a module that
-        ///     satisifes the specified version. Takes into account module 'provides',
-        ///     which may result in a list of alternatives being provided.
+        ///     Returns the latest available version of a module that satisifes the specified version and 
+        ///     optionally a RelationshipDescriptor. Takes into account module 'provides', which may
+        ///     result in a list of alternatives being provided. 
         ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
         ///     If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version)
+        public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version, RelationshipDescriptor relationship_descriptor = null)
         {
             // This public interface calcultes a cache of modules which
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,
-                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null));
+                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null),relationship_descriptor);
         }
 
         /// <summary>
@@ -523,7 +528,7 @@ namespace CKAN
         /// calculated. Not for direct public consumption. ;)
         /// </summary>
         private List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version,
-            IEnumerable<AvailableModule> available_for_current_version)
+            IEnumerable<AvailableModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
         {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 
@@ -534,7 +539,7 @@ namespace CKAN
             try
             {
                 // If we can find the module requested for our KSP, use that.
-                CkanModule mod = LatestAvailable(module, ksp_version);
+                CkanModule mod = LatestAvailable(module, ksp_version, relationship_descriptor);
                 if (mod != null)
                 {
                     modules.Add(mod);
@@ -852,6 +857,17 @@ namespace CKAN
 
             ProvidesVersion version;
             return provided.TryGetValue(modIdentifier, out version) ? version : null;
+        }
+
+        /// <summary>
+        /// Gets the installed version of a mod. Returns null if provided or autodetected. 
+        /// </summary>
+        /// <param name="mod_identifer"></param>
+        /// <returns></returns>
+        public Module GetInstalledVersion(string mod_identifer)
+        {
+            InstalledModule installedModule;
+            return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
         }
 
         /// <summary>

@@ -31,18 +31,16 @@ namespace CKAN.CmdLine
             );
         }
     }
-        
+
     // Actions supported by our client go here.
     // TODO: Figure out how to do per action help screens.
 
     internal class Actions
     {
+        private GuiOptions gui_console_options;
 
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
-
-        [VerbOption("gui-with-console", HelpText = "Start the CKAN GUI with the console visible")]
-        public GuiOptions GuiConsoleOptions { get; set; }
 
         [VerbOption("search", HelpText = "Search for mods")]
         public SearchOptions SearchOptions { get; set; }
@@ -178,6 +176,9 @@ namespace CKAN.CmdLine
     {
         [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
         public bool porcelain { get; set; }
+
+        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
+        public string export { get; set; }
     }
 
     internal class VersionOptions : CommonOptions

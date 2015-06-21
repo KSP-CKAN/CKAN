@@ -37,10 +37,6 @@
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.KSPInstallPathLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.ResetAutoStartChoice = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
@@ -51,7 +47,6 @@
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -158,47 +153,6 @@
             this.CKANCacheLabel.TabIndex = 0;
             this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MiB";
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.KSPInstallPathLabel);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.ResetAutoStartChoice);
-            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox1.Location = new System.Drawing.Point(12, 334);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(476, 93);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "KSP Install";
-            // 
-            // KSPInstallPathLabel
-            // 
-            this.KSPInstallPathLabel.Location = new System.Drawing.Point(137, 20);
-            this.KSPInstallPathLabel.Name = "KSPInstallPathLabel";
-            this.KSPInstallPathLabel.Size = new System.Drawing.Size(320, 41);
-            this.KSPInstallPathLabel.TabIndex = 2;
-            this.KSPInstallPathLabel.Text = "label2";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Current KSP install path: ";
-            // 
-            // ResetAutoStartChoice
-            // 
-            this.ResetAutoStartChoice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetAutoStartChoice.Location = new System.Drawing.Point(309, 64);
-            this.ResetAutoStartChoice.Name = "ResetAutoStartChoice";
-            this.ResetAutoStartChoice.Size = new System.Drawing.Size(161, 23);
-            this.ResetAutoStartChoice.TabIndex = 0;
-            this.ResetAutoStartChoice.Text = "Choose another KSP install";
-            this.ResetAutoStartChoice.UseVisualStyleBackColor = true;
-            this.ResetAutoStartChoice.Click += new System.EventHandler(this.ResetAutoStartChoice_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
@@ -209,7 +163,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox2.Location = new System.Drawing.Point(12, 433);
+            this.groupBox2.Location = new System.Drawing.Point(12, 334);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(476, 105);
             this.groupBox2.TabIndex = 11;
@@ -290,9 +244,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 542);
+            this.ClientSize = new System.Drawing.Size(495, 442);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -302,8 +255,6 @@
             this.RepositoryGroupBox.ResumeLayout(false);
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -317,10 +268,6 @@
         private System.Windows.Forms.GroupBox CacheGroupBox;
         private System.Windows.Forms.Label CKANCacheLabel;
         private System.Windows.Forms.Button ClearCKANCacheButton;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button ResetAutoStartChoice;
-        private System.Windows.Forms.Label KSPInstallPathLabel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.ListBox ReposListBox;
         private System.Windows.Forms.Button UpRepoButton;

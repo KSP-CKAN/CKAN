@@ -89,6 +89,13 @@ namespace CKAN.NetKAN
 
         public static string GithubPage(string repo)
         {
+            var assetMatchIndex = repo.LastIndexOf("/asset_match/", StringComparison.Ordinal);
+
+            if (assetMatchIndex > -1)
+            {
+                repo = repo.Substring(0, assetMatchIndex);
+            }
+
             var github_base = new Uri("https://github.com/");
             var url = new Uri(github_base, repo);
             return url.ToString();
