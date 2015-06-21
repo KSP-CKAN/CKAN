@@ -5,6 +5,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -29,6 +31,14 @@ namespace CKAN.CmdLine
         [STAThread]
         public static int Main(string[] args)
         {
+            // Launch debugger if the "--debugger" flag is present in the command line arguments.
+            // We want to do this as early as possible so just check the flag manually, rather than doing the
+            // more robust argument parsing.
+            if (args.Any(i => i == "--debugger"))
+            {
+                Debugger.Launch();
+            }
+
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
