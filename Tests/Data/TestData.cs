@@ -402,6 +402,28 @@ namespace Tests.Data
                 File.Copy(file, file.Replace(src, dst));
             }
         }
+
+        public static string ConfigurationFile()
+        {
+            return @"<?xml version=""1.0"" encoding=""utf-8""?>
+            <Configuration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+              <CommandLineArguments>KSP.exe -force-opengl</CommandLineArguments>
+              <AutoCloseWaitDialog>false</AutoCloseWaitDialog>
+              <URLHandlerNoNag>false</URLHandlerNoNag>
+              <CheckForUpdatesOnLaunch>true</CheckForUpdatesOnLaunch>
+              <CheckForUpdatesOnLaunchNoNag>true</CheckForUpdatesOnLaunchNoNag>
+              <SortByColumnIndex>2</SortByColumnIndex>
+              <SortDescending>false</SortDescending>
+              <WindowSize>
+                <Width>1024</Width>
+                <Height>664</Height>
+              </WindowSize>
+              <WindowLoc>
+                <X>512</X>
+                <Y>136</Y>
+              </WindowLoc>
+            </Configuration>";
+        }
     }
 
     public class RandomModuleGenerator

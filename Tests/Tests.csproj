@@ -131,6 +131,7 @@
     <Compile Include="Data\DisposableKSP.cs" />
     <Compile Include="Data\TestData.cs" />
     <Compile Include="Data\ZipLib.cs" />
+    <Compile Include="GUI\Configuration.cs" />
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
     <Compile Include="NetKAN\AVC.cs" />
@@ -165,6 +166,9 @@
       <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
       <Name>CKAN-netkan</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
