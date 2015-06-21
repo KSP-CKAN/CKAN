@@ -98,6 +98,9 @@ namespace CKAN.CmdLine
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
+        [Option("debugger", DefaultValue = false, HelpText = "Launch debugger at start")]
+        public bool Debugger { get; set; }
+
         [Option("ksp", DefaultValue = null, HelpText = "KSP install to use")]
         public string KSP { get; set; }
 
