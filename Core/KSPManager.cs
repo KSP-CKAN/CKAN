@@ -21,7 +21,7 @@ namespace CKAN
 
         private readonly SortedList<string, KSP> instances = new SortedList<string, KSP>();
 
-        internal string AutoStartInstance
+        public string AutoStartInstance
         {
             get { return Win32Registry.AutoStartInstance; }
             private set
