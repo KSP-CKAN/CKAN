@@ -314,7 +314,7 @@ namespace CKAN
 
 
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-            Text = String.Format("CKAN {0} - KSP {1}  --  {2}  -- {3}", Meta.Version(), CurrentInstance.Version(),
+            Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
 
