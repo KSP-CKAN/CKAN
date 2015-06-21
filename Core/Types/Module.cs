@@ -244,7 +244,10 @@ namespace CKAN
         /// </summary>
         public bool ConflictsWith(Module module)
         {
-            if (Equals(module)) return false;
+            // We never conflict with ourselves, since we can't be installed at
+            // the same time as another version of ourselves.
+            if (module.identifier == this.identifier) return false;
+
             return UniConflicts(this, module) || UniConflicts(module, this);
         }
 
