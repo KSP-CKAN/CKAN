@@ -291,6 +291,39 @@ namespace Tests.Data
             ;
         }
 
+        // AFAIK kOS isn't multi-licensed, but we need somthing for testing. :)
+        public static string kOS_014_multilicense()
+        {
+            return @"
+                {
+                    ""spec_version"": 1,
+                    ""name""     : ""kOS - Kerbal OS"",
+                    ""identifier"" : ""kOS"",
+                    ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
+                    ""license""  : [ ""GPL-3.0"", ""GPL-2.0"" ],
+                    ""version""  : ""0.14"",
+                    ""release_status"" : ""stable"",
+                    ""ksp_version"" : ""0.24.2"",
+                    ""resources"" : {
+                        ""homepage"" : ""http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13"",
+                        ""manual""   : ""http://ksp-kos.github.io/KOS_DOC/"",
+                        ""bugtracker"": ""https://github.com/KSP-KOS/KOS/issues"",
+                        ""github""   : {
+                            ""url""      : ""https://github.com/KSP-KOS/KOS"",
+                            ""releases"" : true
+                        }
+                    },
+                    ""install"" : [
+                        {
+                            ""file""       : ""GameData/kOS"",
+                            ""install_to"" : ""GameData""
+                        }
+                    ]
+                }"
+            ;
+        }
+
         public static CkanModule kOS_014_module()
         {
             return CkanModule.FromJson(kOS_014());

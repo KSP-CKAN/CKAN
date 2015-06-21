@@ -115,8 +115,8 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.4'. Changes since spec `1`
-are marked with **v1.2** through to **v1.6** respectively. For maximum
+This document describes the CKAN specification 'v1.8'. Changes since spec `1`
+are marked with **v1.2** through to **v1.8** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -151,7 +151,7 @@ described version of the mod.
 
 ##### license
 
-The license, or list of licenses, under which the mod is released.
+The license (**v1.0**), or list of licenses (**v1.8**), under which the mod is released.
 The same rules as per the
 [debian license specification](https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/#license-specification) apply, with the following modifications:
 
@@ -169,7 +169,7 @@ described above:
 - `unrestricted`: Not an OSI approved license, but not restricted
 - `unknown`: License not provided in metadata
 
-A single license, or list of licenses may be provided. The following
+A single license (**v1.0**) , or list of licenses (**v1.8**) may be provided. The following
 are both valid, the first describing a mod released under the BSD license,
 the second under the *user's choice* of BSD-2-clause or GPL-2.0 licenses.
 

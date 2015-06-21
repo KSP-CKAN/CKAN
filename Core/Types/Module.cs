@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace CKAN
 {
@@ -81,7 +82,7 @@ namespace CKAN
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
-    public class Module
+    public class Module : IEquatable<Module>
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Module));
 
@@ -125,7 +126,8 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        public License license;
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        public List<License> license;
 
         [JsonProperty("name")]
         public string name;
@@ -214,7 +216,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new License ("unknown");
+                license = new List<License> {new License ("unknown")};
             }
 
             if (@abstract == null)
@@ -233,6 +235,7 @@ namespace CKAN
         /// </summary>
         public bool ConflictsWith(Module module)
         {
+            if(Equals(module)) return false;
             return UniConflicts(this, module) || UniConflicts(module, this);
         }
 
@@ -298,6 +301,44 @@ namespace CKAN
             }
         }
 
+        protected bool Equals(Module other)
+        {
+            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Module) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (identifier.GetHashCode()*397) ^ version.GetHashCode();
+            }
+        }
+
+        bool IEquatable<Module>.Equals(Module other)
+        {
+            return Equals(other);
+        }
+
+        public class IdentifierEqualilty : EqualityComparer<Module>
+        {
+            public override bool Equals(Module x, Module y)
+            {
+                return x.identifier.Equals(y.identifier);
+            }
+
+            public override int GetHashCode(Module obj)
+            {
+                return obj.identifier.GetHashCode();
+            }
+        }
     }
 
     public class CkanModule : Module
@@ -460,7 +501,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return identifier.GetHashCode() ^ version.GetHashCode();
+            return base.GetHashCode();
         }
 
 

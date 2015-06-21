@@ -67,6 +67,7 @@ namespace Tests.Core.Relationships
 
         [Test]
         [Category("Version")]
+
         public void Constructor_WithConflictingModulesVersion_Throws()
         {
             var list = new List<string>();
@@ -732,7 +733,8 @@ namespace Tests.Core.Relationships
 
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(mod);
-            Assert.That(reason,Is.AssignableTo<Relationship.UserRequested>());
+
+            Assert.That(reason, Is.AssignableTo<SelectionReason.UserRequested>());
         }
 
         [Test]
@@ -747,8 +749,9 @@ namespace Tests.Core.Relationships
             options.with_all_suggests = true;
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(sugested);
-            Assert.That(reason, Is.AssignableTo<Relationship.Suggested>());
-            Assert.That(reason.Parent,Is.EqualTo(mod));
+
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Suggested>());
+            Assert.That(reason.Parent, Is.EqualTo(mod));
         }
 
         [Test]
@@ -771,11 +774,11 @@ namespace Tests.Core.Relationships
             options.with_recommends = true;
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
             var reason = relationship_resolver.ReasonFor(recommendedA);
-            Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
             Assert.That(reason.Parent, Is.EqualTo(sugested));
 
             reason = relationship_resolver.ReasonFor(recommendedB);
-            Assert.That(reason, Is.AssignableTo<Relationship.Recommended>());
+            Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
             Assert.That(reason.Parent, Is.EqualTo(sugested));
         }
 

@@ -21,7 +21,7 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 2;
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] private int registry_version;
@@ -857,6 +857,17 @@ namespace CKAN
 
             ProvidesVersion version;
             return provided.TryGetValue(modIdentifier, out version) ? version : null;
+        }
+
+        /// <summary>
+        /// Gets the installed version of a mod. Returns null if provided or autodetected. 
+        /// </summary>
+        /// <param name="mod_identifer"></param>
+        /// <returns></returns>
+        public Module GetInstalledVersion(string mod_identifer)
+        {
+            InstalledModule installedModule;
+            return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
         }
 
         /// <summary>
