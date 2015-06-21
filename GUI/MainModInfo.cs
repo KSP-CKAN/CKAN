@@ -76,7 +76,7 @@ namespace CKAN
 
         private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
-            if (module == null 
+            if (module == null
                 || (depth > 0 && dependencyGraphRootModule == module)
                 || (alreadyVisited.Contains(module)))
             {
@@ -145,7 +145,7 @@ namespace CKAN
 
                         foreach (var dep in dependencyModules)
                         {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);                            
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
                         }
                     }
                 }
@@ -169,7 +169,7 @@ namespace CKAN
         private void UpdateModDependencyGraph(CkanModule module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
-            //Can be costly. For now only update when visible. 
+            //Can be costly. For now only update when visible.
             if (ModInfoTabControl.SelectedIndex != RelationshipTabPage.TabIndex)
             {
                 return;
@@ -199,7 +199,7 @@ namespace CKAN
             DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
         }
 
-        // When switching tabs ensure that the resulting tab is updated. 
+        // When switching tabs ensure that the resulting tab is updated.
         private void ModInfoIndexChanged(object sender, EventArgs e)
         {
             if (ModInfoTabControl.SelectedIndex == ContentTabPage.TabIndex)
@@ -211,7 +211,7 @@ namespace CKAN
         private void UpdateModContentsTree(CkanModule module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
-            //Can be costly. For now only update when visible. 
+            //Can be costly. For now only update when visible.
             if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
             {
                 return;
@@ -224,7 +224,7 @@ namespace CKAN
         private void _UpdateModContentsTree()
         {
             var module = (CkanModule) ModInfoTabControl.Tag;
-            if (module == current_mod_contents_module)
+            if (Equals(module, current_mod_contents_module))
             {
                 return;
             }

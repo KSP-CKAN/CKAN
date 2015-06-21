@@ -13,7 +13,7 @@ namespace CKAN
 {
     public delegate void ModuleInstallerReportModInstalled(CkanModule module);
 
-    public struct InstallableFile 
+    public struct InstallableFile
     {
         public ZipEntry source;
         public string destination;
@@ -34,7 +34,7 @@ namespace CKAN
         private KSP ksp;
 
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
-          
+
         // Our own cache is that of the KSP instance we're using.
         public NetFileCache Cache
         {
@@ -80,7 +80,7 @@ namespace CKAN
         /// </summary>
         public string Download(Uri url, string filename)
         {
-            User.RaiseProgress(String.Format("Downloading \"{0}\"", url), 0);            
+            User.RaiseProgress(String.Format("Downloading \"{0}\"", url), 0);
             return Download(url, filename, Cache);
         }
 
@@ -144,7 +144,7 @@ namespace CKAN
             return full_path;
         }
 
-        
+
 
         public void InstallList(
             List<string> modules,
@@ -161,7 +161,7 @@ namespace CKAN
         /// <summary>
         ///     Installs all modules given a list of identifiers as a transaction. Resolves dependencies.
         ///     This *will* save the registry at the end of operation.
-        /// 
+        ///
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
@@ -173,10 +173,10 @@ namespace CKAN
             RelationshipResolverOptions options,
             NetAsyncDownloader downloader = null
         )
-        {            
+        {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
             List<CkanModule> modsToInstall = resolver.ModList();
-            List<CkanModule> downloads = new List<CkanModule> (); 
+            List<CkanModule> downloads = new List<CkanModule> ();
 
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
@@ -211,7 +211,7 @@ namespace CKAN
                 {
                     downloader = new NetAsyncDownloader(User);
                 }
-                
+
                 downloader.DownloadModules(ksp.Cache, downloads);
             }
 
@@ -221,7 +221,7 @@ namespace CKAN
                 for (int i = 0; i < modsToInstall.Count; i++)
                 {
                     int percent_complete = (i * 100) / modsToInstall.Count;
-                    
+
                     User.RaiseProgress(String.Format("Installing mod \"{0}\"", modsToInstall[i]),
                                          percent_complete);
 
@@ -278,13 +278,13 @@ namespace CKAN
         ///     Does *not* resolve dependencies; this actually does the heavy listing.
         ///     Does *not* save the registry.
         ///     Do *not* call this directly, use InstallList() instead.
-        /// 
+        ///
         /// Propagates a BadMetadataKraken if our install metadata is bad.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Throws a FileNotFoundKraken if we can't find the downloaded module.
-        /// 
+        ///
         /// </summary>
-        // 
+        //
         // TODO: The name of this and InstallModule() need to be made more distinctive.
 
         private void Install(CkanModule module, string filename = null)
@@ -301,14 +301,14 @@ namespace CKAN
             }
 
             // Find our in the cache if we don't already have it.
-            filename = filename ?? Cache.GetCachedZip(module.download);
+            filename = filename ?? Cache.GetCachedZip(module.download,true);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
             {
                 throw new FileNotFoundKraken(
-                    null, 
-                    String.Format("Trying to install {0}, but it's not downloaded", module)
+                    null,
+                    String.Format("Trying to install {0}, but it's not downloaded or download is corrupted", module)
                 );
             }
 
@@ -349,7 +349,7 @@ namespace CKAN
                 throw new BadCommandKraken("Metapackages can not be installed!");
             }
         }
-            
+
         /// <summary>
         /// Installs the module from the zipfile provided.
         /// Returns a list of files installed.
@@ -388,12 +388,12 @@ namespace CKAN
         /// <summary>
         /// Given a stanza and an open zipfile, returns all files that would be installed
         /// for this stanza.
-        /// 
+        ///
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
-        /// 
+        ///
         /// Throws a BadInstallLocationKraken if the install stanza targets an
         /// unknown install location (eg: not GameData, Ships, etc)
-        /// 
+        ///
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
@@ -411,7 +411,7 @@ namespace CKAN
             // already the basic type.
 
             stanza = stanza.ConvertFindToFile(zipfile);
-  
+
             if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
@@ -421,7 +421,7 @@ namespace CKAN
 
                 string subDir = stanza.install_to.Substring("GameData".Length);    // remove "GameData"
                 subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
-                
+
                 // Add the extracted subdirectory to the path of KSP's GameData
                 installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
@@ -455,7 +455,7 @@ namespace CKAN
                 }
 
                 // Prepare our file info.
-                InstallableFile file_info = new InstallableFile 
+                InstallableFile file_info = new InstallableFile
                 {
                     source = entry,
                     makedir = makeDirs,
@@ -488,7 +488,7 @@ namespace CKAN
         /// <summary>
         /// Transforms the name of the output. This will strip the leading directories from the stanza file from
         /// output name and then combine it with the installDir.
-        /// EX: "kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData" will be transformed 
+        /// EX: "kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData" will be transformed
         /// to "GameData/kOS/Plugins/kOS.dll"
         /// </summary>
         /// <returns>The output name.</returns>
@@ -525,7 +525,7 @@ namespace CKAN
                 // Strip off leading path name
                 outputName = Regex.Replace(outputName, leadingRegEx, "");
             }
- 
+
             // Return our snipped, normalised, and ready to go output filename!
             return KSPPathUtils.NormalizePath(
                 Path.Combine(installDir, outputName)
@@ -535,9 +535,9 @@ namespace CKAN
         /// <summary>
         /// Given a module and an open zipfile, return all the files that would be installed
         /// for this module.
-        /// 
+        ///
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
-        /// 
+        ///
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, KSP ksp)
@@ -574,9 +574,9 @@ namespace CKAN
         /// <summary>
         /// Given a module and a path to a zipfile, returns all the files that would be installed
         /// from that zip for this module.
-        /// 
+        ///
         /// This *will* throw an exception if the file does not exist.
-        /// 
+        ///
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         ///
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
@@ -710,7 +710,7 @@ namespace CKAN
         /// Use UninstallList for user queries, it also does dependency handling.
         /// This does *NOT* save the registry.
         /// </summary>
-         
+
         private void Uninstall(string modName)
         {
             using (var transaction = CkanTransaction.CreateTransactionScope())
