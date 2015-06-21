@@ -15,7 +15,7 @@ namespace CKAN
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
-        
+
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             WebClient client = new WebClient();
@@ -35,7 +35,6 @@ namespace CKAN
 
             m_TabController.RenameTab("WaitTabPage", "Updating repositories");
 
-            CurrentInstance.ScanGameData();
 
             m_UpdateRepoWorker.RunWorkerAsync();
 
