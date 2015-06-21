@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using ChinhDo.Transactions;
 using log4net;
@@ -22,7 +23,7 @@ namespace CKAN
         // when deserialising, and *it* only needs it to do registry upgrades.
         // We could get rid of all of this if we declare we no longer wish to support
         // older registry formats.
-        private KSP ksp;
+        private readonly KSP ksp;
 
         public Registry registry;
 
@@ -38,7 +39,8 @@ namespace CKAN
             // We don't cause an inconsistency error to stop the registry from being loaded,
             // because then the user can't do anything to correct it. However we're
             // sure as hell going to complain if we spot one!
-            try {
+            try
+            {
                 registry.CheckSanity();
             }
             catch (InconsistentKraken kraken)
@@ -63,9 +65,20 @@ namespace CKAN
             return singleton[directory];
         }
 
+        /// <summary>
+        /// Returns the currently installed modules in json format suitable for outputting to a ckan file.
+        /// Defaults to using depends and with version numbers.
+        /// </summary>
+        /// <param name="recommmends">If the json should use a recommends field instead of depends</param>
+        /// <param name="with_versions">If version numbers should be included</param>
+        /// <returns>String containing a valid ckan file</returns>
+        public string CurrentInstallAsCKAN(bool recommmends, bool with_versions)
+        {
+            return SerializeCurrentInstall(recommmends, with_versions);
+        }
+
         private void Load()
         {
-
             // Our registry needs to know our KSP install when upgrading from older
             // registry formats. This lets us encapsulate that to make it available
             // after deserialisation.
@@ -74,7 +87,7 @@ namespace CKAN
                 Context = new System.Runtime.Serialization.StreamingContext(
                     System.Runtime.Serialization.StreamingContextStates.Other,
                     ksp
-                )
+                    )
             };
 
             string json = File.ReadAllText(path);
@@ -118,7 +131,6 @@ namespace CKAN
                 repositories = new SortedDictionary<string, Repository>();
             }
 
-            // if (!(repositories.ContainsKey(Repository.default_ckan_repo_name)))
             if (repositories.Count == 0)
             {
                 repositories.Add(Repository.default_ckan_repo_name,
@@ -133,71 +145,67 @@ namespace CKAN
             StringBuilder sb = new StringBuilder();
             StringWriter sw = new StringWriter(sb);
 
-            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            using (JsonTextWriter writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
-                writer.Indentation = 4;
-                writer.IndentChar = ' ';
+                writer.Indentation = 1;
+                writer.IndentChar = '\t';
 
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(writer, registry);
             }
 
-            return sw.ToString() + Environment.NewLine;
+            return sw + Environment.NewLine;
         }
 
-        private string SerializeCurrentInstall()
+        private string SerializeCurrentInstall(bool recommmends = false, bool with_versions = true)
         {
             // TODO how do we obtain the name of the current KSP instance?
             string kspInstanceName = "default";
             string name = "installed-" + kspInstanceName;
 
-            JObject installed = new JObject ();
-            installed["spec_version"] = "v1.6";
-            installed["identifier"] = name;
-            installed["version"] =  DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
-
-            installed["license"] = "unknown";
-            installed["name"] = name;
-            installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
+            var installed = new JObject();
             installed["kind"] = "metapackage";
+            installed["abstract"] = "A list of modules installed on the " + kspInstanceName + " KSP instance";
+            installed["name"] = name;
+            installed["license"] = "unknown";
+            installed["version"] = DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss");
+            installed["identifier"] = name;
+            installed["spec_version"] = "v1.6";
 
-            JArray depends = new JArray ();
-            installed["depends"] = depends;
-
-            foreach(KeyValuePair<string, CKAN.Version> module in registry.Installed())
+            var mods = new JArray();
+            foreach (var mod in registry.Installed()
+                .Where(mod => !(mod.Value is ProvidesVersion || mod.Value is DllVersion)))
             {
-                if (!(CKAN.Version.AutodetectedDllString.Equals(module.Value.ToString())))
+                var module = new JObject();
+                module["name"] = mod.Key;
+                if (with_versions)
                 {
-                    JObject moduleJson = new JObject();
-                    moduleJson["name"] = module.Key;
-                    moduleJson["version"] = module.Value.ToString();
-
-                    depends.Add(moduleJson);
+                    module["version"] = mod.Value.ToString();
                 }
+                mods.Add(module);
             }
 
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
+            installed[recommmends ? "recommends" : "depends"] = mods;
 
-            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            var sw = new StringWriter(new StringBuilder());
+            using (var writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
-                writer.Indentation = 4;
-                writer.IndentChar = ' ';
+                writer.Indentation = 1;
+                writer.IndentChar = '\t';
 
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(writer, installed);
+                new JsonSerializer().Serialize(writer, installed);
             }
 
-            return sw.ToString() + Environment.NewLine;
+            return sw + Environment.NewLine;
         }
 
-        public void Save(bool enforceConsistency = true)
+        public void Save(bool enforce_consistency = true)
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
 
-            if (enforceConsistency)
+            if (enforce_consistency)
             {
                 // No saving the registry unless it's in a sane state.
                 registry.CheckSanity();
@@ -220,7 +228,7 @@ namespace CKAN
 
             // TODO how do we obtain the name of the current KSP instance?
             string kspInstanceName = "default";
-            string installedModsPath = Path.Combine (directoryPath, "installed-" + kspInstanceName + ".ckan");
+            string installedModsPath = Path.Combine(directoryPath, "installed-" + kspInstanceName + ".ckan");
             file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall());
         }
     }

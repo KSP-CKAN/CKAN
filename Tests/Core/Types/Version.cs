@@ -29,6 +29,16 @@ namespace Tests.Core.Types
         }
 
         [Test]
+        public void Issue1076()
+        {
+            var v0 = new CKAN.Version("1.01");
+            var v1 = new CKAN.Version("1.1");
+
+            Assert.That(v1.IsEqualTo(v0));
+        }
+
+
+        [Test]
         public void Complex()
         {
             var v1 = new CKAN.Version("v6a12");
@@ -99,7 +109,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.StringComp("foobaz", "foobar");
 
-            Assert.That(str.compare_to, Is.GreaterThan(0));            
+            Assert.That(str.compare_to, Is.GreaterThan(0));
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
 
@@ -226,6 +236,12 @@ namespace Tests.Core.Types
             Assert.That(str.compare_to,Is.LessThan(0));
             Assert.AreEqual(".2", str.remainder1);
             Assert.AreEqual(".0", str.remainder2);
+
+            str = CKAN.Version.NumComp("01", "1");
+
+            Assert.That(str.compare_to, Is.EqualTo(0));
+            Assert.AreEqual("", str.remainder1);
+            Assert.AreEqual("", str.remainder2);
         }
 
     }

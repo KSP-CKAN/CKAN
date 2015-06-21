@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using log4net;
 using log4net.Config;
@@ -20,12 +19,12 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
         /*
-         * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded. 
+         * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded.
          * Without getting into a huge discussion about COM and threading,
          * this attribute ensures the communication mechanism between the current thread an
          * other threads that may want to talk to it via COM.  When you're using Windows Forms,
          * depending on the feature you're using, it may be using COM interop in order to communicate with
-         * operating system components.  Good examples of this are the Clipboard and the File Dialogs. 
+         * operating system components.  Good examples of this are the Clipboard and the File Dialogs.
          */
         [STAThread]
         public static int Main(string[] args)
@@ -66,7 +65,7 @@ namespace CKAN.CmdLine
             {
                 if (!options.AsRoot)
                 {
-                    user.RaiseError(@"You are trying to run CKAN as root. 
+                    user.RaiseError(@"You are trying to run CKAN as root.
 This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
                     return Exit.ERROR;
                 }
@@ -151,10 +150,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "uninstall":
                     cmdline.action = "remove";
                     break;
-
                 default:
                     break;
-            } 
+            }
 
             #endregion
 
@@ -173,11 +171,11 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return Available(manager.CurrentInstance, user);
 
                 case "install":
-                    Scan(manager.CurrentInstance);
+                    Scan(manager.CurrentInstance, user, cmdline.action);
                     return (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
 
                 case "scan":
-                    return Scan(manager.CurrentInstance);
+                    return Scan(manager.CurrentInstance,user);
 
                 case "list":
                     return (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
@@ -192,7 +190,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 case "upgrade":
-                    Scan(manager.CurrentInstance);
+                    Scan(manager.CurrentInstance, user, cmdline.action);
                     return (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 case "clean":
@@ -228,16 +226,16 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
                 MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (display_name != null)
-                {                    
+                {
                     var version_string = (string) display_name.Invoke(null, null);
                     var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
-                    
+
                     if (match.Success)
-                    {                        
+                    {
                         int major = Int32.Parse(match.Groups["major"].Value);
                         int minor = Int32.Parse(match.Groups["minor"].Value);
                         int patch = Int32.Parse(match.Groups["revision"].Value);
-                        
+
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
                             user.RaiseMessage(
@@ -291,10 +289,37 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             return Exit.OK;
         }
 
-        private static int Scan(CKAN.KSP current_instance)
+        /// <summary>
+        /// Scans the ksp instance. Detects installed mods to mark as auto-detected and checks the consistency
+        /// </summary>
+        /// <param name="ksp_instance">The instance to scan</param>
+        /// <param name="user"></param>
+        /// <param name="next_command">Changes the output message if set.</param>
+        /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
+        private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command=null)
         {
-            current_instance.ScanGameData();
-            return Exit.OK;
+            try
+            {
+                ksp_instance.ScanGameData();
+                return Exit.OK;
+            }
+            catch (InconsistentKraken kraken)
+            {
+
+                if (next_command==null)
+                {
+                    user.RaiseError(kraken.InconsistenciesPretty);
+                    user.RaiseError("The repo has not been saved.");
+                }
+                else
+                {
+                    user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
+                    user.RaiseMessage("Use ckan.exe scan for more details");
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\n", next_command);
+                }
+
+                return Exit.ERROR;
+            }
         }
 
         private static int Clean(CKAN.KSP current_instance)

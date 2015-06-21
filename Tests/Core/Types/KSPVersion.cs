@@ -20,8 +20,8 @@ namespace Tests.Core.Types
             var min = new CKAN.KSPVersion("0.23");
             var max = new CKAN.KSPVersion("0.23");
 
-            min.ToLongMin();
-            max.ToLongMax();
+            min = min.ToLongMin();
+            max = max.ToLongMax();
 
             Assert.IsTrue(min.Version() == "0.23.0");
             Assert.IsTrue(max.Version() == "0.23.99"); // Ugh, magic version number.

@@ -73,12 +73,12 @@ namespace CKAN {
         /// Returns +1 if this is greater than that
         /// Returns  0 if equal.
         /// </summary>
-        public int CompareTo(Version that) {            
+        public int CompareTo(Version that) {
 
-            if (that.epoch == epoch && that.version == version) {
+            if (that.epoch == epoch && that.version.Equals(version)) {
                 return 0;
             }
- 
+
             // Compare epochs first.
             if (epoch != that.epoch) {
                 return epoch > that.epoch ?1:-1;
@@ -123,10 +123,17 @@ namespace CKAN {
             }
 
             // Oh, we've run out of one or both strings.
-            // They *can't* be equal, because we would have detected that in our first test.
-            // So, whichever version is empty first is the smallest. (1.2 < 1.2.3)
+
 
             if (comp.remainder1.Length == 0) {
+                if (comp.remainder2.Length == 0)
+                {
+                    cache.Add(tuple, 0);
+                    return 0;
+                }
+
+                // They *can't* be equal, because we would have detected that in our first test.
+                // So, whichever version is empty first is the smallest. (1.2 < 1.2.3)
                 cache.Add(tuple, -1);
                 return -1;
             }
@@ -150,7 +157,7 @@ namespace CKAN {
         /// <summary>
         /// Compare the leading non-numerical parts of two strings
         /// </summary>
-       
+
         internal static Comparison StringComp(string v1, string v2)
         {
             var comp = new Comparison {remainder1 = "", remainder2 = ""};
@@ -265,7 +272,7 @@ namespace CKAN {
         }
 
         override public string ToString()
-        {            
+        {
             return AutodetectedDllString;
         }
     }

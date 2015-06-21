@@ -40,12 +40,11 @@ Check out the page about [adding a mod to the CKAN][4] on the wiki; you might al
 
 ## Helping the development
 
-The CKAN client is a C# application that targets Mono 4.0, and therefore it runs natively on all the major platforms. It lives in the `CKAN` directory of this repository.
+The CKAN client is a C# application that targets Mono 4.0, and therefore it runs natively on all the major platforms
 
 Contributions are welcome:
 
-* We have [a wiki][5] that you are
-encouraged to use and contribute to.
+* We have [a wiki][5] that you are encouraged to use and contribute to. You can find development instructions there.
 
 * Our [issues page][6]
 lists things that need doing, or are being worked upon. Feel free to
