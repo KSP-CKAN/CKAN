@@ -81,35 +81,32 @@ namespace CKAN.NetKAN
         /// <returns>The absolute file path to the bundle file or null if none is found.</returns>
         private static string ResolveCurlCaBundle()
         {
-            if (Platform.IsWindows)
+            const string caBundleFileName = "curl-ca-bundle.crt";
+            const string ckanSubDirectoryName = "CKAN";
+
+            string bundle = new[]
             {
-                const string caBundleFileName = "curl-ca-bundle.crt";
-                const string ckanSubDirectoryName = "CKAN";
+                // Working Directory
+                Environment.CurrentDirectory,
 
-                return new[]
-                {
-                    // Working Directory
-                    Environment.CurrentDirectory,
+                // Executable Directory
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
 
-                    // Executable Directory
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                // %LOCALAPPDATA%/CKAN
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ckanSubDirectoryName),
 
-                    // %LOCALAPPDATA%/CKAN
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ckanSubDirectoryName),
+                // %APPDATA%/CKAN
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ckanSubDirectoryName),
 
-                    // %APPDATA%/CKAN
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ckanSubDirectoryName),
-
-                    // %PROGRAMDATA%/CKAN
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ckanSubDirectoryName),
-                }
-                .Select(i => Path.Combine(i, caBundleFileName))
-                .FirstOrDefault(File.Exists);
+                // %PROGRAMDATA%/CKAN
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ckanSubDirectoryName),
             }
-            else
-            {
-                return null;
-            }
+            .Select(i => Path.Combine(i, caBundleFileName))
+            .FirstOrDefault(File.Exists);
+
+            log.InfoFormat("Using curl-ca bundle: {0}",bundle ?? "(none)");
+
+            return bundle;
         }
     }
 }
