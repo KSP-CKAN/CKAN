@@ -44,9 +44,6 @@
       <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\Core\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\Core\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -58,6 +55,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\Core\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\CKAN-meta-badkan.zip" />
@@ -153,15 +153,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
-      <Project>{3b9aea22-fa3b-4e43-9283-eabdd81cf271}</Project>
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
     <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
-      <Project>{a79f9d54-315c-472b-928f-713a5860b2be}</Project>
+      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Netkan\CKAN-netkan.csproj">
-      <Project>{4336f356-33db-442a-bf74-5e89af47a5b9}</Project>
+      <Project>{4336F356-33DB-442A-BF74-5E89AF47A5B9}</Project>
       <Name>CKAN-netkan</Name>
     </ProjectReference>
   </ItemGroup>
