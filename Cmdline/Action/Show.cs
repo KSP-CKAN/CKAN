@@ -158,7 +158,7 @@ namespace CKAN.CmdLine
             }
 
             user.RaiseMessage("- status:\t{0}", module.release_status);
-            user.RaiseMessage("- license:\t{0}", module.license); 
+            user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license)); 
             #endregion
 
             #region Relationships

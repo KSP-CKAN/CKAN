@@ -3,20 +3,66 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 using System.Transactions;
 
 namespace CKAN
 {
     public class RelationshipDescriptor
     {
-        public string max_version;
-        public string min_version;
-        //Why is the identifier called name? 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version max_version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version min_version;
+        //Why is the identifier called name?
         public /* required */ string name;
-        public string version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version version;
+
+
+        /// <summary>
+        /// Returns if the other version satisfies this RelationshipDescriptor.
+        /// If the RelationshipDescriptor has version set it compares against that.
+        /// Else it uses the {min,max}_version fields treating nulls as unbounded.
+        /// Note: Uses inclusive inequalities.
+        /// </summary>
+        /// <param name="other_version"></param>
+        /// <returns>True if other_version is within the bounds</returns>
+        public bool version_within_bounds(Version other_version)
+        {
+            if (version == null)
+            {
+                if (max_version == null && min_version == null)
+                    return true;
+                bool min_sat = min_version == null || min_version <= other_version;
+                bool max_sat = max_version == null || max_version >= other_version;
+                if (min_sat && max_sat) return true;
+            }
+            else
+            {
+                if (version.Equals(other_version))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// A user friendly message for what versions satisfies this descriptor.
+        /// </summary>
+        [JsonIgnore]
+        public string RequiredVersion {
+            get
+            {
+                if (version != null)
+                    return version.ToString();
+                return string.Format("between {0} and {1} inclusive.",
+                    min_version != null ?min_version.ToString() : "any version",
+                    max_version != null ? max_version.ToString() : "any version");
+            }
+        }
+
     }
 
     public class ResourcesDescriptor
@@ -86,7 +132,8 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        public License license;
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        public List<License> license;
 
         [JsonProperty("name")]
         public string name;
@@ -178,7 +225,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new License("unknown");
+                license = new List<License> {new License ("unknown")};
             }
 
             if (@abstract == null)
@@ -211,7 +258,7 @@ namespace CKAN
             {
                 return false;
             }
-            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name));
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
         }
 
         /// <summary>

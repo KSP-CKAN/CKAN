@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using log4net;
 using log4net.Config;
@@ -151,7 +150,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "uninstall":
                     cmdline.action = "remove";
                     break;
-
                 default:
                     break;
             }
@@ -173,11 +171,11 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return Available(manager.CurrentInstance, user);
 
                 case "install":
-                    Scan(manager.CurrentInstance);
+                    Scan(manager.CurrentInstance, user, cmdline.action);
                     return (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
 
                 case "scan":
-                    return Scan(manager.CurrentInstance);
+                    return Scan(manager.CurrentInstance,user);
 
                 case "list":
                     return (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
@@ -192,7 +190,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 case "upgrade":
-                    Scan(manager.CurrentInstance);
+                    Scan(manager.CurrentInstance, user, cmdline.action);
                     return (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 case "clean":
@@ -291,10 +289,37 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             return Exit.OK;
         }
 
-        private static int Scan(CKAN.KSP current_instance)
+        /// <summary>
+        /// Scans the ksp instance. Detects installed mods to mark as auto-detected and checks the consistency
+        /// </summary>
+        /// <param name="ksp_instance">The instance to scan</param>
+        /// <param name="user"></param>
+        /// <param name="next_command">Changes the output message if set.</param>
+        /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
+        private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command=null)
         {
-            current_instance.ScanGameData();
-            return Exit.OK;
+            try
+            {
+                ksp_instance.ScanGameData();
+                return Exit.OK;
+            }
+            catch (InconsistentKraken kraken)
+            {
+
+                if (next_command==null)
+                {
+                    user.RaiseError(kraken.InconsistenciesPretty);
+                    user.RaiseError("The repo has not been saved.");
+                }
+                else
+                {
+                    user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
+                    user.RaiseMessage("Use ckan.exe scan for more details");
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\n", next_command);
+                }
+
+                return Exit.ERROR;
+            }
         }
 
         private static int Clean(CKAN.KSP current_instance)

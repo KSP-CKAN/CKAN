@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -179,6 +180,37 @@ namespace CKAN
                     break;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// The main list of mods. Currently used to work around mono issues.
+    /// </summary>
+    public class MainModListGUI : DataGridView
+    {
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
+            if (Platform.IsMono && !Platform.IsMonoFour)
+            {
+                var first_row_index = typeof (MainModListGUI).BaseType
+                    .GetField("first_row_index", BindingFlags.NonPublic | BindingFlags.Instance);
+                var value = (int) first_row_index.GetValue(this);
+                if (value < 0 || value >= Rows.Count)
+                {
+                    first_row_index.SetValue(this, 0);
+                }
+
+            }
+            base.OnPaint(e);
+        }
+
+        //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
+        protected override void SetSelectedRowCore(int rowIndex, bool selected)
+        {
+            if (rowIndex < 0 || rowIndex >= Rows.Count)
+                return;
+            base.SetSelectedRowCore(rowIndex, selected);
         }
     }
 
