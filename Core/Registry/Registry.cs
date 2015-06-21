@@ -21,7 +21,7 @@ namespace CKAN
 
     public class Registry :IEnlistmentNotification
     {
-        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 2;
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] private int registry_version;
