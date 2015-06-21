@@ -126,5 +126,24 @@ namespace Tests.Core.Types
             });
 
         }
+
+        [Test]
+        public void multilicense_986()
+        {
+            CkanModule mod = CkanModule.FromJson(TestData.kOS_014_multilicense());
+
+            Assert.AreEqual(2, mod.license.Count, "Dual-license");
+            Assert.AreEqual("GPL-3.0", mod.license[0].ToString());
+            Assert.AreEqual("GPL-2.0", mod.license[1].ToString());
+        }
+
+        [Test]
+        public void unilicense_986()
+        {
+            CkanModule mod = TestData.kOS_014_module();
+
+            Assert.AreEqual(1, mod.license.Count, "Uni-license");
+            Assert.AreEqual("GPL-3.0", mod.license[0].ToString());
+        }
     }
 }

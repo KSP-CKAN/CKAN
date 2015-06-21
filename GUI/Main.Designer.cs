@@ -33,6 +33,7 @@ namespace CKAN
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectKSPInstallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -57,7 +58,7 @@ namespace CKAN
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModList = new System.Windows.Forms.DataGridView();
+            this.ModList = new MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -163,6 +164,7 @@ namespace CKAN
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectKSPInstallMenuItem,
             this.installFromckanToolStripMenuItem,
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator1,
@@ -170,6 +172,13 @@ namespace CKAN
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // selectKSPInstallMenuItem
+            // 
+            this.selectKSPInstallMenuItem.Name = "selectKSPInstallMenuItem";
+            this.selectKSPInstallMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.selectKSPInstallMenuItem.Text = "Select KSP Install...";
+            this.selectKSPInstallMenuItem.Click += new System.EventHandler(this.selectKSPInstallMenuItem_Click);
             // 
             // installFromckanToolStripMenuItem
             // 
@@ -398,19 +407,23 @@ namespace CKAN
             this.ModList.Size = new System.Drawing.Size(651, 578);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
             this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
             this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // Installed
             // 
             this.Installed.HeaderText = "Installed";
             this.Installed.Name = "Installed";
+            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.Width = 50;
             // 
             // Update
             // 
             this.Update.HeaderText = "Update";
             this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Update.Width = 46;
             // 
             // ModName
@@ -418,6 +431,7 @@ namespace CKAN
             this.ModName.HeaderText = "Name";
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
+            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.ModName.Width = 58;
             // 
             // Author
@@ -425,6 +439,7 @@ namespace CKAN
             this.Author.HeaderText = "Author";
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
+            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Author.Width = 61;
             // 
             // InstalledVersion
@@ -432,6 +447,7 @@ namespace CKAN
             this.InstalledVersion.HeaderText = "Installed version";
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.InstalledVersion.Width = 97;
             // 
             // LatestVersion
@@ -439,6 +455,7 @@ namespace CKAN
             this.LatestVersion.HeaderText = "Latest version";
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.LatestVersion.Width = 88;
             // 
             // Description
@@ -446,6 +463,7 @@ namespace CKAN
             this.Description.HeaderText = "Description";
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
+            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Description.Width = 83;
             // 
             // Homepage
@@ -455,7 +473,8 @@ namespace CKAN
             this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.Homepage.Name = "Homepage";
             this.Homepage.ReadOnly = true;
-            this.Homepage.Width = 65;
+            this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Homepage.Width = 84;
             // 
             // splitContainer1
             // 
@@ -1143,7 +1162,9 @@ namespace CKAN
             this.ChooseProvidedModsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader6,
             this.columnHeader8});
+            this.ChooseProvidedModsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.ChooseProvidedModsListView.Location = new System.Drawing.Point(6, 28);
+            this.ChooseProvidedModsListView.MultiSelect = false;
             this.ChooseProvidedModsListView.Name = "ChooseProvidedModsListView";
             this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1007, 582);
             this.ChooseProvidedModsListView.TabIndex = 8;
@@ -1183,7 +1204,7 @@ namespace CKAN
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(878, 664);
             this.Name = "Main";
-            this.Text = "CKAN-GUI";            
+            this.Text = "CKAN-GUI";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
@@ -1314,6 +1335,7 @@ namespace CKAN
         private ToolStripMenuItem FilterAllButton;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem exportModListToolStripMenuItem;
+        private ToolStripMenuItem selectKSPInstallMenuItem;
     }
 }
 

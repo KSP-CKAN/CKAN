@@ -20,7 +20,7 @@ namespace CKAN
         {
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
-            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = module.license.ToString());
+            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ",module.license));
             Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
 
