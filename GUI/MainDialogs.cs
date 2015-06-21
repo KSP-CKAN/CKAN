@@ -48,7 +48,7 @@ namespace CKAN
             TaskCompletionSource<CkanModule> task = new TaskCompletionSource<CkanModule>();
             Util.Invoke(this, () =>
             {
-                UpdateProvidedModsDialog(kraken, task);
+                main_install_gui.UpdateProvidedModsDialog(kraken, task);
                 m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
                 m_TabController.SetTabLock(true);
             });

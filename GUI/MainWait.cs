@@ -3,13 +3,13 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-
-    internal delegate void MainCancelCallback();
-
     public partial class Main
-    {
-
-        private MainCancelCallback cancelCallback;
+    {        
+        public Button CancelCurrentActionButton1
+        {
+            set { CancelCurrentActionButton = value; }
+            get { return CancelCurrentActionButton; }
+        }
 
         public void ShowWaitDialog(bool cancelable = true)
         {
@@ -72,17 +72,6 @@ namespace CKAN
         {
             Util.Invoke(LogTextBox, () => LogTextBox.AppendText(message + "\r\n"));
         }
-
-        private void CancelCurrentActionButton_Click(object sender, EventArgs e)
-        {
-            if (cancelCallback != null)
-            {
-                cancelCallback();
-                CancelCurrentActionButton.Enabled = false;
-                HideWaitDialog(true);
-            }
-        }
-
     }
 
 }
