@@ -352,8 +352,10 @@ and identifier:
     ]
 
 Each relationship is an array of entries, each entry *must*
-have a `name`, and the optional fields `min_version`, `max_version`,
-and `version`, to more precisely describe which vesions are needed:
+have a `name`.
+
+The optional fields `min_version`, `max_version`,
+and `version`, may more precisely describe which vesions are needed:
 
     "depends" : [
         { "name" : "ModuleManager",   "min_version" : "2.1.5" },
@@ -363,6 +365,12 @@ and `version`, to more precisely describe which vesions are needed:
 
 It is an error to mix `version` (which specifies an exact vesion) with
 either `min_version` or `max_version` in the same object.
+
+(**v1.0**) Clients implementing versions of the spec older than `v1.8`
+*must* allow for the optional version fields to be present, but *may* choose
+to treat them as if they were absent. (**v1.8**) Clients implementing the
+`v1.8` spec and above *must* respect the optional version fields if
+present.
 
 ##### depends
 

@@ -280,18 +280,38 @@ namespace CKAN
                 return;
             }
 
-            foreach (string dep_name in stanza.Select(dep => dep.name))
+            foreach (var descriptor in stanza)
             {
+                string dep_name = descriptor.name;
                 log.DebugFormat("Considering {0}", dep_name);
 
                 // If we already have this dependency covered, skip.
                 // If it's already installed, skip.
-                if (modlist.ContainsKey(dep_name) || registry.IsInstalled(dep_name))
+
+                if (modlist.ContainsKey(dep_name))
                 {
-                    continue;
+                    if (descriptor.version_within_bounds(modlist[dep_name].version))
+                        continue;
+                    //TODO Ideally we could check here if it can be replaced by the version we want.
+                    throw new InconsistentKraken(
+                        string.Format(
+                            "{0} requires a version {1}. However a incompatible version, {2}, is in the resolver",
+                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
+
                 }
 
-                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion)
+                if (registry.IsInstalled(dep_name))
+                {
+                    if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
+                    continue;
+                    //TODO Ideally we could check here if it can be replaced by the version we want.
+                    throw new InconsistentKraken(
+                        string.Format(
+                            "{0} requires a version {1}. However a incompatible version, {2}, is already installed",
+                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
+                }
+
+                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
                     .Where(mod=>MightBeInstallable(mod)).ToList();
 
                 if (candidates.Count == 0)
