@@ -25,11 +25,10 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            var old_dialog = currentUser.displayYesNo;
-            currentUser.displayYesNo = YesNoDialog;
+            var old_dialog = m_User.displayYesNo;
+            m_User.displayYesNo = YesNoDialog;
 
             tabController.RenameTab("WaitTabPage", "Updating repositories");
-
 
             try
             {
@@ -37,7 +36,7 @@ namespace CKAN
             }
             finally
             {
-                currentUser.displayYesNo = old_dialog;
+                m_User.displayYesNo = old_dialog;
             }
 
             Util.Invoke(this, SwitchEnabledState);

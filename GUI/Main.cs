@@ -337,10 +337,10 @@ namespace CKAN
             installWorker.RunWorkerCompleted += PostInstallMods;
             installWorker.DoWork += InstallMods;
 
-            var old_YesNoDialog = currentUser.displayYesNo;
-            currentUser.displayYesNo = YesNoDialog;
-            URLHandlers.RegisterURLHandler(configuration, currentUser);
-            currentUser.displayYesNo = old_YesNoDialog;
+            var old_YesNoDialog = m_User.displayYesNo;
+            m_User.displayYesNo = YesNoDialog;
+            URLHandlers.RegisterURLHandler(m_Configuration, m_User);
+            m_User.displayYesNo = old_YesNoDialog;
 
             ApplyToolButton.Enabled = false;
 
