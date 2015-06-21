@@ -15,7 +15,7 @@ namespace CKAN
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
-        
+
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             WebClient client = new WebClient();
@@ -31,13 +31,19 @@ namespace CKAN
 
         public void UpdateRepo()
         {
+            var old_dialog = m_User.displayYesNo;
             m_User.displayYesNo = YesNoDialog;
 
             m_TabController.RenameTab("WaitTabPage", "Updating repositories");
 
-            CurrentInstance.ScanGameData();
-
-            m_UpdateRepoWorker.RunWorkerAsync();
+            try
+            {
+                m_UpdateRepoWorker.RunWorkerAsync();
+            }
+            finally
+            {
+                m_User.displayYesNo = old_dialog;
+            }
 
             Util.Invoke(this, () => Enabled = false);
 
@@ -48,25 +54,8 @@ namespace CKAN
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                KSP current_instance1 = CurrentInstance;
-                Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance1, GUI.user);
-            }
-            catch (UriFormatException ex)
-            {
-                m_ErrorDialog.ShowErrorDialog(ex.Message);
-            }
-            catch (MissingCertificateKraken ex)
-            {
-                m_ErrorDialog.ShowErrorDialog(ex.ToString());
-            }
-            catch (Exception ex)
-            {
-                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
-            }
-
-            m_User.displayYesNo = null;
+            KSP current_instance = CurrentInstance;
+            Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance, GUI.user);
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
@@ -74,10 +63,22 @@ namespace CKAN
             SetDescription("Scanning for manually installed mods");
             CurrentInstance.ScanGameData();
 
-            UpdateModsList(repo_updated: true);
+            if (e.Cancelled)
+            {
+                m_User.displayMessage("Install Cancelled", new object[0]);
+            }
+            else if (e.Error != null)
+            {
+                m_User.displayError("Failed to connect to repository. Exception: "+e.Error.ToString(), new object[0]);
+            }
+            else
+            {
+                UpdateModsList(repo_updated: true);
+            }
 
             HideWaitDialog(true);
-            AddStatusMessage("Repository successfully updated");
+            if(!e.Cancelled && e.Error==null)
+                AddStatusMessage("Repository successfully updated");
 
             Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
             Util.Invoke(this, () => Enabled = true);
