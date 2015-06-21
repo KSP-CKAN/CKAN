@@ -30,7 +30,6 @@ namespace CKAN
 
             tabController.RenameTab("WaitTabPage", "Updating repositories");
 
-            CurrentInstance.ScanGameData();
 
             try
             {
