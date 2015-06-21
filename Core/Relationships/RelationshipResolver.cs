@@ -453,7 +453,7 @@ namespace CKAN
             }
         }
 
-        public bool IsConsistant
+        public bool IsConsistent
         {
             get { return !conflicts.Any(); }
         }

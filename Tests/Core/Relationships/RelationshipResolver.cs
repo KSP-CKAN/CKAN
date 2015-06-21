@@ -83,7 +83,7 @@ namespace Tests.Core.Relationships
             var resolver = new RelationshipResolver(options, registry, null);
             resolver.RemoveModsFromInstalledList(new[] {mod_a});
             resolver.AddModulesToInstall(new[] { mod_b} );
-            Assert.IsTrue(resolver.IsConsistant);
+            Assert.IsTrue(resolver.IsConsistent);
 
         }
 
