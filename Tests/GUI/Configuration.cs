@@ -8,10 +8,23 @@ namespace Tests.GUI
     [TestFixture]
     public class ConfigurationTests
     {
+        string tempDir;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            tempDir = TestData.NewTempDir();
+        }
+
+        [TestFixtureTearDown]
+        public void TearDown()
+        {
+            Directory.Delete(tempDir, true);
+        }
+
         [Test]
         public void LoadConfiguration_MalformedXMLFile_ThrowsKraken()
         {
-            string tempDir = TestData.NewTempDir();
             string tempFile = Path.Combine(tempDir, "invalid.xml");
 
             using (var stream = new StreamWriter(tempFile))
@@ -25,7 +38,6 @@ namespace Tests.GUI
         [Test]
         public void LoadConfiguration_CorrectConfigurationFile_Loaded()
         {
-            string tempDir = TestData.NewTempDir();
             string tempFile = Path.Combine(tempDir, "valid.xml");
 
             using (var stream = new StreamWriter(tempFile))
