@@ -342,48 +342,61 @@ namespace CKAN
             UpdateModsList();
             m_TabController.SetTabLock(false);
 
-            var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>) e.Result;
-
-            if (result.Key)
+            if (e.Cancelled)
             {
-                if (modChangedCallback != null)
-                {
-                    foreach (var mod in result.Value)
-                    {
-                        modChangedCallback(mod.Key, mod.Value);
-                    }
-                }
-
-                // install successful
-                AddStatusMessage("Success!");
-                HideWaitDialog(true);
-                m_TabController.HideTab("ChangesetTabPage");
-                ApplyToolButton.Enabled = false;
+                m_User.displayMessage("Install Cancelled", new object[0]);
+            }
+            else if (e.Error != null)
+            {
+                //There are two types of possible errors, ones caught in our code and
+                // exceptions that are not caught. Uncaught errors are placed into the e.Error field.
+                m_User.displayError(e.Error.ToString(),new object[0]);
             }
             else
             {
-                // there was an error
-                // rollback user's choices but stay on the log dialog
-                AddStatusMessage("Error!");
-                SetDescription("An error occurred, check the log for information");
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+                var result = (KeyValuePair<bool, List<KeyValuePair<CkanModule, GUIModChangeType>>>)e.Result;
 
-                var opts = result.Value;
-
-                foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
+                if (result.Key)
                 {
-                    switch (opt.Value)
+                    if (modChangedCallback != null)
                     {
-                        case GUIModChangeType.Install:
-                            MarkModForInstall(opt.Key.identifier);
-                            break;
-                        case GUIModChangeType.Update:
-                            MarkModForUpdate(opt.Key.identifier);
-                            break;
-                        case GUIModChangeType.Remove:
-                            MarkModForInstall(opt.Key.identifier, true);
-                            break;
+                        foreach (var mod in result.Value)
+                        {
+                            modChangedCallback(mod.Key, mod.Value);
+                        }
+                    }
+
+                    // install successful
+                    AddStatusMessage("Success!");
+                    HideWaitDialog(true);
+                    m_TabController.HideTab("ChangesetTabPage");
+                    ApplyToolButton.Enabled = false;
+                }
+                else
+                {
+                    // There was an error that we caught
+                    // rollback user's choices but stay on the log dialog
+                    AddStatusMessage("Error!");
+                    SetDescription("An error occurred, check the log for information");
+                    Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
+                    Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+
+                    var opts = result.Value;
+
+                    foreach (KeyValuePair<CkanModule, GUIModChangeType> opt in opts)
+                    {
+                        switch (opt.Value)
+                        {
+                            case GUIModChangeType.Install:
+                                MarkModForInstall(opt.Key.identifier);
+                                break;
+                            case GUIModChangeType.Update:
+                                MarkModForUpdate(opt.Key.identifier);
+                                break;
+                            case GUIModChangeType.Remove:
+                                MarkModForInstall(opt.Key.identifier, true);
+                                break;
+                        }
                     }
                 }
             }
