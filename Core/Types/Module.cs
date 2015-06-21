@@ -19,7 +19,7 @@ namespace CKAN
         public Version max_version;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version min_version;
-        //Why is the identifier called name? 
+        //Why is the identifier called name?
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version version;
