@@ -31,12 +31,19 @@ namespace CKAN
 
         public void UpdateRepo()
         {
+            var old_dialog = m_User.displayYesNo;
             m_User.displayYesNo = YesNoDialog;
 
             m_TabController.RenameTab("WaitTabPage", "Updating repositories");
 
-
-            m_UpdateRepoWorker.RunWorkerAsync();
+            try
+            {
+                m_UpdateRepoWorker.RunWorkerAsync();
+            }
+            finally
+            {
+                m_User.displayYesNo = old_dialog;
+            }
 
             Util.Invoke(this, () => Enabled = false);
 
