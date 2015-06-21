@@ -155,7 +155,7 @@ namespace CKAN
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
             List<CkanModule> modsToInstall = resolver.ModList();
 
-            InstallList(modsToInstall, options, downloader = null);
+            InstallList(modsToInstall, options, downloader);
         }
 
         /// <summary>
