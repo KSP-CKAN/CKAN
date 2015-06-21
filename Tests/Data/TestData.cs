@@ -229,14 +229,14 @@ namespace Tests.Data
         // TestKAN in tar.gz format.
         public static Uri TestKANTarGz()
         {
-			return new Uri(DataDir("CKAN-meta-testkan.tar.gz"), UriKind.Relative);
+            return new Uri(DataDir("CKAN-meta-testkan.tar.gz"), UriKind.Relative);
         }
 
-		// TestKAN in zip format.
-		public static Uri TestKANZip()
-		{
-			return new Uri(DataDir("CKAN-meta-testkan.zip"), UriKind.Relative);
-		}
+        // TestKAN in zip format.
+        public static Uri TestKANZip()
+        {
+            return new Uri(DataDir("CKAN-meta-testkan.zip"), UriKind.Relative);
+        }
 
         // A repo full of deliciously bad metadata in tar.gz format.
         public static Uri BadKANTarGz()
@@ -244,11 +244,11 @@ namespace Tests.Data
             return new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
         }
 
-		// A repo full of deliciously bad metadata in zip format.
-		public static Uri BadKANZip()
-		{
-			return new Uri(DataDir("CKAN-meta-badkan.zip"));
-		}
+        // A repo full of deliciously bad metadata in zip format.
+        public static Uri BadKANZip()
+        {
+            return new Uri(DataDir("CKAN-meta-badkan.zip"));
+        }
 
         public static string good_ksp_dir()
         {
