@@ -25,8 +25,8 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            var old_dialog = m_User.displayYesNo;
-            m_User.displayYesNo = YesNoDialog;
+            var old_dialog = currentUser.displayYesNo;
+            currentUser.displayYesNo = YesNoDialog;
 
             tabController.RenameTab("WaitTabPage", "Updating repositories");
 
@@ -36,7 +36,7 @@ namespace CKAN
             }
             finally
             {
-                m_User.displayYesNo = old_dialog;
+                currentUser.displayYesNo = old_dialog;
             }
 
             Util.Invoke(this, SwitchEnabledState);
@@ -64,35 +64,34 @@ namespace CKAN
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                KSP current_instance1 = CurrentInstance;
-                Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance1, GUI.user);
-            }
-            catch (UriFormatException ex)
-            {
-                errorDialog.ShowErrorDialog(ex.Message);
-            }
-            catch (MissingCertificateKraken ex)
-            {
-                errorDialog.ShowErrorDialog(ex.ToString());
-            }
-            catch (Exception ex)
-            {
-                errorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
-            }
-
-            currentUser.displayYesNo = null;
+            KSP current_instance = CurrentInstance;
+            Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance, GUI.user);
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateModsList(repo_updated: true);
+            SetDescription("Scanning for manually installed mods");
+            CurrentInstance.ScanGameData();
+
+            if (e.Cancelled)
+            {
+                currentUser.displayMessage("Install Cancelled", new object[0]);
+            }
+            else if (e.Error != null)
+            {
+                currentUser.displayError("Failed to connect to repository. Exception: "+e.Error.ToString(), new object[0]);
+            }
+            else
+            {
+                UpdateModsList(repo_updated: true);
+            }
 
             HideWaitDialog(true);
-            AddStatusMessage("Repository successfully updated");
-            ShowRefreshQuestion();
 
+            if(!e.Cancelled && e.Error==null)
+                AddStatusMessage("Repository successfully updated");
+
+            ShowRefreshQuestion();
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, ModList.Select);

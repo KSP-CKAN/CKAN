@@ -352,32 +352,43 @@ namespace CKAN
 
             UpdateModsList(false, result.Value);
 
-            tabController.SetTabLock(false);
-
-            if (result.Key)
+            if (e.Cancelled)
             {
-                if (modChangedCallback != null)
-                {
-                    foreach (var mod in result.Value)
-                    {
-                        modChangedCallback(mod.Mod, mod.ChangeType);
-                    }
-                }
-
-                // install successful
-                AddStatusMessage("Success!");
-                HideWaitDialog(true);
-                tabController.HideTab("ChangesetTabPage");
-                ApplyToolButton.Enabled = false;
+                GUI.user.displayMessage("Install Cancelled", new object[0]);
+            }
+            else if (e.Error != null)
+            {
+                //There are two types of possible errors, ones caught in our code and
+                // exceptions that are not caught. Uncaught errors are placed into the e.Error field.
+                GUI.user.displayError(e.Error.ToString(),new object[0]);
             }
             else
             {
-                // there was an error
-                // rollback user's choices but stay on the log dialog
-                AddStatusMessage("Error!");
-                SetDescription("An error occurred, check the log for information");
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+
+                if (result.Key)
+                {
+                    if (modChangedCallback != null)
+                    {
+                        foreach (var mod in result.Value)
+                        {
+                            modChangedCallback(mod.Mod, mod.ChangeType);
+                        }
+                    }
+                    // install successful
+                    AddStatusMessage("Success!");
+                    HideWaitDialog(true);
+                    tabController.HideTab("ChangesetTabPage");
+                    ApplyToolButton.Enabled = false;
+                }
+                else
+                {
+                    // There was an error that we caught
+                    // rollback user's choices but stay on the log dialog
+                    AddStatusMessage("Error!");
+                    SetDescription("An error occurred, check the log for information");
+                    Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
+                    Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
+                }
             }
 
             Util.Invoke(this, () => Enabled = true);
