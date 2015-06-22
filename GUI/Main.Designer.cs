@@ -60,7 +60,7 @@ namespace CKAN
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -391,7 +391,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.UpdateCol,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -420,12 +420,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
-            // 
+            //
+            this.UpdateCol.HeaderText = "Update";
+            this.UpdateCol.Name = "Update";
+            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.UpdateCol.Width = 46;
+            //
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -1292,7 +1292,7 @@ namespace CKAN
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
-        private DataGridViewCheckBoxColumn UpdateCell;
+        private DataGridViewCheckBoxColumn UpdateCol;
         private TabPage ChangesetTabPage;
         private Button CancelChangesButton;
         private Button ConfirmChangesButton;
@@ -1319,7 +1319,6 @@ namespace CKAN
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private RichTextBox MetadataModuleAbstractLabel;
         private DataGridViewCheckBoxColumn Installed;
-        private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;
