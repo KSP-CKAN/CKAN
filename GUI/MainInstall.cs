@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
+    using ModChanges = List<KeyValuePair<GUIMod, GUIModChangeType>>;
     public partial class Main
     {
         private BackgroundWorker m_InstallWorker;
@@ -27,7 +28,7 @@ namespace CKAN
             ClearLog();
 
             var opts =
-                (KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>) e.Argument;
+                (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
@@ -184,7 +185,7 @@ namespace CKAN
             {
                 m_TabController.HideTab("WaitTabPage");
                 m_TabController.ShowTab("ManageModsTabPage");
-                e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false, opts.Key);
+                e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                 return;
             }
 
@@ -203,7 +204,7 @@ namespace CKAN
             };
 
             //Set the result to false/failed in case we return
-            e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false, opts.Key);
+            e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
             SetDescription("Uninstalling selected mods");
             if (!WasSuccessful(() => installer.UninstallList(toUninstall)))
                 return;
@@ -224,22 +225,20 @@ namespace CKAN
             {
                 if (installCanceled)
                 {
-                    e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false,
-                        opts.Key);
+                    e.Result = new KeyValuePair<bool, ModChanges>(false,opts.Key);
                     return;
                 }
                     var ret = InstallList(toInstall, opts.Value, downloader);
                     if (!ret)
                     {
                         // install failed for some reason, error message is already displayed to the user
-                        e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false,
-                            opts.Key);
+                        e.Result = new KeyValuePair<bool, ModChanges>(false,opts.Key);
                         return;
                     }
                     resolvedAllProvidedMods = true;
                 }
 
-            e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(true, opts.Key);
+            e.Result = new KeyValuePair<bool, ModChanges>(true, opts.Key);
         }
 
         /// <summary>
@@ -355,7 +354,7 @@ namespace CKAN
             UpdateModsList();
             m_TabController.SetTabLock(false);
 
-            var result = (KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>) e.Result;
+            var result = (KeyValuePair<bool, ModChanges>) e.Result;
 
             if (result.Key)
             {
