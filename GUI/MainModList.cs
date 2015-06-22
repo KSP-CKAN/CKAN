@@ -291,11 +291,13 @@ namespace CKAN
         private readonly HandleTooManyProvides too_many_provides;
 
         /// <summary>
-        /// This function returns a changeset based on the selections of the user. 
-        /// Currently returns null if a conflict is detected.        
+        /// This function returns a changeset based on the selections of the user.
+        /// Currently returns null if a conflict is detected.
         /// </summary>
         /// <param name="registry"></param>
-        /// <param name="current_instance"></param>
+        /// <param name="changeSet"></param>
+        /// <param name="installer">A module installer for the current KSP install</param>
+        /// <param name="version">The version of the current KSP install</param>
         public async Task<IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>>> ComputeChangeSetFromModList(
             Registry registry, HashSet<KeyValuePair<GUIMod, GUIModChangeType>> changeSet, ModuleInstaller installer,
             KSPVersion version)
@@ -460,7 +462,7 @@ namespace CKAN
                     installed_version_cell, latest_version_cell,
                     description_cell, homepage_cell);
 
-                installed_cell.ReadOnly = !mod.IsInstallable(); 
+                installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
                 full_list_of_mod_rows.Add(item);
@@ -539,7 +541,7 @@ namespace CKAN
                     .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
                     .Select(pair => pair.Key);
 
-            //We wish to only check mods that would exist after the changes are made. 
+            //We wish to only check mods that would exist after the changes are made.
             var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);
             var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);
             return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
