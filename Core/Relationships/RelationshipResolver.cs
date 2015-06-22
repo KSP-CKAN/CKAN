@@ -308,7 +308,7 @@ namespace CKAN
                     throw new InconsistentKraken(
                         string.Format(
                             "{0} requires a version {1}. However a incompatible version, {2}, is already installed",
-                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
+                            dep_name, descriptor.RequiredVersion, registry.InstalledVersion(dep_name)));
                 }
 
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
