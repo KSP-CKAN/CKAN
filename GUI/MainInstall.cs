@@ -202,13 +202,16 @@ namespace CKAN
                 installCanceled = true;
             };
 
-
+            //Set the result to false/failed in case we return
+            e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(false, opts.Key);
             SetDescription("Uninstalling selected mods");
-            installer.UninstallList(toUninstall);
+            if (!WasSuccessful(() => installer.UninstallList(toUninstall)))
+                return;
             if (installCanceled) return;
 
             SetDescription("Updating selected mods");
-            installer.Upgrade(toUpgrade, downloader);
+            if (!WasSuccessful(() => installer.Upgrade(toUpgrade, downloader)))
+                return;
 
 
             // TODO: We should be able to resolve all our provisioning conflicts
@@ -239,94 +242,104 @@ namespace CKAN
             e.Result = new KeyValuePair<bool, List<KeyValuePair<GUIMod, GUIModChangeType>>>(true, opts.Key);
         }
 
+        /// <summary>
+        /// Helper function to wrap around calls to ModuleInstaller.
+        /// Handles some of the possible krakens and displays user friendly messages for them.
+        /// </summary>
+        private static bool WasSuccessful(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (ModuleNotFoundKraken ex)
+            {
+                GUI.user.RaiseMessage(
+                    "Module {0} required, but not listed in index, or not available for your version of KSP",
+                    ex.module);
+                return false;
+            }
+            catch (BadMetadataKraken ex)
+            {
+                GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
+                return false;
+            }
+            catch (FileExistsKraken ex)
+            {
+                if (ex.owning_module != null)
+                {
+                    GUI.user.RaiseMessage(
+                        "\nOh no! We tried to overwrite a file owned by another mod!\n" +
+                        "Please try a `ckan update` and try again.\n\n" +
+                        "If this problem re-occurs, then it maybe a packaging bug.\n" +
+                        "Please report it at:\n\n" +
+                        "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n" +
+                        "Please including the following information in your report:\n\n" +
+                        "File           : {0}\n" +
+                        "Installing Mod : {1}\n" +
+                        "Owning Mod     : {2}\n" +
+                        "CKAN Version   : {3}\n",
+                        ex.filename, ex.installing_module, ex.owning_module,
+                        Meta.Version()
+                        );
+                }
+                else
+                {
+                    GUI.user.RaiseMessage(
+                        "\n\nOh no!\n\n" +
+                        "It looks like you're trying to install a mod which is already installed,\n" +
+                        "or which conflicts with another mod which is already installed.\n\n" +
+                        "As a safety feature, the CKAN will *never* overwrite or alter a file\n" +
+                        "that it did not install itself.\n\n" +
+                        "If you wish to install {0} via the CKAN,\n" +
+                        "then please manually uninstall the mod which owns:\n\n" +
+                        "{1}\n\n" + "and try again.\n",
+                        ex.installing_module, ex.filename
+                        );
+                }
+
+                GUI.user.RaiseMessage("Your GameData has been returned to its original state.\n");
+                return false;
+            }
+            catch (InconsistentKraken ex)
+            {
+                // The prettiest Kraken formats itself for us.
+                GUI.user.RaiseMessage(ex.InconsistenciesPretty);
+                return false;
+            }
+            catch (CancelledActionKraken)
+            {
+                return false;
+            }
+            catch (MissingCertificateKraken kraken)
+            {
+                // Another very pretty kraken.
+                GUI.user.RaiseMessage(kraken.ToString());
+                return false;
+            }
+            catch (DownloadErrorsKraken)
+            {
+                // User notified in InstallList
+                return false;
+            }
+            catch (DirectoryNotFoundKraken kraken)
+            {
+                GUI.user.RaiseMessage("\n{0}", kraken.Message);
+                return false;
+            }
+            return true;
+        }
         private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options,
             NetAsyncDownloader downloader)
         {
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
-                ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).onReportModInstalled = OnModInstalled;
+                var module_installer = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user);
+                module_installer.onReportModInstalled = OnModInstalled;
                 cancelCallback = downloader.CancelDownload;
-                try
-                {
-                    ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user)
-                        .InstallList(toInstall.ToList(), options, downloader);
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    GUI.user.RaiseMessage(
-                        "Module {0} required, but not listed in index, or not available for your version of KSP",
-                        ex.module);
-                    return false;
-                }
-                catch (BadMetadataKraken ex)
-                {
-                    GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
-                    return false;
-                }
-                catch (FileExistsKraken ex)
-                {
-                    if (ex.owning_module != null)
-                    {
-                        GUI.user.RaiseMessage(
-                            "\nOh no! We tried to overwrite a file owned by another mod!\n" +
-                            "Please try a `ckan update` and try again.\n\n" +
-                            "If this problem re-occurs, then it maybe a packaging bug.\n" +
-                            "Please report it at:\n\n" +
-                            "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n" +
-                            "Please including the following information in your report:\n\n" +
-                            "File           : {0}\n" +
-                            "Installing Mod : {1}\n" +
-                            "Owning Mod     : {2}\n" +
-                            "CKAN Version   : {3}\n",
-                            ex.filename, ex.installing_module, ex.owning_module,
-                            Meta.Version()
-                            );
-                    }
-                    else
-                    {
-                        GUI.user.RaiseMessage(
-                            "\n\nOh no!\n\n" +
-                            "It looks like you're trying to install a mod which is already installed,\n" +
-                            "or which conflicts with another mod which is already installed.\n\n" +
-                            "As a safety feature, the CKAN will *never* overwrite or alter a file\n" +
-                            "that it did not install itself.\n\n" +
-                            "If you wish to install {0} via the CKAN,\n" +
-                            "then please manually uninstall the mod which owns:\n\n" +
-                            "{1}\n\n" + "and try again.\n",
-                            ex.installing_module, ex.filename
-                            );
-                    }
-
-                    GUI.user.RaiseMessage("Your GameData has been returned to its original state.\n");
-                    return false;
-                }
-                catch (InconsistentKraken ex)
-                {
-                    // The prettiest Kraken formats itself for us.
-                    GUI.user.RaiseMessage(ex.InconsistenciesPretty);
-                    return false;
-                }
-                catch (CancelledActionKraken)
-                {
-                    return false;
-                }
-                catch (MissingCertificateKraken kraken)
-                {
-                    // Another very pretty kraken.
-                    GUI.user.RaiseMessage(kraken.ToString());
-                    return false;
-                }
-                catch (DownloadErrorsKraken)
-                {
-                    // User notified in InstallList
-                    return false;
-                }
-                catch (DirectoryNotFoundKraken kraken)
-                {
-                    GUI.user.RaiseMessage("\n{0}", kraken.Message);
-                    return false;
-                }
+                return WasSuccessful(
+                    () => module_installer.InstallList(toInstall.ToList(), options, downloader));
             }
 
             return true;
