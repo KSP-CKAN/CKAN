@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CKAN
 {
-    public class FileIdentifier
+    public static class FileIdentifier
     {
         /// <summary>
         /// Checks if the file is of type ASCII.
