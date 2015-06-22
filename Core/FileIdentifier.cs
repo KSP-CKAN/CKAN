@@ -1,14 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using log4net;
 
 namespace CKAN
 {
     public class FileIdentifier
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(FileIdentifier));
-
         /// <summary>
         /// Checks if the file is of type ASCII.
         /// </summary>

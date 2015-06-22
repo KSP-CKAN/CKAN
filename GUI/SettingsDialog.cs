@@ -146,7 +146,7 @@ namespace CKAN
 
                     RefreshReposListBox();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }

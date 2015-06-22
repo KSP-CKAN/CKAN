@@ -9,11 +9,9 @@ namespace CKAN
         private FolderBrowserDialog m_BrowseKSPFolder;
         private RenameInstanceDialog m_RenameInstanceDialog;
         private readonly KSPManager manager;
-        private Control main;
 
         public ChooseKSPInstance()
         {
-            main = Main.Instance;
             manager = Main.Instance.Manager;
             InitializeComponent();
 
@@ -85,7 +83,6 @@ namespace CKAN
             manager.SetCurrentInstance(instance);
             DialogResult = DialogResult.OK;
             Close();
-         //   main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)

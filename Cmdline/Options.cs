@@ -37,8 +37,6 @@ namespace CKAN.CmdLine
 
     internal class Actions
     {
-        private GuiOptions gui_console_options;
-
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
 

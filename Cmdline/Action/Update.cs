@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Update : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Update));
-
         public IUser user { get; set; }
 
         public Update(IUser user)

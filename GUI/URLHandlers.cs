@@ -27,7 +27,7 @@ namespace CKAN
                     {
                        RegisterURLHandler_Win32();
                     }
-                    catch (UnauthorizedAccessException ex)
+                    catch (UnauthorizedAccessException)
                     {
                         if (config.URLHandlerNoNag)
                         {

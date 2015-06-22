@@ -600,7 +600,6 @@ namespace CKAN
             }
 
             var current_name = ((GUIMod) current_row.Tag).Name;
-            var current_match = current_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
             DataGridViewRow first_match = null;
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
@@ -979,11 +978,11 @@ namespace CKAN
 
         private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
         {
-            Main.Instance.Manager.ClearAutoStart();
-            var old_instance = Main.Instance.CurrentInstance;
+            Instance.Manager.ClearAutoStart();
+            var old_instance = Instance.CurrentInstance;
             var result = new ChooseKSPInstance().ShowDialog();
-            if (!Equals(old_instance, Main.Instance.CurrentInstance))
-                Main.Instance.CurrentInstanceUpdated();
+            if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
+                Instance.CurrentInstanceUpdated();
         }
     }
 

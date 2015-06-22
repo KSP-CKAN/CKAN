@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CKAN;
 using NUnit.Framework;
@@ -49,12 +47,8 @@ namespace Tests.GUI
         [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
-            using (var tidy = new DisposableKSP())
-            {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
-                var item = new MainModList(delegate { }, delegate { return null; });
-                Assert.That(item.ComputeUserChangeSet(), Is.Empty);
-            }
+            var item = new MainModList(delegate { }, delegate { return null; });
+            Assert.That(item.ComputeUserChangeSet(), Is.Empty);
         }
 
         [Test]
