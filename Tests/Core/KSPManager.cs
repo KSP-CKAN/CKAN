@@ -18,7 +18,7 @@ namespace Tests.Core
         public void SetUp()
         {
             tidy = new DisposableKSP();
-            win32_reg = GetTestWin32Reg(nameInReg);            
+            win32_reg = GetTestWin32Reg(nameInReg);
             manager = new KSPManager(new NullUser(), win32_reg);
         }
 
@@ -31,19 +31,19 @@ namespace Tests.Core
         [Test]
         public void HasInstance_ReturnsFalseIfNoInstanceByThatName()
         {
-            const string anyNameNotInReg = "Games";                        
+            const string anyNameNotInReg = "Games";
             Assert.That(manager.HasInstance(anyNameNotInReg), Is.EqualTo(false));
         }
 
         [Test]
         public void HasInstance_ReturnsTrueIfInstanceByThatName()
-        {            
+        {
             Assert.That(manager.HasInstance(nameInReg), Is.EqualTo(true));
         }
 
         [Test]
         public void SetAutoStart_VaildName_SetsAutoStart()
-        {         
+        {
             Assert.That(manager.AutoStartInstance, Is.EqualTo(string.Empty));
 
             manager.SetAutoStart(nameInReg);
@@ -78,13 +78,13 @@ namespace Tests.Core
             manager.RenameInstance(nameInReg, newname);
             Assert.True(manager.HasInstance(newname));
         }
-        
+
         [Test]
         public void ClearAutoStart_UpdatesValueInWin32Reg()
         {
 
             Assert.That(win32_reg.AutoStartInstance, Is.Null.Or.Empty);
-            
+
         }
 
         [Test]
@@ -92,14 +92,14 @@ namespace Tests.Core
         {
             var name = manager.GetNextValidInstanceName(nameInReg);
             Assert.That(manager.HasInstance(name),Is.False);
-            
+
         }
 
         [Test]
         public void AddInstance_ManagarHasInstance()
         {
             using (var tidy2 = new DisposableKSP())
-            {                
+            {
                 const string newInstance = "tidy2";
                 Assert.That(manager.HasInstance(newInstance), Is.False);
                 manager.AddInstance(newInstance, tidy2.KSP);
@@ -123,7 +123,7 @@ namespace Tests.Core
                 manager.ClearAutoStart();
                 Assert.That(manager.GetPreferredInstance(), Is.Null);
             }
-            
+
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace Tests.Core
         private string _AutoStartInstance;
         public string AutoStartInstance
         {
-            get { return _AutoStartInstance != null ? _AutoStartInstance : string.Empty; }
+            get { return _AutoStartInstance ?? string.Empty; }
             set
             {
                 _AutoStartInstance = value;

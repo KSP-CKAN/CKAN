@@ -31,7 +31,7 @@ namespace CKAN
 
         public string Version
         {
-            get { return InstalledVersion != null ? InstalledVersion : LatestVersion; }
+            get { return InstalledVersion ?? LatestVersion; }
         }
 
         public GUIMod(Module mod, Registry registry, KSPVersion current_ksp_version)
@@ -92,7 +92,7 @@ namespace CKAN
         }
 
         public KeyValuePair<GUIMod, GUIModChangeType>? GetRequestedChange()
-        {            
+        {
             if (IsInstalled ^ IsInstallChecked)
             {
                 var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
