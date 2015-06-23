@@ -103,9 +103,6 @@ namespace CKAN.CmdLine
                     case "remove":
                         args[i] = "forget";
                         break;
-
-                    default:
-                        break;
                 }
             }
 
