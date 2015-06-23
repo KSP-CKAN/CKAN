@@ -23,7 +23,7 @@ namespace Tests.GUI
                 registry.AddAvailable(ckan_mod);
                 var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version());
                 Assert.False(mod.IsUpgradeChecked);
-            }            
+            }
         }
         [Test]
         public void HasUpdateReturnsTrueWhenUpdateAvailible()
@@ -37,7 +37,7 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);
                 registry.AddAvailable(new_version);
-                
+
                 var mod = new GUIMod(old_version, registry, tidy.KSP.Version());
                 Assert.True(mod.HasUpdate);
             }

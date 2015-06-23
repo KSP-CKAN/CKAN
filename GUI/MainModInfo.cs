@@ -120,7 +120,7 @@ namespace CKAN
 
             foreach (RelationshipDescriptor dependency in relationships)
             {
-                Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
                 try
                 {

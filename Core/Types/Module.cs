@@ -414,7 +414,7 @@ namespace CKAN
         /// Tries to parse an identifier in the format Modname=version
         /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
         /// </summary>
-        public static CkanModule FromIDandVersion(Registry registry, string mod, KSPVersion ksp_version)
+        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KSPVersion ksp_version)
         {
             CkanModule module;
 

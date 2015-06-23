@@ -52,7 +52,7 @@ namespace CKAN
         /// <summary>
         /// Returns all the installed modules
         /// </summary>
-        [JsonIgnore] public ICollection<InstalledModule> InstalledModules
+        [JsonIgnore] public IEnumerable<InstalledModule> InstalledModules
         {
             get { return installed_modules.Values; }
         }
@@ -60,7 +60,7 @@ namespace CKAN
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
-        [JsonIgnore] public ICollection<string> InstalledDlls
+        [JsonIgnore] public IEnumerable<string> InstalledDlls
         {
             get { return installed_dlls.Keys; }
         }

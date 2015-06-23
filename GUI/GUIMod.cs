@@ -34,7 +34,7 @@ namespace CKAN
             get { return InstalledVersion ?? LatestVersion; }
         }
 
-        public GUIMod(Module mod, Registry registry, KSPVersion current_ksp_version)
+        public GUIMod(Module mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
@@ -74,7 +74,7 @@ namespace CKAN
             Identifier = mod.identifier;
         }
 
-        public GUIMod(CkanModule mod, Registry registry, KSPVersion current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
             : this((Module) mod, registry, current_ksp_version)
         {
         }

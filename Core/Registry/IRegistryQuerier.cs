@@ -2,8 +2,14 @@
 
 namespace CKAN
 {
+    /// <summary>
+    /// Methods to query a registry.
+    /// </summary>
     public interface IRegistryQuerier
     {
+        IEnumerable<InstalledModule> InstalledModules { get;}
+        IEnumerable<string> InstalledDlls { get; }
+
         /// <summary>
         /// Returns a simple array of all latest available modules for
         /// the specified version of KSP.
@@ -82,9 +88,11 @@ namespace CKAN
         /// <param name="with_provides">If set to false will not check for provided versions.</param>
         /// <returns>The version of the mod or null if not found</returns>
         Version InstalledVersion(string identifier, bool with_provides = true);
-
     }
 
+    /// <summary>
+    /// Helpers for <see cref="IRegistryQuerier"/>
+    /// </summary>
     public static class IRegistryQuerierHelpers
 {
         /// <summary>

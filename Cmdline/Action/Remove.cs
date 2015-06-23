@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
                 List<string> selectedModules = new List<string>();
 
                 // Get the list of installed modules
-                Registry registry = RegistryManager.Instance(ksp).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
                 var installed = new SortedDictionary<string, Version>(registry.Installed(false));
 
                 // Try every regex on every installed module:
