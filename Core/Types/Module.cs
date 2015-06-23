@@ -21,7 +21,6 @@ namespace CKAN
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version version;
 
-
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
         /// If the RelationshipDescriptor has version set it compares against that.
