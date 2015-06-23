@@ -53,6 +53,7 @@
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="CkanTransaction.cs" />
+    <Compile Include="Registry\IRegistryQuerier.cs" />
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
