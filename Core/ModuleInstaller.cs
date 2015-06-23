@@ -149,7 +149,7 @@ namespace CKAN
         public void InstallList(
             List<string> modules,
             RelationshipResolverOptions options,
-            NetAsyncDownloader downloader = null
+            IDownloader downloader = null
         )
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
@@ -171,7 +171,7 @@ namespace CKAN
         public void InstallList(
             ICollection<CkanModule> modules,
             RelationshipResolverOptions options,
-            NetAsyncDownloader downloader = null
+            IDownloader downloader = null
         )
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
@@ -832,7 +832,7 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, NetAsyncDownloader netAsyncDownloader)
+        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader)
         {
             var options = new RelationshipResolverOptions();
 
@@ -851,7 +851,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncDownloader netAsyncDownloader)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader)
         {
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
@@ -910,7 +910,7 @@ namespace CKAN
         /// <summary>
         /// Makes sure all the specified mods are downloaded.
         /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncDownloader downloader)
+        private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
             List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
 

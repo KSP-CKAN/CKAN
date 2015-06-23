@@ -9,14 +9,14 @@ namespace Tests.Core.Net
     /// <summary>
     /// Test the async downloader.
     /// </summary>
-    
+
     [TestFixture]
     public class NetAsyncDownloader
     {
 
         private CKAN.Registry registry;
         private DisposableKSP ksp;
-        private CKAN.NetAsyncDownloader async;
+        private CKAN.IDownloader async;
         private NetFileCache cache;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));

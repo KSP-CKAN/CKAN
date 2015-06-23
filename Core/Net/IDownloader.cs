@@ -2,6 +2,8 @@
 
 namespace CKAN
 {
+    //Todo. Have not specified the user of IUser to report progress as part of the interface
+    // Need to decide if we wish to include a nicer method of reporting such a callbacks or events.
     public interface IDownloader
     {
         /// <summary>

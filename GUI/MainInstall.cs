@@ -328,8 +328,7 @@ namespace CKAN
             }
             return true;
         }
-        private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options,
-            NetAsyncDownloader downloader)
+        private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options, IDownloader downloader)
         {
             if (toInstall.Any())
             {
