@@ -140,6 +140,7 @@
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />
