@@ -31,6 +31,10 @@ namespace CKAN
         /// <returns>True if other_version is within the bounds</returns>
         public bool version_within_bounds(Version other_version)
         {
+            // DLL versions (aka autodetected mods) satisfy *all* relationships
+            if (other_version is DllVersion)
+                return true;
+
             if (version == null)
             {
                 if (max_version == null && min_version == null)
