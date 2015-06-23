@@ -478,7 +478,7 @@ namespace CKAN
 
                 try
                 {
-                    var opts = new RelationshipResolverOptions()
+                    var opts = new RelationshipResolverOptions
                     {
                         with_all_suggests = false,
                         with_recommends = false,

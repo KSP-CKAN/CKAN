@@ -61,7 +61,7 @@ namespace Tests.GUI
 
                 var registry = Registry.Empty();
                 var module = TestData.FireSpitterModule();
-                module.conflicts = new List<RelationshipDescriptor>() { new RelationshipDescriptor { name = "kOS" } };
+                module.conflicts = new List<RelationshipDescriptor> { new RelationshipDescriptor { name = "kOS" } };
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
                 registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
@@ -133,9 +133,9 @@ namespace Tests.GUI
                 var generator = new RandomModuleGenerator(new Random(0451));
                 var provide_ident = "provide";
                 var ksp_version = tidy.KSP.Version();
-                var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>()
+                var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
                 {
-                    new RelationshipDescriptor() {name = provide_ident}
+                    new RelationshipDescriptor {name = provide_ident}
                 },ksp_version:ksp_version);
                 var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
                 , ksp_version: ksp_version);
@@ -147,7 +147,7 @@ namespace Tests.GUI
                 registry.AddAvailable(modb);
                 var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
                 var main_mod_list = new MainModList(null, async kraken => await Task.FromResult(choice_of_provide));
-                var a = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>()
+                var a = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>
                 {
                     new KeyValuePair<GUIMod, GUIModChangeType>(new GUIMod(mod,registry,ksp_version),GUIModChangeType.Install)
                 };
