@@ -47,7 +47,7 @@ namespace CKAN
 
             // Define the buffer and magic types to compare against.
             byte[] buffer = new byte[2];
-            byte[] gzip_identifier = new byte[] { 0x1F, 0x8B };
+            byte[] gzip_identifier = { 0x1F, 0x8B };
 
             // Read the first 2 bytes of the file into the buffer.
             int bytes_read = stream.Read(buffer, 0, buffer.Length);
@@ -82,7 +82,7 @@ namespace CKAN
 
             // Define the buffer and magic types to compare against.
             byte[] buffer = new byte[5];
-            byte[] tar_identifier = new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72 };
+            byte[] tar_identifier = { 0x75, 0x73, 0x74, 0x61, 0x72 };
 
             // Advance the stream position to offset 257. This method circumvents stream which can't seek.
             for(int i = 0; i < 257; i++)
@@ -120,9 +120,9 @@ namespace CKAN
 
             // Define the buffer and magic types to compare against.
             byte[] buffer = new byte[4];
-            byte[] zip_identifier = new byte[] { 0x50, 0x4B, 0x03, 0x04 };
-            byte[] zip_identifier_empty = new byte[] { 0x50, 0x4B, 0x05, 0x06 };
-            byte[] zip_identifier_spanned = new byte[] { 0x50, 0x4B, 0x07, 0x08 };
+            byte[] zip_identifier = { 0x50, 0x4B, 0x03, 0x04 };
+            byte[] zip_identifier_empty = { 0x50, 0x4B, 0x05, 0x06 };
+            byte[] zip_identifier_spanned = { 0x50, 0x4B, 0x07, 0x08 };
 
             // Read the first 4 bytes of the file into the buffer.
             int bytes_read = stream.Read(buffer, 0, buffer.Length);
