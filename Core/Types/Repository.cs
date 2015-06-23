@@ -32,7 +32,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return String.Format("{0} ({1}, {2})", name, priority, uri.ToString());
+            return String.Format("{0} ({1}, {2})", name, priority, uri);
         }
     }
 

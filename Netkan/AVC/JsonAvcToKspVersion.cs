@@ -79,7 +79,7 @@ namespace CKAN.NetKAN
 
             log.DebugFormat("  extracted version: {0}", version);
             KSPVersion result = new KSPVersion(version);
-            log.DebugFormat("  generated result: {0}", result.ToString());
+            log.DebugFormat("  generated result: {0}", result);
             return result;
         }
 
@@ -148,7 +148,7 @@ namespace CKAN.NetKAN
             string version = string.Join(".", major, minor, patch);
             log.DebugFormat("  extracted version: {0}", version);
             Version result = new Version(version);
-            log.DebugFormat("  generated result: {0}", result.ToString());
+            log.DebugFormat("  generated result: {0}", result);
             return result;
         }
 
