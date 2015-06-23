@@ -103,9 +103,6 @@ namespace CKAN.CmdLine
                     case "remove":
                         args[i] = "forget";
                         break;
-
-                    default:
-                        break;
                 }
             }
 
@@ -154,7 +151,7 @@ namespace CKAN.CmdLine
         private int AvailableRepositories()
         {
             User.RaiseMessage("Listing all (canonical) available CKAN repositories:");
-            RepositoryList repositories = new RepositoryList();
+            RepositoryList repositories;
 
             try
             {
@@ -211,7 +208,7 @@ namespace CKAN.CmdLine
 
             if (options.uri == null)
             {
-                RepositoryList repositoryList = new RepositoryList();
+                RepositoryList repositoryList;
 
                 try
                 {

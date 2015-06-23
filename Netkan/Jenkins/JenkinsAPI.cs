@@ -24,18 +24,15 @@ namespace CKAN.NetKAN
             Uri url = new Uri (path);
             log.DebugFormat("Calling {0}", url);
 
-            string result = "";
             try
             {
-                result = web.DownloadString(url);
+                return web.DownloadString(url);
             }
             catch(WebException webEx)
             {
                 log.ErrorFormat ("WebException while accessing {0}: {1}", url, webEx);
                 throw webEx;
             }
-
-            return result;
         }
 
         public static JenkinsBuild GetLatestBuild(string baseUri, string versionBase, bool stable = true)
@@ -49,7 +46,7 @@ namespace CKAN.NetKAN
             // http://jenkins.mumech.com/job/MechJeb2/lastStableBuild/api/json
             string json = Call (baseUri + "lastStableBuild/api/json");
             JObject build = JObject.Parse (json);
-            if (build != null) 
+            if (build != null)
             {
                 string buildNumber = (string) build ["number"];
 

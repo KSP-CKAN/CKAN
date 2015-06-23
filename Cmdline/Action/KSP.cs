@@ -16,7 +16,7 @@ namespace CKAN.CmdLine
             Manager = manager;
             User = user;
         }
-        
+
         internal class KSPSubOptions : CommonOptions
         {
             [VerbOption("list", HelpText="List KSP installs")]
@@ -96,7 +96,7 @@ namespace CKAN.CmdLine
                     default:
                         break;
                 }
-            } 
+            }
 
             #endregion
 
@@ -158,7 +158,7 @@ namespace CKAN.CmdLine
             }
 
             try
-            {                
+            {
                 string path = options.path;
                 Manager.AddInstance(options.name, new CKAN.KSP(path, User));
                 User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
@@ -245,7 +245,7 @@ namespace CKAN.CmdLine
                     keys[0] = Manager.Instances.IndexOfKey(defaultInstance);
                 }
 
-                int result = -1;
+                int result;
 
                 try
                 {

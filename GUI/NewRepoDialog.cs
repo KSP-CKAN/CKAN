@@ -17,7 +17,7 @@ namespace CKAN
 
         private void NewRepoDialog_Load(object sender, EventArgs e)
         {
-            RepositoryList repositories = new RepositoryList();
+            RepositoryList repositories;
 
             try
             {

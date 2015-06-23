@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using log4net;
+using log4net.Repository.Hierarchy;
 
 namespace CKAN
 {
     public partial class SettingsDialog : Form
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
         public SettingsDialog()
         {
             InitializeComponent();
@@ -146,7 +149,7 @@ namespace CKAN
 
                     RefreshReposListBox();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
@@ -208,7 +211,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-
+                log.Warn("Exception caught in CheckForUpdates:\n"+ex);
             }
         }
 

@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
-                    User.RaiseMessage("New CKAN version available - " + latestVersion.ToString());
+                    User.RaiseMessage("New CKAN version available - " + latestVersion);
                     var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
                     User.RaiseMessage(releaseNotes);
                     User.RaiseMessage("\n");

@@ -34,7 +34,6 @@ namespace CKAN.CmdLine
             log.Debug("CKAN started");
 
             Options cmdline;
-            IUser user = null;
 
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
@@ -42,6 +41,7 @@ namespace CKAN.CmdLine
                 return Gui(new GuiOptions(), args);
             }
 
+            IUser user;
             try
             {
                 cmdline = new Options(args);
@@ -149,8 +149,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
                 case "uninstall":
                     cmdline.action = "remove";
-                    break;
-                default:
                     break;
             }
 

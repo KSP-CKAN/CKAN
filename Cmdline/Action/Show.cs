@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Show : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Show));
-
         public IUser user { get; set; }
 
         public Show(IUser user)

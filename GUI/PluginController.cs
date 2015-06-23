@@ -34,7 +34,7 @@ namespace CKAN
 
         private void LoadAssembly(string dll)
         {
-            Assembly assembly = null;
+            Assembly assembly;
 
             try
             {

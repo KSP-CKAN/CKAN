@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Reflection;
 
-/// <summary>
-/// Platform class to detect if we're running on Linux, Windows, or Mac.
-/// Any code for checking for libraries being present also goes here.
-///
-/// This uses the modern technique of checking PlatformID enums, rather than
-/// magic numbers like we used to.
-/// </summary>
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 
 namespace CKAN
 {
+    /// <summary>
+    /// Platform class to detect if we're running on Linux, Windows, or Mac.
+    /// Any code for checking for libraries being present also goes here.
+    ///
+    /// This uses the modern technique of checking PlatformID enums, rather than
+    /// magic numbers like we used to.
+    /// </summary>
     public static class Platform
     {
         static Platform()

@@ -68,7 +68,7 @@ namespace CKAN.NetKAN
             if (version.friendly_version.EpochPart == 0 && metadata["x_netkan_force_epoch"] != null)
             {
                 var epoch = int.Parse(metadata["x_netkan_force_epoch"].ToString());
-                Inflate(metadata, "version", String.Format("{0}:{1}", epoch, version.ToString()));
+                Inflate(metadata, "version", String.Format("{0}:{1}", epoch, version));
             }
             else
             {

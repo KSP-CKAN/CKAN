@@ -28,8 +28,6 @@ namespace CKAN.NetKAN
 
         override public void InflateMetadata(JObject metadata, string filename, object context)
         {
-            var repo = (string)context;
-
             // Check how big our file is
             long download_size = (new FileInfo (filename)).Length;
 
