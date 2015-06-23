@@ -960,7 +960,7 @@ namespace CKAN
                     RegistryManager.Instance(CurrentInstance).Save();
 
                     // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
                 }
                 else
                 {
