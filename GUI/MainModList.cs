@@ -368,9 +368,7 @@ namespace CKAN
             }
 
 
-            foreach (var dependency in modules_to_remove.
-                Select(mod => installer.FindReverseDependencies(mod.identifier)).
-                SelectMany(reverse_dependencies => reverse_dependencies))
+            foreach (var dependency in registry.FindReverseDependencies(modules_to_remove.Select(mod=>mod.identifier)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 Module module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,

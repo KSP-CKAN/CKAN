@@ -919,16 +919,5 @@ namespace CKAN
                 downloader.DownloadModules(ksp.Cache, downloads);
             }
         }
-
-        /// <summary>
-        /// Don't use this. Use Registry.FindReverseDependencies instead.
-        /// This method may be deprecated in the future.
-        /// </summary>
-        // Here for now to keep the GUI happy.
-        public HashSet<string> FindReverseDependencies(string module)
-        {
-            return registry_manager.registry.FindReverseDependencies(module);
-        }
-
     }
 }

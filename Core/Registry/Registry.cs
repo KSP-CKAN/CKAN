@@ -974,14 +974,5 @@ namespace CKAN
             var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
-
-        /// <summary>
-        /// Finds and returns all modules that could not exist without the given module installed
-        /// </summary>
-        public HashSet<string> FindReverseDependencies(string module)
-        {
-            var set = new HashSet<string> {module};
-            return FindReverseDependencies(set);
-        }
     }
 }
