@@ -26,12 +26,11 @@
     <Reference Include="log4net">
       <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action\Compare.cs" />
@@ -57,11 +56,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
-      <Project>{3b9aea22-fa3b-4e43-9283-eabdd81cf271}</Project>
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
     <ProjectReference Include="..\GUI\CKAN-GUI.csproj">
-      <Project>{a79f9d54-315c-472b-928f-713a5860b2be}</Project>
+      <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
   </ItemGroup>
