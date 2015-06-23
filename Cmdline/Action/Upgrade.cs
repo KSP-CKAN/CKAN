@@ -118,7 +118,7 @@ namespace CKAN.CmdLine
             }
             catch (ModuleNotFoundKraken kraken)
             {
-                User.RaiseMessage(kraken.Message);
+                User.RaiseMessage("Module {0} not found", kraken.module);
                 return Exit.ERROR;
             }
             User.RaiseMessage("\nDone!\n");
