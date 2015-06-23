@@ -880,7 +880,7 @@ namespace CKAN
             if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
                 var path = open_file_dialog.FileName;
-                CkanModule module = null;
+                CkanModule module;
 
                 try
                 {

@@ -336,7 +336,7 @@ namespace CKAN
             while (!handled_all_to_many_provides)
             {
                 //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
-                TooManyModsProvideKraken kraken = null;
+                TooManyModsProvideKraken kraken;
                 try
                 {
                     new RelationshipResolver(modules_to_install.ToList(), options, registry, version);

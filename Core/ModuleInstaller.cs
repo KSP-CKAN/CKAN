@@ -61,7 +61,7 @@ namespace CKAN
         /// <param name="user">IUser implementation.</param>
         public static ModuleInstaller GetInstance(KSP ksp_instance, IUser user)
         {
-            ModuleInstaller instance = null;
+            ModuleInstaller instance;
 
             // Check in the list of instances if we have already created a ModuleInstaller instance for this KSP instance.
             if (!instances.TryGetValue(ksp_instance.GameDir().ToLower(), out instance))

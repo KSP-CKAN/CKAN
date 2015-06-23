@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
                 // Oooh! We're installing from a CKAN file.
                 foreach (string ckan_file in options.ckan_files)
                 {
-                    Uri ckan_uri = null;
+                    Uri ckan_uri;
 
                     // Check if the argument if a wellformatted Uri.
                     if (!Uri.IsWellFormedUriString(ckan_file, UriKind.Absolute))
@@ -129,7 +129,7 @@ namespace CKAN.CmdLine
 
                 string message = String.Format("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
-                int result = -1;
+                int result;
 
                 try
                 {

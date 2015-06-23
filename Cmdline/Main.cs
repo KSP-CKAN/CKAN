@@ -34,7 +34,6 @@ namespace CKAN.CmdLine
             log.Debug("CKAN started");
 
             Options cmdline;
-            IUser user = null;
 
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
@@ -42,6 +41,7 @@ namespace CKAN.CmdLine
                 return Gui(new GuiOptions(), args);
             }
 
+            IUser user;
             try
             {
                 cmdline = new Options(args);

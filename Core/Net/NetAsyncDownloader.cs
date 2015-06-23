@@ -49,7 +49,7 @@ namespace CKAN
         private List<CkanModule> modules;
         private int completed_downloads;
 
-        //Used for inter-thread communication. 
+        //Used for inter-thread communication.
         private volatile bool download_canceled;
         private readonly ManualResetEvent complete_or_canceled;
 
@@ -157,7 +157,7 @@ namespace CKAN
                 {
                     log.DebugFormat("Progress function called... {0}/{1}", dlNow,dlTotal);
 
-                    int percent = 0;
+                    int percent;
 
                     if (dlTotal > 0)
                     {
@@ -447,7 +447,6 @@ namespace CKAN
             download.bytesLeft = download.size - bytesDownloaded;
             downloads[index] = download;
 
-            int totalPercentage = 0;
             int totalBytesPerSecond = 0;
             long totalBytesLeft = 0;
             long totalSize = 0;
@@ -462,7 +461,8 @@ namespace CKAN
                 totalBytesLeft += t.bytesLeft;
                 totalSize += t.size;
             }
-            totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
+
+            int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
 
             if (!download_canceled)
             {
