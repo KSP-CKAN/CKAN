@@ -956,12 +956,12 @@ namespace CKAN
 
                 if (exportOption.ExportFileType == ExportFileType.Ckan)
                 {
-                // Save, just to be certain that the installed-*.ckan metapackage is generated
-                RegistryManager.Instance(CurrentInstance).Save();
+                    // Save, just to be certain that the installed-*.ckan metapackage is generated
+                    RegistryManager.Instance(CurrentInstance).Save();
 
-                // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
-            }
+                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
+                }
                 else
                 {
                     var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
@@ -972,8 +972,8 @@ namespace CKAN
 
                         new Exporter(exportOption.ExportFileType).Export(registry, stream);
                     }
-        }
-    }
+                }
+            }
         }
 
         private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
