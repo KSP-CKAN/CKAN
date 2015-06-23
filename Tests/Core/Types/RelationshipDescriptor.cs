@@ -56,8 +56,23 @@ namespace Tests.Core.Types
             };
             
             Assert.True(rd.version_within_bounds(autodetected));
-
         }
+
+        [Test]
+        [TestCase("wibble")]
+        public void VersionWithinBounds_Null(string version)
+        {
+            var rd = new CKAN.RelationshipDescriptor();
+
+            Assert.True(rd.version_within_bounds(new CKAN.Version(version)));
+        }
+
+        [Test]
+        public void VersionWithinBounds_AllNull()
+        {
+            var rd = new CKAN.RelationshipDescriptor();
+
+            Assert.True(rd.version_within_bounds(null));        }
     }
 }
 
