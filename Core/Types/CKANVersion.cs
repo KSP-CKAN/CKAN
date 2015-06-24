@@ -22,7 +22,7 @@ namespace CKAN.Types
 
         public override string ToString()
         {
-            return base.ToString() + " aka. " + name;
+            return base.ToString() + " aka " + name;
         }
     }
 }
