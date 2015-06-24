@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Diagnostics;
 
 namespace CKAN
 {
@@ -265,6 +267,33 @@ namespace CKAN
 
             UpdateModContentsTree(module, true);
             RecreateDialogs();
+        }
+
+        /// <summary>
+        /// Opens the file browser of the users system
+        /// with the folder of the clicked node opened
+        /// TODO: Open a file broweser with the file selected
+        /// </summary>
+        /// <param name="node">A node of the ContentsPreviewTree</param>
+        internal void OpenFileBrowser(TreeNode node)
+        {
+            string location = node.Text;
+
+            if (File.Exists(location))
+            {
+                //We need the Folder of the file
+                //Otherwise the OS would try to open the file in it's default application
+                location = Path.GetDirectoryName(location);
+            }
+
+            if (!Directory.Exists(location))
+            {
+                //User either selected the parent node
+                //or he clicked on the tree node of a cached, but not installed mod
+                return;
+            }
+
+            Process.Start(location);
         }
     }
 }

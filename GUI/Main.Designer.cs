@@ -857,6 +857,7 @@ namespace CKAN
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
             this.ContentsPreviewTree.Size = new System.Drawing.Size(349, 481);
             this.ContentsPreviewTree.TabIndex = 2;
+            this.ContentsPreviewTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.ContentsPreviewTree_NodeMouseDoubleClick);
             // 
             // ContentsDownloadButton
             // 

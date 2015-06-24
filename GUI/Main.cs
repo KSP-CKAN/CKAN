@@ -1063,15 +1063,20 @@ namespace CKAN
 
         private void RecommendedModsToggleCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-          var state = ((CheckBox)sender).Checked;
-          foreach (ListViewItem item in RecommendedModsListView.Items)
-          {
-            if (item.Checked != state)
+            var state = ((CheckBox)sender).Checked;
+            foreach (ListViewItem item in RecommendedModsListView.Items)
             {
-              item.Checked = state;
+                if (item.Checked != state)
+                {
+                    item.Checked = state;
+                }
             }
-          }
-          RecommendedModsListView.Refresh();
+            RecommendedModsListView.Refresh();
+        }
+
+        private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            OpenFileBrowser(e.Node);
         }
     }
 
