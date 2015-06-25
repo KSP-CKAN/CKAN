@@ -4,6 +4,8 @@ using System.Net;
 using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Types;
+
 
 namespace CKAN
 {
@@ -21,7 +23,8 @@ namespace CKAN
         public static Version FetchLatestCkanVersion()
         {
             var response = MakeRequest(latestCKANReleaseApiUrl);
-            return new Version(response.tag_name.ToString());
+
+            return new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
         public static string FetchLatestCkanVersionReleaseNotes()
