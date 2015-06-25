@@ -207,8 +207,9 @@ The comparison behavior of the package management system with respect to the
 `mod_version` is described below. The `mod_version` portion of the version
 number is mandatory.
 
-The `mod_version` may contain only alphanumerics and the characters `.` `+`
-(full stop, plus) and should start with a digit.
+While the CKAN will accept *any* string as a `mod_version`, mod authors are
+encouraged to restrict version names to alphanumerics and the characters `.`
+`+` (full stop, plus), and should start with a digit.
 
 ###### version ordering
 
