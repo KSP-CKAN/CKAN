@@ -295,13 +295,13 @@ namespace CKAN
             if (old_download_canceled)
             {
                 // Abort all our traditional downloads, if there are any.
-                foreach (var download in downloads)
+                foreach (var download in downloads.ToList())
                 {
                     download.agent.CancelAsync();
                 }
 
                 // Abort all our curl downloads, if there are any.
-                foreach (var thread in curl_threads)
+                foreach (var thread in curl_threads.ToList())
                 {
                     thread.Abort();
                 }
