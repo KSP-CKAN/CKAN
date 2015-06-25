@@ -984,6 +984,11 @@ namespace CKAN
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
                 Instance.CurrentInstanceUpdated();
         }
+
+        private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
     }
 
     public class GUIUser : NullUser
