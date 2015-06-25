@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -55,10 +56,13 @@ namespace CKAN
 
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
             install_ops.with_recommends = false;
-            
+            //Using the changeset passed in can cause issues with versions.
+            // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
+            // TODO Work out why this is.
+            var user_change_set = mainModList.ComputeUserChangeSet().ToList();
             m_InstallWorker.RunWorkerAsync(
                 new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
-                    m_Changeset, install_ops));
+                    user_change_set, install_ops));
             m_Changeset = null;
 
             UpdateChangesDialog(null, m_InstallWorker);
