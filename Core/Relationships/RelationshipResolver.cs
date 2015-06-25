@@ -311,8 +311,9 @@ namespace CKAN
                             dep_name, descriptor.RequiredVersion, registry.InstalledVersion(dep_name)));
                 }
 
+                var descriptor1 = descriptor;
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
-                    .Where(mod=>MightBeInstallable(mod)).ToList();
+                    .Where(mod=>descriptor1.version_within_bounds(mod.version) && MightBeInstallable(mod)).ToList();
 
                 if (candidates.Count == 0)
                 {
