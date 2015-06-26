@@ -190,6 +190,7 @@ namespace CKAN.NetKAN
 
             // Fix our version string, if required.
             metadata = FixVersionStrings(metadata);
+            metadata = StripNetkanMetadata(metadata);
 
             // Re-inflate our mod, in case our vref or FixVersionString routines have
             // altered it at all.
@@ -614,7 +615,34 @@ namespace CKAN.NetKAN
 
         }
 
+        /// <summary>
+        /// Remove any metadata entries that start with 'x_netkan'.
+        /// </summary>
+        /// <param name="metadata">The metadata object</param>
+        /// <returns>The metadata object stripped of netkan-specific entries.</returns>
+        internal static JObject StripNetkanMetadata(JObject metadata)
+        {
+            var propertiesToRemove = new List<string>();
 
+            foreach (var property in metadata.Properties())
+            {
+                if (property.Name.StartsWith("x_netkan"))
+                {
+                    propertiesToRemove.Add(property.Name);
+                }
+                else if (property.Value.Type == JTokenType.Object)
+                {
+                    metadata[property.Name] = StripNetkanMetadata((JObject)property.Value);
+                }
+            }
+
+            foreach (var property in propertiesToRemove)
+            {
+                metadata.Remove(property);
+            }
+
+            return metadata;
+        }
     }
 
     internal class NetKanRemote

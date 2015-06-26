@@ -1,4 +1,5 @@
-﻿using CKAN;
+﻿using System.Collections.Generic;
+using CKAN;
 using CKAN.NetKAN;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -61,6 +62,70 @@ namespace Tests.NetKAN
                 Assert.Throws<BadMetadataKraken>(test_delegate);
             else
                 Assert.DoesNotThrow(test_delegate);
+        }
+
+        [TestCaseSource("StripNetkanMetadataTestCaseSource")]
+        public void StripNetkanMetadata(string json, string expected)
+        {
+            var metadata = MainClass.StripNetkanMetadata(JObject.Parse(json));
+            var expectedMetadata = JObject.Parse(expected);
+
+            Assert.AreEqual(metadata, expectedMetadata);
+        }
+
+        private IEnumerable<object[]> StripNetkanMetadataTestCaseSource
+        {
+            get
+            {
+                yield return new object[]
+                {
+@"
+{
+    ""foo"": ""bar""
+}
+",
+@"
+{
+    ""foo"": ""bar""
+}
+                    "
+                };
+
+                yield return new object[]
+                {
+@"
+{
+    ""foo"": ""bar"",
+    ""x_netkan"": ""foobar""
+}
+",
+@"
+{
+    ""foo"": ""bar""
+}
+                    "
+                };
+
+
+                yield return new object[]
+                {
+@"
+{
+    ""foo"": ""bar"",
+    ""x_netkan"": ""foobar"",
+    ""baz"": {
+        ""x_netkan_foo"": ""foobar""
+    }
+}
+",
+@"
+{
+    ""foo"": ""bar"",
+    ""baz"": {}
+}
+                    "
+                };
+            }
         }
     }
 }
