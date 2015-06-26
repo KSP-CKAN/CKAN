@@ -85,7 +85,7 @@ namespace CKAN
         private readonly Dictionary<Module, SelectionReason> reasons =
             new Dictionary<Module, SelectionReason>(new Module.IdentifierEqualilty());
 
-        private readonly Registry registry;
+        private readonly IRegistryQuerier registry;
         private readonly KSPVersion kspversion;
         private readonly RelationshipResolverOptions options;
         private readonly HashSet<Module> installed_modules;
@@ -96,7 +96,7 @@ namespace CKAN
         /// <param name="options"><see cref="RelationshipResolverOptions"/></param>
         /// <param name="registry">The registry to use</param>
         /// <param name="kspversion">The version of the install that the registry corresponds to</param>
-        public RelationshipResolver(RelationshipResolverOptions options, Registry registry, KSPVersion kspversion)
+        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, KSPVersion kspversion)
         {
             this.registry = registry;
             this.kspversion = kspversion;
@@ -117,7 +117,7 @@ namespace CKAN
         /// <param name="options"></param>
         /// <param name="registry"></param>
         /// <param name="kspversion"></param>
-        public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, Registry registry,
+        public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, IRegistryQuerier registry,
             KSPVersion kspversion) :
                 this(module_names.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
                     options,
@@ -130,7 +130,7 @@ namespace CKAN
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        public RelationshipResolver(IEnumerable<CkanModule> modules, RelationshipResolverOptions options, Registry registry,
+        public RelationshipResolver(IEnumerable<CkanModule> modules, RelationshipResolverOptions options, IRegistryQuerier registry,
             KSPVersion kspversion):this(options,registry,kspversion)
         {
             AddModulesToInstall(modules);

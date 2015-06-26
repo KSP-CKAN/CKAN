@@ -19,7 +19,7 @@ namespace CKAN
     // anything has changed. But that would involve catching access to a lot of the data
     // structures we pass back, and we're not doing that yet.
 
-    public class Registry :IEnlistmentNotification
+    public class Registry : IEnlistmentNotification, IRegistryQuerier
     {
         [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
@@ -52,7 +52,7 @@ namespace CKAN
         /// <summary>
         /// Returns all the installed modules
         /// </summary>
-        [JsonIgnore] public ICollection<InstalledModule> InstalledModules
+        [JsonIgnore] public IEnumerable<InstalledModule> InstalledModules
         {
             get { return installed_modules.Values; }
         }
@@ -60,7 +60,7 @@ namespace CKAN
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
-        [JsonIgnore] public ICollection<string> InstalledDlls
+        [JsonIgnore] public IEnumerable<string> InstalledDlls
         {
             get { return installed_dlls.Keys; }
         }
@@ -272,7 +272,7 @@ namespace CKAN
             // TODO: Should we save to disk at the end of a Tx?
             // TODO: If so, we should abort if we find a save that's while a Tx is in progress?
             //
-            // In either case, do we want the registry_manager to be Tx aware? 
+            // In either case, do we want the registry_manager to be Tx aware?
         }
 
         public void Rollback(Enlistment enlistment)
@@ -302,11 +302,11 @@ namespace CKAN
 
         /// <summary>
         /// "Pardon me, but I couldn't help but overhear you're in a Transaction..."
-        /// 
+        ///
         /// Adds our registry to the current transaction. This should be called whenever we
         /// do anything which may dirty the registry.
         /// </summary>
-        // 
+        //
         // http://wondermark.com/1k62/
         private void SealionTransaction()
         {
@@ -388,19 +388,17 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a simple array of all latest available modules for
-        /// the specified version of KSP (installed version by default)
+        /// <see cref="IRegistryQuerier.Available"/>
         /// </summary>
-        // TODO: This name is misleading. It's more a LatestAvailable's'
         public List<CkanModule> Available(KSPVersion ksp_version)
-        {            
+        {
             var candidates = new List<string>(available_modules.Keys);
             var compatible = new List<CkanModule>();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
-            //Cache 
+            //Cache
             AvailableModule[] modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
@@ -448,11 +446,10 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Returns a simple array of all incompatible modules for
-        ///     the specified version of KSP (installed version by default)
+        /// <see cref="IRegistryQuerier.Incompatible"/>
         /// </summary>
         public List<CkanModule> Incompatible(KSPVersion ksp_version)
-        {           
+        {
             var candidates = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
 
@@ -472,16 +469,12 @@ namespace CKAN
 
             return incompatible;
         }
-        
+
 
         /// <summary>
-        ///     Returns the latest available version of a module that
-        ///     satisifes the specified version.
-        ///     Throws a ModuleNotFoundException if asked for a non-existant module.
-        ///     Returns null if there's simply no compatible version for this system.
-        ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
+        /// <see cref = "IRegistryQuerier.LatestAvailable" />
         /// </summary>
-         
+
         // TODO: Consider making this internal, because practically everything should
         // be calling LatestAvailableWithProvides()
         public CkanModule LatestAvailable(
@@ -503,18 +496,14 @@ namespace CKAN
             }
         }
 
-        
+
 
         /// <summary>
-        ///     Returns the latest available version of a module that satisifes the specified version and 
-        ///     optionally a RelationshipDescriptor. Takes into account module 'provides', which may
-        ///     result in a list of alternatives being provided. 
-        ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
-        ///     If no KSP version is provided, the latest module for *any* KSP version is given.
+        /// <see cref = "IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version, RelationshipDescriptor relationship_descriptor = null)
         {
-            // This public interface calcultes a cache of modules which
+            // This public interface calculates a cache of modules which
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,
@@ -573,12 +562,9 @@ namespace CKAN
             return modules;
         }
 
-
-        public CkanModule GetModuleByVersion(string ident, string version)
-        {
-            return GetModuleByVersion(ident, new Version(version));
-        }
-
+        /// <summary>
+        /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
+        /// </summary>
         public CkanModule GetModuleByVersion(string ident, Version version)
         {
             log.DebugFormat("Trying to find {0} version {1}", ident, version);
@@ -589,7 +575,6 @@ namespace CKAN
             }
 
             AvailableModule available = available_modules[ident];
-
             return available.ByVersion(version);
         }
 
@@ -618,7 +603,7 @@ namespace CKAN
                 if (installed_files.TryGetValue(file, out owner))
                 {
                     // Woah! Registering an already owned file? Not cool!
-                    // (Although if it existed, we should have thrown a kraken well before this.)                    
+                    // (Although if it existed, we should have thrown a kraken well before this.)
                     inconsistencies.Add(
                         string.Format("{0} wishes to install {1}, but this file is registered to {2}",
                             mod.identifier, file, owner
@@ -652,7 +637,7 @@ namespace CKAN
         /// <summary>
         /// Deregister a module, which must already have its files removed, thereby
         /// forgetting abouts its metadata and files.
-        /// 
+        ///
         /// Throws an InconsistentKraken if not all files have been removed.
         /// </summary>
         public void DeregisterModule(KSP ksp, string module)
@@ -665,7 +650,7 @@ namespace CKAN
             // Note, this checks to see if a *file* exists; it doesn't
             // trigger on directories, which we allow to still be present
             // (they may be shared by multiple mods.
-                
+
             foreach (var absolute_file in absolute_files.Where(File.Exists))
             {
                 inconsistencies.Add(string.Format(
@@ -692,7 +677,7 @@ namespace CKAN
         /// <summary>
         /// Registers the given DLL as having been installed. This provides some support
         /// for pre-CKAN modules.
-        /// 
+        ///
         /// Does nothing if the DLL is already part of an installed module.
         /// </summary>
         public void RegisterDll(KSP ksp, string absolute_path)
@@ -711,7 +696,7 @@ namespace CKAN
                 );
                 return;
             }
-                
+
             // http://xkcd.com/208/
             // This regex works great for things like GameData/Foo/Foo-1.2.dll
             Match match = Regex.Match(
@@ -748,10 +733,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a dictionary of all modules installed, along with their
-        /// versions.
-        /// This includes DLLs, which will have a version type of `DllVersion`.
-        /// This includes Provides, which will have a version of `ProvidesVersion`.
+        /// <see cref = "IRegistryQuerier.Installed" />
         /// </summary>
         public Dictionary<string, Version> Installed(bool withProvides = true)
         {
@@ -782,8 +764,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the InstalledModule, or null if it is not installed.
-        /// Does *not* look up virtual modules.
+        /// <see cref = "IRegistryQuerier.InstalledModule" />
         /// </summary>
         public InstalledModule InstalledModule(string module)
         {
@@ -795,7 +776,7 @@ namespace CKAN
             InstalledModule installedModule;
             return installed_modules.TryGetValue(module, out installedModule) ? installedModule : null;
         }
-            
+
         /// <summary>
         /// Returns a dictionary of provided (virtual) modules, and a
         /// ProvidesVersion indicating what provides them.
@@ -827,13 +808,9 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Returns the installed version of a given mod.
-        ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
-        ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
-        ///     If `withProvides` is to set to false, null will be returned instead of the ProvidesVersion type.
-        ///     If the mod is not found, a null will be returned.
+        /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
-        public Version InstalledVersion(string modIdentifier, bool withProvides=true)
+        public Version InstalledVersion(string modIdentifier, bool with_provides=true)
         {
             InstalledModule installedModule;
 
@@ -851,7 +828,7 @@ namespace CKAN
 
             // Finally we have our provided checks. We'll skip these if
             // withProvides is false.
-            if (!withProvides) return null;
+            if (!with_provides) return null;
 
             var provided = Provided();
 
@@ -860,50 +837,14 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Gets the installed version of a mod. Returns null if provided or autodetected. 
+        /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
         /// </summary>
-        /// <param name="mod_identifer"></param>
-        /// <returns></returns>
         public Module GetInstalledVersion(string mod_identifer)
         {
             InstalledModule installedModule;
             return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
         }
 
-        /// <summary>
-        ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
-        ///     If withProvides is set to false then we skip the check for if the
-        ///     mod has been provided (rather than existing as a real mod).
-        /// </summary>
-        /// <returns><c>true</c>, if installed<c>false</c> otherwise.</returns>
-        public bool IsInstalled(string modName, bool withProvides = true)
-        {
-            return InstalledVersion(modName, withProvides) != null;
-        }
-
-        /// <summary>
-        ///     Check if a mod is autodetected.
-        /// </summary>
-        /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
-        public bool IsAutodetected(string identifier)
-        {            
-            return IsInstalled(identifier) && InstalledVersion(identifier).ToString().Equals("autodetected dll");
-        }
-
-        public bool HasUpdate(string identifier, KSPVersion version)
-        {
-            CkanModule newestVersion;
-            try
-            {
-                newestVersion = LatestAvailable(identifier, version);
-            }
-            catch (ModuleNotFoundKraken)
-            {
-                return false;
-            }
-            if (newestVersion == null) return false;
-            return IsInstalled(identifier) && newestVersion.version.IsGreaterThan(InstalledVersion(identifier));
-        }
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.
@@ -926,8 +867,7 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Checks the sanity of the registry, to ensure that all dependencies are met,
-        ///     and no mods conflict with each other. Throws an InconsistentKraken on failure.
+        /// <see cref="IRegistryQuerier.CheckSanity"/>
         /// </summary>
         public void CheckSanity()
         {
@@ -939,7 +879,7 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-        public static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
+        internal static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
         {
             while (true)
             {
@@ -956,7 +896,7 @@ namespace CKAN
 
                 // If nothing else would break, it's just the list of modules we're removing.
                 HashSet<string> to_remove = new HashSet<string>(modules_to_remove);
-                
+
                 if (to_remove.IsSupersetOf(broken))
                 {
                     log.DebugFormat("{0} is a superset of {1}, work done", string.Join(", ", to_remove), string.Join(", ", broken));
@@ -969,19 +909,13 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Return modules which are dependent on the modules passed in or modules in the return list
+        /// </summary>
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
             var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
-        }
-
-        /// <summary>
-        /// Finds and returns all modules that could not exist without the given module installed
-        /// </summary>
-        public HashSet<string> FindReverseDependencies(string module)
-        {
-            var set = new HashSet<string> {module};
-            return FindReverseDependencies(set);
         }
     }
 }

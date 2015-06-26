@@ -13,7 +13,7 @@ namespace CKAN
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
-    public class NetAsyncDownloader
+    public class NetAsyncDownloader : IDownloader
     {
 
         public IUser User { get; set; }
@@ -242,9 +242,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Downloads all the modules specified to the cache.
-        /// Even if modules share download URLs, they will only be downloaded once.
-        /// Blocks until the download is complete, cancelled, or errored.
+        /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
         /// </summary>
         public void DownloadModules(
             NetFileCache cache,
@@ -401,8 +399,8 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Cancel any running downloads. This will also call onCompleted with
-        /// all null arguments.
+        /// <see cref="IDownloader.CancelDownload()"/>
+        /// This will also call onCompleted with all null arguments.
         /// </summary>
         public void CancelDownload()
         {

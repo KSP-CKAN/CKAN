@@ -24,7 +24,7 @@ namespace CKAN.CmdLine
         {
             ListOptions options = (ListOptions) raw_options;
 
-            Registry registry = RegistryManager.Instance(ksp).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
 
 
             ExportFileType? exportFileType = null;

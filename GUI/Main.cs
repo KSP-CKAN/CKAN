@@ -693,7 +693,7 @@ namespace CKAN
             }
         }
 
-        private async Task UpdateChangeSetAndConflicts(Registry registry)
+        private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
             IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;

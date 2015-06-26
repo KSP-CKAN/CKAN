@@ -12,6 +12,6 @@ namespace CKAN.Exporters
         /// </summary>
         /// <param name="registry">The registry of mods to be exported.</param>
         /// <param name="stream">The output stream to be written to.</param>
-        void Export(Registry registry, Stream stream);
+        void Export(IRegistryQuerier registry, Stream stream);
     }
 }

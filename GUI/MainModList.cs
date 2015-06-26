@@ -103,7 +103,7 @@ namespace CKAN
         {
             log.Debug("Updating the mod list");
 
-            Registry registry = RegistryManager.Instance(CurrentInstance).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
             var gui_mods = new HashSet<GUIMod>(registry.Available(CurrentInstance.Version())
                 .Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
             gui_mods.UnionWith(registry.Incompatible(CurrentInstance.Version())
@@ -299,7 +299,7 @@ namespace CKAN
         /// <param name="installer">A module installer for the current KSP install</param>
         /// <param name="version">The version of the current KSP install</param>
         public async Task<IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>>> ComputeChangeSetFromModList(
-            Registry registry, HashSet<KeyValuePair<GUIMod, GUIModChangeType>> changeSet, ModuleInstaller installer,
+            IRegistryQuerier registry, HashSet<KeyValuePair<GUIMod, GUIModChangeType>> changeSet, ModuleInstaller installer,
             KSPVersion version)
         {
             var modules_to_install = new HashSet<CkanModule>();
@@ -368,9 +368,7 @@ namespace CKAN
             }
 
 
-            foreach (var dependency in modules_to_remove.
-                Select(mod => installer.FindReverseDependencies(mod.identifier)).
-                SelectMany(reverse_dependencies => reverse_dependencies))
+            foreach (var dependency in registry.FindReverseDependencies(modules_to_remove.Select(mod=>mod.identifier)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 Module module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
@@ -504,7 +502,7 @@ namespace CKAN
         }
 
 
-        public static Dictionary<GUIMod, string> ComputeConflictsFromModList(Registry registry,
+        public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
             IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> change_set, KSPVersion ksp_version)
         {
             var modules_to_install = new HashSet<string>();
