@@ -573,12 +573,19 @@ namespace CKAN
             return modules;
         }
 
-
+        /// <summary>
+        /// Returns the specified CkanModule with the version specified,
+        /// or null if it does not exist.
+        /// </summary>
         public CkanModule GetModuleByVersion(string ident, string version)
         {
             return GetModuleByVersion(ident, new Version(version));
         }
 
+        /// <summary>
+        /// Returns the specified CkanModule with the version specified,
+        /// or null if it does not exist.
+        /// </summary>
         public CkanModule GetModuleByVersion(string ident, Version version)
         {
             log.DebugFormat("Trying to find {0} version {1}", ident, version);
