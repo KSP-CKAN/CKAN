@@ -679,9 +679,10 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        gui_mod.SetInstallChecked(row, (bool) grid_view_cell.Value);
-                        if(gui_mod.IsInstallChecked)
-                            last_mod_to_have_install_toggled.Push(gui_mod);
+                        //gui_mod.SetInstallChecked(row, (bool) grid_view_cell.Value);
+                        MarkModForInstall(gui_mod.Identifier, !(bool)grid_view_cell.Value);
+                        //if(gui_mod.IsInstallChecked != gui_mod.IsInstalled)
+                        //    last_mod_to_have_install_toggled.Push(gui_mod); // Is handled in MarkModForInstall?
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
@@ -997,9 +998,24 @@ namespace CKAN
                 var mod = ((GUIMod)row.Tag);
                 if (row.Cells[0] is DataGridViewCheckBoxCell && (bool) row.Cells[0].Value)
                 {
-                    MarkModForInstall(mod.Identifier, false);
-                    mod.SetInstallChecked(row, false);
+                    MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
+                    //mod.SetInstallChecked(row, false);
                     ApplyToolButton.Enabled = true;
+                }
+            }
+
+            ModList.Refresh();
+        }
+
+        private void SelectInstalledToolButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && !(bool)row.Cells[0].Value && mod.IsInstalled)
+                {
+                    MarkModForInstall(mod.Identifier, false);
+                    //mod.SetInstallChecked(row, true);
                 }
             }
 
