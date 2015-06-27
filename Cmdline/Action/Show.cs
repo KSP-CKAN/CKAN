@@ -217,9 +217,9 @@ namespace CKAN.CmdLine
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(dep.name);
-            if (dep.version!=null) sb.Append(", version: " + dep.version);
-            if (dep.min_version != null) sb.Append(", min: " + dep.version);
-            if (dep.max_version != null) sb.Append(", max: " + dep.version);
+            if (dep.version != null) sb.Append(", version: " + dep.version);
+            if (dep.min_version != null) sb.Append(", min: " + dep.min_version);
+            if (dep.max_version != null) sb.Append(", max: " + dep.max_version);
             return sb.ToString();
         }
     }
