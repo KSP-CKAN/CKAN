@@ -60,6 +60,7 @@ namespace CKAN
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.DeselectAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.SelectInstalledToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new CKAN.MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -283,7 +284,8 @@ namespace CKAN
             this.UpdateAllToolButton,
             this.ApplyToolButton,
             this.FilterToolButton,
-            this.DeselectAllToolButton});
+            this.DeselectAllToolButton,
+            this.SelectInstalledToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 3);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(3917, 40);
@@ -399,6 +401,15 @@ namespace CKAN
             this.DeselectAllToolButton.Size = new System.Drawing.Size(143, 36);
             this.DeselectAllToolButton.Text = "Deselect all mods";
             this.DeselectAllToolButton.Click += new System.EventHandler(this.DeselectAllToolButton_Click);
+            // 
+            // SelectInstalledToolButton
+            // 
+            this.SelectInstalledToolButton.Image = global::CKAN.Properties.Resources.selectinstalled;
+            this.SelectInstalledToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.SelectInstalledToolButton.Name = "SelectInstalledToolButton";
+            this.SelectInstalledToolButton.Size = new System.Drawing.Size(182, 36);
+            this.SelectInstalledToolButton.Text = "(Re)select installed mods";
+            this.SelectInstalledToolButton.Click += new System.EventHandler(this.SelectInstalledToolButton_Click);
             // 
             // ModList
             // 
@@ -1358,6 +1369,7 @@ namespace CKAN
         private ToolStripMenuItem DeselectAllToolButton;
         private DataGridViewCheckBoxColumn Update;
         public MainModListGUI ModList;
+        private ToolStripMenuItem SelectInstalledToolButton;
     }
 }
 

@@ -121,7 +121,7 @@ namespace CKAN
             if (old_value != value) update_cell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row, bool? setvalueto = true)
+        public void SetInstallChecked(DataGridViewRow row, bool? setvalueto = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
