@@ -52,6 +52,7 @@
     <Compile Include="AVC\AVC.cs" />
     <Compile Include="AVC\JsonAvcToKspVersion.cs" />
     <Compile Include="Web.cs" />
+    <Compile Include="NetkanOverride.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
