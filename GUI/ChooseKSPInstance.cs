@@ -110,7 +110,7 @@ namespace CKAN
             }
         }
 
-        private void Delete_Click(object sender, EventArgs e)
+        private void Forget_Click(object sender, EventArgs e)
         {
             var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
             manager.RemoveInstance(instance);
@@ -120,7 +120,7 @@ namespace CKAN
 
         private void SetButtonsEnabled(bool has_instance)
         {
-            DeleteButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
+            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
         }
 
     }
