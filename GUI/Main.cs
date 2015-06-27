@@ -679,10 +679,8 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        //gui_mod.SetInstallChecked(row, (bool) grid_view_cell.Value);
                         MarkModForInstall(gui_mod.Identifier, !(bool)grid_view_cell.Value);
-                        //if(gui_mod.IsInstallChecked != gui_mod.IsInstalled)
-                        //    last_mod_to_have_install_toggled.Push(gui_mod); // Is handled in MarkModForInstall?
+                        // Used to push to "last_mod_to_have_install_toggled", but this is also done in MarkModForInstall.
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
@@ -999,7 +997,6 @@ namespace CKAN
                 if (row.Cells[0] is DataGridViewCheckBoxCell && (bool) row.Cells[0].Value)
                 {
                     MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
-                    //mod.SetInstallChecked(row, false);
                     ApplyToolButton.Enabled = true;
                 }
             }
@@ -1015,7 +1012,6 @@ namespace CKAN
                 if (row.Cells[0] is DataGridViewCheckBoxCell && !(bool)row.Cells[0].Value && mod.IsInstalled)
                 {
                     MarkModForInstall(mod.Identifier, false);
-                    //mod.SetInstallChecked(row, true);
                 }
             }
 
