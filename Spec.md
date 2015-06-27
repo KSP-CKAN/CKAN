@@ -246,7 +246,7 @@ ALPHA or pre-), or with silly orderings.
 ##### install
 
 A list of install directives for this mod, each *must* contain one of
-two mandatory source directives:
+three mandatory source directives:
 
 - `file`: The file or directory root that this directive pertains to.
   All leading directories are stripped from the start of the filename
@@ -255,6 +255,11 @@ two mandatory source directives:
 - `find`: (**v1.4**) Locate the top-most directory which exactly matches
   the name specified. This is particularly useful when distributions
   have structures which change based upon each release.
+- `find_regexp`: (**v1.10**) Locate the top-most directory which matches
+  the specified regular expression. This is particular useful when
+  distributions have structures which change based upon each release, but
+  `find` cannot be used because multiple directories or files contain the
+  same name.
 
 In addition a destination directive *must* be provided:
 
