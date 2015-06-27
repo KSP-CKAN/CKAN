@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
-                    User.RaiseMessage("New CKAN version available - " + latestVersion.ToString());
+                    User.RaiseMessage("New CKAN version available - " + latestVersion);
                     var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
                     User.RaiseMessage(releaseNotes);
                     User.RaiseMessage("\n");
@@ -118,7 +118,7 @@ namespace CKAN.CmdLine
             }
             catch (ModuleNotFoundKraken kraken)
             {
-                User.RaiseMessage(kraken.Message);
+                User.RaiseMessage("Module {0} not found", kraken.module);
                 return Exit.ERROR;
             }
             User.RaiseMessage("\nDone!\n");

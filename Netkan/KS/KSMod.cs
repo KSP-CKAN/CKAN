@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using log4net;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]
@@ -21,7 +22,10 @@ namespace CKAN.NetKAN
         public string author;
         public KSVersion[] versions;
         public Uri website;
+        public Uri source_code;
         public int default_version_id;
+        [JsonConverter(typeof(KSVersion.JsonConvertFromRelativeKsUri))]
+        public Uri background;
 
         public override string ToString()
         {
@@ -64,7 +68,7 @@ namespace CKAN.NetKAN
             if (version.friendly_version.EpochPart == 0 && metadata["x_netkan_force_epoch"] != null)
             {
                 var epoch = int.Parse(metadata["x_netkan_force_epoch"].ToString());
-                Inflate(metadata, "version", String.Format("{0}:{1}", epoch, version.ToString()));
+                Inflate(metadata, "version", String.Format("{0}:{1}", epoch, version));
             }
             else
             {
@@ -73,11 +77,17 @@ namespace CKAN.NetKAN
 
             Inflate(metadata, "download", version.download_path.OriginalString);
             Inflate(metadata, "x_generated_by", "netkan");
+            if(background!=null) Inflate(metadata, "x_screenshot", Escape(background));
             Inflate(metadata, "download_size", download_size);
 
             if (website != null)
             {
                 Inflate((JObject)metadata["resources"], "homepage", Escape(website));
+            }
+
+            if (source_code != null)
+            {
+                Inflate((JObject)metadata["resources"], "repository", Escape(source_code));
             }
 
             Inflate((JObject) metadata["resources"], "kerbalstuff", KSHome().OriginalString);

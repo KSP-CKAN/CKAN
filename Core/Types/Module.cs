@@ -3,19 +3,69 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace CKAN
 {
     public class RelationshipDescriptor
     {
-        public string max_version;
-        public string min_version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version max_version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version min_version;
         //Why is the identifier called name?
         public /* required */ string name;
-        public string version;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Version version;
+
+        /// <summary>
+        /// Returns if the other version satisfies this RelationshipDescriptor.
+        /// If the RelationshipDescriptor has version set it compares against that.
+        /// Else it uses the {min,max}_version fields treating nulls as unbounded.
+        /// Note: Uses inclusive inequalities.
+        /// </summary>
+        /// <param name="other_version"></param>
+        /// <returns>True if other_version is within the bounds</returns>
+        public bool version_within_bounds(Version other_version)
+        {
+            // DLL versions (aka autodetected mods) satisfy *all* relationships
+            if (other_version is DllVersion)
+                return true;
+
+            if (version == null)
+            {
+                if (max_version == null && min_version == null)
+                    return true;
+                bool min_sat = min_version == null || min_version <= other_version;
+                bool max_sat = max_version == null || max_version >= other_version;
+                if (min_sat && max_sat) return true;
+            }
+            else
+            {
+                if (version.Equals(other_version))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// A user friendly message for what versions satisfies this descriptor.
+        /// </summary>
+        [JsonIgnore]
+        public string RequiredVersion {
+            get
+            {
+                if (version != null)
+                    return version.ToString();
+                return string.Format("between {0} and {1} inclusive.",
+                    min_version != null ?min_version.ToString() : "any version",
+                    max_version != null ? max_version.ToString() : "any version");
+            }
+        }
+
     }
 
     public class ResourcesDescriptor
@@ -24,9 +74,10 @@ namespace CKAN
         public Uri homepage;
         public Uri bugtracker;
 
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        [JsonConverter(typeof (JsonOldResourceUrlConverter))]
         public Uri kerbalstuff;
     }
+
 
     /// <summary>
     ///     Describes a CKAN module (ie, what's in the CKAN.schema file).
@@ -35,15 +86,16 @@ namespace CKAN
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
-    public class Module
+    public class Module : IEquatable<Module>
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Module));
+        private static readonly ILog log = LogManager.GetLogger(typeof (Module));
 
         // identifier, license, and version are always required, so we know
         // what we've got.
 
         [JsonProperty("abstract")]
         public string @abstract;
+
         [JsonProperty("description")]
         public string description;
 
@@ -52,7 +104,7 @@ namespace CKAN
         public string kind;
 
         [JsonProperty("author")]
-        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
         public List<string> author;
 
         [JsonProperty("comment")]
@@ -60,13 +112,16 @@ namespace CKAN
 
         [JsonProperty("conflicts")]
         public List<RelationshipDescriptor> conflicts;
+
         [JsonProperty("depends")]
         public List<RelationshipDescriptor> depends;
 
         [JsonProperty("download")]
         public Uri download;
+
         [JsonProperty("download_size")]
         public long download_size;
+
         [JsonProperty("identifier", Required = Required.Always)]
         public string identifier;
 
@@ -75,11 +130,13 @@ namespace CKAN
 
         [JsonProperty("ksp_version_max")]
         public KSPVersion ksp_version_max;
+
         [JsonProperty("ksp_version_min")]
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        public License license;
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        public List<License> license;
 
         [JsonProperty("name")]
         public string name;
@@ -89,13 +146,16 @@ namespace CKAN
 
         [JsonProperty("recommends")]
         public List<RelationshipDescriptor> recommends;
+
         [JsonProperty("release_status")]
         public ReleaseStatus release_status;
 
         [JsonProperty("resources")]
         public ResourcesDescriptor resources;
+
         [JsonProperty("suggests")]
         public List<RelationshipDescriptor> suggests;
+
         [JsonProperty("version", Required = Required.Always)]
         public Version version;
 
@@ -168,7 +228,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new License ("unknown");
+                license = new List<License> {new License ("unknown")};
             }
 
             if (@abstract == null)
@@ -187,6 +247,10 @@ namespace CKAN
         /// </summary>
         public bool ConflictsWith(Module module)
         {
+            // We never conflict with ourselves, since we can't be installed at
+            // the same time as another version of ourselves.
+            if (module.identifier == this.identifier) return false;
+
             return UniConflicts(this, module) || UniConflicts(module, this);
         }
 
@@ -200,7 +264,7 @@ namespace CKAN
             {
                 return false;
             }
-            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name));
+            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
         }
 
         /// <summary>
@@ -246,17 +310,53 @@ namespace CKAN
 
         public bool IsMetapackage
         {
-            get
+            get { return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage"); }
+        }
+
+        protected bool Equals(Module other)
+        {
+            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Module) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage");
+                return (identifier.GetHashCode()*397) ^ version.GetHashCode();
             }
         }
 
+        bool IEquatable<Module>.Equals(Module other)
+        {
+            return Equals(other);
+        }
+
+        public class IdentifierEqualilty : EqualityComparer<Module>
+        {
+            public override bool Equals(Module x, Module y)
+            {
+                return x.identifier.Equals(y.identifier);
+            }
+
+            public override int GetHashCode(Module obj)
+            {
+                return obj.identifier.GetHashCode();
+            }
+        }
     }
 
     public class CkanModule : Module
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
+            private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+
         private static readonly string[] required_fields =
         {
             "spec_version",
@@ -267,10 +367,14 @@ namespace CKAN
             "license",
             "version"
         };
+
         // Only CKAN modules can have install and bundle instructions.
 
-        [JsonProperty("install")] public ModuleInstallDescriptor[] install;
-        [JsonProperty("spec_version", Required = Required.Always)] public Version spec_version;
+            [JsonProperty("install")]
+            public ModuleInstallDescriptor[] install;
+
+            [JsonProperty("spec_version", Required = Required.Always)]
+            public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
@@ -310,7 +414,7 @@ namespace CKAN
         /// Tries to parse an identifier in the format Modname=version
         /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
         /// </summary>
-        public static CkanModule FromIDandVersion(Registry registry, string mod, KSPVersion ksp_version)
+        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KSPVersion ksp_version)
         {
             CkanModule module;
 
@@ -324,13 +428,15 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
-                    throw new ModuleNotFoundKraken(ident, version, string.Format("Cannot install {0}, version {1} not available", ident, version));
+                        throw new ModuleNotFoundKraken(ident, version,
+                            string.Format("Cannot install {0}, version {1} not available", ident, version));
             }
             else
                 module = registry.LatestAvailable(mod, ksp_version);
 
             if (module == null)
-                throw new ModuleNotFoundKraken(mod, null, string.Format("Cannot install {0}, module not available", mod));
+                    throw new ModuleNotFoundKraken(mod, null,
+                        string.Format("Cannot install {0}, module not available", mod));
             else
                 return module;
         }
@@ -404,6 +510,7 @@ namespace CKAN
             // All good! Return module
             return newModule;
         }
+
         public override bool Equals(object obj)
         {
             var other = obj as Module;
@@ -414,7 +521,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return identifier.GetHashCode() ^ version.GetHashCode();
+            return base.GetHashCode();
         }
 
 
@@ -481,3 +588,4 @@ namespace CKAN
         }
     }
 }
+

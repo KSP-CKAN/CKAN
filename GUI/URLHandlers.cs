@@ -27,7 +27,7 @@ namespace CKAN
                     {
                        RegisterURLHandler_Win32();
                     }
-                    catch (UnauthorizedAccessException ex)
+                    catch (UnauthorizedAccessException)
                     {
                         if (config.URLHandlerNoNag)
                         {
@@ -48,7 +48,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
                             config.URLHandlerNoNag = true;
                             config.Save();
                         }
-                        
+
                         throw;
                     }
                 } else if (Platform.IsMac) {
@@ -105,7 +105,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
         private static void RegisterURLHandler_Linux()
         {
             var parser = new FileIniDataParser();
-            IniData data = null;
+            IniData data;
 
             log.InfoFormat("Trying to register URL handler");
 

@@ -9,14 +9,14 @@ namespace Tests.Core.Net
     /// <summary>
     /// Test the async downloader.
     /// </summary>
-    
+
     [TestFixture]
     public class NetAsyncDownloader
     {
 
         private CKAN.Registry registry;
         private DisposableKSP ksp;
-        private CKAN.NetAsyncDownloader async;
+        private CKAN.IDownloader async;
         private NetFileCache cache;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
@@ -36,7 +36,7 @@ namespace Tests.Core.Net
             registry.Installed().Clear();
 
             // Make sure we have a registry we can use.
-            CKAN.Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP, new NullUser());
+            CKAN.Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncDownloader(new NullUser());

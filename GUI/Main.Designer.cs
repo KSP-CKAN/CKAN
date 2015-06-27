@@ -34,6 +34,7 @@ namespace CKAN
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectKSPInstallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openKspDirectoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,7 +61,7 @@ namespace CKAN
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.ModList = new MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -165,6 +166,7 @@ namespace CKAN
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectKSPInstallMenuItem,
+            this.openKspDirectoyToolStripMenuItem,
             this.installFromckanToolStripMenuItem,
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator1,
@@ -179,6 +181,13 @@ namespace CKAN
             this.selectKSPInstallMenuItem.Size = new System.Drawing.Size(196, 22);
             this.selectKSPInstallMenuItem.Text = "Select KSP Install...";
             this.selectKSPInstallMenuItem.Click += new System.EventHandler(this.selectKSPInstallMenuItem_Click);
+            // 
+            // openKspDirectoyToolStripMenuItem
+            // 
+            this.openKspDirectoyToolStripMenuItem.Name = "openKspDirectoyToolStripMenuItem";
+            this.openKspDirectoyToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.openKspDirectoyToolStripMenuItem.Text = "Open KSP Directoy";
+            this.openKspDirectoyToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoyToolStripMenuItem_Click);
             // 
             // installFromckanToolStripMenuItem
             // 
@@ -391,7 +400,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.UpdateCol,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -420,12 +429,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
-            // 
+            //
+            this.UpdateCol.HeaderText = "Update";
+            this.UpdateCol.Name = "Update";
+            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.UpdateCol.Width = 46;
+            //
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -1292,7 +1301,7 @@ namespace CKAN
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
-        private DataGridViewCheckBoxColumn UpdateCell;
+        private DataGridViewCheckBoxColumn UpdateCol;
         private TabPage ChangesetTabPage;
         private Button CancelChangesButton;
         private Button ConfirmChangesButton;
@@ -1319,7 +1328,6 @@ namespace CKAN
         private ToolStripMenuItem kSPCommandlineToolStripMenuItem;
         private RichTextBox MetadataModuleAbstractLabel;
         private DataGridViewCheckBoxColumn Installed;
-        private DataGridViewCheckBoxColumn Update;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;
@@ -1336,6 +1344,7 @@ namespace CKAN
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem exportModListToolStripMenuItem;
         private ToolStripMenuItem selectKSPInstallMenuItem;
+        private ToolStripMenuItem openKspDirectoyToolStripMenuItem;
     }
 }
 

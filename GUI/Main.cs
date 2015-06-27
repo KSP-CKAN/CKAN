@@ -8,7 +8,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Exporters;
 using CKAN.Properties;
+using CKAN.Types;
 using log4net;
 using Timer = System.Windows.Forms.Timer;
 
@@ -35,7 +37,7 @@ namespace CKAN
 
     public partial class Main
     {
-        public delegate void ModChangedCallback(CkanModule module, GUIModChangeType change);
+        public delegate void ModChangedCallback(Module module, GUIModChangeType change);
 
         public static event ModChangedCallback modChangedCallback;
 
@@ -66,15 +68,15 @@ namespace CKAN
 
         public GUIUser m_User;
 
-        private Timer filterTimer;
+        private Timer filter_timer;
 
         private DateTime lastSearchTime;
         private string lastSearchKey;
 
-        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> change_set;
-        private Dictionary<Module, string> conflicts;
+        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> change_set;
+        private Dictionary<GUIMod, string> conflicts;
 
-        private IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> ChangeSet
+        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> ChangeSet
         {
             get { return change_set; }
             set
@@ -85,7 +87,7 @@ namespace CKAN
             }
         }
 
-        private Dictionary<Module, string> Conflicts
+        private Dictionary<GUIMod, string> Conflicts
         {
             get { return conflicts; }
             set
@@ -100,7 +102,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var module = ((GUIMod) row.Tag).ToCkanModule();
+                var module = ((GUIMod) row.Tag);
                 string value;
 
                 if (Conflicts != null && Conflicts.TryGetValue(module, out value))
@@ -310,7 +312,11 @@ namespace CKAN
 
             CurrentInstanceUpdated();
 
+
             ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
+                CurrentInstance.GameDir());
+            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
 
             if (m_CommandLineArgs.Length >= 2)
             {
@@ -333,8 +339,8 @@ namespace CKAN
                 log.Debug("Attempting to select mod from startup parameters");
                 foreach (DataGridViewRow row in ModList.Rows)
                 {
-                    var module = ((GUIMod)row.Tag).ToCkanModule();
-                    if (identifier == module.identifier)
+                    var module = ((GUIMod) row.Tag);
+                    if (identifier == module.Identifier)
                     {
                         ModList.FirstDisplayedScrollingRowIndex = i;
                         row.Selected = true;
@@ -426,8 +432,6 @@ namespace CKAN
             ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
-            ModInfoTabControl.Enabled = true;
-
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
             UpdateModContentsTree(module);
@@ -477,17 +481,17 @@ namespace CKAN
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
         private void RunFilterUpdateTimer() {
-            if (filterTimer == null)
+            if (filter_timer == null)
             {
-                filterTimer = new Timer();
-                filterTimer.Tick += OnFilterUpdateTimer;
-                filterTimer.Interval = 700;
-                filterTimer.Start();
+                filter_timer = new Timer();
+                filter_timer.Tick += OnFilterUpdateTimer;
+                filter_timer.Interval = 700;
+                filter_timer.Start();
             }
             else
             {
-                filterTimer.Stop();
-                filterTimer.Start();
+                filter_timer.Stop();
+                filter_timer.Start();
             }
         }
 
@@ -501,7 +505,7 @@ namespace CKAN
         {
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
-            filterTimer.Stop();
+            filter_timer.Stop();
         }
 
         /// <summary>
@@ -595,13 +599,12 @@ namespace CKAN
                 key = key.Substring(0, 1);
             }
 
-            var current_name = ((GUIMod) current_row.Tag).ToCkanModule().name;
-            var current_match = current_name.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+            var current_name = ((GUIMod) current_row.Tag).Name;
             DataGridViewRow first_match = null;
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
-                var modname = ((GUIMod) row.Tag).ToCkanModule().name;
+                var modname = ((GUIMod) row.Tag).Name;
                 var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 if (row_match && first_match == null)
                 {
@@ -690,10 +693,10 @@ namespace CKAN
             }
         }
 
-        private async Task UpdateChangeSetAndConflicts(Registry registry)
+        private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
-            IEnumerable<KeyValuePair<CkanModule, GUIModChangeType>> full_change_set = null;
-            Dictionary<Module, string> conflicts = null;
+            IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> full_change_set = null;
+            Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
             var user_change_set = mainModList.ComputeUserChangeSet();
@@ -702,13 +705,13 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set =
                     await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
-                        CurrentInstance.Version());
+                    CurrentInstance.Version());
             }
             catch (InconsistentKraken)
             {
                 //Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
                 user_change_set = mainModList.ComputeUserChangeSet();
-                conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
                 full_change_set = null;
             }
             catch (TooManyModsProvideKraken)
@@ -720,11 +723,11 @@ namespace CKAN
             if (too_many_provides_thrown)
             {
                 await UpdateChangeSetAndConflicts(registry);
-                conflicts = Conflicts;
+                new_conflicts = Conflicts;
                 full_change_set = ChangeSet;
             }
             last_mod_to_have_install_toggled.Clear();
-            Conflicts = conflicts;
+            Conflicts = new_conflicts;
             ChangeSet = full_change_set;
         }
 
@@ -774,9 +777,10 @@ namespace CKAN
         {
             var module = GetSelectedModule();
             if (module == null) return;
+
             ResetProgress();
             ShowWaitDialog(false);
-            ModuleInstaller.GetInstance(CurrentInstance, GUI.user).CachedOrDownload(module);
+            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload(module.ToCkanModule());
             HideWaitDialog(true);
 
             UpdateModContentsTree(module);
@@ -790,12 +794,12 @@ namespace CKAN
 
         private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CkanModule module = GetSelectedModule();
+            GUIMod module = GetSelectedModule();
             if (module == null) return;
             UpdateModDependencyGraph(module);
         }
 
-        private CkanModule GetSelectedModule()
+        private GUIMod GetSelectedModule()
         {
             if (ModList.SelectedRows.Count == 0)
             {
@@ -808,7 +812,8 @@ namespace CKAN
                 return null;
             }
 
-            var module = ((GUIMod) selected_item.Tag).ToCkanModule();
+
+            var module = ((GUIMod) selected_item.Tag);
             return module;
         }
 
@@ -875,7 +880,7 @@ namespace CKAN
             if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
                 var path = open_file_dialog.FileName;
-                CkanModule module = null;
+                CkanModule module;
 
                 try
                 {
@@ -901,8 +906,9 @@ namespace CKAN
                 // Sneakily add our version in...
                 registry_manager.registry.AddAvailable(module);
 
-                var changeset = new List<KeyValuePair<CkanModule, GUIModChangeType>>();
-                changeset.Add(new KeyValuePair<CkanModule, GUIModChangeType>(module, GUIModChangeType.Install));
+                var changeset = new List<KeyValuePair<GUIMod, GUIModChangeType>>();
+                changeset.Add(new KeyValuePair<GUIMod, GUIModChangeType>(
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()), GUIModChangeType.Install));
 
                 menuStrip1.Enabled = false;
 
@@ -910,7 +916,7 @@ namespace CKAN
                 install_ops.with_recommends = false;
 
                 m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<KeyValuePair<CkanModule, GUIModChangeType>>, RelationshipResolverOptions>(
+                    new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 
@@ -926,26 +932,62 @@ namespace CKAN
         /// <param name="e"></param>
         private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dlg = new SaveFileDialog();
-            dlg.Filter = Resources.CKANFileFilter;
-            dlg.Title = Resources.ExportInstalledModsDialogTitle;
+            var exportOptions = new List<ExportOption>
+            {
+                new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
+                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
+            };
 
-            if (dlg.ShowDialog() == DialogResult.OK) {
-                // Save, just to be certain that the installed-*.ckan metapackage is generated
-                RegistryManager.Instance(CurrentInstance).Save();
+            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
 
-                // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName);
+            var dlg = new SaveFileDialog
+            {
+                Filter = filter,
+                Title = Resources.ExportInstalledModsDialogTitle
+            };
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
+
+                if (exportOption.ExportFileType == ExportFileType.Ckan)
+                {
+                    // Save, just to be certain that the installed-*.ckan metapackage is generated
+                    RegistryManager.Instance(CurrentInstance).Save();
+
+                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
+                }
+                else
+                {
+                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+
+                    using (var stream = new FileStream(dlg.FileName, fileMode))
+                    {
+                        var registry = RegistryManager.Instance(CurrentInstance).registry;
+
+                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
+                    }
+                }
             }
         }
 
         private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
         {
-            Main.Instance.Manager.ClearAutoStart();
-            var old_instance = Main.Instance.CurrentInstance;
+            Instance.Manager.ClearAutoStart();
+            var old_instance = Instance.CurrentInstance;
             var result = new ChooseKSPInstance().ShowDialog();
-            if (!Equals(old_instance, Main.Instance.CurrentInstance))
-                Main.Instance.CurrentInstanceUpdated();
+            if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
+                Instance.CurrentInstanceUpdated();
+        }
+
+        private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Instance.manager.CurrentInstance.GameDir());
         }
     }
 

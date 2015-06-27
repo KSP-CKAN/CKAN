@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Show : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Show));
-
         public IUser user { get; set; }
 
         public Show(IUser user)
@@ -158,7 +154,7 @@ namespace CKAN.CmdLine
             }
 
             user.RaiseMessage("- status:\t{0}", module.release_status);
-            user.RaiseMessage("- license:\t{0}", module.license); 
+            user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license)); 
             #endregion
 
             #region Relationships
@@ -221,9 +217,9 @@ namespace CKAN.CmdLine
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(dep.name);
-            if (dep.version!=null) sb.Append(", version: " + dep.version);
-            if (dep.min_version != null) sb.Append(", min: " + dep.version);
-            if (dep.max_version != null) sb.Append(", max: " + dep.version);
+            if (dep.version != null) sb.Append(", version: " + dep.version);
+            if (dep.min_version != null) sb.Append(", min: " + dep.min_version);
+            if (dep.max_version != null) sb.Append(", max: " + dep.max_version);
             return sb.ToString();
         }
     }

@@ -6,10 +6,10 @@ using System.Threading;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * CKAN AUTO-UPDATE TOOL
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * 
+ *
  * This simple program is used to replace the local ckan.exe with the latest one i.e. auto-update.
  * It is a command-line tool only, meant to be invoked by the main CKAN process and not manually.
- * 
+ *
  * Invoked as:
  * AutoUpdate.exe <running CKAN PID> <running CKAN path> <updated CKAN path>
  */
@@ -28,7 +28,6 @@ namespace AutoUpdater
             var pid = int.Parse(args[0]);
             var local_path = args[1];
             var updated_path = args[2];
-            var launch = args[3];
 
             if (!File.Exists(updated_path))
             {
@@ -67,14 +66,14 @@ namespace AutoUpdater
                     return;
                 }
             }
-           
+
             // replace ckan.exe
             File.Move(updated_path, local_path);
 
             if (args[3] == "launch")
             {
                 //Start CKAN
-                Process.Start(local_path);    
+                Process.Start(local_path);
             }
         }
 

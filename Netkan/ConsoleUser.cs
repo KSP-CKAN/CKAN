@@ -62,8 +62,7 @@ namespace CKAN
             {
                 Console.Write(
                     // The \r at the front here causes download messages to *overwrite* each other.
-                     String.Format("\r{0} - {1}%           ", format, percent)
-                 );
+                    "\r{0} - {1}%           ", format, percent);
             }
             else
             {

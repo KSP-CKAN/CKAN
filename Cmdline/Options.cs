@@ -37,8 +37,6 @@ namespace CKAN.CmdLine
 
     internal class Actions
     {
-        private GuiOptions gui_console_options;
-
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
 
@@ -97,6 +95,9 @@ namespace CKAN.CmdLine
 
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
+
+        [Option("debugger", DefaultValue = false, HelpText = "Launch debugger at start")]
+        public bool Debugger { get; set; }
 
         [Option("ksp", DefaultValue = null, HelpText = "KSP install to use")]
         public string KSP { get; set; }
@@ -176,6 +177,9 @@ namespace CKAN.CmdLine
     {
         [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
         public bool porcelain { get; set; }
+
+        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
+        public string export { get; set; }
     }
 
     internal class VersionOptions : CommonOptions

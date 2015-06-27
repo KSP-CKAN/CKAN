@@ -4,6 +4,8 @@ using System.Net;
 using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Types;
+
 
 namespace CKAN
 {
@@ -21,7 +23,8 @@ namespace CKAN
         public static Version FetchLatestCkanVersion()
         {
             var response = MakeRequest(latestCKANReleaseApiUrl);
-            return new Version(response.tag_name.ToString());
+
+            return new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
         public static string FetchLatestCkanVersionReleaseNotes()
@@ -34,7 +37,7 @@ namespace CKAN
         public static void StartUpdateProcess(bool launchCKANAfterUpdate)
         {
             var pid = Process.GetCurrentProcess().Id;
-            
+
             // download updater app
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
 
@@ -49,7 +52,7 @@ namespace CKAN
             var path = Assembly.GetEntryAssembly().Location;
 
             // run updater
-            
+
             // mark as executable if on Linux or Mac
             if (Platform.IsUnix || Platform.IsMac)
             {
@@ -76,7 +79,7 @@ namespace CKAN
             // exit this ckan instance
             Environment.Exit(0);
         }
-            
+
         private static Uri FetchUpdaterUrl()
         {
             var response = MakeRequest(latestUpdaterReleaseApiUrl);
@@ -96,18 +99,16 @@ namespace CKAN
             var web = new WebClient();
             web.Headers.Add("user-agent", Net.UserAgentString);
 
-            string result = "";
             try
             {
-                result = web.DownloadString(url);
+                var result = web.DownloadString(url);
+                return JsonConvert.DeserializeObject(result);
             }
             catch (WebException webEx)
             {
                 log.ErrorFormat("WebException while accessing {0}: {1}", url, webEx);
                 throw;
             }
-
-            return JsonConvert.DeserializeObject(result);
         }
 
     }

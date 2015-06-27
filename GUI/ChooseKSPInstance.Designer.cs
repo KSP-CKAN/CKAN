@@ -32,6 +32,7 @@
             "dsadsa",
             "",
             ""}, -1);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChooseKSPInstance));
             this.KSPInstancesListView = new System.Windows.Forms.ListView();
             this.KSPInstallName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.KSPInstallVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,7 +41,7 @@
             this.AddNewButton = new System.Windows.Forms.Button();
             this.RenameButton = new System.Windows.Forms.Button();
             this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
-            this.DeleteButton = new System.Windows.Forms.Button();
+            this.ForgetButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // KSPInstancesListView
@@ -129,17 +130,17 @@
             this.SetAsDefaultCheckbox.Text = "Set as default";
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
             // 
-            // Delete
+            // ForgetButton
             // 
-            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteButton.Location = new System.Drawing.Point(156, 320);
-            this.DeleteButton.Name = "DeleteButton";
-            this.DeleteButton.Size = new System.Drawing.Size(75, 23);
-            this.DeleteButton.TabIndex = 5;
-            this.DeleteButton.Text = "Delete";
-            this.DeleteButton.UseVisualStyleBackColor = true;
-            this.DeleteButton.Click += new System.EventHandler(this.Delete_Click);
+            this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ForgetButton.Location = new System.Drawing.Point(156, 320);
+            this.ForgetButton.Name = "ForgetButton";
+            this.ForgetButton.Size = new System.Drawing.Size(75, 23);
+            this.ForgetButton.TabIndex = 5;
+            this.ForgetButton.Text = "Forget";
+            this.ForgetButton.UseVisualStyleBackColor = true;
+            this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
             // 
             // ChooseKSPInstance
             // 
@@ -147,12 +148,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 355);
-            this.Controls.Add(this.DeleteButton);
+            this.Controls.Add(this.ForgetButton);
             this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.KSPInstancesListView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChooseKSPInstance";
             this.Text = "Select KSP install";
             this.ResumeLayout(false);
@@ -170,6 +172,6 @@
         private System.Windows.Forms.Button AddNewButton;
         private System.Windows.Forms.Button RenameButton;
         private System.Windows.Forms.CheckBox SetAsDefaultCheckbox;
-        private System.Windows.Forms.Button DeleteButton;
+        private System.Windows.Forms.Button ForgetButton;
     }
 }

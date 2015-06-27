@@ -16,11 +16,11 @@ namespace CKAN
 
     public partial class Main : Form
     {
-        private void UpdateModInfo(CkanModule module)
+        private void UpdateModInfo(Module module)
         {
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
-            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = module.license.ToString());
+            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ",module.license));
             Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
 
@@ -52,7 +52,7 @@ namespace CKAN
             }
         }
 
-        private void UpdateModInfoAuthor(CkanModule module)
+        private void UpdateModInfoAuthor(Module module)
         {
             var authors = "";
 
@@ -72,11 +72,11 @@ namespace CKAN
             MetadataModuleAuthorLabel.Text = authors;
         }
 
-        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
+        private HashSet<Module> alreadyVisited = new HashSet<Module>();
 
-        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
+        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, Module module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
-            if (module == null 
+            if (module == null
                 || (depth > 0 && dependencyGraphRootModule == module)
                 || (alreadyVisited.Contains(module)))
             {
@@ -120,7 +120,7 @@ namespace CKAN
 
             foreach (RelationshipDescriptor dependency in relationships)
             {
-                Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
                 try
                 {
@@ -145,7 +145,7 @@ namespace CKAN
 
                         foreach (var dep in dependencyModules)
                         {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);                            
+                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
                         }
                     }
                 }
@@ -166,10 +166,10 @@ namespace CKAN
             return node;
         }
 
-        private void UpdateModDependencyGraph(CkanModule module)
+        private void UpdateModDependencyGraph(Module module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
-            //Can be costly. For now only update when visible. 
+            //Can be costly. For now only update when visible.
             if (ModInfoTabControl.SelectedIndex != RelationshipTabPage.TabIndex)
             {
                 return;
@@ -177,11 +177,11 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
-        private CkanModule dependencyGraphRootModule;
+        private Module dependencyGraphRootModule;
 
         private void _UpdateModDependencyGraph()
         {
-            var module = (CkanModule) ModInfoTabControl.Tag;
+            var module = (Module) ModInfoTabControl.Tag;
             dependencyGraphRootModule = module;
 
 
@@ -199,7 +199,7 @@ namespace CKAN
             DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
         }
 
-        // When switching tabs ensure that the resulting tab is updated. 
+        // When switching tabs ensure that the resulting tab is updated.
         private void ModInfoIndexChanged(object sender, EventArgs e)
         {
             if (ModInfoTabControl.SelectedIndex == ContentTabPage.TabIndex)
@@ -208,10 +208,10 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(CkanModule module)
+        private void UpdateModContentsTree(Module module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
-            //Can be costly. For now only update when visible. 
+            //Can be costly. For now only update when visible.
             if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
             {
                 return;
@@ -219,12 +219,12 @@ namespace CKAN
             Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
         }
 
-        private CkanModule current_mod_contents_module;
+        private Module current_mod_contents_module;
 
         private void _UpdateModContentsTree()
         {
             var module = (CkanModule) ModInfoTabControl.Tag;
-            if (module == current_mod_contents_module)
+            if (Equals(module, current_mod_contents_module))
             {
                 return;
             }

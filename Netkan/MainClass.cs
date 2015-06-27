@@ -190,6 +190,7 @@ namespace CKAN.NetKAN
 
             // Fix our version string, if required.
             metadata = FixVersionStrings(metadata);
+            metadata = StripNetkanMetadata(metadata);
 
             // Re-inflate our mod, in case our vref or FixVersionString routines have
             // altered it at all.
@@ -197,7 +198,7 @@ namespace CKAN.NetKAN
 
             // All done! Write it out!
 
-            var version_filename = mod.version.ToString().Replace(':','-'); 
+            var version_filename = mod.version.ToString().Replace(':','-');
             string final_path = Path.Combine(options.OutputDir, string.Format("{0}-{1}.ckan", mod.identifier, version_filename));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
@@ -429,7 +430,7 @@ namespace CKAN.NetKAN
                 {
                     throw new Kraken("No $vref specified, $kref HTTP method requires it, bailing out..");
                 }
-                
+
                 ModuleInstaller.CachedOrDownload(module.identifier, module.version, module.download, cache);
             }
             else
@@ -460,7 +461,7 @@ namespace CKAN.NetKAN
         /// Return a parsed JObject from a stream.
         /// </summary>
 
-        // Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118 
+        // Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118
         private static JObject DeserializeFromStream(Stream stream)
         {
             using (var sr = new StreamReader(stream))
@@ -568,7 +569,7 @@ namespace CKAN.NetKAN
         }
 
         /// <summary>
-        /// Fixes version strings. 
+        /// Fixes version strings.
         /// This adds a 'v' if 'x_netkan_force_v' is set, and the version string does not
         /// already begin with a 'v'.
         /// This adds the epoch if 'x_netkan_epoch' is set, and contains a positive int
@@ -597,7 +598,7 @@ namespace CKAN.NetKAN
             if (metadata.TryGetValue("x_netkan_epoch", out epoch))
             {
                 uint epoch_number;
-                if (uint.TryParse(epoch.ToString(), out epoch_number) && epoch_number>=0)
+                if (uint.TryParse(epoch.ToString(), out epoch_number))
                 {
                     //Implicit if zero. No need to add
                     if (epoch_number != 0)
@@ -614,7 +615,34 @@ namespace CKAN.NetKAN
 
         }
 
+        /// <summary>
+        /// Remove any metadata entries that start with 'x_netkan'.
+        /// </summary>
+        /// <param name="metadata">The metadata object</param>
+        /// <returns>The metadata object stripped of netkan-specific entries.</returns>
+        internal static JObject StripNetkanMetadata(JObject metadata)
+        {
+            var propertiesToRemove = new List<string>();
 
+            foreach (var property in metadata.Properties())
+            {
+                if (property.Name.StartsWith("x_netkan"))
+                {
+                    propertiesToRemove.Add(property.Name);
+                }
+                else if (property.Value.Type == JTokenType.Object)
+                {
+                    metadata[property.Name] = StripNetkanMetadata((JObject)property.Value);
+                }
+            }
+
+            foreach (var property in propertiesToRemove)
+            {
+                metadata.Remove(property);
+            }
+
+            return metadata;
+        }
     }
 
     internal class NetKanRemote

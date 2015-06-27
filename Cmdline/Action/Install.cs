@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
                 // Oooh! We're installing from a CKAN file.
                 foreach (string ckan_file in options.ckan_files)
                 {
-                    Uri ckan_uri = null;
+                    Uri ckan_uri;
 
                     // Check if the argument if a wellformatted Uri.
                     if (!Uri.IsWellFormedUriString(ckan_file, UriKind.Absolute))
@@ -41,7 +41,9 @@ namespace CKAN.CmdLine
                         else
                         {
                             // We have no further ideas as what we can do with this Uri, tell the user.
-                            user.RaiseError("Could not determine if \"{0}\" is a local or a remote file.", ckan_file);
+                            user.RaiseError("Can not find file \"{0}\".", ckan_file);
+                            user.RaiseError("Exiting.");
+                            return Exit.ERROR;
                         }
                     }
                     else
@@ -127,7 +129,7 @@ namespace CKAN.CmdLine
 
                 string message = String.Format("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
 
-                int result = -1;
+                int result;
 
                 try
                 {
@@ -193,11 +195,12 @@ namespace CKAN.CmdLine
             {
                 // The prettiest Kraken formats itself for us.
                 user.RaiseMessage(ex.InconsistenciesPretty);
+                user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
                 return Exit.ERROR;
             }
             catch (CancelledActionKraken)
             {
-                user.RaiseMessage("Installation cancelled at user request.");
+                user.RaiseMessage("Installation canceled at user request.");
                 return Exit.ERROR;
             }
             catch (MissingCertificateKraken kraken)
@@ -231,7 +234,7 @@ namespace CKAN.CmdLine
             registry_manager.registry.RemoveAvailable(module);
 
             // Sneakily add our version in...
-            registry_manager.registry.AddAvailable(module);            
+            registry_manager.registry.AddAvailable(module);
 
             return module;
         }

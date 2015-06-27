@@ -41,11 +41,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exporters\BbCodeExporter.cs" />
+    <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
+    <Compile Include="Exporters\Exporter.cs" />
+    <Compile Include="Exporters\IExporter.cs" />
+    <Compile Include="Exporters\MarkdownExporter.cs" />
+    <Compile Include="Exporters\PlainTextExporter.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
+    <Compile Include="Net\IDownloader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="CkanTransaction.cs" />
+    <Compile Include="Types\CKANVersion.cs" />
+    <Compile Include="Registry\IRegistryQuerier.cs" />
+    <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
     <Compile Include="Types\KSPVersion.cs" />

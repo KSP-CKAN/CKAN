@@ -84,6 +84,17 @@ namespace Tests.NetKAN
             return KSAPI.ExpandPath(path).OriginalString;
         }
 
+        [Test]
+        [TestCase("1.0","1.0.0")]
+        [TestCase("1.0.3","1.0.3")]
+        public void KS_Expand_KSP_Version_1156(string original, string expected)
+        {
+            Assert.AreEqual(
+                expected,
+                CKAN.NetKAN.KSVersion.JsonConvertKSPVersion.ExpandVersionIfNeeded(original)
+            );
+        }
+
         public static CKAN.NetKAN.KSMod test_ksmod()
         {
             var ksmod = new CKAN.NetKAN.KSMod

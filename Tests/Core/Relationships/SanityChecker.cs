@@ -26,7 +26,7 @@ namespace Tests.Core.Relationships
             registry.ClearDlls();
             registry.Installed().Clear();
 
-            Repo.UpdateRegistry(TestData.TestKAN(), registry, ksp.KSP, new NullUser());
+            Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
         }
 
         [Test]

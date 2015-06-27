@@ -73,9 +73,25 @@ namespace CKAN
                 {
                     configuration = (Configuration) serializer.Deserialize(stream);
                 }
-                catch(System.Xml.XmlException)
+                catch (System.Exception e)
                 {
-                    string message = string.Format("Error trying to parse \"{0}\". Try to move it out of the folder and restart CKAN.", path);
+                    string additionalErrorData = "";
+
+                    if(e is System.InvalidOperationException) // Exception thrown in Windows / .NET
+                    {
+                        if(e.InnerException != null)
+                            additionalErrorData = ": " + e.InnerException.Message;
+                    }
+                    else if(e is System.Xml.XmlException) // Exception thrown in Mono
+                    {
+                        additionalErrorData = ": " + e.Message;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+
+                    string message = string.Format("Error trying to parse \"{0}\"{1}. Try to move it out of the folder and restart CKAN.", path, additionalErrorData);
                     throw new Kraken(message);
                 }
             }

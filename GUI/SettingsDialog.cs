@@ -4,11 +4,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using log4net;
+using log4net.Repository.Hierarchy;
 
 namespace CKAN
 {
     public partial class SettingsDialog : Form
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
+
+        private long m_cacheSize;
+        private int m_cacheFileCount;
+
         public SettingsDialog()
         {
             InitializeComponent();
@@ -52,40 +59,51 @@ namespace CKAN
 
         private void UpdateCacheInfo()
         {
-            long cacheSize = 0;
+            m_cacheSize = 0;
+            m_cacheFileCount = 0;
             var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
 
             var cacheDirectory = new DirectoryInfo(cachePath);
-            int count = 0;
             foreach (var file in cacheDirectory.GetFiles())
             {
-                count++;
-                cacheSize += file.Length;
+                m_cacheFileCount++;
+                m_cacheSize += file.Length;
             }
 
             CKANCacheLabel.Text = String.Format
             (
                 "There are currently {0} files in the cache for a total of {1} MiB",
-                count,
-                cacheSize / 1024 / 1024
+                m_cacheFileCount,
+                m_cacheSize / 1024 / 1024
             );
         }
 
         private void ClearCKANCacheButton_Click(object sender, EventArgs e)
         {
-            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-            foreach (var file in Directory.GetFiles(cachePath))
-            {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (Exception)
-                {
-                }
-            }
+            YesNoDialog deleteConfirmationDialog = new YesNoDialog();
+            string confirmationText = String.Format
+            (
+                "Do you really want to delete {0} files from the cache for a total of {1} MiB?",
+                m_cacheFileCount, 
+                m_cacheSize / 1024 / 1024
+            );
 
-            UpdateCacheInfo();
+            if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)
+            {
+                var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
+                foreach (var file in Directory.GetFiles(cachePath))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                UpdateCacheInfo();
+            }
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -146,7 +164,7 @@ namespace CKAN
 
                     RefreshReposListBox();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
@@ -208,7 +226,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-
+                log.Warn("Exception caught in CheckForUpdates:\n"+ex);
             }
         }
 

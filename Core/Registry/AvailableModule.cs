@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using log4net;
 using Newtonsoft.Json;
@@ -38,15 +39,15 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Return the most recent release of a module.
-        ///     Optionally takes a KSP version number to target.
-        ///     If no KSP version is supplied, we return the latest release of that module for any KSP.
-        ///     Returns null if there are no compatible versions.
+        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy. 
         /// </summary>
-        public CkanModule Latest(KSPVersion ksp_version = null)
+        /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
+        /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
+        /// <returns></returns>
+        public CkanModule Latest(KSPVersion ksp_version = null, RelationshipDescriptor relationship=null)
         {            
             var available_versions = new List<Version>(module_version.Keys);
-
+            CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
@@ -58,26 +59,39 @@ namespace CKAN
             // Sort most recent versions first.            
             available_versions.Reverse();
 
-            if (ksp_version == null)
+            if (ksp_version == null && relationship == null)
             {
-                CkanModule module = module_version[available_versions.First()];
+                module = module_version[available_versions.First()];
 
                 log.DebugFormat("No KSP version restriction, {0} is most recent", module);
                 return module;
             }
-
-            // Time to check if there's anything that we can satisfy.
-
-            foreach (Version v in available_versions.Where(v => module_version[v].IsCompatibleKSP(ksp_version)))
+            if (relationship == null)
             {
-                return module_version[v];
+                // Time to check if there's anything that we can satisfy.
+                var version =
+                    available_versions.FirstOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
+                if (version != null)
+                    return module_version[version];
+
+                log.DebugFormat("No version of {0} is compatible with KSP {1}",
+                    module_version[available_versions[0]].identifier, ksp_version);
+
+                return null;
             }
-
-            log.DebugFormat("No version of {0} is compatible with KSP {1}",
-                module_version[available_versions[0]].identifier, ksp_version);
-
-            // Oh noes! Nothing available!
-            return null;
+            if (ksp_version == null)
+            {
+                var version = available_versions.FirstOrDefault(relationship.version_within_bounds);
+                return version == null ? null : module_version[version];
+            }
+            else
+            {                
+                var version = available_versions.FirstOrDefault(v =>
+                    relationship.version_within_bounds(v) &&
+                    module_version[v].IsCompatibleKSP(ksp_version));
+                return version == null ? null : module_version[version];                
+            }
+            
         }
 
         /// <summary>

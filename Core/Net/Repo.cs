@@ -27,7 +27,7 @@ namespace CKAN
         {
             log.DebugFormat("Converting metadata from JSON.");
 
-            try 
+            try
             {
                 CkanModule module = CkanModule.FromJson(metadata);
                 log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
@@ -258,7 +258,7 @@ namespace CKAN
 It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?", mods)))
                 {
                     ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
-                    installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));         
+                    installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));
                 }
             }
 
@@ -310,7 +310,7 @@ It is advisable that you reinstall them in order to preserve consistency with th
                             log.DebugFormat("Reading CKAN data from {0}", filename);
 
                             // Read each file into a buffer.
-                            int buffer_size = 0;
+                            int buffer_size;
 
                             try
                             {

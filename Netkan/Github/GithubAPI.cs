@@ -42,18 +42,15 @@ namespace CKAN.NetKAN
             Uri url = new Uri (api_base, path);
             log.DebugFormat("Calling {0}", url);
 
-            string result = "";
             try
             {
-                result = web.DownloadString(url);
+                return web.DownloadString(url);
             }
             catch(WebException webEx)
             {
                 log.ErrorFormat ("WebException while accessing {0}: {1}", url, webEx);
                 throw webEx;
             }
-
-            return result;
         }
 
         /// <summary>
@@ -78,7 +75,6 @@ namespace CKAN.NetKAN
 
             // Finding the most recent *stable* release means filtering
             // out on pre-releases.
-            GithubRelease result = null;
 
             foreach (JObject release in releases)
             {
@@ -91,15 +87,14 @@ namespace CKAN.NetKAN
                         // Then, check against the regex, which might default to ".zip"
                         if (Regex.IsMatch ((string) asset ["name"], assetFilter, RegexOptions.IgnoreCase))
                         {
-                            log.DebugFormat ("Hit on {0}", asset.ToString ());
-                            result = new GithubRelease (release, asset);
-                            return result;
+                            log.DebugFormat ("Hit on {0}", asset);
+                            return new GithubRelease (release, asset);
                         }
                     }
                 }
             }
 
-            return result;
+            return null;
         }
     }
 }

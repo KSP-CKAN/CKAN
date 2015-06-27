@@ -226,19 +226,26 @@ namespace Tests.Data
             return CkanModule.FromJson(RandSCapsuleDyne());
         }
 
-        public static Uri TestKAN()
-        {
-            return new Uri("../../../Tests/Data/CKAN-meta-testkan.zip", UriKind.Relative);
-        }
-
-        // Same as TestKAN above, just repacked as tar.gz.
+        // TestKAN in tar.gz format.
         public static Uri TestKANTarGz()
         {
-            return new Uri("../../Data/CKAN-meta-testkan.tar.gz", UriKind.Relative);
+            return new Uri(DataDir("CKAN-meta-testkan.tar.gz"), UriKind.Relative);
         }
 
-        // A repo full of deliciously bad metadata...
-        public static Uri BadKAN()
+        // TestKAN in zip format.
+        public static Uri TestKANZip()
+        {
+            return new Uri(DataDir("CKAN-meta-testkan.zip"), UriKind.Relative);
+        }
+
+        // A repo full of deliciously bad metadata in tar.gz format.
+        public static Uri BadKANTarGz()
+        {
+            return new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
+        }
+
+        // A repo full of deliciously bad metadata in zip format.
+        public static Uri BadKANZip()
         {
             return new Uri(DataDir("CKAN-meta-badkan.zip"));
         }
@@ -269,6 +276,39 @@ namespace Tests.Data
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
                     ""license""  : ""GPL-3.0"",
+                    ""version""  : ""0.14"",
+                    ""release_status"" : ""stable"",
+                    ""ksp_version"" : ""0.24.2"",
+                    ""resources"" : {
+                        ""homepage"" : ""http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13"",
+                        ""manual""   : ""http://ksp-kos.github.io/KOS_DOC/"",
+                        ""bugtracker"": ""https://github.com/KSP-KOS/KOS/issues"",
+                        ""github""   : {
+                            ""url""      : ""https://github.com/KSP-KOS/KOS"",
+                            ""releases"" : true
+                        }
+                    },
+                    ""install"" : [
+                        {
+                            ""file""       : ""GameData/kOS"",
+                            ""install_to"" : ""GameData""
+                        }
+                    ]
+                }"
+            ;
+        }
+
+        // AFAIK kOS isn't multi-licensed, but we need somthing for testing. :)
+        public static string kOS_014_multilicense()
+        {
+            return @"
+                {
+                    ""spec_version"": 1,
+                    ""name""     : ""kOS - Kerbal OS"",
+                    ""identifier"" : ""kOS"",
+                    ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
+                    ""license""  : [ ""GPL-3.0"", ""GPL-2.0"" ],
                     ""version""  : ""0.14"",
                     ""release_status"" : ""stable"",
                     ""ksp_version"" : ""0.24.2"",
@@ -361,6 +401,28 @@ namespace Tests.Data
             {
                 File.Copy(file, file.Replace(src, dst));
             }
+        }
+
+        public static string ConfigurationFile()
+        {
+            return @"<?xml version=""1.0"" encoding=""utf-8""?>
+            <Configuration xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+              <CommandLineArguments>KSP.exe -force-opengl</CommandLineArguments>
+              <AutoCloseWaitDialog>false</AutoCloseWaitDialog>
+              <URLHandlerNoNag>false</URLHandlerNoNag>
+              <CheckForUpdatesOnLaunch>true</CheckForUpdatesOnLaunch>
+              <CheckForUpdatesOnLaunchNoNag>true</CheckForUpdatesOnLaunchNoNag>
+              <SortByColumnIndex>2</SortByColumnIndex>
+              <SortDescending>false</SortDescending>
+              <WindowSize>
+                <Width>1024</Width>
+                <Height>664</Height>
+              </WindowSize>
+              <WindowLoc>
+                <X>512</X>
+                <Y>136</Y>
+              </WindowLoc>
+            </Configuration>";
         }
     }
 

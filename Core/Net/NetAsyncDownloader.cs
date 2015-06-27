@@ -5,16 +5,15 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ChinhDo.Transactions;
-using log4net;
 using CurlSharp;
+using log4net;
 
 namespace CKAN
-{      
+{
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
-    public class NetAsyncDownloader
+    public class NetAsyncDownloader : IDownloader
     {
 
         public IUser User { get; set; }
@@ -50,9 +49,9 @@ namespace CKAN
         private List<CkanModule> modules;
         private int completed_downloads;
 
-        private Object download_complete_lock = new Object();
-
-        private volatile bool downloadCanceled;
+        //Used for inter-thread communication.
+        private volatile bool download_canceled;
+        private readonly ManualResetEvent complete_or_canceled;
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
@@ -72,6 +71,7 @@ namespace CKAN
             User = user;
             downloads = new List<NetAsyncDownloaderDownloadPart>();
             modules = new List<CkanModule>();
+            complete_or_canceled = new ManualResetEvent(false);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace CKAN
             {
                 downloads.Add(download);
             }
-                
+
             if (Platform.IsWindows)
             {
                 DownloadNative();
@@ -94,11 +94,6 @@ namespace CKAN
             {
                 DownloadCurl();
             }
-
-            // The user hasn't cancelled us yet. :)
-            downloadCanceled = false;
-
-            return;
         }
 
         /// <summary>
@@ -162,7 +157,7 @@ namespace CKAN
                 {
                     log.DebugFormat("Progress function called... {0}/{1}", dlNow,dlTotal);
 
-                    int percent = 0;
+                    int percent;
 
                     if (dlTotal > 0)
                     {
@@ -182,7 +177,7 @@ namespace CKAN
                     );
 
                     // If the user has told us to cancel, then bail out now.
-                    if (downloadCanceled)
+                    if (download_canceled)
                     {
                         log.InfoFormat("Bailing out of download {0} at user request", index);
                         // Bail out!
@@ -208,8 +203,6 @@ namespace CKAN
                 // Let's go!
                 thread.Start();
             }
-
-            return;
         }
 
         /// <summary>
@@ -249,9 +242,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Downloads all the modules specified to the cache.
-        /// Even if modules share download URLs, they will only be downloaded once.
-        /// Blocks until the download is complete, cancelled, or errored.
+        /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
         /// </summary>
         public void DownloadModules(
             NetFileCache cache,
@@ -268,7 +259,7 @@ namespace CKAN
             }
             this.modules.AddRange(unique_downloads.Values);
 
-            // Schedule us to process our modules on completion.            
+            // Schedule us to process our modules on completion.
             onCompleted =
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
@@ -284,19 +275,22 @@ namespace CKAN
             // Start the download!
             Download(downloads_with_size);
 
-            // The Monitor.Wait function releases a lock, and then waits until it can re-acquire it.
-            // Elsewhere, our downloading callback pulses the lock, which causes us to wake up and
-            // continue.
-            lock (download_complete_lock)
-            {
-                log.Debug("Waiting for downloads to finish...");
-                Monitor.Wait(download_complete_lock);
-            }
+            log.Debug("Waiting for downloads to finish...");
+            complete_or_canceled.WaitOne();
+
+            var old_download_canceled = download_canceled;
+            // Set up the inter-thread comms for next time. Can not be done at the start
+            // of the method as the thread could pause on the opening line long enough for
+            // a user to cancel.
+
+            download_canceled = false;
+            complete_or_canceled.Reset();
+
 
             // If the user cancelled our progress, then signal that.
             // This *should* be harmless if we're using the curlsharp downloader,
             // which watches for downloadCanceled all by itself. :)
-            if (downloadCanceled)
+            if (old_download_canceled)
             {
                 // Abort all our traditional downloads, if there are any.
                 foreach (var download in downloads)
@@ -305,7 +299,7 @@ namespace CKAN
                 }
 
                 // Abort all our curl downloads, if there are any.
-                foreach (Thread thread in curl_threads)
+                foreach (var thread in curl_threads)
                 {
                     thread.Abort();
                 }
@@ -314,8 +308,10 @@ namespace CKAN
                 throw new CancelledActionKraken("Download cancelled by user");
             }
 
+
+
             // Check to see if we've had any errors. If so, then release the kraken!
-            List<Exception> exceptions = downloads
+            var exceptions = downloads
                 .Select(x => x.error)
                 .Where(ex => ex != null)
                 .ToList();
@@ -323,7 +319,7 @@ namespace CKAN
             // Let's check if any of these are certificate errors. If so,
             // we'll report that instead, as this is common (and user-fixable)
             // under Linux.
-            if (exceptions.Any(ex => ex is WebException && 
+            if (exceptions.Any(ex => ex is WebException &&
                 Regex.IsMatch(ex.Message, "authentication or decryption has failed")))
             {
                 throw new MissingCertificateKraken();
@@ -361,11 +357,11 @@ namespace CKAN
                         }
                     }
                     else
-                    {   
+                    {
                         // Even if some of our downloads failed, we want to cache the
                         // ones which succeeded.
 
-                        // This doesn't work :( 
+                        // This doesn't work :(
                         // for some reason the tmp files get deleted before we get here and we get a nasty exception
                         // not only that but then we try _to install_ the rest of the mods and then CKAN crashes
                         // and the user's registry gets corrupted forever
@@ -398,27 +394,21 @@ namespace CKAN
             }
 
             // Signal that we're done.
-            lock (download_complete_lock)
-            {
-                Monitor.Pulse(download_complete_lock);
-            }
+            complete_or_canceled.Set();
             User.RaiseDownloadsCompleted(urls, filenames, errors);
         }
 
         /// <summary>
-        /// Cancel any running downloads. This will also call onCompleted with
-        /// all null arguments.
+        /// <see cref="IDownloader.CancelDownload()"/>
+        /// This will also call onCompleted with all null arguments.
         /// </summary>
         public void CancelDownload()
         {
             log.Info("Cancelling download");
 
-            downloadCanceled = true;
+            download_canceled = true;
 
-            lock (download_complete_lock)
-            {
-                Monitor.Pulse(download_complete_lock);
-            }
+            complete_or_canceled.Set();
 
             if (onCompleted != null)
             {
@@ -434,7 +424,7 @@ namespace CKAN
         /// </summary>
         private void FileProgressReport(int index, int percent, long bytesDownloaded, long bytesToDownload)
         {
-            if (downloadCanceled)
+            if (download_canceled)
             {
                 return;
             }
@@ -455,7 +445,6 @@ namespace CKAN
             download.bytesLeft = download.size - bytesDownloaded;
             downloads[index] = download;
 
-            int totalPercentage = 0;
             int totalBytesPerSecond = 0;
             long totalBytesLeft = 0;
             long totalSize = 0;
@@ -470,9 +459,10 @@ namespace CKAN
                 totalBytesLeft += t.bytesLeft;
                 totalSize += t.size;
             }
-            totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
 
-            if (!downloadCanceled)
+            int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
+
+            if (!download_canceled)
             {
                 User.RaiseProgress(
                     String.Format("{0} kbps - downloading - {1} MiB left",

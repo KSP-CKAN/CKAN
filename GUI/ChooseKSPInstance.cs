@@ -9,11 +9,9 @@ namespace CKAN
         private FolderBrowserDialog m_BrowseKSPFolder;
         private RenameInstanceDialog m_RenameInstanceDialog;
         private readonly KSPManager manager;
-        private Control main;
 
         public ChooseKSPInstance()
         {
-            main = Main.Instance;
             manager = Main.Instance.Manager;
             InitializeComponent();
 
@@ -85,7 +83,6 @@ namespace CKAN
             manager.SetCurrentInstance(instance);
             DialogResult = DialogResult.OK;
             Close();
-         //   main.Show();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,7 +110,7 @@ namespace CKAN
             }
         }
 
-        private void Delete_Click(object sender, EventArgs e)
+        private void Forget_Click(object sender, EventArgs e)
         {
             var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
             manager.RemoveInstance(instance);
@@ -123,7 +120,7 @@ namespace CKAN
 
         private void SetButtonsEnabled(bool has_instance)
         {
-            DeleteButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
+            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
         }
 
     }

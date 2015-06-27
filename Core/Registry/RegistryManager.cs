@@ -124,12 +124,7 @@ namespace CKAN
 
         private void AscertainDefaultRepo()
         {
-            SortedDictionary<string, Repository> repositories = registry.Repositories;
-
-            if (repositories == null)
-            {
-                repositories = new SortedDictionary<string, Repository>();
-            }
+            var repositories = registry.Repositories ?? new SortedDictionary<string, Repository>();
 
             if (repositories.Count == 0)
             {

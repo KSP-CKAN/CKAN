@@ -14,7 +14,7 @@ namespace Tests.Core.Registry
     {
         private static string test_registry = TestData.TestRegistry();
         private DisposableKSP temp_ksp;
-        private CKAN.Registry registry;
+        private CKAN.IRegistryQuerier registry;
 
         [SetUp]
         public void Setup()
@@ -35,7 +35,7 @@ namespace Tests.Core.Registry
         [Test]
         public void LatestAvailable()
         {
-            CkanModule module = 
+            CkanModule module =
                 registry.LatestAvailable("AGExt", temp_ksp.KSP.Version());
 
             Assert.AreEqual("AGExt", module.identifier);

@@ -15,7 +15,7 @@ namespace CKAN
      * This class allows us to cache downloads by URL
      * It works using two directories - one to store downloads in-progress, and one to commit finished downloads
      * URLs are cached by hashing them by taking the first 8 chars of the url's SHA1 hash.
-     * 
+     *
      * To use this class the user would have to:
      * - Obtain a temporary download path by calling GetTemporaryPathForURL(url)
      * - Initiate his download in this temporary path
@@ -29,7 +29,7 @@ namespace CKAN
         private string cachePath;
         private static readonly TxFileManager tx_file = new TxFileManager();
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
-   
+
         public NetFileCache(string _cachePath)
         {
             // Basic validation, our cache has to exist.
@@ -98,8 +98,11 @@ namespace CKAN
         /// passes zipfile validation tests. Prefer this to GetCachedFilename
         /// when working with zip files. Returns null if not available, or
         /// validation failed.
+        ///
+        /// Test data toggles if low level crc checks should be done. This can
+        ///  take time on order of seconds for larger zip files.
         /// </summary>
-        public string GetCachedZip(Uri url)
+        public string GetCachedZip(Uri url, bool test_data = false)
         {
             string filename = GetCachedFilename(url);
 
@@ -113,7 +116,7 @@ namespace CKAN
                 using (ZipFile zip = new ZipFile (filename))
                 {
                     // Perform CRC check.
-                    if (zip.TestArchive(true))
+                    if (zip.TestArchive(test_data))
                     {
                         return filename;
                     }
@@ -133,9 +136,9 @@ namespace CKAN
         /// Description is adjusted to be filesystem-safe and then appended to the file hash when saving.
         /// If not present, the filename will be used.
         /// If `move` is true, then the file will be moved; otherwise, it will be copied.
-        /// 
+        ///
         /// Returns a path to the newly cached file.
-        /// 
+        ///
         /// This method is filesystem transaction aware.
         /// </summary>
         public string Store(Uri url, string path, string description = null, bool move = false)

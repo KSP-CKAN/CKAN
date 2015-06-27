@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
             this.NewRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.DownRepoButton = new System.Windows.Forms.Button();
@@ -249,6 +250,7 @@
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsDialog";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);

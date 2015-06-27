@@ -11,8 +11,12 @@ namespace CKAN.NetKAN
     /// </summary>
     internal class KSError
     {
+        // Currently only used via JsonConvert.DeserializeObject which the compiler
+        // doesn't pick up on.
+        #pragma warning disable 0649
         public string reason;
         public bool error;
+        #pragma warning restore 0649
     }
 
     // KerbalStuff API
@@ -22,17 +26,13 @@ namespace CKAN.NetKAN
         private static readonly Uri kerbalstuff_api = new Uri(kerbalstuff, "/api/");
         private static readonly ILog log = LogManager.GetLogger(typeof (KSAPI));
 
-        public KSAPI()
-        {
-        }
-
         public static string Call(string path)
         {
             // TODO: There's got to be a better way than using regexps.
             // new Uri (kerbalstuff_api, path) doesn't work, it only uses the *base* of the first arg,
             // and hence drops the /api path.
 
-            // Remove leading slashes. 
+            // Remove leading slashes.
             path = Regex.Replace(path, "^/+", "");
 
             string url = kerbalstuff_api + path;
@@ -45,7 +45,7 @@ namespace CKAN.NetKAN
                     return web.DownloadString(url);
                 }
             }
-            catch (DllNotFoundException exc)
+            catch (DllNotFoundException)
             {
                 //Curl is not installed. Curl is a workaround for a mono issue.
                 //TODO Richard - Once repos are merged go and check all Platform calls to see if they are mono checks
@@ -55,7 +55,7 @@ namespace CKAN.NetKAN
                 {
                     try
                     {
-                        return web.DownloadString(url);                            
+                        return web.DownloadString(url);
                     }
                     catch (WebException web_ex)
                     {

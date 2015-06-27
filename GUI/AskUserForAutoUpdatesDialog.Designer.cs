@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AskUserForAutoUpdatesDialog));
             this.label1 = new System.Windows.Forms.Label();
             this.YesButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -74,6 +75,7 @@
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AskUserForAutoUpdatesDialog";
             this.Text = "Check for updates";
             this.ResumeLayout(false);

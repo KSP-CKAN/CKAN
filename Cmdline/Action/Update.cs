@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using log4net;
 
 namespace CKAN.CmdLine
 {
     public class Update : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Update));
-
         public IUser user { get; set; }
 
         public Update(IUser user)
@@ -155,18 +152,9 @@ namespace CKAN.CmdLine
         {
             RegistryManager registry_manager = RegistryManager.Instance(ksp);
 
-            int updated = 0;
-
-            if (repository == null)
-            {
-                // Update the repository/repositories.
-                updated = CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, user);
-            }
-            else
-            {
-                // Update the repository/repositories.
-                updated = CKAN.Repo.Update(registry_manager, ksp, user, true, repository);
-            }
+            var updated = repository == null
+                ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, user)
+                : CKAN.Repo.Update(registry_manager, ksp, user, true, repository);
 
             user.RaiseMessage("Updated information on {0} available modules", updated);
         }
