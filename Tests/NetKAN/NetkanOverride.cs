@@ -101,6 +101,26 @@ namespace Tests.NetKAN
             OriginalAuthorUnchanged();
         }
 
+        [Test]
+        public void DeleteOverride()
+        {
+            JToken token;
+
+            Assert.IsTrue(such_metadata.TryGetValue("abstract", out token));
+            Assert.IsTrue(such_metadata.TryGetValue("author", out token));
+
+            JObject new_metadata = ProcessOverrides(
+                    such_metadata,
+                    @"[{
+                    ""version"" : ""1.01"",
+                    ""delete"" : [ ""abstract"", ""author"" ]
+                }]");
+
+
+            Assert.IsFalse(new_metadata.TryGetValue("abstract", out token));
+            Assert.IsFalse(new_metadata.TryGetValue("author", out token));
+        }
+
         /// <summary>
         /// Sanity to check to make sure the original metadata hasn't changed during testing.
         /// </summary>
