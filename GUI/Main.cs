@@ -679,7 +679,7 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        gui_mod.SetInstallChecked(row);
+                        gui_mod.SetInstallChecked(row, (bool) grid_view_cell.Value);
                         if(gui_mod.IsInstallChecked)
                             last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
@@ -988,6 +988,22 @@ namespace CKAN
         private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
+
+        private void DeselectAllToolButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && (bool) row.Cells[0].Value)
+                {
+                    MarkModForInstall(mod.Identifier, false);
+                    mod.SetInstallChecked(row, false);
+                    ApplyToolButton.Enabled = true;
+                }
+            }
+
+            ModList.Refresh();
         }
     }
 
