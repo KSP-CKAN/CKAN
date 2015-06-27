@@ -669,7 +669,7 @@ namespace CKAN
             IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
 
             // If there us nothing to uninstall, skip out.
-            if (goners.Count() < 1)
+            if (!goners.Any())
             {
                 return;
             }
