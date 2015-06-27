@@ -197,6 +197,9 @@ namespace CKAN.NetKAN
             // Apply overrides, if applicable.
             metadata = new NetkanOverride(metadata).ProcessOverrides();
 
+            // Finally, strip all our `x_netkan` flags.
+            metadata = StripNetkanMetadata(metadata);
+
             // Re-inflate our mod, in case our vref or FixVersionString routines have
             // altered it at all.
             mod = CkanModule.FromJson (metadata.ToString ());
@@ -620,7 +623,34 @@ namespace CKAN.NetKAN
 
         }
 
+        /// <summary>
+        /// Remove any metadata entries that start with 'x_netkan'.
+        /// </summary>
+        /// <param name="metadata">The metadata object</param>
+        /// <returns>The metadata object stripped of netkan-specific entries.</returns>
+        internal static JObject StripNetkanMetadata(JObject metadata)
+        {
+            var propertiesToRemove = new List<string>();
 
+            foreach (var property in metadata.Properties())
+            {
+                if (property.Name.StartsWith("x_netkan"))
+                {
+                    propertiesToRemove.Add(property.Name);
+                }
+                else if (property.Value.Type == JTokenType.Object)
+                {
+                    metadata[property.Name] = StripNetkanMetadata((JObject)property.Value);
+                }
+            }
+
+            foreach (var property in propertiesToRemove)
+            {
+                metadata.Remove(property);
+            }
+
+            return metadata;
+        }
     }
 
     internal class NetKanRemote
