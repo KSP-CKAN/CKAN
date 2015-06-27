@@ -668,6 +668,12 @@ namespace CKAN
             // Find all the things which need uninstalling.
             IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
 
+            // If there us nothing to uninstall, skip out.
+            if (goners.Count() < 1)
+            {
+                return;
+            }
+
             User.RaiseMessage("About to remove:\n");
 
             foreach (string mod in goners)
