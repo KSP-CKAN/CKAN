@@ -2,6 +2,7 @@ using System.CodeDom;
 using System.IO;
 using CKAN;
 using CKAN.NetKAN;
+using CKAN.NetKAN.Sources.Avc;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Tests.Data;
@@ -16,7 +17,7 @@ namespace Tests.NetKAN
         {
             string json = TestData.KspAvcJson();
 
-            var avc = JsonConvert.DeserializeObject<CKAN.NetKAN.AVC>(json);
+            var avc = JsonConvert.DeserializeObject<AvcVersion>(json);
 
             Assert.AreEqual("0.24.2", avc.ksp_version.ToString());
             Assert.AreEqual("0.24.0", avc.ksp_version_min.ToString());
@@ -28,7 +29,7 @@ namespace Tests.NetKAN
         {
             string json = TestData.KspAvcJsonOneLineVersion();
 
-            var avc = JsonConvert.DeserializeObject<CKAN.NetKAN.AVC>(json);
+            var avc = JsonConvert.DeserializeObject<AvcVersion>(json);
 
             Assert.AreEqual("0.24.2", avc.ksp_version.ToString());
             Assert.AreEqual("0.24.0", avc.ksp_version_min.ToString());

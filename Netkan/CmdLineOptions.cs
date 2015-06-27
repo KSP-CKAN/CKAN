@@ -13,6 +13,9 @@ namespace CKAN.NetKAN
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
+        [Option("debugger", HelpText = "Launch the debugger at start.")]
+        public bool Debugger { get; set; }
+
         [Option("outputdir", DefaultValue = ".", HelpText = "Output directory")]
         public string OutputDir { get; set; }
 
