@@ -220,6 +220,9 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
+
+        [Option("all", HelpText = "Remove all installed mods.")]
+        public bool rmall { get; set; }
     }
 
     internal class ShowOptions : CommonOptions

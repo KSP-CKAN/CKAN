@@ -793,6 +793,17 @@ namespace CKAN
                         log.InfoFormat("Not removing directory {0}, it's not empty", directory);
                     }
                 }
+
+                // Check if Ships/VAB or Ships/SPH is missing for some reason.
+                if (!Directory.Exists(KSPPathUtils.ToAbsolute("VAB", ksp.Ships())))
+                {
+                    Directory.CreateDirectory(KSPPathUtils.ToAbsolute("VAB", ksp.Ships()));
+                }
+                if (!Directory.Exists(KSPPathUtils.ToAbsolute("SPH", ksp.Ships())))
+                {
+                    Directory.CreateDirectory(KSPPathUtils.ToAbsolute("SPH", ksp.Ships()));
+                }
+
                 transaction.Complete();
             }
         }
