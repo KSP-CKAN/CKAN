@@ -64,15 +64,6 @@ namespace CKAN
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.DeselectAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.SelectInstalledToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModList = new CKAN.MainModListGUI();
-            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
@@ -135,9 +126,17 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.ModList = new CKAN.MainModListGUI();
+            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -154,6 +153,7 @@ namespace CKAN
             this.WaitTabPage.SuspendLayout();
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.ChooseProvidedModsTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -430,102 +430,6 @@ namespace CKAN
             // 
             this.SelectInstalledToolButton.Name = "SelectInstalledToolButton";
             this.SelectInstalledToolButton.Size = new System.Drawing.Size(12, 36);
-            // 
-            // ModList
-            // 
-            this.ModList.AllowUserToAddRows = false;
-            this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeRows = false;
-            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Installed,
-            this.Update,
-            this.ModName,
-            this.Author,
-            this.InstalledVersion,
-            this.LatestVersion,
-            this.Description,
-            this.Homepage});
-            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModList.Location = new System.Drawing.Point(0, 0);
-            this.ModList.MultiSelect = false;
-            this.ModList.Name = "ModList";
-            this.ModList.RowHeadersVisible = false;
-            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(651, 578);
-            this.ModList.TabIndex = 3;
-            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
-            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
-            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
-            // 
-            // Installed
-            // 
-            this.Installed.HeaderText = "Installed";
-            this.Installed.Name = "Installed";
-            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Installed.Width = 50;
-            // 
-            // Update
-            // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
-            // 
-            // ModName
-            // 
-            this.ModName.HeaderText = "Name";
-            this.ModName.Name = "ModName";
-            this.ModName.ReadOnly = true;
-            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.ModName.Width = 58;
-            // 
-            // Author
-            // 
-            this.Author.HeaderText = "Author";
-            this.Author.Name = "Author";
-            this.Author.ReadOnly = true;
-            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Author.Width = 61;
-            // 
-            // InstalledVersion
-            // 
-            this.InstalledVersion.HeaderText = "Installed version";
-            this.InstalledVersion.Name = "InstalledVersion";
-            this.InstalledVersion.ReadOnly = true;
-            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.InstalledVersion.Width = 97;
-            // 
-            // LatestVersion
-            // 
-            this.LatestVersion.HeaderText = "Latest version";
-            this.LatestVersion.Name = "LatestVersion";
-            this.LatestVersion.ReadOnly = true;
-            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersion.Width = 88;
-            // 
-            // Description
-            // 
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Description.Width = 83;
-            // 
-            // Homepage
-            // 
-            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Homepage.HeaderText = "Homepage";
-            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.Homepage.Name = "Homepage";
-            this.Homepage.ReadOnly = true;
-            this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Homepage.Width = 84;
             // 
             // splitContainer1
             // 
@@ -1107,9 +1011,9 @@ namespace CKAN
             this.ToggleRecommendedModsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ToggleRecommendedModsCheckBox.Location = new System.Drawing.Point(8, 621);
             this.ToggleRecommendedModsCheckBox.Name = "ToggleRecommendedModsCheckBox";
-            this.ToggleRecommendedModsCheckBox.Size = new System.Drawing.Size(176, 17);
+            this.ToggleRecommendedModsCheckBox.Size = new System.Drawing.Size(129, 17);
             this.ToggleRecommendedModsCheckBox.TabIndex = 9;
-            this.ToggleRecommendedModsCheckBox.Text = "(De-)Select All Suggested Mods";
+            this.ToggleRecommendedModsCheckBox.Text = "(De-)Select All * Mods";
             this.ToggleRecommendedModsCheckBox.UseVisualStyleBackColor = true;
             this.ToggleRecommendedModsCheckBox.CheckedChanged += new System.EventHandler(this.ToggleRecommendedModsCheckBox_CheckedChanged);
             // 
@@ -1256,6 +1160,102 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // ModList
+            // 
+            this.ModList.AllowUserToAddRows = false;
+            this.ModList.AllowUserToDeleteRows = false;
+            this.ModList.AllowUserToResizeRows = false;
+            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Installed,
+            this.Update,
+            this.ModName,
+            this.Author,
+            this.InstalledVersion,
+            this.LatestVersion,
+            this.Description,
+            this.Homepage});
+            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModList.Location = new System.Drawing.Point(0, 0);
+            this.ModList.MultiSelect = false;
+            this.ModList.Name = "ModList";
+            this.ModList.RowHeadersVisible = false;
+            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ModList.Size = new System.Drawing.Size(651, 578);
+            this.ModList.TabIndex = 3;
+            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
+            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
+            // 
+            // Installed
+            // 
+            this.Installed.HeaderText = "Installed";
+            this.Installed.Name = "Installed";
+            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Installed.Width = 50;
+            // 
+            // Update
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Update.Width = 46;
+            // 
+            // ModName
+            // 
+            this.ModName.HeaderText = "Name";
+            this.ModName.Name = "ModName";
+            this.ModName.ReadOnly = true;
+            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ModName.Width = 58;
+            // 
+            // Author
+            // 
+            this.Author.HeaderText = "Author";
+            this.Author.Name = "Author";
+            this.Author.ReadOnly = true;
+            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Author.Width = 61;
+            // 
+            // InstalledVersion
+            // 
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstalledVersion.Width = 97;
+            // 
+            // LatestVersion
+            // 
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.LatestVersion.Width = 88;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Description.Width = 83;
+            // 
+            // Homepage
+            // 
+            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Homepage.HeaderText = "Homepage";
+            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Homepage.Name = "Homepage";
+            this.Homepage.ReadOnly = true;
+            this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Homepage.Width = 84;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1275,7 +1275,6 @@ namespace CKAN
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -1297,6 +1296,7 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage.PerformLayout();
             this.ChooseProvidedModsTabPage.ResumeLayout(false);
             this.ChooseProvidedModsTabPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
