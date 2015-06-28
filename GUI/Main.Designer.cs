@@ -1107,9 +1107,9 @@ namespace CKAN
             this.ToggleRecommendedModsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ToggleRecommendedModsCheckBox.Location = new System.Drawing.Point(8, 621);
             this.ToggleRecommendedModsCheckBox.Name = "ToggleRecommendedModsCheckBox";
-            this.ToggleRecommendedModsCheckBox.Size = new System.Drawing.Size(197, 17);
+            this.ToggleRecommendedModsCheckBox.Size = new System.Drawing.Size(176, 17);
             this.ToggleRecommendedModsCheckBox.TabIndex = 9;
-            this.ToggleRecommendedModsCheckBox.Text = "(De-)Select All Recommended Mods";
+            this.ToggleRecommendedModsCheckBox.Text = "(De-)Select All Suggested Mods";
             this.ToggleRecommendedModsCheckBox.UseVisualStyleBackColor = true;
             this.ToggleRecommendedModsCheckBox.CheckedChanged += new System.EventHandler(this.ToggleRecommendedModsCheckBox_CheckedChanged);
             // 
