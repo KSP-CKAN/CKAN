@@ -96,6 +96,9 @@ namespace CKAN.NetKAN
             // Make sure that at the very least this validates against our own
             // internal model.
 
+            // TODO: Given all the other post-processing we do, we should really
+            // be doing these checks at the end (after overrides, vrefs, etc).
+
             CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             // Make sure our identifiers match.
@@ -113,7 +116,7 @@ namespace CKAN.NetKAN
                 return EXIT_ERROR;
             }
 
-            // Make sure this would actually generate an install
+            // Make sure this would actually generate an install.
             try
             {
                 ModuleInstaller.FindInstallableFiles(mod, file, null);
@@ -190,6 +193,11 @@ namespace CKAN.NetKAN
 
             // Fix our version string, if required.
             metadata = FixVersionStrings(metadata);
+
+            // Apply overrides, if applicable.
+            metadata = new NetkanOverride(metadata).ProcessOverrides();
+
+            // Finally, strip all our `x_netkan` flags.
             metadata = StripNetkanMetadata(metadata);
 
             // Re-inflate our mod, in case our vref or FixVersionString routines have
