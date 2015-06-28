@@ -1007,6 +1007,7 @@ namespace CKAN
 
         private void selectAllInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //TODO : Use "CurrentInstance.Registry.InstalledModules" to get all installed mods.
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = ((GUIMod)row.Tag);
@@ -1018,6 +1019,19 @@ namespace CKAN
 
             ModList.Refresh();
 
+        }
+
+        private void ToggleRecommendedModsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var state = ((CheckBox)sender).Checked;
+            foreach (ListViewItem item in RecommendedModsListView.Items)
+            {
+                if (item.Checked != state)
+                {
+                    item.Checked = state;
+                }
+            }
+            RecommendedModsListView.Refresh();
         }
     }
 
