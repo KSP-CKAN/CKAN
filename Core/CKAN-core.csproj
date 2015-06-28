@@ -86,6 +86,7 @@
     <Compile Include="Types\Repository.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Net\Curl.cs" />
+    <Compile Include="Converters\JsonIgnoreBadUrlConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
