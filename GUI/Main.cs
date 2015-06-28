@@ -1007,14 +1007,9 @@ namespace CKAN
 
         private void selectAllInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //TODO : Use "CurrentInstance.Registry.InstalledModules" to get all installed mods.
-            foreach (DataGridViewRow row in ModList.Rows)
+            foreach (InstalledModule installedMod in CurrentInstance.Registry.InstalledModules)
             {
-                var mod = ((GUIMod)row.Tag);
-                if (row.Cells[0] is DataGridViewCheckBoxCell && !(bool)row.Cells[0].Value && mod.IsInstalled)
-                {
-                    MarkModForInstall(mod.Identifier, false);
-                }
+                MarkModForInstall(installedMod.identifier, false);
             }
 
             ModList.Refresh();
