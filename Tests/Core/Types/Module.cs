@@ -154,11 +154,25 @@ namespace Tests.Core.Types
             JObject metadata = JObject.Parse(TestData.kOS_014());
 
             // Guess which string totally isn't a valid Url? This one.
-            metadata["resources"]["repository"] = "https://included%in%the%download";
+            metadata["resources"]["homepage"] = "https://included%in%the%download";
 
             CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             Assert.IsNotNull(mod);
+            Assert.IsNull(mod.resources.homepage);
+        }
+
+        [Test]
+        public void good_resource_1208()
+        {
+            CkanModule mod = CkanModule.FromJson(TestData.kOS_014());
+
+            Assert.AreEqual(
+                "http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13",
+                mod.resources.homepage.ToString()
+            );
+
+            Assert.IsNull(mod.resources.repository);
         }
     }
 }

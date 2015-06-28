@@ -40,6 +40,15 @@ namespace CKAN
             return false;
         }
 
+        /// <summary>
+        /// Opt out of writing anything, otherwise things go horribly wrong when we try
+        /// to write to the registry.
+        /// </summary>
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
