@@ -169,6 +169,10 @@
                         "description" : "A directory to find for installation",
                         "type" : "string"
                     },
+                    "find_regexp" : {
+                        "description" : "A regexp that matches the directory to install",
+                        "type" : "string"
+                    },
                     "install_to" : {
                         "description" : "Where file should be installed to",
                         "$ref" : "#/definitions/install_to"
