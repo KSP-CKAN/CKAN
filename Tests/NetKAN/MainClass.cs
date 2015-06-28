@@ -73,7 +73,7 @@ namespace Tests.NetKAN
             Assert.AreEqual(metadata, expectedMetadata);
         }
 
-        private IEnumerable<object[]> StripNetkanMetadataTestCaseSource
+        private static IEnumerable<object[]> StripNetkanMetadataTestCaseSource
         {
             get
             {
@@ -124,6 +124,29 @@ namespace Tests.NetKAN
     ""baz"": {}
 }
                     "
+                };
+
+                yield return new object[]
+                {
+@"
+{
+    ""foo"": [
+        {
+            ""foo"": ""bar"",
+            ""x_netkan_foo"": ""foobar""
+        }
+    ]
+}
+",
+@"
+{
+    ""foo"": [
+        {
+            ""foo"": ""bar""
+        }
+    ]
+}
+"
                 };
             }
         }
