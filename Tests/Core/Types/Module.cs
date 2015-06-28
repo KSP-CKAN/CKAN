@@ -1,6 +1,8 @@
 using CKAN;
 using NUnit.Framework;
 using Tests.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tests.Core.Types
 {
@@ -144,6 +146,19 @@ namespace Tests.Core.Types
 
             Assert.AreEqual(1, mod.license.Count, "Uni-license");
             Assert.AreEqual("GPL-3.0", mod.license[0].ToString());
+        }
+
+        [Test]
+        public void bad_resource_1208()
+        {
+            JObject metadata = JObject.Parse(TestData.kOS_014());
+
+            // Guess which string totally isn't a valid Url? This one.
+            metadata["resources"]["repository"] = "https://included%in%the%download";
+
+            CkanModule mod = CkanModule.FromJson(metadata.ToString());
+
+            Assert.IsNotNull(mod);
         }
     }
 }
