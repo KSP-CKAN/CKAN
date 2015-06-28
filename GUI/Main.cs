@@ -580,8 +580,6 @@ namespace CKAN
                 return;
             }
 
-            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
-
             // Determine time passed since last key press
             TimeSpan interval = DateTime.Now - this.lastSearchTime;
             if (interval.TotalSeconds < 1)
@@ -599,43 +597,7 @@ namespace CKAN
                 key = key.Substring(0, 1);
             }
 
-            var current_name = ((GUIMod) current_row.Tag).Name;
-            DataGridViewRow first_match = null;
-
-            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
-            {
-                var modname = ((GUIMod) row.Tag).Name;
-                var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
-                if (row_match && first_match == null)
-                {
-                    // Remember the first match to allow cycling back to it if necessary
-                    first_match = row;
-                }
-                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
-                {
-                    // Keep going forward if it's a single key match and not ahead of the current row
-                    return false;
-                }
-                return row_match;
-            });
-            ModList.ClearSelection();
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
-            if (match == null && first_match != null)
-            {
-                // If there were no matches after the first match, cycle over to the beginning
-                match = first_match;
-            }
-            if (match != null)
-            {
-                match.Selected = true;
-                // Setting this to the Name cell prevents the checkbox from being toggled
-                // by pressing Space while the row is not indicated as active
-                ModList.CurrentCell = match.Cells[2];
-            }
-            else
-            {
-                this.AddStatusMessage("Not found");
-            }
+            FocusMod(key, false);
             e.Handled = true;
         }
 
@@ -988,6 +950,64 @@ namespace CKAN
         private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
+
+        private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            FilterByNameTextBox.Text = "";
+            mainModList.ModNameFilter = "";
+            FocusMod(e.Node.Name, true);
+        }
+
+        private void FocusMod(string key, bool exactMatch) 
+        {
+            DataGridViewRow current_row = ModList.CurrentRow;
+            string current_name = ((GUIMod)current_row.Tag).Name;
+            DataGridViewRow first_match = null;
+
+            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
+            {
+                string modname = ((GUIMod)row.Tag).Name;
+                bool row_match = false;
+                if (exactMatch)
+                {
+                    row_match = modname == key;
+                }
+                else
+                {
+                    row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                }
+                if (row_match && first_match == null)
+                {
+                    // Remember the first match to allow cycling back to it if necessary
+                    first_match = row;
+                }
+                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
+                {
+                    // Keep going forward if it's a single key match and not ahead of the current row
+                    return false;
+                }
+                return row_match;
+            });
+            ModList.ClearSelection();
+            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            if (match == null && first_match != null)
+            {
+                // If there were no matches after the first match, cycle over to the beginning
+                match = first_match;
+            }
+            if (match != null)
+            {
+                match.Selected = true;
+                // Setting this to the Name cell prevents the checkbox from being toggled
+                // by pressing Space while the row is not indicated as active
+                ModList.CurrentCell = match.Cells[2];
+            }
+            else
+            {
+                this.AddStatusMessage("Not found");
+            }
         }
     }
 

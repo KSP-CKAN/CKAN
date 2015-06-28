@@ -92,6 +92,7 @@ namespace CKAN
             }
 
             var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
+            node.Name = module.name;
 
             IEnumerable<RelationshipDescriptor> relationships = null;
             switch (relationship)
