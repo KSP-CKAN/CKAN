@@ -679,9 +679,8 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        gui_mod.SetInstallChecked(row);
-                        if(gui_mod.IsInstallChecked)
-                            last_mod_to_have_install_toggled.Push(gui_mod);
+                        MarkModForInstall(gui_mod.Identifier, !(bool)grid_view_cell.Value);
+                        // Used to push to "last_mod_to_have_install_toggled", but this is also done in MarkModForInstall.
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
@@ -988,6 +987,35 @@ namespace CKAN
         private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
+
+        private void DeselectAllToolButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && (bool) row.Cells[0].Value)
+                {
+                    MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
+                    ApplyToolButton.Enabled = true;
+                }
+            }
+
+            ModList.Refresh();
+        }
+
+        private void SelectInstalledToolButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && !(bool)row.Cells[0].Value && mod.IsInstalled)
+                {
+                    MarkModForInstall(mod.Identifier, false);
+                }
+            }
+
+            ModList.Refresh();
         }
     }
 

@@ -59,9 +59,11 @@ namespace CKAN
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModList = new MainModListGUI();
+            this.DeselectAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.SelectInstalledToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModList = new CKAN.MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -281,7 +283,9 @@ namespace CKAN
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
-            this.FilterToolButton});
+            this.FilterToolButton,
+            this.DeselectAllToolButton,
+            this.SelectInstalledToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 3);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(3917, 40);
@@ -389,6 +393,24 @@ namespace CKAN
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
+            // DeselectAllToolButton
+            // 
+            this.DeselectAllToolButton.Image = global::CKAN.Properties.Resources.deselect;
+            this.DeselectAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.DeselectAllToolButton.Name = "DeselectAllToolButton";
+            this.DeselectAllToolButton.Size = new System.Drawing.Size(143, 36);
+            this.DeselectAllToolButton.Text = "Deselect all mods";
+            this.DeselectAllToolButton.Click += new System.EventHandler(this.DeselectAllToolButton_Click);
+            // 
+            // SelectInstalledToolButton
+            // 
+            this.SelectInstalledToolButton.Image = global::CKAN.Properties.Resources.selectinstalled;
+            this.SelectInstalledToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.SelectInstalledToolButton.Name = "SelectInstalledToolButton";
+            this.SelectInstalledToolButton.Size = new System.Drawing.Size(182, 36);
+            this.SelectInstalledToolButton.Text = "(Re)select installed mods";
+            this.SelectInstalledToolButton.Click += new System.EventHandler(this.SelectInstalledToolButton_Click);
+            // 
             // ModList
             // 
             this.ModList.AllowUserToAddRows = false;
@@ -400,7 +422,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.UpdateCol,
+            this.Update,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -429,12 +451,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            //
-            this.UpdateCol.HeaderText = "Update";
-            this.UpdateCol.Name = "Update";
-            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.UpdateCol.Width = 46;
-            //
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Update.Width = 46;
+            // 
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -1336,7 +1358,6 @@ namespace CKAN
         private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
-        public DataGridView ModList;
         private ToolStripMenuItem installFromckanToolStripMenuItem;
         private TextBox FilterByAuthorTextBox;
         private Label FilterByAuthorLabel;
@@ -1345,6 +1366,10 @@ namespace CKAN
         private ToolStripMenuItem exportModListToolStripMenuItem;
         private ToolStripMenuItem selectKSPInstallMenuItem;
         private ToolStripMenuItem openKspDirectoyToolStripMenuItem;
+        private ToolStripMenuItem DeselectAllToolButton;
+        private DataGridViewCheckBoxColumn Update;
+        public MainModListGUI ModList;
+        private ToolStripMenuItem SelectInstalledToolButton;
     }
 }
 

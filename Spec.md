@@ -115,7 +115,7 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.8'. Changes since spec `1`
+This document describes the CKAN specification 'v1.10'. Changes since spec `1`
 are marked with **v1.2** through to **v1.8** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
@@ -245,8 +245,8 @@ ALPHA or pre-), or with silly orderings.
 
 ##### install
 
-A list of install directives for this mod, each *must* contain one of
-two mandatory source directives:
+A list of install directives for this mod, each *must* contain exactly one of
+three source directives:
 
 - `file`: The file or directory root that this directive pertains to.
   All leading directories are stripped from the start of the filename
@@ -255,6 +255,15 @@ two mandatory source directives:
 - `find`: (**v1.4**) Locate the top-most directory which exactly matches
   the name specified. This is particularly useful when distributions
   have structures which change based upon each release.
+- `find_regexp`: (**v1.10**) Locate the top-most directory which matches
+  the specified regular expression. This is particularly useful when
+  distributions have structures which change based upon each release, but
+  `find` cannot be used because multiple directories or files contain the
+  same name. Directories separators will have been normalised to
+  forward-slashes first, and the trailing slash for each directory removed
+  before the regular expresssion is run.
+  *Use sparingly and with caution*, it's *very* easy to match the wrong
+  thing with a regular expression.
 
 In addition a destination directive *must* be provided:
 

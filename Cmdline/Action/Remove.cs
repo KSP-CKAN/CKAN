@@ -49,6 +49,17 @@ namespace CKAN.CmdLine
                 options.modules = selectedModules;
             }
 
+            if (options.rmall)
+            {
+                log.Debug("Removing all mods");
+                // Get the list of installed modules
+                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
+                var installed = new SortedDictionary<string, Version>(registry.Installed(false));
+
+                // Add it to the list that should be uninstalled.
+                options.modules.AddRange(installed.Keys);
+            }
+
             if (options.modules != null && options.modules.Count > 0)
             {
                 try

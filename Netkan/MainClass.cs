@@ -638,9 +638,17 @@ namespace CKAN.NetKAN
                 {
                     propertiesToRemove.Add(property.Name);
                 }
-                else if (property.Value.Type == JTokenType.Object)
+                else switch (property.Value.Type)
                 {
-                    metadata[property.Name] = StripNetkanMetadata((JObject)property.Value);
+                    case JTokenType.Object:
+                        StripNetkanMetadata((JObject)property.Value);
+                        break;
+                    case JTokenType.Array:
+                        foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
+                        {
+                            StripNetkanMetadata((JObject)element);
+                        }
+                        break;
                 }
             }
 

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRepoDialog));
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
             this.RepoUrlTextBox = new System.Windows.Forms.TextBox();
             this.RepoCancel = new System.Windows.Forms.Button();
@@ -97,6 +98,7 @@
             this.ClientSize = new System.Drawing.Size(495, 434);
             this.Controls.Add(this.RepositoryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NewRepoDialog";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.NewRepoDialog_Load);
