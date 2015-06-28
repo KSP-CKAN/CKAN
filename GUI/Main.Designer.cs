@@ -131,6 +131,9 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deselectAllModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
@@ -156,6 +159,7 @@ namespace CKAN
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.selectionToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -392,24 +396,6 @@ namespace CKAN
             this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
-            // 
-            // DeselectAllToolButton
-            // 
-            this.DeselectAllToolButton.Image = global::CKAN.Properties.Resources.deselect;
-            this.DeselectAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.DeselectAllToolButton.Name = "DeselectAllToolButton";
-            this.DeselectAllToolButton.Size = new System.Drawing.Size(143, 36);
-            this.DeselectAllToolButton.Text = "Deselect all mods";
-            this.DeselectAllToolButton.Click += new System.EventHandler(this.DeselectAllToolButton_Click);
-            // 
-            // SelectInstalledToolButton
-            // 
-            this.SelectInstalledToolButton.Image = global::CKAN.Properties.Resources.selectinstalled;
-            this.SelectInstalledToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.SelectInstalledToolButton.Name = "SelectInstalledToolButton";
-            this.SelectInstalledToolButton.Size = new System.Drawing.Size(182, 36);
-            this.SelectInstalledToolButton.Text = "(Re)select installed mods";
-            this.SelectInstalledToolButton.Click += new System.EventHandler(this.SelectInstalledToolButton_Click);
             // 
             // ModList
             // 
@@ -1221,6 +1207,29 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // selectionToolStripMenuItem
+            // 
+            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deselectAllModsToolStripMenuItem,
+            this.selectAllInstalledModsToolStripMenuItem});
+            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.selectionToolStripMenuItem.Text = "Selection";
+            // 
+            // deselectAllModsToolStripMenuItem
+            // 
+            this.deselectAllModsToolStripMenuItem.Name = "deselectAllModsToolStripMenuItem";
+            this.deselectAllModsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.deselectAllModsToolStripMenuItem.Text = "Deselect All Mods";
+            this.deselectAllModsToolStripMenuItem.Click += new System.EventHandler(this.deselectAllModsToolStripMenuItem_Click);
+            // 
+            // selectAllInstalledModsToolStripMenuItem
+            // 
+            this.selectAllInstalledModsToolStripMenuItem.Name = "selectAllInstalledModsToolStripMenuItem";
+            this.selectAllInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.selectAllInstalledModsToolStripMenuItem.Text = "Select All Installed Mods";
+            this.selectAllInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.selectAllInstalledModsToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1370,6 +1379,9 @@ namespace CKAN
         private DataGridViewCheckBoxColumn Update;
         public MainModListGUI ModList;
         private ToolStripMenuItem SelectInstalledToolButton;
+        private ToolStripMenuItem selectionToolStripMenuItem;
+        private ToolStripMenuItem deselectAllModsToolStripMenuItem;
+        private ToolStripMenuItem selectAllInstalledModsToolStripMenuItem;
     }
 }
 

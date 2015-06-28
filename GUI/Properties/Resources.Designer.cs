@@ -80,16 +80,6 @@ namespace CKAN.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap deselect {
-            get {
-                object obj = ResourceManager.GetObject("deselect", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export Mod List.
         /// </summary>
         internal static string ExportInstalledModsDialogTitle {
@@ -124,16 +114,6 @@ namespace CKAN.Properties {
         internal static System.Drawing.Bitmap search {
             get {
                 object obj = ResourceManager.GetObject("search", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap selectinstalled {
-            get {
-                object obj = ResourceManager.GetObject("selectinstalled", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
