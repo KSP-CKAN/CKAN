@@ -648,6 +648,14 @@ namespace CKAN
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
+        private void ModList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridViewRow row = ModList.Rows[e.RowIndex];
+            // Need to change the state here, because the user hasn't clicked on a checkbo
+            row.Cells[0].Value = !(bool)row.Cells[0].Value;
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
         private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (mainModList.ModFilter == GUIModFilter.Incompatible)
