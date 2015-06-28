@@ -282,10 +282,4 @@
       <Name>CKAN-core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\deselect.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\selectinstalled.png" />
-  </ItemGroup>
 </Project>
