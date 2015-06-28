@@ -18,6 +18,9 @@ namespace CKAN
         {
             string value = reader.Value == null ? null : reader.Value.ToString();
 
+            if (value == null)
+                return null;
+
             Uri url;
 
             try
