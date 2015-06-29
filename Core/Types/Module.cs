@@ -70,8 +70,13 @@ namespace CKAN
 
     public class ResourcesDescriptor
     {
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri repository;
+
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri homepage;
+
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri bugtracker;
 
         [JsonConverter(typeof (JsonOldResourceUrlConverter))]

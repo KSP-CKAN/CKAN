@@ -431,6 +431,103 @@ namespace CKAN
             this.SelectInstalledToolButton.Name = "SelectInstalledToolButton";
             this.SelectInstalledToolButton.Size = new System.Drawing.Size(12, 36);
             // 
+            // ModList
+            // 
+            this.ModList.AllowUserToAddRows = false;
+            this.ModList.AllowUserToDeleteRows = false;
+            this.ModList.AllowUserToResizeRows = false;
+            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Installed,
+            this.Update,
+            this.ModName,
+            this.Author,
+            this.InstalledVersion,
+            this.LatestVersion,
+            this.Description,
+            this.Homepage});
+            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModList.Location = new System.Drawing.Point(0, 0);
+            this.ModList.MultiSelect = false;
+            this.ModList.Name = "ModList";
+            this.ModList.RowHeadersVisible = false;
+            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ModList.Size = new System.Drawing.Size(651, 578);
+            this.ModList.TabIndex = 3;
+            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
+            this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
+            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
+            // 
+            // Installed
+            // 
+            this.Installed.HeaderText = "Installed";
+            this.Installed.Name = "Installed";
+            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Installed.Width = 50;
+            // 
+            // Update
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Update.Width = 46;
+            // 
+            // ModName
+            // 
+            this.ModName.HeaderText = "Name";
+            this.ModName.Name = "ModName";
+            this.ModName.ReadOnly = true;
+            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ModName.Width = 58;
+            // 
+            // Author
+            // 
+            this.Author.HeaderText = "Author";
+            this.Author.Name = "Author";
+            this.Author.ReadOnly = true;
+            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Author.Width = 61;
+            // 
+            // InstalledVersion
+            // 
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstalledVersion.Width = 97;
+            // 
+            // LatestVersion
+            // 
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.LatestVersion.Width = 88;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Description.Width = 83;
+            // 
+            // Homepage
+            // 
+            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Homepage.HeaderText = "Homepage";
+            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.Homepage.Name = "Homepage";
+            this.Homepage.ReadOnly = true;
+            this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Homepage.Width = 84;
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1159,38 +1256,6 @@ namespace CKAN
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(383, 13);
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
-            // 
-            // ModList
-            // 
-            this.ModList.AllowUserToAddRows = false;
-            this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeRows = false;
-            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Installed,
-            this.Update,
-            this.ModName,
-            this.Author,
-            this.InstalledVersion,
-            this.LatestVersion,
-            this.Description,
-            this.Homepage});
-            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModList.Location = new System.Drawing.Point(0, 0);
-            this.ModList.MultiSelect = false;
-            this.ModList.Name = "ModList";
-            this.ModList.RowHeadersVisible = false;
-            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(651, 578);
-            this.ModList.TabIndex = 3;
-            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
-            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
-            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // Installed
             // 
