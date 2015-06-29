@@ -80,6 +80,9 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
+
+        //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
+        // as recreating them from reasons is no longer possible.
         private readonly List<KeyValuePair<Module, Module>> conflicts =
             new List<KeyValuePair<Module, Module>>();
         private readonly Dictionary<Module, SelectionReason> reasons =
@@ -155,9 +158,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Add modules to consideration of the relationship resolver. Optional installed parameter defaults
-        /// to installed mods and is intended to be used when this is incorrect, such as when some are to be
-        /// removed.
+        /// Add modules to consideration of the relationship resolver.
         /// </summary>
         /// <param name="modules">Modules to attempt to install</param>
         public void AddModulesToInstall(IEnumerable<CkanModule> modules)
@@ -290,21 +291,35 @@ namespace CKAN
 
                 if (modlist.ContainsKey(dep_name))
                 {
-                    if (descriptor.version_within_bounds(modlist[dep_name].version))
+                    var module = modlist[dep_name];
+                    if (descriptor.version_within_bounds(module.version))
                         continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
+                    if (options.procede_with_inconsistencies)
+                    {
+                        conflicts.Add(new KeyValuePair<Module, Module>(module,reason.Parent));
+                        conflicts.Add(new KeyValuePair<Module, Module>(reason.Parent,module));
+                        continue;
+                    }
                     throw new InconsistentKraken(
                         string.Format(
                             "{0} requires a version {1}. However a incompatible version, {2}, is in the resolver",
-                            dep_name, descriptor.RequiredVersion, modlist[dep_name].version));
-
+                            dep_name, descriptor.RequiredVersion, module.version));
                 }
 
                 if (registry.IsInstalled(dep_name))
                 {
                     if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
-                    continue;
+                        continue;
+                    var module = registry.InstalledModule(dep_name).Module;
+
                     //TODO Ideally we could check here if it can be replaced by the version we want.
+                    if (options.procede_with_inconsistencies)
+                    {
+                        conflicts.Add(new KeyValuePair<Module, Module>(module, reason.Parent));
+                        conflicts.Add(new KeyValuePair<Module, Module>(reason.Parent, module));
+                        continue;
+                    }
                     throw new InconsistentKraken(
                         string.Format(
                             "{0} requires a version {1}. However a incompatible version, {2}, is already installed",
