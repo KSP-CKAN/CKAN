@@ -401,6 +401,44 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the missing dependencies for a given module.
+        /// If this returns an empty list, it's installable.
+        /// </summary>
+        public List<RelationshipDescriptor> MissingDependencies(CkanModule mod, KSPVersion ksp_version)
+        {
+            // This mod does not depend on anything, so there are no missing deps
+            if (mod.depends == null) return new List<RelationshipDescriptor>();
+
+            var missingDeps = new List<RelationshipDescriptor>();
+            AvailableModule[] modules_for_current_version = available_modules.Values
+                                                                             .Where(pair => pair.Latest(ksp_version) != null)
+                                                                             .ToArray();
+
+            foreach (RelationshipDescriptor dependency in mod.depends)
+            {
+                try
+                {
+                    if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
+                    {
+                        missingDeps.Add(dependency);
+                    }
+                }
+                catch (KeyNotFoundException e)
+                {
+                    log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                    throw e;
+                }
+                catch (ModuleNotFoundKraken e)
+                {
+                    log.ErrorFormat("Cannot find module {0} in registry", dependency.name);
+                    throw e;
+                }
+            }
+
+            return missingDeps;
+        }
+
+        /// <summary>
         /// <see cref="IRegistryQuerier.Available"/>
         /// </summary>
         public List<CkanModule> Available(KspVersionCriteria ksp_version)
