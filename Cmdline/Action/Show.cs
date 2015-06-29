@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
             if (installedModuleToShow != null)
             {
                 // Show the installed module.
-                return ShowMod(installedModuleToShow);
+                return ShowMod(installedModuleToShow, ksp);
             }
 
             // Module was not installed, look for an exact match in the available modules,
@@ -121,7 +121,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <returns>Success status.</returns>
         /// <param name="module">The module to show.</param>
-        public int ShowMod(CkanModule module)
+        public int ShowMod(CkanModule module, CKAN.KSP ksp)
         {
             #region Abstract and description
             if (!string.IsNullOrEmpty(module.@abstract))
@@ -185,7 +185,17 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("\r\nProvides:");
                 foreach (string prov in module.ProvidesList)
                     user.RaiseMessage("- {0}", prov);
-            } 
+            }
+
+            var missingDeps = ksp.Registry.MissingDependencies((CKAN.CkanModule)module, ksp.Version());
+            if (missingDeps.Count() > 0)
+            {
+                user.RaiseMessage("\nUnsatisfied dependencies:");
+                foreach (string dep in missingDeps.Select(d => d.name))
+                    user.RaiseMessage("- {0}", dep);
+            }
+
+
             #endregion
 
             user.RaiseMessage("\r\nResources:");
