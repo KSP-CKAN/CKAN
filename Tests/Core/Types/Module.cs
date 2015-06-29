@@ -1,6 +1,8 @@
 using CKAN;
 using NUnit.Framework;
 using Tests.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tests.Core.Types
 {
@@ -144,6 +146,33 @@ namespace Tests.Core.Types
 
             Assert.AreEqual(1, mod.license.Count, "Uni-license");
             Assert.AreEqual("GPL-3.0", mod.license[0].ToString());
+        }
+
+        [Test]
+        public void bad_resource_1208()
+        {
+            JObject metadata = JObject.Parse(TestData.kOS_014());
+
+            // Guess which string totally isn't a valid Url? This one.
+            metadata["resources"]["homepage"] = "https://included%in%the%download";
+
+            CkanModule mod = CkanModule.FromJson(metadata.ToString());
+
+            Assert.IsNotNull(mod);
+            Assert.IsNull(mod.resources.homepage);
+        }
+
+        [Test]
+        public void good_resource_1208()
+        {
+            CkanModule mod = CkanModule.FromJson(TestData.kOS_014());
+
+            Assert.AreEqual(
+                "http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13",
+                mod.resources.homepage.ToString()
+            );
+
+            Assert.IsNull(mod.resources.repository);
         }
     }
 }
