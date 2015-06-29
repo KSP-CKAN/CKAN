@@ -21,12 +21,9 @@ namespace CKAN
             if (value == null)
                 return null;
 
-            Uri url;
-
             try
             {
-                url = new Uri(value);
-                return url;
+                return new Uri(value);
             }
             catch
             {
