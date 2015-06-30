@@ -170,11 +170,10 @@ namespace CKAN
                 var mod = (GUIMod) row.Tag;
                 if (mod.Identifier == identifier)
                 {
-                    var toggled = uninstall == mod.IsInstalled;
                     mod.IsInstallChecked = !uninstall;
                     //TODO Fix up MarkMod stuff when I commit the GUIConflict
                     (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
-                    if (!toggled) last_mod_to_have_install_toggled.Push(mod);
+                    if (!uninstall) last_mod_to_have_install_toggled.Push(mod);
                     break;
                 }
             }
