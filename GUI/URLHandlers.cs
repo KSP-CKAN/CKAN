@@ -111,21 +111,21 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 
             try
             {
-                data = parser.ReadFile(MimeAppsListPath); //();
+                data = parser.ReadFile(MimeAppsListPath);
             }
             catch (DirectoryNotFoundException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (FileNotFoundException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (ParsingException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
 
