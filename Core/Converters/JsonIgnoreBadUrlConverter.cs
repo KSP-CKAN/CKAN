@@ -27,7 +27,7 @@ namespace CKAN
             }
             catch
             {
-                log.WarnFormat("{0} is not a valid URL, ignoring", value);
+                log.InfoFormat("{0} is not a valid URL, ignoring", value);
                 return null;
             }
         }

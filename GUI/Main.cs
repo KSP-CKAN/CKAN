@@ -687,8 +687,9 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        MarkModForInstall(gui_mod.Identifier, !(bool)grid_view_cell.Value);
-                        // Used to push to "last_mod_to_have_install_toggled", but this is also done in MarkModForInstall.
+                        gui_mod.SetInstallChecked(row);
+                        if(gui_mod.IsInstallChecked)
+                            last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
@@ -996,6 +997,7 @@ namespace CKAN
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
         }
+<<<<<<< HEAD
 
         private void deselectAllModsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1036,6 +1038,8 @@ namespace CKAN
             }
             RecommendedModsListView.Refresh();
         }
+=======
+>>>>>>> b447380fb2da50784be1f6152ac4f58257d05dbb
     }
 
     public class GUIUser : NullUser
