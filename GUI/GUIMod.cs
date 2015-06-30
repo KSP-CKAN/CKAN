@@ -121,16 +121,11 @@ namespace CKAN
             if (old_value != value) update_cell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row, bool? setvalueto = null)
+        public void SetInstallChecked(DataGridViewRow row)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            var old_value = (bool)install_cell.Value;
-
-            bool value = (setvalueto.HasValue ? setvalueto.Value : old_value);
-            IsInstallChecked = value;
-
-            if (old_value != value) install_cell.Value = value;
+            IsInstallChecked = (bool) install_cell.Value;
         }
 
         protected bool Equals(GUIMod other)

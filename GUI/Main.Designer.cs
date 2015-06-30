@@ -311,9 +311,7 @@ namespace CKAN
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
-            this.FilterToolButton,
-            this.DeselectAllToolButton,
-            this.SelectInstalledToolButton});
+            this.FilterToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 3);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(3917, 40);
@@ -442,7 +440,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.UpdateCol,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -472,12 +470,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
-            // 
+            //
+            this.UpdateCol.HeaderText = "Update";
+            this.UpdateCol.Name = "Update";
+            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.UpdateCol.Width = 46;
+            //
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -1458,6 +1456,7 @@ namespace CKAN
         private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
+        public DataGridView ModList;
         private ToolStripMenuItem installFromckanToolStripMenuItem;
         private TextBox FilterByAuthorTextBox;
         private Label FilterByAuthorLabel;
@@ -1468,7 +1467,6 @@ namespace CKAN
         private ToolStripMenuItem openKspDirectoyToolStripMenuItem;
         private ToolStripMenuItem DeselectAllToolButton;
         private DataGridViewCheckBoxColumn Update;
-        public MainModListGUI ModList;
         private ToolStripMenuItem SelectInstalledToolButton;
         private ToolStripMenuItem selectionToolStripMenuItem;
         private ToolStripMenuItem deselectAllModsToolStripMenuItem;
