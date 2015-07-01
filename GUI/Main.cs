@@ -650,6 +650,10 @@ namespace CKAN
 
         private void ModList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
             DataGridViewRow row = ModList.Rows[e.RowIndex];
             // Need to change the state here, because the user hasn't clicked on a checkbo
             row.Cells[0].Value = !(bool)row.Cells[0].Value;
