@@ -103,13 +103,14 @@ namespace CKAN
         {
             log.Debug("Updating the mod list");
 
+            KSPVersion version = CurrentInstance.Version();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-            var gui_mods = new HashSet<GUIMod>(registry.Available(CurrentInstance.Version())
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
-            gui_mods.UnionWith(registry.Incompatible(CurrentInstance.Version())
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
-            var installed = registry.InstalledModules.Select(module => module.Module)
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version()));
+            var gui_mods = new HashSet<GUIMod>(registry.Available(version)
+                .Select(m => new GUIMod(m, registry, version)));
+            gui_mods.UnionWith(registry.Incompatible(version)
+                .Select(m => new GUIMod(m, registry, version)));
+            var installed = registry.InstalledModules
+                .Select(m => new GUIMod(m.Module, registry, version));
 
             //Hashset does not define if add/unionwith replaces existing elements.
             //In this case that could cause a CkanModule to be replaced by a Module.

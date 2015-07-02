@@ -306,8 +306,6 @@ namespace CKAN
             m_CacheWorker.RunWorkerCompleted += PostModCaching;
             m_CacheWorker.DoWork += CacheMod;
 
-            UpdateModsList();
-
             m_User.displayYesNo = YesNoDialog;
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
             m_User.displayYesNo = null;
