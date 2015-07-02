@@ -236,23 +236,23 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(Module module)
+        private void UpdateModContentsTree(Module module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
-            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
+            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex && !force)
             {
                 return;
             }
-            Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
+            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
         }
 
         private Module current_mod_contents_module;
 
-        private void _UpdateModContentsTree()
+        private void _UpdateModContentsTree(bool force = false)
         {
             var module = (CkanModule)ModInfoTabControl.Tag;
-            if (Equals(module, current_mod_contents_module))
+            if (Equals(module, current_mod_contents_module) && !force)
             {
                 return;
             }
@@ -305,7 +305,7 @@ namespace CKAN
         {
             HideWaitDialog(true);
 
-            UpdateModContentsTree(module);
+            UpdateModContentsTree(module, true);
             RecreateDialogs();
         }
     }
