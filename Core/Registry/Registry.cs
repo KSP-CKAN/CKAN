@@ -416,7 +416,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
+                                if (!IsAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version))
                                 {
                                     failedDepedency = true;
                                     break;
@@ -560,6 +560,40 @@ namespace CKAN
                 }
             }
             return modules;
+        }
+
+        /// <summary>
+        /// Returns if any mod provides the requested module
+        /// </summary>
+        private bool IsAvailableWithProvides(string module, KSPVersion ksp_version,
+            IEnumerable<AvailableModule> available_for_current_version, RelationshipDescriptor relationship_descriptor = null)
+        {
+            log.DebugFormat("Finding latest available with provides for {0}", module);
+
+            // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
+
+            if (LatestAvailable(module, ksp_version, relationship_descriptor) != null)
+            {
+                return true;
+            }
+            // Walk through all our available modules, and see if anything
+            // provides what we need.
+
+            foreach (AvailableModule available_module in available_for_current_version)
+            {
+                // Get our candidate module. We can assume this is non-null, as
+                // if it *is* null then available_for_current_version is corrupted,
+                // and something is terribly wrong.
+                CkanModule candidate = available_module.Latest(ksp_version);
+
+                // Does the module provide what we are looking for
+                List<string> provides = candidate.provides;
+                if (provides != null && provides.Any(provided => provided == module))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
