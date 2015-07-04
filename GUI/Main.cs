@@ -655,7 +655,11 @@ namespace CKAN
                 return;
             }
             DataGridViewRow row = ModList.Rows[e.RowIndex];
-            // Need to change the state here, because the user hasn't clicked on a checkbo
+            if (!(row.Cells[0] is DataGridViewCheckBoxCell))
+            {
+                return;
+            }
+            // Need to change the state here, because the user hasn't clicked on a checkbox
             row.Cells[0].Value = !(bool)row.Cells[0].Value;
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
