@@ -484,7 +484,7 @@ namespace Tests.Core
 
             var mod = CkanModule.FromJson(string.Format(@"
             {{
-                ""spec_version"": ""v1.12"",
+                ""spec_version"": 1,
                 ""identifier"": ""AwesomeMod"",
                 ""version"": ""1.0.0"",
                 ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
