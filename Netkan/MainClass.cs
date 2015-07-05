@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using CommandLine;
@@ -61,31 +63,7 @@ namespace CKAN.NetKAN
 
             JObject json = JsonFromFile(options.File);
             NetKanRemote remote = FindRemote(json);
-
-            JObject metadata;
-            switch (remote.source)
-            {
-                case "kerbalstuff":
-                    metadata = KerbalStuff(json, remote.id, cache);
-                    break;
-                case "jenkins":
-                    metadata = Jenkins(json, remote.id, cache);
-                    break;
-                case "github":
-                    if (options.GitHubToken != null)
-                    {
-                        GithubAPI.SetCredentials(options.GitHubToken);
-                    }
-
-                    metadata = GitHub(json, remote.id, options.PreRelease, cache);
-                    break;
-                case "http":
-                    metadata = HTTP(json, remote.id, cache, user);
-                    break;
-                default:
-                    log.FatalFormat("Unknown remote source: {0}", remote.source);
-                    return EXIT_ERROR;
-            }
+            var metadata = ProcessMetadata(json, remote, options.GitHubToken, options.PreRelease, cache, user, useRecursion: true);
 
             if (metadata == null)
             {
@@ -227,6 +205,55 @@ namespace CKAN.NetKAN
             File.WriteAllText(final_path, sw + Environment.NewLine);
 
             return EXIT_OK;
+        }
+
+        internal static JObject ProcessMetadata(
+            JObject json,
+            NetKanRemote remote,
+            string githubToken,
+            bool prelease,
+            NetFileCache cache,
+            IUser user,
+            bool useRecursion
+        )
+        {
+            JObject metadata;
+            switch (remote.source)
+            {
+                case "kerbalstuff":
+                    metadata = KerbalStuff(json, remote.id, cache);
+                    break;
+                case "jenkins":
+                    metadata = Jenkins(json, remote.id, cache);
+                    break;
+                case "github":
+                    if (githubToken != null)
+                    {
+                        GithubAPI.SetCredentials(githubToken);
+                    }
+
+                    metadata = GitHub(json, remote.id, prelease, cache);
+                    break;
+                case "http":
+                    metadata = HTTP(json, remote.id, cache, user);
+                    break;
+                case "netkan":
+                    if (useRecursion)
+                    {
+                        metadata = MetaNetkan(json, remote.id, githubToken, prelease, cache, user);
+                    }
+                    else
+                    {
+                        log.FatalFormat("Attempted to use a nested recursive netkan");
+                        return null;
+                    }
+                    break;
+                default:
+                    log.FatalFormat("Unknown remote source: {0}", remote.source);
+                    return null;
+            }
+
+            return metadata;
         }
 
         /// <summary>
@@ -448,6 +475,48 @@ namespace CKAN.NetKAN
 
            // metadata["download"] = metadata["download"].ToString() + '#' + metadata["version"].ToString();
             return metadata;
+        }
+
+        internal static JObject MetaNetkan(
+            JObject metadata,
+            string remoteId,
+            string githubToken,
+            bool prelease,
+            NetFileCache cache,
+            IUser user
+        )
+        {
+            var downloadFile = Net.Download(new Uri(remoteId));
+
+            var json = JObject.Parse(File.ReadAllText(downloadFile));
+            var remote = FindRemote(json);
+
+            var processedMetadata = ProcessMetadata(json, remote, githubToken, prelease, cache, user, useRecursion: false);
+
+            var metaSpecVersionJToken = metadata["spec_version"];
+            var processedSpecVersionJToken = processedMetadata["spec_version"];
+
+            var metaSpecVersion = metaSpecVersionJToken.Type == JTokenType.String ?
+                new Version((string)metaSpecVersionJToken) : new Version("v1.0");
+
+            var processedSpecVersion = processedSpecVersionJToken.Type == JTokenType.String ?
+                new Version((string)processedSpecVersionJToken) : new Version("v1.0");
+
+            if (metaSpecVersion > processedSpecVersion)
+            {
+                processedMetadata["spec_version"] = metaSpecVersionJToken;
+            }
+            else
+            {
+                processedMetadata["spec_version"] = processedSpecVersionJToken;
+            }
+
+            foreach (var property in metadata.Properties().Where(property => property.Name != "spec_version" && property.Name != "$kref"))
+            {
+                processedMetadata[property.Name] = property.Value;
+            }
+
+            return processedMetadata;
         }
 
         /// <summary>
