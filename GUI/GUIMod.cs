@@ -73,11 +73,11 @@ namespace CKAN
             {
                 Homepage = (object) mod.resources.homepage;
             }
-            else if (mod.resources != null && mod.resources.kerbalstuff != null)
+            else if (mod.resources.kerbalstuff != null)
             {
                 Homepage = (object) mod.resources.kerbalstuff;
             }
-            else if (mod.resources != null && mod.resources.repository != null)
+            else if (mod.resources.repository != null)
             {
                 Homepage = (object) mod.resources.repository;
             }
