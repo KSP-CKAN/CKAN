@@ -67,10 +67,25 @@ namespace CKAN
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
             Abstract = mod.@abstract;
-            Homepage = mod.resources != null && mod.resources.homepage != null
-                ? (object) mod.resources.homepage
-                : "N/A";
-
+            
+            // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
+            if (mod.resources != null && mod.resources.homepage != null)
+            {
+                Homepage = (object) mod.resources.homepage;
+            }
+            else if (mod.resources != null && mod.resources.kerbalstuff != null)
+            {
+                Homepage = (object) mod.resources.kerbalstuff;
+            }
+            else if (mod.resources != null && mod.resources.repository != null)
+            {
+                Homepage = (object) mod.resources.repository;
+            }
+            else
+            {
+                Homepage = "N/A";
+            }
+            
             Identifier = mod.identifier;
         }
 
