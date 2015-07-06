@@ -101,7 +101,11 @@ namespace CKAN.Exporters
             {
                 return QuoteIfNecessary(resources.homepage.ToString());
             }
-
+            else if (resources != null && resources.homepage = null && resources.kerbalstuff != null)
+            {
+                return QuoteIfNecessary(resources.kerbalstuff.ToString());
+            }
+            
             return string.Empty;
         }
 
