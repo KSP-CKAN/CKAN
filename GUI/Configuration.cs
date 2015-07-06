@@ -52,7 +52,7 @@ namespace CKAN
                 {
                     m_Path = path,
                         CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
-                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP -single-instance" :
+                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
                             "KSP.exe -single-instance"
                 };
 
