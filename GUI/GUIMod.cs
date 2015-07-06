@@ -69,17 +69,25 @@ namespace CKAN
             Abstract = mod.@abstract;
             
             // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
-            if (mod.resources != null && mod.resources.homepage != null)
+            
+            if (mod.resources != null)
             {
-                Homepage = (object) mod.resources.homepage;
-            }
-            else if (mod.resources.kerbalstuff != null)
-            {
-                Homepage = (object) mod.resources.kerbalstuff;
-            }
-            else if (mod.resources.repository != null)
-            {
-                Homepage = (object) mod.resources.repository;
+                if (mod.resources.homepage != null)
+                {
+                    Homepage = (object) mod.resources.homepage;
+                }
+                else if (mod.resources.kerbalstuff != null)
+                {
+                    Homepage = (object) mod.resources.kerbalstuff;
+                }
+                else if (mod.resources.repository != null)
+                {
+                    Homepage = (object) mod.resources.repository;
+                }
+                else
+                {
+          	      Homepage = "N/A";
+                }
             }
             else
             {
