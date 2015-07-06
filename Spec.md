@@ -116,7 +116,7 @@ For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.10'. Changes since spec `1`
-are marked with **v1.2** through to **v1.8** respectively. For maximum
+are marked with **v1.2** through to **v1.10** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
