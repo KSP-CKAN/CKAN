@@ -196,7 +196,7 @@ namespace CKAN
             return sw + Environment.NewLine;
         }
 
-        public void Save(bool enforce_consistency = true)
+        public void Save(bool enforce_consistency = true, bool recommmends = false, bool with_versions = true)
         {
             log.DebugFormat("Saving CKAN registry at {0}", path);
 
@@ -224,7 +224,7 @@ namespace CKAN
             // TODO how do we obtain the name of the current KSP instance?
             string kspInstanceName = "default";
             string installedModsPath = Path.Combine(directoryPath, "installed-" + kspInstanceName + ".ckan");
-            file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall());
+            file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall(recommmends, with_versions));
         }
     }
 }

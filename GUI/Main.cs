@@ -947,6 +947,7 @@ namespace CKAN
             var exportOptions = new List<ExportOption>
             {
                 new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourite list (*.ckan)", "ckan"),
                 new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
                 new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
                 new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
@@ -961,15 +962,24 @@ namespace CKAN
                 Filter = filter,
                 Title = Resources.ExportInstalledModsDialogTitle
             };
-
+            ExportOption f;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
 
-                if (exportOption.ExportFileType == ExportFileType.Ckan)
+                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
                 {
+                    bool recommends = false;
+                    bool versions = true;
+
+                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
+                    {
+                        recommends = true;
+                        versions = false;
+                    }
+
                     // Save, just to be certain that the installed-*.ckan metapackage is generated
-                    RegistryManager.Instance(CurrentInstance).Save();
+                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
 
                     // TODO: The core might eventually save as something other than 'installed-default.ckan'
                     File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
