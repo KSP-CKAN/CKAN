@@ -82,6 +82,9 @@ namespace CKAN.CmdLine
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
 
+        [VerbOption("random", HelpText = "Select n random non-conflicting mods and install them")]
+        public RouletteOptions Roulette { get; set; }
+
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
     }
@@ -248,5 +251,11 @@ namespace CKAN.CmdLine
 
         [ValueOption(1)]
         public string Right { get; set; }
+    }
+
+    internal class RouletteOptions : CommonOptions
+    {
+        [ValueOption(0)]
+        public int number_of_mods { get; set; }
     }
 }
