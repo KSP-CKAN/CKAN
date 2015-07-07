@@ -24,16 +24,36 @@ namespace CKAN
             Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
 
-            if (module.resources != null && module.resources.homepage != null)
+            // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
+            if (module.resources != null)
             {
-                Util.Invoke(MetadataModuleHomePageLinkLabel,
-                    () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
+                if (module.resources.homepage != null)
+                {
+                    Util.Invoke(MetadataModuleHomePageLinkLabel,
+                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
+                }
+                else if (module.resources.kerbalstuff != null)
+                {
+                    Util.Invoke(MetadataModuleHomePageLinkLabel,
+                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.kerbalstuff.ToString());
+                }
+                else if (module.resources.repository != null)
+                {
+                    Util.Invoke(MetadataModuleHomePageLinkLabel,
+                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.repository.ToString());
+                }
+                else
+                {
+                    Util.Invoke(MetadataModuleHomePageLinkLabel,
+                        () => MetadataModuleHomePageLinkLabel.Text = "N/A");
+                }
             }
             else
             {
                 Util.Invoke(MetadataModuleHomePageLinkLabel,
                     () => MetadataModuleHomePageLinkLabel.Text = "N/A");
             }
+
 
             if (module.resources != null && module.resources.repository != null)
             {
