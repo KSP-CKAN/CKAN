@@ -43,6 +43,9 @@ namespace CKAN
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kSPCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deselectAllSelectedModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -59,16 +62,16 @@ namespace CKAN
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModList = new MainModListGUI();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ModList = new CKAN.MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.MetadataLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -115,6 +118,7 @@ namespace CKAN
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.MessageTextBox = new System.Windows.Forms.TextBox();
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
+            this.ToggleRecommendedModsCheckBox = new System.Windows.Forms.CheckBox();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
@@ -131,11 +135,11 @@ namespace CKAN
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.ModInfoTabControl.SuspendLayout();
             this.MetadataTabPage.SuspendLayout();
             this.MetadataLayoutPanel.SuspendLayout();
@@ -155,6 +159,7 @@ namespace CKAN
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
+            this.selectionToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -245,6 +250,29 @@ namespace CKAN
             this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.kSPCommandlineToolStripMenuItem.Text = "KSP command-line";
             this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
+            // 
+            // selectionToolStripMenuItem
+            // 
+            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectAllInstalledModsToolStripMenuItem,
+            this.deselectAllSelectedModsToolStripMenuItem});
+            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.selectionToolStripMenuItem.Text = "Selection";
+            // 
+            // selectAllInstalledModsToolStripMenuItem
+            // 
+            this.selectAllInstalledModsToolStripMenuItem.Name = "selectAllInstalledModsToolStripMenuItem";
+            this.selectAllInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.selectAllInstalledModsToolStripMenuItem.Text = "Select All Installed Mods";
+            this.selectAllInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.selectAllInstalledModsToolStripMenuItem_Click);
+            // 
+            // deselectAllSelectedModsToolStripMenuItem
+            // 
+            this.deselectAllSelectedModsToolStripMenuItem.Name = "deselectAllSelectedModsToolStripMenuItem";
+            this.deselectAllSelectedModsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.deselectAllSelectedModsToolStripMenuItem.Text = "Deselect All Selected Mods";
+            this.deselectAllSelectedModsToolStripMenuItem.Click += new System.EventHandler(this.deselectAllSelectedModsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -389,6 +417,26 @@ namespace CKAN
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 72);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.ModList);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
+            this.splitContainer1.Size = new System.Drawing.Size(1015, 578);
+            this.splitContainer1.SplitterDistance = 651;
+            this.splitContainer1.TabIndex = 7;
+            // 
             // ModList
             // 
             this.ModList.AllowUserToAddRows = false;
@@ -400,7 +448,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.UpdateCol,
+            this.Update,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -430,12 +478,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            //
-            this.UpdateCol.HeaderText = "Update";
-            this.UpdateCol.Name = "Update";
-            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.UpdateCol.Width = 46;
-            //
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Update.Width = 46;
+            // 
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -485,26 +533,6 @@ namespace CKAN
             this.Homepage.ReadOnly = true;
             this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Homepage.Width = 84;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 72);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.ModList);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
-            this.splitContainer1.Size = new System.Drawing.Size(1015, 578);
-            this.splitContainer1.SplitterDistance = 651;
-            this.splitContainer1.TabIndex = 7;
             // 
             // ModInfoTabControl
             // 
@@ -1045,6 +1073,7 @@ namespace CKAN
             // 
             // ChooseRecommendedModsTabPage
             // 
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.ToggleRecommendedModsCheckBox);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedDialogLabel);
@@ -1056,6 +1085,20 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage.TabIndex = 3;
             this.ChooseRecommendedModsTabPage.Text = "Choose recommended mods";
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // ToggleRecommendedModsCheckBox
+            // 
+            this.ToggleRecommendedModsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ToggleRecommendedModsCheckBox.AutoSize = true;
+            this.ToggleRecommendedModsCheckBox.Checked = true;
+            this.ToggleRecommendedModsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ToggleRecommendedModsCheckBox.Location = new System.Drawing.Point(8, 621);
+            this.ToggleRecommendedModsCheckBox.Name = "ToggleRecommendedModsCheckBox";
+            this.ToggleRecommendedModsCheckBox.Size = new System.Drawing.Size(128, 17);
+            this.ToggleRecommendedModsCheckBox.TabIndex = 9;
+            this.ToggleRecommendedModsCheckBox.Text = "(De-)Select all * Mods";
+            this.ToggleRecommendedModsCheckBox.UseVisualStyleBackColor = true;
+            this.ToggleRecommendedModsCheckBox.CheckedChanged += new System.EventHandler(this.ToggleRecommendedModsCheckBox_CheckedChanged);
             // 
             // RecommendedModsCancelButton
             // 
@@ -1219,11 +1262,11 @@ namespace CKAN
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ModInfoTabControl.ResumeLayout(false);
             this.MetadataTabPage.ResumeLayout(false);
             this.MetadataLayoutPanel.ResumeLayout(false);
@@ -1337,7 +1380,6 @@ namespace CKAN
         private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
-        public DataGridView ModList;
         private ToolStripMenuItem installFromckanToolStripMenuItem;
         private TextBox FilterByAuthorTextBox;
         private Label FilterByAuthorLabel;
@@ -1346,6 +1388,12 @@ namespace CKAN
         private ToolStripMenuItem exportModListToolStripMenuItem;
         private ToolStripMenuItem selectKSPInstallMenuItem;
         private ToolStripMenuItem openKspDirectoyToolStripMenuItem;
+        private ToolStripMenuItem selectionToolStripMenuItem;
+        private ToolStripMenuItem selectAllInstalledModsToolStripMenuItem;
+        private ToolStripMenuItem deselectAllSelectedModsToolStripMenuItem;
+        private DataGridViewCheckBoxColumn Update;
+        public MainModListGUI ModList;
+        private CheckBox ToggleRecommendedModsCheckBox;
     }
 }
 

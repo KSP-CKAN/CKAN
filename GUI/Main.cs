@@ -1001,6 +1001,42 @@ namespace CKAN
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
         }
+
+        private void selectAllInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (InstalledModule installedMod in CurrentInstance.Registry.InstalledModules)
+            {
+                MarkModForInstall(installedMod.identifier, false);
+            }
+            ModList.Refresh();
+        }
+
+        private void deselectAllSelectedModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && (bool)row.Cells[0].Value)
+                {
+                    MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
+                    ApplyToolButton.Enabled = true;
+                }
+            }
+            ModList.Refresh();
+        }
+
+        private void ToggleRecommendedModsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var state = ((CheckBox)sender).Checked;
+            foreach (ListViewItem item in RecommendedModsListView.Items)
+            {
+                if (item.Checked != state)
+                {
+                    item.Checked = state;
+                }
+            }
+            RecommendedModsListView.Refresh();
+        }
     }
 
     public class GUIUser : NullUser
