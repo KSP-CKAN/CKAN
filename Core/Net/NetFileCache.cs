@@ -150,16 +150,6 @@ namespace CKAN
 
             string hash = CreateURLHash(url);
 
-            if (description != null)
-            {
-                // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
-                // slashes, and heaven knows what use mod authors try to smoosh into them.
-                // We'll reduce this down to "friendly" characters, replacing everything else with
-                // dashes. This doesn't change look-ups, as we use the hash prefix for that.
-
-                description = Regex.Replace(description, "[^A-Za-z0-9_.-]", "-");
-            }
-
             description = description ?? Path.GetFileName(path);
 
             string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
