@@ -52,6 +52,8 @@ namespace CKAN.CmdLine
             // Keep choosing mods from the list until we have enough.
             int chosen = 0;
             List<CkanModule> to_install = new List<CkanModule>();
+            List<String> known_conflicts = new List<String>();
+
             while (chosen < options.number_of_mods) {
 
                 // There is not enough mods left to achieve the wanted number.
@@ -67,15 +69,17 @@ namespace CKAN.CmdLine
                 available_mods.RemoveRange(0, 1);
 
                 // Check if the mods conflicts with any of the previusly selected mods.
-                bool conflicts = false;
-                foreach (CkanModule mod in to_install)
-                {
-                    conflicts = conflicts || mod.ConflictsWith(draw);
-                    if (conflicts) { break; }
-                }
-                if (!conflicts)
+                if(!known_conflicts.Contains(draw.identifier))
                 {
                     to_install.Add(draw);
+                    // Check if this mod have some new conflicts.
+                    if (draw.conflicts != null)
+                    {
+                        foreach (RelationshipDescriptor conflict in draw.conflicts)
+                        {
+                            known_conflicts.Add(conflict.name);
+                        }
+                    }
                     chosen++;
                 }
             }
@@ -97,34 +101,69 @@ namespace CKAN.CmdLine
             install_options.modules = (from mod in to_install select mod.identifier).ToList<String>();
 
             // Get the recommended mods from the previusly selected mods.
-            List<String> recommendations = new List<String>();
+            //List<RelationshipDescriptor> recommendations = new List<RelationshipDescriptor>();
+            List<CkanModule> recommendations = new List<CkanModule>();
             foreach (CkanModule mod in to_install)
             {
-                var relations = mod.recommends;
+                // Add the cconflicts from the recommended mods to the conflict list.
+                var relations = mod.conflicts;
                 if (relations != null)
                 {
-                    foreach (RelationshipDescriptor relation in relations) {
-                        if (!recommendations.Contains(relation.name))
+                    foreach (RelationshipDescriptor relation in relations)
+                    {
+                        try
                         {
-                            recommendations.Add(relation.name);
+                            CkanModule relation_module = ksp.Registry.LatestAvailable(relation.name, ksp.Version());
+                            if (relation_module != null && !known_conflicts.Contains(relation_module.identifier))
+                            {
+                                known_conflicts.Add(relation_module.identifier);
+                            }
+                        } catch (ModuleNotFoundKraken) {
+                            continue;
+                        }
+                    }
+                }
+
+                // Add the recommendation if it is avaiable and does not conflict with any previusly selected mod.
+                relations = mod.recommends;
+                if (relations != null)
+                {
+                    foreach (RelationshipDescriptor relation in relations)
+                    {
+                        // Check if it was already added.
+                        try
+                        {
+                            CkanModule relation_module = ksp.Registry.LatestAvailable(relation.name, ksp.Version());
+                            if (relation_module != null &&
+                                !recommendations.Contains(relation_module) &&
+                                !known_conflicts.Contains(relation_module.identifier) &&
+                                !to_install.Contains(relation_module))
+                            {
+                                recommendations.Add(relation_module);
+                            }
+                        }
+                        catch (ModuleNotFoundKraken)
+                        {
+                            continue;
                         }
                     }
                 }
             }
+            
 
             // If there is any, ask the user if they want to install these as well.
             if (recommendations.Count > 0)
             {
                 user.RaiseMessage("The following extra  have been recommended for the above selection:");
-                foreach (string recommendation in recommendations)
+                foreach (CkanModule recommendation in recommendations)
                 {
-                    user.RaiseMessage(" * " + recommendation);
+                    user.RaiseMessage(" * " + recommendation.name);
                 }
 
                 if (user.RaiseYesNoDialog("Do you want to install these mods as well?"))
                 {
                     // They did, add them to the install arguments.
-                    install_options.modules.AddRange(recommendations);
+                    install_options.modules.AddRange(from recommendation in recommendations select recommendation.identifier);
                 }
                 else
                 {
@@ -132,6 +171,13 @@ namespace CKAN.CmdLine
                     install_options.no_recommends = true;
                 }
             }
+
+            /*user.RaiseMessage("=====================================");
+            foreach (string s in install_options.modules)
+            {
+                user.RaiseMessage("---- " + s);
+            }
+            user.RaiseMessage("=====================================");*/
 
             // Run the install command and return the result.
             return (new Install(user)).RunCommand(ksp, install_options);
