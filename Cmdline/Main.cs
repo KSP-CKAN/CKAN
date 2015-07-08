@@ -243,7 +243,11 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     break;
             }
 
-            manager.CurrentInstance.RegistryManager.Dispose();
+            // Release the registry lock file if possible.
+            if (manager.CurrentInstance != null)
+            {
+                manager.CurrentInstance.RegistryManager.Dispose();
+            }
 
             return return_code;
         }
