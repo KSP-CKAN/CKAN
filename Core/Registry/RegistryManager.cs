@@ -10,13 +10,17 @@ using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
-    public class RegistryManager
+    public class RegistryManager : IDisposable
     {
         private static readonly Dictionary<string, RegistryManager> singleton =
             new Dictionary<string, RegistryManager>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
+        private readonly string lock_file_path;
+
+        private bool lock_acquired = false;
+
         private readonly TxFileManager file_transaction = new TxFileManager();
 
         // The only reason we have a KSP field is so we can pass it to the registry
@@ -34,7 +38,14 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
+            lock_file_path = Path.Combine(path, "registry.json.locked");
             LoadOrCreate();
+
+            // Create a lock for this registry, so we cannot touch it again.
+            if (!GetLock())
+            {
+                throw new Kraken("Registry is already in use. If this is not the case, then delete the lock file manually." + lock_file_path);
+            }
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
             // because then the user can't do anything to correct it. However we're
@@ -46,6 +57,40 @@ namespace CKAN
             catch (InconsistentKraken kraken)
             {
                 log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
+            }
+        }
+
+        public void Dispose()
+        {
+            // Release the lock.
+            ReleaseLock();
+        }
+
+        /// <summary>
+        /// Tries to lock the registry by creating a lock file.
+        /// </summary>
+        /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
+        public bool GetLock()
+        {
+            if (File.Exists(lock_file_path))
+            {
+                return false;
+            }
+
+            File.Create(lock_file_path);
+            lock_acquired = true;
+
+            return true;
+        }
+            
+        /// <summary>
+        /// Release the lock by deleting the file, but only if we managed to create the file.
+        /// </summary>
+        public void ReleaseLock()
+        {
+            if (lock_acquired)
+            {
+                File.Delete(lock_file_path);
             }
         }
 

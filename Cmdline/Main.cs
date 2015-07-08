@@ -121,7 +121,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
+
             KSPManager manager= new KSPManager(user);
+
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
@@ -174,65 +176,88 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             #endregion
 
+            var return_code = Exit.OK;
+
             switch (cmdline.action)
             {
                 case "gui":
-                    return Gui((GuiOptions)options, args);
+                    return_code = Gui((GuiOptions)options, args);
+                    break;
 
                 case "version":
-                    return Version(user);
+                    return_code = Version(user);
+                    break;
 
                 case "update":
-                    return (new Update(user)).RunCommand(manager.CurrentInstance, (UpdateOptions)cmdline.options);
+                    return_code = (new Update(user)).RunCommand(manager.CurrentInstance, (UpdateOptions)cmdline.options);
+                    break;
 
                 case "available":
-                    return Available(manager.CurrentInstance, user);
+                    return_code = Available(manager.CurrentInstance, user);
+                    break;
 
                 case "install":
                     Scan(manager.CurrentInstance, user, cmdline.action);
-                    return (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
+                    return_code = (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
+                    break;
 
                 case "scan":
-                    return Scan(manager.CurrentInstance,user);
+                    return_code = Scan(manager.CurrentInstance,user);
+                    break;
 
                 case "list":
-                    return (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
+                    return_code = (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
+                    break;
 
                 case "show":
-                    return (new Show(user)).RunCommand(manager.CurrentInstance, (ShowOptions)cmdline.options);
+                    return_code = (new Show(user)).RunCommand(manager.CurrentInstance, (ShowOptions)cmdline.options);
+                    break;
 
                 case "search":
-                    return (new Search(user)).RunCommand(manager.CurrentInstance, options);
+                    return_code = (new Search(user)).RunCommand(manager.CurrentInstance, options);
+                    break;
 
                 case "remove":
-                    return (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    return_code = (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    break;
 
                 case "upgrade":
                     Scan(manager.CurrentInstance, user, cmdline.action);
-                    return (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    return_code = (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    break;
 
                 case "clean":
-                    return Clean(manager.CurrentInstance);
+                    return_code = Clean(manager.CurrentInstance);
+                    break;
 
                 case "repair":
                     var repair = new Repair(manager.CurrentInstance,user);
-                    return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+                    return_code = repair.RunSubCommand((SubCommandOptions) cmdline.options);
+                    break;
 
                 case "ksp":
                     var ksp = new KSP(manager, user);
-                    return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+                    return_code = ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+                    break;
 
                 case "repo":
                     var repo = new Repo (manager, user);
-                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
+                    return_code = repo.RunSubCommand((SubCommandOptions) cmdline.options);
+                    break;
 
                 case "compare":
-                    return (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    return_code = (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+                    break;
 
                 default:
                     user.RaiseMessage("Unknown command, try --help");
-                    return Exit.BADOPT;
+                    return_code = Exit.BADOPT;
+                    break;
             }
+
+            manager.CurrentInstance.RegistryManager.Dispose();
+
+            return return_code;
         }
 
         private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)

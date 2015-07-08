@@ -232,6 +232,8 @@ namespace CKAN
             }
 
             Application.Run(this);
+
+            Manager.CurrentInstance.RegistryManager.Dispose();
         }
 
         private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)

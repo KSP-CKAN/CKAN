@@ -233,6 +233,9 @@ namespace CKAN
                 throw new InvalidKSPInstanceKraken(name);
             }
 
+            // Dispose of the old registry manager, to release the registry.
+            CurrentInstance.RegistryManager.Dispose();
+
             CurrentInstance = instances[name];
         }
 
