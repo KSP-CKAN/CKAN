@@ -103,7 +103,12 @@ namespace CKAN.CmdLine
                 var relations = mod.recommends;
                 if (relations != null)
                 {
-                    recommendations.AddRange((from recommendation in relations select recommendation.name).ToList<String>());
+                    foreach (RelationshipDescriptor relation in relations) {
+                        if (!recommendations.Contains(relation.name))
+                        {
+                            recommendations.Add(relation.name);
+                        }
+                    }
                 }
             }
 
