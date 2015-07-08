@@ -39,7 +39,7 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError("The number of mods to install must be greater than 0. You entered: {0}", options.number_of_mods);
                 user.RaiseError("");
-                user.RaiseError("Usage: ckan random n");
+                user.RaiseError("Usage: ckan roulette n");
                 user.RaiseError("    Where n is a number larger than 0.");
                 user.RaiseError("");
                 return Exit.ERROR;

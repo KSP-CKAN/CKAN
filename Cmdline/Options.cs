@@ -82,7 +82,7 @@ namespace CKAN.CmdLine
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
 
-        [VerbOption("random", HelpText = "Select n random non-conflicting mods and install them")]
+        [VerbOption("roulette", HelpText = "Select n random non-conflicting mods and install them")]
         public RouletteOptions Roulette { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]

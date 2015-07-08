@@ -160,9 +160,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "uninstall":
                     cmdline.action = "remove";
                     break;
-                case "roulette":
-                    cmdline.action = "random";
-                    break;
             }
 
             #endregion
@@ -222,7 +219,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "compare":
                     return (new Compare()).RunCommand(manager.CurrentInstance, cmdline.options);
 
-                case "random":
+                case "roulette":
                     Scan(manager.CurrentInstance, user, cmdline.action);
                     return (new Roulette(user)).RunCommand(manager.CurrentInstance, (RouletteOptions)cmdline.options);
 
