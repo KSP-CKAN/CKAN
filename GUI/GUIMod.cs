@@ -38,7 +38,7 @@ namespace CKAN
 
         public string Version
         {
-            get { return InstalledVersion ?? LatestVersion; }
+            get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
         public GUIMod(Module mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
