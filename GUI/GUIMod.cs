@@ -29,7 +29,7 @@ namespace CKAN
 
         public string KSPversion { get; private set; }
         public string Abstract { get; private set; }
-        public object Homepage { get; private set; }
+        public string Homepage { get; private set; }
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
         public bool IsUpgradeChecked { get; private set; }
@@ -115,28 +115,22 @@ namespace CKAN
             Abstract = mod.@abstract;
             
             // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
+
+            Homepage = "N/A";
             if (mod.resources != null)
             {
                 if (mod.resources.homepage != null)
                 {
-                    Homepage = (object) mod.resources.homepage;
+                    Homepage = mod.resources.homepage.ToString();
                 }
                 else if (mod.resources.kerbalstuff != null)
                 {
-                    Homepage = (object) mod.resources.kerbalstuff;
+                    Homepage = mod.resources.kerbalstuff.ToString();
                 }
                 else if (mod.resources.repository != null)
                 {
-                    Homepage = (object) mod.resources.repository;
+                    Homepage = mod.resources.repository.ToString();
                 }
-                else
-                {
-                    Homepage = "N/A";
-                }
-            }
-            else
-            {
-                Homepage = "N/A";
             }
 
             Identifier = mod.identifier;
