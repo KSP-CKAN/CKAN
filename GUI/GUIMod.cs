@@ -20,6 +20,7 @@ namespace CKAN
         public string Authors { get; private set; }
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
+        public string KSPCompatibility { get; private set; }
         public string KSPversion { get; private set; }
         public string Abstract { get; private set; }
         public object Homepage { get; private set; }
@@ -64,12 +65,31 @@ namespace CKAN
 
             InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
             LatestVersion = latest_version != null ? latest_version.ToString() : "-";
+
+            // Find the highest compatible KSP version
+            if (!String.IsNullOrEmpty(mod.ksp_version_max.ToString()))
+            {
+                KSPCompatibility = mod.ksp_version_max.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(mod.ksp_version.ToString()))
+            {
+                KSPCompatibility = mod.ksp_version.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(mod.ksp_version_min.ToString()))
+            {
+                KSPCompatibility = "Any above " + mod.ksp_version_min.ToLongMin().ToString();
+            }
+            else
+            {
+                KSPCompatibility = "All versions";
+            }
+
+
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
             Abstract = mod.@abstract;
             
             // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
-            
             if (mod.resources != null)
             {
                 if (mod.resources.homepage != null)
@@ -93,7 +113,7 @@ namespace CKAN
             {
                 Homepage = "N/A";
             }
-            
+
             Identifier = mod.identifier;
         }
 

@@ -66,6 +66,7 @@ namespace CKAN
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -82,6 +83,8 @@ namespace CKAN
             this.GitHubLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
+            this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
+            this.MetadataModuleKSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
@@ -405,6 +408,7 @@ namespace CKAN
             this.Author,
             this.InstalledVersion,
             this.LatestVersion,
+            this.KSPCompatibility,
             this.Description,
             this.Homepage});
             this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -467,6 +471,14 @@ namespace CKAN
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.LatestVersion.Width = 88;
+            //
+            // LatestVersion
+            // 
+            this.KSPCompatibility.HeaderText = "Highest compat. KSP version";
+            this.KSPCompatibility.Name = "KSPCompatibility";
+            this.KSPCompatibility.ReadOnly = true;
+            this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.KSPCompatibility.Width = 88;
             // 
             // Description
             // 
@@ -550,6 +562,8 @@ namespace CKAN
             this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 7);
             this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
             this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleAbstractLabel, 0, 2);
+            this.MetadataLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 9);
+            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 9);
             this.MetadataLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.MetadataLayoutPanel.Name = "MetadataLayoutPanel";
@@ -676,6 +690,27 @@ namespace CKAN
             this.ReleaseLabel.Size = new System.Drawing.Size(80, 25);
             this.ReleaseLabel.TabIndex = 12;
             this.ReleaseLabel.Text = "Release status:";
+            // 
+            // KSPCompatibilityLabel
+            // 
+            this.KSPCompatibilityLabel.AutoSize = true;
+            this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.KSPCompatibilityLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.KSPCompatibilityLabel.Location = new System.Drawing.Point(3, 320);
+            this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
+            this.KSPCompatibilityLabel.Size = new System.Drawing.Size(80, 33);
+            this.KSPCompatibilityLabel.TabIndex = 13;
+            this.KSPCompatibilityLabel.Text = "Highest compatible KSP Version:";
+            // 
+            // MetadataModuleKSPCompatibilityLabel
+            // 
+            this.MetadataModuleKSPCompatibilityLabel.AutoSize = true;
+            this.MetadataModuleKSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleKSPCompatibilityLabel.Location = new System.Drawing.Point(89, 354);
+            this.MetadataModuleKSPCompatibilityLabel.Name = "MetadataModuleKSPCompatibilityLabel";
+            this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(257, 33);
+            this.MetadataModuleKSPCompatibilityLabel.TabIndex = 14;
+            this.MetadataModuleKSPCompatibilityLabel.Text = "0.0.0";
             // 
             // MetadataModuleHomePageLinkLabel
             // 
@@ -1287,6 +1322,8 @@ namespace CKAN
         private Label GitHubLabel;
         private Label MetadataModuleReleaseStatusLabel;
         private Label ReleaseLabel;
+        private Label KSPCompatibilityLabel;
+        private Label MetadataModuleKSPCompatibilityLabel;
         private LinkLabel MetadataModuleHomePageLinkLabel;
         private LinkLabel MetadataModuleGitHubLinkLabel;
         private Label MetadataModuleNameLabel;
@@ -1332,6 +1369,7 @@ namespace CKAN
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn InstalledVersion;
+        private DataGridViewTextBoxColumn KSPCompatibility;
         private DataGridViewTextBoxColumn LatestVersion;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewLinkColumn Homepage;
