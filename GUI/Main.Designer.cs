@@ -446,7 +446,7 @@ namespace CKAN
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
             this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.ModName.Width = 58;
+            this.ModName.Width = 250;
             // 
             // Author
             // 
@@ -454,7 +454,7 @@ namespace CKAN
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
             this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Author.Width = 61;
+            this.Author.Width = 120;
             // 
             // InstalledVersion
             // 
@@ -462,7 +462,7 @@ namespace CKAN
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.InstalledVersion.Width = 97;
+            this.InstalledVersion.Width = 70;
             // 
             // LatestVersion
             // 
@@ -470,15 +470,15 @@ namespace CKAN
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersion.Width = 88;
+            this.LatestVersion.Width = 70;
             //
-            // LatestVersion
+            // Highest compatible version of KSP
             // 
-            this.KSPCompatibility.HeaderText = "Highest compat. KSP version";
+            this.KSPCompatibility.HeaderText = "Highest compatible KSP version";
             this.KSPCompatibility.Name = "KSPCompatibility";
             this.KSPCompatibility.ReadOnly = true;
             this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.KSPCompatibility.Width = 88;
+            this.KSPCompatibility.Width = 92;
             // 
             // Description
             // 
@@ -486,7 +486,7 @@ namespace CKAN
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Description.Width = 83;
+            this.Description.Width = 300;
             // 
             // Homepage
             // 
@@ -496,7 +496,7 @@ namespace CKAN
             this.Homepage.Name = "Homepage";
             this.Homepage.ReadOnly = true;
             this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Homepage.Width = 84;
+            this.Homepage.Width = 200;
             // 
             // splitContainer1
             // 
