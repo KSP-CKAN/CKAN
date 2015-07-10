@@ -42,7 +42,7 @@ namespace CKAN
 
         // The map of versions -> modules, that's what we're about!
         [JsonProperty]
-        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>();
+        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>(new RecentVersionComparer());
 
         /// <summary>
         /// Record the given module version as being available.
@@ -82,9 +82,6 @@ namespace CKAN
             {
                 return null;
             }
-
-            // Sort most recent versions first.            
-            available_versions.Reverse();
 
             if (ksp_version == null && relationship == null)
             {
@@ -129,6 +126,20 @@ namespace CKAN
             CkanModule module;
             module_version.TryGetValue(v, out module);
             return module;
+        }
+    }
+
+    /// <summary>
+    /// Commparer which sorts the most recent version first
+    /// Depends on the behaaviour of Version.CompareTo(Version)
+    /// to work correctly.
+    /// </summary>
+    public class RecentVersionComparer : IComparer<Version>
+    {
+
+        public int Compare(Version x, Version y)
+        {
+            return y.CompareTo(x);
         }
     }
 }
