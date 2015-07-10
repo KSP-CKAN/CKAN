@@ -700,7 +700,7 @@ namespace CKAN
             this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
             this.KSPCompatibilityLabel.Size = new System.Drawing.Size(80, 33);
             this.KSPCompatibilityLabel.TabIndex = 13;
-            this.KSPCompatibilityLabel.Text = "Highest compatible KSP Version:";
+            this.KSPCompatibilityLabel.Text = "Max KSP ver.:";
             // 
             // MetadataModuleKSPCompatibilityLabel
             // 
