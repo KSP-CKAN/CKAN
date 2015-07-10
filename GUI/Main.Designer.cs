@@ -68,7 +68,6 @@ namespace CKAN
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Homepage = new System.Windows.Forms.DataGridViewLinkColumn();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
@@ -409,8 +408,7 @@ namespace CKAN
             this.InstalledVersion,
             this.LatestVersion,
             this.KSPCompatibility,
-            this.Description,
-            this.Homepage});
+            this.Description});
             this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModList.Location = new System.Drawing.Point(0, 0);
             this.ModList.MultiSelect = false;
@@ -486,17 +484,7 @@ namespace CKAN
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Description.Width = 300;
-            // 
-            // Homepage
-            // 
-            this.Homepage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Homepage.HeaderText = "Homepage";
-            this.Homepage.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.Homepage.Name = "Homepage";
-            this.Homepage.ReadOnly = true;
-            this.Homepage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Homepage.Width = 200;
+            this.Description.Width = 821;
             // 
             // splitContainer1
             // 
@@ -1372,7 +1360,6 @@ namespace CKAN
         private DataGridViewTextBoxColumn KSPCompatibility;
         private DataGridViewTextBoxColumn LatestVersion;
         private DataGridViewTextBoxColumn Description;
-        private DataGridViewLinkColumn Homepage;
         private ToolStripMenuItem pluginsToolStripMenuItem;
         public ToolStripMenuItem settingsToolStripMenuItem;
         public DataGridView ModList;
