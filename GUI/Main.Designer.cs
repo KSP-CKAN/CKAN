@@ -476,7 +476,7 @@ namespace CKAN
             this.KSPCompatibility.Name = "KSPCompatibility";
             this.KSPCompatibility.ReadOnly = true;
             this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.KSPCompatibility.Width = 92;
+            this.KSPCompatibility.Width = 78;
             // 
             // Description
             // 
