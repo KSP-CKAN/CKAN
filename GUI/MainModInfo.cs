@@ -70,6 +70,24 @@ namespace CKAN
             {
                 Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
             }
+
+            // Show mod highest compatible KSP version
+            if (!String.IsNullOrEmpty(module.ksp_version_max.ToString()))
+            {
+                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version_max.ToLongMax().ToString());
+            }
+            else if (!String.IsNullOrEmpty(module.ksp_version.ToString()))
+            {
+                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version.ToLongMax().ToString());
+            }
+            else if (!String.IsNullOrEmpty(module.ksp_version_min.ToString()))
+            {
+                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version_min.ToLongMin().ToString() + " and up");
+            }
+            else
+            {
+                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = "All versions");
+            }
         }
 
         private void UpdateModInfoAuthor(Module module)
