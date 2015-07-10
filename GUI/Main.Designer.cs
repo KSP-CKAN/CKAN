@@ -472,7 +472,7 @@ namespace CKAN
             //
             // Highest compatible version of KSP
             // 
-            this.KSPCompatibility.HeaderText = "Highest compatible KSP version";
+            this.KSPCompatibility.HeaderText = "Max KSP version";
             this.KSPCompatibility.Name = "KSPCompatibility";
             this.KSPCompatibility.ReadOnly = true;
             this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;

@@ -82,7 +82,7 @@ namespace CKAN
             }
             else if (!String.IsNullOrEmpty(module.ksp_version_min.ToString()))
             {
-                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = "Any above " + module.ksp_version_min.ToLongMin().ToString());
+                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version_min.ToLongMin().ToString() + " and up");
             }
             else
             {

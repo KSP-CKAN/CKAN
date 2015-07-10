@@ -77,7 +77,7 @@ namespace CKAN
             }
             else if (!String.IsNullOrEmpty(mod.ksp_version_min.ToString()))
             {
-                KSPCompatibility = "Any above " + mod.ksp_version_min.ToLongMin().ToString();
+                KSPCompatibility = mod.ksp_version_min.ToLongMin().ToString() + " and up";
             }
             else
             {
