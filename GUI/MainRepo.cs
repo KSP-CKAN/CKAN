@@ -79,7 +79,6 @@ namespace CKAN
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
 
-            Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(this, RecreateDialogs);
         }
