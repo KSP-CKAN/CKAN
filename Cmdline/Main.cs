@@ -217,7 +217,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return repo.RunSubCommand((SubCommandOptions) cmdline.options);
 
                 case "compare":
-                    return (new Compare()).RunCommand(manager.CurrentInstance, cmdline.options);
+                    return (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 default:
                     user.RaiseMessage("Unknown command, try --help");
