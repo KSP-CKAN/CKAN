@@ -46,6 +46,7 @@
             this.LocalVersionLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
+            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -156,6 +157,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.RefreshOnStartupCheckbox);
             this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
             this.groupBox2.Controls.Add(this.InstallUpdateButton);
             this.groupBox2.Controls.Add(this.LatestVersionLabel);
@@ -241,6 +243,17 @@
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             // 
+            // RefreshOnStartupCheckbox
+            // 
+            this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
+            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
+            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(148, 17);
+            this.RefreshOnStartupCheckbox.TabIndex = 7;
+            this.RefreshOnStartupCheckbox.Text = "Refresh modlist on launch";
+            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
+            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -282,5 +295,6 @@
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
+        private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
     }
 }
