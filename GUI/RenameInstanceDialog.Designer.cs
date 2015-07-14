@@ -72,6 +72,7 @@
             this.Controls.Add(this.CancelRenameInstanceButton);
             this.Controls.Add(this.OKButton);
             this.Controls.Add(this.NameTextBox);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "RenameInstanceDialog";
             this.Text = "Rename installation";
