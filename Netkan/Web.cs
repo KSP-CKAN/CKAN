@@ -28,8 +28,12 @@ namespace CKAN.NetKAN
             easy = new CurlEasy
             {
                 UserAgent = Net.UserAgentString,
-                CaInfo = ResolveCurlCaBundle()
             };
+            string bundle = ResolveCurlCaBundle();
+            if (bundle != null)
+            {
+                easy.CaInfo = bundle;
+            }
         }
 
         /// <summary>
@@ -104,7 +108,14 @@ namespace CKAN.NetKAN
             .Select(i => Path.Combine(i, caBundleFileName))
             .FirstOrDefault(File.Exists);
 
-            log.InfoFormat("Using curl-ca bundle: {0}",bundle ?? "(none)");
+            if (bundle == null)
+            {
+                log.Info("No custom curl-ca bundle found, using CURL default, check with $ curl-config --ca");
+            }
+            else
+            {
+                log.InfoFormat("Using custom curl-ca bundle: {0}",bundle ?? "(none)");
+            }
 
             return bundle;
         }
