@@ -251,7 +251,12 @@ namespace CKAN
 
         private void _UpdateModContentsTree(bool force = false)
         {
-            var module = (CkanModule)ModInfoTabControl.Tag;
+            GUIMod guiMod = GetSelectedModule();
+            if (!guiMod.IsCKAN)
+            {
+                return;
+            }
+            CkanModule module = guiMod.ToCkanModule();
             if (Equals(module, current_mod_contents_module) && !force)
             {
                 return;

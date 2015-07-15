@@ -760,7 +760,7 @@ namespace CKAN
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-            if (module == null) return;
+            if (module == null || !module.IsCKAN) return;
 
             ResetProgress();
             ShowWaitDialog(false);
