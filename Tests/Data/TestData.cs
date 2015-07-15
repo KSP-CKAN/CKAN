@@ -34,6 +34,11 @@ namespace Tests.Data
             return such_zip_very_currency_wow;
         }
 
+        public static string DogeCoinFlagAvcZip()
+        {
+            return Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
+        }
+
         /// <summary>
         /// Returns DogeCoinFlag.zip, with extra files inside.
         /// Great for testing filters.

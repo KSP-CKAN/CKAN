@@ -154,6 +154,28 @@ namespace CKAN {
             return CompareTo (that) > 0;
         }
 
+        public static Version Max(Version a, Version b)
+        {
+            if (a == null)
+                throw new ArgumentNullException("a");
+
+            if (b == null)
+                throw new ArgumentNullException("b");
+
+            return a.IsGreaterThan(b) ? a : b;
+        }
+
+        public static Version Min(Version a, Version b)
+        {
+            if (a == null)
+                throw new ArgumentNullException("a");
+
+            if (b == null)
+                throw new ArgumentNullException("b");
+
+            return a.IsLessThan(b) ? a : b;
+        }
+
         /// <summary>
         /// Compare the leading non-numerical parts of two strings
         /// </summary>
