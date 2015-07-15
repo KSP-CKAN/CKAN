@@ -39,12 +39,20 @@ namespace CKAN
 
             m_UpdateRepoWorker.RunWorkerAsync();
 
-            Util.Invoke(this, () => Enabled = false);
+            Util.Invoke(this, SwitchEnabledState);
 
             SetDescription("Contacting repository..");
             ClearLog();
             ShowWaitDialog();
         }
+
+        //Todo: better name for this method
+        private void SwitchEnabledState()
+        {
+            menuStrip1.Enabled = !menuStrip1.Enabled;
+            MainTabControl.Enabled = !MainTabControl.Enabled;
+        }
+
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
@@ -79,7 +87,7 @@ namespace CKAN
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
 
-            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
         }
     }

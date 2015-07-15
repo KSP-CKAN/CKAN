@@ -366,6 +366,13 @@ namespace CKAN
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            //Only close the window, when the user has access to the "Exit" of the menu
+            if (!menuStrip1.Enabled)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             m_Configuration.WindowLoc = Location;
 
             // Copy window size to app settings
