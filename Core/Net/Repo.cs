@@ -131,7 +131,16 @@ namespace CKAN
         {
             log.InfoFormat("Downloading {0}", repo);
 
-            string repo_file = Net.Download(repo);
+            string repo_file = String.Empty;
+            try
+            {
+                repo_file = Net.Download(repo);
+            }
+            catch (System.Net.WebException)
+            {
+                user.RaiseMessage("Connection to {0} could not be established.", repo);
+                return;
+            }
 
             // Clear our list of known modules.
             var old_available = registry.available_modules;
