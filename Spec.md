@@ -54,7 +54,10 @@ Any CKAN file *must* conform to this schema to be considered valid.
 A CKAN file is designed to contain all the relevant meta-info
 about a mod, including its name, license, download location,
 dependencies, compatible versions of KSP, and the like. CKAN
-files are simply JSON files.
+files are simply JSON files using  UTF-8 as character-encoding.
+
+Except where stated otherwise all strings *should* be printable unicode only.
+
 
 CKAN files *should* have a naming scheme of their mod's identifier,
 followed by a dash, followed by the version number, followed by
@@ -133,8 +136,7 @@ A short, one line description of the mod and what it does.
 ##### identifer
 
 This is the gloablly unique identifier for the mod, and is how the mod
-will be referred to by other CKAN documents.  It may only consist of
-letters, numbers and dashes. Eg: "FAR" or
+will be referred to by other CKAN documents.  It may only consist of ASCII-letters, ASCII-digits and `-` (dash). Eg: "FAR" or
 "RealSolarSystem". This is the identifier that will be used whenever
 the mod is referenced (by `depends`, `conflicts`, or elsewhere).
 
@@ -208,8 +210,8 @@ The comparison behavior of the package management system with respect to the
 number is mandatory.
 
 While the CKAN will accept *any* string as a `mod_version`, mod authors are
-encouraged to restrict version names to alphanumerics and the characters `.`
-`+` (full stop, plus), and should start with a digit.
+encouraged to restrict version names to ASCII-letters, ASCII-digits, and the characters `.` `+` `-` `_`
+(full stop, plus, dash, underscore) and should start with a digit.
 
 ###### version ordering
 
