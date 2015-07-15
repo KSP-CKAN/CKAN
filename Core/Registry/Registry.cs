@@ -563,6 +563,8 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the specified CkanModule with the version specified,
+        /// or null if it does not exist.
         /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
         /// </summary>
         public CkanModule GetModuleByVersion(string ident, Version version)
