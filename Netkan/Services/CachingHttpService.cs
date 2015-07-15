@@ -113,6 +113,7 @@ namespace CKAN.NetKAN.Services
         public void Dispose()
         {
             Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)
