@@ -790,6 +790,7 @@ namespace CKAN
             this.DependsGraphTree.Name = "DependsGraphTree";
             this.DependsGraphTree.Size = new System.Drawing.Size(346, 509);
             this.DependsGraphTree.TabIndex = 0;
+            this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
             // 
             // ContentTabPage
             // 
