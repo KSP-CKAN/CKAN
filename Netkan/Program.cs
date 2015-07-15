@@ -99,7 +99,7 @@ namespace CKAN.NetKAN
             Parser.Default.ParseArgumentsStrict(args, Options);
 
             BasicConfigurator.Configure();
-            LogManager.GetRepository().Threshold = Level.Error;
+            LogManager.GetRepository().Threshold = Level.Warn;
 
             if (Options.Verbose)
             {
