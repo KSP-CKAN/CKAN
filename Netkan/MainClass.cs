@@ -60,31 +60,38 @@ namespace CKAN.NetKAN
             log.InfoFormat("Processing {0}", options.File);
 
             JObject json = JsonFromFile(options.File);
-            NetKanRemote remote = FindRemote(json);
+            NetKanRemote remote = FindRemoteKref(json,user);
 
-            JObject metadata;
-            switch (remote.source)
+            JObject metadata = json;
+            if (remote == null)
             {
-                case "kerbalstuff":
-                    metadata = KerbalStuff(json, remote.id, cache);
-                    break;
-                case "jenkins":
-                    metadata = Jenkins(json, remote.id, cache);
-                    break;
-                case "github":
-                    if (options.GitHubToken != null)
-                    {
-                        GithubAPI.SetCredentials(options.GitHubToken);
-                    }
+                log.WarnFormat("Not inflating metadata for {0}", json["identifier"]);
+            }
+            else
+            {
+                switch (remote.source)
+                {
+                    case "kerbalstuff":
+                        metadata = KerbalStuff(json, remote.id, cache);
+                        break;
+                    case "jenkins":
+                        metadata = Jenkins(json, remote.id, cache);
+                        break;
+                    case "github":
+                        if (options.GitHubToken != null)
+                        {
+                            GithubAPI.SetCredentials(options.GitHubToken);
+                        }
 
-                    metadata = GitHub(json, remote.id, options.PreRelease, cache);
-                    break;
-                case "http":
-                    metadata = HTTP(json, remote.id, cache, user);
-                    break;
-                default:
-                    log.FatalFormat("Unknown remote source: {0}", remote.source);
-                    return EXIT_ERROR;
+                        metadata = GitHub(json, remote.id, options.PreRelease, cache);
+                        break;
+                    case "http":
+                        metadata = HTTP(json, remote.id, cache, user);
+                        break;
+                    default:
+                        log.FatalFormat("Unknown remote source: {0}", remote.source);
+                        return EXIT_ERROR;
+                }
             }
 
             if (metadata == null)
@@ -102,7 +109,7 @@ namespace CKAN.NetKAN
             CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             // Make sure our identifiers match.
-            if (mod.identifier != (string)json["identifier"])
+            if (mod.identifier != (string) json["identifier"])
             {
                 log.FatalFormat("Error: Have metadata for {0}, but wanted {1}", mod.identifier, json["identifier"]);
                 return EXIT_ERROR;
@@ -112,8 +119,16 @@ namespace CKAN.NetKAN
             string file = cache.GetCachedZip(mod.download);
             if (file == null)
             {
-                log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
-                return EXIT_ERROR;
+                //Last attempt. Should only be triggered by files without krefs
+                try
+                {
+                    file = ModuleInstaller.CachedOrDownload(mod.identifier, mod.version, mod.download, cache);
+                }
+                catch (Exception)
+                {
+                    log.FatalFormat("Error: Unable to find {0} in the cache", mod.identifier);
+                    return EXIT_ERROR;
+                }
             }
 
             // Make sure this would actually generate an install.
@@ -132,33 +147,33 @@ namespace CKAN.NetKAN
             // tell if there's been an override of the version fields or not.
             foreach (string vref in vrefs(metadata))
             {
-                log.DebugFormat ("Expanding vref {0}", vref);
+                log.DebugFormat("Expanding vref {0}", vref);
 
-                if (vref.StartsWith ("#/ckan/ksp-avc"))
+                if (vref.StartsWith("#/ckan/ksp-avc"))
                 {
                     // HTTP has already included the KSP-AVC data as it needs it earlier in the process
                     if (remote.source != "http")
                     {
-                        var versionRemote = FindVersionRemote (metadata, vref);
+                        var version_remote = FindVersionRemote(metadata, vref);
 
                         try
                         {
-                            AVC avc = AVC.FromZipFile (mod, file, versionRemote.id);
+                            AVC avc = AVC.FromZipFile(mod, file, version_remote.id);
                             // TODO check why the AVC file can be null...
                             if (avc != null)
                             {
-                                avc.InflateMetadata (metadata, null, null);
+                                avc.InflateMetadata(metadata, null, null);
                             }
                         }
                         catch (JsonReaderException)
                         {
-                            user.RaiseMessage ("Bad embedded KSP-AVC file for {0}, halting.", mod);
+                            user.RaiseMessage("Bad embedded KSP-AVC file for {0}, halting.", mod);
                             return EXIT_ERROR;
                         }
                     }
                 }
 
-                if (vref.StartsWith ("#/ckan/kerbalstuff"))
+                if (vref.StartsWith("#/ckan/kerbalstuff"))
                 {
                     log.DebugFormat("Kerbalstuff vref: {0}", vref);
                     Match match = Regex.Match(vref, @"^#/ckan/([^/]+)/(.+)");
@@ -166,11 +181,11 @@ namespace CKAN.NetKAN
                     if (!match.Success)
                     {
                         // TODO: Have a proper kraken class!
-                        user.RaiseMessage ("Cannot find remote and ID in vref: {0}, halting.", vref);
+                        user.RaiseMessage("Cannot find remote and ID in vref: {0}, halting.", vref);
                         return EXIT_ERROR;
                     }
 
-                    string remote_id = match.Groups [2].ToString ();
+                    string remote_id = match.Groups[2].ToString();
                     log.DebugFormat("Kerbalstuff id  : {0}", remote_id);
                     try
                     {
@@ -179,12 +194,12 @@ namespace CKAN.NetKAN
                         {
                             KSVersion version = new KSVersion();
                             version.friendly_version = mod.version;
-                            ks.InflateMetadata (metadata, file, version);
+                            ks.InflateMetadata(metadata, file, version);
                         }
                     }
                     catch (JsonReaderException)
                     {
-                        user.RaiseMessage ("Cannot find remote and ID in vref: {0}, halting.", vref);
+                        user.RaiseMessage("Cannot find remote and ID in vref: {0}, halting.", vref);
                         return EXIT_ERROR;
                     }
                 }
@@ -202,11 +217,11 @@ namespace CKAN.NetKAN
 
             // Re-inflate our mod, in case our vref or FixVersionString routines have
             // altered it at all.
-            mod = CkanModule.FromJson (metadata.ToString ());
+            mod = CkanModule.FromJson(metadata.ToString());
 
             // All done! Write it out!
 
-            var version_filename = mod.version.ToString().Replace(':','-');
+            var version_filename = mod.version.ToString().Replace(':', '-');
             string final_path = Path.Combine(options.OutputDir, string.Format("{0}-{1}.ckan", mod.identifier, version_filename));
 
             log.InfoFormat("Writing final metadata to {0}", final_path);
@@ -214,7 +229,7 @@ namespace CKAN.NetKAN
             StringBuilder sb = new StringBuilder();
             StringWriter sw = new StringWriter(sb);
 
-            using (JsonTextWriter writer = new JsonTextWriter (sw))
+            using (JsonTextWriter writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
                 writer.Indentation = 4;
@@ -233,11 +248,11 @@ namespace CKAN.NetKAN
         /// (safely) load all vrefs from file.
         /// Returns a list of vref strings.
         /// </summary>
-        internal static List<string> vrefs (JObject orig_metadata)
+        internal static List<string> vrefs(JObject orig_metadata)
         {
-            List<string> result = new List<string> ();
+            List<string> result = new List<string>();
 
-            JToken vref = orig_metadata [version_token];
+            JToken vref = orig_metadata[version_token];
             // none: null
             // single: Newtonsoft.Json.Linq.JValue
             // multiple: Newtonsoft.Json.Linq.JArray
@@ -245,18 +260,18 @@ namespace CKAN.NetKAN
             {
                 if (vref is JValue)
                 {
-                    result.Add (vref.ToString());
+                    result.Add(vref.ToString());
                 }
                 else if (vref is JArray)
                 {
                     foreach (string innerVref in vref.ToArray())
                     {
-                        result.Add (innerVref);
+                        result.Add(innerVref);
                     }
                 }
 
                 // Remove $vref from the resulting ckan
-                orig_metadata.Remove (version_token);
+                orig_metadata.Remove(version_token);
             }
 
             return result;
@@ -283,9 +298,9 @@ namespace CKAN.NetKAN
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
             // Check if we should auto-inflate.
-            string kref = (string)metadata[expand_token];
+            string kref = (string) metadata[expand_token];
 
-            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
+            if (kref == (string) orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
             {
                 log.InfoFormat("Inflating from KerbalStuff... {0}", metadata[expand_token]);
                 ks.InflateMetadata(metadata, filename, latest);
@@ -305,22 +320,22 @@ namespace CKAN.NetKAN
         /// </summary>
         internal static JObject Jenkins(JObject orig_metadata, string remote_id, NetFileCache cache)
         {
-            string versionBase = (string) orig_metadata ["x_ci_version_base"];
-            log.DebugFormat ("versionBase: {0}", versionBase);
+            string versionBase = (string) orig_metadata["x_ci_version_base"];
+            log.DebugFormat("versionBase: {0}", versionBase);
 
-            JObject resources = (JObject) orig_metadata ["resources"];
-            log.DebugFormat ("resources: {0}", resources);
+            JObject resources = (JObject) orig_metadata["resources"];
+            log.DebugFormat("resources: {0}", resources);
 
-            string baseUri = (string) resources ["ci"];
+            string baseUri = (string) resources["ci"];
             if (baseUri == null)
             {
                 // Fallback, we don't have the defined resource 'ci' in the schema yet...
-                baseUri = (string) resources ["x_ci"];
+                baseUri = (string) resources["x_ci"];
             }
 
-            log.DebugFormat ("baseUri: {0}", baseUri);
+            log.DebugFormat("baseUri: {0}", baseUri);
 
-            JenkinsBuild build = JenkinsAPI.GetLatestBuild (baseUri, versionBase, true);
+            JenkinsBuild build = JenkinsAPI.GetLatestBuild(baseUri, versionBase, true);
 
             Version version = build.version;
 
@@ -332,9 +347,9 @@ namespace CKAN.NetKAN
             JObject metadata = MetadataFromFileOrDefault(filename, orig_metadata);
 
             // Check if we should auto-inflate.
-            string kref = (string)metadata[expand_token];
+            string kref = (string) metadata[expand_token];
 
-            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
+            if (kref == (string) orig_metadata[expand_token] || kref == "#/ckan/kerbalstuff")
             {
                 log.InfoFormat("Inflating from Jenkins... {0}", metadata[expand_token]);
                 build.InflateMetadata(metadata, filename, null);
@@ -368,9 +383,9 @@ namespace CKAN.NetKAN
 
             // Check if we should auto-inflate.
 
-            string kref = (string)metadata[expand_token];
+            string kref = (string) metadata[expand_token];
 
-            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/github")
+            if (kref == (string) orig_metadata[expand_token] || kref == "#/ckan/github")
             {
                 log.InfoFormat("Inflating from github metadata... {0}", metadata[expand_token]);
                 release.InflateMetadata(metadata, filename, repo);
@@ -389,9 +404,9 @@ namespace CKAN.NetKAN
             var metadata = orig_metadata;
 
             // Check if we should auto-inflate.
-            string kref = (string)metadata[expand_token];
+            string kref = (string) metadata[expand_token];
 
-            if (kref == (string)orig_metadata[expand_token] || kref == "#/ckan/http")
+            if (kref == (string) orig_metadata[expand_token] || kref == "#/ckan/http")
             {
                 log.InfoFormat("Inflating from HTTP download... {0}", metadata[expand_token]);
                 metadata["download"] = remote_id;
@@ -446,7 +461,7 @@ namespace CKAN.NetKAN
                 log.WarnFormat("Not inflating metadata for {0}", orig_metadata["identifier"]);
             }
 
-           // metadata["download"] = metadata["download"].ToString() + '#' + metadata["version"].ToString();
+            // metadata["download"] = metadata["download"].ToString() + '#' + metadata["version"].ToString();
             return metadata;
         }
 
@@ -511,12 +526,19 @@ namespace CKAN.NetKAN
         /// <summary>
         /// Find a remote source and remote id from a JObject by parsing its expand_token
         /// </summary>
-        internal static NetKanRemote FindRemote(JObject json)
+        internal static NetKanRemote FindRemoteKref(JObject json, IUser user)
         {
             string kref = (string) json[expand_token];
+
+            if (kref == null)
+            {
+                user.RaiseMessage("Warning. No kref found in netkan");
+                return null;
+            }
+
             Match match = Regex.Match(kref, @"^#/ckan/([^/]+)/(.+)");
 
-            if (! match.Success)
+            if (!match.Success)
             {
                 // TODO: Have a proper kraken class!
                 throw new Kraken("Cannot find remote and ID in kref: " + kref);
@@ -562,7 +584,7 @@ namespace CKAN.NetKAN
             try
             {
                 KSP ksp = ksp_manager.GetPreferredInstance();
-                log.InfoFormat("Using CKAN cache at {0}",ksp.Cache.GetCachePath());
+                log.InfoFormat("Using CKAN cache at {0}", ksp.Cache.GetCachePath());
                 return ksp.Cache;
             }
             catch
@@ -614,7 +636,7 @@ namespace CKAN.NetKAN
                 }
                 else
                 {
-                    log.Error("Invaild epoch: "+epoch);
+                    log.Error("Invaild epoch: " + epoch);
                     throw new BadMetadataKraken(null, "Invaild epoch: " + epoch + "In " + metadata["identifier"]);
                 }
             }
@@ -664,7 +686,7 @@ namespace CKAN.NetKAN
     internal class NetKanRemote
     {
         public string source; // EG: "kerbalstuff" or "github"
-        public string id;     // EG: "269" or "pjf/DogeCoinFlag"
+        public string id; // EG: "269" or "pjf/DogeCoinFlag"
 
         internal NetKanRemote(string source, string id)
         {
