@@ -350,19 +350,19 @@ namespace CKAN
         {
             SealionTransaction();
 
+            var identifier = module.identifier;
             // If we've never seen this module before, create an entry for it.
-
-            if (! available_modules.ContainsKey(module.identifier))
+            if (! available_modules.ContainsKey(identifier))
             {
-                log.DebugFormat("Adding new available module {0}", module.identifier);
-                available_modules[module.identifier] = new AvailableModule();
+                log.DebugFormat("Adding new available module {0}", identifier);
+                available_modules[identifier] = new AvailableModule(identifier);
             }
 
             // Now register the actual version that we have.
             // (It's okay to have multiple versions of the same mod.)
 
-            log.DebugFormat("Available: {0} version {1}", module.identifier, module.version);
-            available_modules[module.identifier].Add(module);
+            log.DebugFormat("Available: {0} version {1}", identifier, module.version);
+            available_modules[identifier].Add(module);
         }
 
         /// <summary>
@@ -844,7 +844,6 @@ namespace CKAN
             InstalledModule installedModule;
             return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
         }
-
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.

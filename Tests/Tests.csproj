@@ -125,7 +125,7 @@
     <Compile Include="Core\Types\KSPVersion.cs" />
     <Compile Include="Core\Types\License.cs" />
     <Compile Include="Core\Types\Module.cs" />
-    <Compile Include="Core\Types\ModuleInstallDescriptor.cs" />
+    <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
     <Compile Include="Core\Types\Version.cs" />
     <Compile Include="Data\DisposableKSP.cs" />

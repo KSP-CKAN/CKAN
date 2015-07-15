@@ -42,7 +42,7 @@ namespace CKAN
                 bool min_sat = min_version == null || min_version <= other_version;
                 bool max_sat = max_version == null || max_version >= other_version;
                 if (min_sat && max_sat) return true;
-            }
+    }
             else
             {
                 if (version.Equals(other_version))
@@ -140,7 +140,7 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        [JsonConverter(typeof (JsonSingleOrArrayConverter<License>))]
         public List<License> license;
 
         [JsonProperty("name")]
@@ -233,7 +233,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new List<License> {new License ("unknown")};
+                license = new List<License> {new License("unknown")};
             }
 
             if (@abstract == null)
@@ -269,7 +269,10 @@ namespace CKAN
             {
                 return false;
             }
-            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
+            return
+                mod1.conflicts.Any(
+                    conflict =>
+                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
         }
 
         /// <summary>
@@ -343,18 +346,28 @@ namespace CKAN
         {
             return Equals(other);
         }
+    }
 
-        public class IdentifierEqualilty : EqualityComparer<Module>
+    public class NameComparer : IEqualityComparer<CkanModule>, IEqualityComparer<Module>
+    {
+        public bool Equals(CkanModule x, CkanModule y)
         {
-            public override bool Equals(Module x, Module y)
-            {
-                return x.identifier.Equals(y.identifier);
-            }
+            return x.identifier.Equals(y.identifier);
+        }
 
-            public override int GetHashCode(Module obj)
-            {
-                return obj.identifier.GetHashCode();
-            }
+        public int GetHashCode(CkanModule obj)
+        {
+            return obj.identifier.GetHashCode();
+        }
+
+        public bool Equals(Module x, Module y)
+        {
+            return x.identifier.Equals(y.identifier);
+        }
+
+        public int GetHashCode(Module obj)
+        {
+            return obj.identifier.GetHashCode();
         }
     }
 

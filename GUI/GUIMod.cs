@@ -4,13 +4,13 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public class GUIMod
+    public sealed class GUIMod
     {
         private Module Mod { get; set; }
 
         public string Name
         {
-            get { return Mod.name; }
+            get { return Mod.name.Trim(); }
         }
 
         public bool IsInstalled { get; private set; }
@@ -153,23 +153,24 @@ namespace CKAN
             return mod.ToModule();
         }
 
-        public void SetUpgradeChecked(DataGridViewRow row, bool? setvalueto = null)
+        public void SetUpgradeChecked(DataGridViewRow row, bool? set_value_to = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
             var old_value = (bool) update_cell.Value;
 
-            bool value = (setvalueto.HasValue ? setvalueto.Value : old_value);
+            bool value = set_value_to ?? old_value;
             IsUpgradeChecked = value;
             if (old_value != value) update_cell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row)
+        public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
             IsInstallChecked = (bool) install_cell.Value;
         }
+
 
         protected bool Equals(GUIMod other)
         {
@@ -180,7 +181,7 @@ namespace CKAN
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((GUIMod) obj);
         }
 

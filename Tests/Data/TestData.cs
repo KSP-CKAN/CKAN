@@ -283,10 +283,7 @@ namespace Tests.Data
                         ""homepage"" : ""http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13"",
                         ""manual""   : ""http://ksp-kos.github.io/KOS_DOC/"",
                         ""bugtracker"": ""https://github.com/KSP-KOS/KOS/issues"",
-                        ""github""   : {
-                            ""url""      : ""https://github.com/KSP-KOS/KOS"",
-                            ""releases"" : true
-                        }
+                        ""repository""   : ""https://github.com/KSP-KOS/KOS""
                     },
                     ""install"" : [
                         {
@@ -351,7 +348,7 @@ namespace Tests.Data
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
 
-        
+
         public static string KspAvcJsonOneLineVersion()
         {
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));

@@ -158,9 +158,9 @@ namespace CKAN
             UpdateFilters(this);
         }
 
-        public void MarkModForInstall(string identifier, bool uninstall = false)
+        public void MarkModForInstall(string identifier, bool uncheck = false)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier, uninstall));
+            Util.Invoke(this, () => _MarkModForInstall(identifier, uncheck));
         }
 
         private void _MarkModForInstall(string identifier, bool uninstall)
@@ -170,10 +170,7 @@ namespace CKAN
                 var mod = (GUIMod) row.Tag;
                 if (mod.Identifier == identifier)
                 {
-                    mod.IsInstallChecked = !uninstall;
-                    //TODO Fix up MarkMod stuff when I commit the GUIConflict
-                    (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
-                    if (!uninstall) last_mod_to_have_install_toggled.Push(mod);
+                    mod.SetInstallChecked(row,!uninstall);
                     break;
                 }
             }
@@ -183,6 +180,7 @@ namespace CKAN
         {
             Util.Invoke(this, () => _MarkModForUpdate(identifier));
         }
+
 
         public void _MarkModForUpdate(string identifier)
         {
@@ -217,7 +215,7 @@ namespace CKAN
                 }
             }
             base.OnPaint(e);
-        }
+            }
 
         //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
         protected override void SetSelectedRowCore(int rowIndex, bool selected)

@@ -9,7 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 namespace Tests.Core.Types
 {
     [TestFixture]
-    public class ModuleInstallDescriptor
+    public class ModuleInstallDescriptorTests
     {
         [Test]
         // NOTE: I've *never* got these to fail. The problem I'm trying to reproduce
