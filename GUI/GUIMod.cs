@@ -106,7 +106,7 @@ namespace CKAN
                 }
                 else
                 {
-          	      Homepage = "N/A";
+                    Homepage = "N/A";
                 }
             }
             else
