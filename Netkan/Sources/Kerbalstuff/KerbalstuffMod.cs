@@ -6,17 +6,15 @@ namespace CKAN.NetKAN.Sources.Kerbalstuff
 {
     internal class KerbalstuffMod
     {
-        public int id; // KSID
-
-        // These get filled in from JSON deserialisation.
-        public string license;
-        public string name;
-        public string short_description;
-        public string author;
-        public KSVersion[] versions;
-        public Uri website;
-        public Uri source_code;
-        public int default_version_id;
+        [JsonProperty] public int id; // KSID
+        [JsonProperty] public string license;
+        [JsonProperty] public string name;
+        [JsonProperty] public string short_description;
+        [JsonProperty] public string author;
+        [JsonProperty] public KSVersion[] versions;
+        [JsonProperty] public Uri website;
+        [JsonProperty] public Uri source_code;
+        [JsonProperty] public int default_version_id;
         [JsonConverter(typeof(KSVersion.JsonConvertFromRelativeKsUri))]
         public Uri background;
 
