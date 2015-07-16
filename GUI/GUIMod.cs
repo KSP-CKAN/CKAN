@@ -58,9 +58,6 @@ namespace CKAN
             Version latest_version = null;
             var ksp_version = mod.ksp_version;
 
-            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
-            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
-
             try
             {
                 var latest_available = registry.LatestAvailable(mod.identifier, current_ksp_version);
@@ -71,6 +68,9 @@ namespace CKAN
             {
                 latest_version = installed_version;
             }
+
+            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
+            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
