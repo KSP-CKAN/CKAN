@@ -31,14 +31,14 @@ namespace CKAN.NetKAN.Transformers
             { "ksp_version", 13 },
             { "ksp_version_min", 14 },
             { "ksp_version_max", 15 },
-            { "download", 16 },
-            { "download_size", 17 },
-            { "provides", 18 },
-            { "depends", 19 },
-            { "recommends", 20 },
-            { "suggests", 21 },
-            { "supports", 22 },
-            { "install", 23 },
+            { "provides", 16 },
+            { "depends", 17 },
+            { "recommends", 18 },
+            { "suggests", 19 },
+            { "supports", 20 },
+            { "install", 21 },
+            { "download", 22 },
+            { "download_size", 23 },
 
             { "x_generated_by", int.MaxValue }
         };
