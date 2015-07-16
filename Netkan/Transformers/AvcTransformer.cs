@@ -1,4 +1,5 @@
 ﻿using System;
+using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using log4net;
@@ -71,7 +72,10 @@ namespace CKAN.NetKAN.Transformers
 
                     if (avc.version != null)
                     {
-                        json["version"] = avc.version.ToString();
+                        // In practice, the version specified in .version files tends to be unreliable, with authors
+                        // forgetting to update it when new versions are released. Therefore if we have a version
+                        // specified from another source such as KerbalStuff or a GitHub tag, don't overwrite it.
+                        json.SafeAdd("version", avc.version.ToString());
                     }
 
                     // It's cool if we don't have version info at all, it's optional in the AVC spec.
