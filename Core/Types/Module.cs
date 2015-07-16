@@ -309,6 +309,33 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns a human readable string indicating the highest compatible
+        /// version of KSP this module will run with. (Eg: 1.0.2, 1.0.2+,
+        /// "All version", etc).
+        /// 
+        /// This is for *human consumption only*, as the strings may change in the
+        /// future as we support additional locales.
+        /// </summary>
+        public string HighestCompatibleKSP()
+        {
+            // Find the highest compatible KSP version
+            if (!String.IsNullOrEmpty(ksp_version_max.ToString()))
+            {
+                return ksp_version_max.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version.ToString()))
+            {
+                return ksp_version.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version_min.ToString()))
+            {
+                return ksp_version_min.ToLongMin().ToString() + "+";
+            }
+
+            return "All versions";
+        }
+
+        /// <summary>
         /// Returns true if this module provides the functionality requested.
         /// </summary>
         public bool DoesProvide(string identifier)

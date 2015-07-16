@@ -16,8 +16,10 @@ namespace CKAN
 
     public partial class Main : Form
     {
-        private void UpdateModInfo(Module module)
+        private void UpdateModInfo(GUIMod gui_module)
         {
+            Module module = gui_module.ToModule();
+
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ",module.license));
@@ -71,23 +73,7 @@ namespace CKAN
                 Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
             }
 
-            // Show mod highest compatible KSP version
-            if (!String.IsNullOrEmpty(module.ksp_version_max.ToString()))
-            {
-                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version_max.ToLongMax().ToString());
-            }
-            else if (!String.IsNullOrEmpty(module.ksp_version.ToString()))
-            {
-                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version.ToLongMax().ToString());
-            }
-            else if (!String.IsNullOrEmpty(module.ksp_version_min.ToString()))
-            {
-                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = module.ksp_version_min.ToLongMin().ToString() + " and up");
-            }
-            else
-            {
-                Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = "All versions");
-            }
+            Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
         }
 
         private void UpdateModInfoAuthor(Module module)
