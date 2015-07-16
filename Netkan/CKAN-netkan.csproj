@@ -78,6 +78,7 @@
     <Compile Include="CmdLineOptions.cs" />
     <Compile Include="Transformers\OptimusPrimeTransformer.cs" />
     <Compile Include="Transformers\VersionEditTransformer.cs" />
+    <Compile Include="Transformers\PropertySortTransformer.cs" />
     <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
     <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />
     <Compile Include="Transformers\EpochTransformer.cs" />
