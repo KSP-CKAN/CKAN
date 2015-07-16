@@ -48,9 +48,31 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("abstract", ksMod.short_description);
                 json.SafeAdd("version", latestVersion.friendly_version.ToString());
                 json.SafeAdd("author", ksMod.author);
-                json.SafeAdd("license", ksMod.license);
                 json.SafeAdd("download", latestVersion.download_path.OriginalString);
-                json.SafeAdd("x_screenshot", Escape(ksMod.background));
+
+                // KS provides users with the following default selection of licenses. Let's convert them to CKAN
+                // compatible license strings if possible.
+                //
+                // "MIT" - OK
+                // "BSD" - Specific version is indeterminate
+                // "GPLv2" - Becomes "GPL-2.0"
+                // "GPLv3" - Becomes "GPL-3.0"
+                // "LGPL" - Specific version is indeterminate
+
+                var ksLicense = ksMod.license.Trim();
+
+                switch (ksLicense)
+                {
+                    case "GPLv2":
+                        json.SafeAdd("license", "GPL-2.0");
+                        break;
+                    case "GPLv3":
+                        json.SafeAdd("license", "GPL-3.0");
+                        break;
+                    default:
+                        json.SafeAdd("license", ksLicense);
+                        break;
+                }
 
                 // Make sure resources exist.
                 if (json["resources"] == null)
@@ -63,6 +85,11 @@ namespace CKAN.NetKAN.Transformers
                 resourcesJson.SafeAdd("homepage", Escape(ksMod.website));
                 resourcesJson.SafeAdd("repository", Escape(ksMod.source_code));
                 resourcesJson.SafeAdd("kerbalstuff", ksMod.GetPageUrl().OriginalString);
+
+                if (ksMod.background != null)
+                {
+                    resourcesJson.SafeAdd("x_screenshot", Escape(ksMod.background));
+                }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
