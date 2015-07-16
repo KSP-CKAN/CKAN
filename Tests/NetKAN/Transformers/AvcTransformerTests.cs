@@ -90,11 +90,10 @@ namespace Tests.NetKAN.Transformers
             );
         }
 
-        [TestCase("version")]
         [TestCase("ksp_version")]
         [TestCase("ksp_version_min")]
         [TestCase("ksp_version_max")]
-        public void OverridesExistingVersionInfo(string propertyName)
+        public void OverridesExistingKspVersionInfo(string propertyName)
         {
             // Arrange
             var avcVersion = new AvcVersion();
@@ -137,6 +136,37 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.That((string)transformedJson[propertyName], Is.EqualTo("1.2.3"),
                 string.Format("AvcTransformer should override an existing {0}.", propertyName)
+            );
+        }
+
+        [Test]
+        public void DoesNotOverrideExistingVersionInfo()
+        {
+            // Arrange
+            var avcVersion = new AvcVersion { version = new Version("1.2.3") };
+
+            var mHttp = new Mock<IHttpService>();
+            var mModuleService = new Mock<IModuleService>();
+
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(avcVersion);
+
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+
+            var json = new JObject();
+            json["spec_version"] = 1;
+            json["identifier"] = "AwesomeMod";
+            json["$vref"] = "#/ckan/ksp-avc";
+            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"] = "9001";
+
+            // Act
+            var result = sut.Transform(new Metadata(json));
+            var transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["version"], Is.EqualTo("9001"),
+                "AvcTransformer should not override an existing version."
             );
         }
     }
