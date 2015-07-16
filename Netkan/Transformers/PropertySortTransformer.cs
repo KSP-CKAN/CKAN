@@ -39,6 +39,17 @@ namespace CKAN.NetKAN.Transformers
             { "x_generated_by", int.MaxValue }
         };
 
+        private static readonly Dictionary<string, int> ResourcePropertySortOrder = new Dictionary<string, int>
+        {
+            { "homepage", 0 },
+            { "kerbalstuff", 1 },
+            { "repository", 2 },
+            { "bugtracker", 3 },
+            { "ci", 4 },
+            { "license", 5 },
+            { "manual", 6 }
+        };
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();
@@ -55,6 +66,25 @@ namespace CKAN.NetKAN.Transformers
                 sortedJson[propertyName] = json[propertyName];
             }
 
+            var resources = json["resources"] as JObject;
+            if (resources != null)
+            {
+                var sortedResourcePropertyNames = resources
+                    .Properties()
+                    .Select(i => i.Name)
+                    .OrderBy(GetResourcePropertySortOrder)
+                    .ThenBy(i => i);
+
+                var sortedResources = new JObject();
+
+                foreach (var resourceProprtyName in sortedResourcePropertyNames)
+                {
+                    sortedResources[resourceProprtyName] = resources[resourceProprtyName];
+                }
+
+                sortedJson["resources"] = sortedResources;
+            }
+
             return new Metadata(sortedJson);
         }
 
@@ -62,6 +92,16 @@ namespace CKAN.NetKAN.Transformers
         {
             int sortOrder;
             return PropertySortOrder.TryGetValue(propertyName, out sortOrder) ?
+                sortOrder :
+                propertyName.StartsWith("x_") ?
+                    DefaultSortOrder + 1 :
+                    DefaultSortOrder;
+        }
+
+        private static double GetResourcePropertySortOrder(string propertyName)
+        {
+            int sortOrder;
+            return ResourcePropertySortOrder.TryGetValue(propertyName, out sortOrder) ?
                 sortOrder :
                 propertyName.StartsWith("x_") ?
                     DefaultSortOrder + 1 :
