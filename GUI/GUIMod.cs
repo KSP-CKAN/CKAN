@@ -20,7 +20,13 @@ namespace CKAN
         public string Authors { get; private set; }
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
+
+        // These indicate the maximum KSP version that the maximum available
+        // version of this mod can handle. The "Long" version also indicates
+        // to the user if a mod upgrade would be required. (#1270)
         public string KSPCompatibility { get; private set; }
+        public string KSPCompatibilityLong { get; private set; }
+
         public string KSPversion { get; private set; }
         public string Abstract { get; private set; }
         public object Homepage { get; private set; }
@@ -51,6 +57,10 @@ namespace CKAN
             var installed_version = registry.InstalledVersion(mod.identifier);
             Version latest_version = null;
             var ksp_version = mod.ksp_version;
+
+            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
+            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
+
             try
             {
                 var latest_available = registry.LatestAvailable(mod.identifier, current_ksp_version);
@@ -62,28 +72,43 @@ namespace CKAN
                 latest_version = installed_version;
             }
 
+            // Let's try to find the compatibility for this mod. If it's not in the registry at
+            // all (because it's a DarkKAN mod) then this might fail.
 
-            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
-            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
+            CkanModule latest_available_for_any_ksp = null;
 
-            // Find the highest compatible KSP version
-            if (!String.IsNullOrEmpty(mod.ksp_version_max.ToString()))
+            try
             {
-                KSPCompatibility = mod.ksp_version_max.ToLongMax().ToString();
+                latest_available_for_any_ksp = registry.LatestAvailable(mod.identifier, null);
             }
-            else if (!String.IsNullOrEmpty(mod.ksp_version.ToString()))
+            catch
             {
-                KSPCompatibility = mod.ksp_version.ToLongMax().ToString();
+                // If we can't find the mod in the CKAN, but we've a CkanModule installed, then
+                // use that.
+                if (IsCKAN)
+                    latest_available_for_any_ksp = (CkanModule) mod;
+                
             }
-            else if (!String.IsNullOrEmpty(mod.ksp_version_min.ToString()))
+
+            // If there's known information for this mod in any form, calculate the highest compatible
+            // KSP.
+            if (latest_available_for_any_ksp != null)
             {
-                KSPCompatibility = mod.ksp_version_min.ToLongMin().ToString() + " and up";
+                KSPCompatibility = KSPCompatibilityLong = latest_available_for_any_ksp.HighestCompatibleKSP();
+
+                // If the mod we have installed is *not* the mod we have installed, or we don't know
+                // what we have installed, indicate that an upgrade would be needed.
+                if (installed_version == null || !latest_available_for_any_ksp.version.IsEqualTo(installed_version))
+                {
+                    KSPCompatibilityLong = string.Format("{0} (using mod version {1})",
+                        KSPCompatibility, latest_available_for_any_ksp.version);
+                }
             }
             else
             {
-                KSPCompatibility = "All versions";
+                // No idea what this mod is, sorry!
+                KSPCompatibility = KSPCompatibilityLong = "unknown";
             }
-
 
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
