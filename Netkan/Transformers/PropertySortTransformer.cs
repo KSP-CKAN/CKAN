@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CKAN.NetKAN.Model;
+using log4net;
 using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
     internal sealed class PropertySortTransformer : ITransformer
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PropertySortTransformer));
+
         private const int DefaultSortOrder = 1073741823; // int.MaxValue / 2
 
         private static readonly Dictionary<string, int> PropertySortOrder = new Dictionary<string, int>
@@ -55,6 +59,9 @@ namespace CKAN.NetKAN.Transformers
             var json = metadata.Json();
             var sortedJson = new JObject();
 
+            Log.InfoFormat("Executing property sort transformation");
+            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+
             var sortedPropertyNames = json
                 .Properties()
                 .Select(i => i.Name)
@@ -84,6 +91,8 @@ namespace CKAN.NetKAN.Transformers
 
                 sortedJson["resources"] = sortedResources;
             }
+
+            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, sortedJson);
 
             return new Metadata(sortedJson);
         }
