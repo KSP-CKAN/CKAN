@@ -193,7 +193,15 @@ namespace CKAN
         {
             //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
             var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            IsInstallChecked = (bool) install_cell.Value;
+            bool changeTo = set_value_to != null ? (bool)set_value_to : (bool)install_cell.Value;
+            //Need to do this check here to prevent an infite loop
+            //which is at least happening on Linux
+            //TODO: Elimate the cause
+            if (changeTo != IsInstallChecked)
+            {
+                IsInstallChecked = changeTo;
+                install_cell.Value = IsInstallChecked;
+            }
         }
 
 
