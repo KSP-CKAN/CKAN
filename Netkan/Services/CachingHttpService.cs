@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Services
             EnsureNotDisposed();
 
             return _cache.GetCachedFilename(url) ?? 
-                _cache.Store(url, CKAN.Net.Download(url), string.Format("netkan-{0}", identifier), move: true);
+                _cache.Store(url, CKAN.Net.Download(url), string.Format("netkan-{0}.zip", identifier), move: true);
         }
 
         public string DownloadText(Uri url)
