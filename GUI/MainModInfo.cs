@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -16,6 +17,8 @@ namespace CKAN
 
     public partial class Main : Form
     {
+        private BackgroundWorker m_CacheWorker;
+
         private void UpdateModInfo(GUIMod gui_module)
         {
             Module module = gui_module.ToModule();
@@ -186,23 +189,28 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(Module module)
+        private void UpdateModContentsTree(Module module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
-            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
+            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex && !force)
             {
                 return;
             }
-            Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
+            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
         }
 
         private Module current_mod_contents_module;
 
-        private void _UpdateModContentsTree()
+        private void _UpdateModContentsTree(bool force = false)
         {
-            var module = (CkanModule) ModInfoTabControl.Tag;
-            if (Equals(module, current_mod_contents_module))
+            GUIMod guiMod = GetSelectedModule();
+            if (!guiMod.IsCKAN)
+            {
+                return;
+            }
+            CkanModule module = guiMod.ToCkanModule();
+            if (Equals(module, current_mod_contents_module) && !force)
             {
                 return;
             }
@@ -238,6 +246,25 @@ namespace CKAN
             }
 
             ContentsPreviewTree.Nodes[0].ExpandAll();
+        }
+
+        private void CacheMod(object sender, DoWorkEventArgs e)
+        {
+            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload((CkanModule)e.Argument);
+            e.Result = e.Argument;
+        }
+
+        private void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Util.Invoke(this, () => _PostModCaching((CkanModule)e.Result));
+        }
+
+        private void _PostModCaching(CkanModule module)
+        {
+            HideWaitDialog(true);
+
+            UpdateModContentsTree(module, true);
+            RecreateDialogs();
         }
     }
 }

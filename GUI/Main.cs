@@ -302,6 +302,10 @@ namespace CKAN
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
+            m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+            m_CacheWorker.RunWorkerCompleted += PostModCaching;
+            m_CacheWorker.DoWork += CacheMod;
+
             UpdateModsList();
 
             m_User.displayYesNo = YesNoDialog;
@@ -764,15 +768,11 @@ namespace CKAN
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-            if (module == null) return;
+            if (module == null || !module.IsCKAN) return;
 
             ResetProgress();
             ShowWaitDialog(false);
-            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload(module.ToCkanModule());
-            HideWaitDialog(true);
-
-            UpdateModContentsTree(module);
-            RecreateDialogs();
+            m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
         }
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
