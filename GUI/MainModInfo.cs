@@ -20,42 +20,15 @@ namespace CKAN
         {
             Module module = gui_module.ToModule();
 
-            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
-            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
+            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = gui_module.Name);
+            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ",module.license));
-            Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
+            Util.Invoke(MetadataModuleAuthorLabel, () => MetadataModuleAuthorLabel.Text = gui_module.Authors);
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
 
             // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
-            if (module.resources != null)
-            {
-                if (module.resources.homepage != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
-                }
-                else if (module.resources.kerbalstuff != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.kerbalstuff.ToString());
-                }
-                else if (module.resources.repository != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.repository.ToString());
-                }
-                else
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = "N/A");
-                }
-            }
-            else
-            {
-                Util.Invoke(MetadataModuleHomePageLinkLabel,
-                    () => MetadataModuleHomePageLinkLabel.Text = "N/A");
-            }
-
+            Util.Invoke(MetadataModuleHomePageLinkLabel,
+                       () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
 
             if (module.resources != null && module.resources.repository != null)
             {
@@ -74,26 +47,6 @@ namespace CKAN
             }
 
             Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
-        }
-
-        private void UpdateModInfoAuthor(Module module)
-        {
-            var authors = "";
-
-            if (module.author != null)
-            {
-                for (int i = 0; i < module.author.Count; i++)
-                {
-                    authors += module.author[i];
-
-                    if (i != module.author.Count - 1)
-                    {
-                        authors += ", ";
-                    }
-                }
-            }
-
-            MetadataModuleAuthorLabel.Text = authors;
         }
 
         private HashSet<Module> alreadyVisited = new HashSet<Module>();
