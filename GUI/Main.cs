@@ -310,8 +310,12 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            CurrentInstanceUpdated();
+            if (m_Configuration.RefreshOnStartup)
+            {
+                UpdateRepo();
+            }
 
+            CurrentInstanceUpdated();
 
             Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
