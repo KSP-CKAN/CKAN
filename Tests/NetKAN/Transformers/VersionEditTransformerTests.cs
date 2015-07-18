@@ -1,4 +1,5 @@
-﻿using CKAN.NetKAN.Model;
+﻿using CKAN;
+using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -90,6 +91,49 @@ namespace Tests.NetKAN.Transformers
 
             // Assert
             Assert.That((string)transformedJson["version"], Is.EqualTo("FOO-1.2.3-BAR"));
+        }
+
+        [Test]
+        public void ThrowsWhenNoMatchInStrictMode()
+        {
+            // Arrange
+            var sut = new VersionEditTransformer();
+
+            var edit = new JObject();
+            edit["find"] = "^v(?<version>.+)$";
+
+            var json = new JObject();
+            json["spec_version"] = 1;
+            json["version"] = "1.2.3";
+            json["x_netkan_version_edit"] = edit;
+
+            // Act
+            TestDelegate act = () => sut.Transform(new Metadata(json));
+
+            // Assert
+            Assert.That(act, Throws.Exception.TypeOf<Kraken>());
+        }
+
+        [Test]
+        public void DoesNotThrowWhenNoMatchInNonStrictMode()
+        {
+            // Arrange
+            var sut = new VersionEditTransformer();
+
+            var edit = new JObject();
+            edit["find"] = "^v(?<version>.+)$";
+            edit["strict"] = false;
+
+            var json = new JObject();
+            json["spec_version"] = 1;
+            json["version"] = "1.2.3";
+            json["x_netkan_version_edit"] = edit;
+
+            // Act
+            TestDelegate act = () => sut.Transform(new Metadata(json));
+
+            // Assert
+            Assert.That(act, Throws.Nothing);
         }
     }
 }

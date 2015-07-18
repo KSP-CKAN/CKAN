@@ -23,8 +23,16 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing version edit transformation");
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                json["version"] = new Regex(versionEditInfo.Find)
-                    .Replace(versionEditInfo.Version, versionEditInfo.Replace);
+                var findRegex = new Regex(versionEditInfo.Find);
+                if (findRegex.IsMatch(versionEditInfo.Version))
+                {
+                    json["version"] = new Regex(versionEditInfo.Find)
+                        .Replace(versionEditInfo.Version, versionEditInfo.Replace);
+                }
+                else if(versionEditInfo.Strict)
+                {
+                    throw new Kraken("Could not match version with find pattern");
+                }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
             }
@@ -44,6 +52,7 @@ namespace CKAN.NetKAN.Transformers
                     {
                         string find;
                         var replace = "${version}";
+                        var strict = true;
 
                         switch (editProp.Type)
                         {
@@ -85,6 +94,21 @@ namespace CKAN.NetKAN.Transformers
                                     }
                                 }
 
+                                JToken strictProp;
+                                if (editObj.TryGetValue("strict", out strictProp))
+                                {
+                                    if (strictProp.Type == JTokenType.Boolean)
+                                    {
+                                        strict = (bool)strictProp;
+                                    }
+                                    else
+                                    {
+                                        throw new Kraken(
+                                            "`x_netkan_version_edit` `strict` property must be a bool"
+                                        );
+                                    }
+                                }
+
                                 break;
                             default:
                                 throw new Kraken(
@@ -92,7 +116,7 @@ namespace CKAN.NetKAN.Transformers
                                 );
                         }
 
-                        return new VersionEditInfo((string)versionProp, find, replace);
+                        return new VersionEditInfo((string)versionProp, find, replace, strict);
                     }
                     else
                     {
@@ -113,12 +137,14 @@ namespace CKAN.NetKAN.Transformers
             public string Version { get; private set; }
             public string Find { get; private set; }
             public string Replace { get; private set; }
+            public bool Strict { get; private set; }
 
-            public VersionEditInfo(string version, string find, string replace)
+            public VersionEditInfo(string version, string find, string replace, bool strict)
             {
                 Version = version;
                 Find = find;
                 Replace = replace;
+                Strict = strict;
             }
         }
     }
