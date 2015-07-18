@@ -156,6 +156,7 @@
     <Compile Include="NetKAN\Transformers\KerbalstuffTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\MetaNetkanTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\StripNetkanMetadataTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\VersionEditTransformerTests.cs" />
     <Compile Include="NetKAN\Validators\CkanValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\HasIdentifierValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\InstallsFilesValidatorTests.cs" />
