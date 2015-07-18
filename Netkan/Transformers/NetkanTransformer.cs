@@ -31,6 +31,7 @@ namespace CKAN.NetKAN.Transformers
                 new JenkinsTransformer(),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),
+                new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
                 new VersionedOverrideTransformer(),
