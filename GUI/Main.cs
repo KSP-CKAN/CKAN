@@ -836,10 +836,9 @@ namespace CKAN
         private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var dialog = new KSPCommandLineOptionsDialog();
-            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowKSPCommandLineOptionsDialog(m_Configuration.CommandLineArguments) == DialogResult.OK)
             {
-                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
+                m_Configuration.CommandLineArguments = dialog.GetResult();
                 m_Configuration.Save();
             }
         }
