@@ -203,42 +203,53 @@ namespace CKAN
                 installCanceled = true;
             };
 
-            //Set the result to false/failed in case we return
-            e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
-            SetDescription("Uninstalling selected mods");
-            if (!WasSuccessful(() => installer.UninstallList(toUninstall)))
-                return;
-            if (installCanceled) return;
-
-            SetDescription("Updating selected mods");
-            if (!WasSuccessful(() => installer.Upgrade(toUpgrade, downloader)))
-                return;
-
-
-            // TODO: We should be able to resolve all our provisioning conflicts
-            // before we start installing anything. CKAN.SanityChecker can be used to
-            // pre-check if our changes are going to be consistent.
-
-            bool resolvedAllProvidedMods = false;
-
-            while (!resolvedAllProvidedMods)
+            //Transaction is needed here to revert changes when an installation is cancelled
+            //TODO: Cancellation should be handelt in the ModuleInstaller
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                if (installCanceled)
-                {
-                    e.Result = new KeyValuePair<bool, ModChanges>(false,opts.Key);
+
+                //Set the result to false/failed in case we return
+                e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                SetDescription("Uninstalling selected mods");
+                if (!WasSuccessful(() => installer.UninstallList(toUninstall)))
                     return;
-                }
+                if (installCanceled) return;
+
+                SetDescription("Updating selected mods");
+                if (!WasSuccessful(() => installer.Upgrade(toUpgrade, downloader)))
+                    return;
+                if (installCanceled) return;
+
+                // TODO: We should be able to resolve all our provisioning conflicts
+                // before we start installing anything. CKAN.SanityChecker can be used to
+                // pre-check if our changes are going to be consistent.
+
+                bool resolvedAllProvidedMods = false;
+
+                while (!resolvedAllProvidedMods)
+                {
+                    if (installCanceled)
+                    {
+                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                        return;
+                    }
                     var ret = InstallList(toInstall, opts.Value, downloader);
                     if (!ret)
                     {
                         // install failed for some reason, error message is already displayed to the user
-                        e.Result = new KeyValuePair<bool, ModChanges>(false,opts.Key);
+                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                         return;
                     }
                     resolvedAllProvidedMods = true;
                 }
 
-            e.Result = new KeyValuePair<bool, ModChanges>(true, opts.Key);
+                if (!installCanceled)
+                {
+                    transaction.Complete();
+                }
+            }
+
+            e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
         }
 
         /// <summary>
@@ -335,7 +346,6 @@ namespace CKAN
                 // actual magic happens here, we run the installer with our mod list
                 var module_installer = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user);
                 module_installer.onReportModInstalled = OnModInstalled;
-                cancelCallback = downloader.CancelDownload;
                 return WasSuccessful(
                     () => module_installer.InstallList(toInstall.ToList(), options, downloader));
             }
