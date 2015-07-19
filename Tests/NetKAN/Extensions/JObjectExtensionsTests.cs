@@ -53,5 +53,21 @@ namespace Tests.NetKAN.Extensions
                 "SafeAdd() should not add property if value is null."
             );
         }
+
+        // https://github.com/KSP-CKAN/NetKAN-bot/issues/27
+        [Test]
+        public void SafeAddDoesNotAddPropertyWhenValueIsTokenWithNullValue()
+        {
+            // Arrange
+            var sut = new JObject();
+
+            // Act
+            sut.SafeAdd("foo", (string)null);
+
+            // Assert
+            Assert.That((string)sut["foo"], Is.Null,
+                "SafeAdd() should not add property if value is null."
+            );
+        }
     }
 }
