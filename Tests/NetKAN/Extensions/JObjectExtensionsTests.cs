@@ -1,4 +1,5 @@
-﻿using CKAN.NetKAN.Extensions;
+﻿using System.Linq;
+using CKAN.NetKAN.Extensions;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -65,7 +66,7 @@ namespace Tests.NetKAN.Extensions
             sut.SafeAdd("foo", (string)null);
 
             // Assert
-            Assert.That((string)sut["foo"], Is.Null,
+            Assert.That(sut.Properties().Any(i => i.Name == "foo"), Is.False,
                 "SafeAdd() should not add property if value is null."
             );
         }
