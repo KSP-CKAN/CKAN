@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -113,6 +114,7 @@ namespace CKAN.NetKAN.Sources.Avc
             var major = "0";
             var minor = "0";
             var patch = "0";
+            string build = null;
 
             var token = JToken.Load(reader);
             Log.DebugFormat("Read Token: {0}, {1}", new Object[] {token.Type, token.ToString()});
@@ -135,17 +137,31 @@ namespace CKAN.NetKAN.Sources.Avc
                     {
                         patch = tokenArray[2];
                     }
+
+                    if (tokenArray.Length >= 3)
+                    {
+                        build = tokenArray[3];
+                    }
+
                     break;
                 case JTokenType.Object:
                     major = (string) token["MAJOR"];
                     minor = (string) token["MINOR"];
                     patch = (string) token["PATCH"];
+                    build = (string) token["BUILD"];
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");
             }
 
-            var version = string.Join(".", major, minor, patch);
+            var components = new List<string>() { major, minor, patch };
+
+            if (!string.IsNullOrWhiteSpace(build))
+            {
+                components.Add(build);
+            }
+
+            var version = string.Join(".", components);
             Log.DebugFormat("  extracted version: {0}", version);
             var result = new Version(version);
             Log.DebugFormat("  generated result: {0}", result);
