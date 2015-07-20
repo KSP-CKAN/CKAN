@@ -143,6 +143,11 @@ namespace CKAN.NetKAN
 
         private static Metadata ReadNetkan()
         {
+            if (!Options.File.EndsWith(".netkan"))
+            {
+                Log.WarnFormat("Input is not a .netkan file");
+            }
+
             return new Metadata(JObject.Parse(File.ReadAllText(Options.File)));
         }
 
