@@ -123,22 +123,22 @@ namespace CKAN.NetKAN.Sources.Avc
                 case JTokenType.String:
                     var tokenArray = token.ToString().Split('.');
 
-                    if (tokenArray.Length >= 0)
+                    if (tokenArray.Length > 0)
                     {
                         major = tokenArray[0];
                     }
 
-                    if (tokenArray.Length >= 1)
+                    if (tokenArray.Length > 1)
                     {
                         minor = tokenArray[1];
                     }
 
-                    if (tokenArray.Length >= 2)
+                    if (tokenArray.Length > 2)
                     {
                         patch = tokenArray[2];
                     }
 
-                    if (tokenArray.Length >= 3)
+                    if (tokenArray.Length > 3)
                     {
                         build = tokenArray[3];
                     }
