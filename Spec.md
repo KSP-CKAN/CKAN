@@ -136,9 +136,12 @@ A short, one line description of the mod and what it does.
 ##### identifer
 
 This is the gloablly unique identifier for the mod, and is how the mod
-will be referred to by other CKAN documents.  It may only consist of ASCII-letters, ASCII-digits and `-` (dash). Eg: "FAR" or
+will be referred to by other CKAN documents. It may only consist of ASCII-letters, ASCII-digits and `-` (dash). Eg: "FAR" or
 "RealSolarSystem". This is the identifier that will be used whenever
 the mod is referenced (by `depends`, `conflicts`, or elsewhere).
+
+Identifiers must be both: case sensitive for machines, and unique regardless of capitalization for human consumption and case-ignorant systems. Example: MyMod must always be expressed as MyMod, but another module
+cannot assume the mymod identifier.
 
 If the mod would generate a `FOR` pass in ModuleManager, then the
 identifier *should* be same as the ModuleManager name. For most mods,
