@@ -79,9 +79,6 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            SetDescription("Scanning for manually installed mods");
-            CurrentInstance.ScanGameData();
-
             UpdateModsList(repo_updated: true);
 
             HideWaitDialog(true);

@@ -399,7 +399,7 @@ namespace CKAN
             candidates.Sort();
 
             //Cache
-            AvailableModule[] modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
+            CkanModule[] modules_for_current_version = available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
             {
@@ -416,7 +416,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
+                                if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
                                 {
                                     failedDepedency = true;
                                     break;
@@ -507,7 +507,8 @@ namespace CKAN
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,
-                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null),relationship_descriptor);
+                available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray(),
+                relationship_descriptor);
         }
 
         /// <summary>
@@ -517,7 +518,7 @@ namespace CKAN
         /// calculated. Not for direct public consumption. ;)
         /// </summary>
         private List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version,
-            IEnumerable<AvailableModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
+            IEnumerable<CkanModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
         {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 
@@ -542,13 +543,11 @@ namespace CKAN
             // Walk through all our available modules, and see if anything
             // provides what we need.
 
-            foreach (AvailableModule available_module in available_for_current_version)
+            // Get our candidate module. We can assume this is non-null, as
+            // if it *is* null then available_for_current_version is corrupted,
+            // and something is terribly wrong.
+            foreach (CkanModule candidate in available_for_current_version)
             {
-                // Get our candidate module. We can assume this is non-null, as
-                // if it *is* null then available_for_current_version is corrupted,
-                // and something is terribly wrong.
-                CkanModule candidate = available_module.Latest(ksp_version);
-
                 // Find everything this module provides (for our version of KSP)
                 List<string> provides = candidate.provides;
 
