@@ -985,7 +985,7 @@ namespace CKAN
         private void FocusMod(string key, bool exactMatch) 
         {
             DataGridViewRow current_row = ModList.CurrentRow;
-            string current_name = ((GUIMod)current_row.Tag).Name;
+            int currentIndex = current_row != null ? current_row.Index : 0;
             DataGridViewRow first_match = null;
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
@@ -1005,7 +1005,7 @@ namespace CKAN
                     // Remember the first match to allow cycling back to it if necessary
                     first_match = row;
                 }
-                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
+                if (key.Length == 1 && row_match && row.Index <= currentIndex)
                 {
                     // Keep going forward if it's a single key match and not ahead of the current row
                     return false;
