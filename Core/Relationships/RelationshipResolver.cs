@@ -233,7 +233,7 @@ namespace CKAN
         /// Resolves all relationships for a module.
         /// May recurse to ResolveStanza, which may add additional modules to be installed.
         /// </summary>
-        private void Resolve(CkanModule module, RelationshipResolverOptions options)
+        private void Resolve(CkanModule module, RelationshipResolverOptions options, IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
@@ -242,18 +242,18 @@ namespace CKAN
             sub_options.with_suggests = false;
 
             log.DebugFormat("Resolving dependencies for {0}", module.identifier);
-            ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options);
+            ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options, false, old_stanza);
 
             if (options.with_recommends)
             {
                 log.DebugFormat("Resolving recommends for {0}", module.identifier);
-                ResolveStanza(module.recommends, new SelectionReason.Recommended(module), sub_options, true);
+                ResolveStanza(module.recommends, new SelectionReason.Recommended(module), sub_options, true, old_stanza);
             }
 
             if (options.with_suggests || options.with_all_suggests)
             {
                 log.DebugFormat("Resolving suggests for {0}", module.identifier);
-                ResolveStanza(module.suggests, new SelectionReason.Suggested(module), sub_options, true);
+                ResolveStanza(module.suggests, new SelectionReason.Suggested(module), sub_options, true, old_stanza);
             }
         }
 
@@ -273,7 +273,7 @@ namespace CKAN
         /// </summary>
 
         private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, SelectionReason reason,
-            RelationshipResolverOptions options, bool soft_resolve = false)
+            RelationshipResolverOptions options, bool soft_resolve = false, IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
             if (stanza == null)
             {
@@ -349,7 +349,21 @@ namespace CKAN
                         continue;
                     }
 
-                    throw new TooManyModsProvideKraken(dep_name, candidates);
+                    if (old_stanza != null)
+                    {
+                        List<CkanModule> provide = candidates.Where(can => old_stanza.Where(relation => can.identifier == relation.name).Any()).ToList();
+                        if (!provide.Any() || provide.Count() > 1)
+                        {
+                            //We still have either nothing, or too my to pick from
+                            //Just throw the TMP now
+                            throw new TooManyModsProvideKraken(dep_name, candidates);
+                        }
+                        candidates[0] = provide.First();
+                    }
+                    else
+                    {
+                        throw new TooManyModsProvideKraken(dep_name, candidates);
+                    }
                 }
 
                 CkanModule candidate = candidates[0];
@@ -366,7 +380,7 @@ namespace CKAN
                 {
                     // Okay, looks like we want this one. Adding.
                     Add(candidate, reason);
-                    Resolve(candidate, options);
+                    Resolve(candidate, options, stanza);
                 }
                 else if (soft_resolve)
                 {
