@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CommandLineArguments>KSP.exe</CommandLineArguments>
+  <AutoCloseWaitDialog>false</AutoCloseWaitDialog>
+  <URLHandlerNoNag>false</URLHandlerNoNag>
+  <CheckForUpdatesOnLaunch>true</CheckForUpdatesOnLaunch>
+  <CheckForUpdatesOnLaunchNoNag>true</CheckForUpdatesOnLaunchNoNag>
+  <SortByColumnIndex>0</SortByColumnIndex>
+  <SortDescending>false</SortDescending>
+  <WindowSize>
+    <Width>878</Width>
+    <Height>664</Height>
+  </WindowSize>
+  <WindowLoc>
+    <X>60</X>
+    <Y>30</Y>
+  </WindowLoc>
+</Configuration>
