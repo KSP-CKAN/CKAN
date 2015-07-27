@@ -1,0 +1,319 @@
+{
+	"kind": "metapackage",
+	"abstract": "A list of modules installed on the default KSP instance",
+	"name": "installed-default",
+	"license": "unknown",
+	"version": "2015.07.27.12.09.37",
+	"identifier": "installed-default",
+	"spec_version": "v1.6",
+	"depends": [
+		{
+			"name": "ModuleManager",
+			"version": "2.6.6"
+		},
+		{
+			"name": "KerbalGPS",
+			"version": "1.0.23.5.01"
+		},
+		{
+			"name": "ProceduralFairings",
+			"version": "v3.15"
+		},
+		{
+			"name": "ProceduralFairings-AutoShroudRemover",
+			"version": "v1.0"
+		},
+		{
+			"name": "RCSSounds",
+			"version": "4.3"
+		},
+		{
+			"name": "RocketdyneF-1",
+			"version": "1.2"
+		},
+		{
+			"name": "RoverWheelSounds",
+			"version": "1.2"
+		},
+		{
+			"name": "ScienceAlert",
+			"version": "1.8.6"
+		},
+		{
+			"name": "HyperEdit",
+			"version": "1.4.1"
+		},
+		{
+			"name": "K2CommandPod",
+			"version": "1.2"
+		},
+		{
+			"name": "KSPIRC",
+			"version": "0.9.0.1"
+		},
+		{
+			"name": "MechJeb2",
+			"version": "2.5.0"
+		},
+		{
+			"name": "MechJebForAll",
+			"version": "1.2.0.0"
+		},
+		{
+			"name": "MenuStabilizer",
+			"version": "1"
+		},
+		{
+			"name": "ModularRocketSystem",
+			"version": "1.6.1"
+		},
+		{
+			"name": "SimpleOrbitCalculator",
+			"version": "v1.1.1"
+		},
+		{
+			"name": "SmartStage",
+			"version": "v2.6.0"
+		},
+		{
+			"name": "KerbalEngineerRedux",
+			"version": "1.0.16.3"
+		},
+		{
+			"name": "BDArmory",
+			"version": "v0.8.0"
+		},
+		{
+			"name": "DistantObject",
+			"version": "v1.5.4"
+		},
+		{
+			"name": "DistantObject-default",
+			"version": "v1.5.4"
+		},
+		{
+			"name": "FuelTanksPlus",
+			"version": "0.8"
+		},
+		{
+			"name": "GlassPanesandEnclosures",
+			"version": "1.0.6"
+		},
+		{
+			"name": "HullcamVDS",
+			"version": "0.34"
+		},
+		{
+			"name": "LaunchCountDown",
+			"version": "1.7.5"
+		},
+		{
+			"name": "NanoKube",
+			"version": "2.1.0"
+		},
+		{
+			"name": "NearFutureSolar",
+			"version": "0.5.1"
+		},
+		{
+			"name": "QuickSearch",
+			"version": "v1.11"
+		},
+		{
+			"name": "RealChute",
+			"version": "1.3.2.2b"
+		},
+		{
+			"name": "RecoverAll",
+			"version": "1.2"
+		},
+		{
+			"name": "TweakScale",
+			"version": "v2.0.1"
+		},
+		{
+			"name": "KerboKatzUtilities",
+			"version": "1.2.1"
+		},
+		{
+			"name": "EditorExtensions",
+			"version": "2.7"
+		},
+		{
+			"name": "KerbalAlarmClock",
+			"version": "v3.4.0.0"
+		},
+		{
+			"name": "KerbalStats",
+			"version": "2.0.0"
+		},
+		{
+			"name": "PartMapper",
+			"version": "0.3.0"
+		},
+		{
+			"name": "CollisionFX",
+			"version": "3.0.1"
+		},
+		{
+			"name": "ContractsWindowPlus",
+			"version": "5.0"
+		},
+		{
+			"name": "CraftHistory",
+			"version": "1.4"
+		},
+		{
+			"name": "CrewManifest",
+			"version": "0.6.0"
+		},
+		{
+			"name": "CrowdSourcedScience",
+			"version": "v3.0"
+		},
+		{
+			"name": "AGExt",
+			"version": "1.33a"
+		},
+		{
+			"name": "ActsEW",
+			"version": "1.5"
+		},
+		{
+			"name": "AdaptiveDockingNode",
+			"version": "1.7"
+		},
+		{
+			"name": "AeroGUI",
+			"version": "v2"
+		},
+		{
+			"name": "KSIPlacementServices",
+			"version": "0.1.6"
+		},
+		{
+			"name": "AlternateResourcePanel",
+			"version": "2.7.2.0"
+		},
+		{
+			"name": "InfernalRobotics",
+			"version": "v0.21"
+		},
+		{
+			"name": "TweakableEverything",
+			"version": "1.9.1"
+		},
+		{
+			"name": "KerbalFlightData",
+			"version": "R19"
+		},
+		{
+			"name": "KerbalMechanics",
+			"version": "v0.6.4.1"
+		},
+		{
+			"name": "TransferWindowPlanner",
+			"version": "v1.3.1.0"
+		},
+		{
+			"name": "KlockheedMartian-Gimbal",
+			"version": "3.0.3.0"
+		},
+		{
+			"name": "SmokeScreen",
+			"version": "2.6.7"
+		},
+		{
+			"name": "TriggerAu-Flags",
+			"version": "2.7.2.0"
+		},
+		{
+			"name": "LandingHeight",
+			"version": "1.4"
+		},
+		{
+			"name": "MissionController2",
+			"version": "1.12.2"
+		},
+		{
+			"name": "Mk2Essentials",
+			"version": "5"
+		},
+		{
+			"name": "Mk3MiniExpansionPack",
+			"version": "V1.1.5"
+		},
+		{
+			"name": "ModuleAnimateEmissive",
+			"version": "v1.8"
+		},
+		{
+			"name": "ActiveTextureManagement-x86-Basic",
+			"version": "5-0"
+		},
+		{
+			"name": "InfernalRobotics-Sequencer",
+			"version": "0.2"
+		},
+		{
+			"name": "ModularFuelTanks",
+			"version": "5.6.0"
+		},
+		{
+			"name": "RasterPropMonitor",
+			"version": "v0.19.3"
+		},
+		{
+			"name": "PunishTheLazy",
+			"version": "0.01"
+		},
+		{
+			"name": "Protractor",
+			"version": "v2.5.1"
+		},
+		{
+			"name": "RasterPropMonitor-Core",
+			"version": "v0.19.1"
+		},
+		{
+			"name": "AntennaRange",
+			"version": "1.8a"
+		},
+		{
+			"name": "AtmosphericSoundEnhancement",
+			"version": "2.2"
+		},
+		{
+			"name": "Muffler",
+			"version": "v1.0"
+		},
+		{
+			"name": "ToadicusTools",
+			"version": "12"
+		},
+		{
+			"name": "EVAManager",
+			"version": "1"
+		},
+		{
+			"name": "CrewQueue",
+			"version": "1:ksp1.0_r2"
+		},
+		{
+			"name": "QuickContracts",
+			"version": "v1.00"
+		},
+		{
+			"name": "QuickGoTo",
+			"version": "v1.00"
+		},
+		{
+			"name": "QuickScroll",
+			"version": "v1.21"
+		},
+		{
+			"name": "FingerboxesCore",
+			"version": "2:1.0.4_r1"
+		}
+	]
+}
