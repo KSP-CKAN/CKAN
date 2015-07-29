@@ -82,6 +82,7 @@
             this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.panel1);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "YesNoDialog";
             this.Text = "CKAN";

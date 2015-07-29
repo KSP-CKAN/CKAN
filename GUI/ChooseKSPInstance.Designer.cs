@@ -155,6 +155,7 @@
             this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.SelectButton);
             this.Controls.Add(this.KSPInstancesListView);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChooseKSPInstance";
             this.Text = "Select KSP install";

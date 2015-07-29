@@ -728,7 +728,7 @@ namespace CKAN
             // 
             this.MetadataLayoutPanel.SetColumnSpan(this.MetadataModuleNameLabel, 2);
             this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MetadataModuleNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
@@ -1233,6 +1233,7 @@ namespace CKAN
             this.Controls.Add(this.StatusPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
