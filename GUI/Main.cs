@@ -962,7 +962,7 @@ namespace CKAN
                 Filter = filter,
                 Title = Resources.ExportInstalledModsDialogTitle
             };
-            ExportOption f;
+
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
