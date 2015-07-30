@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Hitting `cancel` is much more likely to actually cancel an install-in-progress (Postremus, #1325)
 - [GUI] Fewer crashes when double-clicking on an auto-detected mod (Postremus, #1237)
 - [Cmdline] `ckan compare` fails more gracefully when called without arguments (Postremus, #1283)
+- [Cmdline] `ckan show` more accurately displays the cached filename (mgsdk, #1266)
 - [Core] We fail more gracefully when mod metadata can't be downloaded (Postremus, #1291)
 
 ### Features
