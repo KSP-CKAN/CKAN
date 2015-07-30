@@ -605,7 +605,13 @@ namespace CKAN
 
         public static string StandardName(string identifier, Version version)
         {
-            return identifier + "-" + version + ".zip";
+            // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
+            // slashes, and heaven knows what use mod authors try to smoosh into them.
+            // We'll reduce this down to "friendly" characters, replacing everything else with
+            // dashes. This doesn't change look-ups, as we use the hash prefix for that.
+            string version_string = Regex.Replace(version.ToString(), "[^A-Za-z0-9_.-]", "-");
+
+            return identifier + "-" + version_string + ".zip";
         }
     }
 
