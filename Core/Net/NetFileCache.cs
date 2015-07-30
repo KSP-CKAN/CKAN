@@ -6,6 +6,7 @@ using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace CKAN
 {
@@ -151,6 +152,11 @@ namespace CKAN
             string hash = CreateURLHash(url);
 
             description = description ?? Path.GetFileName(path);
+
+            Debug.Assert(
+                Regex.IsMatch(description, "^[A-Za-z0-9_.-]*$"),
+                "description isn't as filesystem safe as we thought... (#1266)"
+            );
 
             string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
