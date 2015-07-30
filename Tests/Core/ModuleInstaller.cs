@@ -470,6 +470,48 @@ namespace Tests.Core
             );
         }
 
+        [TestCase("Ships")]
+        [TestCase("Ships/VAB")]
+        [TestCase("Ships/SPH")]
+        public void AllowsInstallsToShipsDirectories(string directory)
+        {
+            // Arrange
+            var zip = ZipFile.Create(new MemoryStream());
+            zip.BeginUpdate();
+            zip.AddDirectory("ExampleShips");
+            zip.Add(new ZipEntry("/ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
+            zip.CommitUpdate();
+
+            var mod = CkanModule.FromJson(string.Format(@"
+            {{
+                ""spec_version"": 1,
+                ""identifier"": ""AwesomeMod"",
+                ""version"": ""1.0.0"",
+                ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
+                ""install"": [
+                    {{
+                        ""file"": ""ExampleShips/AwesomeShip.craft"",
+                        ""install_to"": ""{0}""
+                    }}
+                ]
+            }}
+            ", directory));
+
+            // Act
+            List<InstallableFile> results;
+            using (var ksp = new DisposableKSP())
+            {
+                results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
+            }
+
+
+            // Assert
+            Assert.That(
+                results.Count(i => i.destination.EndsWith(string.Format("/{0}/AwesomeShip.craft", directory))) == 1,
+                Is.True
+            );
+        }
+
         private static void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);
