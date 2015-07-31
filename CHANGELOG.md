@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## v1.12.0
+
 ### Bugfixes
 
 - [GUI] Hitting `cancel` is much more likely to actually cancel an install-in-progress (Postremus, #1325)
