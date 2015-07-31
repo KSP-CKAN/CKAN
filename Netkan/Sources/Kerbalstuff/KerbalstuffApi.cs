@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Text.RegularExpressions;
 using CKAN.NetKAN.Services;
 using log4net;
@@ -82,29 +81,8 @@ namespace CKAN.NetKAN.Sources.Kerbalstuff
             var url = KerbalstuffApiBase + path;
 
             Log.DebugFormat("Calling {0}", url);
-            try
-            {
-                return _http.DownloadText(new Uri(url));
-            }
-            catch (DllNotFoundException)
-            {
-                //Curl is not installed. Curl is a workaround for a mono issue.
-                //TODO Richard - Once repos are merged go and check all Platform calls to see if they are mono checks
-                if (!Platform.IsWindows) throw;
-                //On mircrosft.net so try native code.
-                using (var web = new WebClient())
-                {
-                    try
-                    {
-                        return web.DownloadString(url);
-                    }
-                    catch (WebException webEx)
-                    {
-                        Log.ErrorFormat("WebException while accessing {0}: {1}", url, webEx);
-                        throw;
-                    }
-                }
-            }
+
+            return _http.DownloadText(new Uri(url));
         }
     }
 }

@@ -38,31 +38,29 @@ namespace CKAN.NetKAN
 
                     var moduleService = new ModuleService();
                     var fileService = new FileService();
+                    var http = new CachingHttpService(FindCache(new KSPManager(new ConsoleUser(false))));
 
-                    using (var http = new CachingHttpService(FindCache(new KSPManager(new ConsoleUser(false)))))
-                    {
-                        var netkan = ReadNetkan();
-                        Log.Info("Finished reading input");
+                    var netkan = ReadNetkan();
+                    Log.Info("Finished reading input");
 
-                        new NetkanValidator().Validate(netkan);
-                        Log.Info("Input successfully passed pre-validation");
+                    new NetkanValidator().Validate(netkan);
+                    Log.Info("Input successfully passed pre-validation");
 
-                        var transformer = new NetkanTransformer(
-                            http,
-                            fileService,
-                            moduleService,
-                            Options.GitHubToken,
-                            Options.PreRelease
-                        );
+                    var transformer = new NetkanTransformer(
+                        http,
+                        fileService,
+                        moduleService,
+                        Options.GitHubToken,
+                        Options.PreRelease
+                    );
 
-                        var ckan = transformer.Transform(netkan);
-                        Log.Info("Finished transformation");
+                    var ckan = transformer.Transform(netkan);
+                    Log.Info("Finished transformation");
 
-                        new CkanValidator(netkan, http, moduleService).Validate(ckan);
-                        Log.Info("Output successfully passed post-validation");
+                    new CkanValidator(netkan, http, moduleService).Validate(ckan);
+                    Log.Info("Output successfully passed post-validation");
 
-                        WriteCkan(ckan);
-                    }
+                    WriteCkan(ckan);
                 }
                 else
                 {
