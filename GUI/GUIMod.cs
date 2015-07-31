@@ -199,7 +199,7 @@ namespace CKAN
         }
 
 
-        protected bool Equals(GUIMod other)
+        private bool Equals(GUIMod other)
         {
             return Equals(Name, other.Name);
         }
