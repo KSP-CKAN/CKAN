@@ -23,9 +23,10 @@ All notable changes to this project will be documented in this file.
 - [Core] Processing an updated mod list is now faster, and other speed enhancements (Postremus, #1229)
 - [Spec] `install_to` can now target `Ships/` subdirectories (dbent and plague006, #1243 #1244)
 
-### NetKAN (indexing tool)
+### Internal
 
-- Cached files have more descriptive file extensions (mgsdk, #1308)
-- A warning is generated if a file without a `.netkan` extension is processed (mgsdk, #1308)
-- We better handle null values in retrieved metadata (dbent, #1324)
-- Better handling of license strings with leading and trailing spaces (dbent, #1305)
+- [NetKAN] Cached files have more descriptive file extensions (mgsdk, #1308)
+- [NetKAN] A warning is generated if a file without a `.netkan` extension is processed (mgsdk, #1308)
+- [NetKAN] We better handle null values in retrieved metadata (dbent, #1324)
+- [NetKAN] Better handling of license strings with leading and trailing spaces (dbent, #1305)
+- [Core] We no longer try to use `libcurl` on systems where the .NET web classes are sufficient (dbent, #1294)
