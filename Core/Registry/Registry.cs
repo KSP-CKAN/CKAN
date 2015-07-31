@@ -163,6 +163,18 @@ namespace CKAN
                 }
             }
 
+            // If we spot a default repo with the old .zip URL, flip it to the new .tar.gz URL
+            // Any other repo we leave *as-is*, even if it's the github meta-repo, as it's been
+            // custom-added by our user.
+
+            Repository default_repo;
+            var OldDefaultRepo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
+            if (repositories.TryGetValue(Repository.default_ckan_repo_name, out default_repo) && default_repo.uri == OldDefaultRepo)
+            {
+                log.InfoFormat("Updating default metadata URL from {0} to {1}", OldDefaultRepo, Repository.default_ckan_repo_uri);
+                repositories["default"].uri = Repository.default_ckan_repo_uri;
+            }
+
             registry_version = LATEST_REGISTRY_VERSION;
         }
 
