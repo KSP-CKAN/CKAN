@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] On first start we always refresh the modlist, with an option to do so each time the CKAN is loaded (Postremus, #1285)
 - [Core] KSP instance names now default to the folder in which they're installed (Postremus, #1261)
 - [Core] Processing an updated mod list is now faster, and other speed enhancements (Postremus, #1229)
+- [Core] Metadata is now downloaded in `.tar.gz` rather than `.zip` format, resulting in much faster downloads (pjf, #1344)
 - [Spec] `install_to` can now target `Ships/` subdirectories (dbent and plague006, #1243 #1244)
 
 ### Internal
