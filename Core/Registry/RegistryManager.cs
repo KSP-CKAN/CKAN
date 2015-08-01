@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -75,6 +76,11 @@ namespace CKAN
             try
             {
                 lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+
+                // Write the current process ID to the file.
+                StreamWriter writer = new StreamWriter(lockfile_stream);
+                writer.Write(Process.GetCurrentProcess().Id);
+                writer.Flush();
             }
             catch (IOException)
             {
