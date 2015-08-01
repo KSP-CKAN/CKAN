@@ -198,6 +198,21 @@ namespace CKAN
                     Repo.default_ckan_repo.ToString()
                 );
 
+            // Check if there is any other instances already running.
+            // This is not entirely necessary, but we can show a nicer error message this way.
+            try
+            {
+                #pragma warning disable 219
+                Registry registry = RegistryManager.Instance(CurrentInstance).registry;
+                #pragma warning restore 219
+            }
+            catch (RegistryInUseKraken kraken)
+            {
+                m_ErrorDialog.ShowErrorDialog(kraken.ToString());
+
+                return;
+            }
+
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
