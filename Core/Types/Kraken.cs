@@ -312,7 +312,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return String.Format("\nThe registry is already in use for this instance!\n\nIf you're certain this is not the case, then delete:\n\t\"{0}\"\n", lockfile_path);
+            return String.Format("The registry is already in use for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfile_path);
         }
     }
 }
