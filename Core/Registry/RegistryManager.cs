@@ -17,9 +17,8 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
-        private readonly string lock_file_path;
-
-        private bool lock_acquired = false;
+        private readonly string lockfile_path;
+        private FileStream lockfile_stream = null;
 
         private readonly TxFileManager file_transaction = new TxFileManager();
 
@@ -38,14 +37,15 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
-            lock_file_path = Path.Combine(path, "registry.json.locked");
-            LoadOrCreate();
+            lockfile_path = Path.Combine(path, "registry.json.locked");
 
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())
             {
-                throw new Kraken("Registry is already in use. If this is not the case, then delete the lock file manually." + lock_file_path);
+                throw new RegistryInUseKraken(lockfile_path);
             }
+
+            LoadOrCreate();
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
             // because then the user can't do anything to correct it. However we're
@@ -72,13 +72,14 @@ namespace CKAN
         /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
         public bool GetLock()
         {
-            if (File.Exists(lock_file_path))
+            try
+            {
+                lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+            }
+            catch (IOException)
             {
                 return false;
             }
-
-            File.Create(lock_file_path);
-            lock_acquired = true;
 
             return true;
         }
@@ -88,9 +89,9 @@ namespace CKAN
         /// </summary>
         public void ReleaseLock()
         {
-            if (lock_acquired)
+            if (lockfile_stream != null)
             {
-                File.Delete(lock_file_path);
+                lockfile_stream.Close();
             }
         }
 
