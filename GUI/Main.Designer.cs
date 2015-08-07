@@ -314,7 +314,7 @@ namespace CKAN
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
             this.UpdateAllToolButton.Size = new System.Drawing.Size(140, 36);
-            this.UpdateAllToolButton.Text = "Mark all updated";
+            this.UpdateAllToolButton.Text = "Add available updates";
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
             // 
             // ApplyToolButton
@@ -323,7 +323,7 @@ namespace CKAN
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
             this.ApplyToolButton.Size = new System.Drawing.Size(127, 36);
-            this.ApplyToolButton.Text = "Go to changes";
+            this.ApplyToolButton.Text = "Apply changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
             // 
             // FilterToolButton
