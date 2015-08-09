@@ -77,7 +77,7 @@ namespace AutoUpdater
                 //Start CKAN
                 if (IsOnMono())
                 {
-                    Process.Start("mono", local_path);
+                    Process.Start("mono", String.Format("\"{0}\"", local_path));
                 }
                 else
                 {

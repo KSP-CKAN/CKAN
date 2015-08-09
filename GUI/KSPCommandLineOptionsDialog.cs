@@ -13,9 +13,15 @@ namespace CKAN
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        public void SetCommandLine(string commandLine)
+        public DialogResult ShowKSPCommandLineOptionsDialog(string arguments)
         {
-            AdditionalArguments.Text = commandLine;
+            AdditionalArguments.Text = arguments;
+            return ShowDialog();
+        }
+
+        public string GetResult()
+        {
+            return AdditionalArguments.Text;
         }
     }
 
