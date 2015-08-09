@@ -61,11 +61,43 @@ namespace CKAN
             }
         }
 
+        #region destruction
+
+        // See http://stackoverflow.com/a/538238/19422 for an awesome explanation of
+        // what's going on here.
+
+        /// <summary>
+        /// Releases all resource used by the <see cref="CKAN.RegistryManager"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.RegistryManager"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.RegistryManager"/> in an unusable state. After
+        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.RegistryManager"/> so
+        /// the garbage collector can reclaim the memory that the <see cref="CKAN.RegistryManager"/> was occupying.</remarks>
         public void Dispose()
         {
-            // Release the lock.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(Boolean safeToAlsoFreeManagedObjects)
+        {
+            // Right now we just release our lock, and leave everything else
+            // to the GC, but if we were implementing the full pattern we'd also
+            // free managed (.NET core) objects when called with a true value here.
+
             ReleaseLock();
         }
+
+        /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="CKAN.RegistryManager"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~RegistryManager()
+        {
+            Dispose(false);
+        }
+
+        #endregion
 
         /// <summary>
         /// Tries to lock the registry by creating a lock file.
