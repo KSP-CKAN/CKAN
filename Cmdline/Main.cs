@@ -164,84 +164,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             #endregion
 
-            var return_code = Exit.OK;
-
-            switch (cmdline.action)
-            {
-                case "gui":
-                    return_code = Gui((GuiOptions)options, args);
-                    break;
-
-                case "version":
-                    return_code = Version(user);
-                    break;
-
-                case "update":
-                    return_code = (new Update(user)).RunCommand(manager.CurrentInstance, (UpdateOptions)cmdline.options);
-                    break;
-
-                case "available":
-                    return_code = Available(manager.CurrentInstance, user);
-                    break;
-
-                case "install":
-                    Scan(manager.CurrentInstance, user, cmdline.action);
-                    return_code = (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
-                    break;
-
-                case "scan":
-                    return_code = Scan(manager.CurrentInstance,user);
-                    break;
-
-                case "list":
-                    return_code = (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
-                    break;
-
-                case "show":
-                    return_code = (new Show(user)).RunCommand(manager.CurrentInstance, (ShowOptions)cmdline.options);
-                    break;
-
-                case "search":
-                    return_code = (new Search(user)).RunCommand(manager.CurrentInstance, options);
-                    break;
-
-                case "remove":
-                    return_code = (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
-                    break;
-
-                case "upgrade":
-                    Scan(manager.CurrentInstance, user, cmdline.action);
-                    return_code = (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
-                    break;
-
-                case "clean":
-                    return_code = Clean(manager.CurrentInstance);
-                    break;
-
-                case "repair":
-                    var repair = new Repair(manager.CurrentInstance,user);
-                    return_code = repair.RunSubCommand((SubCommandOptions) cmdline.options);
-                    break;
-
-                case "ksp":
-                    var ksp = new KSP(manager, user);
-                    return_code = ksp.RunSubCommand((SubCommandOptions) cmdline.options);
-                    break;
-
-                case "repo":
-                    var repo = new Repo (manager, user);
-                    return_code = repo.RunSubCommand((SubCommandOptions) cmdline.options);
-                    break;
-
-                case "compare":
-                    return_code = (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
-                    break;
-
-                default:
-                    user.RaiseMessage("Unknown command, try --help");
-                    return_code = Exit.BADOPT;
-                    break;
-            }
+            int returnCode = RunAction(cmdline, options, args, user, manager);
 
             // Release the registry lock file if possible.
             if (manager.CurrentInstance != null)
@@ -249,7 +172,74 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 manager.CurrentInstance.RegistryManager.Dispose();
             }
 
-            return return_code;
+            return returnCode;
+        }
+
+        /// <summary>
+        /// Run whatever action the user has provided
+        /// </summary>
+        /// <returns>The exit status that should be returned to the system.</returns>
+        private static int RunAction(Options cmdline, CommonOptions options, string[] args, IUser user, KSPManager manager)
+        {
+            switch (cmdline.action)
+            {
+                case "gui":
+                    return Gui((GuiOptions)options, args);
+
+                case "version":
+                    return Version(user);
+
+                case "update":
+                    return (new Update(user)).RunCommand(manager.CurrentInstance, (UpdateOptions)cmdline.options);
+
+                case "available":
+                    return Available(manager.CurrentInstance, user);
+
+                case "install":
+                    Scan(manager.CurrentInstance, user, cmdline.action);
+                    return (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
+
+                case "scan":
+                    return Scan(manager.CurrentInstance,user);
+
+                case "list":
+                    return (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
+
+                case "show":
+                    return (new Show(user)).RunCommand(manager.CurrentInstance, (ShowOptions)cmdline.options);
+
+                case "search":
+                    return (new Search(user)).RunCommand(manager.CurrentInstance, options);
+
+                case "remove":
+                    return (new Remove(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+
+                case "upgrade":
+                    Scan(manager.CurrentInstance, user, cmdline.action);
+                    return (new Upgrade(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+
+                case "clean":
+                    return Clean(manager.CurrentInstance);
+
+                case "repair":
+                    var repair = new Repair(manager.CurrentInstance,user);
+                    return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "ksp":
+                    var ksp = new KSP(manager, user);
+                    return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "repo":
+                    var repo = new Repo (manager, user);
+                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "compare":
+                    return (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
+
+                default:
+                    user.RaiseMessage("Unknown command, try --help");
+                    return Exit.BADOPT;
+            }
         }
 
         private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
