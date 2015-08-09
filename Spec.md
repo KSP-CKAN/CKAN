@@ -118,8 +118,8 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.12'. Changes since spec `1`
-are marked with **v1.2** through to **v1.12** respectively. For maximum
+This document describes the CKAN specification 'v1.14'. Changes since spec `1`
+are marked with **v1.2** through to **v1.14** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -274,7 +274,7 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The location where this section should be installed.
-  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Tutorial`,
+  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Tutorial`, `saves/scenarios` (**v1.14**),
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
