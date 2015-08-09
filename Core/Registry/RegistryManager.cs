@@ -20,6 +20,7 @@ namespace CKAN
         private readonly string path;
         public readonly string lockfile_path;
         private FileStream lockfile_stream = null;
+        private StreamWriter lockfile_writer = null;
 
         private readonly TxFileManager file_transaction = new TxFileManager();
 
@@ -110,9 +111,9 @@ namespace CKAN
                 lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
                 // Write the current process ID to the file.
-                StreamWriter writer = new StreamWriter(lockfile_stream);
-                writer.Write(Process.GetCurrentProcess().Id);
-                writer.Flush();
+                lockfile_writer = new StreamWriter(lockfile_stream);
+                lockfile_writer.Write(Process.GetCurrentProcess().Id);
+                lockfile_writer.Flush();
             }
             catch (IOException)
             {
@@ -131,6 +132,13 @@ namespace CKAN
             {
                 lockfile_stream.Close();
                 lockfile_stream = null;
+            }
+
+            // This may not be needed when the underlying stream is closed,
+            // but doesn't hurt.
+            if (lockfile_writer != null)
+            {
+                lockfile_writer.Dispose();
             }
         }
 
