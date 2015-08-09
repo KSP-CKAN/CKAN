@@ -130,6 +130,7 @@ namespace CKAN
             if (lockfile_stream != null)
             {
                 lockfile_stream.Close();
+                lockfile_stream = null;
             }
         }
 
