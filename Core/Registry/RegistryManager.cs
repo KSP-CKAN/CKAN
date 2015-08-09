@@ -128,19 +128,23 @@ namespace CKAN
         /// </summary>
         public void ReleaseLock()
         {
-            if (lockfile_stream != null)
-            {
-                lockfile_stream.Close();
-                lockfile_stream = null;
-            }
-
-            // This may not be needed when the underlying stream is closed,
-            // but doesn't hurt.
+            // We have to dispose our writer first, otherwise it cries when
+            // it finds the stream is already disposed.
             if (lockfile_writer != null)
             {
                 lockfile_writer.Dispose();
                 lockfile_writer = null;
             }
+
+            // Disposing the writer also disposes the underlying stream,
+            // but we're extra tidy just in case.
+            if (lockfile_stream != null)
+            {
+                lockfile_stream.Dispose();
+                lockfile_stream = null;
+            }
+
+
         }
 
         /// <summary>
