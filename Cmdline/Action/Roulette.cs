@@ -71,16 +71,31 @@ namespace CKAN.CmdLine
                 // Check if the mods conflicts with any of the previusly selected mods.
                 if(!known_conflicts.Contains(draw.identifier))
                 {
-                    to_install.Add(draw);
-                    // Check if this mod have some new conflicts.
+                    // Check if any previusly selected mod is in this ones conflict list.
+                    bool any_conflict = false;
                     if (draw.conflicts != null)
                     {
-                        foreach (RelationshipDescriptor conflict in draw.conflicts)
+                        List<String> conflict_list = new List<string>(from conflict in draw.conflicts select conflict.name);
+                        foreach (CkanModule mod in to_install)
                         {
-                            known_conflicts.Add(conflict.name);
+                            any_conflict = any_conflict || conflict_list.Contains(mod.identifier);
                         }
                     }
-                    chosen++;
+                    if (!any_conflict)
+                    {
+
+                        to_install.Add(draw);
+                        // Check if this mod have some new conflicts.
+                        if (draw.conflicts != null)
+                        {
+                            foreach (RelationshipDescriptor conflict in draw.conflicts)
+                            {
+                                known_conflicts.Add(conflict.name);
+                            }
+                        }
+                        chosen++;
+                    }
+                    
                 }
             }
 
