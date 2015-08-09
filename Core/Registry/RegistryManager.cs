@@ -18,7 +18,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
-        private readonly string lockfile_path;
+        public readonly string lockfile_path;
         private FileStream lockfile_stream = null;
 
         private readonly TxFileManager file_transaction = new TxFileManager();
