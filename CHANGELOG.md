@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Bugfixes
+
+### Features
+
+- [GUI] Updates to the text of some buttons, and change the check mark from blue to green. (plague006, #1352)
+
+### Internal
+
+- [Core] Additional tests against autodetected mods in the RelationshipResolver (Postremus and pjf, #1226 and #1355)
+
 ## v1.12.0
 
 ### Bugfixes
