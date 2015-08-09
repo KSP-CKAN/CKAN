@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace CKAN
     /// <summary>
     ///     Everything for dealing with KSP itself.
     /// </summary>
-    public class KSP
+    public class KSP : IDisposable
     {
         public IUser User { get; set; }
 
@@ -99,6 +100,15 @@ namespace CKAN
             }
 
             log.DebugFormat("Initialised {0}", CkanDir());
+        }
+
+        #endregion
+
+        #region Destructors and Disposal
+
+        public void Dispose()
+        {
+            this.RegistryManager.Dispose();
         }
 
         #endregion
