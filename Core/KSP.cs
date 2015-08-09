@@ -120,6 +120,15 @@ namespace CKAN
 
         #endregion
 
+        #region Destructors and Disposal
+
+        public void Dispose()
+        {
+            this.RegistryManager.Dispose();
+        }
+
+        #endregion
+
         #region KSP Directory Detection and Versioning
 
         /// <summary>

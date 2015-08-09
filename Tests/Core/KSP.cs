@@ -24,6 +24,7 @@ namespace Tests.Core
         [TearDown]
         public void TearDown()
         {
+            ksp.Dispose();
             Directory.Delete(ksp_dir, true);
         }
 
