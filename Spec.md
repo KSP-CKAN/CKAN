@@ -274,7 +274,7 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The location where this section should be installed.
-  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Tutorial`, `saves/scenarios` (**v1.14**),
+  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Tutorial`, `Scenarios` (**v1.14**),
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData` or `Tutorial`.
