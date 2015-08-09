@@ -55,6 +55,7 @@
             this.KSPInstallVersion,
             this.KSPInstallPath});
             this.KSPInstancesListView.FullRowSelect = true;
+            this.KSPInstancesListView.HideSelection = false;
             this.KSPInstancesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
             this.KSPInstancesListView.Location = new System.Drawing.Point(12, 13);

@@ -163,6 +163,18 @@ namespace CKAN
                 }
             }
 
+            // If we spot a default repo with the old .zip URL, flip it to the new .tar.gz URL
+            // Any other repo we leave *as-is*, even if it's the github meta-repo, as it's been
+            // custom-added by our user.
+
+            Repository default_repo;
+            var oldDefaultRepo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
+            if (repositories != null && repositories.TryGetValue(Repository.default_ckan_repo_name, out default_repo) && default_repo.uri == oldDefaultRepo)
+            {
+                log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, Repository.default_ckan_repo_uri);
+                repositories["default"].uri = Repository.default_ckan_repo_uri;
+            }
+
             registry_version = LATEST_REGISTRY_VERSION;
         }
 
@@ -350,19 +362,19 @@ namespace CKAN
         {
             SealionTransaction();
 
+            var identifier = module.identifier;
             // If we've never seen this module before, create an entry for it.
-
-            if (! available_modules.ContainsKey(module.identifier))
+            if (! available_modules.ContainsKey(identifier))
             {
-                log.DebugFormat("Adding new available module {0}", module.identifier);
-                available_modules[module.identifier] = new AvailableModule();
+                log.DebugFormat("Adding new available module {0}", identifier);
+                available_modules[identifier] = new AvailableModule(identifier);
             }
 
             // Now register the actual version that we have.
             // (It's okay to have multiple versions of the same mod.)
 
-            log.DebugFormat("Available: {0} version {1}", module.identifier, module.version);
-            available_modules[module.identifier].Add(module);
+            log.DebugFormat("Available: {0} version {1}", identifier, module.version);
+            available_modules[identifier].Add(module);
         }
 
         /// <summary>
@@ -399,7 +411,7 @@ namespace CKAN
             candidates.Sort();
 
             //Cache
-            AvailableModule[] modules_for_current_version = available_modules.Values.Where(pair => pair.Latest(ksp_version) != null).ToArray();
+            CkanModule[] modules_for_current_version = available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
             {
@@ -416,7 +428,7 @@ namespace CKAN
                         {
                             try
                             {
-                                if (LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Count == 0)
+                                if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
                                 {
                                     failedDepedency = true;
                                     break;
@@ -507,7 +519,8 @@ namespace CKAN
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,
-                available_modules.Values.Where(pair => pair.Latest(ksp_version) != null),relationship_descriptor);
+                available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray(),
+                relationship_descriptor);
         }
 
         /// <summary>
@@ -517,7 +530,7 @@ namespace CKAN
         /// calculated. Not for direct public consumption. ;)
         /// </summary>
         private List<CkanModule> LatestAvailableWithProvides(string module, KSPVersion ksp_version,
-            IEnumerable<AvailableModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
+            IEnumerable<CkanModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
         {
             log.DebugFormat("Finding latest available with provides for {0}", module);
 
@@ -542,13 +555,11 @@ namespace CKAN
             // Walk through all our available modules, and see if anything
             // provides what we need.
 
-            foreach (AvailableModule available_module in available_for_current_version)
+            // Get our candidate module. We can assume this is non-null, as
+            // if it *is* null then available_for_current_version is corrupted,
+            // and something is terribly wrong.
+            foreach (CkanModule candidate in available_for_current_version)
             {
-                // Get our candidate module. We can assume this is non-null, as
-                // if it *is* null then available_for_current_version is corrupted,
-                // and something is terribly wrong.
-                CkanModule candidate = available_module.Latest(ksp_version);
-
                 // Find everything this module provides (for our version of KSP)
                 List<string> provides = candidate.provides;
 
@@ -563,6 +574,8 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns the specified CkanModule with the version specified,
+        /// or null if it does not exist.
         /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
         /// </summary>
         public CkanModule GetModuleByVersion(string ident, Version version)
@@ -844,7 +857,6 @@ namespace CKAN
             InstalledModule installedModule;
             return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
         }
-
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.

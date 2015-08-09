@@ -84,7 +84,7 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "YesNoDialog";
-            this.Text = "User input required";
+            this.Text = "CKAN";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

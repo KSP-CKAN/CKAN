@@ -42,7 +42,7 @@ namespace CKAN
                 bool min_sat = min_version == null || min_version <= other_version;
                 bool max_sat = max_version == null || max_version >= other_version;
                 if (min_sat && max_sat) return true;
-            }
+    }
             else
             {
                 if (version.Equals(other_version))
@@ -140,7 +140,7 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+        [JsonConverter(typeof (JsonSingleOrArrayConverter<License>))]
         public List<License> license;
 
         [JsonProperty("name")]
@@ -233,7 +233,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new List<License> {new License ("unknown")};
+                license = new List<License> {new License("unknown")};
             }
 
             if (@abstract == null)
@@ -269,7 +269,10 @@ namespace CKAN
             {
                 return false;
             }
-            return mod1.conflicts.Any(conflict => mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
+            return
+                mod1.conflicts.Any(
+                    conflict =>
+                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
         }
 
         /// <summary>
@@ -303,6 +306,33 @@ namespace CKAN
             // fields and we passed them successfully.
 
             return ksp_version.Targets(version);
+        }
+
+        /// <summary>
+        /// Returns a human readable string indicating the highest compatible
+        /// version of KSP this module will run with. (Eg: 1.0.2, 1.0.2+,
+        /// "All version", etc).
+        /// 
+        /// This is for *human consumption only*, as the strings may change in the
+        /// future as we support additional locales.
+        /// </summary>
+        public string HighestCompatibleKSP()
+        {
+            // Find the highest compatible KSP version
+            if (!String.IsNullOrEmpty(ksp_version_max.ToString()))
+            {
+                return ksp_version_max.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version.ToString()))
+            {
+                return ksp_version.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version_min.ToString()))
+            {
+                return ksp_version_min.ToLongMin().ToString() + "+";
+            }
+
+            return "All versions";
         }
 
         /// <summary>
@@ -343,18 +373,28 @@ namespace CKAN
         {
             return Equals(other);
         }
+    }
 
-        public class IdentifierEqualilty : EqualityComparer<Module>
+    public class NameComparer : IEqualityComparer<CkanModule>, IEqualityComparer<Module>
+    {
+        public bool Equals(CkanModule x, CkanModule y)
         {
-            public override bool Equals(Module x, Module y)
-            {
-                return x.identifier.Equals(y.identifier);
-            }
+            return x.identifier.Equals(y.identifier);
+        }
 
-            public override int GetHashCode(Module obj)
-            {
-                return obj.identifier.GetHashCode();
-            }
+        public int GetHashCode(CkanModule obj)
+        {
+            return obj.identifier.GetHashCode();
+        }
+
+        public bool Equals(Module x, Module y)
+        {
+            return x.identifier.Equals(y.identifier);
+        }
+
+        public int GetHashCode(Module obj)
+        {
+            return obj.identifier.GetHashCode();
         }
     }
 
@@ -565,7 +605,13 @@ namespace CKAN
 
         public static string StandardName(string identifier, Version version)
         {
-            return identifier + "-" + version + ".zip";
+            // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
+            // slashes, and heaven knows what use mod authors try to smoosh into them.
+            // We'll reduce this down to "friendly" characters, replacing everything else with
+            // dashes. This doesn't change look-ups, as we use the hash prefix for that.
+            string version_string = Regex.Replace(version.ToString(), "[^A-Za-z0-9_.-]", "-");
+
+            return identifier + "-" + version_string + ".zip";
         }
     }
 

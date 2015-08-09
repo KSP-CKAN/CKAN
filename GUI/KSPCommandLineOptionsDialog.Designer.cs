@@ -32,7 +32,7 @@
             this.AdditionalArguments = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.AcceptChangesButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.CancelChangesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AdditionalArguments
@@ -54,6 +54,7 @@
             // AcceptChangesButton
             // 
             this.AcceptChangesButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.AcceptChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AcceptChangesButton.Location = new System.Drawing.Point(397, 51);
             this.AcceptChangesButton.Name = "AcceptChangesButton";
             this.AcceptChangesButton.Size = new System.Drawing.Size(75, 23);
@@ -61,23 +62,26 @@
             this.AcceptChangesButton.Text = "OK";
             this.AcceptChangesButton.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // CancelChangesButton
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(316, 51);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Cancel";
-            this.button1.UseVisualStyleBackColor = true;
+            this.CancelChangesButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelChangesButton.Location = new System.Drawing.Point(316, 51);
+            this.CancelChangesButton.Name = "CancelChangesButton";
+            this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelChangesButton.TabIndex = 4;
+            this.CancelChangesButton.Text = "Cancel";
+            this.CancelChangesButton.UseVisualStyleBackColor = true;
             // 
             // KSPCommandLineOptionsDialog
             // 
+            this.AcceptButton = this.AcceptChangesButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelChangesButton;
             this.ClientSize = new System.Drawing.Size(481, 85);
             this.ControlBox = false;
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.CancelChangesButton);
             this.Controls.Add(this.AcceptChangesButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AdditionalArguments);
@@ -94,7 +98,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button AcceptChangesButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button CancelChangesButton;
         public System.Windows.Forms.TextBox AdditionalArguments;
     }
 }

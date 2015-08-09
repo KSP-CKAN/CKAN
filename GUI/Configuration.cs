@@ -14,6 +14,9 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
+        public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
+        public bool RefreshOnStartupNoNag = false;
+
         // Sort by the mod name (index = 2) column by default
         public int SortByColumnIndex = 2;
         public bool SortDescending = false;
@@ -51,9 +54,9 @@ namespace CKAN
                 var configuration = new Configuration
                 {
                     m_Path = path,
-                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64" :
-                                           Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
-                                                             "KSP.exe"
+                        CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
+                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
+                            "KSP.exe -single-instance"
                 };
 
                 SaveConfiguration(configuration, path);
