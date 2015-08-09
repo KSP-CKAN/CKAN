@@ -3,6 +3,7 @@
     public enum ExportFileType
     {
         Ckan,
+        CkanFavourite,
         PlainText,
         Markdown,
         BbCode,

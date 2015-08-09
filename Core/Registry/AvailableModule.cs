@@ -1,31 +1,58 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using log4net;
 using Newtonsoft.Json;
 
 namespace CKAN
 {
     /// <summary>
-    ///     Utility class to track version -> module mappings
+    /// Utility class to track version -> module mappings
     /// </summary>
+    /// <remarks>
+    /// Json must not contain AvailableModules which are empty
+    /// </remarks>
     public class AvailableModule
     {
+        [JsonIgnore]
+        private string identifier;
 
-        // TODO: It would be great for this have a field tracking which module we're
-        // working with, so we don't allow mixed modules in our list.
+        [JsonConstructor]
+        private AvailableModule()
+        {
+        }
+
+        [OnDeserialized]
+        internal void SetIdentifier(StreamingContext context)
+        {
+            var mod = module_version.Values.FirstOrDefault();
+            identifier = mod.identifier;
+            Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));
+        }
+
+        /// <param name="identifier">The module to keep track of</param>
+        public AvailableModule(string identifier)
+        {
+            this.identifier = identifier;
+        }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
         [JsonProperty]
-        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>();
+        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>(new RecentVersionComparer());
 
         /// <summary>
         /// Record the given module version as being available.
         /// </summary>
         public void Add(CkanModule module)
         {
+            if(!module.identifier.Equals(identifier))
+                throw new ArgumentException(
+                    string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
+
             log.DebugFormat("Adding {0}", module);
             module_version[module.version] = module;
         }
@@ -56,9 +83,6 @@ namespace CKAN
                 return null;
             }
 
-            // Sort most recent versions first.            
-            available_versions.Reverse();
-
             if (ksp_version == null && relationship == null)
             {
                 module = module_version[available_versions.First()];
@@ -68,17 +92,17 @@ namespace CKAN
             }
             if (relationship == null)
             {
-                // Time to check if there's anything that we can satisfy.
+            // Time to check if there's anything that we can satisfy.
                 var version =
                     available_versions.FirstOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
                 if (version != null)
                     return module_version[version];
 
-                log.DebugFormat("No version of {0} is compatible with KSP {1}",
-                    module_version[available_versions[0]].identifier, ksp_version);
+            log.DebugFormat("No version of {0} is compatible with KSP {1}",
+                module_version[available_versions[0]].identifier, ksp_version);
 
-                return null;
-            }
+            return null;
+        }
             if (ksp_version == null)
             {
                 var version = available_versions.FirstOrDefault(relationship.version_within_bounds);
@@ -102,6 +126,20 @@ namespace CKAN
             CkanModule module;
             module_version.TryGetValue(v, out module);
             return module;
+        }
+    }
+
+    /// <summary>
+    /// Commparer which sorts the most recent version first
+    /// Depends on the behaaviour of Version.CompareTo(Version)
+    /// to work correctly.
+    /// </summary>
+    public class RecentVersionComparer : IComparer<Version>
+    {
+
+        public int Compare(Version x, Version y)
+        {
+            return y.CompareTo(x);
         }
     }
 }

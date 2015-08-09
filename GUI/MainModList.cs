@@ -103,13 +103,14 @@ namespace CKAN
         {
             log.Debug("Updating the mod list");
 
+            KSPVersion version = CurrentInstance.Version();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-            var gui_mods = new HashSet<GUIMod>(registry.Available(CurrentInstance.Version())
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
-            gui_mods.UnionWith(registry.Incompatible(CurrentInstance.Version())
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version())));
-            var installed = registry.InstalledModules.Select(module => module.Module)
-                .Select(m => new GUIMod(m, registry, CurrentInstance.Version()));
+            var gui_mods = new HashSet<GUIMod>(registry.Available(version)
+                .Select(m => new GUIMod(m, registry, version)));
+            gui_mods.UnionWith(registry.Incompatible(version)
+                .Select(m => new GUIMod(m, registry, version)));
+            var installed = registry.InstalledModules
+                .Select(m => new GUIMod(m.Module, registry, version));
 
             //Hashset does not define if add/unionwith replaces existing elements.
             //In this case that could cause a CkanModule to be replaced by a Module.
@@ -158,9 +159,9 @@ namespace CKAN
             UpdateFilters(this);
         }
 
-        public void MarkModForInstall(string identifier, bool uninstall = false)
+        public void MarkModForInstall(string identifier, bool uncheck = false)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier, uninstall));
+            Util.Invoke(this, () => _MarkModForInstall(identifier, uncheck));
         }
 
         private void _MarkModForInstall(string identifier, bool uninstall)
@@ -170,10 +171,7 @@ namespace CKAN
                 var mod = (GUIMod) row.Tag;
                 if (mod.Identifier == identifier)
                 {
-                    mod.IsInstallChecked = !uninstall;
-                    //TODO Fix up MarkMod stuff when I commit the GUIConflict
-                    (row.Cells[0] as DataGridViewCheckBoxCell).Value = !uninstall;
-                    if (!uninstall) last_mod_to_have_install_toggled.Push(mod);
+                    mod.SetInstallChecked(row,!uninstall);
                     break;
                 }
             }
@@ -183,6 +181,7 @@ namespace CKAN
         {
             Util.Invoke(this, () => _MarkModForUpdate(identifier));
         }
+
 
         public void _MarkModForUpdate(string identifier)
         {
@@ -217,7 +216,7 @@ namespace CKAN
                 }
             }
             base.OnPaint(e);
-        }
+            }
 
         //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
         protected override void SetSelectedRowCore(int rowIndex, bool selected)
@@ -453,12 +452,12 @@ namespace CKAN
                 var installed_version_cell = new DataGridViewTextBoxCell {Value = mod.InstalledVersion};
                 var latest_version_cell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
                 var description_cell = new DataGridViewTextBoxCell {Value = mod.Abstract};
-                var homepage_cell = new DataGridViewLinkCell {Value = mod.Homepage};
+                var KSPCompatibility_cell = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
 
                 item.Cells.AddRange(installed_cell, update_cell,
                     name_cell, author_cell,
                     installed_version_cell, latest_version_cell,
-                    description_cell, homepage_cell);
+                    KSPCompatibility_cell, description_cell);
 
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;

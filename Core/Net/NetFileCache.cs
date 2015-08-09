@@ -6,6 +6,7 @@ using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace CKAN
 {
@@ -150,17 +151,12 @@ namespace CKAN
 
             string hash = CreateURLHash(url);
 
-            if (description != null)
-            {
-                // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
-                // slashes, and heaven knows what use mod authors try to smoosh into them.
-                // We'll reduce this down to "friendly" characters, replacing everything else with
-                // dashes. This doesn't change look-ups, as we use the hash prefix for that.
-
-                description = Regex.Replace(description, "[^A-Za-z0-9_.-]", "-");
-            }
-
             description = description ?? Path.GetFileName(path);
+
+            Debug.Assert(
+                Regex.IsMatch(description, "^[A-Za-z0-9_.-]*$"),
+                "description isn't as filesystem safe as we thought... (#1266)"
+            );
 
             string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);

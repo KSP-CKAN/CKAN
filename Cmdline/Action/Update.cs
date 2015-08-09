@@ -67,37 +67,19 @@ namespace CKAN.CmdLine
         /// <param name="modules_post">List of the available modules after the update.</param>
         private void PrintChanges(List<CkanModule> modules_prior, List<CkanModule> modules_post)
         {
-            // Check for new modules.
-            List<CkanModule> added = modules_post.Where(a => !modules_prior.Select(b => b.name).Contains(a.name)).ToList();
+            var prior = new HashSet<CkanModule>(modules_prior, new NameComparer());
+            var post = new HashSet<CkanModule>(modules_post, new NameComparer());
 
-            // Check for removed modules.
-            List<CkanModule> removed = modules_prior.Where(a => !modules_post.Select(b => b.name).Contains(a.name)).ToList();
 
-            // Check for updated modules.
-            // TODO: There is most likely a better way of doing this in a single statement using LINQ.
-            List<CkanModule> updated = new List<CkanModule>();
+            var added = new HashSet<CkanModule>(post.Except(prior, new NameComparer()));
+            var removed = new HashSet<CkanModule>(prior.Except(post, new NameComparer()));
 
-            // First, get the identifiers and version of all the mods.
-            Dictionary<string, Version> identifiers_prior = (from a in modules_prior select new {a.identifier, a.version}).ToDictionary(x => x.identifier, x => x.version);
-            Dictionary<string, Version> identifiers_post = (from b in modules_post select new {b.identifier, b.version}).ToDictionary(x => x.identifier, x => x.version);
 
-            // Compare the two lists.
-            foreach (var a in identifiers_prior)
-            {
-                // Check that the mod is still there after the update.
-                if (identifiers_post.ContainsKey(a.Key))
-                {
-                    // Check that the version has increased.
-                    if (identifiers_post[a.Key].IsGreaterThan(a.Value))
-                    {
-                        // Extract the mod information from the updated modules list.
-                        updated.Add(modules_post.Where(b => b.identifier == a.Key).First());
-                    }
-                }
-            }
+            var unchanged = post.Intersect(prior);//Default compare includes versions
+            var updated = post.Except(unchanged).Except(added).Except(removed).ToList();
 
             // Print the changes.
-            user.RaiseMessage("Found {0} new modules, {1} removed modules and {2} updated modules.", added.Count, removed.Count, updated.Count);
+            user.RaiseMessage("Found {0} new modules, {1} removed modules and {2} updated modules.", added.Count(), removed.Count(), updated.Count());
 
             if (added.Count > 0)
             {
@@ -120,7 +102,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="message">The message to print.</param>
         /// <param name="modules">The modules to list.</param>
-        private void PrintModules(string message, List<CkanModule> modules)
+        private void PrintModules(string message, IEnumerable<CkanModule> modules)
         {
             // Check input.
             if (message == null)

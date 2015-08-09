@@ -1,10 +1,11 @@
 using System;
-using System.Net;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using ChinhDo.Transactions;
-using log4net;
 using CurlSharp;
+using log4net;
 
 namespace CKAN
 {
@@ -16,8 +17,8 @@ namespace CKAN
     {
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Net));
-        private static TxFileManager file_transaction = new TxFileManager();
+        private static readonly ILog Log = LogManager.GetLogger(typeof (Net));
+        private static readonly TxFileManager FileTransaction = new TxFileManager();
 
         /// <summary>
         ///     Downloads the specified url, and stores it in the filename given.
@@ -40,13 +41,12 @@ namespace CKAN
             // Generate a temporary file if none is provided.
             if (filename == null)
             {
-                filename = file_transaction.GetTempFileName();
+                filename = FileTransaction.GetTempFileName();
             }
 
-            log.DebugFormat("Downloading {0} to {1}", url, filename);
+            Log.DebugFormat("Downloading {0} to {1}", url, filename);
 
-            var agent = new WebClient();
-            agent.Headers.Add("user-agent", UserAgentString);
+            var agent = MakeDefaultHttpClient();
            
             try
             {
@@ -54,8 +54,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-
-                log.InfoFormat("Download failed, trying with curlsharp...");
+                Log.InfoFormat("Download failed, trying with curlsharp...");
 
                 try
                 {
@@ -71,7 +70,7 @@ namespace CKAN
                         }
                         else
                         {
-                            log.Debug("curlsharp download successful");
+                            Log.Debug("curlsharp download successful");
                         }
                     }
 
@@ -88,8 +87,8 @@ namespace CKAN
                 // It's okay if this fails.
                 try
                 {
-                    log.DebugFormat("Removing {0} after web error failure", filename);
-                    file_transaction.Delete(filename);
+                    Log.DebugFormat("Removing {0} after web error failure", filename);
+                    FileTransaction.Delete(filename);
                 }
                 catch
                 {
@@ -107,6 +106,57 @@ namespace CKAN
             }
 
             return filename;
+        }
+
+        public static string DownloadText(Uri url)
+        {
+            return DownloadText(url.OriginalString);
+        }
+
+        public static string DownloadText(string url)
+        {
+            Log.DebugFormat("About to download {0}", url);
+
+            var agent = MakeDefaultHttpClient();
+
+            try
+            {
+                return agent.DownloadString(url);
+            }
+            catch (Exception)
+            {
+                Log.InfoFormat("Download failed, trying with curlsharp...");
+
+                var content = string.Empty;
+
+                var client = Curl.CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
+                {
+                    content += Encoding.UTF8.GetString(buf);
+                    return size * nmemb;
+                });
+
+                using (client)
+                {
+                    var result = client.Perform();
+
+                    if (result != CurlCode.Ok)
+                    {
+                        throw new Exception("Curl download failed with error " + result);
+                    }
+
+                    Log.DebugFormat("Download from {0}:\n\n{1}", url, content);
+
+                    return content;
+                }
+            }
+        }
+
+        private static WebClient MakeDefaultHttpClient()
+        {
+            var client = new WebClient();
+            client.Headers.Add("User-Agent", UserAgentString);
+
+            return client;
         }
     }
 }

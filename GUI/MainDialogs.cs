@@ -57,7 +57,7 @@ namespace CKAN
             if (module == null)
             {
                 last_mod_to_have_install_toggled.TryPeek(out mod);
-                MarkModForInstall(mod.Identifier,uninstall:true);
+                MarkModForInstall(mod.Identifier,uncheck:true);
             }
             Util.Invoke(this, () =>
             {
