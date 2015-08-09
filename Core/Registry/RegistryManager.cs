@@ -139,6 +139,7 @@ namespace CKAN
             if (lockfile_writer != null)
             {
                 lockfile_writer.Dispose();
+                lockfile_writer = null;
             }
         }
 
