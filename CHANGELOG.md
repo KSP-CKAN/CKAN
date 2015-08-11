@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Bugfixes
+
+- [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
+
+### Features
+
+- [GUI] Updates to the text of some buttons, and change the check mark from blue to green. (plague006, #1352)
+
+### Internal
+
+- [Core] Additional tests against autodetected mods in the RelationshipResolver (Postremus and pjf, #1226 and #1355)
+- [GUI] Removed a spurious warning when building (pjf, #1343)
+- [NetKAN] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
+
 ## v1.12.0
 
 ### Bugfixes
