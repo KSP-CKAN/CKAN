@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Core] Additional tests against autodetected mods in the RelationshipResolver (Postremus and pjf, #1226 and #1355)
+- [NetKAN] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
 
 ## v1.12.0
 
