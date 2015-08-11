@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,16 @@ using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
-    public class RegistryManager
+    public class RegistryManager : IDisposable
     {
         private static readonly Dictionary<string, RegistryManager> singleton =
             new Dictionary<string, RegistryManager>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
+        private readonly string lockfile_path;
+        private FileStream lockfile_stream = null;
+
         private readonly TxFileManager file_transaction = new TxFileManager();
 
         // The only reason we have a KSP field is so we can pass it to the registry
@@ -34,6 +38,14 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
+            lockfile_path = Path.Combine(path, "registry.json.locked");
+
+            // Create a lock for this registry, so we cannot touch it again.
+            if (!GetLock())
+            {
+                throw new RegistryInUseKraken(lockfile_path);
+            }
+
             LoadOrCreate();
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
@@ -46,6 +58,46 @@ namespace CKAN
             catch (InconsistentKraken kraken)
             {
                 log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
+            }
+        }
+
+        public void Dispose()
+        {
+            // Release the lock.
+            ReleaseLock();
+        }
+
+        /// <summary>
+        /// Tries to lock the registry by creating a lock file.
+        /// </summary>
+        /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
+        public bool GetLock()
+        {
+            try
+            {
+                lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+
+                // Write the current process ID to the file.
+                StreamWriter writer = new StreamWriter(lockfile_stream);
+                writer.Write(Process.GetCurrentProcess().Id);
+                writer.Flush();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+            
+        /// <summary>
+        /// Release the lock by deleting the file, but only if we managed to create the file.
+        /// </summary>
+        public void ReleaseLock()
+        {
+            if (lockfile_stream != null)
+            {
+                lockfile_stream.Close();
             }
         }
 
