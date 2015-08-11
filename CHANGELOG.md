@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
+
 ### Features
 
 - [GUI] Updates to the text of some buttons, and change the check mark from blue to green. (plague006, #1352)
