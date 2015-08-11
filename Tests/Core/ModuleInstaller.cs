@@ -541,14 +541,16 @@ namespace Tests.Core
                     ]
                 }")
             ;
-
+            
             List<InstallableFile> results;
             using (var ksp = new DisposableKSP())
             {
                 results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
 
                 Assert.AreEqual(
-                    Path.Combine(ksp.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs"),
+                    CKAN.KSPPathUtils.NormalizePath(
+                        Path.Combine(ksp.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")
+                    ),
                     results.First().destination
                 );
             }
