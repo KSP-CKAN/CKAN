@@ -512,6 +512,50 @@ namespace Tests.Core
             );
         }
 
+        // TODO: It would be nice to merge this and the above function into one super
+        // test.
+        [Test]
+        public void AllowInstallsToScenarios()
+        {
+            // Bogus zip with example to install.
+            var zip = ZipFile.Create(new MemoryStream());
+            zip.BeginUpdate();
+            zip.AddDirectory("saves");
+            zip.AddDirectory("saves/scenarios");
+            zip.Add(new ZipEntry("/saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
+            zip.CommitUpdate();
+
+            // NB: The spec version really would be "v1.14", but travis is sad when it sees
+            // releases that don't exist yet.
+            var mod = CkanModule.FromJson(@"
+                {
+                    ""spec_version"": ""1"",
+                    ""identifier"": ""AwesomeMod"",
+                    ""version"": ""1.0.0"",
+                    ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
+                    ""install"": [
+                        {
+                            ""file"": ""saves/scenarios/AwesomeRace.sfs"",
+                            ""install_to"": ""Scenarios""
+                        }
+                    ]
+                }")
+            ;
+            
+            List<InstallableFile> results;
+            using (var ksp = new DisposableKSP())
+            {
+                results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
+
+                Assert.AreEqual(
+                    CKAN.KSPPathUtils.NormalizePath(
+                        Path.Combine(ksp.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")
+                    ),
+                    results.First().destination
+                );
+            }
+        }
+
         private static void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
         {
             Assert.AreEqual("GameData", stanza.install_to);

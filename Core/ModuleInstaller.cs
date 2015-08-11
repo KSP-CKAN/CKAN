@@ -452,10 +452,17 @@ namespace CKAN
                     installDir = ksp == null ? null : ksp.Tutorial();
                     makeDirs = true;
                     break;
+
+                case "Scenarios":
+                    installDir = ksp == null ? null : ksp.Scenarios();
+                    makeDirs = true;
+                    break;
+
                 case "GameRoot":
                     installDir = ksp == null ? null : ksp.GameDir();
                     makeDirs = false;
                     break;
+
                 default:
                     throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
             }
