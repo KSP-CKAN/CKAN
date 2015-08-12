@@ -370,7 +370,13 @@ namespace CKAN
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = false,
-                with_recommends = false
+                with_recommends = false,
+                //See #1371
+                //The code inside the while loop is only responsible for handling tmp resolution
+                //Inconsistencies are handled later,
+                //and this options are also disabled there
+                procede_with_inconsistencies = true,
+                without_enforce_consistency = true
             };
 
             foreach (var change in changeSet)
@@ -440,6 +446,11 @@ namespace CKAN
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
             //May throw InconsistentKraken
+            //We want to allow InconstistencyKraken's
+            //Because we use them to check if something conflicts
+            options.procede_with_inconsistencies = false;
+            options.without_enforce_consistency = false;
+
             var resolver = new RelationshipResolver(options, registry, version);
             resolver.RemoveModsFromInstalledList(
                 changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()));
