@@ -420,39 +420,6 @@ namespace CKAN
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
-            // ModList
-            // 
-            this.ModList.AllowUserToAddRows = false;
-            this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeRows = false;
-            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Installed,
-            this.UpdateCol,
-            this.ModName,
-            this.Author,
-            this.InstalledVersion,
-            this.LatestVersion,
-            this.KSPCompatibility,
-            this.Description});
-            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModList.Location = new System.Drawing.Point(0, 0);
-            this.ModList.MultiSelect = false;
-            this.ModList.Name = "ModList";
-            this.ModList.RowHeadersVisible = false;
-            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(651, 578);
-            this.ModList.TabIndex = 3;
-            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
-            this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
-            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
-            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
-            // 
             // Installed
             // 
             this.Installed.HeaderText = "Installed";
@@ -461,12 +428,12 @@ namespace CKAN
             this.Installed.Width = 50;
             // 
             // Update
-            // 
+            //
             this.Update.HeaderText = "Update";
             this.Update.Name = "Update";
             this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Update.Width = 46;
-            // 
+            //
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -514,6 +481,39 @@ namespace CKAN
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Description.Width = 821;
+            // 
+            // ModList
+            // 
+            this.ModList.AllowUserToAddRows = false;
+            this.ModList.AllowUserToDeleteRows = false;
+            this.ModList.AllowUserToResizeRows = false;
+            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Installed,
+            this.Update,
+            this.ModName,
+            this.Author,
+            this.InstalledVersion,
+            this.LatestVersion,
+            this.KSPCompatibility,
+            this.Description});
+            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModList.Location = new System.Drawing.Point(0, 0);
+            this.ModList.MultiSelect = false;
+            this.ModList.Name = "ModList";
+            this.ModList.RowHeadersVisible = false;
+            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ModList.Size = new System.Drawing.Size(651, 578);
+            this.ModList.TabIndex = 3;
+            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
+            this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
+            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
             // 
             // splitContainer1
             // 
@@ -1287,11 +1287,11 @@ namespace CKAN
             this.menuStrip1.PerformLayout();
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ModInfoTabControl.ResumeLayout(false);
             this.MetadataTabPage.ResumeLayout(false);
             this.MetadataLayoutPanel.ResumeLayout(false);
