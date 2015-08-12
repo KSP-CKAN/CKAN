@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Additional tests against autodetected mods in the RelationshipResolver (Postremus and pjf, #1226 and #1355)
 - [GUI] Removed a spurious warning when building (pjf, #1343)
 - [NetKAN] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
+- [Core] Files can now be installed to `saves/scenarios` using the `Scenarios` target (pjf, #1360)
 
 ## v1.12.0
 

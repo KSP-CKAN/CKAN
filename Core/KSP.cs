@@ -267,6 +267,11 @@ namespace CKAN
             return Path.Combine(GameDir(), "saves", "training");
         }
 
+        public string Scenarios()
+        {
+            return Path.Combine(GameDir(), "saves", "scenarios");
+        }
+
         public string TempDir()
         {
             return Path.Combine(CkanDir(), "temp");
