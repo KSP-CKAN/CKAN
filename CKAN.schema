@@ -246,7 +246,7 @@
             "oneOf" : [
                 {
                     "description" : "Spec version 1 targets",
-                    "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial" ]
+                    "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial", "Scenarios" ]
                 },
                 {
                     "description" : "Spec v1.2 GameData path",

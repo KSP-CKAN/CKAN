@@ -426,20 +426,43 @@ namespace CKAN
                 installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
+            else if (stanza.install_to.StartsWith("Ships"))
+            {
+                // Don't allow directory creation in ships directory
+                makeDirs = false;
+
+                switch (stanza.install_to)
+                {
+                    case "Ships":
+                        installDir = ksp == null ? null : ksp.Ships();
+                        break;
+                    case "Ships/VAB":
+                        installDir = ksp == null ? null : ksp.ShipsVab();
+                        break;
+                    case "Ships/SPH":
+                        installDir = ksp == null ? null : ksp.ShipsSph();
+                        break;
+                    default:
+                        throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
+                }
+            }
             else switch (stanza.install_to)
             {
-                case "Ships":
-                    installDir = ksp == null ? null : ksp.Ships();
-                    makeDirs = false; // Don't allow directory creation in ships directory
-                    break;
                 case "Tutorial":
                     installDir = ksp == null ? null : ksp.Tutorial();
                     makeDirs = true;
                     break;
+
+                case "Scenarios":
+                    installDir = ksp == null ? null : ksp.Scenarios();
+                    makeDirs = true;
+                    break;
+
                 case "GameRoot":
                     installDir = ksp == null ? null : ksp.GameDir();
                     makeDirs = false;
                     break;
+
                 default:
                     throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
             }

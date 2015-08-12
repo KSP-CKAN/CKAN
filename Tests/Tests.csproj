@@ -44,6 +44,9 @@
       <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\Core\packages\Moq.4.2.1506.2515\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\Core\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -125,7 +128,7 @@
     <Compile Include="Core\Types\KSPVersion.cs" />
     <Compile Include="Core\Types\License.cs" />
     <Compile Include="Core\Types\Module.cs" />
-    <Compile Include="Core\Types\ModuleInstallDescriptor.cs" />
+    <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
     <Compile Include="Core\Types\Version.cs" />
     <Compile Include="Data\DisposableKSP.cs" />
@@ -135,10 +138,30 @@
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
     <Compile Include="NetKAN\AVC.cs" />
-    <Compile Include="NetKAN\GitHubTests.cs" />
+    <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
+    <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
     <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="NetKAN\KSMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
+    <Compile Include="NetKAN\Services\FileServiceTests.cs" />
+    <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
+    <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
+    <Compile Include="NetKAN\Sources\Kerbalstuff\KerbalstuffApiTests.cs" />
+    <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\DownloadSizeTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\GeneratedByTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\GithubTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\HttpTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\InternalCkanTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\KerbalstuffTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\MetaNetkanTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\StripNetkanMetadataTransformerTests.cs" />
+    <Compile Include="NetKAN\Validators\CkanValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\HasIdentifierValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\InstallsFilesValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\IsCkanModuleValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\MatchingIdentifiersValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="NetKAN\NetkanOverride.cs" />

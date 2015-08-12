@@ -4,6 +4,7 @@ using System.Linq;
 using CKAN;
 using NUnit.Framework;
 using Tests.Data;
+using System.IO;
 using Version = CKAN.Version;
 
 namespace Tests.Core.Relationships
@@ -781,6 +782,30 @@ namespace Tests.Core.Relationships
             reason = relationship_resolver.ReasonFor(recommendedB);
             Assert.That(reason, Is.AssignableTo<SelectionReason.Recommended>());
             Assert.That(reason.Parent, Is.EqualTo(sugested));
+        }
+
+        // The whole point of autodetected mods is they can participate in relationships.
+        // This makes sure they can (at least for dependencies). It may overlap with other
+        // tests, but that's cool, beacuse it's a test. :D
+        [Test]
+        public void AutodetectedCanSatisfyRelationships()
+        {
+            using (var ksp = new DisposableKSP ())
+            {
+                registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.GameData(), "ModuleManager.dll"));
+
+                var depends = new List<CKAN.RelationshipDescriptor>();
+                depends.Add(new CKAN.RelationshipDescriptor { name = "ModuleManager" });
+
+                CkanModule mod = generator.GeneratorRandomModule(depends: depends);
+
+                new RelationshipResolver(
+                    new CKAN.CkanModule[] { mod },
+                    RelationshipResolver.DefaultOpts(),
+                    registry,
+                    new KSPVersion("1.0.0")
+                );
+            }
         }
 
         private void AddToRegistry(params CkanModule[] modules)

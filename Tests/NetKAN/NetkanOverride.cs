@@ -1,5 +1,7 @@
 ﻿using CKAN;
 using CKAN.NetKAN;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Transformers;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Tests.Data;
@@ -134,7 +136,9 @@ namespace Tests.NetKAN
         /// </summary>
         private JObject ProcessOverrides(JObject metadata)
         {
-            return new CKAN.NetKAN.NetkanOverride(such_metadata).ProcessOverrides();
+            var transformer = new VersionedOverrideTransformer();
+
+            return transformer.Transform(new Metadata(metadata)).Json();
         }
 
         /// <summary>

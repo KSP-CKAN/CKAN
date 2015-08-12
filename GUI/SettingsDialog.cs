@@ -34,6 +34,7 @@ namespace CKAN
             LocalVersionLabel.Text = Meta.Version();
 
             CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
+            RefreshOnStartupCheckbox.Checked = Main.Instance.m_Configuration.RefreshOnStartup;
 
             UpdateCacheInfo();
         }
@@ -238,6 +239,12 @@ namespace CKAN
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.m_Configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            Main.Instance.m_Configuration.Save();
+        }
+
+        private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.m_Configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
             Main.Instance.m_Configuration.Save();
         }
     }

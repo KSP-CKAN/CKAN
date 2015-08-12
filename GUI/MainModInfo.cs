@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -16,44 +17,21 @@ namespace CKAN
 
     public partial class Main : Form
     {
-        private void UpdateModInfo(Module module)
+        private BackgroundWorker m_CacheWorker;
+
+        private void UpdateModInfo(GUIMod gui_module)
         {
-            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = module.name);
-            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = module.version.ToString());
+            Module module = gui_module.ToModule();
+
+            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = gui_module.Name);
+            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ",module.license));
-            Util.Invoke(MetadataModuleAuthorLabel, () => UpdateModInfoAuthor(module));
+            Util.Invoke(MetadataModuleAuthorLabel, () => MetadataModuleAuthorLabel.Text = gui_module.Authors);
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
 
             // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
-            if (module.resources != null)
-            {
-                if (module.resources.homepage != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.homepage.ToString());
-                }
-                else if (module.resources.kerbalstuff != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.kerbalstuff.ToString());
-                }
-                else if (module.resources.repository != null)
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = module.resources.repository.ToString());
-                }
-                else
-                {
-                    Util.Invoke(MetadataModuleHomePageLinkLabel,
-                        () => MetadataModuleHomePageLinkLabel.Text = "N/A");
-                }
-            }
-            else
-            {
-                Util.Invoke(MetadataModuleHomePageLinkLabel,
-                    () => MetadataModuleHomePageLinkLabel.Text = "N/A");
-            }
-
+            Util.Invoke(MetadataModuleHomePageLinkLabel,
+                       () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
 
             if (module.resources != null && module.resources.repository != null)
             {
@@ -70,26 +48,8 @@ namespace CKAN
             {
                 Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
             }
-        }
 
-        private void UpdateModInfoAuthor(Module module)
-        {
-            var authors = "";
-
-            if (module.author != null)
-            {
-                for (int i = 0; i < module.author.Count; i++)
-                {
-                    authors += module.author[i];
-
-                    if (i != module.author.Count - 1)
-                    {
-                        authors += ", ";
-                    }
-                }
-            }
-
-            MetadataModuleAuthorLabel.Text = authors;
+            Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
         }
 
         private HashSet<Module> alreadyVisited = new HashSet<Module>();
@@ -112,6 +72,7 @@ namespace CKAN
             }
 
             var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
+            node.Name = module.name;
 
             IEnumerable<RelationshipDescriptor> relationships = null;
             switch (relationship)
@@ -228,23 +189,28 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(Module module)
+        private void UpdateModContentsTree(Module module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
-            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex)
+            if (ModInfoTabControl.SelectedIndex != ContentTabPage.TabIndex && !force)
             {
                 return;
             }
-            Util.Invoke(ContentsPreviewTree, _UpdateModContentsTree);
+            Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
         }
 
         private Module current_mod_contents_module;
 
-        private void _UpdateModContentsTree()
+        private void _UpdateModContentsTree(bool force = false)
         {
-            var module = (CkanModule) ModInfoTabControl.Tag;
-            if (Equals(module, current_mod_contents_module))
+            GUIMod guiMod = GetSelectedModule();
+            if (!guiMod.IsCKAN)
+            {
+                return;
+            }
+            CkanModule module = guiMod.ToCkanModule();
+            if (Equals(module, current_mod_contents_module) && !force)
             {
                 return;
             }
@@ -280,6 +246,25 @@ namespace CKAN
             }
 
             ContentsPreviewTree.Nodes[0].ExpandAll();
+        }
+
+        private void CacheMod(object sender, DoWorkEventArgs e)
+        {
+            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload((CkanModule)e.Argument);
+            e.Result = e.Argument;
+        }
+
+        private void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Util.Invoke(this, () => _PostModCaching((CkanModule)e.Result));
+        }
+
+        private void _PostModCaching(CkanModule module)
+        {
+            HideWaitDialog(true);
+
+            UpdateModContentsTree(module, true);
+            RecreateDialogs();
         }
     }
 }

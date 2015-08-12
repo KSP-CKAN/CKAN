@@ -39,12 +39,20 @@ namespace CKAN
 
             m_UpdateRepoWorker.RunWorkerAsync();
 
-            Util.Invoke(this, () => Enabled = false);
+            Util.Invoke(this, SwitchEnabledState);
 
             SetDescription("Contacting repository..");
             ClearLog();
             ShowWaitDialog();
         }
+
+        //Todo: better name for this method
+        private void SwitchEnabledState()
+        {
+            menuStrip1.Enabled = !menuStrip1.Enabled;
+            MainTabControl.Enabled = !MainTabControl.Enabled;
+        }
+
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
@@ -71,17 +79,29 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            SetDescription("Scanning for manually installed mods");
-            CurrentInstance.ScanGameData();
-
             UpdateModsList(repo_updated: true);
 
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
+            ShowRefreshQuestion();
 
-            Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
-            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
+        }
+
+        private void ShowRefreshQuestion()
+        {
+            if (!m_Configuration.RefreshOnStartupNoNag)
+            {
+                m_User.displayYesNo = YesNoDialog;
+                m_Configuration.RefreshOnStartupNoNag = true;
+                if (!m_User.displayYesNo("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
+                {
+                    m_Configuration.RefreshOnStartup = false;
+                }
+                m_Configuration.Save();
+                m_User.displayYesNo = null;
+            }
         }
     }
 }

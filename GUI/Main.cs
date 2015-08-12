@@ -302,7 +302,9 @@ namespace CKAN
             m_InstallWorker.RunWorkerCompleted += PostInstallMods;
             m_InstallWorker.DoWork += InstallMods;
 
-            UpdateModsList();
+            m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+            m_CacheWorker.RunWorkerCompleted += PostModCaching;
+            m_CacheWorker.DoWork += CacheMod;
 
             m_User.displayYesNo = YesNoDialog;
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
@@ -312,8 +314,11 @@ namespace CKAN
 
             CurrentInstanceUpdated();
 
+            if (m_Configuration.RefreshOnStartup)
+            {
+                UpdateRepo();
+            }
 
-            ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
             Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
@@ -367,6 +372,13 @@ namespace CKAN
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            //Only close the window, when the user has access to the "Exit" of the menu
+            if (!menuStrip1.Enabled)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             m_Configuration.WindowLoc = Location;
 
             // Copy window size to app settings
@@ -568,7 +580,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier,uninstall:gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -579,8 +591,6 @@ namespace CKAN
                 // Don't try to search for newlines
                 return;
             }
-
-            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
 
             // Determine time passed since last key press
             TimeSpan interval = DateTime.Now - this.lastSearchTime;
@@ -599,43 +609,7 @@ namespace CKAN
                 key = key.Substring(0, 1);
             }
 
-            var current_name = ((GUIMod) current_row.Tag).Name;
-            DataGridViewRow first_match = null;
-
-            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
-            {
-                var modname = ((GUIMod) row.Tag).Name;
-                var row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
-                if (row_match && first_match == null)
-                {
-                    // Remember the first match to allow cycling back to it if necessary
-                    first_match = row;
-                }
-                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
-                {
-                    // Keep going forward if it's a single key match and not ahead of the current row
-                    return false;
-                }
-                return row_match;
-            });
-            ModList.ClearSelection();
-            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
-            if (match == null && first_match != null)
-            {
-                // If there were no matches after the first match, cycle over to the beginning
-                match = first_match;
-            }
-            if (match != null)
-            {
-                match.Selected = true;
-                // Setting this to the Name cell prevents the checkbox from being toggled
-                // by pressing Space while the row is not indicated as active
-                ModList.CurrentCell = match.Cells[2];
-            }
-            else
-            {
-                this.AddStatusMessage("Not found");
-            }
+            FocusMod(key, false);
             e.Handled = true;
         }
 
@@ -655,7 +629,11 @@ namespace CKAN
                 return;
             }
             DataGridViewRow row = ModList.Rows[e.RowIndex];
-            // Need to change the state here, because the user hasn't clicked on a checkbo
+            if (!(row.Cells[0] is DataGridViewCheckBoxCell))
+            {
+                return;
+            }
+            // Need to change the state here, because the user hasn't clicked on a checkbox
             row.Cells[0].Value = !(bool)row.Cells[0].Value;
             ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
@@ -788,15 +766,11 @@ namespace CKAN
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-            if (module == null) return;
+            if (module == null || !module.IsCKAN) return;
 
             ResetProgress();
             ShowWaitDialog(false);
-            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload(module.ToCkanModule());
-            HideWaitDialog(true);
-
-            UpdateModContentsTree(module);
-            RecreateDialogs();
+            m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
         }
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -860,10 +834,9 @@ namespace CKAN
         private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var dialog = new KSPCommandLineOptionsDialog();
-            dialog.SetCommandLine(m_Configuration.CommandLineArguments);
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowKSPCommandLineOptionsDialog(m_Configuration.CommandLineArguments) == DialogResult.OK)
             {
-                m_Configuration.CommandLineArguments = dialog.AdditionalArguments.Text;
+                m_Configuration.CommandLineArguments = dialog.GetResult();
                 m_Configuration.Save();
             }
         }
@@ -947,6 +920,7 @@ namespace CKAN
             var exportOptions = new List<ExportOption>
             {
                 new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourite list (*.ckan)", "ckan"),
                 new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
                 new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
                 new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
@@ -966,10 +940,19 @@ namespace CKAN
             {
                 var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
 
-                if (exportOption.ExportFileType == ExportFileType.Ckan)
+                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
                 {
+                    bool recommends = false;
+                    bool versions = true;
+
+                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
+                    {
+                        recommends = true;
+                        versions = false;
+                    }
+
                     // Save, just to be certain that the installed-*.ckan metapackage is generated
-                    RegistryManager.Instance(CurrentInstance).Save();
+                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
 
                     // TODO: The core might eventually save as something other than 'installed-default.ckan'
                     File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
@@ -1000,6 +983,64 @@ namespace CKAN
         private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
+
+        private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            FilterByNameTextBox.Text = "";
+            mainModList.ModNameFilter = "";
+            FocusMod(e.Node.Name, true);
+        }
+
+        private void FocusMod(string key, bool exactMatch) 
+        {
+            DataGridViewRow current_row = ModList.CurrentRow;
+            string current_name = ((GUIMod)current_row.Tag).Name;
+            DataGridViewRow first_match = null;
+
+            var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
+            {
+                string modname = ((GUIMod)row.Tag).Name;
+                bool row_match = false;
+                if (exactMatch)
+                {
+                    row_match = modname == key;
+                }
+                else
+                {
+                    row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                }
+                if (row_match && first_match == null)
+                {
+                    // Remember the first match to allow cycling back to it if necessary
+                    first_match = row;
+                }
+                if (key.Length == 1 && row_match && row.Index <= current_row.Index)
+                {
+                    // Keep going forward if it's a single key match and not ahead of the current row
+                    return false;
+                }
+                return row_match;
+            });
+            ModList.ClearSelection();
+            var rows = ModList.Rows.Cast<DataGridViewRow>().Where(row => row.Visible);
+            DataGridViewRow match = rows.FirstOrDefault(does_name_begin_with_key);
+            if (match == null && first_match != null)
+            {
+                // If there were no matches after the first match, cycle over to the beginning
+                match = first_match;
+            }
+            if (match != null)
+            {
+                match.Selected = true;
+                // Setting this to the Name cell prevents the checkbox from being toggled
+                // by pressing Space while the row is not indicated as active
+                ModList.CurrentCell = match.Cells[2];
+            }
+            else
+            {
+                this.AddStatusMessage("Not found");
+            }
         }
 
         private void selectAllInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -54,7 +54,10 @@ Any CKAN file *must* conform to this schema to be considered valid.
 A CKAN file is designed to contain all the relevant meta-info
 about a mod, including its name, license, download location,
 dependencies, compatible versions of KSP, and the like. CKAN
-files are simply JSON files.
+files are simply JSON files using  UTF-8 as character-encoding.
+
+Except where stated otherwise all strings *should* be printable unicode only.
+
 
 CKAN files *should* have a naming scheme of their mod's identifier,
 followed by a dash, followed by the version number, followed by
@@ -115,8 +118,8 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.10'. Changes since spec `1`
-are marked with **v1.2** through to **v1.10** respectively. For maximum
+This document describes the CKAN specification 'v1.14'. Changes since spec `1`
+are marked with **v1.2** through to **v1.14** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -133,10 +136,12 @@ A short, one line description of the mod and what it does.
 ##### identifer
 
 This is the gloablly unique identifier for the mod, and is how the mod
-will be referred to by other CKAN documents.  It may only consist of
-letters, numbers and dashes. Eg: "FAR" or
+will be referred to by other CKAN documents. It may only consist of ASCII-letters, ASCII-digits and `-` (dash). Eg: "FAR" or
 "RealSolarSystem". This is the identifier that will be used whenever
 the mod is referenced (by `depends`, `conflicts`, or elsewhere).
+
+Identifiers must be both: case sensitive for machines, and unique regardless of capitalization for human consumption and case-ignorant systems. Example: MyMod must always be expressed as MyMod, but another module
+cannot assume the mymod identifier.
 
 If the mod would generate a `FOR` pass in ModuleManager, then the
 identifier *should* be same as the ModuleManager name. For most mods,
@@ -208,8 +213,8 @@ The comparison behavior of the package management system with respect to the
 number is mandatory.
 
 While the CKAN will accept *any* string as a `mod_version`, mod authors are
-encouraged to restrict version names to alphanumerics and the characters `.`
-`+` (full stop, plus), and should start with a digit.
+encouraged to restrict version names to ASCII-letters, ASCII-digits, and the characters `.` `+` `-` `_`
+(full stop, plus, dash, underscore) and should start with a digit.
 
 ###### version ordering
 
@@ -269,10 +274,10 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The location where this section should be installed.
-  Valid values for this entry are `GameData`, `Ships`, `Tutorial`,
+  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Tutorial`, `Scenarios` (**v1.14**)
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
-  be created when installing to `GameData` or `Tutorial`.
+  be created when installing to `GameData`, `Tutorial`, or `Scenarios`.
 
 (**v1.2**) For `GameData` *only* one *may* specify the path to a specific
 subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this

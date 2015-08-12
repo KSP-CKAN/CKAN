@@ -252,9 +252,24 @@ namespace CKAN
             return Path.Combine(GameDir(), "Ships");
         }
 
+        public string ShipsVab()
+        {
+            return Path.Combine(Ships(), "VAB");
+        }
+
+        public string ShipsSph()
+        {
+            return Path.Combine(Ships(), "SPH");
+        }
+
         public string Tutorial()
         {
             return Path.Combine(GameDir(), "saves", "training");
+        }
+
+        public string Scenarios()
+        {
+            return Path.Combine(GameDir(), "saves", "scenarios");
         }
 
         public string TempDir()

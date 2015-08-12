@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CKAN
 {
@@ -51,16 +52,18 @@ namespace CKAN
             if (m_BrowseKSPFolder.ShowDialog() == DialogResult.OK)
             {
                 KSP instance;
+                string path = m_BrowseKSPFolder.SelectedPath;
                 try
                 {
-                    instance = new KSP(m_BrowseKSPFolder.SelectedPath, GUI.user);
+                    instance = new KSP(path, GUI.user);
                 }
                 catch (NotKSPDirKraken){
-                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {m_BrowseKSPFolder.SelectedPath});
+                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {path});
                     return;
                 }
 
-                string instanceName = manager.GetNextValidInstanceName("New instance");
+                string instanceName = Path.GetFileName(path);
+                instanceName = manager.GetNextValidInstanceName(instanceName);
                 manager.AddInstance(instanceName, instance);
                 UpdateInstancesList();
             }
