@@ -63,19 +63,8 @@ namespace CKAN
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ModList = new CKAN.MainModListGUI();
-            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
-            this.MetadataLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
             this.LicenseLabel = new System.Windows.Forms.Label();
@@ -86,12 +75,12 @@ namespace CKAN
             this.GitHubLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
-            this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleKSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
             this.MetadataModuleAbstractLabel = new System.Windows.Forms.RichTextBox();
+            this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
+            this.MetadataModuleKSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
             this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
@@ -136,16 +125,26 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.ModList = new CKAN.MainModListGUI();
+            this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.ModInfoTabControl.SuspendLayout();
             this.MetadataTabPage.SuspendLayout();
-            this.MetadataLayoutPanel.SuspendLayout();
             this.RelationshipTabPage.SuspendLayout();
             this.ContentTabPage.SuspendLayout();
             this.StatusPanel.SuspendLayout();
@@ -155,6 +154,13 @@ namespace CKAN
             this.WaitTabPage.SuspendLayout();
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.ChooseProvidedModsTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -342,7 +348,7 @@ namespace CKAN
             this.UpdateAllToolButton.Image = global::CKAN.Properties.Resources.update;
             this.UpdateAllToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.UpdateAllToolButton.Name = "UpdateAllToolButton";
-            this.UpdateAllToolButton.Size = new System.Drawing.Size(140, 36);
+            this.UpdateAllToolButton.Size = new System.Drawing.Size(167, 36);
             this.UpdateAllToolButton.Text = "Add available updates";
             this.UpdateAllToolButton.Click += new System.EventHandler(this.MarkAllUpdatesToolButton_Click);
             // 
@@ -351,7 +357,7 @@ namespace CKAN
             this.ApplyToolButton.Image = global::CKAN.Properties.Resources.apply;
             this.ApplyToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ApplyToolButton.Name = "ApplyToolButton";
-            this.ApplyToolButton.Size = new System.Drawing.Size(127, 36);
+            this.ApplyToolButton.Size = new System.Drawing.Size(129, 36);
             this.ApplyToolButton.Text = "Apply changes";
             this.ApplyToolButton.Click += new System.EventHandler(this.ApplyToolButton_Click);
             // 
@@ -420,101 +426,6 @@ namespace CKAN
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
             // 
-            // Installed
-            // 
-            this.Installed.HeaderText = "Installed";
-            this.Installed.Name = "Installed";
-            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Installed.Width = 50;
-            // 
-            // Update
-            //
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
-            //
-            // ModName
-            // 
-            this.ModName.HeaderText = "Name";
-            this.ModName.Name = "ModName";
-            this.ModName.ReadOnly = true;
-            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.ModName.Width = 250;
-            // 
-            // Author
-            // 
-            this.Author.HeaderText = "Author";
-            this.Author.Name = "Author";
-            this.Author.ReadOnly = true;
-            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Author.Width = 120;
-            // 
-            // InstalledVersion
-            // 
-            this.InstalledVersion.HeaderText = "Installed version";
-            this.InstalledVersion.Name = "InstalledVersion";
-            this.InstalledVersion.ReadOnly = true;
-            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.InstalledVersion.Width = 70;
-            // 
-            // LatestVersion
-            // 
-            this.LatestVersion.HeaderText = "Latest version";
-            this.LatestVersion.Name = "LatestVersion";
-            this.LatestVersion.ReadOnly = true;
-            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersion.Width = 70;
-            //
-            // Highest compatible version of KSP
-            // 
-            this.KSPCompatibility.HeaderText = "Max KSP version";
-            this.KSPCompatibility.Name = "KSPCompatibility";
-            this.KSPCompatibility.ReadOnly = true;
-            this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.KSPCompatibility.Width = 78;
-            // 
-            // Description
-            // 
-            this.Description.HeaderText = "Description";
-            this.Description.Name = "Description";
-            this.Description.ReadOnly = true;
-            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Description.Width = 821;
-            // 
-            // ModList
-            // 
-            this.ModList.AllowUserToAddRows = false;
-            this.ModList.AllowUserToDeleteRows = false;
-            this.ModList.AllowUserToResizeRows = false;
-            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Installed,
-            this.Update,
-            this.ModName,
-            this.Author,
-            this.InstalledVersion,
-            this.LatestVersion,
-            this.KSPCompatibility,
-            this.Description});
-            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModList.Location = new System.Drawing.Point(0, 0);
-            this.ModList.MultiSelect = false;
-            this.ModList.Name = "ModList";
-            this.ModList.RowHeadersVisible = false;
-            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(651, 578);
-            this.ModList.TabIndex = 3;
-            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
-            this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
-            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
-            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
-            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
-            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -551,7 +462,7 @@ namespace CKAN
             // 
             // MetadataTabPage
             // 
-            this.MetadataTabPage.Controls.Add(this.MetadataLayoutPanel);
+            this.MetadataTabPage.Controls.Add(this.splitContainer2);
             this.MetadataTabPage.Location = new System.Drawing.Point(4, 25);
             this.MetadataTabPage.Name = "MetadataTabPage";
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -560,56 +471,14 @@ namespace CKAN
             this.MetadataTabPage.Text = "Metadata";
             this.MetadataTabPage.UseVisualStyleBackColor = true;
             // 
-            // MetadataLayoutPanel
-            // 
-            this.MetadataLayoutPanel.ColumnCount = 2;
-            this.MetadataLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.MetadataLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.MetadataLayoutPanel.Controls.Add(this.VersionLabel, 0, 3);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleVersionLabel, 1, 3);
-            this.MetadataLayoutPanel.Controls.Add(this.LicenseLabel, 0, 4);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleLicenseLabel, 1, 4);
-            this.MetadataLayoutPanel.Controls.Add(this.AuthorLabel, 0, 5);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleAuthorLabel, 1, 5);
-            this.MetadataLayoutPanel.Controls.Add(this.HomePageLabel, 0, 6);
-            this.MetadataLayoutPanel.Controls.Add(this.GitHubLabel, 0, 7);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 8);
-            this.MetadataLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 8);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 6);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 7);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleAbstractLabel, 0, 2);
-            this.MetadataLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 9);
-            this.MetadataLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 9);
-            this.MetadataLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataLayoutPanel.Location = new System.Drawing.Point(3, 3);
-            this.MetadataLayoutPanel.Name = "MetadataLayoutPanel";
-            this.MetadataLayoutPanel.RowCount = 14;
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.MetadataLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.MetadataLayoutPanel.Size = new System.Drawing.Size(346, 543);
-            this.MetadataLayoutPanel.TabIndex = 0;
-            // 
             // VersionLabel
             // 
             this.VersionLabel.AutoSize = true;
             this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.VersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.VersionLabel.Location = new System.Drawing.Point(3, 111);
+            this.VersionLabel.Location = new System.Drawing.Point(3, 0);
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(80, 33);
+            this.VersionLabel.Size = new System.Drawing.Size(79, 41);
             this.VersionLabel.TabIndex = 1;
             this.VersionLabel.Text = "Version:";
             // 
@@ -617,9 +486,9 @@ namespace CKAN
             // 
             this.MetadataModuleVersionLabel.AutoSize = true;
             this.MetadataModuleVersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(89, 111);
+            this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(88, 0);
             this.MetadataModuleVersionLabel.Name = "MetadataModuleVersionLabel";
-            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(257, 33);
+            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleVersionLabel.TabIndex = 2;
             this.MetadataModuleVersionLabel.Text = "0.0.0";
             // 
@@ -628,9 +497,9 @@ namespace CKAN
             this.LicenseLabel.AutoSize = true;
             this.LicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LicenseLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.LicenseLabel.Location = new System.Drawing.Point(3, 144);
+            this.LicenseLabel.Location = new System.Drawing.Point(3, 41);
             this.LicenseLabel.Name = "LicenseLabel";
-            this.LicenseLabel.Size = new System.Drawing.Size(80, 32);
+            this.LicenseLabel.Size = new System.Drawing.Size(79, 41);
             this.LicenseLabel.TabIndex = 3;
             this.LicenseLabel.Text = "License:";
             // 
@@ -638,9 +507,9 @@ namespace CKAN
             // 
             this.MetadataModuleLicenseLabel.AutoSize = true;
             this.MetadataModuleLicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(89, 144);
+            this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(88, 41);
             this.MetadataModuleLicenseLabel.Name = "MetadataModuleLicenseLabel";
-            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(257, 32);
+            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
             // 
@@ -649,9 +518,9 @@ namespace CKAN
             this.AuthorLabel.AutoSize = true;
             this.AuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AuthorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.AuthorLabel.Location = new System.Drawing.Point(3, 176);
+            this.AuthorLabel.Location = new System.Drawing.Point(3, 82);
             this.AuthorLabel.Name = "AuthorLabel";
-            this.AuthorLabel.Size = new System.Drawing.Size(80, 32);
+            this.AuthorLabel.Size = new System.Drawing.Size(79, 41);
             this.AuthorLabel.TabIndex = 5;
             this.AuthorLabel.Text = "Author:";
             // 
@@ -659,9 +528,9 @@ namespace CKAN
             // 
             this.MetadataModuleAuthorLabel.AutoSize = true;
             this.MetadataModuleAuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(89, 176);
+            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(88, 82);
             this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
-            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(257, 32);
+            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleAuthorLabel.TabIndex = 6;
             this.MetadataModuleAuthorLabel.Text = "Nobody";
             // 
@@ -670,9 +539,9 @@ namespace CKAN
             this.HomePageLabel.AutoSize = true;
             this.HomePageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HomePageLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.HomePageLabel.Location = new System.Drawing.Point(3, 208);
+            this.HomePageLabel.Location = new System.Drawing.Point(3, 123);
             this.HomePageLabel.Name = "HomePageLabel";
-            this.HomePageLabel.Size = new System.Drawing.Size(80, 35);
+            this.HomePageLabel.Size = new System.Drawing.Size(79, 41);
             this.HomePageLabel.TabIndex = 7;
             this.HomePageLabel.Text = "Homepage:";
             // 
@@ -681,9 +550,9 @@ namespace CKAN
             this.GitHubLabel.AutoSize = true;
             this.GitHubLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GitHubLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.GitHubLabel.Location = new System.Drawing.Point(3, 243);
+            this.GitHubLabel.Location = new System.Drawing.Point(3, 164);
             this.GitHubLabel.Name = "GitHubLabel";
-            this.GitHubLabel.Size = new System.Drawing.Size(80, 43);
+            this.GitHubLabel.Size = new System.Drawing.Size(79, 41);
             this.GitHubLabel.TabIndex = 10;
             this.GitHubLabel.Text = "GitHub:";
             // 
@@ -691,9 +560,9 @@ namespace CKAN
             // 
             this.MetadataModuleReleaseStatusLabel.AutoSize = true;
             this.MetadataModuleReleaseStatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(89, 286);
+            this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(88, 205);
             this.MetadataModuleReleaseStatusLabel.Name = "MetadataModuleReleaseStatusLabel";
-            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(257, 25);
+            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
             this.MetadataModuleReleaseStatusLabel.Text = "Stable";
             // 
@@ -702,40 +571,19 @@ namespace CKAN
             this.ReleaseLabel.AutoSize = true;
             this.ReleaseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ReleaseLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ReleaseLabel.Location = new System.Drawing.Point(3, 286);
+            this.ReleaseLabel.Location = new System.Drawing.Point(3, 205);
             this.ReleaseLabel.Name = "ReleaseLabel";
-            this.ReleaseLabel.Size = new System.Drawing.Size(80, 25);
+            this.ReleaseLabel.Size = new System.Drawing.Size(79, 41);
             this.ReleaseLabel.TabIndex = 12;
             this.ReleaseLabel.Text = "Release status:";
-            // 
-            // KSPCompatibilityLabel
-            // 
-            this.KSPCompatibilityLabel.AutoSize = true;
-            this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.KSPCompatibilityLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.KSPCompatibilityLabel.Location = new System.Drawing.Point(3, 320);
-            this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
-            this.KSPCompatibilityLabel.Size = new System.Drawing.Size(80, 33);
-            this.KSPCompatibilityLabel.TabIndex = 13;
-            this.KSPCompatibilityLabel.Text = "Max KSP ver.:";
-            // 
-            // MetadataModuleKSPCompatibilityLabel
-            // 
-            this.MetadataModuleKSPCompatibilityLabel.AutoSize = true;
-            this.MetadataModuleKSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleKSPCompatibilityLabel.Location = new System.Drawing.Point(89, 354);
-            this.MetadataModuleKSPCompatibilityLabel.Name = "MetadataModuleKSPCompatibilityLabel";
-            this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(257, 33);
-            this.MetadataModuleKSPCompatibilityLabel.TabIndex = 14;
-            this.MetadataModuleKSPCompatibilityLabel.Text = "0.0.0";
             // 
             // MetadataModuleHomePageLinkLabel
             // 
             this.MetadataModuleHomePageLinkLabel.AutoEllipsis = true;
             this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(89, 208);
+            this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(88, 123);
             this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
-            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(257, 35);
+            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
@@ -745,9 +593,9 @@ namespace CKAN
             // 
             this.MetadataModuleGitHubLinkLabel.AutoEllipsis = true;
             this.MetadataModuleGitHubLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(89, 243);
+            this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(88, 164);
             this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
-            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(257, 43);
+            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(255, 41);
             this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
@@ -755,14 +603,12 @@ namespace CKAN
             // 
             // MetadataModuleNameLabel
             // 
-            this.MetadataLayoutPanel.SetColumnSpan(this.MetadataModuleNameLabel, 2);
             this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MetadataModuleNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
-            this.MetadataLayoutPanel.SetRowSpan(this.MetadataModuleNameLabel, 2);
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(343, 57);
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(340, 29);
             this.MetadataModuleNameLabel.TabIndex = 0;
             this.MetadataModuleNameLabel.Text = "Mod Name";
             this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -770,14 +616,34 @@ namespace CKAN
             // MetadataModuleAbstractLabel
             // 
             this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.MetadataLayoutPanel.SetColumnSpan(this.MetadataModuleAbstractLabel, 2);
             this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 60);
+            this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 32);
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
             this.MetadataModuleAbstractLabel.ReadOnly = true;
-            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(343, 48);
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(340, 113);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "";
+            // 
+            // KSPCompatibilityLabel
+            // 
+            this.KSPCompatibilityLabel.AutoSize = true;
+            this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.KSPCompatibilityLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.KSPCompatibilityLabel.Location = new System.Drawing.Point(3, 246);
+            this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
+            this.KSPCompatibilityLabel.Size = new System.Drawing.Size(79, 139);
+            this.KSPCompatibilityLabel.TabIndex = 13;
+            this.KSPCompatibilityLabel.Text = "Max KSP ver.:";
+            // 
+            // MetadataModuleKSPCompatibilityLabel
+            // 
+            this.MetadataModuleKSPCompatibilityLabel.AutoSize = true;
+            this.MetadataModuleKSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleKSPCompatibilityLabel.Location = new System.Drawing.Point(88, 246);
+            this.MetadataModuleKSPCompatibilityLabel.Name = "MetadataModuleKSPCompatibilityLabel";
+            this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(255, 139);
+            this.MetadataModuleKSPCompatibilityLabel.TabIndex = 14;
+            this.MetadataModuleKSPCompatibilityLabel.Text = "0.0.0";
             // 
             // RelationshipTabPage
             // 
@@ -1268,6 +1134,170 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.tableLayoutPanel1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel2);
+            this.splitContainer2.Size = new System.Drawing.Size(346, 543);
+            this.splitContainer2.SplitterDistance = 148;
+            this.splitContainer2.SplitterWidth = 10;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.MetadataModuleAbstractLabel, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(346, 148);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.56647F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.43353F));
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleAuthorLabel, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleLicenseLabel, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.LicenseLabel, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.AuthorLabel, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.GitHubLabel, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.ReleaseLabel, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.HomePageLabel, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.KSPCompatibilityLabel, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.MetadataModuleVersionLabel, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.VersionLabel, 0, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 7;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(346, 385);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // ModList
+            // 
+            this.ModList.AllowUserToAddRows = false;
+            this.ModList.AllowUserToDeleteRows = false;
+            this.ModList.AllowUserToResizeRows = false;
+            this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Installed,
+            this.Update,
+            this.ModName,
+            this.Author,
+            this.InstalledVersion,
+            this.LatestVersion,
+            this.KSPCompatibility,
+            this.Description});
+            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModList.Location = new System.Drawing.Point(0, 0);
+            this.ModList.MultiSelect = false;
+            this.ModList.Name = "ModList";
+            this.ModList.RowHeadersVisible = false;
+            this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ModList.Size = new System.Drawing.Size(651, 578);
+            this.ModList.TabIndex = 3;
+            this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
+            this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
+            this.ModList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_HeaderMouseClick);
+            this.ModList.SelectionChanged += new System.EventHandler(this.ModList_SelectedIndexChanged);
+            this.ModList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModList_KeyDown);
+            this.ModList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModList_KeyPress);
+            // 
+            // Installed
+            // 
+            this.Installed.HeaderText = "Installed";
+            this.Installed.Name = "Installed";
+            this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Installed.Width = 50;
+            // 
+            // Update
+            // 
+            this.Update.HeaderText = "Update";
+            this.Update.Name = "Update";
+            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Update.Width = 46;
+            // 
+            // ModName
+            // 
+            this.ModName.HeaderText = "Name";
+            this.ModName.Name = "ModName";
+            this.ModName.ReadOnly = true;
+            this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ModName.Width = 250;
+            // 
+            // Author
+            // 
+            this.Author.HeaderText = "Author";
+            this.Author.Name = "Author";
+            this.Author.ReadOnly = true;
+            this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Author.Width = 120;
+            // 
+            // InstalledVersion
+            // 
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstalledVersion.Width = 70;
+            // 
+            // LatestVersion
+            // 
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.LatestVersion.Width = 70;
+            // 
+            // KSPCompatibility
+            // 
+            this.KSPCompatibility.HeaderText = "Max KSP version";
+            this.KSPCompatibility.Name = "KSPCompatibility";
+            this.KSPCompatibility.ReadOnly = true;
+            this.KSPCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.KSPCompatibility.Width = 78;
+            // 
+            // Description
+            // 
+            this.Description.HeaderText = "Description";
+            this.Description.Name = "Description";
+            this.Description.ReadOnly = true;
+            this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Description.Width = 821;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1291,11 +1321,8 @@ namespace CKAN
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ModInfoTabControl.ResumeLayout(false);
             this.MetadataTabPage.ResumeLayout(false);
-            this.MetadataLayoutPanel.ResumeLayout(false);
-            this.MetadataLayoutPanel.PerformLayout();
             this.RelationshipTabPage.ResumeLayout(false);
             this.ContentTabPage.ResumeLayout(false);
             this.StatusPanel.ResumeLayout(false);
@@ -1309,6 +1336,14 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage.PerformLayout();
             this.ChooseProvidedModsTabPage.ResumeLayout(false);
             this.ChooseProvidedModsTabPage.PerformLayout();
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1344,7 +1379,6 @@ namespace CKAN
         private TreeView ContentsPreviewTree;
         private Button ContentsDownloadButton;
         private TabPage MetadataTabPage;
-        private TableLayoutPanel MetadataLayoutPanel;
         private Label VersionLabel;
         private Label MetadataModuleVersionLabel;
         private Label LicenseLabel;
@@ -1421,6 +1455,9 @@ namespace CKAN
         private DataGridViewCheckBoxColumn Update;
         public MainModListGUI ModList;
         private CheckBox ToggleRecommendedModsCheckBox;
+        private SplitContainer splitContainer2;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
     }
 }
 
