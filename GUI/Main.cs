@@ -1059,7 +1059,7 @@ namespace CKAN
                 var mod = ((GUIMod)row.Tag);
                 if (row.Cells[0] is DataGridViewCheckBoxCell && (bool)row.Cells[0].Value)
                 {
-                    MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
+                    MarkModForInstall(mod.Identifier, true);//(bool)row.Cells[0].Value);
                 }
             }
             ApplyToolButton.Enabled = ChangeSet != null && (ChangeSet.Any());
