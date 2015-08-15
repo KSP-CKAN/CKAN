@@ -1060,10 +1060,9 @@ namespace CKAN
                 if (row.Cells[0] is DataGridViewCheckBoxCell && (bool)row.Cells[0].Value)
                 {
                     MarkModForInstall(mod.Identifier, (bool)row.Cells[0].Value);
-                    //ApplyToolButton.Enabled = true;
                 }
             }
-            ApplyToolButton.Enabled = (ChangeSet.Any());
+            ApplyToolButton.Enabled = ChangeSet != null && (ChangeSet.Any());
             ModList.Refresh();
         }
 
