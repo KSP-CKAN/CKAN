@@ -1049,6 +1049,7 @@ namespace CKAN
             {
                 MarkModForInstall(installedMod.identifier, false);
             }
+            mainModList.ComputeUserChangeSet();
             ModList.Refresh();
         }
 
@@ -1062,6 +1063,7 @@ namespace CKAN
                     MarkModForInstall(mod.Identifier, true);//(bool)row.Cells[0].Value);
                 }
             }
+            mainModList.ComputeUserChangeSet();
             ApplyToolButton.Enabled = ChangeSet != null && (ChangeSet.Any());
             ModList.Refresh();
         }
