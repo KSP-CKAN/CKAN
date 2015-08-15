@@ -139,7 +139,7 @@ namespace CKAN
                     }
                     else
                     {
-                        throw kraken;
+                        throw new ModuleNotFoundKraken(kraken.module, kraken.version, "The module is not available, and it is not installed.", kraken);
                     }
                 }
             }
