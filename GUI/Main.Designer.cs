@@ -268,20 +268,20 @@ namespace CKAN
                 this.deselectAllSelectedModsToolStripMenuItem
             });
             this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
-            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.selectionToolStripMenuItem.Text = "Selection";
             //
             // selectAllInstalledModsToolStripMenuItem
             //
             this.selectAllInstalledModsToolStripMenuItem.Name = "selectAllInstalledModsToolStripMenuItem";
-            this.selectAllInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
+            this.selectAllInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.selectAllInstalledModsToolStripMenuItem.Text = "Select all installed mods";
             this.selectAllInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.selectAllInstalledModsToolStripMenuItem_Click);
             //
             // deselectAllSelectedModsToolStripMenuItem
             //
             this.deselectAllSelectedModsToolStripMenuItem.Name = "deselectAllSelectedModsToolStripMenuItem";
-            this.deselectAllSelectedModsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
+            this.deselectAllSelectedModsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.deselectAllSelectedModsToolStripMenuItem.Text = "Deselect all selected mods";
             this.deselectAllSelectedModsToolStripMenuItem.Click += new System.EventHandler(this.deselectAllSelectedModsToolStripMenuItem_Click);
             // 
@@ -1076,9 +1076,11 @@ namespace CKAN
             //
             this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom) | (System.Windows.Forms.AnchorStyles.Left)));
             this.RecommendedModsToggleCheckbox.FlatStyle = FlatStyle.Flat;
-            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(10, 617);
+            this.RecommendedModsToggleCheckbox.AutoSize = true;
+            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(8, 620);
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
-            this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(100,23);
+            this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(92, 17);
+            this.RecommendedModsToggleCheckbox.TabIndex = 9;
             this.RecommendedModsToggleCheckbox.Text = "Toggle * Mods";
             this.RecommendedModsToggleCheckbox.Checked = true;
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
