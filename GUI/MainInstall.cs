@@ -482,12 +482,14 @@ namespace CKAN
                 RecommendedDialogLabel.Text =
                     "The following modules have been recommended by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
+                RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
             }
             else
             {
                 RecommendedDialogLabel.Text =
                     "The following modules have been suggested by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
+                RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
             }
 
 
