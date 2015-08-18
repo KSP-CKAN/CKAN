@@ -50,9 +50,9 @@ namespace CKAN
             sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
 
             ReposListBox.Items.Clear();
-            foreach (var item in sortedRepos)
+            foreach (var repo in sortedRepos)
             {
-                ReposListBox.Items.Add(item);
+                ReposListBox.Items.Add(String.Format("{0} | {1}", repo.name, repo.uri));
             }
 
             Main.Instance.CurrentInstance.RegistryManager.Save();
