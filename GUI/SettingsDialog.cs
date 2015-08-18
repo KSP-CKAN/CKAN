@@ -16,6 +16,8 @@ namespace CKAN
         private long m_cacheSize;
         private int m_cacheFileCount;
 
+        private List<Repository> m_sortedRepos = new List<Repository>();
+
         public SettingsDialog()
         {
             InitializeComponent();
@@ -41,18 +43,17 @@ namespace CKAN
 
         private void RefreshReposListBox()
         {
-            List<Repository> sortedRepos = new List<Repository>();
+            m_sortedRepos = new List<Repository>();
             foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
             {
-                sortedRepos.Add(item.Value);
+                m_sortedRepos.Add(item.Value);
             }
 
-            sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
-
+            m_sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
             ReposListBox.Items.Clear();
-            foreach (var item in sortedRepos)
+            foreach (var repo in m_sortedRepos)
             {
-                ReposListBox.Items.Add(item);
+                ReposListBox.Items.Add(String.Format("{0} | {1}", repo.name, repo.uri));
             }
 
             Main.Instance.CurrentInstance.RegistryManager.Save();
@@ -137,7 +138,7 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
+            var item = m_sortedRepos[ReposListBox.SelectedIndex];
             Main.Instance.CurrentInstance.Registry.Repositories.Remove(item.name);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
@@ -184,8 +185,8 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
-            var aboveItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex - 1];
+            var item = m_sortedRepos[ReposListBox.SelectedIndex];
+            var aboveItem = m_sortedRepos[ReposListBox.SelectedIndex - 1];
             item.priority = aboveItem.priority - 1;
             RefreshReposListBox();
         }
@@ -202,8 +203,8 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
-            var belowItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex + 1];
+            var item = m_sortedRepos[ReposListBox.SelectedIndex];
+            var belowItem = m_sortedRepos[ReposListBox.SelectedIndex + 1];
             item.priority = belowItem.priority + 1;
             RefreshReposListBox();
         }
