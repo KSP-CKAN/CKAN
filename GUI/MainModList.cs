@@ -469,7 +469,10 @@ namespace CKAN
 
         private bool IsNameInNameFilter(GUIMod mod)
         {
-            return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+            string abbrevation = new string(mod.Name.Split(' ').
+                Where(s => s.Length > 0).Select(s => s[0]).ToArray());
+            return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
+                || abbrevation.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
         private bool IsAuthorInauthorFilter(GUIMod mod)
