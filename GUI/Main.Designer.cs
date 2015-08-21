@@ -43,6 +43,9 @@ namespace CKAN
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kSPCommandlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllInstalledModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deselectAllSelectedModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -112,6 +115,7 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage = new System.Windows.Forms.TabPage();
             this.RecommendedModsCancelButton = new System.Windows.Forms.Button();
             this.RecommendedModsContinueButton = new System.Windows.Forms.Button();
+            this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -164,6 +168,7 @@ namespace CKAN
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
+            this.selectionToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -254,6 +259,31 @@ namespace CKAN
             this.kSPCommandlineToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.kSPCommandlineToolStripMenuItem.Text = "KSP command-line";
             this.kSPCommandlineToolStripMenuItem.Click += new System.EventHandler(this.KSPCommandlineToolStripMenuItem_Click);
+            //
+            // selectionToolStripMenuItem
+            //
+            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.selectAllInstalledModsToolStripMenuItem,
+                this.deselectAllSelectedModsToolStripMenuItem
+            });
+            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.selectionToolStripMenuItem.Text = "Selection";
+            //
+            // selectAllInstalledModsToolStripMenuItem
+            //
+            this.selectAllInstalledModsToolStripMenuItem.Name = "selectAllInstalledModsToolStripMenuItem";
+            this.selectAllInstalledModsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.selectAllInstalledModsToolStripMenuItem.Text = "Select all installed mods";
+            this.selectAllInstalledModsToolStripMenuItem.Click += new System.EventHandler(this.selectAllInstalledModsToolStripMenuItem_Click);
+            //
+            // deselectAllSelectedModsToolStripMenuItem
+            //
+            this.deselectAllSelectedModsToolStripMenuItem.Name = "deselectAllSelectedModsToolStripMenuItem";
+            this.deselectAllSelectedModsToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.deselectAllSelectedModsToolStripMenuItem.Text = "Deselect all selected mods";
+            this.deselectAllSelectedModsToolStripMenuItem.Click += new System.EventHandler(this.deselectAllSelectedModsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -1007,6 +1037,7 @@ namespace CKAN
             // 
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsCancelButton);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsContinueButton);
+            this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsToggleCheckbox);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedDialogLabel);
             this.ChooseRecommendedModsTabPage.Controls.Add(this.RecommendedModsListView);
             this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 22);
@@ -1040,6 +1071,20 @@ namespace CKAN
             this.RecommendedModsContinueButton.Text = "Continue";
             this.RecommendedModsContinueButton.UseVisualStyleBackColor = true;
             this.RecommendedModsContinueButton.Click += new System.EventHandler(this.RecommendedModsContinueButton_Click);
+            //
+            // RecommendedModsToggleCheckbox
+            //
+            this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom) | (System.Windows.Forms.AnchorStyles.Left)));
+            this.RecommendedModsToggleCheckbox.FlatStyle = FlatStyle.Flat;
+            this.RecommendedModsToggleCheckbox.AutoSize = true;
+            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(8, 620);
+            this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
+            this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(92, 17);
+            this.RecommendedModsToggleCheckbox.TabIndex = 9;
+            this.RecommendedModsToggleCheckbox.Text = "Toggle * Mods";
+            this.RecommendedModsToggleCheckbox.Checked = true;
+            this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
+            this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             // 
             // RecommendedDialogLabel
             // 
@@ -1317,6 +1362,9 @@ namespace CKAN
         private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
         private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
         private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
+        private ToolStripMenuItem selectionToolStripMenuItem;
+        private ToolStripMenuItem selectAllInstalledModsToolStripMenuItem;
+        private ToolStripMenuItem deselectAllSelectedModsToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private SplitContainer splitContainer1;
         private Panel StatusPanel;
@@ -1379,6 +1427,7 @@ namespace CKAN
         private ColumnHeader columnHeader5;
         private Button RecommendedModsCancelButton;
         private Button RecommendedModsContinueButton;
+        private CheckBox RecommendedModsToggleCheckbox;
         private TabPage ChooseProvidedModsTabPage;
         private Label ChooseProvidedModsLabel;
         private ListView ChooseProvidedModsListView;

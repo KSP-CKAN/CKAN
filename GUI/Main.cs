@@ -1042,6 +1042,45 @@ namespace CKAN
                 this.AddStatusMessage("Not found");
             }
         }
+
+        private void selectAllInstalledModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (InstalledModule installedMod in CurrentInstance.Registry.InstalledModules)
+            {
+                MarkModForInstall(installedMod.identifier, false);
+            }
+            ChangeSet = mainModList.ComputeUserChangeSet();
+            ModList.Refresh();
+        }
+
+        private void deselectAllSelectedModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = ((GUIMod)row.Tag);
+                if (row.Cells[0] is DataGridViewCheckBoxCell && (bool)row.Cells[0].Value)
+                {
+                    MarkModForInstall(mod.Identifier, true);//(bool)row.Cells[0].Value);
+                }
+            }
+            ChangeSet = mainModList.ComputeUserChangeSet();
+            ApplyToolButton.Enabled = ChangeSet != null && (ChangeSet.Any());
+            ModList.Refresh();
+        }
+
+        private void RecommendedModsToggleCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            var state = ((CheckBox)sender).Checked;
+            foreach (ListViewItem item in RecommendedModsListView.Items)
+            {
+                if (item.Checked != state)
+                {
+                    item.Checked = state;
+                }
+            }
+            RecommendedModsListView.Refresh();
+        }
+
     }
 
     public class GUIUser : NullUser
