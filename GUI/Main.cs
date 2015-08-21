@@ -992,7 +992,7 @@ namespace CKAN
             FocusMod(e.Node.Name, true);
         }
 
-        private void FocusMod(string key, bool exactMatch) 
+        private void FocusMod(string key, bool exactMatch)
         {
             DataGridViewRow current_row = ModList.CurrentRow;
             string current_name = ((GUIMod)current_row.Tag).Name;
@@ -1041,6 +1041,19 @@ namespace CKAN
             {
                 this.AddStatusMessage("Not found");
             }
+        }
+
+        private void RecommendedModsToggleCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+          var state = ((CheckBox)sender).Checked;
+          foreach (ListViewItem item in RecommendedModsListView.Items)
+          {
+            if (item.Checked != state)
+            {
+              item.Checked = state;
+            }
+          }
+          RecommendedModsListView.Refresh();
         }
     }
 
