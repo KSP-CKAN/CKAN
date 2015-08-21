@@ -22,6 +22,16 @@ namespace CKAN
 
         public static Version FetchLatestCkanVersion()
         {
+            try
+            {
+                FetchUpdaterUrl();
+                FetchCkanUrl();
+            }
+            catch (Kraken)
+            {
+                return new Version(Meta.Version());
+            }
+
             var response = MakeRequest(latestCKANReleaseApiUrl);
 
             return new CKANVersion(response.tag_name.ToString(), response.name.ToString());
@@ -83,6 +93,10 @@ namespace CKAN
         private static Uri FetchUpdaterUrl()
         {
             var response = MakeRequest(latestUpdaterReleaseApiUrl);
+            if (response.assets.Count == 0)
+            {
+                throw new Kraken("The latest updater isn't uploaded yet.");
+            }
             var assets = response.assets[0];
             return new Uri(assets.browser_download_url.ToString());
         }
@@ -90,6 +104,10 @@ namespace CKAN
         private static Uri FetchCkanUrl()
         {
             var response = MakeRequest(latestCKANReleaseApiUrl);
+            if (response.assets.Count == 0)
+            {
+                throw new Kraken("The latest release isn't uploaded yet.");
+            }
             var assets = response.assets[0];
             return new Uri(assets.browser_download_url.ToString());
         }
