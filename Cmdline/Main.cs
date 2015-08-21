@@ -109,7 +109,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
+
             KSPManager manager= new KSPManager(user);
+
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
@@ -162,6 +164,43 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             #endregion
 
+            try
+            {
+                log.InfoFormat("About to run action {0}",cmdline.action);
+                return RunAction(cmdline, options, args, user, manager);
+            }
+            catch (RegistryInUseKraken kraken)
+            {
+                log.Info("Registry in use detected");
+                user.RaiseMessage(kraken.ToString());
+
+                // By forcing the current instance to be null, we
+                // prevent the finally block from trying to do clean-up
+                // on a locked instance, which ironically throws another
+                // lock exception.
+                manager.CurrentInstance = null;
+                return Exit.ERROR;
+            }
+            finally
+            {
+                log.Info("Freeing resources");
+
+                // Release the registry lock file if possible.
+                if (manager.CurrentInstance != null)
+                {
+                    manager.CurrentInstance.RegistryManager.Dispose();
+                }
+
+                log.Info("Resources freed");
+            }
+        }
+
+        /// <summary>
+        /// Run whatever action the user has provided
+        /// </summary>
+        /// <returns>The exit status that should be returned to the system.</returns>
+        private static int RunAction(Options cmdline, CommonOptions options, string[] args, IUser user, KSPManager manager)
+        {
             switch (cmdline.action)
             {
                 case "gui":

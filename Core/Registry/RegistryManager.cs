@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,17 @@ using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
-    public class RegistryManager
+    public class RegistryManager : IDisposable
     {
         private static readonly Dictionary<string, RegistryManager> singleton =
             new Dictionary<string, RegistryManager>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
+        public readonly string lockfile_path;
+        private FileStream lockfile_stream = null;
+        private StreamWriter lockfile_writer = null;
+
         private readonly TxFileManager file_transaction = new TxFileManager();
 
         // The only reason we have a KSP field is so we can pass it to the registry
@@ -34,6 +39,14 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
+            lockfile_path = Path.Combine(path, "registry.json.locked");
+
+            // Create a lock for this registry, so we cannot touch it again.
+            if (!GetLock())
+            {
+                throw new RegistryInUseKraken(lockfile_path);
+            }
+
             LoadOrCreate();
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
@@ -47,6 +60,91 @@ namespace CKAN
             {
                 log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
             }
+        }
+
+        #region destruction
+
+        // See http://stackoverflow.com/a/538238/19422 for an awesome explanation of
+        // what's going on here.
+
+        /// <summary>
+        /// Releases all resource used by the <see cref="CKAN.RegistryManager"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.RegistryManager"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.RegistryManager"/> in an unusable state. After
+        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.RegistryManager"/> so
+        /// the garbage collector can reclaim the memory that the <see cref="CKAN.RegistryManager"/> was occupying.</remarks>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(Boolean safeToAlsoFreeManagedObjects)
+        {
+            // Right now we just release our lock, and leave everything else
+            // to the GC, but if we were implementing the full pattern we'd also
+            // free managed (.NET core) objects when called with a true value here.
+
+            ReleaseLock();
+        }
+
+        /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="CKAN.RegistryManager"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~RegistryManager()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Tries to lock the registry by creating a lock file.
+        /// </summary>
+        /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
+        public bool GetLock()
+        {
+            try
+            {
+                lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+
+                // Write the current process ID to the file.
+                lockfile_writer = new StreamWriter(lockfile_stream);
+                lockfile_writer.Write(Process.GetCurrentProcess().Id);
+                lockfile_writer.Flush();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+            
+        /// <summary>
+        /// Release the lock by deleting the file, but only if we managed to create the file.
+        /// </summary>
+        public void ReleaseLock()
+        {
+            // We have to dispose our writer first, otherwise it cries when
+            // it finds the stream is already disposed.
+            if (lockfile_writer != null)
+            {
+                lockfile_writer.Dispose();
+                lockfile_writer = null;
+            }
+
+            // Disposing the writer also disposes the underlying stream,
+            // but we're extra tidy just in case.
+            if (lockfile_stream != null)
+            {
+                lockfile_stream.Dispose();
+                lockfile_stream = null;
+            }
+
+
         }
 
         /// <summary>
