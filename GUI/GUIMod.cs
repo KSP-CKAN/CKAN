@@ -70,7 +70,6 @@ namespace CKAN
             }
 
             InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
-            LatestVersion = latest_version != null ? latest_version.ToString() : "-";
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
@@ -108,6 +107,19 @@ namespace CKAN
             {
                 // No idea what this mod is, sorry!
                 KSPCompatibility = KSPCompatibilityLong = "unknown";
+            }
+
+            if (latest_version != null)
+            {
+                LatestVersion = latest_version.ToString();
+            }
+            else if (latest_available_for_any_ksp != null)
+            {
+                LatestVersion = latest_available_for_any_ksp.version.ToString();
+            }
+            else
+            {
+                LatestVersion = "-";
             }
 
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
