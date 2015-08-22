@@ -136,8 +136,10 @@ namespace CKAN
                     gui_mod.IsNew = true;
                 }
             }
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
-            mainModList.ConstructModList(mainModList.Modules);
+
+            mainModList.ConstructModList(gui_mods.ToList(), !repo_updated);
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(
+                mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
             //TODO Consider using smart enum patten so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
@@ -427,11 +429,20 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
 
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false)
         {
-            full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
-            foreach (var mod in modules)
+            if (refreshAll || full_list_of_mod_rows == null)
             {
+                full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
+            }
+
+            IEnumerable<GUIMod> rowsToUpdate = modules.Where(
+                mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
+                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion);
+            
+            foreach (var mod in rowsToUpdate)
+            {
+                full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
                 var installed_cell = mod.IsInstallable()
@@ -465,6 +476,7 @@ namespace CKAN
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
+                
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }
             return full_list_of_mod_rows.Values;
