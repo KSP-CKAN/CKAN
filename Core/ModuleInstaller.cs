@@ -187,12 +187,12 @@ namespace CKAN
             {
                 if (!ksp.Cache.IsCachedZip(module.download))
                 {
-                    User.RaiseMessage(" * {0}", module);
+                    User.RaiseMessage(" * {0} {1}", module.name, module.version);
                     downloads.Add(module);
                 }
                 else
                 {
-                    User.RaiseMessage(" * {0} (cached)", module);
+                    User.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
                 }
             }
 
@@ -701,7 +701,8 @@ namespace CKAN
 
             foreach (string mod in goners)
             {
-                User.RaiseMessage(" * {0}", mod);
+                InstalledModule module = registry_manager.registry.InstalledModule(mod);
+                User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
             bool ok = User.RaiseYesNoDialog("\nContinue?");
