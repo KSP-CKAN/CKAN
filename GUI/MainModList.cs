@@ -453,7 +453,7 @@ namespace CKAN
                 var latest_version_cell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
                 var description_cell = new DataGridViewTextBoxCell {Value = mod.Abstract};
                 var KSPCompatibility_cell = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
-                var size_cell = new DataGridViewTextBoxCell {Value = mod.ToModule().download_size / 1024};
+                var size_cell = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
 
                 item.Cells.AddRange(installed_cell, update_cell,
                     name_cell, author_cell,

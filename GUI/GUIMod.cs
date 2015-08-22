@@ -20,6 +20,7 @@ namespace CKAN
         public string Authors { get; private set; }
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
+        public string DownloadSize { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
@@ -146,6 +147,13 @@ namespace CKAN
             }
 
             Identifier = mod.identifier;
+
+            if (mod.download_size == 0)
+                DownloadSize = "N/A";
+            else if (mod.download_size / 1024.0 < 1)
+                DownloadSize = "1<KB";
+            else
+                DownloadSize = mod.download_size / 1024+"";
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
