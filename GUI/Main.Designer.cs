@@ -1266,7 +1266,7 @@ namespace CKAN
             // 
             // SizeCol
             // 
-            this.SizeCol.HeaderText = "KB";
+            this.SizeCol.HeaderText = "Download (KB)";
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
