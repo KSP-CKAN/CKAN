@@ -61,7 +61,7 @@ namespace CKAN
             // rows in DataGridView.
 
             var rows = new DataGridViewRow[mainModList.full_list_of_mod_rows.Count];
-            mainModList.full_list_of_mod_rows.CopyTo(rows, 0);
+            mainModList.full_list_of_mod_rows.Values.CopyTo(rows, 0);
             // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
             GUIMod selected_mod = null;
@@ -166,14 +166,16 @@ namespace CKAN
 
         private void _MarkModForInstall(string identifier, bool uninstall)
         {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows)
+            if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
             {
-                var mod = (GUIMod) row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    mod.SetInstallChecked(row,!uninstall);
-                    break;
-                }
+                return;
+            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+
+            var mod = (GUIMod)row.Tag;
+            if (mod.Identifier == identifier)
+            {
+                mod.SetInstallChecked(row, !uninstall);
             }
         }
 
@@ -229,7 +231,8 @@ namespace CKAN
 
     public class MainModList
     {
-        internal List<DataGridViewRow> full_list_of_mod_rows;
+        //identifier, row
+        internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
             IUser user = null)
@@ -426,7 +429,7 @@ namespace CKAN
 
         public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
         {
-            full_list_of_mod_rows = new List<DataGridViewRow>();
+            full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
             foreach (var mod in modules)
             {
                 var item = new DataGridViewRow {Tag = mod};
@@ -462,9 +465,9 @@ namespace CKAN
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                full_list_of_mod_rows.Add(item);
+                full_list_of_mod_rows.Add(mod.Identifier, item);
             }
-            return full_list_of_mod_rows;
+            return full_list_of_mod_rows.Values;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
