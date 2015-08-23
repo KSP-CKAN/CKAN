@@ -39,6 +39,14 @@ namespace CKAN.CmdLine
                 Debugger.Launch();
             }
 
+            if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
+            {
+                // Start the gui with logging enabled #437 
+                List<string> guiCommand = args.ToList();
+                guiCommand.Insert(0, "gui");
+                args = guiCommand.ToArray();
+            }
+
             BasicConfigurator.Configure();
             LogManager.GetRepository().Threshold = Level.Warn;
             log.Debug("CKAN started");
