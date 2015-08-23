@@ -384,6 +384,9 @@ namespace CKAN
             // Copy window size to app settings
             m_Configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
 
+            // Save the active filter
+            m_Configuration.ActiveFilter = (int)mainModList.ModFilter;
+
             // Save settings
             m_Configuration.Save();
             base.OnFormClosing(e);
@@ -412,6 +415,8 @@ namespace CKAN
             UpdateModsList();
             ChangeSet = null;
             Conflicts = null;
+
+            Filter((GUIModFilter)m_Configuration.ActiveFilter);
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -723,44 +728,57 @@ namespace CKAN
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.Compatible;
-            FilterToolButton.Text = "Filter (Compatible)";
+            Filter(GUIModFilter.Compatible);
         }
 
         private void FilterInstalledButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.Installed;
-            FilterToolButton.Text = "Filter (Installed)";
+            Filter(GUIModFilter.Installed);
         }
 
         private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.InstalledUpdateAvailable;
-            FilterToolButton.Text = "Filter (Upgradeable)";
+            Filter(GUIModFilter.InstalledUpdateAvailable);
         }
 
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.NewInRepository;
-            FilterToolButton.Text = "Filter (New)";
+            Filter(GUIModFilter.NewInRepository);
         }
 
         private void FilterNotInstalledButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.NotInstalled;
-            FilterToolButton.Text = "Filter (Not installed)";
+            Filter(GUIModFilter.NotInstalled);
         }
 
         private void FilterIncompatibleButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.Incompatible;
-            FilterToolButton.Text = "Filter (Incompatible)";
+            Filter(GUIModFilter.Incompatible);
         }
 
         private void FilterAllButton_Click(object sender, EventArgs e)
         {
-            mainModList.ModFilter = GUIModFilter.All;
-            FilterToolButton.Text = "Filter (All)";
+            Filter(GUIModFilter.All);
+        }
+
+        private void Filter(GUIModFilter filter)
+        {
+            mainModList.ModFilter = filter;
+
+            if (filter == GUIModFilter.All)
+                FilterToolButton.Text = "Filter (All)";
+            else if (filter == GUIModFilter.Incompatible)
+                FilterToolButton.Text = "Filter (Incompatible)";
+            else if (filter == GUIModFilter.Installed)
+                FilterToolButton.Text = "Filter (Installed)";
+            else if (filter == GUIModFilter.InstalledUpdateAvailable)
+                FilterToolButton.Text = "Filter (Upgradeable)";
+            else if (filter == GUIModFilter.NewInRepository)
+                FilterToolButton.Text = "Filter (New)";
+            else if (filter == GUIModFilter.NotInstalled)
+                FilterToolButton.Text = "Filter (New)";
+            else
+                FilterToolButton.Text = "Filter (Compatible)";
         }
 
         private void ContentsDownloadButton_Click(object sender, EventArgs e)
