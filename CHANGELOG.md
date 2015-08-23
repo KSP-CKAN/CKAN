@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] The 'mark for update' button no longer highlights when the only upgrade candidates are autodetected mods we can't actually upgrade. (Postremus, #1392)
 - [Core] Installing from `.ckan` files (such as exported modlists) is more likely to succeed even when dependencies are complex. (#1337, Postremus)
 - [Cmdline] `ckan.exe --verbose` and `ckan.exe --debug` now start the GUI with the appropriate logging mode. (#1403, Postremus)
+- [Updater] We'll no longer try to download a CKAN release that hasn't finished building its assets yet.
 
 ### Features
 
