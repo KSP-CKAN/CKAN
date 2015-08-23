@@ -17,7 +17,7 @@ namespace Tests.Core.AutoUpdate
         {
             Assert.Throws<CKAN.Kraken>(delegate
                 {
-                    CKAN.AutoUpdate.FetchCkanUrl(test_ckan_release);
+                    Fetch(test_ckan_release);
                 }
             );
         }
@@ -28,9 +28,14 @@ namespace Tests.Core.AutoUpdate
         {
             Assert.Throws<CKAN.Kraken>(delegate
                 {
-                    CKAN.AutoUpdate.FetchUpdaterUrl(test_ckan_release);
+                    Fetch(test_ckan_release);
                 }
             );
+        }
+
+        private void Fetch(Uri url)
+        {
+            CKAN.AutoUpdate.Instance.RetrieveUrl(CKAN.AutoUpdate.Instance.MakeRequest(url));
         }
     }
 }

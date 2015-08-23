@@ -38,20 +38,21 @@ namespace CKAN.CmdLine
             if (!options.upgrade_all && options.modules[0] == "ckan")
             {
                 User.RaiseMessage("Querying the latest CKAN version");
-                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+                AutoUpdate.Instance.FetchLatestReleaseInfo();
+                var latestVersion = AutoUpdate.Instance.LatestVersion;
                 var currentVersion = new Version(Meta.Version());
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
                     User.RaiseMessage("New CKAN version available - " + latestVersion);
-                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                    var releaseNotes = AutoUpdate.Instance.ReleaseNotes;
                     User.RaiseMessage(releaseNotes);
                     User.RaiseMessage("\n");
 
                     if (User.RaiseYesNoDialog("Proceed with install?"))
                     {
                         User.RaiseMessage("Upgrading CKAN, please wait..");
-                        AutoUpdate.StartUpdateProcess(false);
+                        AutoUpdate.Instance.StartUpdateProcess(false);
                     }
                 }
                 else
