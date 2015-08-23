@@ -33,7 +33,16 @@ namespace CKAN
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
 
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
+                description.Text = change.Reason.Reason.Trim();
+
+                if (change.ChangeType == GUIModChangeType.Update)
+                {
+                    description.Text = String.Format("Update to version {0}", change.Mod.LatestVersion);
+                }
+
                 item.SubItems.Add(sub_change_type);
+                item.SubItems.Add(description);
                 ChangesListView.Items.Add(item);
             }
         }
