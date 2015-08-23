@@ -615,7 +615,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  To satisfy dependancy from " + Parent.identifier + ".\n"; }
+                get { return "  To satisfy dependency from " + Parent.identifier + ".\n"; }
             }
         }
 
