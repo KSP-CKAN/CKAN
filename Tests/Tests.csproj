@@ -165,6 +165,7 @@
     <Compile Include="Util.cs" />
     <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="NetKAN\NetkanOverride.cs" />
+    <Compile Include="Core\Net\AutoUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />

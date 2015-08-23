@@ -90,9 +90,12 @@ namespace CKAN
             Environment.Exit(0);
         }
 
-        private static Uri FetchUpdaterUrl()
+        // internal so our test suite can poke it.
+        internal static Uri FetchUpdaterUrl(Uri url = null)
         {
-            var response = MakeRequest(latestUpdaterReleaseApiUrl);
+            url = url ?? latestUpdaterReleaseApiUrl;
+
+            var response = MakeRequest(url);
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest updater isn't uploaded yet.");
@@ -101,9 +104,14 @@ namespace CKAN
             return new Uri(assets.browser_download_url.ToString());
         }
 
-        private static Uri FetchCkanUrl()
+        // internal so our test suite can poke it.
+        // TODO: Combine this with FetchUpdaterUrl above, they're
+        // pretty much identical.
+        internal static Uri FetchCkanUrl(Uri url = null)
         {
-            var response = MakeRequest(latestCKANReleaseApiUrl);
+            url = url ?? latestCKANReleaseApiUrl;
+
+            var response = MakeRequest(url);
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
