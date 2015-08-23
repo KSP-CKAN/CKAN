@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+### Features
+
+### Internal
+
+## v1.14.0 (Mimas)
+
+### Bugfixes
+
 - [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
 - [GUI] The latest CKAN-available version of a mod is always shown in the 'latest' column, even if that mod is not compatible with the installed KSP version. (Postremus, #1396)
 - [GUI] Pressing a key with an empty modlist will no longer crash the client. (Postremus, #1329)
@@ -35,7 +43,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
 - [GUI] Refactoring to remove duplicated code. (Postremus, #1362)
 
-## v1.12.0
+## v1.12.0 (Veil Nebula)
 
 ### Bugfixes
 
