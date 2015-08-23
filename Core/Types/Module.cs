@@ -42,7 +42,7 @@ namespace CKAN
                 bool min_sat = min_version == null || min_version <= other_version;
                 bool max_sat = max_version == null || max_version >= other_version;
                 if (min_sat && max_sat) return true;
-    }
+            }
             else
             {
                 if (version.Equals(other_version))
@@ -55,7 +55,8 @@ namespace CKAN
         /// A user friendly message for what versions satisfies this descriptor.
         /// </summary>
         [JsonIgnore]
-        public string RequiredVersion {
+        public string RequiredVersion
+        {
             get
             {
                 if (version != null)
@@ -400,7 +401,7 @@ namespace CKAN
 
     public class CkanModule : Module
     {
-            private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
         private static readonly string[] required_fields =
         {
@@ -413,13 +414,13 @@ namespace CKAN
             "version"
         };
 
-        // Only CKAN modules can have install and bundle instructions.
+        // Only CKAN modules can have install instructions.
 
-            [JsonProperty("install")]
-            public ModuleInstallDescriptor[] install;
+        [JsonProperty("install")]
+        public ModuleInstallDescriptor[] install;
 
-            [JsonProperty("spec_version", Required = Required.Always)]
-            public Version spec_version;
+        [JsonProperty("spec_version", Required = Required.Always)]
+        public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
