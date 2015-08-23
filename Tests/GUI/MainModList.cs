@@ -147,9 +147,9 @@ namespace Tests.GUI
                 registry.AddAvailable(modb);
                 var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
                 var main_mod_list = new MainModList(null, async kraken => await Task.FromResult(choice_of_provide));
-                var a = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>
+                var a = new HashSet<ModChange>
                 {
-                    new KeyValuePair<GUIMod, GUIModChangeType>(new GUIMod(mod,registry,ksp_version),GUIModChangeType.Install)
+                    new ModChange(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install, null)
                 };
 
                 var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, ksp_version);

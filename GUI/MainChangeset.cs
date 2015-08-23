@@ -9,9 +9,9 @@ namespace CKAN
     public partial class Main
     {
 
-        private List<KeyValuePair<GUIMod, GUIModChangeType>> m_Changeset;
+        private List<ModChange> m_Changeset;
 
-        public void UpdateChangesDialog(List<KeyValuePair<GUIMod, GUIModChangeType>> changeset, BackgroundWorker installWorker)
+        public void UpdateChangesDialog(List<ModChange> changeset, BackgroundWorker installWorker)
         {
             m_Changeset = changeset;
             m_InstallWorker = installWorker;
@@ -24,14 +24,14 @@ namespace CKAN
 
             foreach (var change in changeset)
             {
-                if (change.Value == GUIModChangeType.None)
+                if (change.ChangeType == GUIModChangeType.None)
                 {
                     continue;
                 }
 
-                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Key.Name, change.Key.Version)};
+                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Mod.Name, change.Mod.Version)};
 
-                var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.Value.ToString()};
+                var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
 
                 item.SubItems.Add(sub_change_type);
                 ChangesListView.Items.Add(item);
@@ -61,7 +61,7 @@ namespace CKAN
             // TODO Work out why this is.
             var user_change_set = mainModList.ComputeUserChangeSet().ToList();
             m_InstallWorker.RunWorkerAsync(
-                new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                     user_change_set, install_ops));
             m_Changeset = null;
 

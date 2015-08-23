@@ -73,10 +73,10 @@ namespace CKAN
         private DateTime lastSearchTime;
         private string lastSearchKey;
 
-        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> change_set;
+        private IEnumerable<ModChange> change_set;
         private Dictionary<GUIMod, string> conflicts;
 
-        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> ChangeSet
+        private IEnumerable<ModChange> ChangeSet
         {
             get { return change_set; }
             set
@@ -690,7 +690,7 @@ namespace CKAN
 
         private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
-            IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> full_change_set = null;
+            IEnumerable<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
