@@ -7,17 +7,25 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
+- [GUI] The latest CKAN-available version of a mod is always shown in the 'latest' column, even if that mod is not compatible with the installed KSP version. (Postremus, #1396)
 
 ### Features
 
 - [GUI] Updates to the text of some buttons, and change the check mark from blue to green. (plague006, #1352)
+- [GUI] The main display shows the download size if known. (Postremus, #1399)
+- [GUI] Suggested and recommended mods can now be (de)selected with a single click. (martinnj, #1398)
+- [GUI] Mods can be searched by their abbreviation, which we generate by taking the first letter of each word in the title. For example, `KIS` will match `Kerbal Inventory System`. (Postremus, #1394)
+- [GUI] The side metadata panel and its elements can now be resized. (martinnj, #1378)
 
 ### Internal
 
-- [Core] Additional tests against autodetected mods in the RelationshipResolver (Postremus and pjf, #1226 and #1355)
-- [GUI] Removed a spurious warning when building (pjf, #1343)
+- [Core] Additional tests against autodetected mods in the RelationshipResolver. (Postremus and pjf, #1226 and #1355)
+- [GUI] Removed a spurious warning when building. (pjf, #1343)
 - [NetKAN] Reading of information from `.version` files greatly improved, especially when mixing metadata from other sources like github and kerbalstuff. (dbent, #1299)
-- [Core] Files can now be installed to `saves/scenarios` using the `Scenarios` target (pjf, #1360)
+- [Core] Files can now be installed to `saves/scenarios` using the `Scenarios` target. (pjf, #1360)
+- [Spec] Grammar corrections. (Postremus, #1400)
+- [NetKAN] Files produced by `netkan.exe` have more stable field ordering. (dbent, #1304)
+- [NetKAN] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
 
 ## v1.12.0
 
