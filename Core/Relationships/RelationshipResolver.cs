@@ -525,18 +525,23 @@ namespace CKAN
         /// <returns></returns>
         public string ReasonStringFor(Module mod)
         {
+            var reason = ReasonFor(mod);
+            var is_root_type = reason.GetType() == typeof (SelectionReason.UserRequested)
+                || reason.GetType() == typeof(SelectionReason.Installed);
+            return is_root_type
+                ? reason.Reason
+                : reason.Reason + ReasonStringFor(reason.Parent);
+        }
+
+        public SelectionReason ReasonFor(Module mod)
+        {
             if (mod == null) throw new ArgumentNullException();
             if (!ModList().Contains(mod))
             {
                 throw new ArgumentException("Mod " + mod.identifier + " is not in the list");
             }
 
-            var reason = reasons[mod];
-            var is_root_type = reason.GetType() == typeof (SelectionReason.UserRequested)
-                || reason.GetType() == typeof(SelectionReason.Installed);
-            return is_root_type
-                ? reason.Reason
-                : reason.Reason + ReasonStringFor(reason.Parent);
+            return reasons[mod];
         }
     }
 
@@ -544,7 +549,7 @@ namespace CKAN
     /// Used to keep track of the relationships between modules in the resolver.
     /// Intended to be used for displaying messages to the user.
     /// </summary>
-    internal abstract class SelectionReason
+    public abstract class SelectionReason
     {
         //Currently assumed to exist for any relationship other than useradded or installed
         public virtual CkanModule Parent { get; protected set; }
