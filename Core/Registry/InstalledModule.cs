@@ -62,7 +62,7 @@ namespace CKAN
     }
 
     /// <summary>
-    /// A simple clss that represents an installed module. Includes the time of installation,
+    /// A simple class that represents an installed module. Includes the time of installation,
     /// the module itself, and a list of files installed with it.
     /// 
     /// Primarily used by the Registry class.
