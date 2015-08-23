@@ -22,6 +22,15 @@ namespace CKAN
                 return;
             }
 
+            m_Changeset = new List<ModChange>();
+            m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Remove));
+            m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Update));
+
+            IEnumerable<ModChange> left = changeset.Where(change => change.ChangeType == GUIModChangeType.Install);
+            CreateInstallList(left);
+
+            changeset = m_Changeset;
+
             foreach (var change in changeset)
             {
                 if (change.ChangeType == GUIModChangeType.None)
@@ -44,6 +53,25 @@ namespace CKAN
                 item.SubItems.Add(sub_change_type);
                 item.SubItems.Add(description);
                 ChangesListView.Items.Add(item);
+            }
+        }
+
+        private void CreateInstallList(IEnumerable<ModChange> changes, ModChange parent=null)
+        {
+            foreach (ModChange change in changes)
+            {
+                bool goDeeper = parent == null;
+                if (!goDeeper && change.Reason.Parent.identifier == parent.Mod.Identifier)
+                {
+                    goDeeper = true;
+                }
+
+                if (goDeeper)
+                {
+                    if (!m_Changeset.Any(c => c.Mod.Identifier == change.Mod.Identifier))
+                        m_Changeset.Add(change);
+                    CreateInstallList(changes.Where(c => c.Reason is SelectionReason.Depends), change);
+                }
             }
         }
 
