@@ -125,6 +125,7 @@ namespace CKAN
 
         /// <summary>
         /// Is the mod installed and does it have a newer version compatible with version
+        /// We can't update AD mods
         /// </summary>
         public static bool HasUpdate(this IRegistryQuerier querier, string identifier, KSPVersion version)
         {
@@ -138,7 +139,8 @@ namespace CKAN
                 return false;
             }
             if (newest_version == null) return false;
-            return querier.IsInstalled(identifier) && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
+            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier) 
+                && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
         }
     }
 }
