@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
 - [GUI] The latest CKAN-available version of a mod is always shown in the 'latest' column, even if that mod is not compatible with the installed KSP version. (Postremus, #1396)
+- [GUI] Pressing a key with an empty modlist will no longer crash the client. (Postremus, #1329)
 
 ### Features
 
