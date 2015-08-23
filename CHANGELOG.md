@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Mods can be searched by their abbreviation, which we generate by taking the first letter of each word in the title. For example, `KIS` will match `Kerbal Inventory System`. (Postremus, #1394)
 - [GUI] The side metadata panel and its elements can now be resized. (martinnj, #1378)
 - [GUI] Mod filters will no longer reset to 'compatible' each time the client is opened. (Postremus, #1384)
+- [GUI] The repository list no longer has weird numbers visible that we only use internally, and may eventually remove. (Postremus, #1393)
 
 ### Internal
 
