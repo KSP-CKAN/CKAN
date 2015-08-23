@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Spec] Grammar corrections. (Postremus, #1400)
 - [NetKAN] Files produced by `netkan.exe` have more stable field ordering. (dbent, #1304)
 - [NetKAN] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
+- [GUI] Refactoring to remove duplicated code. (Postremus, #1362)
 
 ## v1.12.0
 

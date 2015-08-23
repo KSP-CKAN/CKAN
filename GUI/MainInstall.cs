@@ -30,6 +30,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
 
@@ -63,121 +64,13 @@ namespace CKAN
             {
                 if (change.Value == GUIModChangeType.Install)
                 {
-                    if (change.Key.ToModule().recommends != null)
-                    {
-                        foreach (RelationshipDescriptor mod in change.Key.ToModule().recommends)
-                        {
-                            try
-                            {
-                                // if the mod is available for the current KSP version _and_
-                                // the mod is not installed _and_
-                                // the mod is not already in the install list
-                                if (
-                                    RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) !=
-                                    null &&
-                                    !RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.IsInstalled(mod.name) &&
-                                    !toInstall.Contains(mod.name))
-                                {
-                                    // add it to the list of recommended mods we display to the user
-                                    if (recommended.ContainsKey(mod.name))
-                                    {
-                                        recommended[mod.name].Add(change.Key.Identifier);
-                                    }
-                                    else
-                                    {
-                                        recommended.Add(mod.name, new List<string> {change.Key.Identifier});
-                                    }
-                                }
-                            }
-                                // XXX - Don't ignore all krakens! Those things are important!
-                            catch (Kraken)
-                            {
-                            }
-                        }
-                    }
-
-                    if (change.Key.ToModule().suggests != null)
-                    {
-                        foreach (RelationshipDescriptor mod in change.Key.ToModule().suggests)
-                        {
-                            try
-                            {
-                                if (
-                                    RegistryManager.Instance(manager.CurrentInstance)
-                                        .registry.LatestAvailable(mod.name, manager.CurrentInstance.Version()) != null &&
-                                    !RegistryManager.Instance(manager.CurrentInstance).registry.IsInstalled(mod.name) &&
-                                    !toInstall.Contains(mod.name))
-                                {
-                                    if (suggested.ContainsKey(mod.name))
-                                    {
-                                        suggested[mod.name].Add(change.Key.Identifier);
-                                    }
-                                    else
-                                    {
-                                        suggested.Add(mod.name, new List<string> {change.Key.Identifier});
-                                    }
-                                }
-                            }
-                                // XXX - Don't ignore all krakens! Those things are important!
-                            catch (Kraken)
-                            {
-                            }
-                        }
-                    }
+                    AddMod(change.Key.ToModule().recommends, recommended, change.Key.Identifier, registry);
+                    AddMod(change.Key.ToModule().suggests, suggested, change.Key.Identifier, registry);
                 }
             }
 
-            // If we're going to install something anyway, then don't list it in the
-            // recommended list, since they can't de-select it anyway.
-            foreach (var item in toInstall)
-            {
-                recommended.Remove(item);
-            }
-
-            // If there are any mods that would be recommended, prompt the user to make
-            // selections.
-            if (recommended.Any())
-            {
-                Util.Invoke(this, () => UpdateRecommendedDialog(recommended));
-
-                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
-                m_TabController.SetTabLock(true);
-
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
-
-                m_TabController.SetTabLock(false);
-            }
-
-            m_TabController.HideTab("ChooseRecommendedModsTabPage");
-
-            // And now on to suggestions. Again, we don't show anything that's scheduled to
-            // be installed on our suggest list.
-            foreach (var item in toInstall)
-            {
-                suggested.Remove(item);
-            }
-
-            if (suggested.Any())
-            {
-                Util.Invoke(this, () => UpdateRecommendedDialog(suggested, true));
-
-                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
-                m_TabController.SetTabLock(true);
-
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
-
-                m_TabController.SetTabLock(false);
-            }
+            ShowSelection(recommended);
+            ShowSelection(suggested, true);
 
             m_TabController.HideTab("ChooseRecommendedModsTabPage");
 
@@ -250,6 +143,64 @@ namespace CKAN
             }
 
             e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
+        }
+
+        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble, 
+            string identifier, IRegistryQuerier registry)
+        {
+            if (relations == null)
+                return;
+            foreach (RelationshipDescriptor mod in relations)
+            {
+                try
+                {
+                    // if the mod is available for the current KSP version _and_
+                    // the mod is not installed _and_
+                    // the mod is not already in the install list
+                    if (
+                        registry.LatestAvailable(mod.name, CurrentInstance.Version()) != null &&
+                        !registry.IsInstalled(mod.name) && !toInstall.Contains(mod.name))
+                    {
+                        // add it to the list of chooseAble mods we display to the user
+                        if (!chooseAble.ContainsKey(mod.name))
+                        {
+                            chooseAble.Add(mod.name, new List<string>());
+                        }
+                        chooseAble[mod.name].Add(identifier);
+                    }
+                }
+                // XXX - Don't ignore all krakens! Those things are important!
+                catch (Kraken)
+                {
+                }
+            }
+        }
+
+        private void ShowSelection(Dictionary<string, List<string>> selectable, bool suggest = false)
+        {
+            // If we're going to install something anyway, then don't list it in the
+            // recommended list, since they can't de-select it anyway.
+            foreach (var item in toInstall)
+            {
+                selectable.Remove(item);
+            }
+
+            // If there are any mods that would be recommended, prompt the user to make
+            // selections.
+            if (selectable.Any())
+            {
+                Util.Invoke(this, () => UpdateRecommendedDialog(selectable, suggest));
+
+                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                m_TabController.SetTabLock(true);
+
+                lock (this)
+                {
+                    Monitor.Wait(this);
+                }
+
+                m_TabController.SetTabLock(false);
+            }
         }
 
         /// <summary>
@@ -483,6 +434,7 @@ namespace CKAN
                     "The following modules have been recommended by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
+                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
             }
             else
             {
@@ -490,6 +442,7 @@ namespace CKAN
                     "The following modules have been suggested by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
+                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
 
 
