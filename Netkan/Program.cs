@@ -32,6 +32,14 @@ namespace CKAN.NetKAN
             {
                 ProcessArgs(args);
 
+                // If we see the --version flag, then display our build info
+                // and exit.
+                if (Options.Version)
+                {
+                    Console.WriteLine(Meta.Version());
+                    return ExitOk;
+                }
+
                 if (Options.File != null)
                 {
                     Log.InfoFormat("Transforming {0}", Options.File);
@@ -92,7 +100,7 @@ namespace CKAN.NetKAN
             {
                 Debugger.Launch();
             }
-
+                
             Options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, Options);
 

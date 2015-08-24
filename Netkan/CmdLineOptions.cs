@@ -31,6 +31,9 @@ namespace CKAN.NetKAN
         [Option("prerelease", HelpText = "Index GitHub Prereleases")]
         public bool PreRelease { get; set; }
 
+        [Option("version", HelpText = "Display the netkan version number and exit.")]
+        public bool Version { get; set; }
+
         // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }
