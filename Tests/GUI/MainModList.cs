@@ -155,8 +155,9 @@ namespace Tests.GUI
                 var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, ksp_version);
                 CollectionAssert.AreEquivalent(
                     new[] {
-                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install),
-                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(modb,registry,ksp_version),GUIModChangeType.Install)}, mod_list);
+                        new ModChange(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install, null),
+                        new ModChange(new GUIMod(modb,registry,ksp_version),GUIModChangeType.Install, null)
+                    }, mod_list);
 
             }
         }
