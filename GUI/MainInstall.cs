@@ -443,6 +443,7 @@ namespace CKAN
                     "The following modules have been suggested by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
+                RecommendedModsToggleCheckbox.Checked=false;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
 
