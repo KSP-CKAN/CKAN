@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [NetKAN] `netkan.exe` will now report its version and exit if run with the `--version` switch.
+
 ## v1.14.0 (Mimas)
 
 ### Bugfixes
