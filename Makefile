@@ -20,4 +20,10 @@ clean:
 test: build
 	nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
 
+# This likely only works under Unix, but then again Unix folks are the only
+# ones likely to have `fortune` installed. This target is for amusement purposes
+# only.
+fortune: quotes.txt
+	strfile quotes.txt
+
 FORCE:
