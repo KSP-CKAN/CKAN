@@ -797,7 +797,9 @@ namespace CKAN
                         if (directory == ksp.Tutorial() || directory == ksp.ShipsVab()
                             || directory == ksp.ShipsSph() || directory == ksp.Ships()
                             || directory == ksp.Scenarios() || directory == ksp.GameData()
-                            || directory == ksp.GameDir() || directory == ksp.CkanDir())
+                            || directory == ksp.GameDir() || directory == ksp.CkanDir()
+                            || directory == ksp.ShipsThumbs() || directory == ksp.ShipsThumbsVAB()
+                            || directory == ksp.ShipsThumbsSPH())
                         {
                             continue;
                         }

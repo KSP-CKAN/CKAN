@@ -274,6 +274,27 @@ namespace CKAN
             );
         }
 
+        public string ShipsThumbs()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(Ships(), "@thumbs")
+            );
+        }
+
+        public string ShipsThumbsSPH()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(ShipsThumbs(), "SPH")
+            );
+        }
+
+        public string ShipsThumbsVAB()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(ShipsThumbs(), "VAB")
+            );
+        }
+
         public string Tutorial()
         {
             return KSPPathUtils.NormalizePath(
