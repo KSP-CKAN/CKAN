@@ -601,7 +601,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Suggested by " + Parent.identifier + ".\n"; }
+                get { return "  Suggested by " + Parent.name + ".\n"; }
             }
         }
 
@@ -615,7 +615,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  To satisfy dependency from " + Parent.identifier + ".\n"; }
+                get { return "  To satisfy dependency from " + Parent.name + ".\n"; }
             }
         }
 
@@ -629,7 +629,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Recommended by " + Parent.identifier + ".\n"; }
+                get { return "  Recommended by " + Parent.name + ".\n"; }
             }
         }
     }
