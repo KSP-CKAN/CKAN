@@ -434,6 +434,7 @@ namespace CKAN
                     "The following modules have been recommended by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
+                RecommendModsToggleCheckbox.Checked=true;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
             }
             else
