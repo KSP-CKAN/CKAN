@@ -18,38 +18,71 @@ namespace CKAN
 
         private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
         {
-            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod) row.Tag).Name);
-            Func<DataGridViewRow, string> sort_fn;
-
             // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
             if (this.m_Configuration.SortByColumnIndex < 2)
             {
-                sort_fn = new Func<DataGridViewRow, string>(row =>
-                {
-                    var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
-                    if (cell.ValueType == typeof (bool))
-                    {
-                        return (bool) cell.Value ? "a" : "b";
-                    }
-                    // It's a "-" cell so let it be ordered last
-                    return "c";
-                });
+                return Sort(rows, CreateCheckboxSorter());
             }
-            else
+            // XXX: Same for Integer columns
+            else if (this.m_Configuration.SortByColumnIndex == 7)
             {
-                sort_fn =
-                    new Func<DataGridViewRow, string>(
-                        row => row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString());
+                return Sort(rows, CreateIntegerSorter());
             }
-            // Update the column sort glyph
-            this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell.SortGlyphDirection =
-                this.m_Configuration.SortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            return Sort(rows, CreateDefaultSorter());
+        }
+
+        private IEnumerable<DataGridViewRow> Sort<T>(IEnumerable<DataGridViewRow> rows, Func<DataGridViewRow, T> sortFunction)
+        {
+            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
+            DataGridViewColumnHeaderCell header =
+                this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell;
+
             // The columns will be sorted by mod name in addition to whatever the current sorting column is
             if (this.m_Configuration.SortDescending)
             {
-                return rows.OrderByDescending(sort_fn).ThenBy(get_row_mod_name);
+                header.SortGlyphDirection = SortOrder.Descending;
+                return rows.OrderByDescending(sortFunction).ThenBy(get_row_mod_name);
             }
-            return rows.OrderBy(sort_fn).ThenBy(get_row_mod_name);
+
+            header.SortGlyphDirection = SortOrder.Ascending;
+            return rows.OrderBy(sortFunction).ThenBy(get_row_mod_name);
+        }
+
+        private Func<DataGridViewRow, string> CreateDefaultSorter()
+        {
+            return new Func<DataGridViewRow, string>(
+                        row => row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString());
+        }
+
+        private Func<DataGridViewRow, string> CreateCheckboxSorter()
+        {
+            return new Func<DataGridViewRow, string>(row =>
+            {
+                var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+                if (cell.ValueType == typeof(bool))
+                {
+                    return (bool)cell.Value ? "a" : "b";
+                }
+                // It's a "-" cell so let it be ordered last
+                return "c";
+            });
+        }
+
+        private Func<DataGridViewRow, int> CreateIntegerSorter()
+        {
+            return new Func<DataGridViewRow, int>(row =>
+            {
+                var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+
+                if (cell.Value.ToString() == "N/A")
+                    return -1;
+                else if (cell.Value.ToString() == "1<KB")
+                    return 0;
+
+                int result = -2;
+                int.TryParse(cell.Value as string, out result);
+                return result;
+            });
         }
 
         private void _UpdateFilters()
