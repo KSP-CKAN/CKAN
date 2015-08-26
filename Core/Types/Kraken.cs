@@ -116,11 +116,13 @@ namespace CKAN
     {
         public List<CkanModule> modules;
         public string requested;
+        public CkanModule requestedFrom;
 
-        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception inner_exception = null)
+        public TooManyModsProvideKraken(string requested, CkanModule requestedFrom, List<CkanModule> modules, Exception inner_exception = null)
             :base(FormatMessage(requested, modules), inner_exception)
         {
             this.modules = modules;
+            this.requestedFrom = requestedFrom;
             this.requested = requested;
         }
 

@@ -358,13 +358,13 @@ namespace CKAN
                         {
                             //We still have either nothing, or too my to pick from
                             //Just throw the TMP now
-                            throw new TooManyModsProvideKraken(dep_name, candidates);
+                            throw new TooManyModsProvideKraken(dep_name, reason.Parent, candidates);
                         }
                         candidates[0] = provide.First();
                     }
                     else
                     {
-                        throw new TooManyModsProvideKraken(dep_name, candidates);
+                        throw new TooManyModsProvideKraken(dep_name, reason.Parent, candidates);
                     }
                 }
 
