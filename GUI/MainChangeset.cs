@@ -26,8 +26,9 @@ namespace CKAN
             m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Remove));
             m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Update));
 
-            IEnumerable<ModChange> left = changeset.Where(change => change.ChangeType == GUIModChangeType.Install);
-            CreateInstallList(left);
+            IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
+                                                && change.ChangeType != GUIModChangeType.Update);
+            CreateSortedModList(leftOver);
 
             changeset = m_Changeset;
 
@@ -56,21 +57,28 @@ namespace CKAN
             }
         }
 
-        private void CreateInstallList(IEnumerable<ModChange> changes, ModChange parent=null)
+        /// <summary>
+        /// This method creates the Install part of the changeset
+        /// It arranges the changeset in a human-friendly order
+        /// The requested mod is listed first, it's dependencies right after it
+        /// So we get for example "ModuleRCSFX" directly after "USI Exploration Pack"
+        /// 
+        /// It is very likely that this is forward-compatible with new ChangeTypes's,
+        /// like a a "reconfigure" changetype, but only the future will tell
+        /// </summary>
+        /// <param name="changes">Every leftover ModChange that should be sorted</param>
+        /// <param name="parent"></param>
+        private void CreateSortedModList(IEnumerable<ModChange> changes, ModChange parent=null)
         {
             foreach (ModChange change in changes)
             {
-                bool goDeeper = parent == null;
-                if (!goDeeper && change.Reason.Parent.identifier == parent.Mod.Identifier)
-                {
-                    goDeeper = true;
-                }
+                bool goDeeper = parent == null || change.Reason.Parent.identifier == parent.Mod.Identifier;
 
                 if (goDeeper)
                 {
                     if (!m_Changeset.Any(c => c.Mod.Identifier == change.Mod.Identifier))
                         m_Changeset.Add(change);
-                    CreateInstallList(changes.Where(c => c.Reason is SelectionReason.Depends), change);
+                    CreateSortedModList(changes.Where(c => !(c.Reason is SelectionReason.UserRequested)), change);
                 }
             }
         }
