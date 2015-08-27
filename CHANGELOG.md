@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [GUI] The GUI changeset screen now provides explanations as to why changes are being made. (Postremus, #1412)
+
 ### Internal
 
 - [NetKAN] `netkan.exe` will now report its version and exit if run with the `--version` switch.

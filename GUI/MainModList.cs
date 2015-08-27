@@ -297,8 +297,8 @@ namespace CKAN
         /// <param name="changeSet"></param>
         /// <param name="installer">A module installer for the current KSP install</param>
         /// <param name="version">The version of the current KSP install</param>
-        public async Task<IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>>> ComputeChangeSetFromModList(
-            IRegistryQuerier registry, HashSet<KeyValuePair<GUIMod, GUIModChangeType>> changeSet, ModuleInstaller installer,
+        public async Task<IEnumerable<ModChange>> ComputeChangeSetFromModList(
+            IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
             KSPVersion version)
         {
             var modules_to_install = new HashSet<CkanModule>();
@@ -311,15 +311,17 @@ namespace CKAN
 
             foreach (var change in changeSet)
             {
-                switch (change.Value)
+                switch (change.ChangeType)
                 {
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Install:
-                        modules_to_install.Add(change.Key.ToCkanModule());
+                        //TODO: Fix
+                        //This will give us a mod with a wrong version!
+                        modules_to_install.Add(change.Mod.ToCkanModule());
                         break;
                     case GUIModChangeType.Remove:
-                        modules_to_remove.Add(change.Key);
+                        modules_to_remove.Add(change.Mod);
                         break;
                     case GUIModChangeType.Update:
                         break;
@@ -372,21 +374,16 @@ namespace CKAN
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 Module module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
                     installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
-                changeSet.Add(
-                    new KeyValuePair<GUIMod, GUIModChangeType>(
-                        new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove));
+                changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
             //May throw InconsistentKraken
             var resolver = new RelationshipResolver(options, registry, version);
             resolver.RemoveModsFromInstalledList(
-                changeSet.Where(change => change.Value.Equals(GUIModChangeType.Remove)).Select(m => m.Key.ToModule()));
+                changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()));
             resolver.AddModulesToInstall(modules_to_install.ToList());
             changeSet.UnionWith(
                 resolver.ModList()
-                    .Select(
-                        mod =>
-                            new KeyValuePair<GUIMod, GUIModChangeType>(new GUIMod(mod, registry, version),
-                                GUIModChangeType.Install)));
+                    .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));
 
 
             return changeSet;
@@ -507,7 +504,7 @@ namespace CKAN
 
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
-            IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> change_set, KSPVersion ksp_version)
+            IEnumerable<ModChange> change_set, KSPVersion ksp_version)
         {
             var modules_to_install = new HashSet<string>();
             var modules_to_remove = new HashSet<string>();
@@ -521,15 +518,15 @@ namespace CKAN
 
             foreach (var change in change_set)
             {
-                switch (change.Value)
+                switch (change.ChangeType)
                 {
                     case GUIModChangeType.None:
                         break;
                     case GUIModChangeType.Install:
-                        modules_to_install.Add(change.Key.Identifier);
+                        modules_to_install.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Remove:
-                        modules_to_remove.Add(change.Key.Identifier);
+                        modules_to_remove.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Update:
                         break;
@@ -550,11 +547,13 @@ namespace CKAN
                 item => item.Value);
         }
 
-        public HashSet<KeyValuePair<GUIMod, GUIModChangeType>> ComputeUserChangeSet()
+        public HashSet<ModChange> ComputeUserChangeSet()
         {
             var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
-            var changeset = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>(
-                changes.Where(change => change.HasValue).Select(change => change.Value)
+            var changeset = new HashSet<ModChange>(
+                changes.Where(change => change.HasValue).
+                Select(change => change.Value).
+                Select(change => new ModChange(change.Key, change.Value, null))
                 );
             return changeset;
         }
