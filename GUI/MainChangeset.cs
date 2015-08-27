@@ -48,7 +48,12 @@ namespace CKAN
 
                 if (change.ChangeType == GUIModChangeType.Update)
                 {
-                    description.Text = String.Format("Update to version {0}", change.Mod.LatestVersion);
+                    description.Text = String.Format("Update selected by user to version {0}.", change.Mod.LatestVersion);
+                }
+
+                if (change.ChangeType == GUIModChangeType.Install && change.Reason is SelectionReason.UserRequested)
+                {
+                    description.Text = "New mod install selected by user.";
                 }
 
                 item.SubItems.Add(sub_change_type);
