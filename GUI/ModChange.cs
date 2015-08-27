@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace CKAN
 {
+    /// <summary>
+    /// Everything the GUI needs to know about a change, including
+    /// the mod itself, the change we're making, and the reason why.
+    /// </summary>
     public class ModChange
     {
         public GUIMod Mod { get; private set; }

@@ -22,12 +22,19 @@ namespace CKAN
                 return;
             }
 
+            // We're going to split our change-set into two parts: updated/removed mods,
+            // and everything else (which right now is installing mods, but we may have
+            // other types in the future).
+
             m_Changeset = new List<ModChange>();
             m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Remove));
             m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Update));
 
             IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
                                                 && change.ChangeType != GUIModChangeType.Update);
+            
+            // Now make our list more human-friendly (dependencies for a mod are listed directly
+            // after it.)
             CreateSortedModList(leftOver);
 
             changeset = m_Changeset;
