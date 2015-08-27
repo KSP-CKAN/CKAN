@@ -173,6 +173,11 @@ namespace CKAN
             return Mod;
         }
 
+        /// <summary>
+        /// Get the requested changetype
+        /// Only supports Install, Remove and Update
+        /// </summary>
+        /// <returns>Either a KeyValuaPair with the change, or null if no change is going to be done</returns>
         public KeyValuePair<GUIMod, GUIModChangeType>? GetRequestedChange()
         {
             if (IsInstalled ^ IsInstallChecked)
