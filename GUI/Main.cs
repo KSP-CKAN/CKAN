@@ -733,9 +733,9 @@ namespace CKAN
             ChangeSet = full_change_set;
         }
 
-        public void AddUserRequestedChange(GUIMod mod, GUIModChangeType type = GUIModChangeType.None)
+        public void AddUserRequestedChange(GUIMod mod, GUIModChangeType type, SelectionReason reason = null)
         {
-            ModChange change = new ModChange(mod, type, null);
+            ModChange change = new ModChange(mod, type, reason);
             ModChange oldChange = userRequestedChangeSet.FirstOrDefault(c => c.Mod.Identifier == mod.Identifier);
             if (oldChange == null || oldChange.ChangeType != type)
             {
