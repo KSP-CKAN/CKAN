@@ -730,7 +730,9 @@ namespace CKAN
             }
             last_mod_to_have_install_toggled.Clear();
             Conflicts = new_conflicts;
-            ChangeSet = full_change_set;
+            // If we would set the changeset to null
+            // it would clear the underlying userchangeset
+            ChangeSet = full_change_set ?? new List<ModChange>();
         }
 
         public void AddUserRequestedChange(GUIMod mod, GUIModChangeType type, SelectionReason reason = null)
