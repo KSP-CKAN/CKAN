@@ -360,6 +360,8 @@ namespace CKAN
                 if (mod != null)
                 {
                     modules_to_install.Add(mod);
+                    changeSet.Add(new ModChange(new GUIMod(mod, registry, version),
+                        GUIModChangeType.Install, new SelectionReason.UserRequestedDepends(kraken.requestedFrom)));
                 }
                 else
                 {

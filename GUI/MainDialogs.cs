@@ -69,7 +69,11 @@ namespace CKAN
             });
 
             if(module!=null)
+            {
+                Main.Instance.AddUserRequestedChange(new GUIMod(module, CurrentInstance.Registry, CurrentInstance.Version()),
+                    GUIModChangeType.Install, new SelectionReason.UserRequestedDepends(kraken.requestedFrom));
                 MarkModForInstall(module.identifier);
+            }
 
             last_mod_to_have_install_toggled.TryPop(out mod);
             return module;
