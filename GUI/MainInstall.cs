@@ -331,6 +331,9 @@ namespace CKAN
                 HideWaitDialog(true);
                 m_TabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                // We have no errors
+                // So we are fine to clear the changeset
+                ChangeSet = null;
             }
             else
             {
