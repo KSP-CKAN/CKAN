@@ -546,16 +546,5 @@ namespace CKAN
             return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
                 item => item.Value);
         }
-
-        public HashSet<ModChange> ComputeUserChangeSet()
-        {
-            var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
-            var changeset = new HashSet<ModChange>(
-                changes.Where(change => change.HasValue).
-                Select(change => change.Value).
-                Select(change => new ModChange(change.Key, change.Value, null))
-                );
-            return changeset;
-        }
     }
 }

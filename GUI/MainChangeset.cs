@@ -116,7 +116,7 @@ namespace CKAN
             //Using the changeset passed in can cause issues with versions.
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
             // TODO Work out why this is.
-            var user_change_set = mainModList.ComputeUserChangeSet().ToList();
+            var user_change_set = Main.Instance.userRequestedChangeSet;
             m_InstallWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                     user_change_set, install_ops));

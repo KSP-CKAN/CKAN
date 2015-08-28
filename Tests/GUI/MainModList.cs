@@ -47,8 +47,8 @@ namespace Tests.GUI
         [Test]
         public void ComputeChangeSetFromModList_WithEmptyList_HasEmptyChangeSet()
         {
-            var item = new MainModList(delegate { }, delegate { return null; });
-            Assert.That(item.ComputeUserChangeSet(), Is.Empty);
+            Main main = new Main();
+            Assert.That(main.UserRequestedChangeSet, Is.Empty);
         }
 
         [Test]
@@ -72,7 +72,9 @@ namespace Tests.GUI
                 mod.IsInstallChecked = true;
                 mod2.IsInstallChecked = true;
 
-                var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
+                Main main = new Main();
+                var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, 
+                    new HashSet<ModChange>(main.UserRequestedChangeSet), null, tidy.KSP.Version());
                 await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
             }
         }

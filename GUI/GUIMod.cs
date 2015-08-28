@@ -205,7 +205,11 @@ namespace CKAN
 
             bool value = set_value_to ?? old_value;
             IsUpgradeChecked = value;
-            if (old_value != value) update_cell.Value = value;
+            if (old_value != value)
+            {
+                update_cell.Value = value;
+                Main.Instance.AddUserRequestedChange(this, GUIModChangeType.Update);
+            }
         }
 
         public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
@@ -220,6 +224,8 @@ namespace CKAN
             {
                 IsInstallChecked = changeTo;
                 install_cell.Value = IsInstallChecked;
+                Main.Instance.AddUserRequestedChange(this, 
+                    IsInstallChecked ? GUIModChangeType.Install : GUIModChangeType.Remove);
             }
         }
 

@@ -75,6 +75,7 @@ namespace CKAN
 
         private IEnumerable<ModChange> change_set;
         private Dictionary<GUIMod, string> conflicts;
+        private List<ModChange> userRequestedChangeSet = new List<ModChange>();
 
         private IEnumerable<ModChange> ChangeSet
         {
@@ -84,8 +85,11 @@ namespace CKAN
                 var orig = change_set;
                 change_set = value;
                 if(!ReferenceEquals(orig, value)) ChangeSetUpdated();
+                if (value == null) userRequestedChangeSet = new List<ModChange>();
             }
         }
+
+        public IEnumerable<ModChange> UserRequestedChangeSet { get { return userRequestedChangeSet; } }
 
         private Dictionary<GUIMod, string> Conflicts
         {
@@ -148,6 +152,9 @@ namespace CKAN
                 ApplyToolButton.Enabled = false;
             }
         }
+
+        // Needed for testing
+        public Main() { }
 
         public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
@@ -694,7 +701,7 @@ namespace CKAN
             Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
-            var user_change_set = mainModList.ComputeUserChangeSet();
+            var user_change_set = new HashSet<ModChange>(userRequestedChangeSet);
             try
             {
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
@@ -705,7 +712,7 @@ namespace CKAN
             catch (InconsistentKraken)
             {
                 //Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
-                user_change_set = mainModList.ComputeUserChangeSet();
+                user_change_set = new HashSet<ModChange>(userRequestedChangeSet);
                 new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
                 full_change_set = null;
             }
@@ -724,6 +731,20 @@ namespace CKAN
             last_mod_to_have_install_toggled.Clear();
             Conflicts = new_conflicts;
             ChangeSet = full_change_set;
+        }
+
+        public void AddUserRequestedChange(GUIMod mod, GUIModChangeType type = GUIModChangeType.None)
+        {
+            ModChange change = new ModChange(mod, type, null);
+            ModChange oldChange = userRequestedChangeSet.FirstOrDefault(c => c.Mod.Identifier == mod.Identifier);
+            if (oldChange == null || oldChange.ChangeType != type)
+            {
+                userRequestedChangeSet.Remove(change);
+                if (oldChange == null || oldChange.ChangeType == GUIModChangeType.Update)
+                {
+                    userRequestedChangeSet.Add(change);
+                }
+            }
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)
