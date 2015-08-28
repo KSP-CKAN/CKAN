@@ -619,6 +619,20 @@ namespace CKAN
             }
         }
 
+        public sealed class UserRequestedDepends : SelectionReason
+        {
+            public UserRequestedDepends(CkanModule module)
+            {
+                if (module == null) throw new ArgumentNullException();
+                Parent = module;
+            }
+
+            public override string Reason
+            {
+                get { return "  Requested by user to satisfy dependency from " + Parent.name + ".\n"; }
+            }
+        }
+
         public sealed class Recommended : SelectionReason
         {
             public Recommended(CkanModule module)
