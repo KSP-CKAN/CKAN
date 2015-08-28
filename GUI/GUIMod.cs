@@ -207,8 +207,8 @@ namespace CKAN
             IsUpgradeChecked = value;
             if (old_value != value)
             {
-                update_cell.Value = value;
                 Main.Instance.AddUserRequestedChange(this, GUIModChangeType.Update);
+                update_cell.Value = value;
             }
         }
 
@@ -223,9 +223,9 @@ namespace CKAN
             if (changeTo != IsInstallChecked)
             {
                 IsInstallChecked = changeTo;
-                install_cell.Value = IsInstallChecked;
-                Main.Instance.AddUserRequestedChange(this, 
+                Main.Instance.AddUserRequestedChange(this,
                     IsInstallChecked ? GUIModChangeType.Install : GUIModChangeType.Remove);
+                install_cell.Value = IsInstallChecked;
             }
         }
 
