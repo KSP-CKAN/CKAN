@@ -1018,15 +1018,16 @@ namespace CKAN
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
-                string modname = ((GUIMod)row.Tag).Name;
+                GUIMod mod = row.Tag as GUIMod;
                 bool row_match = false;
                 if (exactMatch)
                 {
-                    row_match = modname == key;
+                    row_match = mod.Name == key;
                 }
                 else
                 {
-                    row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
+                        mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
                 if (row_match && first_match == null)
                 {
