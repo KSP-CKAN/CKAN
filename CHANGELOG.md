@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [All] When installing and uninstalling mods, the mod name and version will be used rather than the internal identifier. (Postremus, #1401)
 - [GUI] The GUI changeset screen now provides explanations as to why changes are being made. (Postremus, #1412)
 
 ### Internal
