@@ -24,6 +24,13 @@ namespace CKAN
             this.uri = new Uri(uri);
         }
 
+        public Repository(string name, string uri, int priority)
+        {
+            this.name = name;
+            this.uri = new Uri(uri);
+            this.priority = priority;
+        }
+
         public Repository(string name, Uri uri)
         {
             this.name = name;

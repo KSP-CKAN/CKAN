@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] Re-ordering repositories in the settings panel is more stable. (Postremus, #1431)
+
 ### Features
 
 - [GUI] The GUI changeset screen now provides explanations as to why changes are being made. (Postremus, #1412)
