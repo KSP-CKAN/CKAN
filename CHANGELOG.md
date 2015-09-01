@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Re-ordering repositories in the settings panel is more stable. (Postremus, #1431)
+- [Core] Less likely to remove essential directories (such as `Ships/*`) if empty. (Postremus, #1405)
 
 ### Features
 

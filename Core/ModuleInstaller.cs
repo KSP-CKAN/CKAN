@@ -792,9 +792,14 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
-                        // Skip Ships/VAB ans Ships/SPH
-                        if (directory == KSPPathUtils.ToAbsolute("VAB", ksp.Ships())
-                            || directory == KSPPathUtils.ToAbsolute("SPH", ksp.Ships()))
+                        // It is bad if any of this directories get's removed
+                        // So we protect them
+                        if (directory == ksp.Tutorial() || directory == ksp.ShipsVab()
+                            || directory == ksp.ShipsSph() || directory == ksp.Ships()
+                            || directory == ksp.Scenarios() || directory == ksp.GameData()
+                            || directory == ksp.GameDir() || directory == ksp.CkanDir()
+                            || directory == ksp.ShipsThumbs() || directory == ksp.ShipsThumbsVAB()
+                            || directory == ksp.ShipsThumbsSPH())
                         {
                             continue;
                         }
