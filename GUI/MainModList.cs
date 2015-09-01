@@ -146,13 +146,15 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.Installed));
             FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
+            FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Cached));
+            FilterToolButton.DropDownItems[4].Text = String.Format("New in repository ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
+            FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
+            FilterToolButton.DropDownItems[6].Text = String.Format("Incompatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-            FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
+            FilterToolButton.DropDownItems[7].Text = String.Format("All ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.All));
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
@@ -409,6 +411,8 @@ namespace CKAN
                     return Modules.Count(m => m.IsInstalled);
                 case GUIModFilter.InstalledUpdateAvailable:
                     return Modules.Count(m => m.HasUpdate);
+                case GUIModFilter.Cached:
+                    return Modules.Count(m => m.IsCached);
                 case GUIModFilter.NewInRepository:
                     return Modules.Count(m => m.IsNew);
                 case GUIModFilter.NotInstalled:
@@ -490,6 +494,8 @@ namespace CKAN
                     return m.IsInstalled;
                 case GUIModFilter.InstalledUpdateAvailable:
                     return m.IsInstalled && m.HasUpdate;
+                case GUIModFilter.Cached:
+                    return m.IsCached;
                 case GUIModFilter.NewInRepository:
                     return m.IsNew;
                 case GUIModFilter.NotInstalled:

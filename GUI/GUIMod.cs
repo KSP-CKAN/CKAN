@@ -21,6 +21,7 @@ namespace CKAN
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public bool IsCached { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
@@ -154,6 +155,9 @@ namespace CKAN
                 DownloadSize = "1<KB";
             else
                 DownloadSize = mod.download_size / 1024+"";
+
+            if (Main.Instance != null)
+                IsCached = Main.Instance.CurrentInstance.Cache.IsCachedZip(mod.download);
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
