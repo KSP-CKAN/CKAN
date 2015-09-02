@@ -1020,6 +1020,7 @@ namespace CKAN
             this.Mod,
             this.ChangeType,
             this.Reason});
+            this.ChangesListView.FullRowSelect = true;
             this.ChangesListView.Location = new System.Drawing.Point(-1, 0);
             this.ChangesListView.Name = "ChangesListView";
             this.ChangesListView.Size = new System.Drawing.Size(1022, 611);
@@ -1181,6 +1182,7 @@ namespace CKAN
             this.columnHeader3,
             this.columnHeader4,
             this.columnHeader5});
+            this.RecommendedModsListView.FullRowSelect = true;
             this.RecommendedModsListView.Location = new System.Drawing.Point(6, 29);
             this.RecommendedModsListView.Name = "RecommendedModsListView";
             this.RecommendedModsListView.Size = new System.Drawing.Size(1007, 582);
@@ -1251,6 +1253,7 @@ namespace CKAN
             this.ChooseProvidedModsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader6,
             this.columnHeader8});
+            this.ChooseProvidedModsListView.FullRowSelect = true;
             this.ChooseProvidedModsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.ChooseProvidedModsListView.Location = new System.Drawing.Point(6, 28);
             this.ChooseProvidedModsListView.MultiSelect = false;
