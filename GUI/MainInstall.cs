@@ -304,7 +304,7 @@ namespace CKAN
             return true;
         }
 
-        private void OnModInstalled(Module mod)
+        private void OnModInstalled(CkanModule mod)
         {
             AddStatusMessage("Module \"{0}\" successfully installed", mod.name);
         }
@@ -377,7 +377,7 @@ namespace CKAN
 
             ChooseProvidedModsListView.ItemChecked += ChooseProvidedModsListView_ItemChecked;
 
-            foreach (Module module in tooManyProvides.modules)
+            foreach (CkanModule module in tooManyProvides.modules)
             {
                 ListViewItem item = new ListViewItem {Tag = module, Checked = false, Text = module.name};
 
@@ -452,7 +452,7 @@ namespace CKAN
 
             foreach (var pair in mods)
             {
-                Module module;
+                CkanModule module;
 
                 try
                 {
@@ -524,7 +524,7 @@ namespace CKAN
             {
                 if (item.Checked)
                 {
-                    var identifier = ((Module) item.Tag).identifier;
+                    var identifier = ((CkanModule) item.Tag).identifier;
                     toInstall.Add(identifier);
                 }
             }

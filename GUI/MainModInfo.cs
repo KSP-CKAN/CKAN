@@ -21,7 +21,7 @@ namespace CKAN
 
         private void UpdateModInfo(GUIMod gui_module)
         {
-            Module module = gui_module.ToModule();
+            CkanModule module = gui_module.ToModule();
 
             Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = gui_module.Name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = gui_module.LatestVersion.ToString());
@@ -52,9 +52,9 @@ namespace CKAN
             Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
         }
 
-        private HashSet<Module> alreadyVisited = new HashSet<Module>();
+        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
 
-        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, Module module, RelationshipType relationship, int depth, bool virtualProvides = false)
+        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
         {
             if (module == null
                 || (depth > 0 && dependencyGraphRootModule == module)
@@ -147,7 +147,7 @@ namespace CKAN
             return node;
         }
 
-        private void UpdateModDependencyGraph(Module module)
+        private void UpdateModDependencyGraph(CkanModule module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
@@ -158,11 +158,11 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
-        private Module dependencyGraphRootModule;
+        private CkanModule dependencyGraphRootModule;
 
         private void _UpdateModDependencyGraph()
         {
-            var module = (Module) ModInfoTabControl.Tag;
+            var module = (CkanModule) ModInfoTabControl.Tag;
             dependencyGraphRootModule = module;
 
 
@@ -189,7 +189,7 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(Module module, bool force = false)
+        private void UpdateModContentsTree(CkanModule module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
@@ -200,7 +200,7 @@ namespace CKAN
             Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(force));
         }
 
-        private Module current_mod_contents_module;
+        private CkanModule current_mod_contents_module;
 
         private void _UpdateModContentsTree(bool force = false)
         {

@@ -6,7 +6,7 @@ namespace CKAN
 {
     public sealed class GUIMod
     {
-        private Module Mod { get; set; }
+        private CkanModule Mod { get; set; }
 
         public string Name
         {
@@ -42,7 +42,7 @@ namespace CKAN
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(Module mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
@@ -156,11 +156,6 @@ namespace CKAN
                 DownloadSize = mod.download_size / 1024+"";
         }
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
-            : this((Module) mod, registry, current_ksp_version)
-        {
-        }
-
         public CkanModule ToCkanModule()
         {
             if (!IsCKAN) throw new InvalidCastException("Method can not be called unless IsCKAN");
@@ -168,7 +163,7 @@ namespace CKAN
             return mod;
         }
 
-        public Module ToModule()
+        public CkanModule ToModule()
         {
             return Mod;
         }
@@ -187,7 +182,7 @@ namespace CKAN
             return null;
         }
 
-        public static implicit operator Module(GUIMod mod)
+        public static implicit operator CkanModule(GUIMod mod)
         {
             return mod.ToModule();
         }

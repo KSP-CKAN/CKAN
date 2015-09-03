@@ -90,6 +90,8 @@ namespace CKAN
                     )
             };
 
+            
+
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
             log.DebugFormat("Loaded CKAN registry at {0}", path);

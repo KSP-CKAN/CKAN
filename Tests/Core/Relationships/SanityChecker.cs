@@ -84,7 +84,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ConflictWithDll()
         {
-            var mods = new List<Module> { registry.LatestAvailable("SRL",null) };
+            var mods = new List<CkanModule> { registry.LatestAvailable("SRL",null) };
             var dlls = new List<string> { "QuickRevert" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
@@ -94,7 +94,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ModulesToProvides()
         {
-            var mods = new List<Module>
+            var mods = new List<CkanModule>
             {
                 registry.LatestAvailable("CustomBiomes",null),
                 registry.LatestAvailable("CustomBiomesKerbal",null),
@@ -112,7 +112,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void FindUnmetDependencies()
         {
-            var mods = new List<Module>();
+            var mods = new List<CkanModule>();
             var dlls = Enumerable.Empty<string>();
             Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "Empty list");
 
@@ -134,7 +134,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReverseDepends()
         {
-            var mods = new List<Module>
+            var mods = new List<CkanModule>
             {
                 registry.LatestAvailable("CustomBiomes",null),
                 registry.LatestAvailable("CustomBiomesKerbal",null),
@@ -171,7 +171,7 @@ namespace Tests.Core.Relationships
 
         }
 
-        private static void TestDepends(List<string> to_remove, List<Module> mods, List<string> dlls, List<string> expected, string message)
+        private static void TestDepends(List<string> to_remove, List<CkanModule> mods, List<string> dlls, List<string> expected, string message)
         {
             dlls = dlls ?? new List<string>();
 
