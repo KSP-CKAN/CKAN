@@ -909,9 +909,10 @@ namespace CKAN
                 // Sneakily add our version in...
                 registry_manager.registry.AddAvailable(module);
 
-                var changeset = new List<KeyValuePair<GUIMod, GUIModChangeType>>();
-                changeset.Add(new KeyValuePair<GUIMod, GUIModChangeType>(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()), GUIModChangeType.Install));
+                var changeset = new List<ModChange>();
+                changeset.Add(new ModChange(
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
 
@@ -919,7 +920,7 @@ namespace CKAN
                 install_ops.with_recommends = false;
 
                 m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
+                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 
