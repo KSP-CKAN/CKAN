@@ -84,19 +84,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Finds the KSP path under Steam. Returns null if the folder cannot be located.
+        /// Finds the KSP path under a Steam Libary. Returns null if the folder cannot be located.
         /// </summary>
+        /// <param name="steam_path">Steam Libary Path</param>
         /// <returns>The KSP path.</returns>
-        public static string KSPSteamPath()
+        public static string KSPDirectory(string steam_path)
         {
-            // Attempt to get the Steam path.
-            string steam_path = SteamPath();
-
-            if (steam_path == null)
-            {
-                return null;
-            }
-
             // There are several possibilities for the path under Linux.
             // Try with the uppercase version.
             string ksp_path = Path.Combine(steam_path, "SteamApps", "common", "Kerbal Space Program");
@@ -113,6 +106,62 @@ namespace CKAN
             {
                 return ksp_path;
             }
+
+            return null;
+
+        }
+
+        /// <summary>
+        /// Finds the Steam KSP path. Returns null if the folder cannot be located.
+        /// </summary>
+        /// <returns>The KSP path.</returns>
+        public static string KSPSteamPath()
+        {
+            // Attempt to get the Steam path.
+            string steam_path = SteamPath();
+
+            if (steam_path == null)
+            {
+                return null;
+            }
+
+            //Default steam libary
+            string ksp_path = KSPDirectory(steam_path);
+            if(ksp_path != null)
+            {
+                return ksp_path;
+            }
+
+            //Attempt to find through config file
+            string config_path = Path.Combine(steam_path, "config", "config.vdf");
+            if (File.Exists(config_path))
+            {
+                log.InfoFormat("Found Steam config file at {0}", config_path);
+                StreamReader reader = new StreamReader(config_path);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    // Found Steam library
+                    if (line.Contains("BaseInstallFolder"))
+                    {
+                        
+                        //TODO: more robust parsing (currently assumes config file is valid)
+                        string[] split_line = line.Split('"');
+
+                        log.DebugFormat("Found a Steam Libary Location at {0}", split_line[3]);
+
+                        ksp_path = KSPDirectory(split_line[3]);
+                        if (ksp_path!= null)
+                        {
+                            log.InfoFormat("Found a KSP install at {0}", ksp_path);
+                            return ksp_path;
+                        }
+                       
+                    }
+                }
+
+            }
+            
 
             // Could not locate the folder.
             return null;
