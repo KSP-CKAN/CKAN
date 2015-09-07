@@ -473,6 +473,9 @@ namespace Tests.Core
         [TestCase("Ships")]
         [TestCase("Ships/VAB")]
         [TestCase("Ships/SPH")]
+        [TestCase("Ships/@thumbs")]
+        [TestCase("Ships/@thumbs/VAB")]
+        [TestCase("Ships/@thumbs/SPH")]
         public void AllowsInstallsToShipsDirectories(string directory)
         {
             // Arrange

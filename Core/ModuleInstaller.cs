@@ -442,6 +442,15 @@ namespace CKAN
                     case "Ships/SPH":
                         installDir = ksp == null ? null : ksp.ShipsSph();
                         break;
+                    case "Ships/@thumbs":
+                        installDir = ksp == null ? null : ksp.ShipsThumbs();
+                        break;
+                    case "Ships/@thumbs/VAB":
+                        installDir = ksp == null ? null : ksp.ShipsThumbsVAB();
+                        break;
+                    case "Ships/@thumbs/SPH":
+                        installDir = ksp == null ? null : ksp.ShipsThumbsSPH();
+                        break;
                     default:
                         throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
                 }
