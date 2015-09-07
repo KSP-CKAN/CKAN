@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+### Features
+
+### Internal
+
+## v1.14.1 (Eris)
+
+### Bugfixes
+
 - [GUI] Re-ordering repositories in the settings panel is more stable. (Postremus, #1431)
 - [GUI] Fixed an unhandled exception that could occur when installing metapages via `Install -> From .ckan`. (Postremus, #1436)
 - [Core] Less likely to remove essential directories (such as `Ships/*`) if empty. (Postremus, #1405)
