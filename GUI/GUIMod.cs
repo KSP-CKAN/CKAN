@@ -4,6 +4,10 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
+    /// <summary>
+    /// An encapsulation of not just a module, but oodles of additional helpers
+    /// used by the GUI for display.
+    /// </summary>
     public sealed class GUIMod
     {
         private Module Mod { get; set; }

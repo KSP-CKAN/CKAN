@@ -27,6 +27,10 @@ namespace CKAN
         All = 6
     }
 
+    /// <summary>
+    /// An enumeration of changes that can be made to mods,
+    /// including install, remove, update, and no change.
+    /// </summary>
     public enum GUIModChangeType
     {
         None = 0,
@@ -735,13 +739,29 @@ namespace CKAN
             ChangeSet = full_change_set ?? new List<ModChange>();
         }
 
+        /// <summary>
+        /// Intelligently updates userRequestedChangeSet with the change provided.
+        /// </summary>
         public void AddUserRequestedChange(GUIMod mod, GUIModChangeType type, SelectionReason reason = null)
         {
             ModChange change = new ModChange(mod, type, reason);
+
+            // Check to see if we've already got a change scheduled for this mod.
             ModChange oldChange = userRequestedChangeSet.FirstOrDefault(c => c.Mod.Identifier == mod.Identifier);
+
+            // If we didn't previously have a change scheduled, or this change is a different type, then
+            // we need to do extra work.
             if (oldChange == null || oldChange.ChangeType != type)
             {
+                // Clear the existing change. This works because changes are considered 'equal' if their
+                // identifiers are equal. This is a no-op if the change was not already in the list.
                 userRequestedChangeSet.Remove(change);
+
+                // If there was no previous change, or if the change is an update, we add it
+                // back in.
+                //
+                // XXX: If there was a previous change that *wasn't* an update, and we now have
+                // a change that's been request, is it just lost?
                 if (oldChange == null || oldChange.ChangeType == GUIModChangeType.Update)
                 {
                     userRequestedChangeSet.Add(change);
