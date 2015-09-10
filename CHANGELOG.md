@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
+
 ### Internal
 
 ## v1.14.1 (Eris)

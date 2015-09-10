@@ -61,7 +61,7 @@ namespace CKAN
             // rows in DataGridView.
 
             var rows = new DataGridViewRow[mainModList.full_list_of_mod_rows.Count];
-            mainModList.full_list_of_mod_rows.CopyTo(rows, 0);
+            mainModList.full_list_of_mod_rows.Values.CopyTo(rows, 0);
             // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
             GUIMod selected_mod = null;
@@ -136,8 +136,12 @@ namespace CKAN
                     gui_mod.IsNew = true;
                 }
             }
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
-            mainModList.ConstructModList(mainModList.Modules);
+
+            // Update our mod listing. If we're doing a repo update, then we don't refresh
+            // all (in case the user has selected changes they wish to apply).
+            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated);
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(
+                mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
             //TODO Consider using smart enum patten so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
@@ -166,14 +170,16 @@ namespace CKAN
 
         private void _MarkModForInstall(string identifier, bool uninstall)
         {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows)
+            if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
             {
-                var mod = (GUIMod) row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    mod.SetInstallChecked(row,!uninstall);
-                    break;
-                }
+                return;
+            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+
+            var mod = (GUIMod)row.Tag;
+            if (mod.Identifier == identifier)
+            {
+                mod.SetInstallChecked(row, !uninstall);
             }
         }
 
@@ -229,7 +235,8 @@ namespace CKAN
 
     public class MainModList
     {
-        internal List<DataGridViewRow> full_list_of_mod_rows;
+        //identifier, row
+        internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
             IUser user = null)
@@ -421,11 +428,36 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
 
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
+        /// <summary>
+        /// Constructs the mod list suitable for display to the user.
+        /// This manipulates <c>full_list_of_mod_rows</c> as it runs, and by default
+        /// will only update entries which have changed or were previously missing.
+        /// (Set <c>refreshAll</c> to force update everything.)
+        /// </summary>
+        /// <returns>The mod list.</returns>
+        /// <param name="modules">A list of modules that may require updating</param>
+        /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false)
         {
-            full_list_of_mod_rows = new List<DataGridViewRow>();
-            foreach (var mod in modules)
+
+            if (refreshAll || full_list_of_mod_rows == null)
             {
+                full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
+            }
+
+            // We're only going to update the status of rows that either don't already exist,
+            // or which exist but have changed their latest version.
+            //
+            // TODO: Will this catch a mod where the latest version number remains the same, but
+            // another part of the metadata (eg: dependencies or description) has changed?
+            IEnumerable<GUIMod> rowsToUpdate = modules.Where(
+                mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
+                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion);
+
+            // Let's update our list!
+            foreach (var mod in rowsToUpdate)
+            {
+                full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
                 var installed_cell = mod.IsInstallable()
@@ -461,9 +493,10 @@ namespace CKAN
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                full_list_of_mod_rows.Add(item);
+                
+                full_list_of_mod_rows.Add(mod.Identifier, item);
             }
-            return full_list_of_mod_rows;
+            return full_list_of_mod_rows.Values;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
