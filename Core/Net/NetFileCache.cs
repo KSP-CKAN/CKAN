@@ -11,20 +11,10 @@ using System.Diagnostics;
 namespace CKAN
 {
 
-
-    /*
-     * This class allows us to cache downloads by URL
-     * It works using two directories - one to store downloads in-progress, and one to commit finished downloads
-     * URLs are cached by hashing them by taking the first 8 chars of the url's SHA1 hash.
-     *
-     * To use this class the user would have to:
-     * - Obtain a temporary download path by calling GetTemporaryPathForURL(url)
-     * - Initiate his download in this temporary path
-     * - Call CommitDownload(url, desired_filename) which will move the temporary file to the final location
-     * - The final file will be named such as <hash>-<filename>.zip
-     * - The user can call IsCached(url) to check if a particular url exists in the cache
-     * and GetCachedFilename() to get its filename
-     */
+    /// <summary>
+    /// A local cache dedicated to storing and retrieving files based upon their
+    /// URL.
+    /// </summary>
     public class NetFileCache
     {
         private string cachePath;
