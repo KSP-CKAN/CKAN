@@ -24,7 +24,8 @@ namespace CKAN
         NewInRepository = 3,
         NotInstalled = 4,
         Incompatible = 5,
-        All = 6
+        All = 6,
+        Cached = 7
     }
 
     public enum GUIModChangeType
@@ -741,6 +742,11 @@ namespace CKAN
             Filter(GUIModFilter.InstalledUpdateAvailable);
         }
 
+        private void cachedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filter(GUIModFilter.Cached);
+        }
+
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
             Filter(GUIModFilter.NewInRepository);
@@ -773,6 +779,8 @@ namespace CKAN
                 FilterToolButton.Text = "Filter (Installed)";
             else if (filter == GUIModFilter.InstalledUpdateAvailable)
                 FilterToolButton.Text = "Filter (Upgradeable)";
+            else if (filter == GUIModFilter.Cached)
+                FilterToolButton.Text = "Filter (Cached)";
             else if (filter == GUIModFilter.NewInRepository)
                 FilterToolButton.Text = "Filter (New)";
             else if (filter == GUIModFilter.NotInstalled)

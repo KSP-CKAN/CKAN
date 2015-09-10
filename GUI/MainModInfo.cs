@@ -218,7 +218,7 @@ namespace CKAN
             {
                 current_mod_contents_module = module;
             }
-            if (!manager.CurrentInstance.Cache.IsCachedZip(module.download))
+            if (!guiMod.IsCached)
             {
                 NotCachedLabel.Text = "This mod is not in the cache, click 'Download' to preview contents";
                 ContentsDownloadButton.Enabled = true;
