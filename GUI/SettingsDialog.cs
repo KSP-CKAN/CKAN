@@ -43,11 +43,14 @@ namespace CKAN
 
         private void RefreshReposListBox()
         {
-            m_sortedRepos = new List<Repository>();
-            foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
+            // Give the Repository the priority it
+            // currently has in the gui
+            for (int i = 0; i < m_sortedRepos.Count; i++)
             {
-                m_sortedRepos.Add(item.Value);
+                m_sortedRepos[i].priority = i;
             }
+
+            m_sortedRepos = new List<Repository>(Main.Instance.CurrentInstance.Registry.Repositories.Values);
 
             m_sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
             ReposListBox.Items.Clear();
@@ -161,7 +164,7 @@ namespace CKAN
                         repositories.Remove(name);
                     }
 
-                    repositories.Add(name, new Repository(name, url));
+                    repositories.Add(name, new Repository(name, url, m_sortedRepos.Count));
                     Main.Instance.CurrentInstance.Registry.Repositories = repositories;
 
                     RefreshReposListBox();
@@ -186,8 +189,8 @@ namespace CKAN
             }
 
             var item = m_sortedRepos[ReposListBox.SelectedIndex];
-            var aboveItem = m_sortedRepos[ReposListBox.SelectedIndex - 1];
-            item.priority = aboveItem.priority - 1;
+            m_sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            m_sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
             RefreshReposListBox();
         }
 
@@ -204,8 +207,8 @@ namespace CKAN
             }
 
             var item = m_sortedRepos[ReposListBox.SelectedIndex];
-            var belowItem = m_sortedRepos[ReposListBox.SelectedIndex + 1];
-            item.priority = belowItem.priority + 1;
+            m_sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            m_sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
             RefreshReposListBox();
         }
 

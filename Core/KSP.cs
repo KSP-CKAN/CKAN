@@ -234,47 +234,86 @@ namespace CKAN
 
         public string GameData()
         {
-            return Path.Combine(GameDir(), "GameData");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "GameData")
+            );
         }
 
         public string CkanDir()
         {
-            return Path.Combine(GameDir(), "CKAN");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "CKAN")
+            );
         }
 
         public string DownloadCacheDir()
         {
-            return Path.Combine(CkanDir(), "downloads");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(CkanDir(), "downloads")
+            );
         }
 
         public string Ships()
         {
-            return Path.Combine(GameDir(), "Ships");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "Ships")
+            );
         }
 
         public string ShipsVab()
         {
-            return Path.Combine(Ships(), "VAB");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(Ships(), "VAB")
+            );
         }
 
         public string ShipsSph()
         {
-            return Path.Combine(Ships(), "SPH");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(Ships(), "SPH")
+            );
+        }
+
+        public string ShipsThumbs()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(Ships(), "@thumbs")
+            );
+        }
+
+        public string ShipsThumbsSPH()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(ShipsThumbs(), "SPH")
+            );
+        }
+
+        public string ShipsThumbsVAB()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(ShipsThumbs(), "VAB")
+            );
         }
 
         public string Tutorial()
         {
-            return Path.Combine(GameDir(), "saves", "training");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "saves", "training")
+            );
         }
 
         public string Scenarios()
         {
-            return Path.Combine(GameDir(), "saves", "scenarios");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "saves", "scenarios")
+            );
         }
 
         public string TempDir()
         {
-            return Path.Combine(CkanDir(), "temp");
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(CkanDir(), "temp")
+            );
         }
 
         public KSPVersion Version()

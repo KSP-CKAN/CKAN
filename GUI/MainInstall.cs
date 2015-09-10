@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    using ModChanges = List<KeyValuePair<GUIMod, GUIModChangeType>>;
+    using ModChanges = List<ModChange>;
     public partial class Main
     {
         private BackgroundWorker m_InstallWorker;
@@ -39,18 +39,18 @@ namespace CKAN
             var toUpgrade = new HashSet<string>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
-            foreach (KeyValuePair<GUIMod, GUIModChangeType> change in opts.Key)
+            foreach (ModChange change in opts.Key)
             {
-                switch (change.Value)
+                switch (change.ChangeType)
                 {
                     case GUIModChangeType.Remove:
-                        toUninstall.Add(change.Key.Identifier);
+                        toUninstall.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Update:
-                        toUpgrade.Add(change.Key.Identifier);
+                        toUpgrade.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Install:
-                        toInstall.Add(change.Key.Identifier);
+                        toInstall.Add(change.Mod.Identifier);
                         break;
                 }
             }
@@ -62,10 +62,10 @@ namespace CKAN
 
             foreach (var change in opts.Key)
             {
-                if (change.Value == GUIModChangeType.Install)
+                if (change.ChangeType == GUIModChangeType.Install)
                 {
-                    AddMod(change.Key.ToModule().recommends, recommended, change.Key.Identifier, registry);
-                    AddMod(change.Key.ToModule().suggests, suggested, change.Key.Identifier, registry);
+                    AddMod(change.Mod.ToModule().recommends, recommended, change.Mod.Identifier, registry);
+                    AddMod(change.Mod.ToModule().suggests, suggested, change.Mod.Identifier, registry);
                 }
             }
 
@@ -322,7 +322,7 @@ namespace CKAN
                 {
                     foreach (var mod in result.Value)
                     {
-                        modChangedCallback(mod.Key, mod.Value);
+                        modChangedCallback(mod.Mod, mod.ChangeType);
                     }
                 }
 
@@ -343,18 +343,18 @@ namespace CKAN
 
                 var opts = result.Value;
 
-                foreach (KeyValuePair<GUIMod, GUIModChangeType> opt in opts)
+                foreach (ModChange opt in opts)
                 {
-                    switch (opt.Value)
+                    switch (opt.ChangeType)
                     {
                         case GUIModChangeType.Install:
-                            MarkModForInstall(opt.Key.Identifier);
+                            MarkModForInstall(opt.Mod.Identifier);
                             break;
                         case GUIModChangeType.Update:
-                            MarkModForUpdate(opt.Key.Identifier);
+                            MarkModForUpdate(opt.Mod.Identifier);
                             break;
                         case GUIModChangeType.Remove:
-                            MarkModForInstall(opt.Key.Identifier, true);
+                            MarkModForInstall(opt.Mod.Identifier, true);
                             break;
                     }
                 }
@@ -434,6 +434,7 @@ namespace CKAN
                     "The following modules have been recommended by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
+                RecommendedModsToggleCheckbox.Checked=true;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
             }
             else
@@ -442,6 +443,7 @@ namespace CKAN
                     "The following modules have been suggested by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
+                RecommendedModsToggleCheckbox.Checked=false;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
 

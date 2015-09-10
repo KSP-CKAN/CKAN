@@ -1,0 +1,9 @@
+Nothing crashes! Halp!
+    -- pjf, #1226
+%
+netkan-bot has decided to make a whole bunch of commits [systematically
+deleting our entire CKAN-meta repository]
+
+This is less than ideal.
+
+    -- dbent, #979

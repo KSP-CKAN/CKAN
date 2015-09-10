@@ -73,10 +73,10 @@ namespace CKAN
         private DateTime lastSearchTime;
         private string lastSearchKey;
 
-        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> change_set;
+        private IEnumerable<ModChange> change_set;
         private Dictionary<GUIMod, string> conflicts;
 
-        private IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> ChangeSet
+        private IEnumerable<ModChange> ChangeSet
         {
             get { return change_set; }
             set
@@ -691,7 +691,7 @@ namespace CKAN
 
         private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
-            IEnumerable<KeyValuePair<GUIMod, GUIModChangeType>> full_change_set = null;
+            IEnumerable<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
 
             bool too_many_provides_thrown = false;
@@ -910,9 +910,10 @@ namespace CKAN
                 // Sneakily add our version in...
                 registry_manager.registry.AddAvailable(module);
 
-                var changeset = new List<KeyValuePair<GUIMod, GUIModChangeType>>();
-                changeset.Add(new KeyValuePair<GUIMod, GUIModChangeType>(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()), GUIModChangeType.Install));
+                var changeset = new List<ModChange>();
+                changeset.Add(new ModChange(
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
 
@@ -920,7 +921,7 @@ namespace CKAN
                 install_ops.with_recommends = false;
 
                 m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
+                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 

@@ -107,6 +107,7 @@
     <Compile Include="MainWait.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ModChange.cs" />
     <Compile Include="NewUpdateDialog.cs">
       <SubType>Form</SubType>
     </Compile>

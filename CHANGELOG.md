@@ -6,13 +6,42 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] Numerical columns can now be sorted numerically. (Postremus, #1420)
+
+### Features
+
+- [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
+
+### Internal
+
+## v1.14.1 (Eris)
+
+### Bugfixes
+
+- [GUI] Re-ordering repositories in the settings panel is more stable. (Postremus, #1431)
+- [GUI] Fixed an unhandled exception that could occur when installing metapages via `Install -> From .ckan`. (Postremus, #1436)
+- [Core] Less likely to remove essential directories (such as `Ships/*`) if empty. (Postremus, #1405)
+
+### Features
+
+- [All] When installing and uninstalling mods, the mod name and version will be used rather than the internal identifier. (Postremus, #1401)
+- [GUI] The GUI changeset screen now provides explanations as to why changes are being made. (Postremus, #1412)
+
+### Internal
+
+- [NetKAN] `netkan.exe` will now report its version and exit if run with the `--version` switch. (pjf, #1415)
+
+## v1.14.0 (Mimas)
+
+### Bugfixes
+
 - [GUI] The CKAN client is less likely to believe that *all* mods are new when auto-updating metadata is enabled. (Postremus, #1369)
 - [GUI] The latest CKAN-available version of a mod is always shown in the 'latest' column, even if that mod is not compatible with the installed KSP version. (Postremus, #1396)
 - [GUI] Pressing a key with an empty modlist will no longer crash the client. (Postremus, #1329)
 - [GUI] The 'mark for update' button no longer highlights when the only upgrade candidates are autodetected mods we can't actually upgrade. (Postremus, #1392)
 - [Core] Installing from `.ckan` files (such as exported modlists) is more likely to succeed even when dependencies are complex. (#1337, Postremus)
 - [Cmdline] `ckan.exe --verbose` and `ckan.exe --debug` now start the GUI with the appropriate logging mode. (#1403, Postremus)
-- [Updater] We'll no longer try to download a CKAN release that hasn't finished building its assets yet.
+- [Updater] We'll no longer try to download a CKAN release that hasn't finished building its assets yet. (Postremus, #1397)
 
 ### Features
 
@@ -35,7 +64,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] `netkan.exe` can use regexps to manipulate version strings. (dbent, #1321)
 - [GUI] Refactoring to remove duplicated code. (Postremus, #1362)
 
-## v1.12.0
+## v1.12.0 (Veil Nebula)
 
 ### Bugfixes
 

@@ -187,12 +187,12 @@ namespace CKAN
             {
                 if (!ksp.Cache.IsCachedZip(module.download))
                 {
-                    User.RaiseMessage(" * {0}", module);
+                    User.RaiseMessage(" * {0} {1}", module.name, module.version);
                     downloads.Add(module);
                 }
                 else
                 {
-                    User.RaiseMessage(" * {0} (cached)", module);
+                    User.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
                 }
             }
 
@@ -701,7 +701,8 @@ namespace CKAN
 
             foreach (string mod in goners)
             {
-                User.RaiseMessage(" * {0}", mod);
+                InstalledModule module = registry_manager.registry.InstalledModule(mod);
+                User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
             bool ok = User.RaiseYesNoDialog("\nContinue?");
@@ -792,9 +793,14 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
-                        // Skip Ships/VAB ans Ships/SPH
-                        if (directory == KSPPathUtils.ToAbsolute("VAB", ksp.Ships())
-                            || directory == KSPPathUtils.ToAbsolute("SPH", ksp.Ships()))
+                        // It is bad if any of this directories get's removed
+                        // So we protect them
+                        if (directory == ksp.Tutorial() || directory == ksp.ShipsVab()
+                            || directory == ksp.ShipsSph() || directory == ksp.Ships()
+                            || directory == ksp.Scenarios() || directory == ksp.GameData()
+                            || directory == ksp.GameDir() || directory == ksp.CkanDir()
+                            || directory == ksp.ShipsThumbs() || directory == ksp.ShipsThumbsVAB()
+                            || directory == ksp.ShipsThumbsSPH())
                         {
                             continue;
                         }
