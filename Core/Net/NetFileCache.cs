@@ -73,6 +73,17 @@ namespace CKAN
             return GetCachedZip(url) != null;
         }
 
+        /// <summary>
+        /// Returns true if a file matching the given URL is cached, but makes no
+        /// attempts to check if it's even valid. This is very fast.
+        /// 
+        /// Use IsCachedZip() for a slower but more reliable method.
+        /// </summary>
+        public bool IsMaybeCachedZip(Uri url)
+        {
+            return GetCachedFilename(url) != null;
+        }
+
         /// <summary>>
         /// Returns the filename of an already cached url or null otherwise
         /// </summary>
@@ -101,7 +112,7 @@ namespace CKAN
         /// validation failed.
         ///
         /// Test data toggles if low level crc checks should be done. This can
-        ///  take time on order of seconds for larger zip files.
+        /// take time on order of seconds for larger zip files.
         /// </summary>
         public string GetCachedZip(Uri url, bool test_data = false)
         {
