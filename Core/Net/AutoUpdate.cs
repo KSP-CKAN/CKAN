@@ -125,6 +125,11 @@ namespace CKAN
             Environment.Exit(0);
         }
 
+        /// <summary>
+        /// Extracts the first downloadable asset (either the ckan.exe or its updater)
+        /// from the provided github API response
+        /// </summary>
+        /// <returns>The URL to the downloadable asset.</returns>
         internal Uri RetrieveUrl(dynamic response)
         {
             if (response.assets.Count == 0)
@@ -135,6 +140,13 @@ namespace CKAN
             return new Uri(assets.browser_download_url.ToString());
         }
 
+        /// <summary>
+        /// Fetches the URL provided, and de-serialises the returned JSON
+        /// data structure into a dynamic object.
+        /// 
+        /// May throw an exception (especially a WebExeption) on failure.
+        /// </summary>
+        /// <returns>A dynamic object representing the JSON we fetched.</returns>
         internal dynamic MakeRequest(Uri url)
         {
             var web = new WebClient();
