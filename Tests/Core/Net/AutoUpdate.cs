@@ -17,20 +17,14 @@ namespace Tests.Core.AutoUpdate
         {
             Assert.Throws<CKAN.Kraken>(delegate
                 {
-                    CKAN.AutoUpdate.FetchCkanUrl(test_ckan_release);
+                    Fetch(test_ckan_release);
                 }
             );
         }
 
-        [Test]
-        [Category("Online")]
-        public void FetchUpdaterUrl()
+        private void Fetch(Uri url)
         {
-            Assert.Throws<CKAN.Kraken>(delegate
-                {
-                    CKAN.AutoUpdate.FetchUpdaterUrl(test_ckan_release);
-                }
-            );
+            CKAN.AutoUpdate.Instance.RetrieveUrl(CKAN.AutoUpdate.Instance.MakeRequest(url));
         }
     }
 }

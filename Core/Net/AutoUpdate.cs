@@ -13,39 +13,74 @@ namespace CKAN
     public class AutoUpdate
     {
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
+        private readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
-        private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
+        private readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
-        private static readonly Uri latestUpdaterReleaseApiUrl = new Uri(
+        private readonly Uri latestUpdaterReleaseApiUrl = new Uri(
             "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
 
-        public static Version FetchLatestCkanVersion()
+        private Uri fetchedUpdaterUrl;
+        private Uri fetchedCkanUrl;
+
+        public Version LatestVersion { get; private set; }
+        public string ReleaseNotes { get; private set; }
+
+        private static AutoUpdate instance;
+
+        public static AutoUpdate Instance
         {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new AutoUpdate();
+                }
+                return instance;
+            }
+            private set { }
+        }
+
+        private AutoUpdate() { }
+
+        public static void ClearCache()
+        {
+            instance = new AutoUpdate();
+        }
+
+        public bool IsFetched()
+        {
+            return LatestVersion != null && fetchedUpdaterUrl != null &&
+                fetchedCkanUrl != null && ReleaseNotes != null;
+        }
+
+        public void FetchLatestReleaseInfo()
+        {
+            var response = MakeRequest(latestCKANReleaseApiUrl);
+
             try
             {
-                FetchUpdaterUrl();
-                FetchCkanUrl();
+                fetchedUpdaterUrl = RetrieveUrl(MakeRequest(latestUpdaterReleaseApiUrl));
+                fetchedCkanUrl = RetrieveUrl(response);
             }
             catch (Kraken)
             {
-                return new Version(Meta.Version());
+                LatestVersion = new Version(Meta.Version());
+                return;
             }
 
-            var response = MakeRequest(latestCKANReleaseApiUrl);
-
-            return new CKANVersion(response.tag_name.ToString(), response.name.ToString());
-        }
-
-        public static string FetchLatestCkanVersionReleaseNotes()
-        {
-            var response = MakeRequest(latestCKANReleaseApiUrl);
             string body = response.body.ToString();
-            return body.Split(new string[] {"\r\n---\r\n"}, StringSplitOptions.None)[1];
+            ReleaseNotes = body.Split(new string[] { "\r\n---\r\n" }, StringSplitOptions.None)[1];
+            LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
-        public static void StartUpdateProcess(bool launchCKANAfterUpdate)
+        public void StartUpdateProcess(bool launchCKANAfterUpdate)
         {
+            if (!IsFetched())
+            {
+                throw new Kraken("You have not fetched the release info yet. Can't update.");
+            }
+
             var pid = Process.GetCurrentProcess().Id;
 
             // download updater app
@@ -53,11 +88,11 @@ namespace CKAN
 
             var web = new WebClient();
             web.Headers.Add("user-agent", Net.UserAgentString);
-            web.DownloadFile(FetchUpdaterUrl(), updaterFilename);
+            web.DownloadFile(fetchedUpdaterUrl, updaterFilename);
 
             // download new ckan.exe
             string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            web.DownloadFile(FetchCkanUrl(), ckanFilename);
+            web.DownloadFile(fetchedCkanUrl, ckanFilename);
 
             var path = Assembly.GetEntryAssembly().Location;
 
@@ -90,28 +125,8 @@ namespace CKAN
             Environment.Exit(0);
         }
 
-        // internal so our test suite can poke it.
-        internal static Uri FetchUpdaterUrl(Uri url = null)
+        internal Uri RetrieveUrl(dynamic response)
         {
-            url = url ?? latestUpdaterReleaseApiUrl;
-
-            var response = MakeRequest(url);
-            if (response.assets.Count == 0)
-            {
-                throw new Kraken("The latest updater isn't uploaded yet.");
-            }
-            var assets = response.assets[0];
-            return new Uri(assets.browser_download_url.ToString());
-        }
-
-        // internal so our test suite can poke it.
-        // TODO: Combine this with FetchUpdaterUrl above, they're
-        // pretty much identical.
-        internal static Uri FetchCkanUrl(Uri url = null)
-        {
-            url = url ?? latestCKANReleaseApiUrl;
-
-            var response = MakeRequest(url);
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
@@ -120,7 +135,7 @@ namespace CKAN
             return new Uri(assets.browser_download_url.ToString());
         }
 
-        private static dynamic MakeRequest(Uri url)
+        internal dynamic MakeRequest(Uri url)
         {
             var web = new WebClient();
             web.Headers.Add("user-agent", Net.UserAgentString);
@@ -136,7 +151,6 @@ namespace CKAN
                 throw;
             }
         }
-
     }
 
 }
