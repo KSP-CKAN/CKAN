@@ -271,18 +271,19 @@ namespace CKAN
                 try
                 {
                     log.Info("Making autoupdate call");
-                    var latest_version = AutoUpdate.FetchLatestCkanVersion();
+                    AutoUpdate.Instance.FetchLatestReleaseInfo();
+                    var latest_version = AutoUpdate.Instance.LatestVersion;
                     var current_version = new Version(Meta.Version());
 
-                    if (latest_version.IsGreaterThan(current_version))
+                    if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
                     {
                         log.Debug("Found higher ckan version");
-                        var release_notes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                        var release_notes = AutoUpdate.Instance.ReleaseNotes;
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             log.Info("Start ckan update");
-                            AutoUpdate.StartUpdateProcess(true);
+                            AutoUpdate.Instance.StartUpdateProcess(true);
                         }
                     }
                 }

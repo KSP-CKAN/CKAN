@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Updater] Checking for updates takes less network resources, and is more resilient to malformed release notes. (Postremus #1410; pjf #1453)
+
 ## v1.14.1 (Eris)
 
 ### Bugfixes
