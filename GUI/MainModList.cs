@@ -21,14 +21,14 @@ namespace CKAN
             // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
             if (this.m_Configuration.SortByColumnIndex < 2)
             {
-                return Sort(rows, CreateCheckboxSorter());
+                return Sort(rows, CheckboxSorter);
             }
             // XXX: Same for Integer columns
             else if (this.m_Configuration.SortByColumnIndex == 7)
             {
-                return Sort(rows, CreateIntegerSorter());
+                return Sort(rows, IntegerSorter);
             }
-            return Sort(rows, CreateDefaultSorter());
+            return Sort(rows, DefaultSorter);
         }
 
         private IEnumerable<DataGridViewRow> Sort<T>(IEnumerable<DataGridViewRow> rows, Func<DataGridViewRow, T> sortFunction)
@@ -48,41 +48,49 @@ namespace CKAN
             return rows.OrderBy(sortFunction).ThenBy(get_row_mod_name);
         }
 
-        private Func<DataGridViewRow, string> CreateDefaultSorter()
+        /// <summary>
+        /// Transforms a DataGridViewRow's into a generic value suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private string DefaultSorter(DataGridViewRow row)
         {
-            return new Func<DataGridViewRow, string>(
-                        row => row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString());
+                return row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString();
         }
 
-        private Func<DataGridViewRow, string> CreateCheckboxSorter()
+        /// <summary>
+        /// Transforms a DataGridViewRow's checkbox status into a value suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private string CheckboxSorter(DataGridViewRow row)
         {
-            return new Func<DataGridViewRow, string>(row =>
+            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+            if (cell.ValueType == typeof(bool))
             {
-                var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
-                if (cell.ValueType == typeof(bool))
-                {
-                    return (bool)cell.Value ? "a" : "b";
-                }
-                // It's a "-" cell so let it be ordered last
-                return "c";
-            });
+                return (bool)cell.Value ? "a" : "b";
+            }
+            // It's a "-" cell so let it be ordered last
+            return "c";
         }
 
-        private Func<DataGridViewRow, int> CreateIntegerSorter()
+        /// <summary>
+        /// Transforms a DataGridViewRow into an integer suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private int IntegerSorter(DataGridViewRow row)
         {
-            return new Func<DataGridViewRow, int>(row =>
-            {
-                var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
 
-                if (cell.Value.ToString() == "N/A")
-                    return -1;
-                else if (cell.Value.ToString() == "1<KB")
-                    return 0;
+            if (cell.Value.ToString() == "N/A")
+                return -1;
+            else if (cell.Value.ToString() == "1<KB")
+                return 0;
 
-                int result = -2;
-                int.TryParse(cell.Value as string, out result);
-                return result;
-            });
+            int result = -2;
+            int.TryParse(cell.Value as string, out result);
+            return result;
         }
 
         private void _UpdateFilters()
