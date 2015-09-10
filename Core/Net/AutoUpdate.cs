@@ -6,10 +6,13 @@ using log4net;
 using Newtonsoft.Json;
 using CKAN.Types;
 
-
 namespace CKAN
 {
 
+    /// <summary>
+    /// CKAN client auto-updating routines. This works in conjunction with the
+    /// auto-update helper to allow users to upgrade.
+    /// </summary>
     public class AutoUpdate
     {
 
@@ -41,6 +44,7 @@ namespace CKAN
             private set { }
         }
 
+        // This is private so we can enforce our class being a singleton.
         private AutoUpdate() { }
 
         public static void ClearCache()
@@ -48,12 +52,20 @@ namespace CKAN
             instance = new AutoUpdate();
         }
 
+        /// <summary>
+        /// Our metadata is considered fetched if we have a latest version, release notes,
+        /// and download URLs for the ckan executable and helper.
+        /// </summary>
         public bool IsFetched()
         {
             return LatestVersion != null && fetchedUpdaterUrl != null &&
                 fetchedCkanUrl != null && ReleaseNotes != null;
         }
 
+        /// <summary>
+        /// Fetches all the latest release info, populating our attributes in
+        /// the process.
+        /// </summary>
         public void FetchLatestReleaseInfo()
         {
             var response = MakeRequest(latestCKANReleaseApiUrl);
@@ -70,6 +82,9 @@ namespace CKAN
             }
 
             string body = response.body.ToString();
+
+            // TODO: What happens if we make a release without three dashes? We should
+            // fall back to using the entire response body.
             ReleaseNotes = body.Split(new string[] { "\r\n---\r\n" }, StringSplitOptions.None)[1];
             LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
