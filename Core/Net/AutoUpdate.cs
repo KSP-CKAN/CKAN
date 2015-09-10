@@ -74,11 +74,16 @@ namespace CKAN
             LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
+        /// <summary>
+        /// Downloads the new ckan.exe version, as well as the updater helper,
+        /// and then launches the helper allowing us to upgrade.
+        /// </summary>
+        /// <param name="launchCKANAfterUpdate">If set to <c>true</c> launch CKAN after update.</param>
         public void StartUpdateProcess(bool launchCKANAfterUpdate)
         {
             if (!IsFetched())
             {
-                throw new Kraken("You have not fetched the release info yet. Can't update.");
+                throw new Kraken("We have not fetched the release info yet. Can't update.");
             }
 
             var pid = Process.GetCurrentProcess().Id;
