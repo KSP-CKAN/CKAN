@@ -8,11 +8,12 @@ namespace Tests.Core.AutoUpdate
     [TestFixture]
     public class AutoUpdate
     {
+        // pjf's repo has no releases, so tests on this URL should fail
         private readonly Uri test_ckan_release = new Uri("https://api.github.com/repos/pjf/CKAN/releases/latest");
 
         [Test]
         [Category("Online")]
-        // We should get a kraken if something exists but has no release yet
+        // We expect a kraken when looking at a URL with no releases.
         public void FetchCkanUrl()
         {
             Assert.Throws<CKAN.Kraken>(delegate
@@ -20,6 +21,22 @@ namespace Tests.Core.AutoUpdate
                     Fetch(test_ckan_release);
                 }
             );
+        }
+
+        [Test]
+        [Category("Online")]
+        // This could fail if run during a release, so it's marked as Flaky.
+        [Category("FlakyNetwork")]
+        public void FetchLatestReleaseInfo()
+        {
+            var updater = CKAN.AutoUpdate.Instance;
+
+            // Is is a *really* basic test to just make sure we get release info
+            // if we ask for it.
+            updater.FetchLatestReleaseInfo();
+            Assert.IsTrue(updater.IsFetched());
+            Assert.IsNotNull(updater.ReleaseNotes);
+            Assert.IsNotNull(updater.LatestVersion);
         }
 
         [Test]
