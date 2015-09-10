@@ -5,6 +5,7 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 using CKAN.Types;
+using System.Linq;
 
 namespace CKAN
 {
@@ -83,10 +84,28 @@ namespace CKAN
 
             string body = response.body.ToString();
 
-            // TODO: What happens if we make a release without three dashes? We should
-            // fall back to using the entire response body.
-            ReleaseNotes = body.Split(new string[] { "\r\n---\r\n" }, StringSplitOptions.None)[1];
+            ReleaseNotes = ExtractReleaseNotes(body);
             LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
+        }
+
+        /// <summary>
+        /// Extracts release notes from the body of text provided by the github API.
+        /// By default this is everything after the first three dashes on a line by
+        /// itself, but as a fallback we'll use the whole body if not found.
+        /// </summary>
+        /// <returns>The release notes.</returns>
+        public string ExtractReleaseNotes(string releaseBody)
+        {
+            string divider = "\r\n---\r\n";
+            string[] notesArray = releaseBody.Split(new string[] { divider }, StringSplitOptions.None);
+
+            if (notesArray.Length > 1)
+            {
+                // Return everything after the first divider, re-joining if necessary.
+                return string.Join(divider, notesArray.Skip(1));
+            }
+
+            return notesArray[0];
         }
 
         /// <summary>

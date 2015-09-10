@@ -22,6 +22,19 @@ namespace Tests.Core.AutoUpdate
             );
         }
 
+        [Test]
+        [TestCase("aaa\r\n---\r\nbbb", "bbb", "Release note marker included")]
+        [TestCase("aaa\r\nbbb", "aaa\r\nbbb", "No release note marker")]
+        [TestCase("aaa\r\n---\r\nbbb\r\n---\r\nccc", "bbb\r\n---\r\nccc", "Multi release notes markers")]
+        public void ExtractReleaseNotes(string body, string expected, string comment)
+        {
+            Assert.AreEqual(
+                expected,
+                CKAN.AutoUpdate.Instance.ExtractReleaseNotes(body),
+                comment
+            );
+        }
+
         private void Fetch(Uri url)
         {
             CKAN.AutoUpdate.Instance.RetrieveUrl(CKAN.AutoUpdate.Instance.MakeRequest(url));
