@@ -30,6 +30,10 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Two ModChanges are considered equal if they are the same object, or
+        /// if their mod identifiers match.
+        /// </summary>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -38,6 +42,9 @@ namespace CKAN
             return (obj as ModChange).Mod.Identifier == Mod.Identifier;
         }
 
+        /// <summary>
+        /// When hashing ModChanges, we hash their identifiers.
+        /// </summary>
         public override int GetHashCode()
         {
             return Mod != null ? Mod.Identifier.GetHashCode() : 0;
