@@ -137,7 +137,9 @@ namespace CKAN
                 }
             }
 
-            mainModList.ConstructModList(gui_mods.ToList(), !repo_updated);
+            // Update our mod listing. If we're doing a repo update, then we don't refresh
+            // all (in case the user has selected changes they wish to apply).
+            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
@@ -429,17 +431,33 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
 
+        /// <summary>
+        /// Constructs the mod list suitable for display to the user.
+        /// This manipulates <c>full_list_of_mod_rows</c> as it runs, and by default
+        /// will only update entries which have changed or were previously missing.
+        /// (Set <c>refreshAll</c> to force update everything.)
+        /// </summary>
+        /// <returns>The mod list.</returns>
+        /// <param name="modules">A list of modules that may require updating</param>
+        /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
         public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false)
         {
+
             if (refreshAll || full_list_of_mod_rows == null)
             {
                 full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
             }
 
+            // We're only going to update the status of rows that either don't already exist,
+            // or which exist but have changed their latest version.
+            //
+            // TODO: Will this catch a mod where the latest version number remains the same, but
+            // another part of the metadata (eg: dependencies or description) has changed?
             IEnumerable<GUIMod> rowsToUpdate = modules.Where(
                 mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
                 mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion);
-            
+
+            // Let's update our list!
             foreach (var mod in rowsToUpdate)
             {
                 full_list_of_mod_rows.Remove(mod.Identifier);
