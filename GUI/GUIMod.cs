@@ -208,12 +208,12 @@ namespace CKAN
             var old_value = (bool) update_cell.Value;
 
             bool value = set_value_to ?? old_value;
-            IsUpgradeChecked = value;
-            if (old_value != value)
+            if (IsUpgradeChecked != value)
             {
                 Main.Instance.AddUserRequestedChange(this, GUIModChangeType.Update);
                 update_cell.Value = value;
             }
+            IsUpgradeChecked = value;
         }
 
         public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
