@@ -40,8 +40,9 @@
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -215,6 +216,9 @@
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -227,7 +231,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\refresh.png" />
