@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] Numerical columns can now be sorted numerically. (Postremus, #1420)
+
 ### Features
 
 - [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
