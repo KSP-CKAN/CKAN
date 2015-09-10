@@ -157,7 +157,7 @@ namespace CKAN
                 DownloadSize = mod.download_size / 1024+"";
 
             if (Main.Instance != null)
-                IsCached = Main.Instance.CurrentInstance.Cache.IsCachedZip(mod.download);
+                IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
