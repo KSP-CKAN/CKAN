@@ -7,26 +7,22 @@ using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Security.Permissions;
 
 namespace CKAN
 {
 
+    /// <summary>
+    /// A local cache dedicated to storing and retrieving files based upon their
+    /// URL.
+    /// </summary>
 
-    /*
-     * This class allows us to cache downloads by URL
-     * It works using two directories - one to store downloads in-progress, and one to commit finished downloads
-     * URLs are cached by hashing them by taking the first 8 chars of the url's SHA1 hash.
-     *
-     * To use this class the user would have to:
-     * - Obtain a temporary download path by calling GetTemporaryPathForURL(url)
-     * - Initiate his download in this temporary path
-     * - Call CommitDownload(url, desired_filename) which will move the temporary file to the final location
-     * - The final file will be named such as <hash>-<filename>.zip
-     * - The user can call IsCached(url) to check if a particular url exists in the cache
-     * and GetCachedFilename() to get its filename
-     */
-    public class NetFileCache
+    // We require fancy permissions to use the FileSystemWatcher
+    [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
+    public class NetFileCache : IDisposable
     {
+        private FileSystemWatcher watcher;
+        private string[] cachedFiles;
         private string cachePath;
         private static readonly TxFileManager tx_file = new TxFileManager();
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
@@ -41,6 +37,58 @@ namespace CKAN
             }
 
             cachePath = _cachePath;
+
+            // Establish a watch on our cache. This means we can cache the directory contents,
+            // and discard that cache if we spot changes.
+            watcher = new FileSystemWatcher(cachePath, "");
+
+            // While we should only care about files appearing and disappearing, I've over-asked
+            // for permissions to get things to work on Mono.
+
+            watcher.NotifyFilter =
+                NotifyFilters.LastWrite | NotifyFilters.LastAccess | NotifyFilters.DirectoryName | NotifyFilters.FileName;
+            
+            // If we spot any changes, we fire our event handler.
+            watcher.Changed += new FileSystemEventHandler(OnCacheChanged);
+            watcher.Created += new FileSystemEventHandler(OnCacheChanged);
+            watcher.Deleted += new FileSystemEventHandler(OnCacheChanged);
+            watcher.Renamed += new RenamedEventHandler(OnCacheChanged);
+
+            // Enable events!
+            watcher.EnableRaisingEvents = true;
+        }
+
+        /// <summary>
+        /// Releases all resource used by the <see cref="CKAN.NetFileCache"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.NetFileCache"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.NetFileCache"/> in an unusable state. After calling
+        /// <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.NetFileCache"/> so the garbage
+        /// collector can reclaim the memory that the <see cref="CKAN.NetFileCache"/> was occupying.</remarks>
+        public void Dispose()
+        {
+            // All we really need to do is clear our FileSystemWatcher.
+            // We disable its event raising capabilities first for good measure.
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
+
+        /// <summary>
+        /// Called from our FileSystemWatcher. Use OnCacheChanged()
+        /// without arguments to signal manually.
+        /// </summary>
+        private void OnCacheChanged(object source, FileSystemEventArgs e)
+        {
+            OnCacheChanged();
+        }
+
+        /// <summary>
+        /// When our cache dirctory changes, we just clear the list of
+        /// files we know about.
+        /// </summary>
+        private void OnCacheChanged()
+        {
+            cachedFiles = null;   
         }
 
         public string GetCachePath()
@@ -73,6 +121,17 @@ namespace CKAN
             return GetCachedZip(url) != null;
         }
 
+        /// <summary>
+        /// Returns true if a file matching the given URL is cached, but makes no
+        /// attempts to check if it's even valid. This is very fast.
+        /// 
+        /// Use IsCachedZip() for a slower but more reliable method.
+        /// </summary>
+        public bool IsMaybeCachedZip(Uri url)
+        {
+            return GetCachedFilename(url) != null;
+        }
+
         /// <summary>>
         /// Returns the filename of an already cached url or null otherwise
         /// </summary>
@@ -82,7 +141,25 @@ namespace CKAN
 
             string hash = CreateURLHash(url);
 
-            foreach (string file in Directory.GetFiles(cachePath))
+            // Use our existing list of files, or retrieve and
+            // store the list of files in our cache. Note that
+            // we copy cachedFiles into our own variable as it
+            // *may* get cleared by OnCacheChanged while we're
+            // using it.
+
+            string[] files = cachedFiles;
+
+            if (files == null)
+            {
+                log.Debug("Rebuilding cache index");
+                cachedFiles = files = Directory.GetFiles(cachePath);
+            }
+
+            // Now that we have a list of files one way or another,
+            // check them to see if we can find the one we're looking
+            // for.
+
+            foreach (string file in files)
             {
                 string filename = Path.GetFileName(file);
                 if (filename.StartsWith(hash))
@@ -101,7 +178,7 @@ namespace CKAN
         /// validation failed.
         ///
         /// Test data toggles if low level crc checks should be done. This can
-        ///  take time on order of seconds for larger zip files.
+        /// take time on order of seconds for larger zip files.
         /// </summary>
         public string GetCachedZip(Uri url, bool test_data = false)
         {
@@ -172,6 +249,9 @@ namespace CKAN
                 tx_file.Copy(path, targetPath, true);
             }
 
+            // We've changed our cache, so signal that immediately.
+            OnCacheChanged();
+
             return targetPath;
         }
 
@@ -187,6 +267,10 @@ namespace CKAN
             if (file != null)
             {
                 tx_file.Delete(file);
+
+                // We've changed our cache, so signal that immediately.
+                OnCacheChanged();
+
                 return true;
             }
 
