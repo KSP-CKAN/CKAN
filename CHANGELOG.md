@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
+- [GUI] Mods can be search by abbreviation by typing directly into the modlist, as well as the search bar. (Postremus, #1430)
 
 ### Internal
 

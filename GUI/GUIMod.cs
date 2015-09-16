@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace CKAN
 {
@@ -36,6 +37,7 @@ namespace CKAN
         public bool IsUpgradeChecked { get; private set; }
         public bool IsNew { get; set; }
         public bool IsCKAN { get; private set; }
+        public string Abbrevation { get; private set; }
 
         public string Version
         {
@@ -154,6 +156,9 @@ namespace CKAN
                 DownloadSize = "1<KB";
             else
                 DownloadSize = mod.download_size / 1024+"";
+            
+            Abbrevation = new string(mod.name.Split(' ').
+                Where(s => s.Length > 0).Select(s => s[0]).ToArray());
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
