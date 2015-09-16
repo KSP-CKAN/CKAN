@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
 - [GUI] Mods can be search by abbreviation by typing directly into the modlist, as well as the search bar. (Postremus, #1430)
+- [GUI] Mods can be filtered by locally cached status (Postremus, #1426)
 
 ### Internal
 

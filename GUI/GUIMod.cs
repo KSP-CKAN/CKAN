@@ -22,6 +22,7 @@ namespace CKAN
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public bool IsCached { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
@@ -159,6 +160,9 @@ namespace CKAN
             
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
+
+            if (Main.Instance != null)
+                IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)

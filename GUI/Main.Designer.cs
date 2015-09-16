@@ -135,6 +135,7 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.cachedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -341,6 +342,7 @@ namespace CKAN
             this.FilterCompatibleButton,
             this.FilterInstalledButton,
             this.FilterInstalledUpdateButton,
+            this.cachedToolStripMenuItem,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
@@ -1279,6 +1281,13 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // cachedToolStripMenuItem
+            // 
+            this.cachedToolStripMenuItem.Name = "cachedToolStripMenuItem";
+            this.cachedToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.cachedToolStripMenuItem.Text = "Cached";
+            this.cachedToolStripMenuItem.Click += new System.EventHandler(this.cachedToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1437,5 +1446,6 @@ namespace CKAN
         private DataGridViewTextBoxColumn KSPCompatibility;
         private DataGridViewTextBoxColumn SizeCol;
         private DataGridViewTextBoxColumn Description;
+        private ToolStripMenuItem cachedToolStripMenuItem;
     }
 }
