@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Updater] Checking for updates takes less network resources, and is more resilient to malformed release notes. (Postremus #1410; pjf #1453)
+- [Core] We now cache the results of cache look-ups (so you can cache while you cache... faster). (pjf, #1454)
 
 ## v1.14.1 (Eris)
 
