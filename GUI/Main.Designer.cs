@@ -1057,7 +1057,7 @@ namespace CKAN
             this.WaitTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.WaitTabPage.Size = new System.Drawing.Size(1021, 646);
             this.WaitTabPage.TabIndex = 1;
-            this.WaitTabPage.Text = "Installing mods";
+            this.WaitTabPage.Text = "Status log";
             // 
             // CancelCurrentActionButton
             // 

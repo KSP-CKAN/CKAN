@@ -84,7 +84,7 @@ namespace CKAN
 
             // Now let's make all our changes.
 
-            m_TabController.RenameTab("WaitTabPage", "Installing mods");
+            m_TabController.RenameTab("WaitTabPage", "Status log");
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
