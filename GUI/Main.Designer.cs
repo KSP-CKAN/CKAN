@@ -135,6 +135,8 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.MetadataIdentifierLabel = new System.Windows.Forms.Label();
+            this.IdentifierLabel = new System.Windows.Forms.Label();
             this.cachedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -422,6 +424,28 @@ namespace CKAN
             this.splitContainer1.SplitterDistance = 651;
             this.splitContainer1.TabIndex = 7;
             // 
+            // MetadataIdentifierLabel
+            // 
+            this.MetadataIdentifierLabel.AutoSize = true;
+            this.MetadataIdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataIdentifierLabel.ForeColor = System.Drawing.Color.Black;
+            this.MetadataIdentifierLabel.Location = new System.Drawing.Point(92, 210);
+            this.MetadataIdentifierLabel.Name = "MetadataIdentifierLabel";
+            this.MetadataIdentifierLabel.Size = new System.Drawing.Size(249, 66);
+            this.MetadataIdentifierLabel.TabIndex = 27;
+            this.MetadataIdentifierLabel.Text = "-";
+            // 
+            // IdentifierLabel
+            // 
+            this.IdentifierLabel.AutoSize = true;
+            this.IdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.IdentifierLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.IdentifierLabel.Location = new System.Drawing.Point(3, 210);
+            this.IdentifierLabel.Name = "IdentifierLabel";
+            this.IdentifierLabel.Size = new System.Drawing.Size(83, 66);
+            this.IdentifierLabel.TabIndex = 28;
+            this.IdentifierLabel.Text = "Identifier";
+            // 
             // ModList
             // 
             this.ModList.AllowUserToAddRows = false;
@@ -566,7 +590,7 @@ namespace CKAN
             // 
             this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
             this.splitContainer2.Size = new System.Drawing.Size(346, 543);
-            this.splitContainer2.SplitterDistance = 284;
+            this.splitContainer2.SplitterDistance = 261;
             this.splitContainer2.TabIndex = 0;
             // 
             // MetaDataUpperLayoutPanel
@@ -582,7 +606,7 @@ namespace CKAN
             this.MetaDataUpperLayoutPanel.RowCount = 2;
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(344, 282);
+            this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(344, 259);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
             // 
             // MetadataModuleNameLabel
@@ -614,6 +638,8 @@ namespace CKAN
             this.MetaDataLowerLayoutPanel.ColumnCount = 2;
             this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.16279F));
             this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73.83721F));
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 7);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierLabel, 0, 7);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 6);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 5);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.GitHubLabel, 0, 4);
@@ -631,7 +657,7 @@ namespace CKAN
             this.MetaDataLowerLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetaDataLowerLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.MetaDataLowerLayoutPanel.Name = "MetaDataLowerLayoutPanel";
-            this.MetaDataLowerLayoutPanel.RowCount = 7;
+            this.MetaDataLowerLayoutPanel.RowCount = 9;
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
@@ -639,7 +665,8 @@ namespace CKAN
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(344, 253);
+            this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(344, 276);
             this.MetaDataLowerLayoutPanel.TabIndex = 0;
             // 
             // KSPCompatibilityLabel
@@ -1450,5 +1477,7 @@ namespace CKAN
         private DataGridViewTextBoxColumn SizeCol;
         private DataGridViewTextBoxColumn Description;
         private ToolStripMenuItem cachedToolStripMenuItem;
+        private Label IdentifierLabel;
+        private Label MetadataIdentifierLabel;
     }
 }
