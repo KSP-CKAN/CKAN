@@ -7,7 +7,7 @@ deleting our entire CKAN-meta repository]
 This is less than ideal.
 
     -- dbent, #979
-
+%
 techman83: Hehe. :) The Linux style of locking is "here's a tiny 
 easy-to-miss note I'm putting on my sandwich, don't eat it!". 
 Windows is "I'm locking my sandwich in this safe. Why are you 
