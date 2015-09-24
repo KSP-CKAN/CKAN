@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [GUI] Added a column to show users a mod's identifier. (postremus #1470, plague006 #1476)
+
 ### Internal
 
 ## v1.14.2 (Makemake)
