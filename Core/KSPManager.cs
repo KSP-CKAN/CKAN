@@ -98,13 +98,12 @@ namespace CKAN
             {
                 // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
                 // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
-                if (AutoStartInstance == "")
+                if (AutoStartInstance != "")
                 {
-                    return null;
-                }
-                if (HasInstance(AutoStartInstance))
-                {
-                    return instances[AutoStartInstance];
+                    if (HasInstance(AutoStartInstance))
+                    {
+                        return instances[AutoStartInstance];
+                    }
                 }
             }
 
