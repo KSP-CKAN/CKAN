@@ -6,9 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [Core] CKAN is more likely to find your KSP install. (McJones, #1480)
+- [GUI] The "Installing mods" tab is now called the "Status log" tab, as it's used for upgrading and removing mods too. (plague006, #1460)
+
 ### Features
 
-- [GUI] Added a column to show users a mod's identifier. (postremus #1470, plague006 #1476)
+- [GUI] The CKAN Identifer for each mod is now shown in their metadata panel. (plague006, #1476)
 
 ### Internal
 
