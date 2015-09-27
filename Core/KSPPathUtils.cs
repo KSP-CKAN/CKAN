@@ -145,23 +145,23 @@ namespace CKAN
                     if (line.Contains("BaseInstallFolder"))
                     {
                         
-                        //TODO: more robust parsing (currently assumes config file is valid)
+                        // This assumes config file is valid, we just skip it if it looks funny.
                         string[] split_line = line.Split('"');
 
-                        log.DebugFormat("Found a Steam Libary Location at {0}", split_line[3]);
-
-                        ksp_path = KSPDirectory(split_line[3]);
-                        if (ksp_path!= null)
+                        if (split_line.Length > 3)
                         {
-                            log.InfoFormat("Found a KSP install at {0}", ksp_path);
-                            return ksp_path;
+                            log.DebugFormat("Found a Steam Libary Location at {0}", split_line[3]);
+
+                            ksp_path = KSPDirectory(split_line[3]);
+                            if (ksp_path != null)
+                            {
+                                log.InfoFormat("Found a KSP install at {0}", ksp_path);
+                                return ksp_path;
+                            }
                         }
-                       
                     }
                 }
-
             }
-            
 
             // Could not locate the folder.
             return null;
