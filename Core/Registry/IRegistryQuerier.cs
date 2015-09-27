@@ -139,7 +139,7 @@ namespace CKAN
                 return false;
             }
             if (newest_version == null) return false;
-            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier) 
+            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false) 
                 && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
         }
     }

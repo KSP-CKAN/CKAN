@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] CKAN is more likely to find your KSP install. (McJones, #1480)
+- [Core] Uninstalled mods will no longer be reported as upgradeable when another mod provides their fuctionality. (Postremus, #1449)
 - [GUI] Installing a `.ckan` virtual mod will crash the client with an NRE less often (Postremus, #1478)
 - [GUI] The "Installing mods" tab is now called the "Status log" tab, as it's used for upgrading and removing mods too. (plague006, #1460)
 - [GUI] Links to `ckan://` resources under Linux are more likely to be handled correctly. (Postremus, #1434)
