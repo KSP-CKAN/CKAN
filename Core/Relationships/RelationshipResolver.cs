@@ -82,15 +82,15 @@ namespace CKAN
 
         //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
         // as recreating them from reasons is no longer possible.
-        private readonly List<KeyValuePair<Module, Module>> conflicts =
-            new List<KeyValuePair<Module, Module>>();
-        private readonly Dictionary<Module, SelectionReason> reasons =
-            new Dictionary<Module, SelectionReason>(new NameComparer());
+        private readonly List<KeyValuePair<CkanModule, CkanModule>> conflicts =
+            new List<KeyValuePair<CkanModule, CkanModule>>();
+        private readonly Dictionary<CkanModule, SelectionReason> reasons =
+            new Dictionary<CkanModule, SelectionReason>(new NameComparer());
 
         private readonly IRegistryQuerier registry;
         private readonly KSPVersion kspversion;
         private readonly RelationshipResolverOptions options;
-        private readonly HashSet<Module> installed_modules;
+        private readonly HashSet<CkanModule> installed_modules;
 
         /// <summary>
         /// Creates a new Relationship resolver.
@@ -104,7 +104,7 @@ namespace CKAN
             this.kspversion = kspversion;
             this.options = options;
 
-            installed_modules = new HashSet<Module>(registry.InstalledModules.Select(i_module => i_module.Module));
+            installed_modules = new HashSet<CkanModule>(registry.InstalledModules.Select(i_module => i_module.Module));
             var installed_relationship = new SelectionReason.Installed();
             foreach (var module in installed_modules)
             {
@@ -180,8 +180,8 @@ namespace CKAN
                 {
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<Module, Module>(listed_mod, module));
-                        conflicts.Add(new KeyValuePair<Module, Module>(module, listed_mod));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(listed_mod, module));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, listed_mod));
                     }
                     else
                     {
@@ -205,7 +205,7 @@ namespace CKAN
 
             if (!options.without_enforce_consistency)
             {
-                var final_modules = new List<Module>(modlist.Values);
+                var final_modules = new List<CkanModule>(modlist.Values);
                 final_modules.AddRange(installed_modules);
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
@@ -220,7 +220,7 @@ namespace CKAN
         /// in which the mod is to be un-installed.
         /// </summary>
         /// <param name="mods">The mods to remove.</param>
-        public void RemoveModsFromInstalledList(IEnumerable<Module> mods)
+        public void RemoveModsFromInstalledList(IEnumerable<CkanModule> mods)
         {
             foreach (var module in mods)
             {
@@ -296,8 +296,8 @@ namespace CKAN
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<Module, Module>(module,reason.Parent));
-                        conflicts.Add(new KeyValuePair<Module, Module>(reason.Parent,module));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module,reason.Parent));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent,module));
                         continue;
                     }
                     throw new InconsistentKraken(
@@ -315,8 +315,8 @@ namespace CKAN
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<Module, Module>(module, reason.Parent));
-                        conflicts.Add(new KeyValuePair<Module, Module>(reason.Parent, module));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
                         continue;
                     }
                     throw new InconsistentKraken(
@@ -374,7 +374,7 @@ namespace CKAN
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
 
-                var fixed_mods = new HashSet<Module>(modlist.Values);
+                var fixed_mods = new HashSet<CkanModule>(modlist.Values);
                 fixed_mods.UnionWith(installed_modules);
 
                 var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
@@ -393,8 +393,8 @@ namespace CKAN
                     if (options.procede_with_inconsistencies)
                     {
                         Add(candidate, reason);
-                        conflicts.Add(new KeyValuePair<Module, Module>(conflicting_mod, candidate));
-                        conflicts.Add(new KeyValuePair<Module, Module>(candidate, conflicting_mod));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(conflicting_mod, candidate));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(candidate, conflicting_mod));
                     }
                     else
                     {
@@ -487,11 +487,11 @@ namespace CKAN
         ///  Returns a IList consisting of keyValuePairs containing conflicting mods.
         /// Note: (a,b) in the list should imply that (b,a) is in the list.
         /// </summary>
-        public Dictionary<Module, String> ConflictList
+        public Dictionary<CkanModule, String> ConflictList
         {
             get
             {
-                var dict = new Dictionary<Module, String>();
+                var dict = new Dictionary<CkanModule, String>();
                 foreach (var conflict in conflicts)
                 {
                     var module = conflict.Key;
@@ -509,21 +509,12 @@ namespace CKAN
             get { return !conflicts.Any(); }
         }
 
-        internal SelectionReason ReasonFor(CkanModule mod)
-        {
-            if (!ModList().Contains(mod))
-            {
-                throw new ArgumentException("Mod " + mod.StandardName() + " is not in the list");
-            }
-            return reasons[mod];
-        }
-
         /// <summary>
         /// Displays a user readable string explaining why the mod was chosen.
         /// </summary>
         /// <param name="mod">A Mod in the resolvers modlist. Must not be null</param>
         /// <returns></returns>
-        public string ReasonStringFor(Module mod)
+        public string ReasonStringFor(CkanModule mod)
         {
             var reason = ReasonFor(mod);
             var is_root_type = reason.GetType() == typeof (SelectionReason.UserRequested)
@@ -533,7 +524,7 @@ namespace CKAN
                 : reason.Reason + ReasonStringFor(reason.Parent);
         }
 
-        public SelectionReason ReasonFor(Module mod)
+        public SelectionReason ReasonFor(CkanModule mod)
         {
             if (mod == null) throw new ArgumentNullException();
             if (!ModList().Contains(mod))

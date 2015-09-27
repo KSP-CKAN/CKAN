@@ -143,7 +143,7 @@ namespace CKAN
                     installed_modules.Remove(old_ident);
 
                     // Extract the old module metadata
-                    Module control_lock_mod = control_lock_entry.Module;
+                    CkanModule control_lock_mod = control_lock_entry.Module;
 
                     // Change to the correct ident.
                     control_lock_mod.identifier = new_ident;
@@ -394,7 +394,7 @@ namespace CKAN
         /// <summary>
         /// Removes the given module from the registry of available modules.
         /// Does *nothing* if the module was not present to begin with.</summary>
-        public void RemoveAvailable(Module module)
+        public void RemoveAvailable(CkanModule module)
         {
             RemoveAvailable(module.identifier, module.version);
         }
@@ -595,7 +595,7 @@ namespace CKAN
         ///     Register the supplied module as having been installed, thereby keeping
         ///     track of its metadata and files.
         /// </summary>
-        public void RegisterModule(Module mod, IEnumerable<string> absolute_files, KSP ksp)
+        public void RegisterModule(CkanModule mod, IEnumerable<string> absolute_files, KSP ksp)
         {
             SealionTransaction();
 
@@ -803,7 +803,7 @@ namespace CKAN
 
             foreach (var modinfo in installed_modules)
             {
-                Module module = modinfo.Value.Module;
+                CkanModule module = modinfo.Value.Module;
 
                 // Skip if this module provides nothing.
                 if (module.provides == null)
@@ -852,7 +852,7 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
         /// </summary>
-        public Module GetInstalledVersion(string mod_identifer)
+        public CkanModule GetInstalledVersion(string mod_identifer)
         {
             InstalledModule installedModule;
             return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
@@ -883,7 +883,7 @@ namespace CKAN
         /// </summary>
         public void CheckSanity()
         {
-            IEnumerable<Module> installed = from pair in installed_modules select pair.Value.Module;
+            IEnumerable<CkanModule> installed = from pair in installed_modules select pair.Value.Module;
             SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
         }
 
@@ -891,12 +891,12 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-        internal static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<Module> orig_installed, IEnumerable<string> dlls)
+        internal static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<CkanModule> orig_installed, IEnumerable<string> dlls)
         {
             while (true)
             {
                 // Make our hypothetical install, and remove the listed modules from it.
-                HashSet<Module> hypothetical = new HashSet<Module>(orig_installed); // Clone because we alter hypothetical.
+                HashSet<CkanModule> hypothetical = new HashSet<CkanModule>(orig_installed); // Clone because we alter hypothetical.
                 hypothetical.RemoveWhere(mod => modules_to_remove.Contains(mod.identifier));
 
                 log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
@@ -926,7 +926,7 @@ namespace CKAN
         /// </summary>
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
-            var installed = new HashSet<Module>(installed_modules.Values.Select(x => x.Module));
+            var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
     }

@@ -24,7 +24,8 @@ namespace CKAN
         NewInRepository = 3,
         NotInstalled = 4,
         Incompatible = 5,
-        All = 6
+        All = 6,
+        Cached = 7
     }
 
     public enum GUIModChangeType
@@ -37,7 +38,7 @@ namespace CKAN
 
     public partial class Main
     {
-        public delegate void ModChangedCallback(Module module, GUIModChangeType change);
+        public delegate void ModChangedCallback(CkanModule module, GUIModChangeType change);
 
         public static event ModChangedCallback modChangedCallback;
 
@@ -271,18 +272,19 @@ namespace CKAN
                 try
                 {
                     log.Info("Making autoupdate call");
-                    var latest_version = AutoUpdate.FetchLatestCkanVersion();
+                    AutoUpdate.Instance.FetchLatestReleaseInfo();
+                    var latest_version = AutoUpdate.Instance.LatestVersion;
                     var current_version = new Version(Meta.Version());
 
-                    if (latest_version.IsGreaterThan(current_version))
+                    if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
                     {
                         log.Debug("Found higher ckan version");
-                        var release_notes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                        var release_notes = AutoUpdate.Instance.ReleaseNotes;
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
                             log.Info("Start ckan update");
-                            AutoUpdate.StartUpdateProcess(true);
+                            AutoUpdate.Instance.StartUpdateProcess(true);
                         }
                     }
                 }
@@ -741,6 +743,11 @@ namespace CKAN
             Filter(GUIModFilter.InstalledUpdateAvailable);
         }
 
+        private void cachedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filter(GUIModFilter.Cached);
+        }
+
         private void FilterNewButton_Click(object sender, EventArgs e)
         {
             Filter(GUIModFilter.NewInRepository);
@@ -773,6 +780,8 @@ namespace CKAN
                 FilterToolButton.Text = "Filter (Installed)";
             else if (filter == GUIModFilter.InstalledUpdateAvailable)
                 FilterToolButton.Text = "Filter (Upgradeable)";
+            else if (filter == GUIModFilter.Cached)
+                FilterToolButton.Text = "Filter (Cached)";
             else if (filter == GUIModFilter.NewInRepository)
                 FilterToolButton.Text = "Filter (New)";
             else if (filter == GUIModFilter.NotInstalled)
@@ -909,9 +918,10 @@ namespace CKAN
                 // Sneakily add our version in...
                 registry_manager.registry.AddAvailable(module);
 
-                var changeset = new List<KeyValuePair<GUIMod, GUIModChangeType>>();
-                changeset.Add(new KeyValuePair<GUIMod, GUIModChangeType>(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()), GUIModChangeType.Install));
+                var changeset = new List<ModChange>();
+                changeset.Add(new ModChange(
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
 
@@ -919,7 +929,7 @@ namespace CKAN
                 install_ops.with_recommends = false;
 
                 m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<KeyValuePair<GUIMod, GUIModChangeType>>, RelationshipResolverOptions>(
+                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         changeset, install_ops));
                 m_Changeset = null;
 
@@ -1018,15 +1028,16 @@ namespace CKAN
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
-                string modname = ((GUIMod)row.Tag).Name;
+                GUIMod mod = row.Tag as GUIMod;
                 bool row_match = false;
                 if (exactMatch)
                 {
-                    row_match = modname == key;
+                    row_match = mod.Name == key;
                 }
                 else
                 {
-                    row_match = modname.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
+                        mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
                 if (row_match && first_match == null)
                 {

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace CKAN
 {
     public sealed class GUIMod
     {
-        private Module Mod { get; set; }
+        private CkanModule Mod { get; set; }
 
         public string Name
         {
@@ -21,6 +22,7 @@ namespace CKAN
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public bool IsCached { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
@@ -36,13 +38,14 @@ namespace CKAN
         public bool IsUpgradeChecked { get; private set; }
         public bool IsNew { get; set; }
         public bool IsCKAN { get; private set; }
+        public string Abbrevation { get; private set; }
 
         public string Version
         {
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(Module mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
@@ -154,11 +157,12 @@ namespace CKAN
                 DownloadSize = "1<KB";
             else
                 DownloadSize = mod.download_size / 1024+"";
-        }
+            
+            Abbrevation = new string(mod.name.Split(' ').
+                Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
-            : this((Module) mod, registry, current_ksp_version)
-        {
+            if (Main.Instance != null)
+                IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
         }
 
         public CkanModule ToCkanModule()
@@ -168,7 +172,7 @@ namespace CKAN
             return mod;
         }
 
-        public Module ToModule()
+        public CkanModule ToModule()
         {
             return Mod;
         }
@@ -187,7 +191,7 @@ namespace CKAN
             return null;
         }
 
-        public static implicit operator Module(GUIMod mod)
+        public static implicit operator CkanModule(GUIMod mod)
         {
             return mod.ToModule();
         }

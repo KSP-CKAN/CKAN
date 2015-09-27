@@ -18,38 +18,79 @@ namespace CKAN
 
         private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
         {
-            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod) row.Tag).Name);
-            Func<DataGridViewRow, string> sort_fn;
-
             // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
             if (this.m_Configuration.SortByColumnIndex < 2)
             {
-                sort_fn = new Func<DataGridViewRow, string>(row =>
-                {
-                    var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
-                    if (cell.ValueType == typeof (bool))
-                    {
-                        return (bool) cell.Value ? "a" : "b";
-                    }
-                    // It's a "-" cell so let it be ordered last
-                    return "c";
-                });
+                return Sort(rows, CheckboxSorter);
             }
-            else
+            // XXX: Same for Integer columns
+            else if (this.m_Configuration.SortByColumnIndex == 7)
             {
-                sort_fn =
-                    new Func<DataGridViewRow, string>(
-                        row => row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString());
+                return Sort(rows, IntegerSorter);
             }
-            // Update the column sort glyph
-            this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell.SortGlyphDirection =
-                this.m_Configuration.SortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            return Sort(rows, DefaultSorter);
+        }
+
+        private IEnumerable<DataGridViewRow> Sort<T>(IEnumerable<DataGridViewRow> rows, Func<DataGridViewRow, T> sortFunction)
+        {
+            var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
+            DataGridViewColumnHeaderCell header =
+                this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell;
+
             // The columns will be sorted by mod name in addition to whatever the current sorting column is
             if (this.m_Configuration.SortDescending)
             {
-                return rows.OrderByDescending(sort_fn).ThenBy(get_row_mod_name);
+                header.SortGlyphDirection = SortOrder.Descending;
+                return rows.OrderByDescending(sortFunction).ThenBy(get_row_mod_name);
             }
-            return rows.OrderBy(sort_fn).ThenBy(get_row_mod_name);
+
+            header.SortGlyphDirection = SortOrder.Ascending;
+            return rows.OrderBy(sortFunction).ThenBy(get_row_mod_name);
+        }
+
+        /// <summary>
+        /// Transforms a DataGridViewRow's into a generic value suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private string DefaultSorter(DataGridViewRow row)
+        {
+                return row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString();
+        }
+
+        /// <summary>
+        /// Transforms a DataGridViewRow's checkbox status into a value suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private string CheckboxSorter(DataGridViewRow row)
+        {
+            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+            if (cell.ValueType == typeof(bool))
+            {
+                return (bool)cell.Value ? "a" : "b";
+            }
+            // It's a "-" cell so let it be ordered last
+            return "c";
+        }
+
+        /// <summary>
+        /// Transforms a DataGridViewRow into an integer suitable for sorting.
+        /// Uses this.m_Configuration.SortByColumnIndex to determine which
+        /// field to sort on.
+        /// </summary>
+        private int IntegerSorter(DataGridViewRow row)
+        {
+            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+
+            if (cell.Value.ToString() == "N/A")
+                return -1;
+            else if (cell.Value.ToString() == "1<KB")
+                return 0;
+
+            int result = -2;
+            int.TryParse(cell.Value as string, out result);
+            return result;
         }
 
         private void _UpdateFilters()
@@ -61,7 +102,7 @@ namespace CKAN
             // rows in DataGridView.
 
             var rows = new DataGridViewRow[mainModList.full_list_of_mod_rows.Count];
-            mainModList.full_list_of_mod_rows.CopyTo(rows, 0);
+            mainModList.full_list_of_mod_rows.Values.CopyTo(rows, 0);
             // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModList.FirstDisplayedScrollingColumnIndex);
             GUIMod selected_mod = null;
@@ -136,8 +177,12 @@ namespace CKAN
                     gui_mod.IsNew = true;
                 }
             }
-            mainModList.Modules = new ReadOnlyCollection<GUIMod>(gui_mods.ToList());
-            mainModList.ConstructModList(mainModList.Modules);
+
+            // Update our mod listing. If we're doing a repo update, then we don't refresh
+            // all (in case the user has selected changes they wish to apply).
+            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated);
+            mainModList.Modules = new ReadOnlyCollection<GUIMod>(
+                mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
             //TODO Consider using smart enum patten so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
@@ -146,13 +191,15 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.Installed));
             FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            FilterToolButton.DropDownItems[3].Text = String.Format("New in repository ({0})",
+            FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
+                mainModList.CountModsByFilter(GUIModFilter.Cached));
+            FilterToolButton.DropDownItems[4].Text = String.Format("New in repository ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-            FilterToolButton.DropDownItems[4].Text = String.Format("Not installed ({0})",
+            FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-            FilterToolButton.DropDownItems[5].Text = String.Format("Incompatible ({0})",
+            FilterToolButton.DropDownItems[6].Text = String.Format("Incompatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-            FilterToolButton.DropDownItems[6].Text = String.Format("All ({0})",
+            FilterToolButton.DropDownItems[7].Text = String.Format("All ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.All));
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
@@ -166,14 +213,16 @@ namespace CKAN
 
         private void _MarkModForInstall(string identifier, bool uninstall)
         {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows)
+            if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
             {
-                var mod = (GUIMod) row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    mod.SetInstallChecked(row,!uninstall);
-                    break;
-                }
+                return;
+            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+
+            var mod = (GUIMod)row.Tag;
+            if (mod.Identifier == identifier)
+            {
+                mod.SetInstallChecked(row, !uninstall);
             }
         }
 
@@ -229,7 +278,8 @@ namespace CKAN
 
     public class MainModList
     {
-        internal List<DataGridViewRow> full_list_of_mod_rows;
+        //identifier, row
+        internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
 
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
             IUser user = null)
@@ -302,7 +352,7 @@ namespace CKAN
             KSPVersion version)
         {
             var modules_to_install = new HashSet<CkanModule>();
-            var modules_to_remove = new HashSet<Module>();
+            var modules_to_remove = new HashSet<CkanModule>();
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = false,
@@ -372,7 +422,7 @@ namespace CKAN
             foreach (var dependency in registry.FindReverseDependencies(modules_to_remove.Select(mod=>mod.identifier)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                Module module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
+                CkanModule module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
                     installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
@@ -409,6 +459,8 @@ namespace CKAN
                     return Modules.Count(m => m.IsInstalled);
                 case GUIModFilter.InstalledUpdateAvailable:
                     return Modules.Count(m => m.HasUpdate);
+                case GUIModFilter.Cached:
+                    return Modules.Count(m => m.IsCached);
                 case GUIModFilter.NewInRepository:
                     return Modules.Count(m => m.IsNew);
                 case GUIModFilter.NotInstalled:
@@ -421,11 +473,36 @@ namespace CKAN
             throw new Kraken("Unknown filter type in CountModsByFilter");
         }
 
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules)
+        /// <summary>
+        /// Constructs the mod list suitable for display to the user.
+        /// This manipulates <c>full_list_of_mod_rows</c> as it runs, and by default
+        /// will only update entries which have changed or were previously missing.
+        /// (Set <c>refreshAll</c> to force update everything.)
+        /// </summary>
+        /// <returns>The mod list.</returns>
+        /// <param name="modules">A list of modules that may require updating</param>
+        /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false)
         {
-            full_list_of_mod_rows = new List<DataGridViewRow>();
-            foreach (var mod in modules)
+
+            if (refreshAll || full_list_of_mod_rows == null)
             {
+                full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
+            }
+
+            // We're only going to update the status of rows that either don't already exist,
+            // or which exist but have changed their latest version.
+            //
+            // TODO: Will this catch a mod where the latest version number remains the same, but
+            // another part of the metadata (eg: dependencies or description) has changed?
+            IEnumerable<GUIMod> rowsToUpdate = modules.Where(
+                mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
+                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion);
+
+            // Let's update our list!
+            foreach (var mod in rowsToUpdate)
+            {
+                full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
                 var installed_cell = mod.IsInstallable()
@@ -461,17 +538,16 @@ namespace CKAN
                 installed_cell.ReadOnly = !mod.IsInstallable();
                 update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                full_list_of_mod_rows.Add(item);
+                
+                full_list_of_mod_rows.Add(mod.Identifier, item);
             }
-            return full_list_of_mod_rows;
+            return full_list_of_mod_rows.Values;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
         {
-            string abbrevation = new string(mod.Name.Split(' ').
-                Where(s => s.Length > 0).Select(s => s[0]).ToArray());
             return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
-                || abbrevation.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+                || mod.Abbrevation.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
         private bool IsAuthorInauthorFilter(GUIMod mod)
@@ -490,6 +566,8 @@ namespace CKAN
                     return m.IsInstalled;
                 case GUIModFilter.InstalledUpdateAvailable:
                     return m.IsInstalled && m.HasUpdate;
+                case GUIModFilter.Cached:
+                    return m.IsCached;
                 case GUIModFilter.NewInRepository:
                     return m.IsNew;
                 case GUIModFilter.NotInstalled:

@@ -6,7 +6,41 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [Core] CKAN is more likely to find your KSP install. (McJones, #1480)
+- [GUI] The "Installing mods" tab is now called the "Status log" tab, as it's used for upgrading and removing mods too. (plague006, #1460)
+
+### Features
+
+- [GUI] The CKAN Identifer for each mod is now shown in their metadata panel. (plague006, #1476)
+
+### Internal
+
+- [Internal] `Module` and `CkanModule` are finally merged into the same class! (Postremus, #1440)
+
+## v1.14.2 (Makemake)
+
+### Bugfixes
+
+- [GUI] Numerical columns can now be sorted numerically. (Postremus, #1420)
+- [GUI] Clicking on rows in suggests, recommends, and requirement pickers now selects the whole row, not just the cell clicked. (Postremus, #1438)
+
+### Features
+
+- [GUI] Updating the list of available mods will no longer clear user selections. (Postremus, #1402)
+- [GUI] Mods can be search by abbreviation by typing directly into the modlist, as well as the search bar. (Postremus, #1430)
+- [GUI] Mods can be filtered by locally cached status (Postremus, #1426)
+
+### Internal
+
+- [Updater] Checking for updates takes less network resources, and is more resilient to malformed release notes. (Postremus #1410; pjf #1453)
+- [Core] We now cache the results of cache look-ups (so you can cache while you cache... faster). (pjf, #1454)
+
+## v1.14.1 (Eris)
+
+### Bugfixes
+
 - [GUI] Re-ordering repositories in the settings panel is more stable. (Postremus, #1431)
+- [GUI] Fixed an unhandled exception that could occur when installing metapages via `Install -> From .ckan`. (Postremus, #1436)
 - [Core] Less likely to remove essential directories (such as `Ships/*`) if empty. (Postremus, #1405)
 
 ### Features

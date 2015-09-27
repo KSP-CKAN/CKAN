@@ -52,7 +52,7 @@ namespace CKAN
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.
         /// </summary>
         /// <returns>The module or null if not found</returns>
-        Module GetInstalledVersion(string identifer);
+        CkanModule GetInstalledVersion(string identifer);
 
         /// <summary>
         /// Attempts to find a module with the given identifier and version.
