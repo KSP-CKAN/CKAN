@@ -161,8 +161,14 @@ namespace CKAN
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
-            if (Main.Instance != null)
-                IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
+            // The following two lines seem unnecessary. mod.download looks like it will always be null
+            // because it is never set up to this point. If InMaybeCachedZip() is executed, a NullReferenceException
+            // is thrown. So, simply set IsCached = false.
+
+            //if (Main.Instance != null)
+            //    IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
+
+            IsCached = false;
         }
 
         public CkanModule ToCkanModule()
