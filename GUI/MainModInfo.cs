@@ -253,7 +253,12 @@ namespace CKAN
 
         private void CacheMod(object sender, DoWorkEventArgs e)
         {
-            ModuleInstaller.GetInstance(CurrentInstance, m_User).CachedOrDownload((CkanModule)e.Argument);
+            ResetProgress();
+            ClearLog();
+
+            NetAsyncDownloader dowloader = new NetAsyncDownloader(m_User);
+            
+            dowloader.DownloadModules(CurrentInstance.Cache, new List<CkanModule> { (CkanModule)e.Argument });
             e.Result = e.Argument;
         }
 

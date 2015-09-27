@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] The CKAN Identifer for each mod is now shown in their metadata panel. (plague006, #1476)
 - [GUI] Double-clicking on a filename in the 'Contents' panel now opens the directory containing that file. (Postremus, #1443)
+- [GUI] The progress bar now shows the progress of downloading to the cache. (Postremus, #1445)
 
 ### Internal
 
