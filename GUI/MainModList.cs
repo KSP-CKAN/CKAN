@@ -365,6 +365,7 @@ namespace CKAN
                 {
                     case GUIModChangeType.None:
                         break;
+                    case GUIModChangeType.Update:
                     case GUIModChangeType.Install:
                         //TODO: Fix
                         //This will give us a mod with a wrong version!
@@ -372,8 +373,6 @@ namespace CKAN
                         break;
                     case GUIModChangeType.Remove:
                         modules_to_remove.Add(change.Mod);
-                        break;
-                    case GUIModChangeType.Update:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

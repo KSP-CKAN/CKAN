@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Installing a `.ckan` virtual mod will crash the client with an NRE less often (Postremus, #1478)
 - [GUI] The "Installing mods" tab is now called the "Status log" tab, as it's used for upgrading and removing mods too. (plague006, #1460)
 - [GUI] Links to `ckan://` resources under Linux are more likely to be handled correctly. (Postremus, #1434)
+- [GUI] Mods upgrades with additional dependencies are better handled and displayed to the user. (Postremus, #1447)
 
 ### Features
 
