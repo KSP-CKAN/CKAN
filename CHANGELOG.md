@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+### Features
+
+### Internal
+
+## v1.14.3 (Haumea)
+
+### Bugfixes
+
 - [Core] CKAN is more likely to find your KSP install. (McJones, #1480)
 - [Core] Uninstalled mods will no longer be reported as upgradeable when another mod provides their fuctionality. (Postremus, #1449)
 - [GUI] Installing a `.ckan` virtual mod will crash the client with an NRE less often (Postremus, #1478)
