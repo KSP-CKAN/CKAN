@@ -74,7 +74,7 @@
     <Compile Include="Relationships\RelationshipResolver.cs" />
     <Compile Include="Net\Repo.cs" />
     <Compile Include="Net\NetFileCache.cs" />
-    <Compile Include="Types\Module.cs" />
+    <Compile Include="Types\CkanModule.cs" />
     <Compile Include="Converters\JsonOldResourceUrlConverter.cs" />
     <Compile Include="Converters\JsonSimpleStringConverter.cs" />
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />

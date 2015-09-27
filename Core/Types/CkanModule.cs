@@ -84,17 +84,40 @@ namespace CKAN
         public Uri kerbalstuff;
     }
 
+    public class NameComparer : IEqualityComparer<CkanModule>
+    {
+        public bool Equals(CkanModule x, CkanModule y)
+        {
+            return x.identifier.Equals(y.identifier);
+        }
+
+        public int GetHashCode(CkanModule obj)
+        {
+            return obj.identifier.GetHashCode();
+        }
+    }
 
     /// <summary>
     ///     Describes a CKAN module (ie, what's in the CKAN.schema file).
     /// </summary>
-
+    
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
-    public class Module : IEquatable<Module>
+    public class CkanModule : IEquatable<CkanModule>
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Module));
+        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+
+        private static readonly string[] required_fields =
+        {
+            "spec_version",
+            "name",
+            "abstract",
+            "identifier",
+            "download",
+            "license",
+            "version"
+        };
 
         // identifier, license, and version are always required, so we know
         // what we've got.
@@ -110,7 +133,7 @@ namespace CKAN
         public string kind;
 
         [JsonProperty("author")]
-        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> author;
 
         [JsonProperty("comment")]
@@ -141,7 +164,7 @@ namespace CKAN
         public KSPVersion ksp_version_min;
 
         [JsonProperty("license")]
-        [JsonConverter(typeof (JsonSingleOrArrayConverter<License>))]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
         public List<License> license;
 
         [JsonProperty("name")]
@@ -168,6 +191,36 @@ namespace CKAN
         [JsonProperty("supports")]
         public List<RelationshipDescriptor> supports;
 
+        [JsonProperty("install")]
+        public ModuleInstallDescriptor[] install;
+
+        [JsonIgnore]
+        [JsonProperty("specVersion", Required = Required.Default)]
+        private Version specVersion;
+        // We integrated the Module and CkanModule into one class
+        // Since spec_version was only required for CkanModule before
+        // this change, we now need to make sure the user is converted
+        // and has the spec_version's in his installed_modules section
+        // We should return this to a simple Required.Always field some time in the future
+        // ~ Postremus, 03.09.2015
+        [JsonProperty("spec_version")]
+        public Version spec_version
+        {
+            get
+            {
+                if (specVersion == null)
+                    specVersion = new Version("1");
+                return specVersion;
+            }
+            set
+            {
+                if (value == null)
+                    specVersion = new Version("1");
+                else
+                    specVersion = value;
+            }
+        }
+
         // A list of eveything this mod provides.
         public List<string> ProvidesList
         {
@@ -175,7 +228,7 @@ namespace CKAN
             // serialise it.
             get
             {
-                var provides = new List<string> {identifier};
+                var provides = new List<string> { identifier };
 
                 if (this.provides != null)
                 {
@@ -189,11 +242,6 @@ namespace CKAN
         public string serialise()
         {
             return JsonConvert.SerializeObject(this);
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", identifier, version);
         }
 
         [OnDeserialized]
@@ -234,7 +282,7 @@ namespace CKAN
 
             if (license == null)
             {
-                license = new List<License> {new License("unknown")};
+                license = new List<License> { new License("unknown") };
             }
 
             if (@abstract == null)
@@ -247,180 +295,6 @@ namespace CKAN
                 name = "";
             }
         }
-
-        /// <summary>
-        /// Returns true if we conflict with the given module.
-        /// </summary>
-        public bool ConflictsWith(Module module)
-        {
-            // We never conflict with ourselves, since we can't be installed at
-            // the same time as another version of ourselves.
-            if (module.identifier == this.identifier) return false;
-
-            return UniConflicts(this, module) || UniConflicts(module, this);
-        }
-
-        /// <summary>
-        /// Checks if A conflicts with B, but not if B conflicts with A.
-        /// Used by ConflictsWith.
-        /// </summary>
-        internal static bool UniConflicts(Module mod1, Module mod2)
-        {
-            if (mod1.conflicts == null)
-            {
-                return false;
-            }
-            return
-                mod1.conflicts.Any(
-                    conflict =>
-                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
-        }
-
-        /// <summary>
-        ///     Returns true if our mod is compatible with the KSP version specified.
-        /// </summary>
-        public bool IsCompatibleKSP(string version)
-        {
-            return IsCompatibleKSP(new KSPVersion(version));
-        }
-
-        public bool IsCompatibleKSP(KSPVersion version)
-        {
-            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
-
-            // Check the min and max versions.
-
-            if (ksp_version_min.IsNotAny() && version < ksp_version_min)
-            {
-                return false;
-            }
-
-            if (ksp_version_max.IsNotAny() && version > ksp_version_max)
-            {
-                return false;
-            }
-
-            // We didn't hit the min/max guards. They may not have existed.
-
-            // Note that since ksp_version is "any" if not specified, this
-            // will work fine if there's no target, or if there were min/max
-            // fields and we passed them successfully.
-
-            return ksp_version.Targets(version);
-        }
-
-        /// <summary>
-        /// Returns a human readable string indicating the highest compatible
-        /// version of KSP this module will run with. (Eg: 1.0.2, 1.0.2+,
-        /// "All version", etc).
-        /// 
-        /// This is for *human consumption only*, as the strings may change in the
-        /// future as we support additional locales.
-        /// </summary>
-        public string HighestCompatibleKSP()
-        {
-            // Find the highest compatible KSP version
-            if (!String.IsNullOrEmpty(ksp_version_max.ToString()))
-            {
-                return ksp_version_max.ToLongMax().ToString();
-            }
-            else if (!String.IsNullOrEmpty(ksp_version.ToString()))
-            {
-                return ksp_version.ToLongMax().ToString();
-            }
-            else if (!String.IsNullOrEmpty(ksp_version_min.ToString()))
-            {
-                return ksp_version_min.ToLongMin().ToString() + "+";
-            }
-
-            return "All versions";
-        }
-
-        /// <summary>
-        /// Returns true if this module provides the functionality requested.
-        /// </summary>
-        public bool DoesProvide(string identifier)
-        {
-            return this.identifier == identifier || provides.Contains(identifier);
-        }
-
-        public bool IsMetapackage
-        {
-            get { return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage"); }
-        }
-
-        protected bool Equals(Module other)
-        {
-            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Module) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (identifier.GetHashCode()*397) ^ version.GetHashCode();
-            }
-        }
-
-        bool IEquatable<Module>.Equals(Module other)
-        {
-            return Equals(other);
-        }
-    }
-
-    public class NameComparer : IEqualityComparer<CkanModule>, IEqualityComparer<Module>
-    {
-        public bool Equals(CkanModule x, CkanModule y)
-        {
-            return x.identifier.Equals(y.identifier);
-        }
-
-        public int GetHashCode(CkanModule obj)
-        {
-            return obj.identifier.GetHashCode();
-        }
-
-        public bool Equals(Module x, Module y)
-        {
-            return x.identifier.Equals(y.identifier);
-        }
-
-        public int GetHashCode(Module obj)
-        {
-            return obj.identifier.GetHashCode();
-        }
-    }
-
-    public class CkanModule : Module
-    {
-        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
-
-        private static readonly string[] required_fields =
-        {
-            "spec_version",
-            "name",
-            "abstract",
-            "identifier",
-            "download",
-            "license",
-            "version"
-        };
-
-        // Only CKAN modules can have install instructions.
-
-        [JsonProperty("install")]
-        public ModuleInstallDescriptor[] install;
-
-        [JsonProperty("spec_version", Required = Required.Always)]
-        public Version spec_version;
 
         private static bool validate_json_against_schema(string json)
         {
@@ -540,7 +414,16 @@ namespace CKAN
 
             foreach (string field in required_fields)
             {
-                object value = newModule.GetType().GetField(field).GetValue(newModule);
+                object value = null;
+                if (newModule.GetType().GetField(field) != null)
+                {
+                    value = typeof(CkanModule).GetField(field).GetValue(newModule);
+                }
+                else
+                {
+                    // uh, maybe it is not a field, but a property?
+                    value = typeof(CkanModule).GetProperty(field).GetValue(newModule, null);
+                }
 
                 if (value == null)
                 {
@@ -557,17 +440,131 @@ namespace CKAN
             return newModule;
         }
 
+        /// <summary>
+        /// Returns true if we conflict with the given module.
+        /// </summary>
+        public bool ConflictsWith(CkanModule module)
+        {
+            // We never conflict with ourselves, since we can't be installed at
+            // the same time as another version of ourselves.
+            if (module.identifier == this.identifier) return false;
+
+            return UniConflicts(this, module) || UniConflicts(module, this);
+        }
+
+        /// <summary>
+        /// Checks if A conflicts with B, but not if B conflicts with A.
+        /// Used by ConflictsWith.
+        /// </summary>
+        internal static bool UniConflicts(CkanModule mod1, CkanModule mod2)
+        {
+            if (mod1.conflicts == null)
+            {
+                return false;
+            }
+            return
+                mod1.conflicts.Any(
+                    conflict =>
+                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
+        }
+
+        /// <summary>
+        ///     Returns true if our mod is compatible with the KSP version specified.
+        /// </summary>
+        public bool IsCompatibleKSP(string version)
+        {
+            return IsCompatibleKSP(new KSPVersion(version));
+        }
+
+        public bool IsCompatibleKSP(KSPVersion version)
+        {
+            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
+
+            // Check the min and max versions.
+
+            if (ksp_version_min.IsNotAny() && version < ksp_version_min)
+            {
+                return false;
+            }
+
+            if (ksp_version_max.IsNotAny() && version > ksp_version_max)
+            {
+                return false;
+            }
+
+            // We didn't hit the min/max guards. They may not have existed.
+
+            // Note that since ksp_version is "any" if not specified, this
+            // will work fine if there's no target, or if there were min/max
+            // fields and we passed them successfully.
+
+            return ksp_version.Targets(version);
+        }
+
+        /// <summary>
+        /// Returns a human readable string indicating the highest compatible
+        /// version of KSP this module will run with. (Eg: 1.0.2, 1.0.2+,
+        /// "All version", etc).
+        /// 
+        /// This is for *human consumption only*, as the strings may change in the
+        /// future as we support additional locales.
+        /// </summary>
+        public string HighestCompatibleKSP()
+        {
+            // Find the highest compatible KSP version
+            if (!String.IsNullOrEmpty(ksp_version_max.ToString()))
+            {
+                return ksp_version_max.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version.ToString()))
+            {
+                return ksp_version.ToLongMax().ToString();
+            }
+            else if (!String.IsNullOrEmpty(ksp_version_min.ToString()))
+            {
+                return ksp_version_min.ToLongMin().ToString() + "+";
+            }
+
+            return "All versions";
+        }
+
+        /// <summary>
+        /// Returns true if this module provides the functionality requested.
+        /// </summary>
+        public bool DoesProvide(string identifier)
+        {
+            return this.identifier == identifier || provides.Contains(identifier);
+        }
+
+        public bool IsMetapackage
+        {
+            get { return (!string.IsNullOrEmpty(this.kind) && this.kind == "metapackage"); }
+        }
+
+        protected bool Equals(CkanModule other)
+        {
+            return string.Equals(identifier, other.identifier) && version.Equals(other.version);
+        }
+
         public override bool Equals(object obj)
         {
-            var other = obj as Module;
-            return other != null
-            ? identifier.Equals(other.identifier) && version.Equals(other.version)
-            : base.Equals(obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((CkanModule)obj);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            unchecked
+            {
+                return (identifier.GetHashCode() * 397) ^ version.GetHashCode();
+            }
+        }
+
+        bool IEquatable<CkanModule>.Equals(CkanModule other)
+        {
+            return Equals(other);
         }
 
 
@@ -614,14 +611,19 @@ namespace CKAN
 
             return identifier + "-" + version_string + ".zip";
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", identifier, version);
+        }
     }
 
     public class InvalidModuleAttributesException : Exception
     {
-        private readonly Module module;
+        private readonly CkanModule module;
         private readonly string why;
 
-        public InvalidModuleAttributesException(string why, Module module = null)
+        public InvalidModuleAttributesException(string why, CkanModule module = null)
         {
             this.why = why;
             this.module = module;

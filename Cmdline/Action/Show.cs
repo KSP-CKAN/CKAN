@@ -120,7 +120,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <returns>Success status.</returns>
         /// <param name="module">The module to show.</param>
-        public int ShowMod(Module module)
+        public int ShowMod(CkanModule module)
         {
             #region Abstract and description
             if (!string.IsNullOrEmpty(module.@abstract))

@@ -918,7 +918,7 @@ namespace CKAN
                     // Module already installed. We'll need to remove it first.
                     to_remove.Add(module.identifier);
 
-                    Module installed = installed_mod.Module;
+                    CkanModule installed = installed_mod.Module;
                     if (installed.version.IsEqualTo(module.version))
                     {
                         log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);

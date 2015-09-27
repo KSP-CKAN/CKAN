@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Internal] `Module` and `CkanModule` are finally merged into the same class! (Postremus, #1440)
+
 ## v1.14.2 (Makemake)
 
 ### Bugfixes
