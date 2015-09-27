@@ -139,6 +139,11 @@ namespace CKAN
         {
             log.DebugFormat("Checking cache for {0}", url);
 
+            if (url == null)
+            {
+                return null;
+            }
+
             string hash = CreateURLHash(url);
 
             // Use our existing list of files, or retrieve and
