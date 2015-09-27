@@ -208,11 +208,13 @@ namespace CKAN
             var old_value = (bool) update_cell.Value;
 
             bool value = set_value_to ?? old_value;
+            // Was the value changed by a non gui call to this method?
+            if (old_value != value) update_cell.Value = value;
+
+            // Have we changed the value at all?
             if (IsUpgradeChecked != value)
-            {
                 Main.Instance.AddUserRequestedChange(this, GUIModChangeType.Update);
-                update_cell.Value = value;
-            }
+
             IsUpgradeChecked = value;
         }
 
