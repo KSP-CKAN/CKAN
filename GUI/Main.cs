@@ -344,18 +344,8 @@ namespace CKAN
 
                 int i = 0;
                 log.Debug("Attempting to select mod from startup parameters");
-                foreach (DataGridViewRow row in ModList.Rows)
-                {
-                    var module = ((GUIMod) row.Tag);
-                    if (identifier == module.Identifier)
-                    {
-                        ModList.FirstDisplayedScrollingRowIndex = i;
-                        row.Selected = true;
-                        break;
-                    }
-
-                    i++;
-                }
+                FocusMod(identifier, true, true);
+                ModList.Refresh();
                 log.Debug("Failed to select mod from startup parameters");
             }
 
@@ -1020,7 +1010,7 @@ namespace CKAN
             FocusMod(e.Node.Name, true);
         }
 
-        private void FocusMod(string key, bool exactMatch)
+        private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
         {
             DataGridViewRow current_row = ModList.CurrentRow;
             int currentIndex = current_row != null ? current_row.Index : 0;
@@ -1032,12 +1022,13 @@ namespace CKAN
                 bool row_match = false;
                 if (exactMatch)
                 {
-                    row_match = mod.Name == key;
+                    row_match = mod.Name == key || mod.Identifier == key;
                 }
                 else
                 {
                     row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
-                        mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                        mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
+                        mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
                 if (row_match && first_match == null)
                 {
@@ -1065,6 +1056,8 @@ namespace CKAN
                 // Setting this to the Name cell prevents the checkbox from being toggled
                 // by pressing Space while the row is not indicated as active
                 ModList.CurrentCell = match.Cells[2];
+                if (showAsFirst)
+                    ModList.FirstDisplayedScrollingRowIndex = match.Index;
             }
             else
             {

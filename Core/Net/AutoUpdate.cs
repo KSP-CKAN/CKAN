@@ -137,19 +137,7 @@ namespace CKAN
 
             // run updater
 
-            // mark as executable if on Linux or Mac
-            if (Platform.IsUnix || Platform.IsMac)
-            {
-                // TODO: It would be really lovely (and safer!) to use the native system
-                // call here: http://docs.go-mono.com/index.aspx?link=M:Mono.Unix.Native.Syscall.chmod
-
-                string command = string.Format("+x \"{0}\"", updaterFilename);
-
-                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
-                permsinfo.UseShellExecute = false;
-                Process permsprocess = Process.Start(permsinfo);
-                permsprocess.WaitForExit();
-            }
+            SetExecutable(updaterFilename);
 
             var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch");
 
@@ -202,6 +190,22 @@ namespace CKAN
                 throw;
             }
         }
-    }
 
+        public static void SetExecutable(string fileName)
+        {
+            // mark as executable if on Linux or Mac
+            if (Platform.IsUnix || Platform.IsMac)
+            {
+                // TODO: It would be really lovely (and safer!) to use the native system
+                // call here: http://docs.go-mono.com/index.aspx?link=M:Mono.Unix.Native.Syscall.chmod
+
+                string command = string.Format("+x \"{0}\"", fileName);
+
+                ProcessStartInfo permsinfo = new ProcessStartInfo("chmod", command);
+                permsinfo.UseShellExecute = false;
+                Process permsprocess = Process.Start(permsinfo);
+                permsprocess.WaitForExit();
+            }
+        }
+    }
 }
