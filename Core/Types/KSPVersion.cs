@@ -153,10 +153,16 @@ namespace CKAN
             return ret;
         }
 
-        // Returns true if this targets that version of KSP.
-        // That must be a long (actual) version.
-        // Eg: 0.25 targets 0.25.2
+        public bool Targets(string target_version)
+        {
+            return Targets(new KSPVersion(target_version));
+        }
 
+        /// <summary>
+        /// Returns true if this targets that version of KSP.
+        /// That must be a long (actual) version.
+        /// Eg: 0.25 targets 0.25.2
+        /// </summary>
         public bool Targets(KSPVersion that)
         {
             // Cry if we're not looking at a long version to compare to.
@@ -185,7 +191,10 @@ namespace CKAN
             return (that >= min && that <= max);
         }
 
-        // "any" -> null
+        /// <summary>
+        /// Returns null if passed null, or the string "any",
+        /// otherwise returns the string passed.
+        /// </summary>
         private static string AnyToNull(string v)
         {
             if (v != null && v == "any")
@@ -195,7 +204,9 @@ namespace CKAN
             return v;
         }
 
-        // Throws on error.
+        /// <summary>
+        /// Throws an exception if our version object is not well-formed.
+        /// </summary>
         private void Validate()
         {
             if (version == null || IsShortVersion() || IsLongVersion())
@@ -237,6 +248,15 @@ namespace CKAN
         protected bool Equals(KSPVersion other)
         {
             return string.Equals(version, other.version);
+        }
+
+        /// <summary>
+        /// Compare the version against a string. This only makes sense for complete
+        /// versions (eg: '1.0.4').
+        /// </summary>
+        public bool Equals(string version_string)
+        {
+            return string.Equals(version, version_string);
         }
 
         public override bool Equals(object obj)
