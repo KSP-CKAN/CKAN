@@ -350,6 +350,25 @@ The maximum version of KSP the mod requires to operate correctly.
 Same format as `ksp_version`. It is an error to include both this
 and the `ksp_version` field.
 
+##### ksp_version_strict
+
+(**v1.16**)
+
+If `true`, the mod will only be installed if the user's KSP version is
+exactly targetted by the mod.
+
+If `false`, the mod will be installed if the KSP version it targets is
+"generally recognised" as being compatible with the KSP version
+the user has installed. It is up to the CKAN client to determine what is
+"generally recognised" as working.
+
+As an example, a mod with a `ksp_version` of `1.0.4` will also install in
+KSP `1.0.5` (but not any other version) when `ksp_version_strict` is false.
+
+This field defaults to `false`, including for `spec_version`s less than
+`v1.16`, however CKAN clients prior to `v1.16` would only perform strict
+checking. 
+
 ### Relationships
 
 Relationships are optional fields which describe this mod's relationship

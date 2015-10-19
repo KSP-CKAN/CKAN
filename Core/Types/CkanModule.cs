@@ -163,6 +163,9 @@ namespace CKAN
         [JsonProperty("ksp_version_min")]
         public KSPVersion ksp_version_min;
 
+        [JsonProperty("ksp_version_strict")]
+        public bool ksp_version_strict = false;
+
         [JsonProperty("license")]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
         public List<License> license;

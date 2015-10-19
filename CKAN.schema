@@ -88,6 +88,10 @@
             "description" : "Optional maximum KSP version",
             "$ref"        : "#/definitions/ksp_version"
         },
+        "ksp_version_strict" : {
+            "description" : "Optional enforcement of strict version checks (defaults to false)",
+            "type"        : "boolean"
+        },
         "depends" : {
             "description" : "Optional list of dependencies",
             "$ref"        : "#/definitions/relationship"
@@ -100,10 +104,10 @@
             "description" : "Optional list of recommended, but not essential mods",
             "$ref"        : "#/definitions/relationship"
         },
-		"supports" : {
-				"description" : "Optional list of supported mods",
-				"$ref"        : "#/definitions/relationship"
-		},
+        "supports" : {
+            "description" : "Optional list of supported mods",
+            "$ref"        : "#/definitions/relationship"
+        },
         "conflicts" : {
             "description" : "Optional list of conflicting mods",
             "$ref"        : "#/definitions/relationship"
