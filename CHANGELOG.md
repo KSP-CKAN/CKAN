@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent)
+
 ## v1.14.3 (Haumea)
 
 ### Bugfixes
