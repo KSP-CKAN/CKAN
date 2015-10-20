@@ -254,10 +254,15 @@ namespace CKAN
         #region Constructors
 
         /// <summary>
-        /// To be used by test cases only, and even then I'm not sure this is a great idea.
+        /// To be used by test cases and cascaded json deserialisation only,
+        /// and even then I'm not sure this is a great idea.
         /// </summary>
+        [JsonConstructor]
         internal CkanModule()
         {
+            // We don't have this passed in, so we'll ask the service locator
+            // directly. Yuck.
+            _comparator = ServiceLocator.container.Resolve<IGameComparator>();
         }
 
         /// <summary>
