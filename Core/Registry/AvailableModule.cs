@@ -77,12 +77,14 @@ namespace CKAN
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
+
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
             if (available_versions.Count == 0)
             {
                 return null;
             }
 
+            // No restrictions? Great, we can just pick the first one!
             if (ksp_version == null && relationship == null)
             {
                 module = module_version[available_versions.First()];
@@ -90,19 +92,24 @@ namespace CKAN
                 log.DebugFormat("No KSP version restriction, {0} is most recent", module);
                 return module;
             }
+
+            // If there's no relationship to satisfy, we can just pick the first that is
+            // compatible with our version of KSP.
             if (relationship == null)
             {
-            // Time to check if there's anything that we can satisfy.
+                // Time to check if there's anything that we can satisfy.
                 var version =
                     available_versions.FirstOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
                 if (version != null)
                     return module_version[version];
 
-            log.DebugFormat("No version of {0} is compatible with KSP {1}",
-                module_version[available_versions[0]].identifier, ksp_version);
+                log.DebugFormat("No version of {0} is compatible with KSP {1}",
+                    module_version[available_versions[0]].identifier, ksp_version);
 
-            return null;
-        }
+                return null;
+            }
+
+            // If we're here, then we have a relationship to satisfy, so things get more complex.
             if (ksp_version == null)
             {
                 var version = available_versions.FirstOrDefault(relationship.version_within_bounds);
