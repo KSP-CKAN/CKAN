@@ -36,9 +36,10 @@ namespace CKAN.NetKAN.Transformers
             { "recommends", 18 },
             { "suggests", 19 },
             { "supports", 20 },
-            { "install", 21 },
-            { "download", 22 },
-            { "download_size", 23 },
+            { "conflicts", 21 },
+            { "install", 22 },
+            { "download", 23 },
+            { "download_size", 24 },
 
             { "x_generated_by", int.MaxValue }
         };
