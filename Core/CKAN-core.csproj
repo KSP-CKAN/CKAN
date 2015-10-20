@@ -94,6 +94,7 @@
     <Compile Include="Types\GameComparatorStrict.cs" />
     <Compile Include="Types\GameComparatorYOYO.cs" />
     <Compile Include="Types\GameComparatorGRAS.cs" />
+    <Compile Include="ServiceLocator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

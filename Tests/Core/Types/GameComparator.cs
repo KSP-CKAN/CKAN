@@ -9,7 +9,6 @@ namespace Tests.Core.Types
     public class GameComparator
     {
         static readonly CKAN.KSPVersion gameVersion = new CKAN.KSPVersion("1.0.5");
-        static readonly ILog log = LogManager.GetLogger(typeof(GameComparator));
         CKAN.CkanModule gameMod;
 
         [SetUp]

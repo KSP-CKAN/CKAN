@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 using System.Transactions;
+using Autofac;
 
 namespace CKAN
 {
@@ -106,6 +107,9 @@ namespace CKAN
     [JsonObject(MemberSerialization.OptIn)]
     public class CkanModule : IEquatable<CkanModule>
     {
+
+        #region Fields
+
         private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
         private static readonly string[] required_fields =
@@ -197,6 +201,9 @@ namespace CKAN
         [JsonProperty("install")]
         public ModuleInstallDescriptor[] install;
 
+        // Used to see if we're compatible with a given game/KSP version or not.
+        private IGameComparator _comparator;
+
         [JsonIgnore]
         [JsonProperty("specVersion", Required = Required.Default)]
         private Version specVersion;
@@ -239,6 +246,80 @@ namespace CKAN
                 }
 
                 return provides;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// To be used by test cases only, and even then I'm not sure this is a great idea.
+        /// </summary>
+        internal CkanModule()
+        {
+        }
+
+        /// <summary>
+        /// Inflates a CKAN object from a JSON string.
+        /// </summary>
+        public CkanModule(string json, IGameComparator comparator)
+        {
+            _comparator = comparator;
+
+            if (!validate_json_against_schema(json))
+            {
+                throw new BadMetadataKraken(null, "Validation against spec failed");
+            }
+
+            try
+            {
+                // Use the json string to populate our object
+                JsonConvert.PopulateObject(json, this);
+            }
+            catch (JsonException ex)
+            {
+                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
+            }
+
+            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            if (!IsSpecSupported())
+            {
+                throw new UnsupportedKraken(
+                    String.Format(
+                        "{0} requires CKAN {1}, we can't read it.",
+                        this,
+                        spec_version
+                    )
+                );
+            }
+
+            // Check everything in the spec if defined.
+            // TODO: This *can* and *should* be done with JSON attributes!
+
+            foreach (string field in required_fields)
+            {
+                object value = null;
+                if (GetType().GetField(field) != null)
+                {
+                    value = typeof(CkanModule).GetField(field).GetValue(this);
+                }
+                else
+                {
+                    // uh, maybe it is not a field, but a property?
+                    value = typeof(CkanModule).GetProperty(field).GetValue(this, null);
+                }
+
+                if (value == null)
+                {
+                    // Metapackages are allowed to have no download field
+                    if (field == "download" && IsMetapackage) continue;
+
+                    string error = String.Format("{0} missing required field {1}", identifier, field);
+
+                    log.Error(error);
+                    throw new BadMetadataKraken(null, error);
+                }
             }
         }
 
@@ -384,64 +465,16 @@ namespace CKAN
         /// </summary>
         public static CkanModule FromJson(string json)
         {
-            if (!validate_json_against_schema(json))
-            {
-                throw new BadMetadataKraken(null, "Validation against spec failed");
-            }
+            log.Debug("Inflating comparator object");
+            IGameComparator comparator;
 
-            CkanModule newModule;
+            comparator = ServiceLocator.container.Resolve<IGameComparator>();
 
-            try
-            {
-                newModule = JsonConvert.DeserializeObject<CkanModule>(json);
-            }
-            catch (JsonException ex)
-            {
-                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
-            }
-
-            // NOTE: Many of these tests may be better inour Deserialisation handler.
-            if (!newModule.IsSpecSupported())
-            {
-                throw new UnsupportedKraken(
-                    String.Format(
-                        "{0} requires CKAN {1}, we can't read it.",
-                        newModule,
-                        newModule.spec_version
-                    )
-                );
-            }
-
-            // Check everything in the spec if defined.
-            // TODO: This *can* and *should* be done with JSON attributes!
-
-            foreach (string field in required_fields)
-            {
-                object value = null;
-                if (newModule.GetType().GetField(field) != null)
-                {
-                    value = typeof(CkanModule).GetField(field).GetValue(newModule);
-                }
-                else
-                {
-                    // uh, maybe it is not a field, but a property?
-                    value = typeof(CkanModule).GetProperty(field).GetValue(newModule, null);
-                }
-
-                if (value == null)
-                {
-                    // Metapackages are allowed to have no download field
-                    if (field == "download" && newModule.IsMetapackage) continue;
-
-                    string error = String.Format("{0} missing required field {1}", newModule.identifier, field);
-
-                    log.Error(error);
-                    throw new BadMetadataKraken(null, error);
-                }
-            }
-            // All good! Return module
-            return newModule;
+            log.Debug("Building CkanModule");
+            return new CkanModule(json, comparator);
         }
+
+        #endregion
 
         /// <summary>
         /// Returns true if we conflict with the given module.
@@ -472,36 +505,21 @@ namespace CKAN
         }
 
         /// <summary>
-        ///     Returns true if our mod is compatible with the KSP version specified.
+        /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
         public bool IsCompatibleKSP(string version)
         {
             return IsCompatibleKSP(new KSPVersion(version));
         }
 
+        /// <summary>
+        /// Returns true if our mod is compatible with the KSP version specified.
+        /// </summary>
         public bool IsCompatibleKSP(KSPVersion version)
         {
             log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
 
-            // Check the min and max versions.
-
-            if (ksp_version_min.IsNotAny() && version < ksp_version_min)
-            {
-                return false;
-            }
-
-            if (ksp_version_max.IsNotAny() && version > ksp_version_max)
-            {
-                return false;
-            }
-
-            // We didn't hit the min/max guards. They may not have existed.
-
-            // Note that since ksp_version is "any" if not specified, this
-            // will work fine if there's no target, or if there were min/max
-            // fields and we passed them successfully.
-
-            return ksp_version.Targets(version);
+            return _comparator.Compatible(version, this);
         }
 
         /// <summary>
