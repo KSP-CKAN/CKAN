@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
+
 ### Internal
 
 - [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent)
