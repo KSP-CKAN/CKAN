@@ -256,7 +256,7 @@
                 {
                     "description" : "Spec v1.12 Ships subfolder paths",
                     "type" : "string",
-                    "enum" : [ "Ships/SPH", "Ships/VAB" ]
+                    "pattern" : "^Ships/[SPH|VAB]"
                 }
             ]
         },
