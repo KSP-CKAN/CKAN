@@ -9,10 +9,12 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
+- [Core] `find` and `find_regexp` install directives can now be used to specify files as well as directories. (dbent #1241)
 
 ### Internal
 
 - [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent)
+- [NetKAN] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent)
 
 ## v1.14.3 (Haumea)
 
