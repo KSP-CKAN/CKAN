@@ -45,6 +45,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var buildType = "stable";
+                var useFilenameVersion = true;
 
                 var jenkinsMetadata = (JObject)json["x_netkan_jenkins"];
                 if (jenkinsMetadata != null)
@@ -54,6 +55,13 @@ namespace CKAN.NetKAN.Transformers
                     if (jenkinsBuildMetadata != null)
                     {
                         buildType = jenkinsBuildMetadata;
+                    }
+
+                    var jenkinsUseFilenameVersionMetadata = (bool?)jenkinsMetadata["use_filename_version"];
+
+                    if (jenkinsUseFilenameVersionMetadata != null)
+                    {
+                        useFilenameVersion = jenkinsUseFilenameVersionMetadata.Value;
                     }
                 }
 
@@ -92,10 +100,13 @@ namespace CKAN.NetKAN.Transformers
                 var version = artifactFileName;
 
                 Log.DebugFormat("Using download URL: {0}", download);
-                Log.DebugFormat("Using version: {0}", version);
-
                 json.SafeAdd("download", download);
-                json.SafeAdd("version", version);
+
+                if (useFilenameVersion)
+                {
+                    Log.DebugFormat("Using filename as version: {0}", version);
+                    json.SafeAdd("version", version);
+                }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
