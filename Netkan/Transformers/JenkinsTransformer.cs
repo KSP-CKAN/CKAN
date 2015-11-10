@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Transformers
         private static readonly Dictionary<string, string> BuildTypeToProperty = new Dictionary<string, string>
         {
             { "any", "lastBuild" },
-            { "compeleted", "lastCompletedBuild" },
+            { "completed", "lastCompletedBuild" },
             { "failed", "lastFailedBuild" },
             { "stable", "lastStableBuild" },
             { "successful", "lastSuccessfulBuild" },
