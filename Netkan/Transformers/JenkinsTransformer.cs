@@ -96,7 +96,6 @@ namespace CKAN.NetKAN.Transformers
                 );
 
                 // Get the artifact metadata
-                // TODO: Support asset_matching
                 var artifacts = ((JArray)build["artifacts"])
                     .Select(i => (JObject)i)
                     .Where(i => assetMatchPattern.IsMatch((string)i["fileName"]))
