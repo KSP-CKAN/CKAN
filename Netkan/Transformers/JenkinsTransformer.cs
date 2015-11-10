@@ -46,7 +46,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var buildType = "stable";
-                var useFilenameVersion = true;
+                var useFilenameVersion = false;
                 var assetMatchPattern = Constants.DefaultAssetMatchPattern;
 
                 var jenkinsMetadata = (JObject)json["x_netkan_jenkins"];
