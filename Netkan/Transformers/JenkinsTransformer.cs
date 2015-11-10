@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -46,6 +47,7 @@ namespace CKAN.NetKAN.Transformers
 
                 var buildType = "stable";
                 var useFilenameVersion = true;
+                var assetMatchPattern = Constants.DefaultAssetMatchPattern;
 
                 var jenkinsMetadata = (JObject)json["x_netkan_jenkins"];
                 if (jenkinsMetadata != null)
@@ -62,6 +64,13 @@ namespace CKAN.NetKAN.Transformers
                     if (jenkinsUseFilenameVersionMetadata != null)
                     {
                         useFilenameVersion = jenkinsUseFilenameVersionMetadata.Value;
+                    }
+
+                    var jenkinsAssetMatchMetadata = (string)jenkinsMetadata["asset_match"];
+
+                    if (jenkinsAssetMatchMetadata != null)
+                    {
+                        assetMatchPattern = new Regex(jenkinsAssetMatchMetadata);
                     }
                 }
 
@@ -88,29 +97,40 @@ namespace CKAN.NetKAN.Transformers
 
                 // Get the artifact metadata
                 // TODO: Support asset_matching
-                var artifact = ((JArray)build["artifacts"])
+                var artifacts = ((JArray)build["artifacts"])
                     .Select(i => (JObject)i)
-                    .Single(i => ((string)i["fileName"]).ToLowerInvariant().EndsWith(".zip"));
+                    .Where(i => assetMatchPattern.IsMatch((string)i["fileName"]))
+                    .ToList();
 
-                var artifactFileName = artifact["fileName"];
-                var artifactRelativePath = artifact["relativePath"];
-
-                // I'm not sure if 'relativePath' is the right property to use here
-                var download = Uri.EscapeUriString(buildUrl + "artifact/" + artifactRelativePath);
-                var version = artifactFileName;
-
-                Log.DebugFormat("Using download URL: {0}", download);
-                json.SafeAdd("download", download);
-
-                if (useFilenameVersion)
+                switch (artifacts.Count)
                 {
-                    Log.DebugFormat("Using filename as version: {0}", version);
-                    json.SafeAdd("version", version);
+                    case 1:
+                        var artifact = artifacts.Single();
+
+                        var artifactFileName = artifact["fileName"];
+                        var artifactRelativePath = artifact["relativePath"];
+
+                        // I'm not sure if 'relativePath' is the right property to use here
+                        var download = Uri.EscapeUriString(buildUrl + "artifact/" + artifactRelativePath);
+                        var version = artifactFileName;
+
+                        Log.DebugFormat("Using download URL: {0}", download);
+                        json.SafeAdd("download", download);
+
+                        if (useFilenameVersion)
+                        {
+                            Log.DebugFormat("Using filename as version: {0}", version);
+                            json.SafeAdd("version", version);
+                        }
+
+                        Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                        return new Metadata(json);
+                    case 0:
+                        throw new Exception("Could not find any matching artifacts");
+                    default:
+                        throw new Exception("Found too many matching artifacts");
                 }
-
-                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                return new Metadata(json);
             }
 
             return metadata;
