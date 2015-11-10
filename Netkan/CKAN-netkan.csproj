@@ -52,8 +52,6 @@
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
-    <Compile Include="Sources\Jenkins\JenkinsAPI.cs" />
-    <Compile Include="Sources\Jenkins\JenkinsBuild.cs" />
     <Compile Include="Sources\Kerbalstuff\IKerbalstuffApi.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffApi.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffError.cs" />
