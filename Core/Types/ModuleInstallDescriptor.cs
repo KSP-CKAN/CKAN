@@ -25,6 +25,9 @@ namespace CKAN
         [JsonProperty("find_regexp")]
         public string find_regexp;
 
+        [JsonProperty("find_matches_files")]
+        public bool find_matches_files;
+
         [JsonProperty("install_to", Required = Required.Always)]
         public string install_to;
 
@@ -179,7 +182,9 @@ namespace CKAN
             // Let's find that directory
 
             // Normalise our path.
-            var normalised = zipfile.Cast<ZipEntry>().Select(entry => entry.Name)
+            var normalised = zipfile
+                .Cast<ZipEntry>()
+                .Select(entry => find_matches_files ? entry.Name : Path.GetDirectoryName(entry.Name))
                 .Select(entry =>
                 {
                     var dir = entry.Replace('\\', '/');
