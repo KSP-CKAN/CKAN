@@ -236,6 +236,20 @@ namespace CKAN
 
             throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
         }
+        
+        /// <summary>
+        /// Rebuilds the "Ships" directory inside the current KSP instance
+        /// </summary>
+        public void RebuildKSPSubDir()
+        {
+            string[] FoldersToCheck = { "Ships/VAB", "Ships/SPH", "Ships/@thumbs/VAB", "Ships/@thumbs/SPH" };
+            foreach (string sRelativePath in FoldersToCheck)
+            {
+                string sAbsolutePath = ToAbsoluteGameDir(sRelativePath);
+                if (!Directory.Exists(sAbsolutePath))
+                    Directory.CreateDirectory(sAbsolutePath);
+            }
+        }
 
         #endregion
 
