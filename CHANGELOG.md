@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
-- [Core] `find` and `find_regexp` install directives can now be used to specify files as well as directories. (dbent #1241)
+- [Core] `find` and `find_regexp` install directives will match files as well as directories if the `find_matches_files` field is set to `true`. (dbent #1241)
 
 ### Internal
 
