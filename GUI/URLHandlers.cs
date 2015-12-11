@@ -116,6 +116,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
         private static void RegisterURLHandler_Linux()
         {
             var parser = new FileIniDataParser();
+            parser.Parser.Configuration.AssigmentSpacer = "";
             IniData data;
 
             log.InfoFormat("Trying to register URL handler");
