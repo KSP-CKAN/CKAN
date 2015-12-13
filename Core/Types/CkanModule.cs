@@ -202,7 +202,7 @@ namespace CKAN
         public ModuleInstallDescriptor[] install;
 
         // Used to see if we're compatible with a given game/KSP version or not.
-        private IGameComparator _comparator;
+        private readonly IGameComparator _comparator;
 
         [JsonIgnore]
         [JsonProperty("specVersion", Required = Required.Default)]
@@ -262,7 +262,7 @@ namespace CKAN
         {
             // We don't have this passed in, so we'll ask the service locator
             // directly. Yuck.
-            _comparator = ServiceLocator.container.Resolve<IGameComparator>();
+            _comparator = ServiceLocator.Container.Resolve<IGameComparator>();
         }
 
         /// <summary>
@@ -471,9 +471,7 @@ namespace CKAN
         public static CkanModule FromJson(string json)
         {
             log.Debug("Inflating comparator object");
-            IGameComparator comparator;
-
-            comparator = ServiceLocator.container.Resolve<IGameComparator>();
+            IGameComparator comparator = ServiceLocator.Container.Resolve<IGameComparator>();
 
             log.Debug("Building CkanModule");
             return new CkanModule(json, comparator);

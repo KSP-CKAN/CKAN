@@ -9,8 +9,9 @@ namespace CKAN
     public static class ServiceLocator
     {
         private static IContainer _container;
-        public static IContainer container
+        public static IContainer Container
         {
+            // NB: Totally not thread-safe.
             get
             {
                 if (_container == null)
@@ -27,7 +28,7 @@ namespace CKAN
             }
         }
 
-        public static void Init()
+        private static void Init()
         {
             var builder = new ContainerBuilder();
 
