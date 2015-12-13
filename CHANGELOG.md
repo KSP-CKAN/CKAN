@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v1.16.0
 
 ### Bugfixes
 
@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
 - [Core] `find` and `find_regexp` install directives will match files as well as directories if the `find_matches_files` field is set to `true`. (dbent #1241)
 - [Core/GUI] Missing directories in `Ships` will be recreated as needed. (Wetmelon, #1525)
-- [Core] Framework added to allow fuzzy version checking, including "you're on your own" comparisons where KSP version checks are disabled. (pjf #1499)
+- [Core] Framework added to allow fuzzy version checking, including "you're on your own" comparisons where KSP version checks are disabled. Updated spec to include `ksp_version_strict`, which enforces strict versioning. (pjf #1499)
 - [Core] Thumbs subdirectories in `Ships` can now be directly targeted by install stanzas. (Postremus, #1448)
 
 ### Internal
