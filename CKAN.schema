@@ -264,8 +264,14 @@
                 {
                     "description" : "Spec v1.12 Ships subfolder paths",
                     "type" : "string",
-                    "pattern" : "^Ships/[SPH|VAB]"
+                    "pattern" : "^Ships/(SPH|VAB)$"
+                },
+                {
+                    "description" : "Spec v1.16 thumbs paths",
+                    "type" : "string",
+                    "pattern" : "^Ships/@thumbs/(SPH|VAB)$"
                 }
+
             ]
         },
         "license" : {
