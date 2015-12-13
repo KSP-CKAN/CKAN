@@ -6,7 +6,7 @@ namespace CKAN
     /// Test to see if a module is compatible with the user's installed game,
     /// using strict tests.
     /// </summary>
-    public class GameComparatorStrict : IGameComparator
+    public class StrictGameComparator : IGameComparator
     {
 
         public bool Compatible(KSPVersion gameVersion, CkanModule module)

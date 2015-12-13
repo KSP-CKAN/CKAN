@@ -19,9 +19,9 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase(typeof(CKAN.GameComparatorStrict), true)]
-        [TestCase(typeof(CKAN.GameComparatorGRAS), true)]
-        [TestCase(typeof(CKAN.GameComparatorYOYO), true)]
+        [TestCase(typeof(CKAN.StrictGameComparator), true)]
+        [TestCase(typeof(CKAN.GrasGameComparator), true)]
+        [TestCase(typeof(CKAN.YoyoGameComparator), true)]
         public void TotallyCompatible(Type type, bool expected)
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
@@ -35,9 +35,9 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase(typeof(CKAN.GameComparatorStrict), false)]
-        [TestCase(typeof(CKAN.GameComparatorGRAS), true)]
-        [TestCase(typeof(CKAN.GameComparatorYOYO), true)]
+        [TestCase(typeof(CKAN.StrictGameComparator), false)]
+        [TestCase(typeof(CKAN.GrasGameComparator), true)]
+        [TestCase(typeof(CKAN.YoyoGameComparator), true)]
         public void GenerallySafeLax(Type type, bool expected)
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
@@ -51,9 +51,9 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase(typeof(CKAN.GameComparatorStrict), false)]
-        [TestCase(typeof(CKAN.GameComparatorGRAS), false)]
-        [TestCase(typeof(CKAN.GameComparatorYOYO), true)]
+        [TestCase(typeof(CKAN.StrictGameComparator), false)]
+        [TestCase(typeof(CKAN.GrasGameComparator), false)]
+        [TestCase(typeof(CKAN.YoyoGameComparator), true)]
         public void GenerallySafeStrict(Type type, bool expected)
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
@@ -69,9 +69,9 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase(typeof(CKAN.GameComparatorStrict), false)]
-        [TestCase(typeof(CKAN.GameComparatorGRAS), false)]
-        [TestCase(typeof(CKAN.GameComparatorYOYO), true)]
+        [TestCase(typeof(CKAN.StrictGameComparator), false)]
+        [TestCase(typeof(CKAN.GrasGameComparator), false)]
+        [TestCase(typeof(CKAN.YoyoGameComparator), true)]
         public void Incompatible(Type type, bool expected)
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);

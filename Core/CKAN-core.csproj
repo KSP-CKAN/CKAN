@@ -90,11 +90,11 @@
     <Compile Include="Platform.cs" />
     <Compile Include="Net\Curl.cs" />
     <Compile Include="Converters\JsonIgnoreBadUrlConverter.cs" />
-    <Compile Include="Types\IGameComparator.cs" />
-    <Compile Include="Types\GameComparatorStrict.cs" />
-    <Compile Include="Types\GameComparatorYOYO.cs" />
-    <Compile Include="Types\GameComparatorGRAS.cs" />
     <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Types\GameComparator\IGameComparator.cs" />
+    <Compile Include="Types\GameComparator\GrasGameComparator.cs" />
+    <Compile Include="Types\GameComparator\StrictGameComparator.cs" />
+    <Compile Include="Types\GameComparator\YoyoGameComparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -102,4 +102,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Types\GameComparator\" />
+  </ItemGroup>
 </Project>

@@ -7,9 +7,9 @@ namespace CKAN
     /// with extra understanding of which KSP versions are "safe" (ie: 1.0.5 mostly works with 1.0.4 mods).
     /// If the mod has `ksp_version_strict` set then this is identical to strict checking.
     /// </summary>
-    public class GameComparatorGRAS : IGameComparator
+    public class GrasGameComparator : IGameComparator
     {
-        static readonly GameComparatorStrict strict = new GameComparatorStrict();
+        static readonly StrictGameComparator strict = new StrictGameComparator();
         static readonly KSPVersion v104 = new KSPVersion("1.0.4");
 
         public bool Compatible(KSPVersion gameVersion, CkanModule module)
