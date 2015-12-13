@@ -118,7 +118,7 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.14'. Changes since spec `1`
+This document describes the CKAN specification 'v1.16'. Changes since spec `1`
 are marked with **v1.2** through to **v1.14** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
@@ -284,7 +284,7 @@ subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this
 path and abort the install if any attempts to traverse up directories are found
 (eg: `GameData/../Example`).
 
-Optionally, one or more filter directives *may* be provided:
+In addition, any number of optional directives *may* be provided:
 
 - `filter` : A string, or list of strings, of file parts that should not
   be installed. These are treated as literal things which must match a
@@ -294,6 +294,8 @@ Optionally, one or more filter directives *may* be provided:
   case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
   expression, it is not installed.
+- `find_matches_files` : If set to `true` then both `find` and
+  `find_regexp` will match files in addition to directories (**v1.16**).
 
 If no install sections are provided, a CKAN client *must* find the
 top-most directory in the archive that matches the module identifier,

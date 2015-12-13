@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Transformers
                 new KerbalstuffTransformer(new KerbalstuffApi(http)),
                 new GithubTransformer(new GithubApi(githubToken), prerelease),
                 new HttpTransformer(),
-                new JenkinsTransformer(),
+                new JenkinsTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),
                 new VersionEditTransformer(),

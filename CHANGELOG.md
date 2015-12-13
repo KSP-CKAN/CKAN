@@ -6,11 +6,18 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] CKAN handlers added to `mimeapps.list` in a more cross-platform friendly fashion. (danielrschmidt, #1536)
+
 ### Features
+
+- [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
+- [Core] `find` and `find_regexp` install directives will match files as well as directories if the `find_matches_files` field is set to `true`. (dbent #1241)
+- [Core/GUI] Missing directories in `Ships` will be recreated as needed. (Wetmelon, #1525)
 
 ### Internal
 
 - [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent)
+- [NetKAN] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent)
 
 ## v1.14.3 (Haumea)
 

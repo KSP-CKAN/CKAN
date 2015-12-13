@@ -10,10 +10,6 @@ namespace CKAN.NetKAN.Sources.Github
             RegexOptions.Compiled
         );
 
-        private static readonly Regex DefaultFilterPattern = new Regex(
-            @"\.zip$", RegexOptions.IgnoreCase | RegexOptions.Compiled
-        );
-
         public string Account { get; private set; }
         public string Project { get; private set; }
         public string Repository { get; private set; }
@@ -36,7 +32,7 @@ namespace CKAN.NetKAN.Sources.Github
 
                 Filter = match.Groups["filter"].Success ?
                     new Regex(match.Groups["filter"].Value, RegexOptions.Compiled) :
-                    DefaultFilterPattern;
+                    Constants.DefaultAssetMatchPattern;
 
                 UsePrelease = usePrelease;
             }

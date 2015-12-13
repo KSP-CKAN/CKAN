@@ -356,6 +356,8 @@ namespace CKAN
             }
 
             m_PluginController = new PluginController(pluginsPath, true);
+            
+            CurrentInstance.RebuildKSPSubDir();
 
             log.Info("GUI started");
             ModList.Select();

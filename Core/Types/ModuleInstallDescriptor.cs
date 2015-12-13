@@ -25,6 +25,9 @@ namespace CKAN
         [JsonProperty("find_regexp")]
         public string find_regexp;
 
+        [JsonProperty("find_matches_files")]
+        public bool find_matches_files;
+
         [JsonProperty("install_to", Required = Required.Always)]
         public string install_to;
 
@@ -179,15 +182,17 @@ namespace CKAN
             // Let's find that directory
 
             // Normalise our path.
-            var normalised = zipfile.Cast<ZipEntry>().Select(entry => Path.GetDirectoryName(entry.Name))
-                .Select(directory =>
+            var normalised = zipfile
+                .Cast<ZipEntry>()
+                .Select(entry => find_matches_files ? entry.Name : Path.GetDirectoryName(entry.Name))
+                .Select(entry =>
                 {
-                    var dir = directory.Replace('\\', '/');
+                    var dir = entry.Replace('\\', '/');
                     return Regex.Replace(dir, "/$", "");
                 });
 
             // If this looks like what we're after, remember it.
-            var directories = normalised.Where(directory => Regex.IsMatch(directory, filter, RegexOptions.IgnoreCase));
+            var directories = normalised.Where(entry => Regex.IsMatch(entry, filter, RegexOptions.IgnoreCase));
             candidate_set.UnionWith(directories);
 
             // Sort to have shortest first. It's not *quite* top-level directory order,
@@ -199,7 +204,7 @@ namespace CKAN
             {
                 throw new FileNotFoundKraken(
                     this.find ?? this.find_regexp,
-                    String.Format("Could not find {0} directory in zipfile to install", this.find ?? this.find_regexp)
+                    String.Format("Could not find {0} entry in zipfile to install", this.find ?? this.find_regexp)
                 );
             }
 
