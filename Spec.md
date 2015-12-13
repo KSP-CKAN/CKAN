@@ -364,8 +364,8 @@ If `false`, the mod will be installed if the KSP version it targets is
 the user has installed. It is up to the CKAN client to determine what is
 "generally recognised" as working.
 
-As an example, a mod with a `ksp_version` of `1.0.4` will also install in
-KSP `1.0.5` (but not any other version) when `ksp_version_strict` is false.
+As an example, a mod with a `ksp_version` of `1.0.3` will also install in
+KSP `1.0.4` (but not any other version) when `ksp_version_strict` is false.
 
 This field defaults to `false`, including for `spec_version`s less than
 `v1.16`, however CKAN clients prior to `v1.16` would only perform strict
