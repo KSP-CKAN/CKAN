@@ -8,7 +8,7 @@ namespace Tests.Core.Types
     [TestFixture]
     public class GameComparator
     {
-        static readonly CKAN.KSPVersion gameVersion = new CKAN.KSPVersion("1.0.5");
+        static readonly CKAN.KSPVersion gameVersion = new CKAN.KSPVersion("1.0.4");
         CKAN.CkanModule gameMod;
 
         [SetUp]
@@ -26,9 +26,9 @@ namespace Tests.Core.Types
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
 
-            // Mark the mod as being for 1.0.5
+            // Mark the mod as being for 1.0.4
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.5");
+                = new CKAN.KSPVersion("1.0.4");
 
             // Now test!
             Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
@@ -42,9 +42,9 @@ namespace Tests.Core.Types
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
 
-            // We're going to tweak compatibly to mark the mod as being for 1.0.4
+            // We're going to tweak compatibly to mark the mod as being for 1.0.3
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.4");
+                = new CKAN.KSPVersion("1.0.3");
 
             // Now test!
             Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
@@ -58,9 +58,9 @@ namespace Tests.Core.Types
         {
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
 
-            // We're going to tweak compatibly to mark the mod as being for 1.0.4 ONLY
+            // We're going to tweak compatibly to mark the mod as being for 1.0.3 ONLY
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.4");
+                = new CKAN.KSPVersion("1.0.3");
 
             gameMod.ksp_version_strict = true;
 
