@@ -10,7 +10,7 @@ namespace CKAN
     public class GrasGameComparator : IGameComparator
     {
         static readonly StrictGameComparator strict = new StrictGameComparator();
-        static readonly KSPVersion v104 = new KSPVersion("1.0.4");
+        static readonly KSPVersion v103 = new KSPVersion("1.0.3");
 
         public bool Compatible(KSPVersion gameVersion, CkanModule module)
         {
@@ -25,10 +25,10 @@ namespace CKAN
 
             // Otherwise, check if it's "generally recognise as safe".
 
-            // If we're running KSP 1.0.5, then allow the mod to run if we would have
-            // considered it compatible under 1.0.4
-            if (gameVersion.Equals("1.0.5"))
-                return strict.Compatible(v104, module);
+            // If we're running KSP 1.0.4, then allow the mod to run if we would have
+            // considered it compatible under 1.0.3 (as 1.0.4 was "just a hotfix").
+            if (gameVersion.Equals("1.0.4"))
+                return strict.Compatible(v103, module);
 
             return false;
         }
