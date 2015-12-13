@@ -39,6 +39,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac">
+      <HintPath>packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exporters\BbCodeExporter.cs" />
@@ -87,6 +90,11 @@
     <Compile Include="Platform.cs" />
     <Compile Include="Net\Curl.cs" />
     <Compile Include="Converters\JsonIgnoreBadUrlConverter.cs" />
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Types\GameComparator\IGameComparator.cs" />
+    <Compile Include="Types\GameComparator\GrasGameComparator.cs" />
+    <Compile Include="Types\GameComparator\StrictGameComparator.cs" />
+    <Compile Include="Types\GameComparator\YoyoGameComparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -94,4 +102,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Types\GameComparator\" />
+  </ItemGroup>
 </Project>

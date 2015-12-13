@@ -57,6 +57,26 @@ namespace Tests.Core.Types
         }
 
         [Test]
+        public void TargetsString()
+        {
+            var any = new CKAN.KSPVersion(null);
+            var vshort = new CKAN.KSPVersion("0.23");
+            var vlong = new CKAN.KSPVersion("0.23.5");
+            var slong = "0.23.5";
+
+            // Same tests as above, but now testing against a string. :)
+            Assert.IsTrue(any.Targets(slong));
+            Assert.IsTrue(vshort.Targets(slong));
+            Assert.IsTrue(vlong.Targets(slong));
+
+            // And lets test some things that should fail.
+            var too_big = new CKAN.KSPVersion("1.0.4");
+
+            Assert.IsFalse(vshort.Targets(too_big));
+            Assert.IsFalse(vlong.Targets(too_big));
+        }
+
+        [Test]
         public void Types()
         {
             var v1 = new CKAN.KSPVersion("any");

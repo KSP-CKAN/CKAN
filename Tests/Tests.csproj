@@ -167,6 +167,7 @@
     <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="NetKAN\NetkanOverride.cs" />
     <Compile Include="Core\Net\AutoUpdate.cs" />
+    <Compile Include="Core\Types\GameComparator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />
