@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [GUI] CKAN handlers added to `mimeapps.list` in a more cross-platform friendly fashion. (danielrschmidt, #1536)
+
 ### Features
 
 - [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
