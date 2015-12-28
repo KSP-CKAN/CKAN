@@ -37,6 +37,15 @@ namespace Tests.Core.Types
             Assert.That(v1.IsEqualTo(v0));
         }
 
+        [Test]
+        public void SortAllNonNumbersBeforeDot()
+        {
+            var v0 = new CKAN.Version("1.0_beta");
+            var v1 = new CKAN.Version("1.0.1_beta");
+
+            Assert.That(v0.IsLessThan(v1));
+            Assert.That(v1.IsGreaterThan(v0));
+        }
 
         [Test]
         public void Complex()
@@ -154,6 +163,18 @@ namespace Tests.Core.Types
             Assert.That(str.compare_to, Is.EqualTo(0));
             Assert.AreEqual("25.0", str.remainder1);
             Assert.AreEqual("25.99", str.remainder2);
+
+            str = CKAN.Version.StringComp(".42", "_42");
+
+            Assert.That(str.compare_to, Is.GreaterThan(0));
+            Assert.AreEqual("42", str.remainder1);
+            Assert.AreEqual("42", str.remainder2);
+
+            str = CKAN.Version.StringComp("_42", ".42");
+
+            Assert.That(str.compare_to, Is.LessThan(0));
+            Assert.AreEqual("42", str.remainder1);
+            Assert.AreEqual("42", str.remainder2);
         }
 
         [Test]

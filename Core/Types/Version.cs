@@ -215,8 +215,19 @@ namespace CKAN {
             }
 
             // Then compare the two strings, and return our comparison state.
-
-            comp.compare_to = String.CompareOrdinal(str1, str2);
+            // Override sorting of '.' to higher than other characters.
+            if (!str1.StartsWith(".", StringComparison.Ordinal) && str2.StartsWith(".", StringComparison.Ordinal))
+            {
+                comp.compare_to = -1;
+            }
+            else if (str1.StartsWith(".", StringComparison.Ordinal) && !str2.StartsWith(".", StringComparison.Ordinal))
+            {
+                comp.compare_to = 1;
+            }
+            else
+            {
+                comp.compare_to = String.CompareOrdinal(str1, str2);
+            }
             return comp;
         }
 
