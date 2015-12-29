@@ -226,13 +226,16 @@ namespace CKAN {
                 {
                     comp.compare_to = 1;
                 }
-                else if (str1.Length == 1 && str2.Length > 1)
+                else if (str1[0] == '.' && str2[0] == '.')
                 {
-                    comp.compare_to = 1;
-                }
-                else if (str1.Length > 1 && str2.Length == 1)
-                {
-                    comp.compare_to = -1;
+                    if (str1.Length == 1 && str2.Length > 1)
+                    {
+                        comp.compare_to = 1;
+                    }
+                    else if (str1.Length > 1 && str2.Length == 1)
+                    {
+                        comp.compare_to = -1;
+                    }
                 }
                 else
                 {
