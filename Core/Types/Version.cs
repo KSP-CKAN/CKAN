@@ -226,6 +226,14 @@ namespace CKAN {
                 {
                     comp.compare_to = 1;
                 }
+                else if (str1.Length == 1 && str2.Length > 1)
+                {
+                    comp.compare_to = 1;
+                }
+                else if (str1.Length > 1 && str2.Length == 1)
+                {
+                    comp.compare_to = -1;
+                }
                 else
                 {
                     comp.compare_to = String.CompareOrdinal(str1, str2);

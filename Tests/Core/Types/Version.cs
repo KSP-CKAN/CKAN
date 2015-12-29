@@ -48,6 +48,29 @@ namespace Tests.Core.Types
         }
 
         [Test]
+        public void DotSeparatorForExtraData()
+        {
+            var v0 = new CKAN.Version("1.0");
+            var v1 = new CKAN.Version("1.0.repackaged");
+            var v2 = new CKAN.Version("1.0.1");
+
+            Assert.That(v0.IsLessThan(v1));
+            Assert.That(v1.IsLessThan(v2));
+            Assert.That(v1.IsGreaterThan(v0));
+            Assert.That(v2.IsGreaterThan(v1));
+        }
+
+        [Test]
+        public void UnevenVersioning()
+        {
+            var v0 = new CKAN.Version("1.1.0.0");
+            var v1 = new CKAN.Version("1.1.1");
+
+            Assert.That(v0.IsLessThan(v1));
+            Assert.That(v1.IsGreaterThan(v0));
+        }
+
+        [Test]
         public void Complex()
         {
             var v1 = new CKAN.Version("v6a12");
