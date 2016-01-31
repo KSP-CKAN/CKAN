@@ -308,9 +308,10 @@ namespace CKAN
             m_CacheWorker.RunWorkerCompleted += PostModCaching;
             m_CacheWorker.DoWork += CacheMod;
 
+            var old_YesNoDialog = m_User.displayYesNo;
             m_User.displayYesNo = YesNoDialog;
             URLHandlers.RegisterURLHandler(m_Configuration, m_User);
-            m_User.displayYesNo = null;
+            m_User.displayYesNo = old_YesNoDialog;
 
             ApplyToolButton.Enabled = false;
 
