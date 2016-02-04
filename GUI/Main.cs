@@ -778,7 +778,7 @@ namespace CKAN
             else if (filter == GUIModFilter.NewInRepository)
                 FilterToolButton.Text = "Filter (New)";
             else if (filter == GUIModFilter.NotInstalled)
-                FilterToolButton.Text = "Filter (New)";
+                FilterToolButton.Text = "Filter (Not installed)";
             else
                 FilterToolButton.Text = "Filter (Compatible)";
         }
