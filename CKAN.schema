@@ -192,7 +192,31 @@
                     "filter_regexp" : {
                         "description" : "List of regexps that should filter files from this install",
                         "$ref" : "#/definitions/one_or_more_strings"
+                    },
+                    "include_only" : {
+                        "description" : "List of files and directories that should not be excluded from the install",
+                        "$ref" : "#/definitions/one_or_more_strings"
+                    },
+                    "include_only_regexp" : {
+                        "description" : "List of regexps that should include files in this install",
+                        "$ref" : "#/definitions/one_or_more_strings"
                     }
+                },
+                "not": {
+                    "anyOf": [
+                        {
+                            "required": [ "filter", "include_only" ]
+                        },
+                        {
+                            "required": [ "filter", "include_only_regexp" ]
+                        },
+                        {
+                            "required": [ "filter_regexp", "include_only" ]
+                        },
+                        {
+                            "required": [ "filter_regexp", "include_only_regexp" ]
+                        }
+                    ]
                 },
                 "required" : [ "install_to" ],
                 "comment" : "One must have either file or find, is there a JSON Schema friendly way of specifying that?"
