@@ -195,7 +195,17 @@
                     }
                 },
                 "required" : [ "install_to" ],
-                "comment" : "One must have either file or find, is there a JSON Schema friendly way of specifying that?"
+                "oneOf": [
+                    {
+                        "required": [ "file" ]
+                    },
+                    {
+                        "required": [ "find" ]
+                    },
+                    {
+                        "required": [ "find_regexp" ]
+                    }
+                ]
             }
         }
     },
