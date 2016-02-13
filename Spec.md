@@ -519,62 +519,55 @@ it's the result of a custom build process.
 Extension fields are unrestricted, and may contain any sort of data,
 including lists and objects.
 
-#### Special use fields
+#### NetKAN Fields
 
-##### $kref
+NetKAN is the name the tool which is used to automatically generate CKAN files from a variety of sources. NetKAN
+consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict superset* of `.ckan` files. Every
+`.ckan` file is a valid `.netkan` file but not vice versa. NetKAN uses the following fields to produce `.ckan` files.
 
-The `$kref` field is a special use field that indicates that data
-should be filled in from an external service provider. Documents
-containing the `$kref` field are *not* valid CKAN files, but they
-may be used by external tools to *generate* valid CKAN files.
+##### `$kref`
 
-For example:
+The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
+values are understood. Only *one* `$kref` field may be present in a `.netkan` file.
 
-    "$kref" : "#/ckan/kerbalstuff"
-
-The following `$kref` values are understood. Only *one* `$kref`
-field may be present in a document.
-
-###### #/ckan/kerbalstuff/:ksid
+###### `#/ckan/kerbalstuff/:ksid`
 
 Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- name
-- license
-- abstract
-- author
-- version
-- download
-- download_size
-- homepage
-- resources/kerbalstuff
-- ksp_version
+- `name`
+- `license`
+- `abstract`
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `resources.homepage`
+- `resources.kerbalstuff`
+- `resources.repository`
+- `resources.x_screenshot`
+- `ksp_version`
 
-###### #/ckan/github/:user/:repo[/asset_match/:filter_regexp]
+###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
 
-Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
+Indicates that data should be fetched from GitHub, using the `:user` and `:repo` provided.
+For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- author
-- version
-- download
-- download_size
-- resources/repository
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `resources.repository`
 
 Optionally, one asset `:filter_regexp` directive *may* be provided:
 
-- `filter_regexp` : A string which is treated as
-  case-sensitive C# regular expressions which are matched against the
-  name of the released artifact. An example for this may be found
-  in the netkan files for the Active Texture Management and
-  Environmental Visual Enhancements addons where multiple zip
-  files are uploaded for each version and netkan has to identify
-  the correct one.
+- `filter_regexp`: A string which is treated as  case-sensitive C# regular expressions which are matched against the
+  name of the released artifact.
 
-###### #/ckan/jenkins/:joburl
+###### `#/ckan/jenkins/:joburl`
 
 Indicates data should be fetched from a [Jenkins CI server](http://jenkins-ci.org/) using the `:joburl` provided. For
 example: `#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/`.
@@ -602,33 +595,42 @@ object has the following properties:
   Otherwise the expectation is that the archive will have an AVC `.version` file which will be used to generate the
   `version` value.
 
-###### #/ckan/http/:url
+If any options are not present their default values are used.
+
+An example `.netkan` excerpt:
+```json
+{
+    // ...
+    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
+    "x_netkan_jenkins": {
+        "build": "stable",
+        "asset_match": "\\.zip$",
+        "use_filename_version": false
+    }
+    // ...
+}
+```
+
+###### `#/ckan/http/:url`
 
 Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- download
-- download_size
+- `download`
+- `download_size`
 
-This method depends on the existence of an AVC file in the download file
+This method depends on the existence of an AVC `.version` file in the download file
 to determine:
 
-- version
+- `version`
 
-##### $vref
+##### `$vref`
 
-The `$vref` field is a special use field that indicates that version
-data should be filled in from an external service provider.  Documents
-containing the `$vref` field are *not* valid CKAN files, but they
-may be used by external tools to *generate* valid CKAN files.
+The `$vref` field indicates that version data should be filled in from an external service provider. Only *one*
+`$vref` field may be present in a document.
 
-If provided, the data fetched from `$vref` field will overwrite that
-povided by a `$kref` expansion.
-
-Only *one* `$vref` field may be present in a document.
-
-###### #/ckan/ksp-avc
+###### `#/ckan/ksp-avc`
 
 If present, a `$vref` symbol of `#/ckan/ksp-avc` states that version
 information should be retrieved from an embedded KSP-AVC `.version` file in the
