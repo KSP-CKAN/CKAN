@@ -660,6 +660,21 @@ An example `.netkan` excerpt:
 }
 ```
 
+##### `x_netkan_force_v`
+
+The `x_netkan_force_v` field is used to specify that a `v` should be prepended to the `version` field. It is a
+`boolean` field.
+
+A combination of `x_netkan_epoch` and `x_netkan_version_edit` should be used instead to ensure that the `version`
+field *only* contains the actual version string.
+
+An example `.netkan` excerpt:
+```json
+{
+    "x_netkan_force_v": true
+}
+```
+
 ##### `x_netkan_version_edit`
 
 The `x_netkan_version_edit` field is used to edit the final value of the `version` field. `x_netkan_version_edit` is
