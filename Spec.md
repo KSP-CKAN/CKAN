@@ -600,14 +600,12 @@ If any options are not present their default values are used.
 An example `.netkan` excerpt:
 ```json
 {
-    // ...
     "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
     "x_netkan_jenkins": {
         "build": "stable",
         "asset_match": "\\.zip$",
         "use_filename_version": false
     }
-    // ...
 }
 ```
 
@@ -658,9 +656,7 @@ an unsigned 32-bit integer.
 An example `.netkan` excerpt:
 ```json
 {
-    // ...
     "x_netkan_epoch": 1
-    // ...
 }
 ```
 
@@ -683,13 +679,11 @@ the default values for the `replace` and `strict` fields are used.
 An example `.netkan` excerpt:
 ```json
 {
-    // ...
     "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
     "x_netkan_version_edit": {
         "find": "^[vV]?(?<version>.+)$",
         "replace": "${version}",
         "strict": true
     }
-    // ...
 }
 ```
