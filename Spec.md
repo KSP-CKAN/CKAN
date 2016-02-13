@@ -574,22 +574,33 @@ Optionally, one asset `:filter_regexp` directive *may* be provided:
   files are uploaded for each version and netkan has to identify
   the correct one.
 
-###### #/ckan/jenkins/:buildname
+###### #/ckan/jenkins/:joburl
 
-Indicates data should be fetched from a Jenkins server, using the `:buildname` provided. For example: `#/ckan/jenkins/CrewManifest`.
+Indicates data should be fetched from a [Jenkins CI server](http://jenkins-ci.org/) using the `:joburl` provided. For
+example: `#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/`.
 
-When used, the resource field `ci` must exist as well, with a fallback to `x_ci`.
-Both pieces of information will be used to create an URL to the json documents describing
-the build on the target jenkins server.
+The following fields will be auto-filled if not already present:
 
-When used, the following fields will be auto-filled if not already present:
+- `version`
+- `download`
+- `download_size`
+- `resources.ci`
 
-- download
-- download_size
+An `x_netkan_jenkins` object may be provided to customize how the metadata is fetched from the Jenkins server. The
+object has the following properties:
 
-When clients are adapted to v1.6, the following field will be auto-filled if not already present:
-
-- resources/ci
+- `build` (type: `string`, enumerated) (default: `"stable"`)<br/>
+   Specifies the type of build to use. Possible values are `"any"`, `"completed"`, `"failed"`, `"stable"`,
+   `"successful"`, `"unstable"`, or `"unsuccessful"`. Many of these values do not make sense to use in practice but
+   are provided for completeness.
+- `asset_match` (type: `string`, regex) (default: `"\\.zip$"`)<br/>
+  Specifies a regex which selects which artifact to use by filename (case-insensitively). Not having exactly one
+  matching asset is an error.
+- `use_filename_version` (type: `boolean`, default: `false`)<br/>
+  Specifies if the filename of the matched artifact should be used as the value of the `version` property. Combined
+  with the `x_netkan_version_edit` property this allows the version to be extracted from the filename itself.
+  Otherwise the expectation is that the archive will have an AVC `.version` file which will be used to generate the
+  `version` value.
 
 ###### #/ckan/http/:url
 
