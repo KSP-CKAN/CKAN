@@ -579,8 +579,8 @@ The following fields will be auto-filled if not already present:
 - `download_size`
 - `resources.ci`
 
-An `x_netkan_jenkins` object may be provided to customize how the metadata is fetched from the Jenkins server. The
-object has the following properties:
+An `x_netkan_jenkins` field may be provided to customize how the metadata is fetched from the Jenkins server. It is
+an `object` with the following fields:
 
 - `build` (type: `string`, enumerated) (default: `"stable"`)<br/>
    Specifies the type of build to use. Possible values are `"any"`, `"completed"`, `"failed"`, `"stable"`,
@@ -650,4 +650,18 @@ from `$kref`, but not those specified in the CKAN document itself (if present):
 - `ksp_version_min`
 - `ksp_version_max`
 
-Future releases of the spec may allow for additional fields to generated.
+##### `x_netkan_version_edit`
+
+The `x_netkan_version_edit` field is used to edit the final value of the `version` field. `x_netkan_version_edit` is
+an `object` with the following fields:
+
+- `find` (type: `string`, regex) (default: *none*)<br/>
+   A regex to match against the existing `version` field.
+- `replace` (type: `string`, regex substitution) (default: `"${version}"`)<br/>
+  Specifies a [regex substitution string](https://msdn.microsoft.com/en-us/library/ewy2t5e0%28v=vs.110%29.aspx) which
+  will be used as the value of the new `version` field.
+- `strict` (type: `boolean`, default: `true`)<br/>
+  Specifies if NetKAN should produce an error if `find` fails to produce a match against the `version` field.
+  
+`x_netkan_version_edit` can also be a `string` in which case its value is treated as the value the `find` field and
+the default values for the `replace` and `strict` fields are used.
