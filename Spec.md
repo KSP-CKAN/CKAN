@@ -722,3 +722,27 @@ An example `.netkan` excerpt:
     }
 }
 ```
+
+##### `x_netkan_override`
+
+The `x_netkan_override` field is used to override field values based on the value of the `version` field.
+`x_netkan_override` is an `array` of `object`s. Each `object` may have the following fields:
+
+- `version` (type: `array` of `string`, version comparison)<br/>
+  An array of version comparison strings that are used to match against `version`. Version comparison strings are of
+  the form `"[operator]<version>"` where `operator` is one of `=`, `<`, `>`, `<=`, or `>=`. If no `operator` is given
+  it is equivalent to specifying `=`. In order for the override to match *all* the comparisons must be true. Therefore
+  a range may be specified as such: `[ ">=1.0", "<2.0" ]`. A `string` may also be specified instead of an `array` in
+  which case it is treated as an array with a single element equal to the value of the string.
+- `override` (type: `object`)<br/>
+  An object whose fields will override the fields already present if a match occurs. No merging of values occurs, the
+  values of the fields are entirely replaced.
+- `delete` (type: `array` of `string`)<br/>
+  An array of strings which are the names of fields to remove if a match occurs.
+
+Override objects are processed sequentially and all matching overrides will be used.
+
+When any metadata changes occur which are version specific, for example a new dependency is added, overrides are the
+recomended means of specifying them. Overrides may also be used to *stage* metadata changes, for example when new
+dependencies are anticipated to be added in yet unreleased versions of a mod. This allows mod metadata to be
+up-to-date as soon as possible without requiring excessive coordination.
