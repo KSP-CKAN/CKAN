@@ -82,13 +82,13 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                resourcesJson.SafeAdd("homepage", Escape(sdMod.website));
-                resourcesJson.SafeAdd("repository", Escape(sdMod.source_code));
+                resourcesJson.SafeAdd("homepage", Normalize(sdMod.website));
+                resourcesJson.SafeAdd("repository", Normalize(sdMod.source_code));
                 resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
 
                 if (sdMod.background != null)
                 {
-                    resourcesJson.SafeAdd("x_screenshot", Escape(sdMod.background));
+                    resourcesJson.SafeAdd("x_screenshot", Normalize(sdMod.background));
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -99,20 +99,25 @@ namespace CKAN.NetKAN.Transformers
             return metadata;
         }
 
+        private static string Normalize(Uri uri)
+        {
+            return Normalize(uri.ToString());
+        }
+
         /// <summary>
-        /// Provide an escaped version of the given URL, including converting
+        /// Provide an escaped version of the given Uri string, including converting
         /// square brackets to their escaped forms.
         /// </summary>
-        private static string Escape(Uri url)
+        private static string Normalize(string uri)
         {
-            if (url == null)
+            if (uri == null)
             {
                 return null;
             }
 
-            Log.DebugFormat("Escaping {0}", url);
+            Log.DebugFormat("Escaping {0}", uri);
 
-            var escaped = Uri.EscapeUriString(url.ToString());
+            var escaped = Uri.EscapeUriString(uri);
 
             // Square brackets are "reserved characters" that should not appear
             // in strings to begin with, so C# doesn't try to escape them in case
@@ -130,9 +135,16 @@ namespace CKAN.NetKAN.Transformers
                 escaped = "http://" + escaped;
             }
 
-            Log.DebugFormat("Escaped to {0}", escaped);
-
-            return escaped;
+            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
+            {
+                Log.DebugFormat("Escaped to {0}", escaped);
+                return escaped;
+            }
+            else
+            {
+                Log.WarnFormat("Could not normalize URL: {0}", uri);
+                return null;
+            }
         }
     }
 }
