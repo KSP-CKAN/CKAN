@@ -679,3 +679,17 @@ an `object` with the following fields:
   
 `x_netkan_version_edit` can also be a `string` in which case its value is treated as the value the `find` field and
 the default values for the `replace` and `strict` fields are used.
+
+An example `.netkan` excerpt:
+```json
+{
+    // ...
+    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
+    "x_netkan_version_edit": {
+        "find": "^[vV]?(?<version>.+)$",
+        "replace": "${version}",
+        "strict": true
+    }
+    // ...
+}
+```
