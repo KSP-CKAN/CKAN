@@ -623,6 +623,26 @@ to determine:
 
 - `version`
 
+###### `#/ckan/netkan/:url`
+
+Indicates that data should be fetched from another `.netkan` file hosted remotely.
+For example: `#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan`.
+
+The remote `.netkan` file is downloaded and used as if it were the original. `.netkan` files which contain such a
+reference are known as *recursive netkans* or *metanetkans*. They are primarily used so that mod authors can provide
+authoritative metadata.
+
+The following conditions apply:
+- A metanekan may not reference another metanetkan, otherwise an error is produced.
+- An fields specified in the metanetkan will override any fields in the target netkan file.
+
+An example `.netkan` excerpt:
+```json
+{
+    "$kref": "#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan"
+}
+```
+
 ##### `$vref`
 
 The `$vref` field indicates that version data should be filled in from an external service provider. Only *one*
