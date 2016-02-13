@@ -650,6 +650,20 @@ from `$kref`, but not those specified in the CKAN document itself (if present):
 - `ksp_version_min`
 - `ksp_version_max`
 
+##### `x_netkan_epoch`
+
+The `x_netkan_epoch` field is used to specify a particular `epoch` number in the `version` field. Its value should be
+an unsigned 32-bit integer.
+
+An example `.netkan` excerpt:
+```json
+{
+    // ...
+    "x_netkan_epoch": 1
+    // ...
+}
+```
+
 ##### `x_netkan_version_edit`
 
 The `x_netkan_version_edit` field is used to edit the final value of the `version` field. `x_netkan_version_edit` is
