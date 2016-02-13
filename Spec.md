@@ -661,12 +661,15 @@ file downloaded by the `download` field. The following conditions apply:
 * The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
 
-When used, the folowing fields are auto-generated, overwriting those
-from `$kref`, but not those specified in the CKAN document itself (if present):
+When used, the folowing fields are auto-generated:
 
 - `ksp_version`
 - `ksp_version_min`
 - `ksp_version_max`
+
+Version information is generated in such a way as to ensure maximum compatability. For example if the `.version` file
+specifies that the mod is compatible with KSP version `1.0.2` but the existing `version` specifies `1.0.5` then the
+version information generated will give a `ksp_version_min` of `1.0.2` and a `ksp_version_max` of `1.0.5`.
 
 ##### `x_netkan_epoch`
 
