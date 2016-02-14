@@ -32,6 +32,7 @@ namespace CKAN
             RecreateDialogs();
 
             m_TabController.SetActiveTab("ManageModsTabPage");
+            Util.Invoke(this, ModList.Select);
 
             CancelCurrentActionButton.Enabled = false;
             DialogProgressBar.Value = 0;

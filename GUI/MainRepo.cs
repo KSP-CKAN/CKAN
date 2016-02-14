@@ -95,6 +95,7 @@ namespace CKAN
 
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
+            Util.Invoke(this, ModList.Select);
         }
 
         private void ShowRefreshQuestion()
