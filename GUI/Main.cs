@@ -343,7 +343,6 @@ namespace CKAN
                     identifier = identifier.Substring(0, identifier.Length - 1);
                 }
 
-                int i = 0;
                 log.Debug("Attempting to select mod from startup parameters");
                 FocusMod(identifier, true, true);
                 ModList.Refresh();

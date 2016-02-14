@@ -265,7 +265,7 @@ namespace CKAN
                 }
             }
             base.OnPaint(e);
-            }
+        }
 
         //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
         protected override void SetSelectedRowCore(int rowIndex, bool selected)
