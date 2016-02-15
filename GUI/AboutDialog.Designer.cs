@@ -109,7 +109,7 @@ namespace CKAN
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(184, 18);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Version " + Meta.Version();
+            this.label2.Text = "Version " + Meta.GetVersion();
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // linkLabel5

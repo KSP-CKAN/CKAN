@@ -1,0 +1,62 @@
+#!/bin/sh
+set -e
+
+arg0=""
+remainingArgs=""
+
+if [ $# -gt 0 ]; then
+    arg0="$1"
+fi
+
+if [ $# -gt 1 ]; then
+    skippedFirst=false
+    for i in "$@"; do
+        if $skippedFirst; then
+            remainingArgs="$remainingArgs $i"
+        else
+            skippedFirst=true
+        fi
+    done
+fi
+
+nugetVersion="2.8.6"
+useExperimental=false
+rootDir=$(dirname $0)
+buildDir="$rootDir/_build"
+toolsDir="$buildDir/tools"
+packagesDir="$buildDir/lib/nuget"
+nugetExe="$toolsDir/NuGet/$nugetVersion/nuget.exe"
+packagesConfigFile="$rootDir/packages.config"
+cakeVersion="$(sed -nE "s|\s*<package\s+id=\"Cake\"\s+version=\"(.+)\"\s*/>\s*|\1|p" $packagesConfigFile)"
+cakeExe="$packagesDir/Cake.$cakeVersion/Cake.exe"
+
+nugetDir="$(dirname $nugetExe)"
+if [ ! -d "$nugetDir" ]; then
+    mkdir -p "$nugetDir"
+fi
+
+if [ ! -f "$nugetExe" ]; then
+    curl -L "https://dist.nuget.org/win-x86-commandline/v${nugetVersion}/nuget.exe" --output "$nugetExe"
+fi
+
+mono "$nugetExe" install "$packagesConfigFile" -OutputDirectory "$packagesDir"
+
+cakeArgs=""
+
+if [ -n "$arg0" ]; then
+    case $arg0 in
+        -*)
+            cakeArgs="$cakeArgs $arg0"
+            ;;
+        *)
+            cakeArgs="$cakeArgs --target=$arg0"
+            ;;
+    esac
+fi
+
+if $useExperimental; then
+    cakeArgs="$cakeArgs --experimental"
+fi
+
+mono "$cakeExe" $cakeArgs $remainingArgs
+exit $?

@@ -78,7 +78,7 @@ namespace CKAN
             }
             catch (Kraken)
             {
-                LatestVersion = new Version(Meta.Version());
+                LatestVersion = new Version(Meta.GetVersion());
                 return;
             }
 

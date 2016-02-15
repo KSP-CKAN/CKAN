@@ -246,7 +246,7 @@ namespace CKAN
                         "Owning Mod     : {2}\r\n" +
                         "CKAN Version   : {3}\r\n",
                         ex.filename, ex.installingModule, ex.owningModule,
-                        Meta.Version()
+                        Meta.GetVersion()
                         );
                 }
                 else

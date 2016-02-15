@@ -1,70 +1,42 @@
-using System.Text.RegularExpressions;
+﻿using System;
+using System.Reflection;
 
 namespace CKAN
 {
     public static class Meta
     {
-        public readonly static string Development = "development";
-
-        // Do *not* change the following line, BUILD_VERSION is
-        // replaced by our build system with our actual version.
-
-        private readonly static string BUILD_VERSION = null;
-
-        /// <summary>
-        /// Returns the version of the CKAN.dll used, complete with git info
-        /// and other decorations as filled in by our build system.
-        /// Eg: v1.3.5-12-g055d7c3 (beta) or "development (unstable)"
-        /// </summary>
-        public static string Version()
+        public static string GetVersion(VersionFormat format = VersionFormat.Normal)
         {
-            string version = BuildVersion();
+            var version = ((AssemblyInformationalVersionAttribute)
+                Assembly
+                    .GetExecutingAssembly()
+                    .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)[0]
+            ).InformationalVersion;
 
-            #if (STABLE)
-            version += " (stable)";
-            #else
-            version += " (beta)";
-            #endif
+            var dashIndex = version.IndexOf('-');
+            var plusIndex = version.IndexOf('+');
 
-            return version;
-        }
-
-        /// <summary>
-        /// Returns only the build info, with no decorations, or "development" if
-        /// unknown.
-        /// </summary>
-        public static string BuildVersion()
-        {
-            return BUILD_VERSION ?? Development;
-        }
-
-        /// <summary>
-        /// Returns just our release number (eg: 1.0.3), or null for a dev build.
-        /// </summary>
-        public static Version ReleaseNumber()
-        {
-            string build_version = BuildVersion();
-
-            if (build_version == Development)
+            switch (format)
             {
-                return null;
+                case VersionFormat.Short:
+                    if (dashIndex >= 0)
+                        version = version.Substring(0, dashIndex);
+                    else if (plusIndex >= 0)
+                        version = version.Substring(0, plusIndex);
+
+                    break;
+                case VersionFormat.Normal:
+                    if (plusIndex >= 0)
+                        version = version.Substring(0, plusIndex);
+
+                    break;
+                case VersionFormat.Full:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
 
-            string short_version = Regex.Match(build_version, @"^(.*)-\d+-.*$").Result("$1");
-
-            return new Version(short_version);
-        }
-
-        /// <summary>
-        /// Returns true if this is a 'stable' build, false otherwise.
-        /// </summary>
-        public static bool IsStable()
-        {
-            #if (STABLE)
-            return true;
-            #else
-            return false;
-            #endif
+            return "v" + version;
         }
     }
 }

@@ -173,28 +173,35 @@ namespace CKAN
             }
             catch (Exception)
             {
-                Log.InfoFormat("Download failed, trying with curlsharp...");
-
-                var content = string.Empty;
-
-                var client = Curl.CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
+                try
                 {
-                    content += Encoding.UTF8.GetString(buf);
-                    return size * nmemb;
-                });
+                    Log.InfoFormat("Download failed, trying with curlsharp...");
 
-                using (client)
-                {
-                    var result = client.Perform();
+                    var content = string.Empty;
 
-                    if (result != CurlCode.Ok)
+                    var client = Curl.CreateEasy(url, delegate (byte[] buf, int size, int nmemb, object extraData)
                     {
-                        throw new Exception("Curl download failed with error " + result);
+                        content += Encoding.UTF8.GetString(buf);
+                        return size * nmemb;
+                    });
+
+                    using (client)
+                    {
+                        var result = client.Perform();
+
+                        if (result != CurlCode.Ok)
+                        {
+                            throw new Exception("Curl download failed with error " + result);
+                        }
+
+                        Log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
+
+                        return content;
                     }
-
-                    Log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
-
-                    return content;
+                }
+                catch(Exception e)
+                {
+                    throw new Kraken("Downloading using cURL failed", e);
                 }
             }
         }
