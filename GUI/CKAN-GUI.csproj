@@ -225,6 +225,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="MainTabControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
