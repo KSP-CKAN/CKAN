@@ -17,7 +17,7 @@ namespace Tests.Data
             // things will still work.
             string current = Directory.GetCurrentDirectory();
 
-            return Path.Combine(current, "../../Data");
+            return Path.Combine(current, "../../../../../Tests/Data");
         }
 
         public static string DataDir(string file)

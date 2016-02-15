@@ -36,7 +36,7 @@ namespace CKAN.NetKAN
                 // and exit.
                 if (Options.Version)
                 {
-                    Console.WriteLine(Meta.Version());
+                    Console.WriteLine(Meta.GetVersion(VersionFormat.Full));
                     return ExitOk;
                 }
 

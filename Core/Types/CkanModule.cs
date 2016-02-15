@@ -589,7 +589,7 @@ namespace CKAN
         internal static bool IsSpecSupported(Version spec_vesion)
         {
             // This could be a read-only state variable; do we have those in C#?
-            Version release = Meta.ReleaseNumber();
+            Version release = new Version(Meta.GetVersion(VersionFormat.Short));
 
             return release == null || release.IsGreaterThan(spec_vesion);
         }

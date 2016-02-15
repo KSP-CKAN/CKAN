@@ -108,11 +108,6 @@ namespace Tests.Core.Types
         [Test]
         public void IsSpecSupported()
         {
-            if (CKAN.Meta.ReleaseNumber() == null)
-            {
-                Assert.Inconclusive("Dev build");
-            }
-
             // We should always support old versions, and the classic '1' version.
             Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("1")));
             Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.Version("v0.02")));
@@ -135,11 +130,6 @@ namespace Tests.Core.Types
         [Test]
         public void FutureModule()
         {
-            if (CKAN.Meta.ReleaseNumber() == null)
-            {
-                Assert.Inconclusive("Dev build");
-            }
-
             // Modules form the future are unsupported.
 
             Assert.Throws<UnsupportedKraken>(delegate

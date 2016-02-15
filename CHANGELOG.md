@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v1.22.2-dev
 
 ### Bugfixes
 - [CLI] Removed non-functioning code on available command (#1966 by: poltas; reviewed: dbent)
