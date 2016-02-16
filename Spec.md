@@ -519,105 +519,136 @@ it's the result of a custom build process.
 Extension fields are unrestricted, and may contain any sort of data,
 including lists and objects.
 
-#### Special use fields
+#### NetKAN Fields
 
-##### $kref
+NetKAN is the name the tool which is used to automatically generate CKAN files from a variety of sources. NetKAN
+consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict superset* of `.ckan` files. Every
+`.ckan` file is a valid `.netkan` file but not vice versa. NetKAN uses the following fields to produce `.ckan` files.
 
-The `$kref` field is a special use field that indicates that data
-should be filled in from an external service provider. Documents
-containing the `$kref` field are *not* valid CKAN files, but they
-may be used by external tools to *generate* valid CKAN files.
+##### `$kref`
 
-For example:
+The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
+values are understood. Only *one* `$kref` field may be present in a `.netkan` file.
 
-    "$kref" : "#/ckan/kerbalstuff"
-
-The following `$kref` values are understood. Only *one* `$kref`
-field may be present in a document.
-
-###### #/ckan/kerbalstuff/:ksid
+###### `#/ckan/kerbalstuff/:ksid`
 
 Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- name
-- license
-- abstract
-- author
-- version
-- download
-- download_size
-- homepage
-- resources/kerbalstuff
-- ksp_version
+- `name`
+- `license`
+- `abstract`
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `resources.homepage`
+- `resources.kerbalstuff`
+- `resources.repository`
+- `resources.x_screenshot`
+- `ksp_version`
 
-###### #/ckan/github/:user/:repo[/asset_match/:filter_regexp]
+###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
 
-Indicates data should be fetched from Github, using the `:user` and `:repo` provided. For example: `#/ckan/github/pjf/DogeCoinFlag`.
+Indicates that data should be fetched from GitHub, using the `:user` and `:repo` provided.
+For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- author
-- version
-- download
-- download_size
-- resources/repository
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `resources.repository`
 
 Optionally, one asset `:filter_regexp` directive *may* be provided:
 
-- `filter_regexp` : A string which is treated as
-  case-sensitive C# regular expressions which are matched against the
-  name of the released artifact. An example for this may be found
-  in the netkan files for the Active Texture Management and
-  Environmental Visual Enhancements addons where multiple zip
-  files are uploaded for each version and netkan has to identify
-  the correct one.
+- `filter_regexp`: A string which is treated as  case-sensitive C# regular expressions which are matched against the
+  name of the released artifact.
 
-###### #/ckan/jenkins/:buildname
+###### `#/ckan/jenkins/:joburl`
 
-Indicates data should be fetched from a Jenkins server, using the `:buildname` provided. For example: `#/ckan/jenkins/CrewManifest`.
+Indicates data should be fetched from a [Jenkins CI server](http://jenkins-ci.org/) using the `:joburl` provided. For
+example: `#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/`.
 
-When used, the resource field `ci` must exist as well, with a fallback to `x_ci`.
-Both pieces of information will be used to create an URL to the json documents describing
-the build on the target jenkins server.
+The following fields will be auto-filled if not already present:
 
-When used, the following fields will be auto-filled if not already present:
+- `version`
+- `download`
+- `download_size`
+- `resources.ci`
 
-- download
-- download_size
+An `x_netkan_jenkins` field may be provided to customize how the metadata is fetched from the Jenkins server. It is
+an `object` with the following fields:
 
-When clients are adapted to v1.6, the following field will be auto-filled if not already present:
+- `build` (type: `string`, enumerated) (default: `"stable"`)<br/>
+   Specifies the type of build to use. Possible values are `"any"`, `"completed"`, `"failed"`, `"stable"`,
+   `"successful"`, `"unstable"`, or `"unsuccessful"`. Many of these values do not make sense to use in practice but
+   are provided for completeness.
+- `asset_match` (type: `string`, regex) (default: `"\\.zip$"`)<br/>
+  Specifies a regex which selects which artifact to use by filename (case-insensitively). Not having exactly one
+  matching asset is an error.
+- `use_filename_version` (type: `boolean`, default: `false`)<br/>
+  Specifies if the filename of the matched artifact should be used as the value of the `version` property. Combined
+  with the `x_netkan_version_edit` property this allows the version to be extracted from the filename itself.
+  Otherwise the expectation is that the archive will have an AVC `.version` file which will be used to generate the
+  `version` value.
 
-- resources/ci
+If any options are not present their default values are used.
 
-###### #/ckan/http/:url
+An example `.netkan` excerpt:
+```json
+{
+    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
+    "x_netkan_jenkins": {
+        "build": "stable",
+        "asset_match": "\\.zip$",
+        "use_filename_version": false
+    }
+}
+```
+
+###### `#/ckan/http/:url`
 
 Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
 
 When used, the following fields will be auto-filled if not already present:
 
-- download
-- download_size
+- `download`
+- `download_size`
 
-This method depends on the existence of an AVC file in the download file
+This method depends on the existence of an AVC `.version` file in the download file
 to determine:
 
-- version
+- `version`
 
-##### $vref
+###### `#/ckan/netkan/:url`
 
-The `$vref` field is a special use field that indicates that version
-data should be filled in from an external service provider.  Documents
-containing the `$vref` field are *not* valid CKAN files, but they
-may be used by external tools to *generate* valid CKAN files.
+Indicates that data should be fetched from another `.netkan` file hosted remotely.
+For example: `#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan`.
 
-If provided, the data fetched from `$vref` field will overwrite that
-povided by a `$kref` expansion.
+The remote `.netkan` file is downloaded and used as if it were the original. `.netkan` files which contain such a
+reference are known as *recursive netkans* or *metanetkans*. They are primarily used so that mod authors can provide
+authoritative metadata.
 
-Only *one* `$vref` field may be present in a document.
+The following conditions apply:
+- A metanekan may not reference another metanetkan, otherwise an error is produced.
+- An fields specified in the metanetkan will override any fields in the target netkan file.
 
-###### #/ckan/ksp-avc
+An example `.netkan` excerpt:
+```json
+{
+    "$kref": "#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan"
+}
+```
+
+##### `$vref`
+
+The `$vref` field indicates that version data should be filled in from an external service provider. Only *one*
+`$vref` field may be present in a document.
+
+###### `#/ckan/ksp-avc`
 
 If present, a `$vref` symbol of `#/ckan/ksp-avc` states that version
 information should be retrieved from an embedded KSP-AVC `.version` file in the
@@ -630,11 +661,91 @@ file downloaded by the `download` field. The following conditions apply:
 * The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
 
-When used, the folowing fields are auto-generated, overwriting those
-from `$kref`, but not those specified in the CKAN document itself (if present):
+When used, the folowing fields are auto-generated:
 
 - `ksp_version`
 - `ksp_version_min`
 - `ksp_version_max`
 
-Future releases of the spec may allow for additional fields to generated.
+Version information is generated in such a way as to ensure maximum compatability. For example if the `.version` file
+specifies that the mod is compatible with KSP version `1.0.2` but the existing `version` specifies `1.0.5` then the
+version information generated will give a `ksp_version_min` of `1.0.2` and a `ksp_version_max` of `1.0.5`.
+
+##### `x_netkan_epoch`
+
+The `x_netkan_epoch` field is used to specify a particular `epoch` number in the `version` field. Its value should be
+an unsigned 32-bit integer.
+
+An example `.netkan` excerpt:
+```json
+{
+    "x_netkan_epoch": 1
+}
+```
+
+##### `x_netkan_force_v`
+
+The `x_netkan_force_v` field is used to specify that a `v` should be prepended to the `version` field. It is a
+`boolean` field.
+
+A combination of `x_netkan_epoch` and `x_netkan_version_edit` should be used instead to ensure that the `version`
+field *only* contains the actual version string.
+
+An example `.netkan` excerpt:
+```json
+{
+    "x_netkan_force_v": true
+}
+```
+
+##### `x_netkan_version_edit`
+
+The `x_netkan_version_edit` field is used to edit the final value of the `version` field. `x_netkan_version_edit` is
+an `object` with the following fields:
+
+- `find` (type: `string`, regex) (default: *none*)<br/>
+   A regex to match against the existing `version` field.
+- `replace` (type: `string`, regex substitution) (default: `"${version}"`)<br/>
+  Specifies a [regex substitution string](https://msdn.microsoft.com/en-us/library/ewy2t5e0%28v=vs.110%29.aspx) which
+  will be used as the value of the new `version` field.
+- `strict` (type: `boolean`, default: `true`)<br/>
+  Specifies if NetKAN should produce an error if `find` fails to produce a match against the `version` field.
+  
+`x_netkan_version_edit` can also be a `string` in which case its value is treated as the value the `find` field and
+the default values for the `replace` and `strict` fields are used.
+
+An example `.netkan` excerpt:
+```json
+{
+    "$kref": "#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/",
+    "x_netkan_version_edit": {
+        "find": "^[vV]?(?<version>.+)$",
+        "replace": "${version}",
+        "strict": true
+    }
+}
+```
+
+##### `x_netkan_override`
+
+The `x_netkan_override` field is used to override field values based on the value of the `version` field.
+`x_netkan_override` is an `array` of `object`s. Each `object` may have the following fields:
+
+- `version` (type: `array` of `string`, version comparison)<br/>
+  An array of version comparison strings that are used to match against `version`. Version comparison strings are of
+  the form `"[operator]<version>"` where `operator` is one of `=`, `<`, `>`, `<=`, or `>=`. If no `operator` is given
+  it is equivalent to specifying `=`. In order for the override to match *all* the comparisons must be true. Therefore
+  a range may be specified as such: `[ ">=1.0", "<2.0" ]`. A `string` may also be specified instead of an `array` in
+  which case it is treated as an array with a single element equal to the value of the string.
+- `override` (type: `object`)<br/>
+  An object whose fields will override the fields already present if a match occurs. No merging of values occurs, the
+  values of the fields are entirely replaced.
+- `delete` (type: `array` of `string`)<br/>
+  An array of strings which are the names of fields to remove if a match occurs.
+
+Override objects are processed sequentially and all matching overrides will be used.
+
+When any metadata changes occur which are version specific, for example a new dependency is added, overrides are the
+recomended means of specifying them. Overrides may also be used to *stage* metadata changes, for example when new
+dependencies are anticipated to be added in yet unreleased versions of a mod. This allows mod metadata to be
+up-to-date as soon as possible without requiring excessive coordination.
