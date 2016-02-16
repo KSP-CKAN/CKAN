@@ -100,7 +100,7 @@ namespace CKAN
             this.NotCachedLabel = new System.Windows.Forms.Label();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.MainTabControl = new System.Windows.Forms.TabControl();
+            this.MainTabControl = new MainTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
             this.FilterByAuthorTextBox = new System.Windows.Forms.TextBox();
             this.FilterByAuthorLabel = new System.Windows.Forms.Label();
@@ -1417,7 +1417,7 @@ namespace CKAN
         private Label MetadataModuleNameLabel;
         private ComboBox ModuleRelationshipType;
         private ToolStripMenuItem launchKSPToolStripMenuItem;
-        private TabControl MainTabControl;
+        private MainTabControl MainTabControl;
         private TabPage ManageModsTabPage;
         private Label KSPVersionLabel;
         private Label FilterByNameLabel;

@@ -360,7 +360,6 @@ namespace CKAN
             CurrentInstance.RebuildKSPSubDir();
 
             log.Info("GUI started");
-            ModList.Select();
             base.OnLoad(e);
         }
 
