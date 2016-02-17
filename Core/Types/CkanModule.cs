@@ -83,6 +83,9 @@ namespace CKAN
 
         [JsonConverter(typeof (JsonOldResourceUrlConverter))]
         public Uri kerbalstuff;
+
+        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        public Uri spacedock;
     }
 
     public class NameComparer : IEqualityComparer<CkanModule>

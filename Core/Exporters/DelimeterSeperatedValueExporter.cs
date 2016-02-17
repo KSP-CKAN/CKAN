@@ -50,7 +50,8 @@ namespace CKAN.Exporters
                     "repository",
                     "homepage",
                     "bugtracker",
-                    "kerbalstuff"
+                    "kerbalstuff",
+                    "spacedock"
                 );
 
                 foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
@@ -74,7 +75,8 @@ namespace CKAN.Exporters
                         WriteRepository(mod.Module.resources),
                         WriteHomepage(mod.Module.resources),
                         WriteBugtracker(mod.Module.resources),
-                        WriteKerbalStuff(mod.Module.resources)
+                        WriteKerbalStuff(mod.Module.resources),
+                        WriteSpaceDock(mod.Module.resources)
                     );
                 }
             }
@@ -120,6 +122,16 @@ namespace CKAN.Exporters
             if (resources != null && resources.kerbalstuff != null)
             {
                 return QuoteIfNecessary(resources.kerbalstuff.ToString());
+            }
+
+            return string.Empty;
+        }
+
+        private string WriteSpaceDock(ResourcesDescriptor resources)
+        {
+            if (resources != null && resources.spacedock != null)
+            {
+                return QuoteIfNecessary(resources.spacedock.ToString());
             }
 
             return string.Empty;

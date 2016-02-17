@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - [GUI] The "Not Installed" filter now has a more correct label. (#1573 by: plague006; reviewed: Postremus)
 - [GUI] Scrolling of the mod-list no longer requires clicking on the list after start-up. (#1584 by: ChucklesTheBeard; reviewed: Olympic1)
+-
+### Features
+
+- [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1; reviewed: pjf)
 
 ### Internal
 

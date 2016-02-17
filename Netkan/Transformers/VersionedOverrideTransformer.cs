@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Transformers
             JToken overrideList;
             if (json.TryGetValue("x_netkan_override", out overrideList))
             {
-                Log.InfoFormat("Executing KerbalStuff transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing Override transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 // There's an override section, process them

@@ -143,6 +143,10 @@ namespace CKAN
                 {
                     Homepage = mod.resources.kerbalstuff.ToString();
                 }
+                else if (mod.resources.spacedock != null)
+                {
+                    Homepage = mod.resources.spacedock.ToString();
+                }
                 else if (mod.resources.repository != null)
                 {
                     Homepage = mod.resources.repository.ToString();
