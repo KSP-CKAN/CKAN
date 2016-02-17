@@ -48,11 +48,12 @@ namespace CKAN.NetKAN.Transformers
         {
             { "homepage", 0 },
             { "kerbalstuff", 1 },
-            { "repository", 2 },
-            { "bugtracker", 3 },
-            { "ci", 4 },
-            { "license", 5 },
-            { "manual", 6 }
+            { "spacedock", 2 },
+            { "repository", 3 },
+            { "bugtracker", 4 },
+            { "ci", 5 },
+            { "license", 6 },
+            { "manual", 7 }
         };
 
         public Metadata Transform(Metadata metadata)
