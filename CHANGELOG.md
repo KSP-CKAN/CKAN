@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Bugfixes
+
+- [GUI] The "Not Installed" filter now has a more correct label. (#1573 by: Postremus; reviewed: Postremus)
+- [GUI] Scrolling of the mod-list no longer requires clicking on the list after start-up. (#1584 by: ChucklesTheBeard; reviewed: Olympic1)
+- [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
+- [Internal] General code tidy-up. (#1582 by: ChucklesTheBeard; reviewed: plague006)
+- [Internal] Avoidance of a future bug involving how we query users regarding choices. (#1538 by: pjf, RichardLake; reviewed: Postremus)
+
 ## v1.16.0
 
 ### Bugfixes
