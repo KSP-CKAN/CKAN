@@ -8,8 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Core] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (Olympic1, #1593)
-- [GUI] Scrolling now works without having to click in the modlist first. (ChucklesTheBeard, #1584)
+- [Core] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1)
 
 ### Internal
 
