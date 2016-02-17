@@ -58,6 +58,11 @@
     <Compile Include="Sources\Kerbalstuff\KerbalstuffError.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffMod.cs" />
     <Compile Include="Sources\Kerbalstuff\KSVersion.cs" />
+    <Compile Include="Sources\Spacedock\ISpacedockApi.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockError.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
+    <Compile Include="Sources\Spacedock\SDVersion.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockApi.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
     <Compile Include="Transformers\DownloadSizeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
@@ -70,6 +75,7 @@
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
     <Compile Include="Transformers\JenkinsTransformer.cs" />
     <Compile Include="Transformers\KerbalstuffTransformer.cs" />
+    <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
     <Compile Include="Transformers\NetkanTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
