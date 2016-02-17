@@ -152,6 +152,11 @@
                     "type" : "string",
                     "format" : "uri"
                 },
+                "spacedock" : {
+                    "description" : "Project on SpaceDock",
+                    "type" : "string",
+                    "format" : "uri"
+                },
                 "manual" : {
                     "description" : "Mod's manual",
                     "type" : "string",

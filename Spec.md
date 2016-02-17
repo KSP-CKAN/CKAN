@@ -549,6 +549,25 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.x_screenshot`
 - `ksp_version`
 
+###### `#/ckan/spacedock/:sdid`
+
+Indicates that data should be fetched from SpaceDock, using the `:sdid` provided. For example: `#/ckan/spacedock/269`.
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `license`
+- `abstract`
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `resources.homepage`
+- `resources.kerbalstuff`
+- `resources.repository`
+- `resources.x_screenshot`
+- `ksp_version`
+
 ###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
 
 Indicates that data should be fetched from GitHub, using the `:user` and `:repo` provided.
