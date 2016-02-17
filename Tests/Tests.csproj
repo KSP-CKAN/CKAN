@@ -146,6 +146,7 @@
     <Compile Include="NetKAN\Services\FileServiceTests.cs" />
     <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
     <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
+    <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />
     <Compile Include="NetKAN\Sources\Kerbalstuff\KerbalstuffApiTests.cs" />
     <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\DownloadSizeTransformerTests.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="NetKAN\Transformers\GithubTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\HttpTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\InternalCkanTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\SpacedockTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\KerbalstuffTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\MetaNetkanTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\StripNetkanMetadataTransformerTests.cs" />

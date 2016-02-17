@@ -53,6 +53,11 @@
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
+    <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
+    <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockError.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
+    <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Kerbalstuff\IKerbalstuffApi.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffApi.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffError.cs" />
@@ -69,6 +74,7 @@
     <Compile Include="Model\RemoteRef.cs" />
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
     <Compile Include="Transformers\JenkinsTransformer.cs" />
+    <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\KerbalstuffTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
     <Compile Include="Transformers\NetkanTransformer.cs" />
