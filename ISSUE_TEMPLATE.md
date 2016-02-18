@@ -8,6 +8,6 @@ Before you open a ticket, please do a quick search of the existing issues to see
 
 **The issue you are experiencing:** 
 
-**How to recreat this issue:** 
+**How to recreate this issue:** 
 
 **CKAN error codes (if applicable):** 
