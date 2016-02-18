@@ -10,4 +10,4 @@ Before you open a ticket, please do a quick search of the existing issues to see
 
 **How to recreat this issue:** 
 
-**CKAN error codes (ifapplicable):** 
+**CKAN error codes (if applicable):** 
