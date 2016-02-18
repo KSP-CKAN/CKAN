@@ -204,6 +204,9 @@ namespace CKAN
         [JsonProperty("install")]
         public ModuleInstallDescriptor[] install;
 
+        [JsonProperty("btih")]
+        public String btih;
+
         // Used to see if we're compatible with a given game/KSP version or not.
         private readonly IGameComparator _comparator;
 
