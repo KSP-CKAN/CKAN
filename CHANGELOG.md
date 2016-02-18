@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1 and Zane6888; reviewed: pjf)
+- [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1, Zane6888; reviewed: pjf)
 
 ### Internal
 
