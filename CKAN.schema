@@ -219,7 +219,7 @@
         {
             "properties": {
                 "kind": {
-                    "enum": [ "package", "metapackage" ]
+                    "enum": [ "metapackage" ]
                 }
             }
         }
