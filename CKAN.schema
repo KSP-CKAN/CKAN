@@ -212,6 +212,18 @@
         "license",
         "version"
     ],
+    "oneOf": [
+        {
+            "required": [ "download" ]
+        },
+        {
+            "properties": {
+                "kind": {
+                    "enum": [ "package", "metapackage" ]
+                }
+            }
+        }
+    ],
     "definitions" : {
         "identifier" : {
             "description" : "Unique identifier for this mod.",
