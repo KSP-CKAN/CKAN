@@ -110,8 +110,20 @@ namespace CKAN
         private void _DownloadModules(IEnumerable<CkanModule> modules)
         {
             //TODO: check that downloaddir exists
+
+            // We only need to download each torrent once - some clients will
+            // automatically detect this, but it's best to be on the safe side.
+            List<String> unique_btihs = new List<String>();
+            List<CkanModule> unique_modules = new List<CkanModule>();
+            foreach (CkanModule module in modules
+                .Where(module => !unique_btihs.Contains(module.btih)))
+            {
+                unique_btihs.Add(module.btih);
+                unique_modules.Add(module);
+            }
+
             List<Task<string>> tasks = new List<Task<string>>();
-            foreach (CkanModule module in modules)
+            foreach (CkanModule module in unique_modules)
             {
                 Task<string> task = _DownloadModule(module);
                 tasks.Add(task);
