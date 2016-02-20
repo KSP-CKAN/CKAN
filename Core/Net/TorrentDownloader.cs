@@ -72,25 +72,11 @@ namespace CKAN
 
             foreach (CkanModule module in modules)
             {
-                if (String.IsNullOrEmpty(module.btih))
-                {
-                    fallback_list.Add(module);
-                }
+                if (!String.IsNullOrEmpty(module.btih)
+                    && IsTorrentable(module.license.ToArray()))
+                    torrentable.Add(module);
                 else
-                {
-                    bool istorrentable = true;
-                    foreach (License license in module.license)
-                    {
-                        if (!torrentable_licenses.Contains(license.ToString()))
-                        {
-                            fallback_list.Add(module);
-                            istorrentable = false;
-                            break;
-                        }
-                    }
-                    if (istorrentable)
-                        torrentable.Add(module);
-                }
+                    fallback_list.Add(module);
             }
             //run torrent downloader
             _DownloadModules(torrentable);
@@ -105,6 +91,19 @@ namespace CKAN
         /// </summary>
         public void CancelDownload()
         {
+        }
+
+        public static bool IsTorrentable(String[] licenses){
+            bool istorrentable = true;
+            foreach (String license in licenses)
+            {
+                if (!torrentable_licenses.Contains(license))
+                {
+                    istorrentable = false;
+                    break;
+                }
+            }
+            return istorrentable;
         }
 
         private void _DownloadModules(IEnumerable<CkanModule> modules)
