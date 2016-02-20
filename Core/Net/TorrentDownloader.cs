@@ -47,10 +47,12 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(TorrentDownloader));
         private NetFileCache _cache;
+        private Uri _downloaddir;
 
-        public TorrentDownloader(IUser user)
+        public TorrentDownloader(IUser user, Uri downloadDir)
         {
             User = user;
+            _downloaddir = downloadDir;
         }
 
         /// <summary>
@@ -59,7 +61,9 @@ namespace CKAN
         /// </summary>
         /// <param name="cache">Cache.</param>
         /// <param name="modules">Modules.</param>
-        public void DownloadModules(NetFileCache cache, IEnumerable<CkanModule> modules)
+        public void DownloadModules(
+            NetFileCache cache,
+            IEnumerable<CkanModule> modules)
         {
             List<CkanModule> torrentable = new List<CkanModule>();
             List<CkanModule> fallback_list = new List<CkanModule>();

@@ -21,10 +21,11 @@ namespace CKAN
 
     public class Registry : IEnlistmentNotification, IRegistryQuerier
     {
-        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
+        [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 4;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof (Registry));
 
         [JsonProperty] private int registry_version;
+        [JsonProperty] public Uri torrent_dir {get; set;}
 
         [JsonProperty("sorted_repositories")]
         private SortedDictionary<string, Repository> repositories; // name => Repository
@@ -928,6 +929,15 @@ namespace CKAN
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
+        }
+
+        /// <summary>
+        /// Determines whether torrent downloading is configured.
+        /// </summary>
+        /// <returns><c>true</c> if torrent downloading is configured; otherwise, <c>false</c>.</returns>
+        public bool IsTorrentConfigured()
+        {
+            return torrent_dir != null;
         }
     }
 }

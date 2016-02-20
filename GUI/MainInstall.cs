@@ -30,7 +30,7 @@ namespace CKAN
             var opts =
                 (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            Registry registry = RegistryManager.Instance(manager.CurrentInstance).registry;
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
 
