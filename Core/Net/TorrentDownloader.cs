@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using log4net;
 using System.IO;
 using System.Web;
+using System.Linq;
 
 namespace CKAN
 {
@@ -106,8 +107,6 @@ namespace CKAN
         {
         }
 
-        private string downloaddir = "debugconst";
-
         private void _DownloadModules(IEnumerable<CkanModule> modules)
         {
             //TODO: check that downloaddir exists
@@ -119,18 +118,20 @@ namespace CKAN
             }
             log.Debug("Waiting for downloads to finish.");
             Task.WaitAll(tasks.ToArray());
+            //TODO: notify user of errors
         }
 
         private Task<string> _DownloadModule(CkanModule module)
         {
             User.RaiseMessage("Generating magnet link for \"{0}\"", module.name);
-            string filename = module.StandardName();
-            string filepath = Path.Combine(downloaddir, filename);
+            string urlhash = NetFileCache.CreateURLHash(module.download);
+            string filename = String.Format("{0}-{1}", urlhash, module.StandardName());
+            string filepath = Path.Combine(_downloaddir.AbsolutePath, filename);
             string link = GenerateMagnetLink(module, filename);
             System.Diagnostics.Process.Start(link);
 
             var tcs = new TaskCompletionSource<string>();
-            FileSystemWatcher watcher = new FileSystemWatcher(downloaddir);
+            FileSystemWatcher watcher = new FileSystemWatcher(_downloaddir.AbsolutePath);
             FileSystemEventHandler created = null;
             created = (s, e) =>
             {

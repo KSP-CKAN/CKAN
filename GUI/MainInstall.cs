@@ -88,8 +88,13 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-            //TODO: config options here?
-            var downloader = new NetAsyncDownloader(GUI.user);
+            IDownloader downloader = null;
+            if (registry.IsTorrentConfigured())
+            {
+                downloader = new TorrentDownloader(GUI.user, registry.torrent_dir);
+            }else{
+                downloader = new NetAsyncDownloader(GUI.user);
+            }
             cancelCallback = () =>
             {
                 downloader.CancelDownload();
