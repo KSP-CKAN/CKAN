@@ -33,6 +33,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="MonoTorrent">
+      <HintPath>..\packages\MonoTorrent.0.9.0\lib\net20\MonoTorrent.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
     <Compile Include="Validators\NetkanValidator.cs" />
+    <Compile Include="Transformers\TorrentTransformer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

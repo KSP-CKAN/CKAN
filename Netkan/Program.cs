@@ -59,7 +59,8 @@ namespace CKAN.NetKAN
                         fileService,
                         moduleService,
                         Options.GitHubToken,
-                        Options.PreRelease
+                        Options.PreRelease,
+                        Options.GenerateTorrents
                     );
 
                     var ckan = transformer.Transform(netkan);
@@ -73,7 +74,7 @@ namespace CKAN.NetKAN
                 else
                 {
                     Log.Fatal(
-                        "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] <filename>"
+                        "Usage: netkan [--verbose|--debug] [--debugger] [--prerelease] [--outputdir=...] [--generate-torrents=...] <filename>"
                     );
 
                     return ExitBadOpt;

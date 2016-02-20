@@ -34,6 +34,9 @@ namespace CKAN.NetKAN
         [Option("version", HelpText = "Display the netkan version number and exit.")]
         public bool Version { get; set; }
 
+        [Option('T', "generate-torrents", DefaultValue = "", HelpText = "Generate .torrent files in specified directory, and write btih property to .ckan's")]
+        public string GenerateTorrents { get; set; }
+
         // TODO: How do we mark this as required?
         [ValueOption(0)]
         public string File { get; set; }

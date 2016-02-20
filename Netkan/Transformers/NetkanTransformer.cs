@@ -20,7 +20,8 @@ namespace CKAN.NetKAN.Transformers
             IFileService fileService,
             IModuleService moduleService,
             string githubToken,
-            bool prerelease
+            bool prerelease,
+            string torrentPath
         )
         {
             _transformers = new List<ITransformer>
@@ -40,6 +41,7 @@ namespace CKAN.NetKAN.Transformers
                 new DownloadSizeTransformer(http, fileService),
                 new GeneratedByTransformer(),
                 new OptimusPrimeTransformer(),
+                new TorrentTransformer(http, torrentPath),
                 new StripNetkanMetadataTransformer(),
                 new PropertySortTransformer()
             };
