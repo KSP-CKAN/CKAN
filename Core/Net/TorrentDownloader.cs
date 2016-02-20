@@ -67,14 +67,24 @@ namespace CKAN
 
             foreach (CkanModule module in modules)
             {
-                if (torrentable_licenses.Contains(module.license.ToString())
-                    && !String.IsNullOrEmpty(module.btih))
+                if (String.IsNullOrEmpty(module.btih))
                 {
-                    torrentable.Add(module);
+                    fallback_list.Add(module);
                 }
                 else
                 {
-                    fallback_list.Add(module);
+                    bool istorrentable = true;
+                    foreach (License license in module.license)
+                    {
+                        if (!torrentable_licenses.Contains(license.ToString()))
+                        {
+                            fallback_list.Add(module);
+                            istorrentable = false;
+                            break;
+                        }
+                    }
+                    if (istorrentable)
+                        torrentable.Add(module);
                 }
             }
             //run torrent downloader
@@ -122,7 +132,7 @@ namespace CKAN
                     try
                     {
                         //explicitly copy, so the torrent software can continue seeding, if permitted
-                        _cache.Store(module.download, filename, module.StandardName(), false);
+                        _cache.Store(module.download, filepath, module.StandardName(), false);
                         tcs.TrySetResult(filename);
                     }
                     catch (FileNotFoundException ex)
