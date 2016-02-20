@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using log4net;
+using System.IO;
+using System.Web;
 
 namespace CKAN
 {
     public class TorrentDownloader : IDownloader
     {
-        private static readonly HashSet<string> torrentable_licenses = new HashSet<string> {
+        private static readonly HashSet<string> torrentable_licenses = new HashSet<string>
+        {
             "public-domain", "CC0",
             "Apache", "Apache-1.0", "Apache-2.0",
             "Artistic", "Artistic-1.0", "Artistic-2.0",
@@ -37,7 +42,11 @@ namespace CKAN
             "unrestricted",
             //"unknown"
         };
+
         public IUser User { get; set; }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(TorrentDownloader));
+        private NetFileCache _cache;
 
         public TorrentDownloader(IUser user)
         {
@@ -54,10 +63,12 @@ namespace CKAN
         {
             List<CkanModule> torrentable = new List<CkanModule>();
             List<CkanModule> fallback_list = new List<CkanModule>();
+            _cache = cache;
 
             foreach (CkanModule module in modules)
             {
-                if (torrentable_licenses.Contains(module.license.ToString()))
+                if (torrentable_licenses.Contains(module.license.ToString())
+                    && !String.IsNullOrEmpty(module.btih))
                 {
                     torrentable.Add(module);
                 }
@@ -67,14 +78,77 @@ namespace CKAN
                 }
             }
             //run torrent downloader
-            //run fallback downloader as usual
-            IDownloader fallback_downloader
+            _DownloadModules(torrentable);
+
+            //run fallback downloader
+            IDownloader fallback_downloader = new NetAsyncDownloader(User);
+            fallback_downloader.DownloadModules(cache, fallback_list);
         }
 
         /// <summary>
         /// Unimplemented - can't stop arbitrary torrent clients.
         /// </summary>
-        public void CancelDownload(){}
+        public void CancelDownload()
+        {
+        }
+
+        private void _DownloadModules(IEnumerable<CkanModule> modules)
+        {
+            //TODO: check that $TORRENT_COMPLETED_DIR exists
+            List<Task<string>> tasks = new List<Task<string>>();
+            foreach (CkanModule module in modules)
+            {
+                Task<string> task = _DownloadModule(module);
+                tasks.Add(task);
+            }
+            log.Debug("Waiting for downloads to finish.");
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private Task<string> _DownloadModule(CkanModule module)
+        {
+            User.RaiseMessage("Generating magnet link for \"{0}\"", module.name);
+            string filename = module.StandardName();
+            string filepath = Path.Combine(""/*TODO:$TORRENT_COMPLETED_DIR*/, filename);
+            string link = GenerateMagnetLink(module, filename);
+            System.Diagnostics.Process.Start(link);
+
+            var tcs = new TaskCompletionSource<string>();
+            FileSystemWatcher watcher = new FileSystemWatcher(/*TODO:$TORRENT_COMPLETED_DIR*/);
+            FileSystemEventHandler created = (s, e) =>
+            {
+                if (e.Name.Equals(filename))
+                {
+                    try
+                    {
+                        //explicitly copy, so the torrent software can continue seeding, if permitted
+                        _cache.Store(module.download, filename, module.StandardName(), false);
+                        tcs.TrySetResult(filename);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        log.WarnFormat("cache.Store(): FileNotFoundException: {0}", ex.Message);
+                    }
+                }
+            };
+            watcher.Created += created;
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Generates a magnet link for a file. Example: magnet:?xt=urn:btih:8e7e8089f22cbb70d0d4fe06528fb1e416d1bd1e&dn=1C28BC18-Chatterer-0.9.7.zip&ws=https%3a%2f%2fs3-us-west-2.amazonaws.com%2fksp-ckan%2f1C28BC18.zip
+        /// </summary>
+        /// <returns>The magnet link.</returns>
+        /// <param name="module">Module.</param>
+        /// <param name="filename">Filename.</param>
+        public static string GenerateMagnetLink(CkanModule module, string filename)
+        {
+            string magnet = "magnet:";
+            string btihpart = "?xt=+urn:btih:" + module.btih;
+            string namepart = "&dn=" + Uri.EscapeDataString(filename);
+            string websourcepart = "&ws=" + Uri.EscapeDataString(module.download.ToString());
+            return magnet + btihpart + namepart + websourcepart;
+        }
     }
 }
 
