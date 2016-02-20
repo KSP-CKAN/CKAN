@@ -102,9 +102,11 @@ namespace CKAN
         {
         }
 
+        private string downloaddir = "debugconst";
+
         private void _DownloadModules(IEnumerable<CkanModule> modules)
         {
-            //TODO: check that $TORRENT_COMPLETED_DIR exists
+            //TODO: check that downloaddir exists
             List<Task<string>> tasks = new List<Task<string>>();
             foreach (CkanModule module in modules)
             {
@@ -119,20 +121,42 @@ namespace CKAN
         {
             User.RaiseMessage("Generating magnet link for \"{0}\"", module.name);
             string filename = module.StandardName();
-            string filepath = Path.Combine(""/*TODO:$TORRENT_COMPLETED_DIR*/, filename);
+            string filepath = Path.Combine(downloaddir, filename);
             string link = GenerateMagnetLink(module, filename);
             System.Diagnostics.Process.Start(link);
 
             var tcs = new TaskCompletionSource<string>();
-            FileSystemWatcher watcher = new FileSystemWatcher(/*TODO:$TORRENT_COMPLETED_DIR*/);
-            FileSystemEventHandler created = (s, e) =>
+            FileSystemWatcher watcher = new FileSystemWatcher(downloaddir);
+            FileSystemEventHandler created = null;
+            created = (s, e) =>
             {
-                if (e.Name.Equals(filename))
+                if (e.Name.Equals(filepath))
                 {
                     try
                     {
                         //explicitly copy, so the torrent software can continue seeding, if permitted
                         _cache.Store(module.download, filepath, module.StandardName(), false);
+                        watcher.Created -= created;
+                        watcher.Dispose();
+                        tcs.TrySetResult(filename);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        log.WarnFormat("cache.Store(): FileNotFoundException: {0}", ex.Message);
+                    }
+                }
+            };
+            RenamedEventHandler renamed = null;
+            renamed = (s, e) =>
+            {
+                if (e.Name.Equals(filepath))
+                {
+                    try
+                    {
+                        //explicitly copy, so the torrent software can continue seeding, if permitted
+                        _cache.Store(module.download, filepath, module.StandardName(), false);
+                        watcher.Renamed -= renamed;
+                        watcher.Dispose();
                         tcs.TrySetResult(filename);
                     }
                     catch (FileNotFoundException ex)
@@ -142,6 +166,8 @@ namespace CKAN
                 }
             };
             watcher.Created += created;
+            watcher.Renamed += renamed;
+            watcher.EnableRaisingEvents = true;
             return tcs.Task;
         }
 
@@ -156,7 +182,7 @@ namespace CKAN
             string magnet = "magnet:";
             string btihpart = "?xt=urn:btih:" + module.btih;
             string namepart = "&dn=" + Uri.EscapeDataString(filename);
-            string websourcepart = "&ws=" + Uri.EscapeDataString(module.download.ToString());
+            string websourcepart = "&as=" + Uri.EscapeDataString(module.download.ToString());
             return magnet + btihpart + namepart + websourcepart;
         }
     }

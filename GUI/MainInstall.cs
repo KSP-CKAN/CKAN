@@ -88,7 +88,7 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-
+            //TODO: config options here?
             var downloader = new NetAsyncDownloader(GUI.user);
             cancelCallback = () =>
             {
