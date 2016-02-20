@@ -154,7 +154,7 @@ namespace CKAN
         public static string GenerateMagnetLink(CkanModule module, string filename)
         {
             string magnet = "magnet:";
-            string btihpart = "?xt=+urn:btih:" + module.btih;
+            string btihpart = "?xt=urn:btih:" + module.btih;
             string namepart = "&dn=" + Uri.EscapeDataString(filename);
             string websourcepart = "&ws=" + Uri.EscapeDataString(module.download.ToString());
             return magnet + btihpart + namepart + websourcepart;
