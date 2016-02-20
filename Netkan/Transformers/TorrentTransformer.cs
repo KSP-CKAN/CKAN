@@ -27,7 +27,7 @@ namespace CKAN.NetKAN.Transformers
         public Metadata Transform(Metadata metadata){
             var json = metadata.Json();
 
-            if (!CKAN.TorrentDownloader.IsTorrentable(new string[]{ json["license"] }))
+            if (!CKAN.TorrentDownloader.IsTorrentable(new string[]{ json["license"].ToString() }))
             {
                 Log.InfoFormat("Torrent transformation of {0} skipped due to licensing concerns.", metadata.Kref);
                 return metadata;
@@ -39,6 +39,17 @@ namespace CKAN.NetKAN.Transformers
 
             TorrentCreator tc = new TorrentCreator();
             var dic = tc.Create(new TorrentFileSource(filesource));
+
+            // rename to something predictable - <id>-<version>.<ext>
+            string filename = String.Format(
+                "{0}-{1}{2}",
+                metadata.Identifier,
+                metadata.Version,
+                Path.GetExtension(filesource));
+
+            BEncodedDictionary info = (BEncodedDictionary)dic["info"];
+            info["name"] = new BEncodedString(filename);
+            dic["info"] = info;
             dic["created by"] = new BEncodedString("NetKAN");
 
             Torrent t = Torrent.Load(dic);
@@ -46,6 +57,10 @@ namespace CKAN.NetKAN.Transformers
             json["btih"] = t.InfoHash.ToHex();
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
+            // save .torrent file
+            string savepath = Path.Combine(_torrentPath, filename + ".torrent");
+
+            return new Metadata(json);
         }
     }
 }

@@ -72,8 +72,12 @@ namespace CKAN
 
             foreach (CkanModule module in modules)
             {
+                String[] licensestrings =
+                    (from license in module.license
+                     select license.ToString())
+                    .ToArray();
                 if (!String.IsNullOrEmpty(module.btih)
-                    && IsTorrentable(module.license.ToArray()))
+                    && IsTorrentable(licensestrings))
                     torrentable.Add(module);
                 else
                     fallback_list.Add(module);
@@ -135,8 +139,7 @@ namespace CKAN
         private Task<string> _DownloadModule(CkanModule module)
         {
             User.RaiseMessage("Generating magnet link for \"{0}\"", module.name);
-            string urlhash = NetFileCache.CreateURLHash(module.download);
-            string filename = String.Format("{0}-{1}", urlhash, module.StandardName());
+            string filename = module.StandardName();
             string filepath = Path.Combine(_downloaddir.AbsolutePath, filename);
             string link = GenerateMagnetLink(module, filename);
             System.Diagnostics.Process.Start(link);
