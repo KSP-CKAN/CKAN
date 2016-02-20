@@ -177,17 +177,27 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Generates a magnet link for a file. Example: magnet:?xt=urn:btih:8e7e8089f22cbb70d0d4fe06528fb1e416d1bd1e&dn=1C28BC18-Chatterer-0.9.7.zip&ws=https%3a%2f%2fs3-us-west-2.amazonaws.com%2fksp-ckan%2f1C28BC18.zip
+        /// Generates a magnet link, for downloading a module via the bittorrent protocol.
+        /// 
+        /// Example:
+        /// magnet:?xt=urn:btih:8e7e8089f22cbb70d0d4fe06528fb1e416d1bd1e&dn=1C28BC18-Chatterer-0.9.7.zip&ws=https%3a%2f%2fs3-us-west-2.amazonaws.com%2fksp-ckan%2f1C28BC18.zip
         /// </summary>
         /// <returns>The magnet link.</returns>
-        /// <param name="module">Module.</param>
+        /// <param name="module">Module</param>
         /// <param name="filename">Filename.</param>
         public static string GenerateMagnetLink(CkanModule module, string filename)
         {
+            if (string.IsNullOrEmpty(module.btih))
+            {
+                throw new BadMetadataKraken(module, "GenerateMagnetLink called on module with missing btih.");
+            }
             string magnet = "magnet:";
             string btihpart = "?xt=urn:btih:" + module.btih;
             string namepart = "&dn=" + Uri.EscapeDataString(filename);
-            string websourcepart = "&as=" + Uri.EscapeDataString(module.download.ToString());
+            string websourcepart = "";
+            if (!string.IsNullOrEmpty(module.download.ToString()))
+                websourcepart = "&as=" + Uri.EscapeDataString(module.download.ToString());
+            
             return magnet + btihpart + namepart + websourcepart;
         }
     }
