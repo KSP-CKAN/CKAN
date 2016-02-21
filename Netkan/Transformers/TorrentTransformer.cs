@@ -30,13 +30,13 @@ namespace CKAN.NetKAN.Transformers
             string[] licenses;
             if (json["license"] is Newtonsoft.Json.Linq.JArray)
             {
-                licenses = new string[]{ json["license"].ToString() };
+                licenses = (from x in json["license"]
+                            select x.ToString())
+                    .ToArray();
             }
             else
             {
-                licenses = (from x in json["license"]
-                                        select x.ToString())
-                    .ToArray();
+                licenses = new string[]{ json["license"].ToString() };
             }
             
             if (!CKAN.TorrentDownloader.IsTorrentable(licenses))

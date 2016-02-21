@@ -98,7 +98,7 @@ namespace CKAN
         }
 
         public static bool IsTorrentable(String[] licenses){
-            bool istorrentable = true;
+            bool istorrentable = false;
             foreach (String license in licenses)
             {
                 if (!torrentable_licenses.Contains(license))
@@ -106,6 +106,7 @@ namespace CKAN
                     istorrentable = false;
                     break;
                 }
+                istorrentable = true;
             }
             return istorrentable;
         }
