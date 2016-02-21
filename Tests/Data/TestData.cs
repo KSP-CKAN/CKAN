@@ -154,6 +154,22 @@ namespace Tests.Data
             return doge;
         }
 
+        /// <summary>
+        /// The Doge Coin flag using include_only and include_only_regexp.
+        /// Won't install the same files as the other modules and the files don't make sense but I needed some module to test the include_only stuff
+        /// </summary>
+        public static CkanModule DogeCoinFlag_101_module_include()
+        {
+            CkanModule doge = DogeCoinFlag_101_module();
+
+            doge.install[0].filter = null;
+            doge.install[0].filter_regexp = null;
+            doge.install[0].include_only = new List<String> { "dogecoin.png" };
+            doge.install[0].include_only_regexp = new List<string> { "\\.bak$" };
+
+            return doge;
+        }
+
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
         public static string FutureMetaData()
         {

@@ -197,6 +197,23 @@ namespace Tests.Core
         }
 
         [Test]
+        // Test includes_only and includes_only_regexp
+        public void FindInstallableFilesWithInclude()
+        {
+            string extra_doge = TestData.DogeCoinFlagZipWithExtras();
+            CkanModule mod = TestData.DogeCoinFlag_101_module_include();
+
+            List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mod, extra_doge, null);
+
+            var files = contents.Select(x => x.source.Name);
+
+            Assert.IsTrue(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png"), "dogecoin.png");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/README.md"), "Filtered README 1");
+            Assert.IsFalse(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/README.md"), "Filtered README 2");
+            Assert.IsTrue(files.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/notes.txt.bak"), ".bak file");
+        }
+
+        [Test]
         public void No_Installable_Files()
         {
             // This tests GH #93
