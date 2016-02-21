@@ -59,6 +59,32 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("author", ghRelease.Author);
                     json.SafeAdd("download", Uri.EscapeUriString(ghRelease.Download.ToString()));
 
+                    if (ghRef.Project.Contains("_"))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace("_", " "));
+                    }
+                    else if (ghRef.Project.Contains("-"))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace("-", " "));
+                    }
+                    else if (ghRef.Project.Contains("."))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace(".", " "));
+                    }
+                    else
+                    {
+                        var repoName = ghRef.Project;
+                        for (var i = 1; i < repoName.Length - 1; ++i)
+                        {
+                            if (char.IsLower(repoName[i - 1]) && char.IsUpper(repoName[i]) || repoName[i - 1] != ' ' && char.IsUpper(repoName[i]) && char.IsLower(repoName[i + 1]))
+                            {
+                                repoName = repoName.Insert(i, " ");
+                            }
+                        }
+
+                        json.SafeAdd("name", repoName);
+                    }
+
                     // Make sure resources exist.
                     if (json["resources"] == null)
                     {
