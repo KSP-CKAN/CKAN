@@ -24,7 +24,7 @@ NetKAN reports an error and calls a forth one to come check it out.
     -- Daz NetKAN#3159
 %
 A PR to break RealSolarSystem into multiple pieces is opened and
-then goes one for two months of back and forth, commiting and testing.
+then goes on for two months of back and forth, commiting and testing.
 A new version of KSP is released and RSS switches engine.
 
 So this is funny and sad at the same time but seeing as RSS is switching over to Kopernicus all of this was for naught and is no longer needed.
