@@ -75,7 +75,11 @@ namespace CKAN.NetKAN.Transformers
             dic["info"] = info;
             dic["created by"] = new BEncodedString("NetKAN");
 
+            if(metadata.Download != null)
+                dic["url-list"] = new BEncodedString(metadata.Download.AbsoluteUri);
+
             Torrent t = Torrent.Load(dic);
+
             json["btih"] = t.InfoHash.ToHex();
 
             // save .torrent file
