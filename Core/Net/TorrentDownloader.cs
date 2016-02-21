@@ -112,7 +112,10 @@ namespace CKAN
 
         private void _DownloadModules(IEnumerable<CkanModule> modules)
         {
-            //TODO: check that downloaddir exists
+            if (!Directory.Exists(_downloaddir.AbsolutePath))
+            {
+                throw new DirectoryNotFoundKraken(_downloaddir.AbsolutePath);
+            }
 
             // We only need to download each torrent once - some clients will
             // automatically detect this, but it's best to be on the safe side.
