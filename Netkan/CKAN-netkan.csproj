@@ -34,7 +34,7 @@
       <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="MonoTorrent">
-      <HintPath>..\packages\MonoTorrent.0.9.0\lib\net20\MonoTorrent.dll</HintPath>
+      <HintPath>..\CKAN\packages\MonoTorrent.0.9.0\lib\net20\MonoTorrent.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
