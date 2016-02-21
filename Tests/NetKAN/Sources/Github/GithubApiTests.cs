@@ -19,12 +19,11 @@ namespace Tests.NetKAN.Sources.Github
             var sut = new GithubApi();
 
             // Act
-            var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test"));
+            var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test", false, false));
 
             // Assert
             Assert.IsNotNull(githubRelease.Author);
             Assert.IsNotNull(githubRelease.Download);
-            Assert.IsNotNull(githubRelease.Size);
             Assert.IsNotNull(githubRelease.Version);
         }
     }

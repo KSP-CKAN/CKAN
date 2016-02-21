@@ -11,13 +11,14 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1; reviewed: pjf)
+- [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1, Zane6888; reviewed: pjf)
 
 ### Internal
 
 - [General] General code tidy-up. (#1582 by: ChucklesTheBeard; reviewed: plague006)
 - [GUI] Avoidance of a future bug involving how we query users regarding choices. (#1538 by: pjf, RichardLake; reviewed: Postremus)
 - [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
+- [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
 
 ## v1.16.0
 

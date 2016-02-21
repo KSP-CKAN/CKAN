@@ -24,10 +24,9 @@ namespace Tests.NetKAN.Transformers
             var mApi = new Mock<IGithubApi>();
             mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>()))
                 .Returns(new GithubRelease(
+                    "ExampleProject",
                     new Version("1.0"),
-                    new Uri("http://github.example/download"),
-                    0,
-                    "ExampleProject"
+                    new Uri("http://github.example/download")
                 ));
 
             var sut = new GithubTransformer(mApi.Object, matchPreleases: false);
