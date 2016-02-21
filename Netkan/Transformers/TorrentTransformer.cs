@@ -27,7 +27,19 @@ namespace CKAN.NetKAN.Transformers
         public Metadata Transform(Metadata metadata){
             var json = metadata.Json();
 
-            if (!CKAN.TorrentDownloader.IsTorrentable(new string[]{ json["license"].ToString() }))
+            string[] licenses;
+            if (json["license"] is Newtonsoft.Json.Linq.JArray)
+            {
+                licenses = new string[]{ json["license"].ToString() };
+            }
+            else
+            {
+                licenses = (from x in json["license"]
+                                        select x.ToString())
+                    .ToArray();
+            }
+            
+            if (!CKAN.TorrentDownloader.IsTorrentable(licenses))
             {
                 Log.InfoFormat("Torrent transformation of {0} skipped due to licensing concerns.", metadata.Kref);
                 return metadata;
