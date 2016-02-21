@@ -32,6 +32,17 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Torrent transformation of {0} skipped due to licensing concerns.", metadata.Kref);
                 return metadata;
             }
+            if (String.IsNullOrEmpty(_torrentPath))
+            {
+                Log.InfoFormat("Torrent transformation of {0} skipped due to unconfigured .torrent storage directory.", metadata.Kref);
+                return metadata;
+            }
+            else if (!Directory.Exists(_torrentPath))
+            {
+                Log.ErrorFormat("Torrent transformation of {0} skipped due to MISSING .torrent storage directory: {1}", metadata.Kref, _torrentPath);
+                return metadata;
+            }
+
             Log.InfoFormat("Executing Torrent transformation with {0}", metadata.Kref);
             Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
@@ -53,12 +64,15 @@ namespace CKAN.NetKAN.Transformers
             dic["created by"] = new BEncodedString("NetKAN");
 
             Torrent t = Torrent.Load(dic);
-
             json["btih"] = t.InfoHash.ToHex();
-            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
             // save .torrent file
             string savepath = Path.Combine(_torrentPath, filename + ".torrent");
+            BinaryWriter writer = new BinaryWriter(new FileStream(savepath, FileMode.OpenOrCreate));
+            writer.Write(dic.Encode());
+            writer.Close();
+
+            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
             return new Metadata(json);
         }
