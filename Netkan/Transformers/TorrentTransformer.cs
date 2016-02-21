@@ -40,9 +40,9 @@ namespace CKAN.NetKAN.Transformers
             TorrentCreator tc = new TorrentCreator();
             var dic = tc.Create(new TorrentFileSource(filesource));
 
-            // rename to something predictable - <id>-<version>.<ext>
             string filename = String.Format(
-                "{0}-{1}{2}",
+                "{0}-{1}-{2}{3}",
+                NetFileCache.CreateURLHash(metadata.Download),
                 metadata.Identifier,
                 metadata.Version,
                 Path.GetExtension(filesource));

@@ -139,7 +139,7 @@ namespace CKAN
         private Task<string> _DownloadModule(CkanModule module)
         {
             User.RaiseMessage("Generating magnet link for \"{0}\"", module.name);
-            string filename = module.StandardName();
+            string filename = String.Format("{0}-{1}", NetFileCache.CreateURLHash(module.download), module.StandardName());
             string filepath = Path.Combine(_downloaddir.AbsolutePath, filename);
             string link = GenerateMagnetLink(module, filename);
             System.Diagnostics.Process.Start(link);
