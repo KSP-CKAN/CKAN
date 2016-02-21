@@ -15,6 +15,7 @@ namespace CKAN
 
         private long m_cacheSize;
         private int m_cacheFileCount;
+        private RegistryManager _registryManager;
 
         private List<Repository> m_sortedRepos = new List<Repository>();
 
@@ -26,6 +27,7 @@ namespace CKAN
 
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
+            _registryManager = RegistryManager.Instance(Main.Instance.CurrentInstance);
             UpdateDialog();
         }
 
@@ -39,6 +41,7 @@ namespace CKAN
             RefreshOnStartupCheckbox.Checked = Main.Instance.m_Configuration.RefreshOnStartup;
 
             UpdateCacheInfo();
+            UpdateTorrentInfo();
         }
 
         private void RefreshReposListBox()
@@ -81,6 +84,20 @@ namespace CKAN
                 m_cacheFileCount,
                 m_cacheSize / 1024 / 1024
             );
+        }
+
+        private void UpdateTorrentInfo()
+        {
+            if (_registryManager.registry.IsTorrentConfigured())
+            {
+                DisableTorrentsButton.Visible = true;
+                TorrentDirectoryLabel.Text = _registryManager.registry.torrent_dir.AbsolutePath;
+            }
+            else
+            {
+                DisableTorrentsButton.Visible = false;
+                TorrentDirectoryLabel.Text = "Torrents are disabled. Click \"Pick Directory\" to enable.";
+            }
         }
 
         private void ClearCKANCacheButton_Click(object sender, EventArgs e)
@@ -251,6 +268,25 @@ namespace CKAN
         {
             Main.Instance.m_Configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
             Main.Instance.m_Configuration.Save();
+        }
+
+        private void DisableTorrentsButton_Click(object sender, EventArgs e)
+        {
+            _registryManager.registry.torrent_dir = null;
+            _registryManager.Save();
+            UpdateTorrentInfo();
+        }
+
+        private void SetTorrentDirButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.ShowDialog();
+            if (!String.IsNullOrEmpty(fbd.SelectedPath))
+            {
+                _registryManager.registry.torrent_dir = new Uri(fbd.SelectedPath);
+                _registryManager.Save();
+                UpdateTorrentInfo();
+            }
         }
     }
 }

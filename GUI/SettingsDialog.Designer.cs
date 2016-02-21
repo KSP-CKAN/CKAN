@@ -39,6 +39,7 @@
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
@@ -46,10 +47,14 @@
             this.LocalVersionLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
-            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
+            this.TorrentGroupBox = new System.Windows.Forms.GroupBox();
+            this.TorrentDirectoryLabel = new System.Windows.Forms.Label();
+            this.SetTorrentDirButton = new System.Windows.Forms.Button();
+            this.DisableTorrentsButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.TorrentGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // NewRepoButton
@@ -173,6 +178,17 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CKAN auto-update";
             // 
+            // RefreshOnStartupCheckbox
+            // 
+            this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
+            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
+            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(148, 17);
+            this.RefreshOnStartupCheckbox.TabIndex = 7;
+            this.RefreshOnStartupCheckbox.Text = "Refresh modlist on launch";
+            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
+            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
+            // 
             // CheckUpdateOnLaunchCheckbox
             // 
             this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
@@ -243,22 +259,57 @@
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             // 
-            // RefreshOnStartupCheckbox
+            // TorrentGroupBox
             // 
-            this.RefreshOnStartupCheckbox.AutoSize = true;
-            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
-            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
-            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(148, 17);
-            this.RefreshOnStartupCheckbox.TabIndex = 7;
-            this.RefreshOnStartupCheckbox.Text = "Refresh modlist on launch";
-            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
-            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
+            this.TorrentGroupBox.Controls.Add(this.TorrentDirectoryLabel);
+            this.TorrentGroupBox.Controls.Add(this.SetTorrentDirButton);
+            this.TorrentGroupBox.Controls.Add(this.DisableTorrentsButton);
+            this.TorrentGroupBox.Location = new System.Drawing.Point(12, 446);
+            this.TorrentGroupBox.Name = "TorrentGroupBox";
+            this.TorrentGroupBox.Size = new System.Drawing.Size(476, 50);
+            this.TorrentGroupBox.TabIndex = 12;
+            this.TorrentGroupBox.TabStop = false;
+            this.TorrentGroupBox.Text = "Torrents";
+            // 
+            // TorrentDirectoryLabel
+            // 
+            this.TorrentDirectoryLabel.AutoSize = true;
+            this.TorrentDirectoryLabel.Location = new System.Drawing.Point(158, 24);
+            this.TorrentDirectoryLabel.Name = "TorrentDirectoryLabel";
+            this.TorrentDirectoryLabel.Size = new System.Drawing.Size(264, 13);
+            this.TorrentDirectoryLabel.TabIndex = 2;
+            this.TorrentDirectoryLabel.Text = "Torrents are disabled. Click \"Pick Directory\" to enable.";
+            // 
+            // SetTorrentDirButton
+            // 
+            this.SetTorrentDirButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SetTorrentDirButton.Location = new System.Drawing.Point(6, 19);
+            this.SetTorrentDirButton.Name = "SetTorrentDirButton";
+            this.SetTorrentDirButton.Size = new System.Drawing.Size(85, 23);
+            this.SetTorrentDirButton.TabIndex = 1;
+            this.SetTorrentDirButton.Text = "Pick Directory";
+            this.SetTorrentDirButton.UseVisualStyleBackColor = true;
+            this.SetTorrentDirButton.Click += new System.EventHandler(this.SetTorrentDirButton_Click);
+            // 
+            // DisableTorrentsButton
+            // 
+            this.DisableTorrentsButton.BackColor = System.Drawing.SystemColors.Control;
+            this.DisableTorrentsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DisableTorrentsButton.Location = new System.Drawing.Point(97, 19);
+            this.DisableTorrentsButton.Name = "DisableTorrentsButton";
+            this.DisableTorrentsButton.Size = new System.Drawing.Size(56, 23);
+            this.DisableTorrentsButton.TabIndex = 0;
+            this.DisableTorrentsButton.Text = "Disable";
+            this.DisableTorrentsButton.UseVisualStyleBackColor = false;
+            this.DisableTorrentsButton.Visible = false;
+            this.DisableTorrentsButton.Click += new System.EventHandler(this.DisableTorrentsButton_Click);
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 442);
+            this.ClientSize = new System.Drawing.Size(495, 508);
+            this.Controls.Add(this.TorrentGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
@@ -272,6 +323,8 @@
             this.CacheGroupBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.TorrentGroupBox.ResumeLayout(false);
+            this.TorrentGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -296,5 +349,9 @@
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
         private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
+        private System.Windows.Forms.GroupBox TorrentGroupBox;
+        private System.Windows.Forms.Button DisableTorrentsButton;
+        private System.Windows.Forms.Label TorrentDirectoryLabel;
+        private System.Windows.Forms.Button SetTorrentDirButton;
     }
 }
