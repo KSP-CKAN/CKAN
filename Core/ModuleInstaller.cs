@@ -850,8 +850,6 @@ namespace CKAN
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
 
-            // TODO: Download our files.
-
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
 

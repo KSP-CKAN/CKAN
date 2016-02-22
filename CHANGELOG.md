@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [General] General code tidy-up. (#1582 by: ChucklesTheBeard; reviewed: plague006)
+- [General] General code tidy-up. (#1582, #1602 by: ChucklesTheBeard; reviewed: plague006, Olympic1)
 - [GUI] Avoidance of a future bug involving how we query users regarding choices. (#1538 by: pjf, RichardLake; reviewed: Postremus)
 - [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
 - [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
