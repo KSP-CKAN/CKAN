@@ -35,7 +35,20 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing GitHub transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                var ghRef = new GithubRef(metadata.Kref, _matchPreleases);
+                var useSourceAchive = false;
+
+                var githubMetadata = (JObject)json["x_netkan_github"];
+                if (githubMetadata != null)
+                {
+                    var githubUseSourceArchive = (bool?)githubMetadata["use_source_archive"];
+
+                    if (githubUseSourceArchive != null)
+                    {
+                        useSourceAchive = githubUseSourceArchive.Value;
+                    }
+                }
+
+                var ghRef = new GithubRef(metadata.Kref, useSourceAchive, _matchPreleases);
 
                 // Find the release on github and download.
                 var ghRelease = _api.GetLatestRelease(ghRef);

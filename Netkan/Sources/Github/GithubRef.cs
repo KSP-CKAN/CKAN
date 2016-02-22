@@ -14,12 +14,13 @@ namespace CKAN.NetKAN.Sources.Github
         public string Project { get; private set; }
         public string Repository { get; private set; }
         public Regex Filter { get; private set; }
+        public bool UseSourceArchive { get; private set; }
         public bool UsePrelease { get; private set; }
 
-        public GithubRef(string remoteRefToken, bool usePrelease = false)
-            : this(new RemoteRef(remoteRefToken), usePrelease) { }
+        public GithubRef(string remoteRefToken, bool useSourceArchive, bool usePrelease)
+            : this(new RemoteRef(remoteRefToken), useSourceArchive, usePrelease) { }
 
-        public GithubRef(RemoteRef remoteRef, bool usePrelease = false)
+        public GithubRef(RemoteRef remoteRef, bool useSourceArchive, bool usePrelease)
             : base(remoteRef)
         {
             var match = Pattern.Match(remoteRef.Id);
@@ -34,6 +35,7 @@ namespace CKAN.NetKAN.Sources.Github
                     new Regex(match.Groups["filter"].Value, RegexOptions.Compiled) :
                     Constants.DefaultAssetMatchPattern;
 
+                UseSourceArchive = useSourceArchive;
                 UsePrelease = usePrelease;
             }
             else

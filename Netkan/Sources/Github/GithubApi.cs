@@ -35,12 +35,31 @@ namespace CKAN.NetKAN.Sources.Github
                 // First, check for prerelease status...
                 if (reference.UsePrelease == (bool)release["prerelease"])
                 {
-                    var assets = (JArray)release["assets"];
+                    var version = new Version((string)release["tag_name"]);
+                    var author = (string)release["author"]["login"];
 
-                    foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
+                    Uri download = null;
+
+                    if (reference.UseSourceArchive)
                     {
-                        Log.DebugFormat ("Hit on {0}", asset);
-                        return new GithubRelease((JObject)release, (JObject)asset);
+                        Log.Debug("Using GitHub source archive");
+                        download = new Uri((string)release["zipball_url"]);
+                    }
+                    else
+                    {
+                        var assets = (JArray)release["assets"];
+
+                        foreach (var asset in assets.Where(asset => reference.Filter.IsMatch((string)asset["name"])))
+                        {
+                            Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
+                            download = new Uri((string)asset["browser_download_url"]);
+                            break;
+                        }
+                    }
+
+                    if (download != null)
+                    {
+                        return new GithubRelease(author, version, download);
                     }
                 }
             }
@@ -51,7 +70,7 @@ namespace CKAN.NetKAN.Sources.Github
         private string Call(string path)
         {
             var web = new WebClient();
-            web.Headers.Add("User-Agent", CKAN.Net.UserAgentString);
+            web.Headers.Add("User-Agent", Net.UserAgentString);
 
             if (_oauthToken != null)
             {

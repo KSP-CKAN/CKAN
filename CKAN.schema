@@ -3,10 +3,10 @@
     "title" : "CKAN JSON Schema",
     "description" : "Schema for validating CKAN meta files",
     "type" : "object",
-    "properties": {
-        "spec_version": {
+    "properties" : {
+        "spec_version" : {
             "description" : "Version of the CKAN spec this document uses",
-            "oneOf"       : [
+            "oneOf" : [
                 {
                     "type"        : "integer",
                     "description" : "The integer '1' is special cased",
@@ -30,7 +30,7 @@
         },
         "kind" : {
             "description" : "Package type, defaults to package.",
-            "enum" : [ "package", "metapackage" ]
+            "enum"        : [ "package", "metapackage" ]
         },
         "abstract" : {
             "description" : "Short description of the mod",
@@ -46,7 +46,7 @@
         },
         "author" : {
             "description" : "Author, or list of authors.",
-            "oneOf"       : [
+            "oneOf" : [
                 { "type" : "string" },
                 {
                     "type"        : "array",
@@ -62,11 +62,11 @@
         },
         "download_size" : {
             "description" : "The size of the download in bytes",
-            "type" : "integer"
+            "type"        : "integer"
         },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
-            "$ref"      : "#/definitions/licenses"
+            "$ref"        : "#/definitions/licenses"
         },
         "version" : {
             "description" : "Version of the mod. Drop the leading v",
@@ -74,7 +74,7 @@
         },
         "release_status" : {
             "description" : "Optional release status",
-            "enum" : [ "stable", "testing", "development" ]
+            "enum"        : [ "stable", "testing", "development" ]
         },
         "ksp_version" : {
             "description" : "Optional target KSP version",
@@ -114,8 +114,8 @@
         },
         "provides" : {
             "description" : "A list of virtual packages this mod provides",
-            "type" : "array",
-            "items" : { "type" : "string" },
+            "type"        : "array",
+            "items"       : { "type" : "string" },
             "uniqueItems" : true
         },
         "resources" : {
@@ -124,43 +124,43 @@
             "properties" : {
                 "homepage" : {
                     "description" : "Mod homepage",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "bugtracker" : {
                     "description" : "Mod bugtracker",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "license" : {
                     "description" : "Mod license",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "repository" : {
                     "description" : "Mod repository",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "ci" : {
                     "description" : "Continuous Integration",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "kerbalstuff" : {
                     "description" : "Project on KerbalStuff",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "spacedock" : {
                     "description" : "Project on SpaceDock",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 },
                 "manual" : {
                     "description" : "Mod's manual",
-                    "type" : "string",
-                    "format" : "uri"
+                    "type"        : "string",
+                    "format"      : "uri"
                 }
             }
         },
@@ -172,31 +172,31 @@
                 "properties" : {
                     "file" : {
                         "description" : "Path to file to install",
-                        "type" : "string"
+                        "type"        : "string"
                     },
                     "find" : {
                         "description" : "A directory to find for installation",
-                        "type" : "string"
+                        "type"        : "string"
                     },
                     "find_regexp" : {
                         "description" : "A regexp that matches the directory to install",
-                        "type" : "string"
+                        "type"        : "string"
                     },
                     "find_matches_files" : {
-                        "description": "If true, find directives match files as well as directories",
-                        "type" : "boolean"
+                        "description" : "If true, find directives match files as well as directories",
+                        "type"        : "boolean"
                     },
                     "install_to" : {
                         "description" : "Where file should be installed to",
-                        "$ref" : "#/definitions/install_to"
+                        "$ref"        : "#/definitions/install_to"
                     },
                     "filter" : {
                         "description" : "List of files and directories that should be filtered from the install",
-                        "$ref" : "#/definitions/one_or_more_strings"
+                        "$ref"        : "#/definitions/one_or_more_strings"
                     },
                     "filter_regexp" : {
                         "description" : "List of regexps that should filter files from this install",
-                        "$ref" : "#/definitions/one_or_more_strings"
+                        "$ref"        : "#/definitions/one_or_more_strings"
                     }
                 },
                 "required" : [ "install_to" ],
@@ -259,24 +259,23 @@
             "oneOf" : [
                 {
                     "description" : "Spec version 1 targets",
-                    "enum" : [ "GameData", "Ships", "GameRoot", "Tutorial", "Scenarios" ]
+                    "enum"        : [ "GameData", "Ships", "GameRoot", "Tutorial", "Scenarios" ]
                 },
                 {
                     "description" : "Spec v1.2 GameData path",
-                    "type" : "string",
-                    "pattern" : "^GameData/"
+                    "type"        : "string",
+                    "pattern"     : "^GameData/"
                 },
                 {
                     "description" : "Spec v1.12 Ships subfolder paths",
-                    "type" : "string",
-                    "pattern" : "^Ships/(SPH|VAB)$"
+                    "type"        : "string",
+                    "pattern"     : "^Ships/(SPH|VAB)$"
                 },
                 {
                     "description" : "Spec v1.16 thumbs paths",
-                    "type" : "string",
-                    "pattern" : "^Ships/@thumbs/(SPH|VAB)$"
+                    "type"        : "string",
+                    "pattern"     : "^Ships/@thumbs/(SPH|VAB)$"
                 }
-
             ]
         },
         "license" : {
@@ -317,15 +316,15 @@
             "anyOf" : [
                 { "$ref" : "#/definitions/license" },
                 {
-                    "type"  : "array",
-                    "items" : { "$ref" : "#/definitions/license" },
+                    "type"        : "array",
+                    "items"       : { "$ref" : "#/definitions/license" },
                     "uniqueItems" : true
                 }
             ]
         },
         "one_or_more_strings" : {
             "description" : "One or more strings",
-            "oneOf"       : [
+            "oneOf" : [
                 { "type" : "string" },
                 {
                     "type"        : "array",
