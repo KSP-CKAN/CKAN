@@ -2,6 +2,7 @@
 using System.Linq;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Kerbalstuff;
 using CKAN.NetKAN.Sources.Spacedock;
@@ -28,6 +29,7 @@ namespace CKAN.NetKAN.Transformers
                 new MetaNetkanTransformer(http),
                 new KerbalstuffTransformer(new KerbalstuffApi(http)),
                 new SpacedockTransformer(new SpacedockApi(http)),
+                new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(new GithubApi(githubToken), prerelease),
                 new HttpTransformer(),
                 new JenkinsTransformer(http),

@@ -53,6 +53,11 @@
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
+    <Compile Include="Sources\Curse\ICurseApi.cs" />
+    <Compile Include="Sources\Curse\CurseFile.cs" />
+    <Compile Include="Sources\Curse\CurseApi.cs" />
+    <Compile Include="Sources\Curse\CurseError.cs" />
+    <Compile Include="Sources\Curse\CurseMod.cs" />
     <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
     <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
@@ -74,6 +79,7 @@
     <Compile Include="Model\RemoteRef.cs" />
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
     <Compile Include="Transformers\JenkinsTransformer.cs" />
+    <Compile Include="Transformers\CurseTransformer.cs" />
     <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\KerbalstuffTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
