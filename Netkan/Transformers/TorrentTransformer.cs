@@ -75,8 +75,23 @@ namespace CKAN.NetKAN.Transformers
             dic["info"] = info;
             dic["created by"] = new BEncodedString("NetKAN");
 
-            if(metadata.Download != null)
-                dic["url-list"] = new BEncodedString(metadata.Download.AbsoluteUri);
+            if (metadata.Download != null)
+            {
+                Uri uri = new Uri(metadata.Download.AbsoluteUri); //copy 
+                if (uri.Scheme == "https")
+                {
+                    // See http://www.bittorrent.org/beps/bep_0019.html
+                    // https has less support in clients. The bittorrent client
+                    // must verify pieces from url-seeds, same as any other source.
+                    // https doesn't add protection or privacy in this use-case.
+                    UriBuilder ub = new UriBuilder(uri.AbsoluteUri){
+                        Scheme = "http",
+                        Port = -1 //default
+                    };
+                    uri = ub.Uri;
+                }
+                dic["url-list"] = new BEncodedString(uri.AbsoluteUri);
+            }
 
             Torrent t = Torrent.Load(dic);
 
