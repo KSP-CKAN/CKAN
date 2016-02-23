@@ -50,27 +50,101 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("author", curseMod.authors[0]);
                 json.SafeAdd("download", latestVersion.GetDownloadUrl());
 
-                // SD provides users with the following default selection of licenses. Let's convert them to CKAN
+                // Curse provides users with the following default selection of licenses. Let's convert them to CKAN
                 // compatible license strings if possible.
                 //
-                // "MIT" - OK
-                // "BSD" - Specific version is indeterminate
-                // "GPLv2" - Becomes "GPL-2.0"
-                // "GPLv3" - Becomes "GPL-3.0"
-                // "LGPL" - Specific version is indeterminate
+                // "Academic Free License v3.0"                               - Becomes "AFL-3.0"
+                // "Ace3 Style BSD"                                           - Becomes "restricted"
+                // "All Rights Reserved"                                      - Becomes "restricted"
+                // "Apache License version 2.0"                               - Becomes "Apache-2.0"
+                // "Apple Public Source License version 2.0 (APSL)"           - Becomes "APSL-2.0"
+                // "BSD License"                                              - Becomes "BSD-3-clause"
+                // "Common Development and Distribution License (CDDL) "      - Becomes "CDDL"
+                // "GNU Affero General Public License version 3 (AGPLv3)"     - Becomes "AGPL-3.0"
+                // "GNU General Public License version 2 (GPLv2)"             - Becomes "GPL-2.0"
+                // "GNU General Public License version 3 (GPLv3)"             - Becomes "GPL-3.0"
+                // "GNU Lesser General Public License version 2.1 (LGPLv2.1)" - Becomes "LGPL-2.1"
+                // "GNU Lesser General Public License version 3 (LGPLv3)"     - Becomes "LGPL-3.0"
+                // "ISC License (ISCL)"                                       - Becomes "ISC"
+                // "Microsoft Public License (Ms-PL)"                         - Becomes "Ms-PL"
+                // "Microsoft Reciprocal License (Ms-RL)"                     - Becomes "Ms-RL"
+                // "MIT License"                                              - Becomes "MIT"
+                // "Mozilla Public License 1.0 (MPL)"                         - Becomes "MPL-1.0"
+                // "Mozilla Public License 1.1 (MPL 1.1)"                     - Becomes "MPL-1.1"
+                // "Public Domain"                                            - Becomes "public-domain"
+                // "WTFPL"                                                    - Becomes "WTFPL"
+                // "zlib/libpng License"                                      - Becomes "Zlib"
+                // "Custom License"                                           - Becomes "unknown"
 
                 var sdLicense = curseMod.license.Trim();
 
                 switch (sdLicense)
                 {
-                    case "GPLv2":
+                    case "Academic Free License v3.0":
+                        json.SafeAdd("license", "AFL-3.0");
+                        break;
+                    case "Ace3 Style BSD":
+                        json.SafeAdd("license", "restricted");
+                        break;
+                    case "All Rights Reserved":
+                        json.SafeAdd("license", "restricted");
+                        break;
+                    case "Apache License version 2.0":
+                        json.SafeAdd("license", "Apache-2.0");
+                        break;
+                    case "Apple Public Source License version 2.0 (APSL)":
+                        json.SafeAdd("license", "APSL-2.0");
+                        break;
+                    case "BSD License":
+                        json.SafeAdd("license", "BSD-3-clause");
+                        break;
+                    case "Common Development and Distribution License (CDDL) ":
+                        json.SafeAdd("license", "CDDL");
+                        break;
+                    case "GNU Affero General Public License version 3 (AGPLv3)":
+                        json.SafeAdd("license", "AGPL-3.0");
+                        break;
+                    case "GNU General Public License version 2 (GPLv2)":
                         json.SafeAdd("license", "GPL-2.0");
                         break;
-                    case "GPLv3":
+                    case "GNU General Public License version 3 (GPLv3)":
                         json.SafeAdd("license", "GPL-3.0");
                         break;
+                    case "GNU Lesser General Public License version 2.1 (LGPLv2.1)":
+                        json.SafeAdd("license", "LGPL-2.1");
+                        break;
+                    case "GNU Lesser General Public License version 3 (LGPLv3)":
+                        json.SafeAdd("license", "LGPL-3.0");
+                        break;
+                    case "ISC License (ISCL)":
+                        json.SafeAdd("license", "ISC");
+                        break;
+                    case "Microsoft Public License (Ms-PL)":
+                        json.SafeAdd("license", "Ms-PL");
+                        break;
+                    case "Microsoft Reciprocal License (Ms-RL)":
+                        json.SafeAdd("license", "Ms-RL");
+                        break;
+                    case "MIT License":
+                        json.SafeAdd("license", "MIT");
+                        break;
+                    case "Mozilla Public License 1.0 (MPL)":
+                        json.SafeAdd("license", "MPL-1.0");
+                        break;
+                    case "Mozilla Public License 1.1 (MPL 1.1)":
+                        json.SafeAdd("license", "MPL-1.1");
+                        break;
+                    case "Public Domain":
+                        json.SafeAdd("license", "public-domain");
+                        break;
+                    case "WTFPL":
+                        json.SafeAdd("license", "WTFPL");
+                        break;
+                    case "zlib/libpng License":
+                        json.SafeAdd("license", "Zlib");
+                        break;
                     default:
-                        json.SafeAdd("license", sdLicense);
+                        json.SafeAdd("license", "unknown");
                         break;
                 }
 
