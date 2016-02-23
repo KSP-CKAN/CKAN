@@ -19,6 +19,9 @@ namespace CKAN.NetKAN.Sources.Curse
         //[JsonProperty] public int default_version_id;
         [JsonProperty] public string thumbnail;
 
+        private string _pageUrl;
+        private string _name;
+
         public CurseFile Latest()
         {
             return files.Values.First();
@@ -27,19 +30,31 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <summary>
         /// Returns the direct path to the mod's current home on Curse
         /// </summary>
-        /// <returns>The home.</returns>
-        public Uri GetPageUrl()
+        /// <returns>The home</returns>
+        public string GetPageUrl()
         {
-            return new Uri(Regex.Replace(CurseApi.ResolveRedirect(new Uri(project_url)).ToString(), "\\?.*$", ""));
+            if (_pageUrl == null)
+            {
+                _pageUrl = new Uri(Regex.Replace(CurseApi.ResolveRedirect(new Uri(project_url)).ToString(), "\\?.*$", "")).ToString();
+            }
+            return _pageUrl;
         }
 
         /// <summary>
-        /// Returns the direct path to the file
+        /// Returns the name of the mod
         /// </summary>
-        /// <returns>The home.</returns>
-        public Uri GetDownloadUrl(CurseFile file)
+        /// <returns>The name</returns>
+        public string GetName()
         {
-            return CurseApi.ResolveRedirect(new Uri(GetPageUrl().ToString() + "/files/" + file.id + "/download"));
+            if (_name == null)
+            {
+                //Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
+                //This is to filter out version information
+                Match match = Regex.Match(title, "^([A-Za-z ]*[A-Za-z][A-Za-z])");
+                if (match.Groups.Count > 1) _name = match.Groups[1].Value;
+                else _name = "title"; ;
+            }
+            return _name;
         }
 
         public override string ToString()
@@ -50,7 +65,12 @@ namespace CKAN.NetKAN.Sources.Curse
 
         public static CurseMod FromJson(string json)
         {
-            return JsonConvert.DeserializeObject<CurseMod>(json);
+            CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
+            foreach (CurseFile file in mod.files.Values)
+            {
+                file.Mod = mod;
+            }
+            return mod;
         }
     }
 }

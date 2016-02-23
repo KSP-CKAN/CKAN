@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Transformers
                 var curseMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var latestVersion = curseMod.Latest();
 
-                Log.InfoFormat("Found SpaceDock Mod: {0} {1}", curseMod.title);
+                Log.InfoFormat("Found SpaceDock Mod: {0} {1}", curseMod.GetName());
 
                 // Only pre-fill version info if there's none already. GH #199
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
@@ -44,11 +44,11 @@ namespace CKAN.NetKAN.Transformers
                     json["ksp_version"] = latestVersion.version;
                 }
 
-                json.SafeAdd("name", curseMod.title);
+                json.SafeAdd("name", curseMod.GetName());
                 //json.SafeAdd("abstract", cMod.short_description);
-                json.SafeAdd("version", "0");
+                json.SafeAdd("version", latestVersion.GetFileVersion());
                 json.SafeAdd("author", curseMod.authors[0]);
-                json.SafeAdd("download", curseMod.GetDownloadUrl(latestVersion));
+                json.SafeAdd("download", latestVersion.GetDownloadUrl());
 
                 // SD provides users with the following default selection of licenses. Let's convert them to CKAN
                 // compatible license strings if possible.
