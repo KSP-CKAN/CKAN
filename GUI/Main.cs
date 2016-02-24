@@ -932,8 +932,8 @@ namespace CKAN
         {
             var exportOptions = new List<ExportOption>
             {
-                new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourite list (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
                 new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
                 new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
                 new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
