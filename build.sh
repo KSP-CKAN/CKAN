@@ -46,7 +46,8 @@ mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	Cmdline/bin/Debug/log4net.dll \
 	Cmdline/bin/Debug/Newtonsoft.Json.dll \
 	Cmdline/bin/Debug/INIFileParser.dll \
-        Cmdline/bin/Debug/CurlSharp.dll
+    Cmdline/bin/Debug/Autofac.dll \
+    Cmdline/bin/Debug/CurlSharp.dll
 
 mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	/target:exe \
@@ -59,4 +60,6 @@ mono Core/packages/ILRepack.1.25.0/tools/ILRepack.exe \
 	Cmdline/bin/Debug/log4net.dll \
 	Cmdline/bin/Debug/Newtonsoft.Json.dll \
 	Cmdline/bin/Debug/INIFileParser.dll \
-        Cmdline/bin/Debug/CurlSharp.dll
+    Netkan/bin/Debug/MonoTorrent.dll \
+    Netkan/bin/Debug/Autofac.dll \
+    Cmdline/bin/Debug/CurlSharp.dll
