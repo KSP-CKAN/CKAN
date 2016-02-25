@@ -47,7 +47,7 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("name", curseMod.GetName());
                 //json.SafeAdd("abstract", cMod.short_description);
                 json.SafeAdd("version", latestVersion.GetFileVersion());
-                json.SafeAdd("author", curseMod.authors[0]);
+                json.SafeAdd("author", JToken.FromObject(curseMod.authors));
                 json.SafeAdd("download", latestVersion.GetDownloadUrl());
 
                 // Curse provides users with the following default selection of licenses. Let's convert them to CKAN
