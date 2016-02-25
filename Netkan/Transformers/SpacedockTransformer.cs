@@ -108,6 +108,9 @@ namespace CKAN.NetKAN.Transformers
         /// Provide an escaped version of the given Uri string, including converting
         /// square brackets to their escaped forms.
         /// </summary>
+        /// <returns>
+        /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normlized form.
+        /// </returns>
         private static string Normalize(string uri)
         {
             if (uri == null)
