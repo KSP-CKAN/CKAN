@@ -14,8 +14,8 @@ namespace CKAN.NetKAN.Sources.Curse
         //[JsonProperty] public string short_description;
         [JsonProperty] public string[] authors;
         [JsonProperty] public Dictionary<int, CurseFile> files;
-        //[JsonProperty] public Uri website;
-        //[JsonProperty] public Uri source_code;
+        //[JsonProperty] public string website;
+        //[JsonProperty] public string source_code;
         //[JsonProperty] public int default_version_id;
         [JsonProperty] public string thumbnail;
 
@@ -48,8 +48,8 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_name == null)
             {
-                //Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
-                //This is to filter out version information
+                // Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
+                // This is to filter out version information
                 Match match = Regex.Match(title, "^([A-Za-z ]*[A-Za-z][A-Za-z])");
                 if (match.Groups.Count > 1) _name = match.Groups[1].Value;
                 else _name = "title"; ;

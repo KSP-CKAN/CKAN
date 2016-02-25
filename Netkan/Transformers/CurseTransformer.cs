@@ -28,19 +28,19 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                Log.InfoFormat("Executing SpaceDock transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing Curse transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                // Look up our mod on SD by its Id.
+                // Look up our mod on Curse by its Id.
                 var curseMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var latestVersion = curseMod.Latest();
 
-                Log.InfoFormat("Found SpaceDock Mod: {0} {1}", curseMod.GetName());
+                Log.InfoFormat("Found Curse Mod: {0} {1}", curseMod.GetName());
 
                 // Only pre-fill version info if there's none already. GH #199
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
                 {
-                    Log.DebugFormat("Writing ksp_version from SpaceDock: {0}", latestVersion.version);
+                    Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);
                     json["ksp_version"] = latestVersion.version;
                 }
 
@@ -156,13 +156,13 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                //resourcesJson.SafeAdd("homepage", Escape(cMod.website));
-                //resourcesJson.SafeAdd("repository", Escape(cMod.source_code));
+                //resourcesJson.SafeAdd("homepage", Normalize(cMod.website));
+                //resourcesJson.SafeAdd("repository", Normalize(cMod.source_code));
                 resourcesJson.SafeAdd("curse", curseMod.project_url);
 
                 if (curseMod.thumbnail != null)
                 {
-                    resourcesJson.SafeAdd("x_screenshot", Escape(new Uri(curseMod.thumbnail)));
+                    resourcesJson.SafeAdd("x_screenshot", Normalize(new Uri(curseMod.thumbnail)));
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -173,25 +173,33 @@ namespace CKAN.NetKAN.Transformers
             return metadata;
         }
 
+        private static string Normalize(Uri uri)
+        {
+            return Normalize(uri.ToString());
+        }
+
         /// <summary>
-        /// Provide an escaped version of the given URL, including converting
+        /// Provide an escaped version of the given Uri string, including converting
         /// square brackets to their escaped forms.
         /// </summary>
-        private static string Escape(Uri url)
+        /// <returns>
+        /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normlized form.
+        /// </returns>
+        private static string Normalize(string uri)
         {
-            if (url == null)
+            if (uri == null)
             {
                 return null;
             }
 
-            Log.DebugFormat("Escaping {0}", url);
+            Log.DebugFormat("Escaping {0}", uri);
 
-            var escaped = Uri.EscapeUriString(url.ToString());
+            var escaped = Uri.EscapeUriString(uri);
 
             // Square brackets are "reserved characters" that should not appear
             // in strings to begin with, so C# doesn't try to escape them in case
             // they're being used in a special way. They're not; some mod authors
-            // just have crazy ideas as to what should be in a URL, and SD doesn't
+            // just have crazy ideas as to what should be in a URL, and Curse doesn't
             // escape them in its API. There's probably more in RFC 3986.
 
             escaped = escaped.Replace("[", Uri.HexEscape('['));
@@ -204,9 +212,16 @@ namespace CKAN.NetKAN.Transformers
                 escaped = "http://" + escaped;
             }
 
-            Log.DebugFormat("Escaped to {0}", escaped);
-
-            return escaped;
+            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
+            {
+                Log.DebugFormat("Escaped to {0}", escaped);
+                return escaped;
+            }
+            else
+            {
+                Log.WarnFormat("Could not normalize URL: {0}", uri);
+                return null;
+            }
         }
     }
 }

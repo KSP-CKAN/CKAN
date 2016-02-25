@@ -1,7 +1,7 @@
 namespace CKAN.NetKAN.Sources.Curse
 {
     /// <summary>
-    /// Internal class to read errors from SD.
+    /// Internal class to read errors from Curse.
     /// </summary>
     internal class CurseError
     {
