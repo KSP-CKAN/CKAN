@@ -530,25 +530,6 @@ consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict
 The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
 values are understood. Only *one* `$kref` field may be present in a `.netkan` file.
 
-###### `#/ckan/kerbalstuff/:ksid`
-
-Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
-
-When used, the following fields will be auto-filled if not already present:
-
-- `name`
-- `license`
-- `abstract`
-- `author`
-- `version`
-- `download`
-- `download_size`
-- `resources.homepage`
-- `resources.kerbalstuff`
-- `resources.repository`
-- `resources.x_screenshot`
-- `ksp_version`
-
 ###### `#/ckan/spacedock/:sdid`
 
 Indicates that data should be fetched from SpaceDock, using the `:sdid` provided. For example: `#/ckan/spacedock/269`.
