@@ -12,8 +12,8 @@ namespace CKAN.NetKAN.Sources.Spacedock
         [JsonProperty] public string short_description;
         [JsonProperty] public string author;
         [JsonProperty] public SDVersion[] versions;
-        [JsonProperty] public Uri website;
-        [JsonProperty] public Uri source_code;
+        [JsonProperty] public string website;
+        [JsonProperty] public string source_code;
         [JsonProperty] public int default_version_id;
         [JsonConverter(typeof(SDVersion.JsonConvertFromRelativeSdUri))]
         public Uri background;
