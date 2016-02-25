@@ -141,7 +141,7 @@
     <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
     <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
     <Compile Include="NetKAN\JenkinsTests.cs" />
-    <Compile Include="NetKAN\KSMod.cs" />
+    <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
     <Compile Include="NetKAN\Services\FileServiceTests.cs" />
     <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
