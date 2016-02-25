@@ -449,7 +449,7 @@ are described. Unless specified otherwise, these are URLs:
 - `license` : The mod's license.
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
-- `kerbalstuff` : The mod on KerbalStuff.
+- `spacedock` : The mod on SpaceDock.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
@@ -459,7 +459,7 @@ Example resources:
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
         "repository"   : "http://github.com/pjf/DogeCoinFlag",
         "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
-        "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
+        "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag"
     }
 
 While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
@@ -530,25 +530,6 @@ consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict
 The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
 values are understood. Only *one* `$kref` field may be present in a `.netkan` file.
 
-###### `#/ckan/kerbalstuff/:ksid`
-
-Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
-
-When used, the following fields will be auto-filled if not already present:
-
-- `name`
-- `license`
-- `abstract`
-- `author`
-- `version`
-- `download`
-- `download_size`
-- `resources.homepage`
-- `resources.kerbalstuff`
-- `resources.repository`
-- `resources.x_screenshot`
-- `ksp_version`
-
 ###### `#/ckan/spacedock/:sdid`
 
 Indicates that data should be fetched from SpaceDock, using the `:sdid` provided. For example: `#/ckan/spacedock/269`.
@@ -563,7 +544,7 @@ When used, the following fields will be auto-filled if not already present:
 - `download`
 - `download_size`
 - `resources.homepage`
-- `resources.kerbalstuff`
+- `resources.spacedock`
 - `resources.repository`
 - `resources.x_screenshot`
 - `ksp_version`

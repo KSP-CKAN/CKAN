@@ -147,11 +147,6 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
-                "kerbalstuff" : {
-                    "description" : "Project on KerbalStuff",
-                    "type"        : "string",
-                    "format"      : "uri"
-                },
                 "spacedock" : {
                     "description" : "Project on SpaceDock",
                     "type"        : "string",
