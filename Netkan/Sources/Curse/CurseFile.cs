@@ -11,7 +11,7 @@ namespace CKAN.NetKAN.Sources.Curse
 
         internal CurseMod Mod;
 
-        [JsonProperty] public string version; //KSPVersion
+        [JsonProperty] public string version; // KSP Version
 
         //[JsonProperty] public string changelog;
 
@@ -45,12 +45,12 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_fileVersion == null)
             {
-                //matches the last group of numbers letters and dots before the .zip extension, staring at a number or a 'v' and a number
+                // Matches the last group of numbers letters and dots before the .zip extension, staring at a number or a 'v' and a number
                 Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
                 if (match.Groups.Count > 1) _fileVersion = match.Groups[1].Value;
 
-                //the id is unique across all files, and is always incrementing.
-                //this format also assures, that any "real" version precedes them.
+                // The id is unique across all files, and is always incrementing.
+                // This format also assures, that any "real" version precedes them.
                 else _fileVersion = "0curse" + id;
             }
             return _fileVersion;
