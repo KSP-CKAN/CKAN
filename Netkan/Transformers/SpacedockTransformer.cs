@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -47,8 +49,14 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("name", sdMod.name);
                 json.SafeAdd("abstract", sdMod.short_description);
                 json.SafeAdd("version", latestVersion.friendly_version.ToString());
-                json.SafeAdd("author", sdMod.author);
                 json.SafeAdd("download", latestVersion.download_path.OriginalString);
+
+                var authors = GetAuthors(sdMod);
+
+                if (authors.Count == 1)
+                    json.SafeAdd("author", sdMod.author);
+                else if (authors.Count > 1)
+                    json.SafeAdd("author", new JArray(authors));
 
                 // SD provides users with the following default selection of licenses. Let's convert them to CKAN
                 // compatible license strings if possible.
@@ -145,6 +153,16 @@ namespace CKAN.NetKAN.Transformers
                 Log.WarnFormat("Could not normalize URL: {0}", uri);
                 return null;
             }
+        }
+
+        private static List<string> GetAuthors(SpacedockMod mod)
+        {
+            var result = new List<string> { mod.author };
+
+            if (mod.shared_authors != null)
+                result.AddRange(mod.shared_authors.Select(i => i.Username));
+
+            return result;
         }
     }
 }
