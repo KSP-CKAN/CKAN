@@ -63,6 +63,7 @@
     <Compile Include="Sources\Kerbalstuff\KerbalstuffError.cs" />
     <Compile Include="Sources\Kerbalstuff\KerbalstuffMod.cs" />
     <Compile Include="Sources\Kerbalstuff\KSVersion.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
     <Compile Include="Transformers\DownloadSizeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
