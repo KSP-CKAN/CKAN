@@ -58,6 +58,7 @@
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
     <Compile Include="Sources\Spacedock\SDVersion.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
     <Compile Include="Transformers\DownloadSizeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
