@@ -43,6 +43,7 @@ namespace CKAN.NetKAN.Sources.Curse
         public static Uri ResolveRedirect(Uri url)
         {
             Uri redirUrl = url;
+            int redirects = 0;
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(redirUrl);
             request.AllowAutoRedirect = false;
             request.UserAgent = Net.UserAgentString;
@@ -50,6 +51,8 @@ namespace CKAN.NetKAN.Sources.Curse
             response.Close();
             while (response.Headers["Location"] != null)
             {
+                redirects++;
+                if(redirects > 6) throw new Kraken("More than 6 redirects when resolving the following url: " + url);
                 redirUrl = new Uri(redirUrl, response.Headers["Location"]);
                 request = (HttpWebRequest) WebRequest.Create(redirUrl);
                 request.AllowAutoRedirect = false;
