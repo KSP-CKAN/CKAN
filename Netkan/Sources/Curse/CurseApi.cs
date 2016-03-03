@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Sources.Curse
                 throw new Kraken("Could not get the mod from Curse, reason: Specified id is not a KSP mod");
             }
 
-            return CurseMod.FromJson(json);
+            return CurseMod.FromJson(modId, json);
         }
 
         public static Uri ResolveRedirect(Uri url)

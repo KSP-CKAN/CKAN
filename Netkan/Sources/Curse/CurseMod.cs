@@ -8,7 +8,6 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     internal class CurseMod
     {
-        [JsonProperty] public string project_url; // CID
         [JsonProperty] public string license;
         [JsonProperty] public string title;
         //[JsonProperty] public string short_description;
@@ -19,12 +18,23 @@ namespace CKAN.NetKAN.Sources.Curse
         //[JsonProperty] public int default_version_id;
         [JsonProperty] public string thumbnail;
 
+        public int ModId;
+
         private string _pageUrl;
         private string _name;
 
         public CurseFile Latest()
         {
             return files.Values.First();
+        }
+
+        /// <summary>
+        /// Returns the static Url of the project
+        /// </summary>
+        /// <returns>The home</returns>
+        public string GetProjectUrl()
+        {
+            return "http://kerbal.curseforge.com/projects/" + ModId;
         }
 
         /// <summary>
@@ -35,7 +45,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_pageUrl == null)
             {
-                _pageUrl = new Uri(Regex.Replace(CurseApi.ResolveRedirect(new Uri(project_url)).ToString(), "\\?.*$", "")).ToString();
+                _pageUrl = new Uri(Regex.Replace(CurseApi.ResolveRedirect(new Uri(GetProjectUrl())).ToString(), "\\?.*$", "")).ToString();
             }
             return _pageUrl;
         }
@@ -63,9 +73,10 @@ namespace CKAN.NetKAN.Sources.Curse
             return string.Format("{0}", title);
         }
 
-        public static CurseMod FromJson(string json)
+        public static CurseMod FromJson(int modId, string json)
         {
             CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
+            mod.ModId = modId;
             foreach (CurseFile file in mod.files.Values)
             {
                 file.Mod = mod;
