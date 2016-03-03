@@ -158,7 +158,7 @@ namespace CKAN.NetKAN.Transformers
 
                 //resourcesJson.SafeAdd("homepage", Normalize(cMod.website));
                 //resourcesJson.SafeAdd("repository", Normalize(cMod.source_code));
-                resourcesJson.SafeAdd("curse", curseMod.project_url);
+                resourcesJson.SafeAdd("curse", curseMod.GetProjectUrl());
 
                 if (curseMod.thumbnail != null)
                 {
