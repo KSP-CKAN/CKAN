@@ -31,11 +31,22 @@ So this is funny and sad at the same time but seeing as RSS is switching over to
 
     -- Daz NetKAN#889
 %
-Early in his career in the CKAN project a certain individual strived
-for one simple goal.
+One individual, one goal, many _MANY_ PRs
 
 Homepage added
 Adding homepage
 Added homepage
 
     -- plague006 all early PRs
+%
+<ChucklesTheBeard> ayy
+<p6-away> hey boss
+<pjf> Yes. Chuckles is boss now. This pleases me. :)
+
+    -- pjf on irc
+%
+Sometimes you just don't want to fix things.
+
+[04:30] (@plague006): politas, Olympic1 you guys around?
+[04:30] (@plague006): y'all [goofed] :p
+[04:32] *** Olympic1 is now known as Olympic1|AWAY
