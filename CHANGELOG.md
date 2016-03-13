@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
 - [NetKAN] `netkan.exe` checks for malformed url's and prevents them from being added to the metadata. (#1580 by: dbent; reviewed: Olympic1)
 - [NetKAN] `netkan.exe` will now add all authors listed on SpaceDock (#1600 by: dbent; reviewed: techman83)
+- [Core] Spelling mistake in documentation fixed (#1623 by: Dazpoet; reviewed: pjf)
 
 ## v1.16.0
 
