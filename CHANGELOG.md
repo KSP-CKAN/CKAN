@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+### Features
+
+### Internal
+
+## v1.16.1
+
+### Bugfixes
+
 - [GUI] The "Not Installed" filter now has a more correct label. (#1573 by: plague006; reviewed: Postremus)
 - [GUI] Scrolling of the mod-list no longer requires clicking on the list after start-up. (#1584 by: ChucklesTheBeard; reviewed: Olympic1)
 - [GUI] The GUI now displays repo information as "Source Code" rather than "Github". (#1627 by: politas; reviewed: pjf)
