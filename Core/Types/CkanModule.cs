@@ -81,9 +81,6 @@ namespace CKAN
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri bugtracker;
 
-        [JsonConverter(typeof (JsonOldResourceUrlConverter))]
-        public Uri kerbalstuff;
-
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri spacedock;
     }

@@ -47,13 +47,12 @@ namespace CKAN.NetKAN.Transformers
         private static readonly Dictionary<string, int> ResourcePropertySortOrder = new Dictionary<string, int>
         {
             { "homepage", 0 },
-            { "kerbalstuff", 1 },
-            { "spacedock", 2 },
-            { "repository", 3 },
-            { "bugtracker", 4 },
-            { "ci", 5 },
-            { "license", 6 },
-            { "manual", 7 }
+            { "spacedock", 1 },
+            { "repository", 2 },
+            { "bugtracker", 3 },
+            { "ci", 4 },
+            { "license", 5 },
+            { "manual", 6 }
         };
 
         public Metadata Transform(Metadata metadata)

@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
+
 ## v1.16.1
 
 ### Bugfixes
