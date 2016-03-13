@@ -993,7 +993,7 @@ namespace CKAN
                 Instance.CurrentInstanceUpdated();
         }
 
-        private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
         }

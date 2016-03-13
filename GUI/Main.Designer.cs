@@ -34,7 +34,7 @@ namespace CKAN
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectKSPInstallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openKspDirectoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openKspDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -180,7 +180,7 @@ namespace CKAN
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectKSPInstallMenuItem,
-            this.openKspDirectoyToolStripMenuItem,
+            this.openKspDirectoryToolStripMenuItem,
             this.installFromckanToolStripMenuItem,
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator1,
@@ -196,12 +196,12 @@ namespace CKAN
             this.selectKSPInstallMenuItem.Text = "Select KSP Install...";
             this.selectKSPInstallMenuItem.Click += new System.EventHandler(this.selectKSPInstallMenuItem_Click);
             // 
-            // openKspDirectoyToolStripMenuItem
+            // openKspDirectoryToolStripMenuItem
             // 
-            this.openKspDirectoyToolStripMenuItem.Name = "openKspDirectoyToolStripMenuItem";
-            this.openKspDirectoyToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
-            this.openKspDirectoyToolStripMenuItem.Text = "Open KSP Directoy";
-            this.openKspDirectoyToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoyToolStripMenuItem_Click);
+            this.openKspDirectoryToolStripMenuItem.Name = "openKspDirectoryToolStripMenuItem";
+            this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.openKspDirectoryToolStripMenuItem.Text = "Open KSP Directory";
+            this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
             // 
             // installFromckanToolStripMenuItem
             // 
@@ -1463,7 +1463,7 @@ namespace CKAN
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem exportModListToolStripMenuItem;
         private ToolStripMenuItem selectKSPInstallMenuItem;
-        private ToolStripMenuItem openKspDirectoyToolStripMenuItem;
+        private ToolStripMenuItem openKspDirectoryToolStripMenuItem;
         private SplitContainer splitContainer2;
         private TableLayoutPanel MetaDataUpperLayoutPanel;
         public MainModListGUI ModList;
