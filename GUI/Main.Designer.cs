@@ -700,7 +700,7 @@ namespace CKAN
             this.GitHubLabel.Name = "GitHubLabel";
             this.GitHubLabel.Size = new System.Drawing.Size(83, 30);
             this.GitHubLabel.TabIndex = 10;
-            this.GitHubLabel.Text = "GitHub:";
+            this.GitHubLabel.Text = "Source Code:";
             // 
             // HomePageLabel
             // 
