@@ -477,6 +477,19 @@ namespace CKAN
             }
         }
 
+        private void FilterByDescriptionTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Platform.IsMac)
+            {
+                // Delay updating to improve typing performance on OS X
+                RunFilterUpdateTimer();
+            }
+            else
+            {
+                mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
+            }
+        }
+
         /// <summary>
         /// Start or restart a timer to update the filter after an interval
         /// since the last keypress. On Mac OS X, this prevents the search
@@ -509,6 +522,7 @@ namespace CKAN
         {
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+            mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
             filter_timer.Stop();
         }
 
