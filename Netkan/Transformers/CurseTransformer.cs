@@ -44,9 +44,45 @@ namespace CKAN.NetKAN.Transformers
                     json["ksp_version"] = latestVersion.version;
                 }
 
+                var useDownloadNameVersion = false;
+                var useFilenameVersion = false;
+                var useCurseIdVersion = false;
+
+                var curseMetadata = (JObject) json["x_netkan_curse"];
+                if (curseMetadata != null)
+                {
+                    var useDownloadNameVersionMetadata = (bool?)curseMetadata["use_download_name_version"];
+                    if (useDownloadNameVersionMetadata != null)
+                    {
+                        useDownloadNameVersion = useDownloadNameVersionMetadata.Value;
+                    }
+
+                    var useFilenameVersionMetadata = (bool?) curseMetadata["use_filename_version"];
+                    if (useFilenameVersionMetadata != null)
+                    {
+                        useFilenameVersion = useFilenameVersionMetadata.Value;
+                    }
+
+                    var useCurseIdVersionMetadata = (bool?)curseMetadata["use_curse_id_version"];
+                    if (useCurseIdVersionMetadata != null)
+                    {
+                        useCurseIdVersion = useCurseIdVersionMetadata.Value;
+                    }
+
+                    if ((useDownloadNameVersion ? 1 : 0) + (useFilenameVersion ? 1 : 0) + (useCurseIdVersion ? 1 : 0) > 1)
+                    {
+                        throw new Kraken("Conflicting version options set in x_netkan_curse");
+                    }
+                }
+
                 json.SafeAdd("name", curseMod.GetName());
                 //json.SafeAdd("abstract", cMod.short_description);
-                json.SafeAdd("version", latestVersion.GetFileVersion());
+
+                if (useDownloadNameVersion)  json.SafeAdd("version", latestVersion.name);
+                else if (useFilenameVersion) json.SafeAdd("version", latestVersion.GetFilename());
+                else if (useCurseIdVersion)  json.SafeAdd("version", latestVersion.GetCurseIdVersion());
+                else                         json.SafeAdd("version", latestVersion.GetFileVersion());
+
                 json.SafeAdd("author", JToken.FromObject(curseMod.authors));
                 json.SafeAdd("download", latestVersion.GetDownloadUrl());
 

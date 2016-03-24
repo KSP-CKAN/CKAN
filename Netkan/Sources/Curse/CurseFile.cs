@@ -22,6 +22,7 @@ namespace CKAN.NetKAN.Sources.Curse
         [JsonProperty] public int id;
 
         private string _downloadUrl;
+        private string _filename;
         private string _fileVersion;
 
         /// <summary>
@@ -38,6 +39,30 @@ namespace CKAN.NetKAN.Sources.Curse
         }
 
         /// <summary>
+        /// Returns the Curse Id version of the file
+        /// </summary>
+        /// <returns>The Curse Id version</returns>
+        public string GetCurseIdVersion()
+        {
+            return "0curse" + id;
+        }
+
+        /// <summary>
+        /// Returns the filename of the file
+        /// </summary>
+        /// <returns>The filename</returns>
+        public string GetFilename()
+        {
+            if (_filename == null)
+            {
+                Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
+                if (match.Groups.Count > 0) _filename = match.Groups[0].Value;
+                else _filename = GetCurseIdVersion();
+            }
+            return _filename;
+        }
+
+        /// <summary>
         /// Returns the version of the file
         /// </summary>
         /// <returns>The version</returns>
@@ -51,7 +76,7 @@ namespace CKAN.NetKAN.Sources.Curse
 
                 // The id is unique across all files, and is always incrementing.
                 // This format also assures, that any "real" version precedes them.
-                else _fileVersion = "0curse" + id;
+                else _fileVersion = GetCurseIdVersion();
             }
             return _fileVersion;
         }
