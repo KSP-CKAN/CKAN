@@ -1,5 +1,4 @@
-﻿using System;
-using CKAN.NetKAN;
+﻿using System.Collections.Generic;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Transformers;
@@ -43,17 +42,16 @@ namespace Tests.NetKAN.Transformers
             var cmod = new CurseMod
             {
                 license = "CC-BY",
-                title = "Dogecoin Flag"
+                title = "Dogecoin Flag",
                 //short_description = "Such test. Very unit. Wow.",
-                //author = "pjf",
+                authors = new string[] {"pjf"}
                 //versions = new SDVersion[1]
             };
 
-            //cmod.versions[0] = new SDVersion
-            //{
-            //    friendly_version = new CKAN.Version("0.25"),
-            //    download_path = new Uri("http://example.com/")
-            //};
+            cmod.files = new Dictionary<int, CurseFile>();
+            cmod.files[0] = new CurseFile();
+            cmod.files[0].SetFileVersion("0.25");
+            cmod.files[0].SetDownloadUrl("http://example.com/download.zip");
 
             return cmod;
         }

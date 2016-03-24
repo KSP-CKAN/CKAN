@@ -39,6 +39,14 @@ namespace CKAN.NetKAN.Sources.Curse
         }
 
         /// <summary>
+        /// Sets the download url of the file
+        /// </summary>
+        public void SetDownloadUrl(String url)
+        {
+            _downloadUrl = url;
+        }
+
+        /// <summary>
         /// Returns the Curse Id version of the file
         /// </summary>
         /// <returns>The Curse Id version</returns>
@@ -79,6 +87,14 @@ namespace CKAN.NetKAN.Sources.Curse
                 else _fileVersion = GetCurseIdVersion();
             }
             return _fileVersion;
+        }
+
+        /// <summary>
+        /// Sets the version of the file
+        /// </summary>
+        public void SetFileVersion(string version)
+        {
+            _fileVersion = version;
         }
 
         //public string Download(string identifier, NetFileCache cache)
