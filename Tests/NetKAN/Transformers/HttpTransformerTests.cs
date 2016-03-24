@@ -33,6 +33,7 @@ namespace Tests.NetKAN.Transformers
         [TestCase("#/ckan/netkan/http://awesomemod.example/awesomemod.netkan")]
         [TestCase("#/ckan/kerbalstuff/1")]
         [TestCase("#/ckan/spacedock/1")]
+        [TestCase("#/ckan/curse/1")]
         [TestCase("#/ckan/foo")]
         public void DoesNotAlterMetadataWhenNonMatching(string kref)
         {
