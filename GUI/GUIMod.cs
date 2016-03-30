@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -45,7 +46,7 @@ namespace CKAN
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KSPVersion current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersion current_ksp_version)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist

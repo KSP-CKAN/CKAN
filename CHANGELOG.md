@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent)
 - [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
 - [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1597 by: plague006; reviewed: Daz)
 - [spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)

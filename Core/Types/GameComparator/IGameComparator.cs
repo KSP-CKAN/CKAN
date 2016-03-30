@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -11,7 +11,7 @@ namespace CKAN
         /// Returns true if the given module is compatible with the supplied
         /// gameVersion, false otherwise.
         /// </summary>
-        bool Compatible(KSPVersion gameVersion, CkanModule module);
+        bool Compatible(KspVersion gameVersion, CkanModule module);
     }
 }
 

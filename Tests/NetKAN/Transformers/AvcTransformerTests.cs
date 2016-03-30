@@ -3,6 +3,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.NetKAN.Transformers;
+using CKAN.Versioning;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -19,7 +20,7 @@ namespace Tests.NetKAN.Transformers
             var avcVersion = new AvcVersion
             {
                 version = new Version("1.0.0"),
-                ksp_version = new KSPVersion("1.0.4")
+                ksp_version = KspVersion.Parse("1.0.4")
             };
 
             var mHttp = new Mock<IHttpService>();
@@ -55,9 +56,9 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var avcVersion = new AvcVersion
             {
-                ksp_version = new KSPVersion("1.0.4"),
-                ksp_version_min = new KSPVersion("0.90"),
-                ksp_version_max  = new KSPVersion("1.0.3")
+                ksp_version = KspVersion.Parse("1.0.4"),
+                ksp_version_min = KspVersion.Parse("0.90"),
+                ksp_version_max  = KspVersion.Parse("1.0.3")
             };
 
             var mHttp = new Mock<IHttpService>();
@@ -175,13 +176,13 @@ namespace Tests.NetKAN.Transformers
             var avcVersion = new AvcVersion();
 
             if (!string.IsNullOrWhiteSpace(avcKsp))
-                avcVersion.ksp_version = new KSPVersion(avcKsp);
+                avcVersion.ksp_version = KspVersion.Parse(avcKsp);
 
             if (!string.IsNullOrWhiteSpace(avcKspMin))
-                avcVersion.ksp_version_min = new KSPVersion(avcKspMin);
+                avcVersion.ksp_version_min = KspVersion.Parse(avcKspMin);
 
             if (!string.IsNullOrWhiteSpace(avcKspMax))
-                avcVersion.ksp_version_max = new KSPVersion(avcKspMax);
+                avcVersion.ksp_version_max = KspVersion.Parse(avcKspMax);
 
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
