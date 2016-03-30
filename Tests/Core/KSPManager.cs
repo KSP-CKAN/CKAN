@@ -176,6 +176,7 @@ namespace Tests.Core
         }
 
         public List<Tuple<string, string>> Instances { get; set; }
+        public string BuildMap { get; set; }
 
         public int InstanceCount
         {
@@ -208,6 +209,16 @@ namespace Tests.Core
         public IEnumerable<Tuple<string, string>> GetInstances()
         {
             return Instances;
+        }
+
+        public string GetKSPBuilds()
+        {
+            return BuildMap;
+        }
+
+        public void SetKSPBuilds(string buildMap)
+        {
+            BuildMap = buildMap;
         }
     }
 }

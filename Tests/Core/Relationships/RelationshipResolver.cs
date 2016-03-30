@@ -5,6 +5,9 @@ using CKAN;
 using NUnit.Framework;
 using Tests.Data;
 using System.IO;
+using CKAN.Versioning;
+using Tests.Core.Types;
+using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 using Version = CKAN.Version;
 
 namespace Tests.Core.Relationships
@@ -694,7 +697,7 @@ namespace Tests.Core.Relationships
         {
             var list = new List<string>();
             var mod = generator.GeneratorRandomModule();
-            mod.ksp_version = new KSPVersion("0.10");
+            mod.ksp_version = KspVersion.Parse("0.10");
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             registry.RemoveAvailable(mod);
@@ -803,7 +806,7 @@ namespace Tests.Core.Relationships
                     new CKAN.CkanModule[] { mod },
                     RelationshipResolver.DefaultOpts(),
                     registry,
-                    new KSPVersion("1.0.0")
+                    KspVersion.Parse("1.0.0")
                 );
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN
@@ -88,7 +89,7 @@ namespace CKAN
             new Dictionary<CkanModule, SelectionReason>(new NameComparer());
 
         private readonly IRegistryQuerier registry;
-        private readonly KSPVersion kspversion;
+        private readonly KspVersion kspversion;
         private readonly RelationshipResolverOptions options;
         private readonly HashSet<CkanModule> installed_modules;
 
@@ -98,7 +99,7 @@ namespace CKAN
         /// <param name="options"><see cref="RelationshipResolverOptions"/></param>
         /// <param name="registry">The registry to use</param>
         /// <param name="kspversion">The version of the install that the registry corresponds to</param>
-        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, KSPVersion kspversion)
+        public RelationshipResolver(RelationshipResolverOptions options, IRegistryQuerier registry, KspVersion kspversion)
         {
             this.registry = registry;
             this.kspversion = kspversion;
@@ -120,7 +121,7 @@ namespace CKAN
         /// <param name="registry"></param>
         /// <param name="kspversion"></param>
         public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KSPVersion kspversion) :
+            KspVersion kspversion) :
                 this(module_names.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
                     options,
                     registry,
@@ -133,7 +134,7 @@ namespace CKAN
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
         public RelationshipResolver(IEnumerable<CkanModule> modules, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KSPVersion kspversion):this(options,registry,kspversion)
+            KspVersion kspversion):this(options,registry,kspversion)
         {
             AddModulesToInstall(modules);
         }

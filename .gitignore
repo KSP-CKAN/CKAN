@@ -1,4 +1,5 @@
 build/
+/.vs/
 packages/
 CKAN/*/bin
 CKAN/*/obj

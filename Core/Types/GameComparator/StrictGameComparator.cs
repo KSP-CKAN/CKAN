@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -8,33 +8,51 @@ namespace CKAN
     /// </summary>
     public class StrictGameComparator : IGameComparator
     {
-
-        public bool Compatible(KSPVersion gameVersion, CkanModule module)
+        public bool Compatible(KspVersion gameVersion, CkanModule module)
         {
-            KSPVersion ksp_version = module.ksp_version;
-            KSPVersion ksp_version_min = module.ksp_version_min;
-            KSPVersion ksp_version_max = module.ksp_version_max;
+            var gameVersionRange = gameVersion.ToVersionRange();
 
-            // Check the min and max versions.
+            var moduleRange = KspVersionRange.Any;
 
-            if (ksp_version_min.IsNotAny() && gameVersion < ksp_version_min)
+            if (module.ksp_version != null)
             {
-                return false;
+                moduleRange = module.ksp_version.ToVersionRange();
+            }
+            else if (module.ksp_version_min != null || module.ksp_version_max != null)
+            {
+                if (module.ksp_version_min != null && module.ksp_version_max != null)
+                {
+                    if (module.ksp_version_min <= module.ksp_version_max)
+                    {
+                        var minRange = module.ksp_version_min.ToVersionRange();
+                        var maxRange = module.ksp_version_max.ToVersionRange();
+
+                        moduleRange = new KspVersionRange(minRange.Lower, maxRange.Upper);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (module.ksp_version_min != null)
+                {
+                    var minRange = module.ksp_version_min.ToVersionRange();
+
+                    moduleRange = new KspVersionRange(minRange.Lower, KspVersionBound.Unbounded);
+                }
+                else if (module.ksp_version_max != null)
+                {
+                    var maxRange = module.ksp_version_max.ToVersionRange();
+
+                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Upper);
+                }
+            }
+            else
+            {
+                return true;
             }
 
-            if (ksp_version_max.IsNotAny() && gameVersion > ksp_version_max)
-            {
-                return false;
-            }
-
-            // We didn't hit the min/max guards. They may not have existed.
-
-            // Note that since ksp_version is "any" if not specified, this
-            // will work fine if there's no target, or if there were min/max
-            // fields and we passed them successfully.
-
-            return ksp_version.Targets(gameVersion);
+            return moduleRange.IsSupersetOf(gameVersionRange);
         }
     }
 }
-

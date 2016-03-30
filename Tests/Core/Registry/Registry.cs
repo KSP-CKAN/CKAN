@@ -1,5 +1,6 @@
 using System.Transactions;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 
@@ -10,8 +11,8 @@ namespace Tests.Core.Registry
     {
         private static readonly CkanModule module = TestData.kOS_014_module();
         private static readonly string identifier = module.identifier;
-        private static readonly KSPVersion v0_24_2 = new KSPVersion("0.24.2");
-        private static readonly KSPVersion v0_25_0 = new KSPVersion("0.25.0");
+        private static readonly KspVersion v0_24_2 = KspVersion.Parse("0.24.2");
+        private static readonly KspVersion v0_25_0 = KspVersion.Parse("0.25.0");
 
         private CKAN.Registry registry;
 

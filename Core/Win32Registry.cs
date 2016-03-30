@@ -10,6 +10,8 @@ namespace CKAN
         string AutoStartInstance { get; set; }
         void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance);
         IEnumerable<Tuple<string, string>> GetInstances();
+        string GetKSPBuilds();
+        void SetKSPBuilds(string buildMap);
     }
 
     public class Win32Registry : IWin32Registry
@@ -47,13 +49,21 @@ namespace CKAN
             {                
                 SetInstanceKeysTo(instance.number, instance.name, instance.path);                
             }
-
-            
         }
 
         public IEnumerable<Tuple<string, string>> GetInstances()
         {
             return Enumerable.Range(0, InstanceCount).Select(GetInstance).ToList();
+        }
+
+        public string GetKSPBuilds()
+        {
+            return GetRegistryValue(@"KSPBuilds", (string)null);
+        }
+
+        public void SetKSPBuilds(string buildMap)
+        {
+            SetRegistryValue(@"KSPBuilds", buildMap);
         }
 
         private void ConstructKey()

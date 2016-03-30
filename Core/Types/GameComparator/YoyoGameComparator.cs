@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -8,7 +8,7 @@ namespace CKAN
     /// </summary>
     public class YoyoGameComparator : IGameComparator
     {
-        public bool Compatible(KSPVersion gameVersion, CkanModule module)
+        public bool Compatible(KspVersion gameVersion, CkanModule module)
         {
             return true;
         }
