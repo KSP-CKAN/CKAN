@@ -69,8 +69,8 @@ namespace CKAN {
 
         private Dictionary<Tuple<Version,Version>, int> cache = new Dictionary<Tuple<Version, Version>, int>();
         /// <summary>
-        /// Returns -1 if this is less than that
-        /// Returns +1 if this is greater than that
+        /// Returns a negative value if this is less than that
+        /// Returns a positive value if this is greater than that
         /// Returns  0 if equal.
         /// </summary>
         public int CompareTo(Version that) {
