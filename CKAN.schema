@@ -9,7 +9,7 @@
             "oneOf" : [
                 {
                     "type"        : "integer",
-                    "description" : "The integer '1' is special cased",
+                    "description" : "The integer '1' is special case",
                     "minimum"     : 1,
                     "maximum"     : 1
                 },
