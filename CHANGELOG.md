@@ -9,10 +9,13 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Added "filter by description" search box. (#1632 by: politas; reviewed: pjf)
+- [CLI] `compare` command now checks positive and negative rather than -1/+1 (#1649 by: dbent; reviewed: Daz)
 
 ### Internal
 
 - [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
+- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1597 by: plague006; reviewed: Daz)
+- [Netkan] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
 
 ## v1.16.1
 
