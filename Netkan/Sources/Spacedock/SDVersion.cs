@@ -12,7 +12,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
         // These all get filled by JSON deserialisation.
 
         [JsonConverter(typeof(JsonConvertKSPVersion))]
+        [JsonProperty("game_version")]
         public KSPVersion KSP_version;
+
         public string changelog;
 
         [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
