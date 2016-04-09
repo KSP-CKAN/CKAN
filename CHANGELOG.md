@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] In windows launch `KSP_x64.exe` by default rather than `KSP.exe`. (#1711 by plague006; reviewed: dbent)
 - [Core] Unlicense added to CKAN as an option for mods. (#1737 by plague006; reviewed: techman83)
 - [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent; reviewed: techman83)
+- [Cmdline] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent)
 
 ### Internal
 
