@@ -214,20 +214,9 @@
         "name",
         "abstract",
         "identifier",
+        "download",
         "license",
         "version"
-    ],
-    "oneOf": [
-        {
-            "required": [ "download" ]
-        },
-        {
-            "properties": {
-                "kind": {
-                    "enum": [ "metapackage" ]
-                }
-            }
-        }
     ],
     "definitions" : {
         "identifier" : {
