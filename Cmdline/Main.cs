@@ -82,8 +82,8 @@ namespace CKAN.CmdLine
 
             // Processes in Docker containers normally run as root.
             // If we are running in a Docker container, do not require --asroot.
-            // Docker creates a .dockerinit file in the root of each container.
-            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerinit"))
+            // Docker creates a .dockerenv file in the root of each container.
+            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerenv"))
             {
                 if (!options.AsRoot)
                 {
