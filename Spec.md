@@ -119,7 +119,7 @@ For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.16'. Changes since spec `1`
-are marked with **v1.2** through to **v1.14** respectively. For maximum
+are marked with **v1.2** through to **v1.16** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -152,7 +152,7 @@ with any version and the `.dll` suffix removed.
 ##### download
 
 A fully formed URL, indicating where a machine may download the
-described version of the mod.
+described version of the mod. Note: This field is not required if the `kind` is `metapackage`.
 
 ##### license
 
@@ -473,6 +473,10 @@ custom use fields, and will be ignored. For example:
 
 These fields are optional, and should only be used with good reason.
 Typical mods *should not* include these special use fields.
+
+##### kind
+
+Specifies the type of package the .ckan file delivers. This field defaults to `package`, the other option (and presently the only time the field is explicitly declared) is `metapackage`. Metapackages allow for a distributable .ckan file that has relationships to other mods while having no `download` of its own. **v1.6**
 
 ##### provides
 
