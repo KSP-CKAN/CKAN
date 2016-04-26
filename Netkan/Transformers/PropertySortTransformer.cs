@@ -55,6 +55,8 @@ namespace CKAN.NetKAN.Transformers
             { "manual", 6 }
         };
 
+        public string Name { get { return "property_sort"; } }
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

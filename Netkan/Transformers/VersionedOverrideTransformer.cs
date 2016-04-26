@@ -15,6 +15,27 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(VersionedOverrideTransformer));
 
+        private readonly HashSet<string> _before;
+        private readonly HashSet<string> _after;
+
+        public string Name { get { return "versioned_override"; } }
+
+        public VersionedOverrideTransformer(IEnumerable<string> before, IEnumerable<string> after)
+        {
+            _before = new HashSet<string>(before);
+            _after = new HashSet<string>(after);
+        }
+
+        public void AddBefore(string before)
+        {
+            _before.Add(before);
+        }
+
+        public void AddAfter(string after)
+        {
+            _after.Add(after);
+        }
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();
@@ -35,7 +56,6 @@ namespace CKAN.NetKAN.Transformers
                     // an applicable section for us.
                     foreach (var overrideStanza in overrideList)
                     {
-                        Log.InfoFormat("Processing override: {0}", overrideStanza);
                         ProcessOverrideStanza((JObject)overrideStanza, json);
                     }
 
@@ -61,60 +81,86 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         private void ProcessOverrideStanza(JObject overrideStanza, JObject metadata)
         {
-            JToken stanzaConstraints;
+            JToken jBefore;
+            JToken jAfter;
+            string before = null;
+            string after = null;
 
-            if (!overrideStanza.TryGetValue("version", out stanzaConstraints))
+            if (overrideStanza.TryGetValue("before", out jBefore))
             {
-                throw new Kraken(
-                    string.Format(
-                        "Can't find version in override stanza {0}",
-                        overrideStanza));
+                if (jBefore.Type == JTokenType.String)
+                    before = (string)jBefore;
+                else
+                    throw new Kraken("override before property must be a string");
             }
 
-            IEnumerable<string> constraints;
-
-            // First let's get our constraints into a list of strings.
-
-            if (stanzaConstraints is JValue)
+            if (overrideStanza.TryGetValue("after", out jAfter))
             {
-                constraints = new List<string> { stanzaConstraints.ToString() };
-            }
-            else if (stanzaConstraints is JArray)
-            {
-                // Pop the constraints in 'constraints'
-                constraints = ((JArray)stanzaConstraints).Values().Select(x => x.ToString());
-            }
-            else
-            {
-                throw new Kraken(
-                    string.Format("Totally unexpected x_netkan_override - {0}", stanzaConstraints));
+                if (jAfter.Type == JTokenType.String)
+                    after = (string)jAfter;
+                else
+                    throw new Kraken("override after property must be a string");
             }
 
-            // If the constraints don't apply, then do nothing.
-            if (!ConstraintsApply(constraints, new Version(metadata["version"].ToString())))
-                return;
-
-            // All the constraints pass; let's replace the metadata we have with what's
-            // in the override.
-
-            JToken overrideBlock;
-
-            if (overrideStanza.TryGetValue("override", out overrideBlock))
+            if (_before.Contains(before) || _after.Contains(after))
             {
-                foreach (var property in ((JObject)overrideBlock).Properties())
+                Log.InfoFormat("Processing override: {0}", overrideStanza);
+
+                JToken stanzaConstraints;
+
+                if (!overrideStanza.TryGetValue("version", out stanzaConstraints))
                 {
-                    metadata[property.Name] = property.Value;
+                    throw new Kraken(
+                        string.Format(
+                            "Can't find version in override stanza {0}",
+                            overrideStanza));
                 }
-            }
 
-            // And let's delete anything that needs deleting.
+                IEnumerable<string> constraints;
 
-            JToken deleteList;
-            if (overrideStanza.TryGetValue("delete", out deleteList))
-            {
-                foreach (string key in (JArray)deleteList)
+                // First let's get our constraints into a list of strings.
+
+                if (stanzaConstraints is JValue)
                 {
-                    metadata.Remove(key);
+                    constraints = new List<string> { stanzaConstraints.ToString() };
+                }
+                else if (stanzaConstraints is JArray)
+                {
+                    // Pop the constraints in 'constraints'
+                    constraints = ((JArray)stanzaConstraints).Values().Select(x => x.ToString());
+                }
+                else
+                {
+                    throw new Kraken(
+                        string.Format("Totally unexpected x_netkan_override - {0}", stanzaConstraints));
+                }
+
+                // If the constraints don't apply, then do nothing.
+                if (!ConstraintsApply(constraints, new Version(metadata["version"].ToString())))
+                    return;
+
+                // All the constraints pass; let's replace the metadata we have with what's
+                // in the override.
+
+                JToken overrideBlock;
+
+                if (overrideStanza.TryGetValue("override", out overrideBlock))
+                {
+                    foreach (var property in ((JObject)overrideBlock).Properties())
+                    {
+                        metadata[property.Name] = property.Value;
+                    }
+                }
+
+                // And let's delete anything that needs deleting.
+
+                JToken deleteList;
+                if (overrideStanza.TryGetValue("delete", out deleteList))
+                {
+                    foreach (string key in (JArray)deleteList)
+                    {
+                        metadata.Remove(key);
+                    }
                 }
             }
         }

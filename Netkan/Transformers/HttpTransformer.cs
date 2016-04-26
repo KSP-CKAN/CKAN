@@ -11,6 +11,8 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(HttpTransformer));
 
+        public string Name { get { return "http"; } }
+
         public Metadata Transform(Metadata metadata)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "http")

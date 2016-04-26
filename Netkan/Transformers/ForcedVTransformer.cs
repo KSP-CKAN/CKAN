@@ -12,6 +12,8 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ForcedVTransformer));
 
+        public string Name { get { return "forced_v"; } }
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

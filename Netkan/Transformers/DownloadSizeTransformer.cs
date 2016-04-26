@@ -15,6 +15,8 @@ namespace CKAN.NetKAN.Transformers
         private readonly IHttpService _http;
         private readonly IFileService _fileService;
 
+        public string Name { get { return "download_size"; } }
+
         public DownloadSizeTransformer(IHttpService http, IFileService fileService)
         {
             _http = http;
