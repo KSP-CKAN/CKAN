@@ -19,6 +19,8 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly ISpacedockApi _api;
 
+        public string Name { get { return "spacedock"; } }
+
         public SpacedockTransformer(ISpacedockApi api)
         {
             _api = api;

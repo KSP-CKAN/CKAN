@@ -1,6 +1,4 @@
-﻿using CKAN;
-using CKAN.NetKAN;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -123,6 +121,36 @@ namespace Tests.NetKAN
             Assert.IsFalse(new_metadata.TryGetValue("author", out token));
         }
 
+        [Test]
+        public void LaterOverridesOverrideEarlierOverrides()
+        {
+            var metadata = such_metadata;
+            metadata["x_netkan_override"] = JArray.Parse(@"[
+                {
+                    ""version"": ""1.01"",
+                    ""before"": ""$all"",
+                    ""override"": {
+                        ""name"": ""EARLY""
+                    }
+                },
+                {
+                    ""version"": ""1.01"",
+                    ""after"": ""$all"",
+                    ""override"": {
+                        ""name"": ""LATE""
+                    }
+                }
+            ]");
+
+            var earlyTransformer = new VersionedOverrideTransformer(new[] { "$all" }, new[] { "$none" });
+            var lateTransformer = new VersionedOverrideTransformer(new[] { "$none" }, new[] { "$all" });
+
+            var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata)).Json();
+            var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1));
+
+            Assert.AreEqual((string)transformedMetadata2.Json()["name"], "LATE");
+        }
+
         /// <summary>
         /// Sanity to check to make sure the original metadata hasn't changed during testing.
         /// </summary>
@@ -136,7 +164,10 @@ namespace Tests.NetKAN
         /// </summary>
         private JObject ProcessOverrides(JObject metadata)
         {
-            var transformer = new VersionedOverrideTransformer();
+            var transformer = new VersionedOverrideTransformer(
+                before: new string[] { null },
+                after: new string[] { null }
+            );
 
             return transformer.Transform(new Metadata(metadata)).Json();
         }

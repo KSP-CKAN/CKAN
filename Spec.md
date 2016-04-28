@@ -741,13 +741,39 @@ The `x_netkan_override` field is used to override field values based on the valu
   it is equivalent to specifying `=`. In order for the override to match *all* the comparisons must be true. Therefore
   a range may be specified as such: `[ ">=1.0", "<2.0" ]`. A `string` may also be specified instead of an `array` in
   which case it is treated as an array with a single element equal to the value of the string.
+- `before` (type: `string`, transformation name)<br/>
+  The name of a transformation this override to happen directly before.
+- `after` (type: `string:, transformation name)<br/>
+  The name of a transformation this override to happen directly after.
 - `override` (type: `object`)<br/>
   An object whose fields will override the fields already present if a match occurs. No merging of values occurs, the
   values of the fields are entirely replaced.
 - `delete` (type: `array` of `string`)<br/>
   An array of strings which are the names of fields to remove if a match occurs.
 
-Override objects are processed sequentially and all matching overrides will be used.
+The possible values of `before` and `after` are:
+
+- `$none`
+- `$all`
+- `avc`
+- `download_size`
+- `epoch`
+- `forced_v`
+- `generated_by`
+- `github`
+- `http`
+- `internal_ckan`
+- `jenkins`
+- `metanetkan`
+- `optimus_prime`
+- `property_sort`
+- `spacedock`
+- `strip_netkan_metadata`
+- `version_edit`
+- `versioned_override`
+
+If no `before` or `after` is specified then the override occurs at a "reasonable" point in the transformation process.
+Most overrides should **not** specify a `before` or `after` unless there is a specific need to.
 
 When any metadata changes occur which are version specific, for example a new dependency is added, overrides are the
 recomended means of specifying them. Overrides may also be used to *stage* metadata changes, for example when new

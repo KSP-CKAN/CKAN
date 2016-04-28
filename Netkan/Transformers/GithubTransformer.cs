@@ -17,6 +17,8 @@ namespace CKAN.NetKAN.Transformers
         private readonly IGithubApi _api;
         private readonly bool _matchPreleases;
 
+        public string Name { get { return "github"; } }
+
         public GithubTransformer(IGithubApi api, bool matchPreleases)
         {
             if (api == null)

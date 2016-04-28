@@ -8,6 +8,11 @@ namespace CKAN.NetKAN.Transformers
     internal interface ITransformer
     {
         /// <summary>
+        /// A unique name which identifies the transformer.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Transform the given metadata.
         /// </summary>
         /// <param name="metadata">The metadata to transform.</param>

@@ -8,6 +8,8 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(OptimusPrimeTransformer));
 
+        public string Name { get { return "optimus_prime"; } }
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

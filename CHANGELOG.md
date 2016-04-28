@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)
 - [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
 - [NetKAN] Catch ksp_version from SpaceDocks newly implemented game_version (#1655 by: dbent; reviewed: -)
+- [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
 
 ## v1.16.1
 
