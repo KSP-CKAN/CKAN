@@ -11,6 +11,8 @@ namespace CKAN
     {
         static readonly StrictGameComparator strict = new StrictGameComparator();
         static readonly KSPVersion v103 = new KSPVersion("1.0.3");
+        static readonly KSPVersion v110 = new KSPVersion("1.1.0");
+        static readonly KSPVersion v111 = new KSPVersion("1.1.1");
 
         public bool Compatible(KSPVersion gameVersion, CkanModule module)
         {
@@ -29,6 +31,10 @@ namespace CKAN
             // considered it compatible under 1.0.3 (as 1.0.4 was "just a hotfix").
             if (gameVersion.Equals("1.0.4"))
                 return strict.Compatible(v103, module);
+				
+			// 1.1.1 and 1.1.2 are hotfixes to 1.1.0
+            if (gameVersion.Equals("1.1.2") || gameVersion.Equals("1.1.1"))
+                return strict.Compatible(v110, module) || strict.Compatible(v111, module);
 
             return false;
         }
