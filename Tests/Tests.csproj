@@ -118,7 +118,7 @@
     <Compile Include="Core\Meta.cs" />
     <Compile Include="Core\ModuleInstaller.cs" />
     <Compile Include="Core\Net\Net.cs" />
-    <Compile Include="Core\Net\NetAsyncDownloader.cs" />
+    <Compile Include="Core\Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Core\Net\Repo.cs" />
     <Compile Include="Core\Registry\Registry.cs" />
     <Compile Include="Core\Registry\RegistryLive.cs" />

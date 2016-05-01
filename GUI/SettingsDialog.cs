@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -238,7 +239,10 @@ namespace CKAN
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            AutoUpdate.Instance.StartUpdateProcess(true);
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (s, a) => AutoUpdate.Instance.StartUpdateProcess(true, PleaseWait.User);
+            bw.RunWorkerAsync();
+            new PleaseWait().ShowDialog(this);
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)

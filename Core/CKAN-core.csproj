@@ -52,6 +52,7 @@
     <Compile Include="Exporters\PlainTextExporter.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Net\IDownloader.cs" />
+    <Compile Include="Net\NetAsyncDownloader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
     <Compile Include="Relationships\SanityChecker.cs" />
     <Compile Include="Net\Net.cs" />
-    <Compile Include="Net\NetAsyncDownloader.cs" />
+    <Compile Include="Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Relationships\RelationshipResolver.cs" />
     <Compile Include="Net\Repo.cs" />
     <Compile Include="Net\NetFileCache.cs" />
