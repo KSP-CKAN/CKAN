@@ -114,12 +114,6 @@
     <Compile Include="NewUpdateDialog.Designer.cs">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="PleaseWait.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PleaseWait.Designer.cs">
-      <DependentUpon>PleaseWait.cs</DependentUpon>
-    </Compile>
     <Compile Include="PluginController.cs" />
     <Compile Include="RenameInstanceDialog.cs">
       <SubType>Form</SubType>
@@ -195,9 +189,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewUpdateDialog.resx">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PleaseWait.resx">
-      <DependentUpon>PleaseWait.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
