@@ -312,7 +312,10 @@ namespace CKAN
 
         private void triggerCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors)
         {
-            onCompleted?.Invoke(file_urls, file_paths, errors);
+            if (onCompleted != null)
+            {
+                onCompleted.Invoke(file_urls, file_paths, errors);
+            }
             // Signal that we're done.
             complete_or_canceled.Set();
             User.RaiseDownloadsCompleted(file_urls, file_paths, errors);

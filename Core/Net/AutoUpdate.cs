@@ -137,7 +137,7 @@ namespace CKAN
             {
                 Verb = "runas",
                 FileName = updaterFilename,
-                Arguments = $@"{pid} ""{path}"" ""{ckanFilename}"" {(launchCKANAfterUpdate ? "launch" : "nolaunch")}",
+                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
                 UseShellExecute = false
             });
 
