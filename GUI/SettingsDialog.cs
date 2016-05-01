@@ -219,7 +219,6 @@ namespace CKAN
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-
                 if (latestVersion.IsGreaterThan(new Version(Meta.Version())) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
@@ -239,10 +238,8 @@ namespace CKAN
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s, a) => AutoUpdate.Instance.StartUpdateProcess(true, PleaseWait.User);
-            bw.RunWorkerAsync();
-            new PleaseWait().ShowDialog(this);
+            Hide();
+            Main.Instance.UpdateCKAN();
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
