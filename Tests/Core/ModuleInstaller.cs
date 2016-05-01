@@ -359,7 +359,7 @@ namespace Tests.Core
                     CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).UninstallList("Foo");
                 });
 
-                manager.CurrentInstance = null; // I weep even more.
+                tidy.DisposeOfAllManagedKSPs(manager);
             }
         }
 
@@ -434,6 +434,9 @@ namespace Tests.Core
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
+
+                ksp.DisposeOfAllManagedKSPs(manager);
+
             }
         }
 
@@ -464,6 +467,7 @@ namespace Tests.Core
                         string mod_file_path = Path.Combine(ksp.KSP.GameData(), mod_file_name);
 
                         Assert.IsTrue(File.Exists(mod_file_path));
+
                     }
                 }
             }

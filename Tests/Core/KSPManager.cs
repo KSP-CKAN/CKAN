@@ -25,6 +25,7 @@ namespace Tests.Core
         [TearDown]
         public void TearDown()
         {
+            tidy.DisposeOfAllManagedKSPs(manager);
             tidy.Dispose();
         }
 
@@ -104,6 +105,7 @@ namespace Tests.Core
                 Assert.That(manager.HasInstance(newInstance), Is.False);
                 manager.AddInstance(newInstance, tidy2.KSP);
                 Assert.That(manager.HasInstance(newInstance),Is.True);
+                tidy2.DisposeOfAllManagedKSPs(manager);
             }
         }
 
@@ -122,6 +124,7 @@ namespace Tests.Core
                 manager.LoadInstancesFromRegistry();
                 manager.ClearAutoStart();
                 Assert.That(manager.GetPreferredInstance(), Is.Null);
+                tidy2.DisposeOfAllManagedKSPs(manager);
             }
 
         }
@@ -142,8 +145,12 @@ namespace Tests.Core
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            Assert.DoesNotThrow(() => new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP, "invalid")
-                ));
+            Assert.DoesNotThrow(() =>
+            {
+                var kspManager = new KSPManager(new NullUser(),new FakeWin32Registry(tidy.KSP, "invalid"));
+                tidy.DisposeOfAllManagedKSPs(kspManager);
+                
+            });
         }
 
 

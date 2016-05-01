@@ -23,6 +23,7 @@ namespace Tests.Core
         [TearDown]
         public void RemoveCache()
         {
+            cache.Dispose();
             Directory.Delete(cache_dir, true);
         }
 
