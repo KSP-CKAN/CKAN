@@ -8,27 +8,6 @@ namespace Tests.NetKAN.Transformers
     [TestFixture]
     public sealed class HttpTransformerTests
     {
-        [Test]
-        public void AddsDownloadProperty()
-        {
-            // Arrange
-            const string url = "https://awesomemod.example/download/AwesomeMod.zip";
-
-            var sut = new HttpTransformer();
-            var json = new JObject();
-            json["spec_version"] = 1;
-            json["$kref"] = string.Format("#/ckan/http/{0}", url);
-
-            // Act
-            var result = sut.Transform(new Metadata(json));
-            var transformedJson = result.Json();
-
-            // Assert
-            Assert.That((string)transformedJson["download"], Is.EqualTo(url),
-                "HttpTransformer should add a download property equal to the $kref ID."
-            );
-        }
-
         [TestCase("#/ckan/github/foo/bar")]
         [TestCase("#/ckan/netkan/http://awesomemod.example/awesomemod.netkan")]
         [TestCase("#/ckan/spacedock/1")]
