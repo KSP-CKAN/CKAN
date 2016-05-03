@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
 - [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
 - [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
+- [NetKAN] Add download hash to Metadata (#1703 by: techman83; addresses: #1682)
 
 ## v1.16.1
 
