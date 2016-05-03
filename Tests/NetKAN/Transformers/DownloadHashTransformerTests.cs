@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Transformers;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -42,17 +43,9 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Collection Comparison
-            var sha1 = new JObject();
-            sha1.Add("type", "sha1");
-            sha1.Add("digest", downloadHashSha1);
-            
-            var sha256 = new JObject();
-            sha256.Add("type", "sha256");
-            sha256.Add("digest", downloadHashSha256);
-            
-            var download_hashJson = new JArray();
-            download_hashJson.Add(sha1);
-            download_hashJson.Add(sha256);
+            var download_hashJson = new JObject();
+            download_hashJson.SafeAdd("sha1", downloadHashSha1);
+            download_hashJson.SafeAdd("sha256", downloadHashSha256);
 
             // Assert
             CollectionAssert.AreEquivalent(transformedJson["download_hash"],download_hashJson);
