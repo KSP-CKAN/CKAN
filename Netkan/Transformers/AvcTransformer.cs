@@ -4,7 +4,9 @@ using System.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Sources.Avc;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -56,6 +58,29 @@ namespace CKAN.NetKAN.Transformers
                 if (avc != null)
                 {
                     Log.Info("Found internal AVC version file");
+
+                    if (Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
+                    {
+                        Log.InfoFormat("Found remote AVC version file at {0}", avc.Url);
+
+                        try
+                        {
+                            var remoteJson = Net.DownloadText(avc.Url);
+                            var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
+
+                            if (avc.version.CompareTo(remoteAvc.version) == 0)
+                            {
+                                // Local AVC and Remote AVC describe the same version, prefer
+                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferrentially.");
+                                avc = remoteAvc;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.InfoFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
+                            Log.Debug(e);
+                        }
+                    }
 
                     // Get the minimum and maximum KSP versions that already exist in the metadata.
                     // Use specific KSP version if min/max don't exist.
