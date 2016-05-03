@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 ### Bugfixes
+- [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
 
 ### Features
 
@@ -19,6 +20,8 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
 - [NetKAN] Catch ksp_version from SpaceDocks newly implemented game_version (#1655 by: dbent; reviewed: -)
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
+- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
+- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
 
 ## v1.16.1
 
