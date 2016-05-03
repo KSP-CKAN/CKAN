@@ -65,8 +65,8 @@
             "type"        : "integer"
         },
         "download_hash" : {
-            "description" : "The hash of the downloaded file",
-            "type"        : "string"
+            "description" : "An array of hashes of the downloaded file",
+            "type"        : "array"
         },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
