@@ -46,6 +46,7 @@ namespace CKAN.NetKAN
 
                     var moduleService = new ModuleService();
                     var fileService = new FileService();
+                    var fileHash = new FileHash();
                     var http = new CachingHttpService(FindCache(new KSPManager(new ConsoleUser(false))));
 
                     var netkan = ReadNetkan();
@@ -57,6 +58,7 @@ namespace CKAN.NetKAN
                     var transformer = new NetkanTransformer(
                         http,
                         fileService,
+                        fileHash,
                         moduleService,
                         Options.GitHubToken,
                         Options.PreRelease

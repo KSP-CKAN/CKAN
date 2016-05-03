@@ -19,6 +19,7 @@ namespace CKAN.NetKAN.Transformers
         public NetkanTransformer(
             IHttpService http,
             IFileService fileService,
+            IFileHash fileHash,
             IModuleService moduleService,
             string githubToken,
             bool prerelease
