@@ -144,7 +144,6 @@
     <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
     <Compile Include="NetKAN\Services\FileServiceTests.cs" />
-    <Compile Include="NetKAN\Services\FileHashTests.cs" />
     <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
     <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
     <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />

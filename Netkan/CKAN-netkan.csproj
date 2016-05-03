@@ -38,8 +38,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IFileService.cs" />
-    <Compile Include="Services\FileHash.cs" />
-    <Compile Include="Services\IFileHash.cs" />
     <Compile Include="Services\IModuleService.cs" />
     <Compile Include="Services\CachingHttpService.cs" />
     <Compile Include="ConsoleUser.cs">
