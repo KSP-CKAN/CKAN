@@ -70,11 +70,11 @@
             "properties" : {
                 "sha1" : {
                     "description" : "SHA1 hash of the file",
-                    "type"        : "string",
+                    "type"        : "string"
                 },
                 "sha256" : {
                     "description" : "SHA256 hash of the file",
-                    "type"        : "string",
+                    "type"        : "string"
                 }
             }
         },
