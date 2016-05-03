@@ -2,6 +2,7 @@
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using log4net;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -13,14 +14,14 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(DownloadHashTransformer));
 
         private readonly IHttpService _http;
-        private readonly IFileHash _fileHash;
+        private readonly IFileService _fileService;
 
         public string Name { get { return "download_hash"; } }
 
-        public DownloadHashTransformer(IHttpService http, IFileHash fileHash)
+        public DownloadHashTransformer(IHttpService http, IFileService fileService)
         {
             _http = http;
-            _fileHash = fileHash;
+            _fileService = fileService;
         }
 
         public Metadata Transform(Metadata metadata)
@@ -36,7 +37,20 @@ namespace CKAN.NetKAN.Transformers
 
                 if (file != null)
                 {
-                    json["download_hash"] = _fileHash.GetFileHash(file);
+                    var sha1 = new JObject();
+                    sha1.Add("type", "sha1");
+                    sha1.Add("digest", _fileService.GetFileHashSha1(file));
+                    
+                    var sha256 = new JObject();
+                    sha256.Add("type", "sha256");
+                    sha256.Add("digest", _fileService.GetFileHashSha256(file));
+                    
+                    json["download_hash"] = new JArray();
+
+                    var download_hashJson = (JArray)json["download_hash"];
+
+                    download_hashJson.Add(sha1);
+                    download_hashJson.Add(sha256);
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
