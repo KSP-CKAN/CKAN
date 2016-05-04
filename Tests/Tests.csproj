@@ -148,8 +148,7 @@
     <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
     <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />
     <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\DownloadSizeTransformerTests.cs" />
-    <Compile Include="NetKAN\Transformers\DownloadHashTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\DownloadAttributeTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\GeneratedByTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\GithubTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\HttpTransformerTests.cs" />

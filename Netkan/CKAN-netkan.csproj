@@ -60,8 +60,7 @@
     <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
-    <Compile Include="Transformers\DownloadSizeTransformer.cs" />
-    <Compile Include="Transformers\DownloadHashTransformer.cs" />
+    <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
     <Compile Include="Transformers\GeneratedByTransformer.cs" />
     <Compile Include="Transformers\GithubTransformer.cs" />
