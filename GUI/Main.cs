@@ -1004,6 +1004,13 @@ namespace CKAN
                         {
                             if (rel.name == im.identifier) keep = true;
                         }
+                    if (module.depends != null)
+                    {
+                        foreach (RelationshipDescriptor rel in module.depends)
+                        {
+                            if (rel.name == im.identifier) keep = true;
+                        }
+                    }
                     if (!keep)
                     {
                         changeset.Add(new ModChange(
