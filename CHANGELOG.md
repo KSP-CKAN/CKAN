@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 - [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
+- [GUI] Fix typo in export options. (#1718 by: dandrestor, reviewed: plague006)
 
 ### Features
 
