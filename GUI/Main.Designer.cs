@@ -142,6 +142,8 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.switchToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -218,6 +220,8 @@ namespace CKAN
             // 
             this.ckanModListsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
+            this.switchToToolStripMenuItem,
+            this.toolStripMenuItem2,
             this.exportCurrentSetToolStripMenuItem});
             this.ckanModListsToolStripMenuItem.Name = "ckanModListsToolStripMenuItem";
             this.ckanModListsToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
@@ -453,7 +457,7 @@ namespace CKAN
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
             this.splitContainer1.Size = new System.Drawing.Size(1353, 718);
-            this.splitContainer1.SplitterDistance = 987;
+            this.splitContainer1.SplitterDistance = 986;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 7;
             // 
@@ -483,7 +487,7 @@ namespace CKAN
             this.ModList.Name = "ModList";
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(987, 718);
+            this.ModList.Size = new System.Drawing.Size(986, 718);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
@@ -572,7 +576,7 @@ namespace CKAN
             this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4);
             this.ModInfoTabControl.Name = "ModInfoTabControl";
             this.ModInfoTabControl.SelectedIndex = 0;
-            this.ModInfoTabControl.Size = new System.Drawing.Size(361, 718);
+            this.ModInfoTabControl.Size = new System.Drawing.Size(362, 718);
             this.ModInfoTabControl.TabIndex = 0;
             this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoIndexChanged);
             // 
@@ -583,7 +587,7 @@ namespace CKAN
             this.MetadataTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.MetadataTabPage.Name = "MetadataTabPage";
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.MetadataTabPage.Size = new System.Drawing.Size(353, 686);
+            this.MetadataTabPage.Size = new System.Drawing.Size(354, 686);
             this.MetadataTabPage.TabIndex = 0;
             this.MetadataTabPage.Text = "Metadata";
             this.MetadataTabPage.UseVisualStyleBackColor = true;
@@ -604,7 +608,7 @@ namespace CKAN
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
-            this.splitContainer2.Size = new System.Drawing.Size(345, 678);
+            this.splitContainer2.Size = new System.Drawing.Size(346, 678);
             this.splitContainer2.SplitterDistance = 325;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
@@ -623,7 +627,7 @@ namespace CKAN
             this.MetaDataUpperLayoutPanel.RowCount = 2;
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(343, 323);
+            this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(344, 323);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
             // 
             // MetadataModuleNameLabel
@@ -634,7 +638,7 @@ namespace CKAN
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(4, 0);
             this.MetadataModuleNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(335, 64);
+            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(336, 64);
             this.MetadataModuleNameLabel.TabIndex = 0;
             this.MetadataModuleNameLabel.Text = "Mod Name";
             this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -647,7 +651,7 @@ namespace CKAN
             this.MetadataModuleAbstractLabel.Margin = new System.Windows.Forms.Padding(4);
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
             this.MetadataModuleAbstractLabel.ReadOnly = true;
-            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(335, 251);
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(336, 251);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "";
             // 
@@ -687,7 +691,7 @@ namespace CKAN
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(343, 346);
+            this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(344, 346);
             this.MetaDataLowerLayoutPanel.TabIndex = 0;
             // 
             // IdentifierLabel
@@ -710,7 +714,7 @@ namespace CKAN
             this.MetadataIdentifierLabel.Location = new System.Drawing.Point(93, 259);
             this.MetadataIdentifierLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataIdentifierLabel.Name = "MetadataIdentifierLabel";
-            this.MetadataIdentifierLabel.Size = new System.Drawing.Size(246, 25);
+            this.MetadataIdentifierLabel.Size = new System.Drawing.Size(247, 25);
             this.MetadataIdentifierLabel.TabIndex = 27;
             this.MetadataIdentifierLabel.Text = "-";
             // 
@@ -793,7 +797,7 @@ namespace CKAN
             this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(93, 0);
             this.MetadataModuleVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleVersionLabel.Name = "MetadataModuleVersionLabel";
-            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleVersionLabel.TabIndex = 2;
             this.MetadataModuleVersionLabel.Text = "0.0.0";
             // 
@@ -804,7 +808,7 @@ namespace CKAN
             this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(93, 37);
             this.MetadataModuleLicenseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleLicenseLabel.Name = "MetadataModuleLicenseLabel";
-            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
             // 
@@ -815,7 +819,7 @@ namespace CKAN
             this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(93, 74);
             this.MetadataModuleAuthorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
-            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleAuthorLabel.TabIndex = 6;
             this.MetadataModuleAuthorLabel.Text = "Nobody";
             // 
@@ -838,7 +842,7 @@ namespace CKAN
             this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(93, 185);
             this.MetadataModuleReleaseStatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleReleaseStatusLabel.Name = "MetadataModuleReleaseStatusLabel";
-            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
             this.MetadataModuleReleaseStatusLabel.Text = "Stable";
             // 
@@ -849,7 +853,7 @@ namespace CKAN
             this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(93, 111);
             this.MetadataModuleHomePageLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleHomePageLinkLabel.Name = "MetadataModuleHomePageLinkLabel";
-            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleHomePageLinkLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleHomePageLinkLabel.TabIndex = 25;
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
@@ -862,7 +866,7 @@ namespace CKAN
             this.MetadataModuleKSPCompatibilityLabel.Location = new System.Drawing.Point(93, 222);
             this.MetadataModuleKSPCompatibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleKSPCompatibilityLabel.Name = "MetadataModuleKSPCompatibilityLabel";
-            this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleKSPCompatibilityLabel.TabIndex = 14;
             this.MetadataModuleKSPCompatibilityLabel.Text = "0.0.0";
             // 
@@ -873,7 +877,7 @@ namespace CKAN
             this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(93, 148);
             this.MetadataModuleGitHubLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleGitHubLinkLabel.Name = "MetadataModuleGitHubLinkLabel";
-            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(246, 37);
+            this.MetadataModuleGitHubLinkLabel.Size = new System.Drawing.Size(247, 37);
             this.MetadataModuleGitHubLinkLabel.TabIndex = 26;
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
@@ -887,7 +891,7 @@ namespace CKAN
             this.RelationshipTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.RelationshipTabPage.Name = "RelationshipTabPage";
             this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.RelationshipTabPage.Size = new System.Drawing.Size(353, 686);
+            this.RelationshipTabPage.Size = new System.Drawing.Size(354, 686);
             this.RelationshipTabPage.TabIndex = 1;
             this.RelationshipTabPage.Text = "Relationships";
             this.RelationshipTabPage.UseVisualStyleBackColor = true;
@@ -907,7 +911,7 @@ namespace CKAN
             this.ModuleRelationshipType.Location = new System.Drawing.Point(8, 9);
             this.ModuleRelationshipType.Margin = new System.Windows.Forms.Padding(4);
             this.ModuleRelationshipType.Name = "ModuleRelationshipType";
-            this.ModuleRelationshipType.Size = new System.Drawing.Size(333, 24);
+            this.ModuleRelationshipType.Size = new System.Drawing.Size(334, 24);
             this.ModuleRelationshipType.TabIndex = 1;
             this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
             // 
@@ -920,7 +924,7 @@ namespace CKAN
             this.DependsGraphTree.Location = new System.Drawing.Point(4, 42);
             this.DependsGraphTree.Margin = new System.Windows.Forms.Padding(4);
             this.DependsGraphTree.Name = "DependsGraphTree";
-            this.DependsGraphTree.Size = new System.Drawing.Size(342, 629);
+            this.DependsGraphTree.Size = new System.Drawing.Size(343, 629);
             this.DependsGraphTree.TabIndex = 0;
             this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
             // 
@@ -933,7 +937,7 @@ namespace CKAN
             this.ContentTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.ContentTabPage.Name = "ContentTabPage";
             this.ContentTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.ContentTabPage.Size = new System.Drawing.Size(353, 686);
+            this.ContentTabPage.Size = new System.Drawing.Size(354, 686);
             this.ContentTabPage.TabIndex = 2;
             this.ContentTabPage.Text = "Contents";
             this.ContentTabPage.UseVisualStyleBackColor = true;
@@ -948,7 +952,7 @@ namespace CKAN
             this.ContentsPreviewTree.Location = new System.Drawing.Point(0, 80);
             this.ContentsPreviewTree.Margin = new System.Windows.Forms.Padding(4);
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
-            this.ContentsPreviewTree.Size = new System.Drawing.Size(346, 595);
+            this.ContentsPreviewTree.Size = new System.Drawing.Size(347, 595);
             this.ContentsPreviewTree.TabIndex = 2;
             this.ContentsPreviewTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.ContentsPreviewTree_NodeMouseDoubleClick);
             // 
@@ -1430,6 +1434,18 @@ namespace CKAN
             this.ChooseProvidedModsLabel.TabIndex = 7;
             this.ChooseProvidedModsLabel.Text = "Several mods provide the virtual module Foo, choose one of the following mods:";
             // 
+            // switchToToolStripMenuItem
+            // 
+            this.switchToToolStripMenuItem.Name = "switchToToolStripMenuItem";
+            this.switchToToolStripMenuItem.Size = new System.Drawing.Size(213, 26);
+            this.switchToToolStripMenuItem.Text = "Switch To...";
+            this.switchToToolStripMenuItem.Click += new System.EventHandler(this.switchToToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(210, 6);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1596,5 +1612,7 @@ namespace CKAN
         private ToolStripMenuItem ckanModListsToolStripMenuItem;
         private ToolStripMenuItem importToolStripMenuItem;
         private ToolStripMenuItem exportCurrentSetToolStripMenuItem;
+        private ToolStripMenuItem switchToToolStripMenuItem;
+        private ToolStripSeparator toolStripMenuItem2;
     }
 }
