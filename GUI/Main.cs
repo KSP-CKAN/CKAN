@@ -886,28 +886,10 @@ namespace CKAN
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
+            CkanModule module = GetCkanModuleFromFile();
 
-            if (open_file_dialog.ShowDialog() == DialogResult.OK)
+            if (module != null)
             {
-                var path = open_file_dialog.FileName;
-                CkanModule module;
-
-                try
-                {
-                    module = CkanModule.FromFile(path);
-                }
-                catch (Kraken kraken)
-                {
-                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    m_User.RaiseError(ex.Message);
-                    return;
-                }
-
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
 
@@ -1000,28 +982,10 @@ namespace CKAN
 
         private void switchToToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
+            CkanModule module = GetCkanModuleFromFile();
 
-            if (open_file_dialog.ShowDialog() == DialogResult.OK)
+            if (module != null)
             {
-                var path = open_file_dialog.FileName;
-                CkanModule module;
-
-                try
-                {
-                    module = CkanModule.FromFile(path);
-                }
-                catch (Kraken kraken)
-                {
-                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    m_User.RaiseError(ex.Message);
-                    return;
-                }
-
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
 
@@ -1085,6 +1049,35 @@ namespace CKAN
             FilterByNameTextBox.Text = "";
             mainModList.ModNameFilter = "";
             FocusMod(e.Node.Name, true);
+        }
+
+        private CkanModule GetCkanModuleFromFile()
+        {
+            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
+
+            if (open_file_dialog.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
+            var path = open_file_dialog.FileName;
+            CkanModule module;
+
+            try
+            {
+                module = CkanModule.FromFile(path);
+                return module;
+            }
+            catch (Kraken kraken)
+            {
+                m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                m_User.RaiseError(ex.Message);
+                return null;
+            }
         }
 
         private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
