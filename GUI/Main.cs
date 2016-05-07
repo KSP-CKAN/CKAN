@@ -882,40 +882,13 @@ namespace CKAN
             Enabled = true;
         }
 
-
-
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CkanModule module = GetCkanModuleFromFile();
-
             if (module != null)
             {
-                // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
-
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
-
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
-                var changeset = new List<ModChange>();
-                changeset.Add(new ModChange(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
-                    GUIModChangeType.Install, null));
-
-                menuStrip1.Enabled = false;
-
-                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-                install_ops.with_recommends = false;
-
-                m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset, install_ops));
-                m_Changeset = null;
-
-                UpdateChangesDialog(null, m_InstallWorker);
-                ShowWaitDialog();
+                var changeset = ComputeImportChangeset(module);
+                ApplyChangesetWithoutRecommends(changeset);
             }
         }
 
@@ -983,57 +956,10 @@ namespace CKAN
         private void switchToToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CkanModule module = GetCkanModuleFromFile();
-
             if (module != null)
             {
-                // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
-
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
-
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
-                var changeset = new List<ModChange>();
-                foreach (InstalledModule im in registry_manager.registry.InstalledModules)
-                {
-                    bool keep = false;
-                    if (module.recommends != null)
-                        foreach (RelationshipDescriptor rel in module.recommends)
-                        {
-                            if (rel.name == im.identifier) keep = true;
-                        }
-                    if (module.depends != null)
-                    {
-                        foreach (RelationshipDescriptor rel in module.depends)
-                        {
-                            if (rel.name == im.identifier) keep = true;
-                        }
-                    }
-                    if (!keep)
-                    {
-                        changeset.Add(new ModChange(
-                            new GUIMod(im.Module, registry_manager.registry, CurrentInstance.Version()),
-                            GUIModChangeType.Remove, null));
-                    }
-                }
-                changeset.Add(new ModChange(
-                    new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
-                    GUIModChangeType.Install, null));
-
-                menuStrip1.Enabled = false;
-
-                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-                install_ops.with_recommends = false;
-
-                m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset, install_ops));
-                m_Changeset = null;
-
-                UpdateChangesDialog(null, m_InstallWorker);
-                ShowWaitDialog();
+                var changeset = ComputeSwitchChangeset(module);
+                ApplyChangesetWithoutRecommends(changeset);
             }
         }
 
@@ -1085,6 +1011,70 @@ namespace CKAN
                 m_User.RaiseError(ex.Message);
                 return null;
             }
+        }
+
+        private void ApplyChangesetWithoutRecommends(List<ModChange> changeset)
+        {
+            menuStrip1.Enabled = false;
+
+            RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
+            install_ops.with_recommends = false;
+
+            m_InstallWorker.RunWorkerAsync(
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                    changeset, install_ops));
+            m_Changeset = null;
+
+            UpdateChangesDialog(null, m_InstallWorker);
+            ShowWaitDialog();
+        }
+
+        private List<ModChange> ComputeImportChangeset(CkanModule module)
+        {
+            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+            registry_manager.registry.RemoveAvailable(module);
+            registry_manager.registry.AddAvailable(module);
+
+            var changeset = new List<ModChange>();
+            changeset.Add(new ModChange(
+                new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
+                GUIModChangeType.Install, null));
+            return changeset;
+        }
+
+        private List<ModChange> ComputeSwitchChangeset(CkanModule module)
+        {
+            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+            registry_manager.registry.RemoveAvailable(module);
+            registry_manager.registry.AddAvailable(module);
+
+            var changeset = new List<ModChange>();
+            foreach (InstalledModule im in registry_manager.registry.InstalledModules)
+            {
+                bool keep = false;
+                if (module.recommends != null)
+                    foreach (RelationshipDescriptor rel in module.recommends)
+                    {
+                        if (rel.name == im.identifier) keep = true;
+                    }
+                if (module.depends != null)
+                {
+                    foreach (RelationshipDescriptor rel in module.depends)
+                    {
+                        if (rel.name == im.identifier) keep = true;
+                    }
+                }
+                if (!keep)
+                {
+                    changeset.Add(new ModChange(
+                        new GUIMod(im.Module, registry_manager.registry, CurrentInstance.Version()),
+                        GUIModChangeType.Remove, null));
+                }
+            }
+            changeset.Add(new ModChange(
+                new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
+                GUIModChangeType.Install, null));
+            return changeset;
         }
 
         private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
