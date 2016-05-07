@@ -951,8 +951,8 @@ namespace CKAN
                 new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
                 new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
                 new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
-                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
+                new ExportOption(ExportFileType.Csv, "Comma-separated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-separated values (*.tsv)", "tsv")
             };
 
             var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
