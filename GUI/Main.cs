@@ -46,7 +46,7 @@ namespace CKAN
 
         public ControlFactory controlFactory;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(Main));
+        private static readonly ILog log = LogManager.GetLogger(typeof (Main));
         public TabController m_TabController;
         public volatile KSPManager manager;
 
@@ -84,7 +84,7 @@ namespace CKAN
             {
                 var orig = change_set;
                 change_set = value;
-                if (!ReferenceEquals(orig, value)) ChangeSetUpdated();
+                if(!ReferenceEquals(orig, value)) ChangeSetUpdated();
             }
         }
 
@@ -95,7 +95,7 @@ namespace CKAN
             {
                 var orig = conflicts;
                 conflicts = value;
-                if (orig != value) ConflictsUpdated();
+                if(orig != value) ConflictsUpdated();
             }
         }
 
@@ -103,7 +103,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var module = ((GUIMod)row.Tag);
+                var module = ((GUIMod) row.Tag);
                 string value;
 
                 if (Conflicts != null && Conflicts.TryGetValue(module, out value))
@@ -214,9 +214,8 @@ namespace CKAN
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                var yield_timer = new Timer { Interval = 2 };
-                yield_timer.Tick += (sender, e) =>
-                {
+                var yield_timer = new Timer {Interval = 2};
+                yield_timer.Tick += (sender, e) => {
                     Thread.Yield();
                 };
                 yield_timer.Start();
@@ -357,7 +356,7 @@ namespace CKAN
             }
 
             m_PluginController = new PluginController(pluginsPath, true);
-
+            
             CurrentInstance.RebuildKSPSubDir();
 
             log.Info("GUI started");
@@ -416,7 +415,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod)row.Tag);
+                var mod = ((GUIMod) row.Tag);
                 if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
                 {
                     MarkModForUpdate(mod.Identifier);
@@ -434,7 +433,7 @@ namespace CKAN
 
             this.AddStatusMessage("");
 
-            ModInfoTabControl.Enabled = module != null;
+            ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
             UpdateModInfo(module);
@@ -498,8 +497,7 @@ namespace CKAN
         /// key strokes being interpreted incorrectly when slowed down:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
-        private void RunFilterUpdateTimer()
-        {
+        private void RunFilterUpdateTimer() {
             if (filter_timer == null)
             {
                 filter_timer = new Timer();
@@ -554,11 +552,11 @@ namespace CKAN
             {
                 case Keys.Home:
                     // First row
-                    cell = ModList.Rows[0].Cells[2];
+                    cell = ModList.Rows [0].Cells [2];
                     break;
                 case Keys.End:
                     // Last row
-                    cell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
+                    cell = ModList.Rows [ModList.Rows.Count - 1].Cells [2];
                     break;
             }
             if (cell != null)
@@ -588,7 +586,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier, uncheck: gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -678,7 +676,7 @@ namespace CKAN
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
-                        if (gui_mod.IsInstallChecked)
+                        if(gui_mod.IsInstallChecked)
                             last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
                     case 1:
@@ -827,7 +825,7 @@ namespace CKAN
             }
 
 
-            var module = ((GUIMod)selected_item.Tag);
+            var module = ((GUIMod) selected_item.Tag);
             return module;
         }
 
@@ -841,7 +839,7 @@ namespace CKAN
             }
 
             var binary = split[0];
-            var args = string.Join(" ", split.Skip(1));
+            var args = string.Join(" ",split.Skip(1));
 
             try
             {
@@ -888,7 +886,7 @@ namespace CKAN
 
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
+            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
 
             if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
@@ -921,7 +919,7 @@ namespace CKAN
 
                 var changeset = new List<ModChange>();
                 changeset.Add(new ModChange(
-                    new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
                     GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
@@ -939,7 +937,11 @@ namespace CKAN
             }
         }
 
-
+        /// <summary>
+        /// Exports installed mods to a .ckan file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var exportOptions = new List<ExportOption>
@@ -1017,7 +1019,7 @@ namespace CKAN
             FocusMod(e.Node.Name, true);
         }
 
-        private void FocusMod(string key, bool exactMatch, bool showAsFirst = false)
+        private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
         {
             DataGridViewRow current_row = ModList.CurrentRow;
             int currentIndex = current_row != null ? current_row.Index : 0;
@@ -1033,7 +1035,7 @@ namespace CKAN
                 }
                 else
                 {
-                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
+                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
                         mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                         mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
@@ -1088,160 +1090,6 @@ namespace CKAN
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             OpenFileBrowser(e.Node);
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
-
-            if (open_file_dialog.ShowDialog() == DialogResult.OK)
-            {
-                var path = open_file_dialog.FileName;
-                CkanModule module;
-
-                try
-                {
-                    module = CkanModule.FromFile(path);
-                }
-                catch (Kraken kraken)
-                {
-                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    m_User.RaiseError(ex.Message);
-                    return;
-                }
-
-                // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
-
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
-
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
-                var changeset = new List<ModChange>();
-                changeset.Add(new ModChange(
-                    new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
-                    GUIModChangeType.Install, null));
-
-                menuStrip1.Enabled = false;
-
-                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-                install_ops.with_recommends = false;
-
-                m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset, install_ops));
-                m_Changeset = null;
-
-                UpdateChangesDialog(null, m_InstallWorker);
-                ShowWaitDialog();
-            }
-        }
-
-        /// <summary>
-        /// Exports installed mods to a .ckan file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void exportCurrentSetToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            var exportOptions = new List<ExportOption>
-            {
-                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
-                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
-                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
-            };
-
-            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
-
-            var dlg = new SaveFileDialog
-            {
-                Filter = filter,
-                Title = Resources.ExportInstalledModsDialogTitle
-            };
-
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
-
-                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                {
-                    bool recommends = false;
-                    bool versions = true;
-
-                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                    {
-                        recommends = true;
-                        versions = false;
-                    }
-
-                    // Save, just to be certain that the installed-*.ckan metapackage is generated
-                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
-
-                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
-                }
-                else
-                {
-                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
-
-                    using (var stream = new FileStream(dlg.FileName, fileMode))
-                    {
-                        var registry = RegistryManager.Instance(CurrentInstance).registry;
-
-                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
-                    }
-                }
-            }
-        }
-
-        private void ModInfoIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CancelChangesButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ConfirmChangesButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CancelCurrentActionButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RecommendedModsCancelButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RecommendedModsContinueButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ChooseProvidedModsContinueButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 
