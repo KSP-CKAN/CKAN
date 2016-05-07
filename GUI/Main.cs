@@ -884,7 +884,7 @@ namespace CKAN
 
 
 
-        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
 
@@ -942,7 +942,7 @@ namespace CKAN
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exportCurrentSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var exportOptions = new List<ExportOption>
             {
