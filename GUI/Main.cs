@@ -882,6 +882,122 @@ namespace CKAN
             Enabled = true;
         }
 
+
+
+        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
+
+            if (open_file_dialog.ShowDialog() == DialogResult.OK)
+            {
+                var path = open_file_dialog.FileName;
+                CkanModule module;
+
+                try
+                {
+                    module = CkanModule.FromFile(path);
+                }
+                catch (Kraken kraken)
+                {
+                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    m_User.RaiseError(ex.Message);
+                    return;
+                }
+
+                // We'll need to make some registry changes to do this.
+                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+
+                // Remove this version of the module in the registry, if it exists.
+                registry_manager.registry.RemoveAvailable(module);
+
+                // Sneakily add our version in...
+                registry_manager.registry.AddAvailable(module);
+
+                var changeset = new List<ModChange>();
+                changeset.Add(new ModChange(
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    GUIModChangeType.Install, null));
+
+                menuStrip1.Enabled = false;
+
+                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
+                install_ops.with_recommends = false;
+
+                m_InstallWorker.RunWorkerAsync(
+                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                        changeset, install_ops));
+                m_Changeset = null;
+
+                UpdateChangesDialog(null, m_InstallWorker);
+                ShowWaitDialog();
+            }
+        }
+
+        /// <summary>
+        /// Exports installed mods to a .ckan file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var exportOptions = new List<ExportOption>
+            {
+                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
+                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
+                new ExportOption(ExportFileType.Csv, "Comma-separated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-separated values (*.tsv)", "tsv")
+            };
+
+            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
+
+            var dlg = new SaveFileDialog
+            {
+                Filter = filter,
+                Title = Resources.ExportInstalledModsDialogTitle
+            };
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
+
+                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
+                {
+                    bool recommends = false;
+                    bool versions = true;
+
+                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
+                    {
+                        recommends = true;
+                        versions = false;
+                    }
+
+                    // Save, just to be certain that the installed-*.ckan metapackage is generated
+                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
+
+                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
+                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
+                }
+                else
+                {
+                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+
+                    using (var stream = new FileStream(dlg.FileName, fileMode))
+                    {
+                        var registry = RegistryManager.Instance(CurrentInstance).registry;
+
+                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
+                    }
+                }
+            }
+        }
+
         private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
         {
             Instance.Manager.ClearAutoStart();
@@ -974,120 +1090,6 @@ namespace CKAN
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             OpenFileBrowser(e.Node);
-        }
-
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
-
-            if (open_file_dialog.ShowDialog() == DialogResult.OK)
-            {
-                var path = open_file_dialog.FileName;
-                CkanModule module;
-
-                try
-                {
-                    module = CkanModule.FromFile(path);
-                }
-                catch (Kraken kraken)
-                {
-                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    m_User.RaiseError(ex.Message);
-                    return;
-                }
-
-                // We'll need to make some registry changes to do this.
-                RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
-
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
-
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
-
-                var changeset = new List<ModChange>();
-                changeset.Add(new ModChange(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
-                    GUIModChangeType.Install, null));
-
-                menuStrip1.Enabled = false;
-
-                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-                install_ops.with_recommends = false;
-
-                m_InstallWorker.RunWorkerAsync(
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset, install_ops));
-                m_Changeset = null;
-
-                UpdateChangesDialog(null, m_InstallWorker);
-                ShowWaitDialog();
-            }
-        }
-
-        /// <summary>
-        /// Exports installed mods to a .ckan file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void exportCurrentSetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var exportOptions = new List<ExportOption>
-            {
-                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
-                new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Csv, "Comma-separated values (*.csv)", "csv"),
-                new ExportOption(ExportFileType.Tsv, "Tab-separated values (*.tsv)", "tsv")
-            };
-
-            var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
-
-            var dlg = new SaveFileDialog
-            {
-                Filter = filter,
-                Title = Resources.ExportInstalledModsDialogTitle
-            };
-
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                var exportOption = exportOptions[dlg.FilterIndex - 1]; // FilterIndex is 1-indexed
-
-                if (exportOption.ExportFileType == ExportFileType.Ckan || exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                {
-                    bool recommends = false;
-                    bool versions = true;
-
-                    if (exportOption.ExportFileType == ExportFileType.CkanFavourite)
-                    {
-                        recommends = true;
-                        versions = false;
-                    }
-
-                    // Save, just to be certain that the installed-*.ckan metapackage is generated
-                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
-
-                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
-                }
-                else
-                {
-                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
-
-                    using (var stream = new FileStream(dlg.FileName, fileMode))
-                    {
-                        var registry = RegistryManager.Instance(CurrentInstance).registry;
-
-                        new Exporter(exportOption.ExportFileType).Export(registry, stream);
-                    }
-                }
-            }
         }
     }
 
