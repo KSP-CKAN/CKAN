@@ -902,6 +902,7 @@ namespace CKAN
                     }
                 }
                 UpdateChangesetPrecomputed(changeset);
+                m_TabController.ShowTab("ChangesetTabPage");
             }
         }
 
@@ -988,6 +989,7 @@ namespace CKAN
                     }
                 }
                 UpdateChangesetPrecomputed(cc);
+                m_TabController.ShowTab("ChangesetTabPage");
             }
         }
 
