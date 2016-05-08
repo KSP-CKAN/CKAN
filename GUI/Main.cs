@@ -888,7 +888,6 @@ namespace CKAN
             if (module != null)
             {
                 var changeset = ComputeImportChangeset(module);
-                ApplyChangesetWithoutRecommends(changeset);
             }
         }
 
@@ -958,8 +957,9 @@ namespace CKAN
             CkanModule module = GetCkanModuleFromFile();
             if (module != null)
             {
-                var changeset = ComputeSwitchChangeset(module);
-                ApplyChangesetWithoutRecommends(changeset);
+                var cc = ComputeCleanupChangeset(module);
+                var ic = ComputeImportChangeset(module);
+                cc.UnionWith(ic);
             }
         }
 
@@ -1010,7 +1010,6 @@ namespace CKAN
             }
         }
 
-        private async void ApplyChangesetWithoutRecommends(HashSet<ModChange> changeset)
         {
             IEnumerable<ModChange> full_change_set = null;
             Dictionary<GUIMod, string> new_conflicts = null;
@@ -1056,41 +1055,6 @@ namespace CKAN
             registry_manager.registry.AddAvailable(module);
 
             var changeset = new HashSet<ModChange>();
-            changeset.Add(new ModChange(
-                new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
-                GUIModChangeType.Install, null));
-            return changeset;
-        }
-
-        private HashSet<ModChange> ComputeSwitchChangeset(CkanModule module)
-        {
-            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
-            registry_manager.registry.RemoveAvailable(module);
-            registry_manager.registry.AddAvailable(module);
-
-            var changeset = new HashSet<ModChange>();
-            foreach (InstalledModule im in registry_manager.registry.InstalledModules)
-            {
-                bool keep = false;
-                if (module.recommends != null)
-                    foreach (RelationshipDescriptor rel in module.recommends)
-                    {
-                        if (rel.name == im.identifier) keep = true;
-                    }
-                if (module.depends != null)
-                {
-                    foreach (RelationshipDescriptor rel in module.depends)
-                    {
-                        if (rel.name == im.identifier) keep = true;
-                    }
-                }
-                if (!keep)
-                {
-                    changeset.Add(new ModChange(
-                        new GUIMod(im.Module, registry_manager.registry, CurrentInstance.Version()),
-                        GUIModChangeType.Remove, null));
-                }
-            }
             if (module.recommends != null)
             {
                 foreach (var rel in module.recommends)
@@ -1153,6 +1117,38 @@ namespace CKAN
                             log.WarnFormat("Required module {0} not found in registry.", rel.name);
                         }
                     }
+                }
+            }
+            return changeset;
+        }
+
+        private HashSet<ModChange> ComputeCleanupChangeset(CkanModule module)
+        {
+            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
+            registry_manager.registry.RemoveAvailable(module);
+            registry_manager.registry.AddAvailable(module);
+
+            var changeset = new HashSet<ModChange>();
+            foreach (InstalledModule im in registry_manager.registry.InstalledModules)
+            {
+                bool keep = false;
+                if (module.recommends != null)
+                    foreach (RelationshipDescriptor rel in module.recommends)
+                    {
+                        if (rel.name == im.identifier) keep = true;
+                    }
+                if (module.depends != null)
+                {
+                    foreach (RelationshipDescriptor rel in module.depends)
+                    {
+                        if (rel.name == im.identifier) keep = true;
+                    }
+                }
+                if (!keep)
+                {
+                    changeset.Add(new ModChange(
+                        new GUIMod(im.Module, registry_manager.registry, CurrentInstance.Version()),
+                        GUIModChangeType.Remove, null));
                 }
             }
             return changeset;
