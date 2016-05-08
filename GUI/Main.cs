@@ -888,6 +888,19 @@ namespace CKAN
             if (module != null)
             {
                 var changeset = ComputeImportChangeset(module);
+                if (!changeset.Any())
+                {
+                    MessageBox.Show("You are already using the mods listed in the mod list.", "CKAN Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (ChangeSet != null && ChangeSet.Any())
+                {
+                    DialogResult dialogResult = MessageBox.Show("Your current changeset is not empty. If you proceed, your changes will be lost.", "CKAN Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (dialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
                 UpdateChangesetPrecomputed(changeset);
             }
         }
@@ -961,6 +974,19 @@ namespace CKAN
                 var cc = ComputeCleanupChangeset(module);
                 var ic = ComputeImportChangeset(module);
                 cc.UnionWith(ic);
+                if (!cc.Any())
+                {
+                    MessageBox.Show("You are already using the specified mod list.", "CKAN Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (ChangeSet != null && ChangeSet.Any())
+                {
+                    DialogResult dialogResult = MessageBox.Show("Your current changeset is not empty. If you proceed, your changes will be lost.", "CKAN Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (dialogResult == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
                 UpdateChangesetPrecomputed(cc);
             }
         }
