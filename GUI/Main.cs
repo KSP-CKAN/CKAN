@@ -987,18 +987,15 @@ namespace CKAN
         private CkanModule GetCkanModuleFromFile()
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
-
             if (open_file_dialog.ShowDialog() != DialogResult.OK)
             {
                 return null;
             }
 
             var path = open_file_dialog.FileName;
-            CkanModule module;
-
             try
             {
-                module = CkanModule.FromFile(path);
+                CkanModule module = CkanModule.FromFile(path);
                 return module;
             }
             catch (Kraken kraken)
