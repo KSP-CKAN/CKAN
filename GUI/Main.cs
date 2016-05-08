@@ -1010,42 +1010,65 @@ namespace CKAN
             }
         }
 
-        private void ApplyChangesetWithoutRecommends(List<ModChange> changeset)
+        private async void ApplyChangesetWithoutRecommends(HashSet<ModChange> changeset)
         {
-            menuStrip1.Enabled = false;
+            IEnumerable<ModChange> full_change_set = null;
+            Dictionary<GUIMod, string> new_conflicts = null;
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
 
-            RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-            install_ops.with_recommends = false;
-
-            m_InstallWorker.RunWorkerAsync(
-                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    changeset, install_ops));
-            m_Changeset = null;
-
-            UpdateChangesDialog(null, m_InstallWorker);
-            ShowWaitDialog();
+            bool too_many_provides_thrown = false;
+            var user_change_set = changeset;
+            try
+            {
+                var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                full_change_set =
+                    await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
+                    CurrentInstance.Version());
+            }
+            catch (InconsistentKraken)
+            {
+                //Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                user_change_set = changeset;
+                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+                full_change_set = null;
+            }
+            catch (TooManyModsProvideKraken)
+            {
+                //Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
+                //We can just rerun it as the ModInfoTabControl has been removed.
+                too_many_provides_thrown = true;
+            }
+            if (too_many_provides_thrown)
+            {
+                await UpdateChangeSetAndConflicts(registry);
+                new_conflicts = Conflicts;
+                full_change_set = ChangeSet;
+            }
+            last_mod_to_have_install_toggled.Clear();
+            Conflicts = new_conflicts;
+            ChangeSet = full_change_set;
         }
 
-        private List<ModChange> ComputeImportChangeset(CkanModule module)
+        private HashSet<ModChange> ComputeImportChangeset(CkanModule module)
         {
             RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
             registry_manager.registry.RemoveAvailable(module);
             registry_manager.registry.AddAvailable(module);
 
-            var changeset = new List<ModChange>();
+            var changeset = new HashSet<ModChange>();
             changeset.Add(new ModChange(
                 new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
                 GUIModChangeType.Install, null));
             return changeset;
         }
 
-        private List<ModChange> ComputeSwitchChangeset(CkanModule module)
+        private HashSet<ModChange> ComputeSwitchChangeset(CkanModule module)
         {
             RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
             registry_manager.registry.RemoveAvailable(module);
             registry_manager.registry.AddAvailable(module);
 
-            var changeset = new List<ModChange>();
+            var changeset = new HashSet<ModChange>();
             foreach (InstalledModule im in registry_manager.registry.InstalledModules)
             {
                 bool keep = false;
@@ -1068,9 +1091,70 @@ namespace CKAN
                         GUIModChangeType.Remove, null));
                 }
             }
-            changeset.Add(new ModChange(
-                new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
-                GUIModChangeType.Install, null));
+            if (module.recommends != null)
+            {
+                foreach (var rel in module.recommends)
+                {
+                    bool install = true;
+                    foreach (var im in registry_manager.registry.InstalledModules)
+                    {
+                        if (rel.name == im.identifier) install = false;
+                    }
+                    if (install)
+                    { 
+                        try
+                        {
+                            var ckan_module = registry_manager.registry.LatestAvailable(rel.name, CurrentInstance.Version(), rel);
+                            if (ckan_module != null)
+                            {
+                                changeset.Add(new ModChange(
+                                    new GUIMod(ckan_module, registry_manager.registry, CurrentInstance.Version()),
+                                    GUIModChangeType.Install, null));
+                            }
+                            else
+                            {
+                                log.WarnFormat("No available version found for recommended module {0}.", rel.name);
+                            }
+                        }
+                        catch (ModuleNotFoundKraken k)
+                        {
+                            log.WarnFormat("Recommended module {0} not found in registry.", rel.name);
+                        }
+                    }
+                }
+            }
+            if (module.depends != null)
+            {
+                foreach (var rel in module.depends)
+                {
+                    bool install = true;
+                    foreach (var im in registry_manager.registry.InstalledModules)
+                    {
+                        if (rel.name == im.identifier) install = false;
+                    }
+                    if (install)
+                    {
+                        try
+                        {
+                            var ckan_module = registry_manager.registry.LatestAvailable(rel.name, CurrentInstance.Version(), rel);
+                            if (ckan_module != null)
+                            {
+                                changeset.Add(new ModChange(
+                                    new GUIMod(ckan_module, registry_manager.registry, CurrentInstance.Version()),
+                                    GUIModChangeType.Install, null));
+                            }
+                            else
+                            {
+                                log.WarnFormat("No available version found for required module {0}.", rel.name);
+                            }
+                        }
+                        catch (ModuleNotFoundKraken k)
+                        {
+                            log.WarnFormat("Required module {0} not found in registry.", rel.name);
+                        }
+                    }
+                }
+            }
             return changeset;
         }
 
