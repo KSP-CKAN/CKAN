@@ -64,6 +64,24 @@
             "description" : "The size of the download in bytes",
             "type"        : "integer"
         },
+        "download_hash" : {
+            "description" : "A object of hashes of the downloaded file",
+            "type"        : "object",
+            "properties" : {
+                "sha1" : {
+                    "description" : "SHA1 hash of the file",
+                    "type"        : "string"
+                },
+                "sha256" : {
+                    "description" : "SHA256 hash of the file",
+                    "type"        : "string"
+                }
+            }
+        },
+        "download_content_type" : {
+            "description" : "The content type of the download",
+            "type"        : "string"
+        },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
             "$ref"        : "#/definitions/licenses"
