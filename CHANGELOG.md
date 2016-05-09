@@ -23,7 +23,8 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
 - [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
 - [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
-- [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; addresses: #1682)
+- [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
+- [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
 
 ## v1.16.1
 
