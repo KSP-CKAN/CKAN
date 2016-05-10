@@ -63,8 +63,12 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                json.SafeAdd("abstract", ghRepo.Description);
-                resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
+                if (!string.IsNullOrWhiteSpace(ghRepo.Description))
+                    json.SafeAdd("abstract", ghRepo.Description);
+
+                if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
+                    resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
+
                 resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
 
                 if (ghRelease != null)
