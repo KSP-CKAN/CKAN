@@ -52,6 +52,7 @@
     <Compile Include="Sources\Github\GithubApi.cs" />
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
+    <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
     <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
     <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
