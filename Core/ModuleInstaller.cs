@@ -501,7 +501,7 @@ namespace CKAN
                     string outputName = entry.Name;
 
                     // Update our file info with the install location
-                    file_info.destination = TransformOutputName(stanza.file, outputName, installDir);
+                    file_info.destination = TransformOutputName(stanza.file, outputName, installDir, stanza.@as);
                 }
 
                 files.Add(file_info);
@@ -527,7 +527,7 @@ namespace CKAN
         /// <param name="file">The file directive of the stanza.</param>
         /// <param name="outputName">The name of the file to transform.</param>
         /// <param name="installDir">The installation dir where the file should end up with.</param>
-        internal static string TransformOutputName(string file, string outputName, string installDir)
+        internal static string TransformOutputName(string file, string outputName, string installDir, string @as)
         {
             string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
 
@@ -539,6 +539,13 @@ namespace CKAN
             )
             {
                 leadingPathToRemove = file;
+
+                // It's unclear what the behavior should be in this special case if `as` is specified, therefore
+                // disallow it.
+                if (!string.IsNullOrWhiteSpace(@as))
+                {
+                    throw new BadMetadataKraken(null, "Cannot specify `as` if `file` is GameData or Ships.");
+                }
             }
 
             // If there's a leading path to remove, then we have some extra work that
@@ -556,6 +563,23 @@ namespace CKAN
                 }
                 // Strip off leading path name
                 outputName = Regex.Replace(outputName, leadingRegEx, "");
+            }
+
+            // If an `as` is specified, replace the first component in the file path with the value of `as`
+            // This works for both when `find` specifies a directory and when it specifies a file.
+            if (!string.IsNullOrWhiteSpace(@as))
+            {
+                if (!@as.Contains("/") && !@as.Contains("\\"))
+                {
+                    var components = outputName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    components[0] = @as;
+
+                    outputName = string.Join("/", components);
+                }
+                else
+                {
+                    throw new BadMetadataKraken(null, "`as` may not include path seperators.");
+                }
             }
 
             // Return our snipped, normalised, and ready to go output filename!

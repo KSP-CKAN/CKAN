@@ -286,6 +286,8 @@ path and abort the install if any attempts to traverse up directories are found
 
 In addition, any number of optional directives *may* be provided:
 
+- `as` : (**v1.18**) The name to give the matching directory or file when installed. Allows renaming directories or
+  files.
 - `filter` : A string, or list of strings, of file parts that should not
   be installed. These are treated as literal things which must match a
   file name or directory. Examples of filters may be `Thumbs.db`,
@@ -294,8 +296,8 @@ In addition, any number of optional directives *may* be provided:
   case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
   expression, it is not installed.
-- `find_matches_files` : If set to `true` then both `find` and
-  `find_regexp` will match files in addition to directories (**v1.16**).
+- `find_matches_files` : (**v1.16**) If set to `true` then both `find` and
+  `find_regexp` will match files in addition to directories.
 
 If no install sections are provided, a CKAN client *must* find the
 top-most directory in the archive that matches the module identifier,
