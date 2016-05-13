@@ -13,7 +13,7 @@ namespace CKAN
     /// <summary>
     /// Download lots of files at once!
     /// </summary>
-    public class NetAsyncDownloader : IDownloader
+    public class NetAsyncDownloader
     {
 
         public IUser User { get; set; }
@@ -46,7 +46,6 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
 
         private List<NetAsyncDownloaderDownloadPart> downloads;
-        private List<CkanModule> modules;
         private int completed_downloads;
 
         //Used for inter-thread communication.
@@ -55,13 +54,12 @@ namespace CKAN
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
-        // Can be set by ourself in the DownloadModules method.
-        private delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
-        private NetAsyncCompleted onCompleted;
+        public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
+        public NetAsyncCompleted onCompleted;
 
         // When using the curlsharp downloader, this contains all the threads
         // that are working for us.
-        private List<Thread> curl_threads = new List<Thread> ();
+        private List<Thread> curl_threads = new List<Thread>();
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader.
@@ -70,7 +68,6 @@ namespace CKAN
         {
             User = user;
             downloads = new List<NetAsyncDownloaderDownloadPart>();
-            modules = new List<CkanModule>();
             complete_or_canceled = new ManualResetEvent(false);
         }
 
@@ -112,8 +109,8 @@ namespace CKAN
                 // Schedule for us to get back progress reports.
                 downloads[i].agent.DownloadProgressChanged +=
                     (sender, args) =>
-                    FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                        args.TotalBytesToReceive);
+                        FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
+                            args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
                 downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
@@ -240,40 +237,11 @@ namespace CKAN
                 );
             }
         }
-
-        /// <summary>
-        /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
-        /// </summary>
-        public void DownloadModules(
-            NetFileCache cache,
-            IEnumerable<CkanModule> modules
-            )
+        
+        public void DownloadAndWait(ICollection<KeyValuePair<Uri, long>> urls)
         {
-            var unique_downloads = new Dictionary<Uri, CkanModule>();
-
-            // Walk through all our modules, but only keep the first of each
-            // one that has a unique download path.
-            foreach (CkanModule module in modules.Where(module => !unique_downloads.ContainsKey(module.download)))
-            {
-                unique_downloads[module.download] = module;
-            }
-            this.modules.AddRange(unique_downloads.Values);
-
-            // Schedule us to process our modules on completion.
-            onCompleted =
-                (_uris, paths, errors) =>
-                    ModuleDownloadsComplete(cache, _uris, paths, errors);
-
-            // retrieve the expected download size for each mod
-            List<KeyValuePair<Uri, long>> downloads_with_size = new List<KeyValuePair<Uri, long>>();
-
-            foreach(var item in unique_downloads)
-            {
-                downloads_with_size.Add(new KeyValuePair<Uri, long>(item.Key, item.Value.download_size));
-            }
-
             // Start the download!
-            Download(downloads_with_size);
+            Download(urls);
 
             log.Debug("Waiting for downloads to finish...");
             complete_or_canceled.WaitOne();
@@ -308,8 +276,6 @@ namespace CKAN
                 throw new CancelledActionKraken("Download cancelled by user");
             }
 
-
-
             // Check to see if we've had any errors. If so, then release the kraken!
             var exceptions = downloads
                 .Select(x => x.error)
@@ -334,86 +300,25 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Stores all of our files in the cache once done.
-        /// Called by NetAsyncDownloader on completion.
-        /// Called with all nulls on download cancellation.
-        /// </summary>
-        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames,
-            Exception[] errors)
-        {
-            if (urls != null)
-            {
-                // spawn up to 3 dialogs
-                int errorDialogsLeft = 3;
-
-                for (int i = 0; i < errors.Length; i++)
-                {
-                    if (errors[i] != null)
-                    {
-                        if (errorDialogsLeft > 0)
-                        {
-                            User.RaiseError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
-                            errorDialogsLeft--;
-                        }
-                    }
-                    else
-                    {
-                        // Even if some of our downloads failed, we want to cache the
-                        // ones which succeeded.
-
-                        // This doesn't work :(
-                        // for some reason the tmp files get deleted before we get here and we get a nasty exception
-                        // not only that but then we try _to install_ the rest of the mods and then CKAN crashes
-                        // and the user's registry gets corrupted forever
-                        // commenting out until this is resolved
-                        // ~ nlight
-
-                        try
-                        {
-                            cache.Store(urls[i], filenames[i], modules[i].StandardName());
-                        }
-                        catch (FileNotFoundException e)
-                        {
-                            log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
-                        }
-                    }
-                }
-            }
-
-            if (filenames != null)
-            {
-                // Finally, remove all our temp files.
-                // We probably *could* have used Store's integrated move function above, but if we managed
-                // to somehow get two URLs the same in our download set, that could cause right troubles!
-
-                foreach (string tmpfile in filenames)
-                {
-                    log.DebugFormat("Cleaning up {0}", tmpfile);
-                    File.Delete(tmpfile);
-                }
-            }
-
-            // Signal that we're done.
-            complete_or_canceled.Set();
-            User.RaiseDownloadsCompleted(urls, filenames, errors);
-        }
-
-        /// <summary>
         /// <see cref="IDownloader.CancelDownload()"/>
         /// This will also call onCompleted with all null arguments.
         /// </summary>
         public void CancelDownload()
         {
             log.Info("Cancelling download");
-
             download_canceled = true;
+            triggerCompleted(null, null, null);
+        }
 
-            complete_or_canceled.Set();
-
+        private void triggerCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors)
+        {
             if (onCompleted != null)
             {
-                onCompleted(null, null, null);
+                onCompleted.Invoke(file_urls, file_paths, errors);
             }
+            // Signal that we're done.
+            complete_or_canceled.Set();
+            User.RaiseDownloadsCompleted(file_urls, file_paths, errors);
         }
 
         /// <summary>
@@ -464,10 +369,11 @@ namespace CKAN
 
             if (!download_canceled)
             {
+                // Math.Ceiling was added to avoid showing 0 MiB left when finishing
                 User.RaiseProgress(
-                    String.Format("{0} kbps - downloading - {1} MiB left",
+                    String.Format("{0} kbps - downloading - {1:f0} MiB left",
                         totalBytesPerSecond/1024,
-                        (totalBytesLeft)/1024/1024),
+                        Math.Ceiling((double)totalBytesLeft/1024/1024)),
                     totalPercentage);
             }
         }
@@ -511,7 +417,7 @@ namespace CKAN
                 }
 
                 log.Debug("Signalling completion via callback");
-                onCompleted(fileUrls, filePaths, errors);
+                triggerCompleted(fileUrls, filePaths, errors);
             }
         }
     }

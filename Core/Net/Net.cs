@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -106,6 +108,52 @@ namespace CKAN
             }
 
             return filename;
+        }
+
+        public class DownloadTarget
+        {
+            public Uri uri { get; private set; }
+            public string filename { get; private set; }
+            public long size { get; private set; }
+
+            public DownloadTarget(Uri uri, string filename = null, long size = 0)
+            {
+                if (filename == null)
+                {
+                    filename = FileTransaction.GetTempFileName();
+                }
+
+                this.uri = uri;
+                this.filename = filename;
+                this.size = size;
+            }
+        }
+
+        public static string DownloadWithProgress(string url, string filename = null, IUser user = null)
+        {
+            return DownloadWithProgress(new Uri(url), filename, user);
+        }
+
+        public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
+        {
+            var targets = new[] {new DownloadTarget(url, filename)};
+            DownloadWithProgress(targets, user);
+            return targets.First().filename;
+        }
+
+        public static void DownloadWithProgress(ICollection<DownloadTarget> downloadTargets, IUser user = null)
+        {
+            new NetAsyncDownloader(user ?? new NullUser())
+            {
+                onCompleted = (urls, filenames, errors) =>
+                {
+                    if (filenames == null || urls == null) return;
+                    for (var i = 0; i < Math.Min(urls.Length, filenames.Length); i++)
+                    {
+                        File.Move(filenames[i], downloadTargets.First(p => p.uri == urls[i]).filename);
+                    }
+                }
+            }.DownloadAndWait(downloadTargets.ToDictionary(p => p.uri, p => p.size));
         }
 
         public static string DownloadText(Uri url)

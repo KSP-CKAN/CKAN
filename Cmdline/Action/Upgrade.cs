@@ -109,12 +109,12 @@ namespace CKAN.CmdLine
 
                     }
 
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User));
                 }
                 else
                 {
                     // TODO: These instances all need to go.
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
                 }
             }
             catch (ModuleNotFoundKraken kraken)
