@@ -166,7 +166,7 @@ namespace CKAN
         public static RegistryManager Instance(KSP ksp)
         {
             string directory = ksp.CkanDir();
-            if (!registryCache.ContainsKey(directory))
+            if (!singleton.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
                 registryCache[directory] = new RegistryManager(directory, ksp);
