@@ -418,7 +418,7 @@ namespace CKAN
                     
                 tx.Complete();
             }
-            RegistryManager.Save();
+            RegistryManager.Save(enforce_consistency: false);
         }
 
         #endregion

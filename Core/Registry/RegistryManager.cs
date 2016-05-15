@@ -39,13 +39,18 @@ namespace CKAN
             // We don't cause an inconsistency error to stop the registry from being loaded,
             // because then the user can't do anything to correct it. However we're
             // sure as hell going to complain if we spot one!
-            try
+            var sanityErrors = registry.GetSanityErrors();
+
+            if (sanityErrors.Any())
             {
-                registry.CheckSanity();
-            }
-            catch (InconsistentKraken kraken)
-            {
-                log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
+                log.Info("Loaded registry with inconsistencies:\n\n");
+
+                foreach (var sanityError in sanityErrors)
+                {
+                    log.InfoFormat("- {0}", sanityError);
+                }
+
+                log.Info("\n");
             }
         }
 

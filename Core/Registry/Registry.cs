@@ -887,6 +887,12 @@ namespace CKAN
             SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
         }
 
+        public List<string> GetSanityErrors()
+        {
+            var installed = from pair in installed_modules select pair.Value.Module;
+            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys).ToList();
+        }
+
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.

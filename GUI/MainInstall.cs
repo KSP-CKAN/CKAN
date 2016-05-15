@@ -216,7 +216,7 @@ namespace CKAN
             catch (ModuleNotFoundKraken ex)
             {
                 GUI.user.RaiseMessage(
-                    "Module {0} required, but not listed in index, or not available for your version of KSP",
+                    "Module {0} required but it is not listed in the index, or not available for your version of KSP.",
                     ex.module);
                 return false;
             }

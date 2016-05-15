@@ -100,24 +100,9 @@ namespace CKAN
             }
 
             // Save our changes.
-            registry_manager.Save();
+            registry_manager.Save(enforce_consistency: false);
 
-            // Return how many we got!
-            return registry_manager.registry.Available(ksp.Version()).Count;
-        }
-
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, Uri repo = null)
-        {
-            // Use our default repo, unless we've been told otherwise.
-            if (repo == null)
-            {
-                repo = default_ckan_repo;
-            }
-
-            UpdateRegistry(repo, registry_manager.registry, ksp, user, clear);
-
-            // Save our changes!
-            registry_manager.Save();
+            ShowUserInconsistencies(registry_manager.registry, user);
 
             // Return how many we got!
             return registry_manager.registry.Available(ksp.Version()).Count;
@@ -153,7 +138,6 @@ namespace CKAN
             }
 
             // Clear our list of known modules.
-            var old_available = registry.available_modules;
             if (clear)
             {
                 registry.ClearAvailable();
@@ -176,120 +160,256 @@ namespace CKAN
 
             List<CkanModule> metadataChanges = new List<CkanModule>();
 
-            foreach (var identifierModulePair in old_available)
+            foreach (var installedModule in registry.InstalledModules)
             {
-                var identifier = identifierModulePair.Key;
+                var identifier = installedModule.identifier;
 
-                if (registry.IsInstalled(identifier))
+                var installedVersion = registry.InstalledVersion(identifier);
+                if (!(registry.available_modules.ContainsKey(identifier)))
                 {
-                    var installedVersion = registry.InstalledVersion(identifier);
-                    if (!(registry.available_modules.ContainsKey(identifier)))
-                    {
-                        log.InfoFormat("UpdateRegistry, module {0}, version {1} not in repository ({2})", identifier, installedVersion, repo);
-                        continue;
-                    }
+                    log.InfoFormat("UpdateRegistry, module {0}, version {1} not in repository ({2})", identifier, installedVersion, repo);
+                    continue;
+                }
 
-                    if (!registry.available_modules[identifier].module_version.ContainsKey(installedVersion))
-                    {
-                        continue;
-                    }
+                if (!registry.available_modules[identifier].module_version.ContainsKey(installedVersion))
+                {
+                    continue;
+                }
 
-                    // if the mod is installed and the metadata is different we have to reinstall it
-                    var metadata = registry.available_modules[identifier].module_version[installedVersion];
+                // if the mod is installed and the metadata is different we have to reinstall it
+                var metadata = registry.available_modules[identifier].module_version[installedVersion];
 
-                    if (!old_available.ContainsKey(identifier) ||
-                        !old_available[identifier].module_version.ContainsKey(installedVersion))
-                    {
-                        continue;
-                    }
+                var oldMetadata = registry.InstalledModule(identifier).Module;
 
-                    var oldMetadata = old_available[identifier].module_version[installedVersion];
-
-                    bool same = true;
-                    if ((metadata.install == null) != (oldMetadata.install == null) ||
-                        (metadata.install != null && metadata.install.Length != oldMetadata.install.Length))
+                bool same = true;
+                if ((metadata.install == null) != (oldMetadata.install == null) ||
+                    (metadata.install != null && metadata.install.Length != oldMetadata.install.Length))
+                {
+                    same = false;
+                }
+                else
+                {
+                    if(metadata.install != null)
+                    for (int i = 0; i < metadata.install.Length; i++)
                     {
-                        same = false;
-                    }
-                    else
-                    {
-                        if(metadata.install != null)
-                        for (int i = 0; i < metadata.install.Length; i++)
+                        if (metadata.install[i].file != oldMetadata.install[i].file)
                         {
-                            if (metadata.install[i].file != oldMetadata.install[i].file)
-                            {
-                                same = false;
-                                break;
-                            }
+                            same = false;
+                            break;
+                        }
 
-                            if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
-                            {
-                                same = false;
-                                break;
-                            }
+                        if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
+                        {
+                            same = false;
+                            break;
+                        }
 
-                            if (metadata.install[i].@as != oldMetadata.install[i].@as)
-                            {
-                                same = false;
-                                break;
-                            }
+                        if (metadata.install[i].@as != oldMetadata.install[i].@as)
+                        {
+                            same = false;
+                            break;
+                        }
 
-                            if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
-                            {
-                                same = false;
-                                break;
-                            }
+                        if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
+                        {
+                            same = false;
+                            break;
+                        }
 
-                            if(metadata.install[i].filter != null)
-                            if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
-                            {
-                                same = false;
-                                break;
-                            }
 
-                            if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
-                            {
-                                same = false;
-                                break;
-                            }
+                        if(metadata.install[i].filter != null)
+                        if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
+                        {
+                            same = false;
+                            break;
+                        }
 
-                            if(metadata.install[i].filter_regexp != null)
-                            if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
-                            {
-                                same = false;
-                                break;
-                            }
+                        if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
+                        {
+                            same = false;
+                            break;
+                        }
+
+                        if(metadata.install[i].filter_regexp != null)
+                        if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
+                        {
+                            same = false;
+                            break;
                         }
                     }
+                }
 
-                    if (!same)
-                    {
-                        metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
-                    }
+                if (!RelationshipsAreEquivalent(metadata.conflicts, oldMetadata.conflicts))
+                    same = false;
+
+                if (!RelationshipsAreEquivalent(metadata.depends, oldMetadata.depends))
+                    same = false;
+
+                if (!RelationshipsAreEquivalent(metadata.recommends, oldMetadata.recommends))
+                    same = false;
+
+                if (metadata.provides != oldMetadata.provides)
+                {
+                    if (metadata.provides == null || oldMetadata.provides == null)
+                        same = false;
+                    else if (!metadata.provides.OrderBy(i => i).SequenceEqual(oldMetadata.provides.OrderBy(i => i)))
+                        same = false;
+                }
+
+                if (!same)
+                {
+                    metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
                 }
             }
 
             if (metadataChanges.Any())
             {
-                string mods = "";
-                for (int i = 0; i < metadataChanges.Count; i++)
+                var sb = new StringBuilder();
+
+                for (var i = 0; i < metadataChanges.Count; i++)
                 {
-                    mods += metadataChanges[i].identifier + " "
-                        + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count-1) ? ", " : "");
+                    var module = metadataChanges[i];
+
+                    sb.AppendLine(string.Format("- {0} {1}", module.identifier, module.version));
                 }
 
-                if(user.RaiseYesNoDialog(String.Format(
-                    @"The following mods have had their metadata changed since last update - {0}.
-It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?", mods)))
+                if(user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
+
+{0}
+You should reinstall them in order to preserve consistency with the repository.
+
+Do you wish to reinstall now?", sb)))
                 {
                     ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
-                    installer.Upgrade(metadataChanges, new NetAsyncDownloader(new NullUser()));
+                    // New upstream metadata may break the consistency of already installed modules
+                    // e.g. if user installs modules A and B and then later up A is made to conflict with B
+                    // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing
+                    // consistency. However, we will show the user any inconsistencies later on.
+
+                    // Use the identifiers so we use the overload that actually resolves relationships
+                    // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
+                    foreach (var changedIdentifier in metadataChanges.Select(i => i.identifier))
+                    {
+                        try
+                        {
+                            installer.Upgrade(
+                                new[] { changedIdentifier },
+                                new NetAsyncDownloader(new NullUser()),
+                                enforceConsistency: false
+                            );
+                        }
+                        // Thrown when a dependency couldn't be satisfied
+                        catch(ModuleNotFoundKraken)
+                        {
+                            log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                            user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        }
+                        // Thrown when a conflicts relationship is violated
+                        catch (InconsistentKraken)
+                        {
+                            log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                            user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        }
+                    }
                 }
             }
 
             // Remove our downloaded meta-data now we've processed it.
             // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
             file_transaction.Delete(repo_file);
+        }
+
+        private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor> a, List<RelationshipDescriptor> b)
+        {
+            if (a == b)
+                return true; // If they're the same exact object they must be equivalent
+
+            if (a == null || b == null)
+                return false; // If they're not the same exact object and either is nul then must not be equivalent
+
+            if (a.Count != b.Count)
+                return false; // If their counts different they must not be equivalent
+
+            // Sort the lists so we can compare each relationship
+            var aSorted = a.OrderBy(i => i.name).ToList();
+            var bSorted = b.OrderBy(i => i.name).ToList();
+
+            for(var i = 0; i < a.Count; i++)
+            {
+                var aRel = aSorted[i];
+                var bRel = bSorted[i];
+
+                if (aRel.name != bRel.name)
+                {
+                    return false; // If corresponding relationships are the same they must not be equivalent
+                }
+
+                // Calculate min/max for each based on explicit min/max or the bare version
+                var aMinVersion = aRel.min_version ?? aRel.version;
+                var aMaxVersion = aRel.max_version ?? aRel.version;
+                var bMinVersion = bRel.min_version ?? bRel.version;
+                var bMaxVersion = bRel.max_version ?? bRel.version;
+
+                if (!ReferenceEquals(aMinVersion, bMinVersion))
+                {
+                    // If they're not the same object they may not be equivalent
+
+                    if (aMinVersion != null && bMinVersion != null)
+                    {
+                        if (aMinVersion.CompareTo(bMinVersion) != 0)
+                        {
+                            // If they're not equal then the ymust not be equivalent
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // If one or the other is null they must not be equivalent
+                        return false;
+                    }
+                }
+
+                if (!ReferenceEquals(aMaxVersion, bMaxVersion))
+                {
+                    // If they're not the same object they may not be equivalent
+
+                    if (aMaxVersion != null && bMaxVersion != null)
+                    {
+                        if (aMaxVersion.CompareTo(bMaxVersion) != 0)
+                        {
+                            // If they're not equal then the ymust not be equivalent
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // If one or the other is null they must not be equivalent
+                        return false;
+                    }
+                }
+            }
+
+            // If we couldn't find any differences they must be equivalent
+            return true;
+        }
+
+        private static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, Uri repo = null)
+        {
+            // Use our default repo, unless we've been told otherwise.
+            if (repo == null)
+            {
+                repo = default_ckan_repo;
+            }
+
+            UpdateRegistry(repo, registry_manager.registry, ksp, user, clear);
+
+            // Save our changes!
+            registry_manager.Save(enforce_consistency: false);
+
+            ShowUserInconsistencies(registry_manager.registry, user);
+
+            // Return how many we got!
+            return registry_manager.registry.Available(ksp.Version()).Count;
         }
 
         /// <summary>
@@ -400,6 +520,26 @@ It is advisable that you reinstall them in order to preserve consistency with th
                 }
 
                 zipfile.Close();
+            }
+        }
+
+
+        private static void ShowUserInconsistencies(Registry registry, IUser user)
+        {
+            // However, if there are any sanity errors let's show them to the user so at least they're aware
+            var sanityErrors = registry.GetSanityErrors();
+            if (sanityErrors.Any())
+            {
+                var sanityMessage = new StringBuilder();
+
+                sanityMessage.AppendLine("The following inconsistencies were found:");
+                foreach (var sanityError in sanityErrors)
+                {
+                    sanityMessage.Append("- ");
+                    sanityMessage.AppendLine(sanityError);
+                }
+
+                user.RaiseMessage(sanityMessage.ToString());
             }
         }
     }
