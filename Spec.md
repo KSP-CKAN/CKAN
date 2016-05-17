@@ -309,7 +309,7 @@ A typical install directive only has `file` and `install_to` sections:
         {
             "file"       : "GameData/ExampleMod",
             "install_to" : "GameData"
-        },
+        }
     ]
 
 ##### comment
