@@ -228,6 +228,12 @@ namespace CKAN
                                 break;
                             }
 
+                            if (metadata.install[i].@as != oldMetadata.install[i].@as)
+                            {
+                                same = false;
+                                break;
+                            }
+
                             if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
                             {
                                 same = false;
