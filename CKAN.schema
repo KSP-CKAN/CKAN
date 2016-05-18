@@ -347,10 +347,11 @@
                 "Perl",
                 "Python-2.0",
                 "QPL-1.0",
+                "Unlicense",
                 "W3C",
+                "WTFPL",
                 "Zlib",
                 "Zope",
-                "WTFPL",
                 "open-source", "restricted", "unrestricted", "unknown"
             ]
         },
