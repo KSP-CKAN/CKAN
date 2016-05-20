@@ -4,7 +4,9 @@ using System.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Sources.Avc;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -18,6 +20,8 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
+
+        public string Name { get { return "avc"; } }
 
         public AvcTransformer(IHttpService http, IModuleService moduleService)
         {
@@ -54,6 +58,29 @@ namespace CKAN.NetKAN.Transformers
                 if (avc != null)
                 {
                     Log.Info("Found internal AVC version file");
+
+                    if (Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
+                    {
+                        Log.InfoFormat("Found remote AVC version file at {0}", avc.Url);
+
+                        try
+                        {
+                            var remoteJson = Net.DownloadText(avc.Url);
+                            var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
+
+                            if (avc.version.CompareTo(remoteAvc.version) == 0)
+                            {
+                                // Local AVC and Remote AVC describe the same version, prefer
+                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferrentially.");
+                                avc = remoteAvc;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.InfoFormat("An error occured fetching the remote AVC version file, ignoring: {0}", e.Message);
+                            Log.Debug(e);
+                        }
+                    }
 
                     // Get the minimum and maximum KSP versions that already exist in the metadata.
                     // Use specific KSP version if min/max don't exist.
@@ -127,7 +154,7 @@ namespace CKAN.NetKAN.Transformers
                     {
                         // In practice, the version specified in .version files tends to be unreliable, with authors
                         // forgetting to update it when new versions are released. Therefore if we have a version
-                        // specified from another source such as KerbalStuff or a GitHub tag, don't overwrite it.
+                        // specified from another source such as SpaceDock or a GitHub tag, don't overwrite it.
                         json.SafeAdd("version", avc.version.ToString());
                     }
 

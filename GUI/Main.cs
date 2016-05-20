@@ -477,6 +477,19 @@ namespace CKAN
             }
         }
 
+        private void FilterByDescriptionTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (Platform.IsMac)
+            {
+                // Delay updating to improve typing performance on OS X
+                RunFilterUpdateTimer();
+            }
+            else
+            {
+                mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
+            }
+        }
+
         /// <summary>
         /// Start or restart a timer to update the filter after an interval
         /// since the last keypress. On Mac OS X, this prevents the search
@@ -509,6 +522,7 @@ namespace CKAN
         {
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
+            mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
             filter_timer.Stop();
         }
 
@@ -932,13 +946,13 @@ namespace CKAN
         {
             var exportOptions = new List<ExportOption>
             {
-                new ExportOption(ExportFileType.Ckan, "CKAN metadata (*.ckan)", "ckan"),
-                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourite list (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.CkanFavourite, "CKAN favourites list (*.ckan)", "ckan"),
+                new ExportOption(ExportFileType.Ckan, "CKAN modpack (enforces exact mod versions) (*.ckan)", "ckan"),
                 new ExportOption(ExportFileType.PlainText, "Plain text (*.txt)", "txt"),
                 new ExportOption(ExportFileType.Markdown, "Markdown (*.md)", "md"),
                 new ExportOption(ExportFileType.BbCode, "BBCode (*.txt)", "txt"),
-                new ExportOption(ExportFileType.Csv, "Comma-seperated values (*.csv)", "csv"),
-                new ExportOption(ExportFileType.Tsv, "Tab-seperated values (*.tsv)", "tsv")
+                new ExportOption(ExportFileType.Csv, "Comma-separated values (*.csv)", "csv"),
+                new ExportOption(ExportFileType.Tsv, "Tab-separated values (*.tsv)", "tsv")
             };
 
             var filter = string.Join("|", exportOptions.Select(i => i.ToString()).ToArray());
@@ -993,7 +1007,7 @@ namespace CKAN
                 Instance.CurrentInstanceUpdated();
         }
 
-        private void openKspDirectoyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
         }

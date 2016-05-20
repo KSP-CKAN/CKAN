@@ -151,12 +151,76 @@ namespace CKAN
             }
         }
 
+        public static Uri ResolveRedirect(Uri uri)
+        {
+            const int maximumRequest = 5;
+
+            var currentUri = uri;
+            for (var i = 0; i < maximumRequest; i++)
+            {
+                var client = new RedirectWebClient();
+
+                // The empty using is so that we dispose of the stream and don't block
+                // We don't ACTUALLY attempt to download the file, but it appears that if the client sees a
+                // Content Length in the response it thinks there will be a response body and blocks.
+                using (client.OpenRead(currentUri)) { }
+
+                var location = client.ResponseHeaders["Location"];
+
+                if (location == null)
+                {
+                    return currentUri;
+                }
+                else
+                {
+                    Log.DebugFormat("{0} redirected to {1}", currentUri, location);
+
+                    if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
+                    {
+                        currentUri = new Uri(location);
+                    }
+                    else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
+                    {
+                        currentUri = new Uri(currentUri, location);
+                        Log.DebugFormat("Relative URL {0} is absolute URL {1}", location, currentUri);
+                    }
+                    else
+                    {
+                        throw new Kraken("Invalid URL in Location header: " + location);
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private static WebClient MakeDefaultHttpClient()
         {
             var client = new WebClient();
             client.Headers.Add("User-Agent", UserAgentString);
 
             return client;
+        }
+
+        // HACK: The ancient WebClient doesn't support setting the request type to HEAD and WebRequest doesn't support
+        // setting the User-Agent header.
+        // Maybe one day we'll be able to use HttpClient (https://msdn.microsoft.com/en-us/library/system.net.http.httpclient%28v=vs.118%29.aspx)
+        private sealed class RedirectWebClient : WebClient
+        {
+            public RedirectWebClient()
+            {
+                Headers.Add("User-Agent", UserAgentString);
+            }
+
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                var webRequest = (HttpWebRequest)base.GetWebRequest(address);
+                webRequest.AllowAutoRedirect = false;
+
+                webRequest.Method = "HEAD";
+
+                return webRequest;
+            }
         }
     }
 }

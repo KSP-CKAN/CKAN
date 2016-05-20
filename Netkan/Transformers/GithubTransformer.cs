@@ -17,6 +17,8 @@ namespace CKAN.NetKAN.Transformers
         private readonly IGithubApi _api;
         private readonly bool _matchPreleases;
 
+        public string Name { get { return "github"; } }
+
         public GithubTransformer(IGithubApi api, bool matchPreleases)
         {
             if (api == null)
@@ -52,6 +54,20 @@ namespace CKAN.NetKAN.Transformers
 
                 // Find the release on github and download.
                 var ghRelease = _api.GetLatestRelease(ghRef);
+
+                // Make sure resources exist.
+                if (json["resources"] == null)
+                    json["resources"] = new JObject();
+
+                var resourcesJson = (JObject)json["resources"];
+
+                if (!string.IsNullOrWhiteSpace(ghRepo.Description))
+                    json.SafeAdd("abstract", ghRepo.Description);
+
+                if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
+                    resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
+
+                resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
 
                 if (ghRelease != null)
                 {

@@ -31,6 +31,9 @@ namespace CKAN
         [JsonProperty("install_to", Required = Required.Always)]
         public string install_to;
 
+        [JsonProperty("as")]
+        public string @as;
+
         [JsonProperty("filter")]
         [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
         public List<string> filter;

@@ -81,9 +81,6 @@ namespace CKAN
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri bugtracker;
 
-        [JsonConverter(typeof (JsonOldResourceUrlConverter))]
-        public Uri kerbalstuff;
-
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri spacedock;
     }
@@ -290,7 +287,7 @@ namespace CKAN
                 throw new BadMetadataKraken(null, "JSON deserialization error", ex);
             }
 
-            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            // NOTE: Many of these tests may be better in our Deserialisation handler.
             if (!IsSpecSupported())
             {
                 throw new UnsupportedKraken(
