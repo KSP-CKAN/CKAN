@@ -1,5 +1,4 @@
 ﻿using System;
-using CKAN.NetKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
@@ -22,6 +21,12 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
 
             var mApi = new Mock<IGithubApi>();
+            mApi.Setup(i => i.GetRepo(It.IsAny<GithubRef>()))
+                .Returns(new GithubRepo
+                {
+                    HtmlUrl = "https://github.com/ExampleAccount/ExampleProject"
+                });
+
             mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>()))
                 .Returns(new GithubRelease(
                     "ExampleProject",

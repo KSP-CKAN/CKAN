@@ -31,15 +31,18 @@ namespace CKAN.NetKAN.Transformers
             { "ksp_version", 13 },
             { "ksp_version_min", 14 },
             { "ksp_version_max", 15 },
-            { "provides", 16 },
-            { "depends", 17 },
-            { "recommends", 18 },
-            { "suggests", 19 },
-            { "supports", 20 },
-            { "conflicts", 21 },
-            { "install", 22 },
-            { "download", 23 },
-            { "download_size", 24 },
+            { "ksp_version_strict", 16 },
+            { "provides", 17 },
+            { "depends", 18 },
+            { "recommends", 19 },
+            { "suggests", 20 },
+            { "supports", 21 },
+            { "conflicts", 22 },
+            { "install", 23 },
+            { "download", 24 },
+            { "download_size", 25 },
+            { "download_hash", 26 },
+            { "download_content_type", 27 },
 
             { "x_generated_by", int.MaxValue }
         };
@@ -47,14 +50,15 @@ namespace CKAN.NetKAN.Transformers
         private static readonly Dictionary<string, int> ResourcePropertySortOrder = new Dictionary<string, int>
         {
             { "homepage", 0 },
-            { "kerbalstuff", 1 },
-            { "spacedock", 2 },
-            { "repository", 3 },
-            { "bugtracker", 4 },
-            { "ci", 5 },
-            { "license", 6 },
-            { "manual", 7 }
+            { "spacedock", 1 },
+            { "repository", 2 },
+            { "bugtracker", 3 },
+            { "ci", 4 },
+            { "license", 5 },
+            { "manual", 6 }
         };
+
+        public string Name { get { return "property_sort"; } }
 
         public Metadata Transform(Metadata metadata)
         {

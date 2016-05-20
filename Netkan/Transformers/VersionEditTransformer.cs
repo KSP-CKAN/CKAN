@@ -13,6 +13,8 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(VersionEditTransformer));
 
+        public string Name { get { return "version_edit"; } }
+
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

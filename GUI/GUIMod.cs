@@ -130,7 +130,7 @@ namespace CKAN
 
             Abstract = mod.@abstract;
             
-            // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
+            // If we have homepage provided use that, otherwise use the spacedock page or the github repo so that users have somewhere to get more info than just the abstract.
 
             Homepage = "N/A";
             if (mod.resources != null)
@@ -138,10 +138,6 @@ namespace CKAN
                 if (mod.resources.homepage != null)
                 {
                     Homepage = mod.resources.homepage.ToString();
-                }
-                else if (mod.resources.kerbalstuff != null)
-                {
-                    Homepage = mod.resources.kerbalstuff.ToString();
                 }
                 else if (mod.resources.spacedock != null)
                 {

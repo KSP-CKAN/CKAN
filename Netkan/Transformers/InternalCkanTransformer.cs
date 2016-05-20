@@ -16,6 +16,8 @@ namespace CKAN.NetKAN.Transformers
         private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
 
+        public string Name { get { return "internal_ckan"; } }
+
         public InternalCkanTransformer(IHttpService http, IModuleService moduleService)
         {
             _http = http;

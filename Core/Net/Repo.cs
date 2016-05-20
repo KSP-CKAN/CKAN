@@ -64,9 +64,18 @@ namespace CKAN
                 // If we haven't handled our exception, then it really was exceptional.
                 if (handled == false)
                 {
-                    // In case whatever's calling us is lazy in error reporting, we'll
-                    // report that we've got an issue here.
-                    log.ErrorFormat("Error processing {0} : {1}", filename, exception.Message);
+                    if (exception == null)
+                    {
+                        // Had exception, walked exception tree, reached leaf, got stuck.
+                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename); 
+                    }
+                    else
+                    {
+                        // In case whatever's calling us is lazy in error reporting, we'll
+                        // report that we've got an issue here.
+                        log.ErrorFormat("Error processing {0} : {1}", filename, exception.Message);
+                    }
+
                     throw;
                 }
             }
@@ -87,6 +96,7 @@ namespace CKAN
             {
                 log.InfoFormat("About to update {0}", repository.Value.name);
                 UpdateRegistry(repository.Value.uri, registry_manager.registry, ksp, user, false);
+                log.InfoFormat("Updated {0}", repository.Value.name);
             }
 
             // Save our changes.
@@ -213,6 +223,12 @@ namespace CKAN
                             }
 
                             if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
+                            {
+                                same = false;
+                                break;
+                            }
+
+                            if (metadata.install[i].@as != oldMetadata.install[i].@as)
                             {
                                 same = false;
                                 break;
