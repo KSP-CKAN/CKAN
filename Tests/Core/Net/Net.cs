@@ -47,11 +47,11 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        public void SpaceDockSSL()
+        public void KerbalStuffSSL()
         {
             Assert.DoesNotThrow(delegate
             {
-                string file = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");
+                string file = CKAN.Net.Download("https://kerbalstuff.com/mod/646/Contract%20Reward%20Modifier/download/1.2");
                 if (!File.Exists(file))
                 {
                     throw new Exception("File not downloaded");

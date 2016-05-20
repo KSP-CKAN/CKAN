@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Net;
 using log4net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 // We could use OctoKit for this, but since we're only pinging the
@@ -20,11 +19,6 @@ namespace CKAN.NetKAN.Sources.Github
         public GithubApi(string oauthToken = null)
         {
             _oauthToken = oauthToken;
-        }
-
-        public GithubRepo GetRepo(GithubRef reference)
-        {
-            return JsonConvert.DeserializeObject<GithubRepo>(Call(string.Format("repos/{0}", reference.Repository)));
         }
 
         public GithubRelease GetLatestRelease(GithubRef reference)

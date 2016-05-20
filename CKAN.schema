@@ -9,7 +9,7 @@
             "oneOf" : [
                 {
                     "type"        : "integer",
-                    "description" : "The integer '1' is special case",
+                    "description" : "The integer '1' is special cased",
                     "minimum"     : 1,
                     "maximum"     : 1
                 },
@@ -63,24 +63,6 @@
         "download_size" : {
             "description" : "The size of the download in bytes",
             "type"        : "integer"
-        },
-        "download_hash" : {
-            "description" : "A object of hashes of the downloaded file",
-            "type"        : "object",
-            "properties" : {
-                "sha1" : {
-                    "description" : "SHA1 hash of the file",
-                    "type"        : "string"
-                },
-                "sha256" : {
-                    "description" : "SHA256 hash of the file",
-                    "type"        : "string"
-                }
-            }
-        },
-        "download_content_type" : {
-            "description" : "The content type of the download",
-            "type"        : "string"
         },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
@@ -165,6 +147,11 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
+                "kerbalstuff" : {
+                    "description" : "Project on KerbalStuff",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
                 "spacedock" : {
                     "description" : "Project on SpaceDock",
                     "type"        : "string",
@@ -203,11 +190,6 @@
                         "description" : "Where file should be installed to",
                         "$ref"        : "#/definitions/install_to"
                     },
-                    "as": {
-                        "description" : "The name to give the matching directory or file when installed",
-                        "type"        : "string",
-                        "pattern"     : "^[^/\\]+$"
-                    },
                     "filter" : {
                         "description" : "List of files and directories that should be filtered from the install",
                         "$ref"        : "#/definitions/one_or_more_strings"
@@ -218,17 +200,7 @@
                     }
                 },
                 "required" : [ "install_to" ],
-                "oneOf": [
-                    {
-                        "required": [ "file" ]
-                    },
-                    {
-                        "required": [ "find" ]
-                    },
-                    {
-                        "required": [ "find_regexp" ]
-                    }
-                ]
+                "comment" : "One must have either file or find, is there a JSON Schema friendly way of specifying that?"
             }
         }
     },
@@ -237,24 +209,9 @@
         "name",
         "abstract",
         "identifier",
+        "download",
         "license",
         "version"
-    ],
-    "oneOf": [
-        {
-            "required": [ "download" ]
-        },
-        {
-            "properties": {
-                "kind": {
-                    "enum": [ "metapackage" ]
-                }
-            },
-            "not": {
-                "required": [ "download" ]
-            },
-            "required": [ "kind" ]
-        }
     ],
     "definitions" : {
         "identifier" : {
@@ -347,11 +304,10 @@
                 "Perl",
                 "Python-2.0",
                 "QPL-1.0",
-                "Unlicense",
                 "W3C",
-                "WTFPL",
                 "Zlib",
                 "Zope",
+                "WTFPL",
                 "open-source", "restricted", "unrestricted", "unknown"
             ]
         },

@@ -332,21 +332,9 @@ namespace CKAN
             }
         }
 
-        public string ModDescriptionFilter
-        {
-            get { return _modDescriptionFilter; }
-            set
-            {
-                var old = _modDescriptionFilter;
-                _modDescriptionFilter = value;
-                if (!old.Equals(value)) ModFiltersUpdated(this);
-            }
-        }
-
         private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
-        private string _modDescriptionFilter = String.Empty;
         private IUser user;
 
         private readonly HandleTooManyProvides too_many_provides;
@@ -454,9 +442,8 @@ namespace CKAN
         {
             var nameMatchesFilter = IsNameInNameFilter(mod);
             var authorMatchesFilter = IsAuthorInauthorFilter(mod);
-            var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
             var modMatchesType = IsModInFilter(mod);
-            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
+            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter;
             return isVisible;
         }
 
@@ -566,11 +553,6 @@ namespace CKAN
         private bool IsAuthorInauthorFilter(GUIMod mod)
         {
             return mod.Authors.IndexOf(ModAuthorFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
-        }
-
-        private bool IsAbstractInDescriptionFilter(GUIMod mod)
-        {
-            return mod.Abstract.IndexOf(ModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
 

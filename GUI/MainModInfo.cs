@@ -32,7 +32,7 @@ namespace CKAN
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
             Util.Invoke(MetadataIdentifierLabel, () => MetadataIdentifierLabel.Text = module.identifier);
 
-            // If we have homepage provided use that, otherwise use the spacedock page or the github repo so that users have somewhere to get more info than just the abstract.
+            // If we have homepage provided use that, otherwise use the kerbalstuff page or the github repo so that users have somewhere to get more info than just the abstract.
             Util.Invoke(MetadataModuleHomePageLinkLabel,
                        () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
 

@@ -14,8 +14,6 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(StripNetkanMetadataTransformer));
 
-        public string Name { get { return "strip_netkan_metadata"; } }
-
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

@@ -194,6 +194,8 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("- bugtracker: {0}", Uri.EscapeUriString(module.resources.bugtracker.ToString()));
                 if (module.resources.homepage != null)
                     user.RaiseMessage("- homepage: {0}", Uri.EscapeUriString(module.resources.homepage.ToString()));
+                if (module.resources.kerbalstuff != null)
+                    user.RaiseMessage("- kerbalstuff: {0}", Uri.EscapeUriString(module.resources.kerbalstuff.ToString()));
                 if (module.resources.spacedock != null)
                     user.RaiseMessage("- spacedock: {0}", Uri.EscapeUriString(module.resources.spacedock.ToString()));
                 if (module.resources.repository != null)

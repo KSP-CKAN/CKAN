@@ -2,23 +2,23 @@ using System;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace CKAN.NetKAN.Sources.Spacedock
+namespace CKAN.NetKAN.Sources.Kerbalstuff
 {
-    internal class SpacedockMod
+    internal class KerbalstuffMod
     {
-        [JsonProperty] public int id; // SDID
+        [JsonProperty] public int id; // KSID
         [JsonProperty] public string license;
         [JsonProperty] public string name;
         [JsonProperty] public string short_description;
         [JsonProperty] public string author;
-        [JsonProperty] public SDVersion[] versions;
+        [JsonProperty] public KSVersion[] versions;
         [JsonProperty] public string website;
         [JsonProperty] public string source_code;
         [JsonProperty] public int default_version_id;
-        [JsonConverter(typeof(SDVersion.JsonConvertFromRelativeSdUri))]
+        [JsonConverter(typeof(KSVersion.JsonConvertFromRelativeKsUri))]
         public Uri background;
 
-        public SDVersion Latest()
+        public KSVersion Latest()
         {
             // The version we want is specified by `default_version_id`, it's not just
             // the latest. See GH #214. Thanks to @Starstrider42 for spotting this.
@@ -32,14 +32,14 @@ namespace CKAN.NetKAN.Sources.Spacedock
             // There should only ever be one.
             return latest.First();
         }
-
+        
         /// <summary>
-        /// Returns the path to the mod's home on SpaceDock
+        /// Returns the path to the mod's home on KerbalStuff
         /// </summary>
         /// <returns>The home.</returns>
         public Uri GetPageUrl()
         {
-            return SpacedockApi.ExpandPath(string.Format("/mod/{0}/{1}", id, name));
+            return KerbalstuffApi.ExpandPath(string.Format("/mod/{0}/{1}", id, name));
         }
 
         public override string ToString()
@@ -47,9 +47,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
             return string.Format("{0}", name);
         }
 
-        public static SpacedockMod FromJson(string json)
+        public static KerbalstuffMod FromJson(string json)
         {
-            return JsonConvert.DeserializeObject<SpacedockMod>(json);
+            return JsonConvert.DeserializeObject<KerbalstuffMod>(json);
         }
     }
 }

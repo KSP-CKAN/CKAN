@@ -465,7 +465,7 @@ namespace CKAN
             if (!download_canceled)
             {
                 User.RaiseProgress(
-                    String.Format("{0} KB/s - downloading - {1} MB left",
+                    String.Format("{0} kbps - downloading - {1} MiB left",
                         totalBytesPerSecond/1024,
                         (totalBytesLeft)/1024/1024),
                     totalPercentage);

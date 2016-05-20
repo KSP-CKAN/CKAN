@@ -153,7 +153,7 @@
             this.CKANCacheLabel.Name = "CKANCacheLabel";
             this.CKANCacheLabel.Size = new System.Drawing.Size(273, 13);
             this.CKANCacheLabel.TabIndex = 0;
-            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
+            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MiB";
             // 
             // groupBox2
             // 

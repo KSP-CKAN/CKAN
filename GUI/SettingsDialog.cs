@@ -77,7 +77,7 @@ namespace CKAN
 
             CKANCacheLabel.Text = String.Format
             (
-                "There are currently {0} files in the cache for a total of {1} MB",
+                "There are currently {0} files in the cache for a total of {1} MiB",
                 m_cacheFileCount,
                 m_cacheSize / 1024 / 1024
             );
@@ -88,7 +88,7 @@ namespace CKAN
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
             (
-                "Do you really want to delete {0} files from the cache for a total of {1} MB?",
+                "Do you really want to delete {0} files from the cache for a total of {1} MiB?",
                 m_cacheFileCount, 
                 m_cacheSize / 1024 / 1024
             );

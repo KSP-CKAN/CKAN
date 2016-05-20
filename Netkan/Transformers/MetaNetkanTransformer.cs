@@ -18,8 +18,6 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService _http;
 
-        public string Name { get { return "metanetkan"; } }
-
         public MetaNetkanTransformer(IHttpService http)
         {
             _http = http;

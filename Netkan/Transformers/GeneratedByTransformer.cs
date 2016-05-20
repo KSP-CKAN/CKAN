@@ -12,8 +12,6 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(GeneratedByTransformer));
 
-        public string Name { get { return "generated_by"; } }
-
         public Metadata Transform(Metadata metadata)
         {
             var json = metadata.Json();

@@ -45,11 +45,6 @@ def main():
                 print e
                 error = 1
                 continue
-            except ValueError as e:
-                print 'Failed! This error will be cryptic, but often a JSON or property error'
-                print e
-                error = 1
-                continue
             print 'Success!'
 
     sys.exit(error)

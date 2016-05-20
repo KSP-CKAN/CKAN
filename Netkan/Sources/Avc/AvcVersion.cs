@@ -6,9 +6,6 @@ namespace CKAN.NetKAN.Sources.Avc
     {
         // Right now we only support KSP versioning info.
 
-        [JsonProperty("URL")]
-        public string Url;
-
         [JsonConverter(typeof(JsonAvcToVersion))]
         public Version version;
 

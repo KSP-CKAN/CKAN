@@ -34,7 +34,6 @@ namespace CKAN
             "Perl",
             "Python-2.0",
             "QPL-1.0",
-            "Unlicense",
             "W3C",
             "WTFPL",
             "Zlib",

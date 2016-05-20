@@ -3,11 +3,11 @@ using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 
-namespace CKAN.NetKAN.Sources.Spacedock
+namespace CKAN.NetKAN.Sources.Kerbalstuff
 {
-    public class SDVersion
+    public class KSVersion
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (SDVersion));
+        private static readonly ILog log = LogManager.GetLogger(typeof (KSVersion));
 
         // These all get filled by JSON deserialisation.
 
@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         public KSPVersion KSP_version;
         public string changelog;
 
-        [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
+        [JsonConverter(typeof(JsonConvertFromRelativeKsUri))]
         public Uri download_path;
 
         public Version friendly_version;
@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         }
 
         /// <summary>
-        /// SpaceDock always trims trailing zeros from a three-part version
+        /// KerbalStuff always trims trailing zeros from a three-part version
         /// (eg: 1.0.0 -> 1.0). This means we could potentially think some mods
         /// will work with more versions than they actually will. This converter
         /// puts the .0 back on when appropriate. GH #1156.
@@ -78,16 +78,16 @@ namespace CKAN.NetKAN.Sources.Spacedock
         }
 
         /// <summary>
-        /// A simple helper class to prepend SpaceDock URLs.
+        /// A simple helper class to prepend KerbalStuff URLs.
         /// </summary>
-        internal class JsonConvertFromRelativeSdUri : JsonConverter
+        internal class JsonConvertFromRelativeKsUri : JsonConverter
         {
             public override object ReadJson(
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
             )
             {
                 if(reader.Value!=null)
-                    return SpacedockApi.ExpandPath(reader.Value.ToString());
+                    return KerbalstuffApi.ExpandPath(reader.Value.ToString());
                 return null;
 
             }
