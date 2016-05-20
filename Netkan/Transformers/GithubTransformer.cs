@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
@@ -16,8 +16,6 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IGithubApi _api;
         private readonly bool _matchPreleases;
-
-        public string Name { get { return "github"; } }
 
         public GithubTransformer(IGithubApi api, bool matchPreleases)
         {
@@ -52,24 +50,8 @@ namespace CKAN.NetKAN.Transformers
 
                 var ghRef = new GithubRef(metadata.Kref, useSourceAchive, _matchPreleases);
 
-                // Get the GitHub repository
-                var ghRepo = _api.GetRepo(ghRef);
-                // Get the GitHub release
+                // Find the release on github and download.
                 var ghRelease = _api.GetLatestRelease(ghRef);
-
-                // Make sure resources exist.
-                if (json["resources"] == null)
-                    json["resources"] = new JObject();
-
-                var resourcesJson = (JObject)json["resources"];
-
-                if (!string.IsNullOrWhiteSpace(ghRepo.Description))
-                    json.SafeAdd("abstract", ghRepo.Description);
-
-                if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
-                    resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
-
-                resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
 
                 if (ghRelease != null)
                 {
@@ -103,6 +85,15 @@ namespace CKAN.NetKAN.Transformers
                         json.SafeAdd("name", repoName);
                     }
 
+                    // Make sure resources exist.
+                    if (json["resources"] == null)
+                    {
+                        json["resources"] = new JObject();
+                    }
+
+                    var resourcesJson = (JObject)json["resources"];
+                    resourcesJson.SafeAdd("repository", GithubPage(ghRef.Repository));
+
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                     return new Metadata(json);
@@ -114,6 +105,11 @@ namespace CKAN.NetKAN.Transformers
             }
 
             return metadata;
+        }
+
+        private static string GithubPage(string repo)
+        {
+            return new Uri(new Uri("https://github.com/"), repo).ToString();
         }
     }
 }
