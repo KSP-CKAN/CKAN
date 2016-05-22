@@ -58,7 +58,7 @@ ask questions.
 
  [1]:https://github.com/KSP-CKAN/CKAN/commits/master
  [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
- [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#testing-your-file
+ [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#verifying-metadata-files
  [4]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN
  [5]:https://github.com/KSP-CKAN/CKAN/wiki
  [6]:https://github.com/KSP-CKAN/CKAN/issues
