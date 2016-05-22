@@ -1,0 +1,6 @@
+version: "2"
+services:
+    ckan:
+        build: .
+        volumes:
+            - ~/.steam/steam/steamapps/common/Kerbal Space Program/:/kspdir
