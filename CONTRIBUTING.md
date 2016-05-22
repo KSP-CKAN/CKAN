@@ -14,7 +14,7 @@ Please report bugs and open issues generously. Don't be afraid that your idea is
 Contributions to the CKAN (via pull request or otherwise) *must* be
 licensed under the [MIT license](LICENSE.md).
 
-### Submission of CKAN metadata files (.ckan files)
+### Submission of CKAN metadata files (.ckan and .netkan files)
 
 Contributions of CKAN metadata files *must* be be contributed under the
 [CC-0](http://creativecommons.org/publicdomain/zero/1.0/) license.
