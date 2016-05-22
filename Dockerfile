@@ -1,9 +1,24 @@
 FROM mono
-RUN echo '#!/bin/bash\nchown --reference=/kspdir/GameData -R /kspdir\n' >> /root/cleanup.sh
+RUN echo '#!/bin/bash\n\
+  chown --reference=/kspdir/GameData -R /kspdir\n\
+' >> /root/cleanup.sh
 RUN chmod +x /root/cleanup.sh
-RUN echo 'trap /root/cleanup.sh EXIT\nckan()\n{\n  mono /build/CmdLine.exe "$@" --kspdir /kspdir --headless\n}\nckan update\n' >> /root/.bashrc
-RUN chmod +x /root/.bashrc
-RUN echo '#!/bin/bash\nsource /root/.bashrc\nckan scan\nckan upgrade --all\n' >> /root/entrypoint.sh
+RUN echo 'trap /root/cleanup.sh EXIT\n\
+  ckan()\n\
+  {\n\
+    mono /build/CmdLine.exe "$@" --kspdir /kspdir --headless\n\
+  }\n\
+  ckan update\n\
+' >> /root/.bashrc
+RUN echo '#!/bin/bash\n\
+  source /root/.bashrc\n\
+  ckan scan\n\
+  if [ "$#" -ne 0 ]; then\n\
+    ckan $@\n\
+  else\n\
+    ckan upgrade --all\n\
+  fi\n\
+' >> /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
 RUN apt-get -y update && apt-get -y install libcurl4-openssl-dev
 RUN mkdir /kspdir
@@ -12,4 +27,4 @@ COPY . /source
 WORKDIR /source
 RUN nuget restore -NonInteractive
 RUN xbuild /property:Configuration=Release /property:OutDir=/build/
-CMD ["/root/entrypoint.sh"]
+ENTRYPOINT ["/root/entrypoint.sh"]
