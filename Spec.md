@@ -165,6 +165,7 @@ The same rules as per the
   author did not specify which version applies.
 * Stripping of trailing zeros is not recognised.
 * (**v1.2**) `WTFPL` is recognised as a valid license.
+* (**v1.18**) `Unlicense` is recognised as a valid license.
 
 The following license strings are also valid and indicate other licensing not
 described above:
