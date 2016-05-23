@@ -166,6 +166,7 @@ The same rules as per the
 * Stripping of trailing zeros is not recognised.
 * (**v1.2**) `WTFPL` is recognised as a valid license.
 * (**v1.18**) `Unlicense` is recognised as a valid license.
+* `public-domain` is taken as to only express the author's intent to put the mod in the public domain, not that it actually is uncopyrighted - see https://en.wikipedia.org/wiki/Public-domain_software
 
 The following license strings are also valid and indicate other licensing not
 described above:
