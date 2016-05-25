@@ -85,6 +85,15 @@ namespace CKAN
         public Uri spacedock;
     }
 
+    public class DownloadHashsDescriptor
+    {
+        [JsonProperty("sha1")]
+        public string sha1;
+
+        [JsonProperty("sha256")]
+        public string sha256;
+    }
+
     public class NameComparer : IEqualityComparer<CkanModule>
     {
         public bool Equals(CkanModule x, CkanModule y)
@@ -154,6 +163,9 @@ namespace CKAN
 
         [JsonProperty("download_size")]
         public long download_size;
+
+        [JsonProperty("download_hash")]
+        public DownloadHashsDescriptor download_hash;
 
         [JsonProperty("identifier", Required = Required.Always)]
         public string identifier;
