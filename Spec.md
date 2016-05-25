@@ -669,9 +669,11 @@ The following conditions apply:
 - A metanekan may not reference another metanetkan, otherwise an error is produced.
 - An fields specified in the metanetkan will override any fields in the target netkan file.
 
-An example `.netkan` excerpt:
+An example `.netkan` including all required fields for a valid metanetkan:
 ```json
 {
+    "spec_version": 1,
+    "identifier": "AwesomeMod",
     "$kref": "#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan"
 }
 ```
