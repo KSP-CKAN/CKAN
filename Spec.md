@@ -667,7 +667,7 @@ authoritative metadata.
 
 The following conditions apply:
 - A metanekan may not reference another metanetkan, otherwise an error is produced.
-- An fields specified in the metanetkan will override any fields in the target netkan file.
+- Any fields specified in the metanetkan will override any fields in the target netkan file.
 
 An example `.netkan` including all required fields for a valid metanetkan:
 ```json
