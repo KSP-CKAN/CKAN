@@ -85,7 +85,7 @@ namespace CKAN
         public Uri spacedock;
     }
 
-    public class DownloadHashsDescriptor
+    public class DownloadHashesDescriptor
     {
         [JsonProperty("sha1")]
         public string sha1;
@@ -165,7 +165,7 @@ namespace CKAN
         public long download_size;
 
         [JsonProperty("download_hash")]
-        public DownloadHashsDescriptor download_hash;
+        public DownloadHashesDescriptor download_hash;
 
         [JsonProperty("identifier", Required = Required.Always)]
         public string identifier;
