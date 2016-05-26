@@ -64,6 +64,24 @@
             "description" : "The size of the download in bytes",
             "type"        : "integer"
         },
+        "download_hash" : {
+            "description" : "A object of hashes of the downloaded file",
+            "type"        : "object",
+            "properties" : {
+                "sha1" : {
+                    "description" : "SHA1 hash of the file",
+                    "type"        : "string"
+                },
+                "sha256" : {
+                    "description" : "SHA256 hash of the file",
+                    "type"        : "string"
+                }
+            }
+        },
+        "download_content_type" : {
+            "description" : "The content type of the download",
+            "type"        : "string"
+        },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
             "$ref"        : "#/definitions/licenses"
@@ -184,6 +202,11 @@
                     "install_to" : {
                         "description" : "Where file should be installed to",
                         "$ref"        : "#/definitions/install_to"
+                    },
+                    "as": {
+                        "description" : "The name to give the matching directory or file when installed",
+                        "type"        : "string",
+                        "pattern"     : "^[^/\\]+$"
                     },
                     "filter" : {
                         "description" : "List of files and directories that should be filtered from the install",
@@ -324,10 +347,11 @@
                 "Perl",
                 "Python-2.0",
                 "QPL-1.0",
+                "Unlicense",
                 "W3C",
+                "WTFPL",
                 "Zlib",
                 "Zope",
-                "WTFPL",
                 "open-source", "restricted", "unrestricted", "unknown"
             ]
         },

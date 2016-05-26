@@ -52,23 +52,30 @@ namespace CKAN.NetKAN.Transformers
 
                 var ghRef = new GithubRef(metadata.Kref, useSourceAchive, _matchPreleases);
 
-                // Find the release on github and download.
+                // Get the GitHub repository
+                var ghRepo = _api.GetRepo(ghRef);
+                // Get the GitHub release
                 var ghRelease = _api.GetLatestRelease(ghRef);
+
+                // Make sure resources exist.
+                if (json["resources"] == null)
+                    json["resources"] = new JObject();
+
+                var resourcesJson = (JObject)json["resources"];
+
+                if (!string.IsNullOrWhiteSpace(ghRepo.Description))
+                    json.SafeAdd("abstract", ghRepo.Description);
+
+                if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
+                    resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
+
+                resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
 
                 if (ghRelease != null)
                 {
                     json.SafeAdd("version", ghRelease.Version.ToString());
                     json.SafeAdd("author", ghRelease.Author);
                     json.SafeAdd("download", Uri.EscapeUriString(ghRelease.Download.ToString()));
-
-                    // Make sure resources exist.
-                    if (json["resources"] == null)
-                    {
-                        json["resources"] = new JObject();
-                    }
-
-                    var resourcesJson = (JObject)json["resources"];
-                    resourcesJson.SafeAdd("repository", GithubPage(ghRef.Repository));
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
@@ -81,11 +88,6 @@ namespace CKAN.NetKAN.Transformers
             }
 
             return metadata;
-        }
-
-        private static string GithubPage(string repo)
-        {
-            return new Uri(new Uri("https://github.com/"), repo).ToString();
         }
     }
 }

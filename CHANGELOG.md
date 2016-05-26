@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 ### Bugfixes
+- [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
+- [GUI] Fix typo in export options. (#1718 by: dandrestor, reviewed: plague006)
+- [GUI] Fix unit of measure for download speed. (#1732 by: plague006, reviewed: dbent)
 
 ### Features
 
+- [Core] `install` stanzas can have an `as` property allowing directories and files to be renamed/moved on installation. (#1728 by: dbent; reviewed: techman83)
 - [GUI] Added "filter by description" search box. (#1632 by: politas; reviewed: pjf)
 - [CLI] `compare` command now checks positive and negative rather than -1/+1 (#1649 by: dbent; reviewed: Daz)
+- [GUI] In windows launch KSP_x64.exe by default rather than KSP.exe. (#1711 by plague006; reviewed: dbent)
+- [Core] Unlicense added to CKAN as an option for mods. (#1737 by plague006; reviewed: techman83)
 
 ### Internal
 
@@ -19,6 +25,10 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
 - [NetKAN] Catch ksp_version from SpaceDocks newly implemented game_version (#1655 by: dbent; reviewed: -)
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
+- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
+- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
+- [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
+- [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
 
 ## v1.16.1
 

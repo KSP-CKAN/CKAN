@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
                 // This is the "default" VersionedOverrideTransformer for compatability with overrides that don't
                 // specify a before or after property.
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
-                new DownloadSizeTransformer(http, fileService),
+                new DownloadAttributeTransformer(http, fileService),
                 new GeneratedByTransformer(),
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),

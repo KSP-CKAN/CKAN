@@ -52,6 +52,7 @@
     <Compile Include="Sources\Github\GithubApi.cs" />
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
+    <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
     <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
     <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
-    <Compile Include="Transformers\DownloadSizeTransformer.cs" />
+    <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
     <Compile Include="Transformers\GeneratedByTransformer.cs" />
     <Compile Include="Transformers\GithubTransformer.cs" />
