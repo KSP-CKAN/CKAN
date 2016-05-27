@@ -295,7 +295,11 @@ namespace Tests.Data
                             ""file""       : ""GameData/kOS"",
                             ""install_to"" : ""GameData""
                         }
-                    ]
+                    ],
+                    ""download_hash"": {
+                        ""sha1"": ""C5A224AC4397770C0B19B4A6417F6C5052191608"",
+                        ""sha256"": ""E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB""
+                    }
                 }"
             ;
         }
