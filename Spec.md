@@ -572,6 +572,7 @@ When used, the following fields will be auto-filled if not already present:
 - `download`
 - `download_size`
 - `download_hash`
+- `download_content_type`
 - `resources.homepage`
 - `resources.spacedock`
 - `resources.repository`
@@ -590,6 +591,7 @@ When used, the following fields will be auto-filled if not already present:
 - `download`
 - `download_size`
 - `download_hash`
+- `download_content_type`
 - `resources.repository`
 
 Optionally, one asset `:filter_regexp` directive *may* be provided:
@@ -608,6 +610,7 @@ The following fields will be auto-filled if not already present:
 - `download`
 - `download_size`
 - `download_hash`
+- `download_content_type`
 - `resources.ci`
 
 An `x_netkan_jenkins` field may be provided to customize how the metadata is fetched from the Jenkins server. It is
