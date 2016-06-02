@@ -28,7 +28,7 @@ We very much welcome contributions, discussions, and especially pull-requests.
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
 which comes with a corresponding [JSON Schema](CKAN.schema).
 
-This repository includes a JSON schema validator that you can use to [validate your files][3].
+This repository includes a validator that you can use to [validate your files][3].
 
 ## CKAN for players
 
