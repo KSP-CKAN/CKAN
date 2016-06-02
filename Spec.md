@@ -279,11 +279,7 @@ In addition a destination directive *must* be provided:
   and `GameRoot` (which should be used sparingly, if at all).
   Paths will be preserved, but directories will *only*
   be created when installing to `GameData`, `Tutorial`, or `Scenarios`.
-
-(**v1.2**) For `GameData` *only* one *may* specify the path to a specific
-subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this
-path and abort the install if any attempts to traverse up directories are found
-(eg: `GameData/../Example`).
+  A path to a specific subfolder can be specified under `GameData` *only* (**v1.2**); for example: `GameData/MyMod/Plugins`. The client *must* check this path and abort the install if any attempts to traverse up directories are found (eg: `GameData/../Example`).
 
 In addition, any number of optional directives *may* be provided:
 
