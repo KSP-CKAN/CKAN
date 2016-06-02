@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using CKAN;
+using CKAN.Versioning;
 using Version = CKAN.Version;
 
 namespace Tests.Data
@@ -470,7 +471,7 @@ namespace Tests.Data
         }
 
         public CkanModule GeneratorRandomModule(
-            KSPVersion ksp_version = null,
+            KspVersion ksp_version = null,
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
             List<RelationshipDescriptor> sugests = null,
@@ -484,10 +485,10 @@ namespace Tests.Data
                 @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
                 identifier = identifier??Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
-                ksp_version = ksp_version ?? new KSPVersion("0." + Generator.Next()),
+                ksp_version = ksp_version ?? KspVersion.Parse("0." + Generator.Next()),
                 version = version ?? new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
             };
-            mod.ksp_version_max = mod.ksp_version_min = new KSPVersion(null);
+            mod.ksp_version_max = mod.ksp_version_min = null;
             mod.conflicts = conflicts;
             mod.depends = depends;
             mod.suggests = sugests;

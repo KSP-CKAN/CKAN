@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -63,7 +64,7 @@ namespace CKAN.NetKAN.Sources.Avc
             string version;
             if (int.TryParse(major, out integer) && integer == AvcWildcard)
             {
-                version = null;
+                return KspVersion.Any;
             }
             else if (int.TryParse(minor, out integer) && integer == AvcWildcard)
             {
@@ -79,7 +80,7 @@ namespace CKAN.NetKAN.Sources.Avc
             }
 
             Log.DebugFormat("  extracted version: {0}", version);
-            var result = new KSPVersion(version);
+            var result = KspVersion.Parse(version);
             Log.DebugFormat("  generated result: {0}", result);
             return result;
         }

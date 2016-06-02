@@ -5,6 +5,7 @@ using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 
@@ -87,8 +88,8 @@ namespace CKAN.NetKAN.Transformers
                     var existingKspMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
                     var existingKspMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
 
-                    var existingKspMin = existingKspMinStr == null ? null : new KSPVersion(existingKspMinStr);
-                    var existingKspMax = existingKspMaxStr == null ? null : new KSPVersion(existingKspMaxStr);
+                    var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
+                    var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
                     
                     // Get the minimum and maximum KSP versions that are in the AVC file.
                     // Use specific KSP version if min/max don't exist.
@@ -97,8 +98,8 @@ namespace CKAN.NetKAN.Transformers
 
                     // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
                     // AVC file.
-                    var kspMins = new List<KSPVersion>();
-                    var kspMaxes = new List<KSPVersion>();
+                    var kspMins = new List<KspVersion>();
+                    var kspMaxes = new List<KspVersion>();
 
                     if (existingKspMin != null)
                         kspMins.Add(existingKspMin);

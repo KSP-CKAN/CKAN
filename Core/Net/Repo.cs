@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Autofac;
 using ChinhDo.Transactions;
+using CKAN.GameVersionProviders;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
@@ -139,6 +141,9 @@ namespace CKAN
         /// </summary>
         internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp, IUser user, Boolean clear = true)
         {
+            // Use this opportunity to also update the build mappings... kind of hacky
+            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+
             log.InfoFormat("Downloading {0}", repo);
 
             string repo_file = String.Empty;

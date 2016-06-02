@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -125,12 +126,15 @@
     <Compile Include="Core\Registry\RegistryMultipleRepos.cs" />
     <Compile Include="Core\Relationships\RelationshipResolver.cs" />
     <Compile Include="Core\Relationships\SanityChecker.cs" />
-    <Compile Include="Core\Types\KSPVersion.cs" />
     <Compile Include="Core\Types\License.cs" />
     <Compile Include="Core\Types\Module.cs" />
     <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
     <Compile Include="Core\Types\Version.cs" />
+    <Compile Include="Core\Versioning\KspVersionBoundTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionJsonConverterTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionRangeTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionTests.cs" />
     <Compile Include="Data\DisposableKSP.cs" />
     <Compile Include="Data\TestData.cs" />
     <Compile Include="Data\ZipLib.cs" />

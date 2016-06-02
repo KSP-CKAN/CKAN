@@ -1,4 +1,5 @@
 ﻿using System;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 using log4net;
@@ -8,7 +9,7 @@ namespace Tests.Core.Types
     [TestFixture]
     public class GameComparator
     {
-        static readonly CKAN.KSPVersion gameVersion = new CKAN.KSPVersion("1.0.4");
+        static readonly KspVersion gameVersion = KspVersion.Parse("1.0.4");
         CKAN.CkanModule gameMod;
 
         [SetUp]
@@ -28,7 +29,7 @@ namespace Tests.Core.Types
 
             // Mark the mod as being for 1.0.4
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.4");
+                = KspVersion.Parse("1.0.4");
 
             // Now test!
             Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
@@ -44,7 +45,7 @@ namespace Tests.Core.Types
 
             // We're going to tweak compatibly to mark the mod as being for 1.0.3
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.3");
+                = KspVersion.Parse("1.0.3");
 
             // Now test!
             Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
@@ -60,7 +61,7 @@ namespace Tests.Core.Types
 
             // We're going to tweak compatibly to mark the mod as being for 1.0.3 ONLY
             gameMod.ksp_version = gameMod.ksp_version_min = gameMod.ksp_version_max
-                = new CKAN.KSPVersion("1.0.3");
+                = KspVersion.Parse("1.0.3");
 
             gameMod.ksp_version_strict = true;
 
