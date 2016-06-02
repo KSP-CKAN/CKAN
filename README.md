@@ -26,7 +26,7 @@ We very much welcome contributions, discussions, and especially pull-requests.
 ## The CKAN spec
 
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
-which comes with a corresponding [JSON Schema](CKAN.schema).
+which comes with a corresponding [JSON Schema](CKAN.schema) which you can also find in the [Schema Store][8]
 
 This repository includes a validator that you can use to [validate your files][3].
 
@@ -54,3 +54,4 @@ If you want to contribute, please read our [CONTRIBUTING][4] file.
  [5]:https://github.com/KSP-CKAN/CKAN/wiki
  [6]:https://github.com/KSP-CKAN/CKAN/issues/new
  [7]:https://github.com/KSP-CKAN/NetKAN/issues/new
+ [8]:http://schemastore.org/json/
