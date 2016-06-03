@@ -23,6 +23,7 @@ namespace CKAN
         public string InstalledVersion { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public string LastModified { get; private set; }
         public bool IsCached { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
@@ -158,7 +159,17 @@ namespace CKAN
                 DownloadSize = "1<KB";
             else
                 DownloadSize = mod.download_size / 1024+"";
-            
+
+            // Check if last_modified is set
+            if (mod.last_modified != DateTime.MinValue)
+            {
+                LastModified = mod.last_modified.ToLocalTime().ToString();
+            }
+            else
+            {
+                LastModified = "N/A";
+            }
+
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 

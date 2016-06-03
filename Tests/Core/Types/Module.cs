@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CKAN;
 using NUnit.Framework;
@@ -41,6 +42,7 @@ namespace Tests.Core.Types
             Assert.AreEqual("0.14", module.version.ToString());
             Assert.AreEqual("stable", module.release_status.ToString());
             Assert.AreEqual("0.24.2", module.ksp_version.ToString());
+            Assert.AreEqual(DateTime.Parse("2016-06-02T23:08:48.2829391Z"), module.last_modified);
 
             Assert.That(module.install.First().file, Is.EqualTo("GameData/kOS"));
             Assert.That(module.install.First().install_to, Is.EqualTo("GameData"));
@@ -48,6 +50,8 @@ namespace Tests.Core.Types
             Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
+
+
         }
 
         /// <summary>

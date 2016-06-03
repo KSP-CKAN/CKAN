@@ -69,6 +69,7 @@ namespace CKAN
             this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LastModifiedCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModInfoTabControl = new System.Windows.Forms.TabControl();
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
@@ -466,6 +467,7 @@ namespace CKAN
             this.LatestVersion,
             this.KSPCompatibility,
             this.SizeCol,
+            this.LastModifiedCol,
             this.Description});
             this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModList.Location = new System.Drawing.Point(0, 0);
@@ -542,6 +544,15 @@ namespace CKAN
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.SizeCol.Width = 60;
+            // 
+            // LastModifiedCol
+            // 
+            this.LastModifiedCol.HeaderText = "Last modified";
+            this.LastModifiedCol.Name = "LastModifiedCol";
+            this.LastModifiedCol.ReadOnly = true;
+            this.LastModifiedCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.LastModifiedCol.Width = 125;
             // 
             // Description
             // 
@@ -1006,7 +1017,7 @@ namespace CKAN
             this.FilterByNameTextBox.Size = new System.Drawing.Size(124, 20);
             this.FilterByNameTextBox.TabIndex = 9;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterByNameTextBox_TextChanged);
-            //
+            // 
             // FilterByDescriptionLabel
             // 
             this.FilterByDescriptionLabel.AutoSize = true;
@@ -1501,6 +1512,7 @@ namespace CKAN
         private DataGridViewTextBoxColumn LatestVersion;
         private DataGridViewTextBoxColumn KSPCompatibility;
         private DataGridViewTextBoxColumn SizeCol;
+        private DataGridViewTextBoxColumn LastModifiedCol;
         private DataGridViewTextBoxColumn Description;
         private ToolStripMenuItem cachedToolStripMenuItem;
         private Label IdentifierLabel;

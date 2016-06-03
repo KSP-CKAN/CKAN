@@ -43,6 +43,7 @@ namespace CKAN.NetKAN.Transformers
             { "download_size", 25 },
             { "download_hash", 26 },
             { "download_content_type", 27 },
+            { "last_modified", 28},
 
             { "x_generated_by", int.MaxValue }
         };

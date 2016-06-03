@@ -82,6 +82,10 @@
             "description" : "The content type of the download",
             "type"        : "string"
         },
+        "last_modified" : {
+            "description" : "The UTC time at which metadata was last modified",
+            "type"        : "string"
+        },
         "license" : {
             "description" : "Machine readable license, or array of licenses",
             "$ref"        : "#/definitions/licenses"

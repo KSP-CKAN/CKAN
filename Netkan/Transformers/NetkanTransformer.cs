@@ -41,6 +41,7 @@ namespace CKAN.NetKAN.Transformers
                 new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
                 new DownloadAttributeTransformer(http, fileService),
                 new GeneratedByTransformer(),
+                new LastModifiedTransformer(),
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),
                 new PropertySortTransformer()
