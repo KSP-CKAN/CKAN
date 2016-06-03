@@ -1452,7 +1452,6 @@ namespace CKAN
         private TextBox LogTextBox;
         private ProgressBar DialogProgressBar;
         private TextBox MessageTextBox;
-        private DataGridViewCheckBoxColumn UpdateCol;
         private TabPage ChangesetTabPage;
         private Button CancelChangesButton;
         private Button ConfirmChangesButton;
