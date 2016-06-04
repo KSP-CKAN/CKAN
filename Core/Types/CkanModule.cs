@@ -86,6 +86,12 @@ namespace CKAN
         public Uri spacedock;
     }
 
+    public class LastModified
+    {
+        [JsonProperty("last_modified")]
+        public DateTime last_modified;
+    }
+
     public class NameComparer : IEqualityComparer<CkanModule>
     {
         public bool Equals(CkanModule x, CkanModule y)
@@ -155,6 +161,9 @@ namespace CKAN
 
         [JsonProperty("download_size")]
         public long download_size;
+
+        [JsonProperty("last_modified")]
+        public DateTime last_modified;
 
         [JsonProperty("identifier", Required = Required.Always)]
         public string identifier;

@@ -296,7 +296,8 @@ namespace Tests.Data
                             ""file""       : ""GameData/kOS"",
                             ""install_to"" : ""GameData""
                         }
-                    ]
+                    ],
+                    ""last_modified"": ""2016-06-02T23:08:48.2829391Z""
                 }"
             ;
         }

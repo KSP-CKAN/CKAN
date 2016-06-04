@@ -531,6 +531,12 @@ and not filled in by hand.
 
     "download_content_type": "application/zip"
 
+##### last_updated
+
+If supplied, `last_updated` is the last time the metadata was modified.
+Time is given in UTC. It is recommended that this field is only generated
+by automated tools )where it is encouraged), and not filled in by hand.
+
 #### Extensions
 
 Any field starting with `x_` (an x, followed by an underscore) is considered
