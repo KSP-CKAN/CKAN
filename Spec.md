@@ -597,6 +597,11 @@ Optionally, one asset `:filter_regexp` directive *may* be provided:
 - `filter_regexp`: A string which is treated as  case-sensitive C# regular expressions which are matched against the
   name of the released artifact.
 
+An `x_netkan_github` field may be provided to customize how the metadata is fetched from GitHub. It is an `object` with the following fields:
+
+- `use_source_archive` (type: `boolean`) (default: `false`)<br/>
+  Specifies that the source ZIP of the repository itself will be used instead of any assets in the release.
+
 ###### `#/ckan/jenkins/:joburl`
 
 Indicates data should be fetched from a [Jenkins CI server](http://jenkins-ci.org/) using the `:joburl` provided. For
