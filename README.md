@@ -1,4 +1,6 @@
-# The Comprehensive Kerbal Archive Network (CKAN)
+# The Comprehensive Kerbal Archive Network (CKAN) 
+
+Latest release downloads: [![Downloads](https://img.shields.io/github/downloads/KSP-CKAN/CKAN/latest/total.svg)](https://github.com/KSP-CKAN/CKAN/releases/latest)
 
 [Click here to open a new CKAN issue][6]
 
