@@ -1,3 +1,4 @@
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 using System;
@@ -11,7 +12,8 @@ namespace CKAN.NetKAN.Sources.Curse
 
         internal CurseMod Mod;
 
-        [JsonProperty] public string version; // KSP Version
+        [JsonConverter(typeof(JsonConvertKSPVersion))]
+        [JsonProperty] public KspVersion version;
 
         //[JsonProperty] public string changelog;
 
@@ -107,5 +109,35 @@ namespace CKAN.NetKAN.Sources.Curse
         //
         //    return filename;
         //}
+
+        /// <summary>
+        /// Curse has versions that don't play nicely with CKAN, for example "1.1-prerelease".
+        /// This transformer strips out the dash and anything after it.
+        /// </summary>
+        internal class JsonConvertKSPVersion : JsonConverter
+        {
+            public override object ReadJson(
+                JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
+            )
+            {
+                if (reader.Value == null)
+                    return null;
+
+                string raw_version = reader.Value.ToString();
+
+                return KspVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
     }
 }

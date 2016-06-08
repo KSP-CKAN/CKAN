@@ -43,7 +43,7 @@ namespace CKAN.NetKAN.Transformers
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
                 {
                     Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);
-                    json["ksp_version"] = latestVersion.version;
+                    json["ksp_version"] = latestVersion.version.ToString();
                 }
 
                 var useDownloadNameVersion = false;
