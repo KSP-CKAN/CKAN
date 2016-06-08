@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using CKAN.GameVersionProviders;
 
 namespace CKAN
 {
@@ -32,7 +33,23 @@ namespace CKAN
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<GrasGameComparator>().As<IGameComparator>();
+            builder.RegisterType<GrasGameComparator>()
+                .As<IGameComparator>();
+
+            builder.RegisterType<Win32Registry>()
+                .As<IWin32Registry>();
+
+            builder.RegisterType<KspBuildMap>()
+                .As<IKspBuildMap>()
+                .SingleInstance(); // Since it stores cached data we want to keep it around
+
+            builder.RegisterType<KspBuildIdVersionProvider>()
+                .As<IGameVersionProvider>()
+                .Keyed<IGameVersionProvider>(KspVersionSource.BuildId);
+
+            builder.RegisterType<KspReadmeVersionProvider>()
+                .As<IGameVersionProvider>()
+                .Keyed<IGameVersionProvider>(KspVersionSource.Readme);
 
             _container = builder.Build();
         }

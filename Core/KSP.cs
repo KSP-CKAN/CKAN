@@ -6,6 +6,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using Autofac;
+using CKAN.GameVersionProviders;
+using CKAN.Versioning;
 using log4net;
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]
@@ -25,7 +28,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
         private readonly string gamedir;
-        private KSPVersion version;
+        private KspVersion version;
 
         public NetFileCache Cache { get; private set; }
 
@@ -172,31 +175,7 @@ namespace CKAN
         /// </summary>
         internal static bool IsKspDir(string directory)
         {
-            //first we need to check is directory exists
-            if (!Directory.Exists(Path.Combine(directory, "GameData")))
-            {
-                log.DebugFormat("Cannot find GameData in {0}", directory);
-                return false;
-            }
-            
-            if (!File.Exists(Path.Combine(directory, "readme.txt")))
-            {
-                log.DebugFormat("Cannot find readme in {0}", directory);
-                return false;
-            }
-
-            //If both exist we should be able to get game version
-            try
-            {
-                DetectVersion(directory);
-            }
-            catch (NotKSPDirKraken)
-            {
-                log.DebugFormat("Cannot detect KSP version in {0}", directory);
-                return false;
-            }
-            log.DebugFormat("{0} looks like a GameDir", directory);
-            return true;
+            return Directory.Exists(Path.Combine(directory, "GameData"));
         }
 
 
@@ -204,37 +183,39 @@ namespace CKAN
         /// Detects the version of KSP in a given directory.
         /// Throws a NotKSPDirKraken if anything goes wrong.
         /// </summary>
-        private static KSPVersion DetectVersion(string directory)
+        private static KspVersion DetectVersion(string directory)
         {
-            //Contract.Requires<ArgumentNullException>(directory==null);
+            var version = DetectVersionInternal(directory);
 
-            string readme;
-            try
+            if (version != null)
             {
-                // Slurp our README into memory
-                readme = File.ReadAllText(Path.Combine(directory, "readme.txt"));
-            }
-            catch
-            {
-                log.Error("Could not open KSP readme.txt in "+directory);
-                throw new NotKSPDirKraken("readme.txt not found or not readable");
-            }
-
-            // And find the KSP version. Easy! :)
-            Match match = Regex.Match(readme, @"^Version\s+(\d+\.\d+\.\d+)",
-                RegexOptions.IgnoreCase | RegexOptions.Multiline);
-
-            if (match.Success)
-            {
-                string version = match.Groups[1].Value;
                 log.DebugFormat("Found version {0}", version);
-                return new KSPVersion(version);
+                return version;
             }
+            else
+            {
+                log.Error("Could not find KSP version");
+                throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
+            }
+        }
 
-            // Oh noes! We couldn't find the version!
-            log.Error("Could not find KSP version in readme.txt");
+        private static KspVersion DetectVersionInternal(string directory)
+        {
+            var buildIdVersionProvider = ServiceLocator.Container
+                .ResolveKeyed<IGameVersionProvider>(KspVersionSource.BuildId);
 
-            throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
+            KspVersion version;
+            if (buildIdVersionProvider.TryGetVersion(directory, out version))
+            {
+                return version;
+            }
+            else
+            {
+                var readmeVersionProvider = ServiceLocator.Container
+                    .ResolveKeyed<IGameVersionProvider>(KspVersionSource.Readme);
+
+                return readmeVersionProvider.TryGetVersion(directory, out version) ? version : null;
+            }
         }
         
         /// <summary>
@@ -344,7 +325,7 @@ namespace CKAN
             );
         }
 
-        public KSPVersion Version()
+        public KspVersion Version()
         {
             if (version != null)
             {

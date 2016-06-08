@@ -5,12 +5,43 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 ### Bugfixes
-
-- [GUI] The "Not Installed" filter now has a more correct label. (#1573 by: plague006; reviewed: Postremus)
-- [GUI] Scrolling of the mod-list no longer requires clicking on the list after start-up. (#1584 by: ChucklesTheBeard; reviewed: Olympic1)
+- [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
+- [GUI] Fix typo in export options. (#1718 by: dandrestor, reviewed: plague006)
+- [GUI] Fix unit of measure for download speed. (#1732 by: plague006, reviewed: dbent)
 
 ### Features
 
+- [Core] `install` stanzas can have an `as` property allowing directories and files to be renamed/moved on installation. (#1728 by: dbent; reviewed: techman83)
+- [GUI] Added "filter by description" search box. (#1632 by: politas; reviewed: pjf)
+- [CLI] `compare` command now checks positive and negative rather than -1/+1 (#1649 by: dbent; reviewed: Daz)
+- [GUI] In windows launch KSP_x64.exe by default rather than KSP.exe. (#1711 by plague006; reviewed: dbent)
+- [Core] Unlicense added to CKAN as an option for mods. (#1737 by plague006; reviewed: techman83)
+
+### Internal
+
+- [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent)
+- [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
+- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1597 by: plague006; reviewed: Daz)
+- [spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)
+- [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
+- [NetKAN] Catch ksp_version from SpaceDocks newly implemented game_version (#1655 by: dbent; reviewed: -)
+- [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
+- [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
+- [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
+- [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
+- [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
+
+## v1.16.1
+
+### Bugfixes
+
+- [GUI] The "Not Installed" filter now has a more correct label. (#1573 by: plague006; reviewed: Postremus)
+- [GUI] Scrolling of the mod-list no longer requires clicking on the list after start-up. (#1584 by: ChucklesTheBeard; reviewed: Olympic1)
+- [GUI] The GUI now displays repo information as "Source Code" rather than "Github". (#1627 by: politas; reviewed: pjf)
+
+### Features
+
+- [GUI] The export menu now selects "favourites" as default, as that's almost always what people want. (#1609 by: plague006; reviewed: pjf)
 - [Core/NetKAN] CKAN will now also work for mods that are hosted on SpaceDock. Use the new `$kref` "spacedock". (#1593 by: Olympic1, Zane6888; reviewed: pjf)
 - [Core] CKAN has now an improved version sorting. (#1554 by: distantcam; reviewed: Olympic1)
 
@@ -18,8 +49,13 @@ All notable changes to this project will be documented in this file.
 
 - [General] General code tidy-up. (#1582, #1602 by: ChucklesTheBeard; reviewed: plague006, Olympic1)
 - [GUI] Avoidance of a future bug involving how we query users regarding choices. (#1538 by: pjf, RichardLake; reviewed: Postremus)
+- [GUI] Fixed mispellings in the word "directory". (#1624 by: tonygambone; reviewed: pjf)
 - [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
 - [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
+- [NetKAN] `netkan.exe` checks for malformed url's and prevents them from being added to the metadata. (#1580 by: dbent; reviewed: Olympic1)
+- [NetKAN] `netkan.exe` will now add all authors listed on SpaceDock (#1600,#1620 by: dbent; reviewed: techman83)
+- [Core] Spelling mistake in documentation fixed (#1623 by: Dazpoet; reviewed: pjf)
+- [Reporting] Creation of an issues template to help with bug reporting. (#1596 and #1598 by plague006, Shuudoushi; reviewed: Dazpoet, Olympic1)
 
 ## v1.16.0
 

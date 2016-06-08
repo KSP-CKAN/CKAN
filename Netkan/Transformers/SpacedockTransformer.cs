@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -16,6 +18,8 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
+
+        public string Name { get { return "spacedock"; } }
 
         public SpacedockTransformer(ISpacedockApi api)
         {
@@ -47,8 +51,14 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("name", sdMod.name);
                 json.SafeAdd("abstract", sdMod.short_description);
                 json.SafeAdd("version", latestVersion.friendly_version.ToString());
-                json.SafeAdd("author", sdMod.author);
                 json.SafeAdd("download", latestVersion.download_path.OriginalString);
+
+                var authors = GetAuthors(sdMod);
+
+                if (authors.Count == 1)
+                    json.SafeAdd("author", sdMod.author);
+                else if (authors.Count > 1)
+                    json.SafeAdd("author", new JArray(authors));
 
                 // SD provides users with the following default selection of licenses. Let's convert them to CKAN
                 // compatible license strings if possible.
@@ -82,13 +92,13 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                resourcesJson.SafeAdd("homepage", Escape(sdMod.website));
-                resourcesJson.SafeAdd("repository", Escape(sdMod.source_code));
+                resourcesJson.SafeAdd("homepage", Normalize(sdMod.website));
+                resourcesJson.SafeAdd("repository", Normalize(sdMod.source_code));
                 resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
 
                 if (sdMod.background != null)
                 {
-                    resourcesJson.SafeAdd("x_screenshot", Escape(sdMod.background));
+                    resourcesJson.SafeAdd("x_screenshot", Normalize(sdMod.background));
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -99,20 +109,28 @@ namespace CKAN.NetKAN.Transformers
             return metadata;
         }
 
+        private static string Normalize(Uri uri)
+        {
+            return Normalize(uri.ToString());
+        }
+
         /// <summary>
-        /// Provide an escaped version of the given URL, including converting
+        /// Provide an escaped version of the given Uri string, including converting
         /// square brackets to their escaped forms.
         /// </summary>
-        private static string Escape(Uri url)
+        /// <returns>
+        /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normlized form.
+        /// </returns>
+        private static string Normalize(string uri)
         {
-            if (url == null)
+            if (uri == null)
             {
                 return null;
             }
 
-            Log.DebugFormat("Escaping {0}", url);
+            Log.DebugFormat("Escaping {0}", uri);
 
-            var escaped = Uri.EscapeUriString(url.ToString());
+            var escaped = Uri.EscapeUriString(uri);
 
             // Square brackets are "reserved characters" that should not appear
             // in strings to begin with, so C# doesn't try to escape them in case
@@ -130,9 +148,26 @@ namespace CKAN.NetKAN.Transformers
                 escaped = "http://" + escaped;
             }
 
-            Log.DebugFormat("Escaped to {0}", escaped);
+            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
+            {
+                Log.DebugFormat("Escaped to {0}", escaped);
+                return escaped;
+            }
+            else
+            {
+                Log.WarnFormat("Could not normalize URL: {0}", uri);
+                return null;
+            }
+        }
 
-            return escaped;
+        private static List<string> GetAuthors(SpacedockMod mod)
+        {
+            var result = new List<string> { mod.author };
+
+            if (mod.shared_authors != null)
+                result.AddRange(mod.shared_authors.Select(i => i.Username));
+
+            return result;
         }
     }
 }

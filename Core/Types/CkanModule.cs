@@ -8,6 +8,7 @@ using log4net;
 using Newtonsoft.Json;
 using System.Transactions;
 using Autofac;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -80,9 +81,6 @@ namespace CKAN
 
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri bugtracker;
-
-        [JsonConverter(typeof (JsonOldResourceUrlConverter))]
-        public Uri kerbalstuff;
 
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri spacedock;
@@ -162,13 +160,13 @@ namespace CKAN
         public string identifier;
 
         [JsonProperty("ksp_version")]
-        public KSPVersion ksp_version;
+        public KspVersion ksp_version;
 
         [JsonProperty("ksp_version_max")]
-        public KSPVersion ksp_version_max;
+        public KspVersion ksp_version_max;
 
         [JsonProperty("ksp_version_min")]
-        public KSPVersion ksp_version_min;
+        public KspVersion ksp_version_min;
 
         [JsonProperty("ksp_version_strict")]
         public bool ksp_version_strict = false;
@@ -290,7 +288,7 @@ namespace CKAN
                 throw new BadMetadataKraken(null, "JSON deserialization error", ex);
             }
 
-            // NOTE: Many of these tests may be better inour Deserialisation handler.
+            // NOTE: Many of these tests may be better in our Deserialisation handler.
             if (!IsSpecSupported())
             {
                 throw new UnsupportedKraken(
@@ -342,31 +340,8 @@ namespace CKAN
             // Make sure our version fields are populated.
             // TODO: There's got to be a better way of doing this, right?
 
-            if (ksp_version_min == null)
-            {
-                ksp_version_min = new KSPVersion(null);
-            }
-            else
-            {
-                ksp_version_min = ksp_version_min.ToLongMin();
-            }
-
-            if (ksp_version_max == null)
-            {
-                ksp_version_max = new KSPVersion(null);
-            }
-            else
-            {
-                ksp_version_max = ksp_version_max.ToLongMax();
-            }
-
-            if (ksp_version == null)
-            {
-                ksp_version = new KSPVersion(null);
-            }
-
             // Now see if we've got version with version min/max.
-            if (ksp_version.IsNotAny() && (ksp_version_max.IsNotAny() || ksp_version_min.IsNotAny()))
+            if (ksp_version != null && (ksp_version_max != null || ksp_version_min != null))
             {
                 // KSP version mixed with min/max.
                 throw new InvalidModuleAttributesException("ksp_version mixed with ksp_version_(min|max)", this);
@@ -426,7 +401,7 @@ namespace CKAN
         /// Tries to parse an identifier in the format Modname=version
         /// If the module cannot be found in the registry, throws a ModuleNotFoundKraken.
         /// </summary>
-        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KSPVersion ksp_version)
+        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, KspVersion ksp_version)
         {
             CkanModule module;
 
@@ -515,15 +490,16 @@ namespace CKAN
         /// </summary>
         public bool IsCompatibleKSP(string version)
         {
-            return IsCompatibleKSP(new KSPVersion(version));
+            return IsCompatibleKSP(KspVersion.Parse(version));
         }
 
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
         /// </summary>
-        public bool IsCompatibleKSP(KSPVersion version)
+        public bool IsCompatibleKSP(KspVersion version)
         {
             log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
+
 
             return _comparator.Compatible(version, this);
         }
@@ -539,17 +515,17 @@ namespace CKAN
         public string HighestCompatibleKSP()
         {
             // Find the highest compatible KSP version
-            if (!String.IsNullOrEmpty(ksp_version_max.ToString()))
+            if (ksp_version_max != null)
             {
-                return ksp_version_max.ToLongMax().ToString();
+                return ksp_version_max.ToString();
             }
-            else if (!String.IsNullOrEmpty(ksp_version.ToString()))
+            else if (ksp_version != null)
             {
-                return ksp_version.ToLongMax().ToString();
+                return ksp_version.ToString();
             }
-            else if (!String.IsNullOrEmpty(ksp_version_min.ToString()))
+            else if (ksp_version_min != null )
             {
-                return ksp_version_min.ToLongMin().ToString() + "+";
+                return ksp_version_min + "+";
             }
 
             return "All versions";

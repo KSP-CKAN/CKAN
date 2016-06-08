@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 
@@ -12,7 +13,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
         // These all get filled by JSON deserialisation.
 
         [JsonConverter(typeof(JsonConvertKSPVersion))]
-        public KSPVersion KSP_version;
+        [JsonProperty("game_version")]
+        public KspVersion KSP_version;
+
         public string changelog;
 
         [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
@@ -49,7 +52,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
                 string raw_version = reader.Value.ToString();
 
-                return new KSPVersion( ExpandVersionIfNeeded(raw_version) );
+                return KspVersion.Parse(ExpandVersionIfNeeded(raw_version));
             }
 
             /// <summary>

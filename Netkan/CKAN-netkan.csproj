@@ -52,6 +52,7 @@
     <Compile Include="Sources\Github\GithubApi.cs" />
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
+    <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
     <Compile Include="Sources\Curse\ICurseApi.cs" />
     <Compile Include="Sources\Curse\CurseFile.cs" />
@@ -63,13 +64,9 @@
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
     <Compile Include="Sources\Spacedock\SDVersion.cs" />
-    <Compile Include="Sources\Kerbalstuff\IKerbalstuffApi.cs" />
-    <Compile Include="Sources\Kerbalstuff\KerbalstuffApi.cs" />
-    <Compile Include="Sources\Kerbalstuff\KerbalstuffError.cs" />
-    <Compile Include="Sources\Kerbalstuff\KerbalstuffMod.cs" />
-    <Compile Include="Sources\Kerbalstuff\KSVersion.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
-    <Compile Include="Transformers\DownloadSizeTransformer.cs" />
+    <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
     <Compile Include="Transformers\GeneratedByTransformer.cs" />
     <Compile Include="Transformers\GithubTransformer.cs" />
@@ -81,7 +78,6 @@
     <Compile Include="Transformers\JenkinsTransformer.cs" />
     <Compile Include="Transformers\CurseTransformer.cs" />
     <Compile Include="Transformers\SpacedockTransformer.cs" />
-    <Compile Include="Transformers\KerbalstuffTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
     <Compile Include="Transformers\NetkanTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

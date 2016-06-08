@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Windows.Forms;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -144,7 +145,7 @@ namespace CKAN
         {
             log.Debug("Updating the mod list");
 
-            KSPVersion version = CurrentInstance.Version();
+            KspVersion version = CurrentInstance.Version();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
             var gui_mods = new HashSet<GUIMod>(registry.Available(version)
                 .Select(m => new GUIMod(m, registry, version)));
@@ -332,9 +333,21 @@ namespace CKAN
             }
         }
 
+        public string ModDescriptionFilter
+        {
+            get { return _modDescriptionFilter; }
+            set
+            {
+                var old = _modDescriptionFilter;
+                _modDescriptionFilter = value;
+                if (!old.Equals(value)) ModFiltersUpdated(this);
+            }
+        }
+
         private GUIModFilter _modFilter = GUIModFilter.Compatible;
         private string _modNameFilter = String.Empty;
         private string _modAuthorFilter = String.Empty;
+        private string _modDescriptionFilter = String.Empty;
         private IUser user;
 
         private readonly HandleTooManyProvides too_many_provides;
@@ -349,7 +362,7 @@ namespace CKAN
         /// <param name="version">The version of the current KSP install</param>
         public async Task<IEnumerable<ModChange>> ComputeChangeSetFromModList(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
-            KSPVersion version)
+            KspVersion version)
         {
             var modules_to_install = new HashSet<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
@@ -442,8 +455,9 @@ namespace CKAN
         {
             var nameMatchesFilter = IsNameInNameFilter(mod);
             var authorMatchesFilter = IsAuthorInauthorFilter(mod);
+            var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
             var modMatchesType = IsModInFilter(mod);
-            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter;
+            var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
             return isVisible;
         }
 
@@ -555,6 +569,11 @@ namespace CKAN
             return mod.Authors.IndexOf(ModAuthorFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
+        private bool IsAbstractInDescriptionFilter(GUIMod mod)
+        {
+            return mod.Abstract.IndexOf(ModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+        }
+
 
         private bool IsModInFilter(GUIMod m)
         {
@@ -582,7 +601,7 @@ namespace CKAN
 
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
-            IEnumerable<ModChange> change_set, KSPVersion ksp_version)
+            IEnumerable<ModChange> change_set, KspVersion ksp_version)
         {
             var modules_to_install = new HashSet<string>();
             var modules_to_remove = new HashSet<string>();

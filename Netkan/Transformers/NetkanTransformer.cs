@@ -4,7 +4,6 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
-using CKAN.NetKAN.Sources.Kerbalstuff;
 using CKAN.NetKAN.Sources.Spacedock;
 
 namespace CKAN.NetKAN.Transformers
@@ -16,6 +15,8 @@ namespace CKAN.NetKAN.Transformers
     {
         private readonly List<ITransformer> _transformers;
 
+        public string Name { get { return "netkan"; } }
+
         public NetkanTransformer(
             IHttpService http,
             IFileService fileService,
@@ -24,10 +25,9 @@ namespace CKAN.NetKAN.Transformers
             bool prerelease
         )
         {
-            _transformers = new List<ITransformer>
+            _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
                 new MetaNetkanTransformer(http),
-                new KerbalstuffTransformer(new KerbalstuffApi(http)),
                 new SpacedockTransformer(new SpacedockApi(http)),
                 new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(new GithubApi(githubToken), prerelease),
@@ -38,13 +38,15 @@ namespace CKAN.NetKAN.Transformers
                 new VersionEditTransformer(),
                 new ForcedVTransformer(),
                 new EpochTransformer(),
-                new VersionedOverrideTransformer(),
-                new DownloadSizeTransformer(http, fileService),
+                // This is the "default" VersionedOverrideTransformer for compatability with overrides that don't
+                // specify a before or after property.
+                new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
+                new DownloadAttributeTransformer(http, fileService),
                 new GeneratedByTransformer(),
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),
                 new PropertySortTransformer()
-            };
+            });
         }
 
         public Metadata Transform(Metadata metadata)
@@ -54,6 +56,43 @@ namespace CKAN.NetKAN.Transformers
                     metadata,
                     (transformedMetadata, transformer) => transformer.Transform(transformedMetadata)
                 );
+        }
+
+        private static List<ITransformer> InjectVersionedOverrideTransformers(List<ITransformer> transformers)
+        {
+            var result = new List<ITransformer>();
+
+            for (var i = 0; i < transformers.Count; i++)
+            {
+                var before = new List<string>();
+                var after = new List<string>();
+
+                before.Add(transformers[i].Name);
+
+                if (i - 1 >= 0)
+                    after.Add(transformers[i - 1].Name);
+
+                result.Add(new VersionedOverrideTransformer(before, after));
+                result.Add(transformers[i]);
+            }
+
+            if (result.Any())
+            {
+                var firstVersionedOverride = result.First() as VersionedOverrideTransformer;
+
+                if (firstVersionedOverride != null)
+                {
+                    firstVersionedOverride.AddBefore("$all");
+                    firstVersionedOverride.AddAfter("$none");
+                }
+
+                result.Add(new VersionedOverrideTransformer(
+                    new[] { "$none" },
+                    new[] { result.Last().Name, "$all" }
+                ));
+            }
+
+            return result;
         }
     }
 }

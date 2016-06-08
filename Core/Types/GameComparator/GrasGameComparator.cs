@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -10,9 +10,9 @@ namespace CKAN
     public class GrasGameComparator : IGameComparator
     {
         static readonly StrictGameComparator strict = new StrictGameComparator();
-        static readonly KSPVersion v103 = new KSPVersion("1.0.3");
+        static readonly KspVersion v103 = KspVersion.Parse("1.0.3");
 
-        public bool Compatible(KSPVersion gameVersion, CkanModule module)
+        public bool Compatible(KspVersion gameVersion, CkanModule module)
         {
             // If it's strictly compatible, then it's compatible.
             if (strict.Compatible(gameVersion, module))
@@ -27,11 +27,10 @@ namespace CKAN
 
             // If we're running KSP 1.0.4, then allow the mod to run if we would have
             // considered it compatible under 1.0.3 (as 1.0.4 was "just a hotfix").
-            if (gameVersion.Equals("1.0.4"))
+            if (gameVersion.Equals(KspVersion.Parse("1.0.4")))
                 return strict.Compatible(v103, module);
 
             return false;
         }
     }
 }
-

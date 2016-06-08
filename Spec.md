@@ -119,7 +119,7 @@ For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.16'. Changes since spec `1`
-are marked with **v1.2** through to **v1.14** respectively. For maximum
+are marked with **v1.2** through to **v1.16** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -152,7 +152,7 @@ with any version and the `.dll` suffix removed.
 ##### download
 
 A fully formed URL, indicating where a machine may download the
-described version of the mod.
+described version of the mod. Note: This field is not required if the `kind` is `metapackage`.
 
 ##### license
 
@@ -165,6 +165,7 @@ The same rules as per the
   author did not specify which version applies.
 * Stripping of trailing zeros is not recognised.
 * (**v1.2**) `WTFPL` is recognised as a valid license.
+* (**v1.18**) `Unlicense` is recognised as a valid license.
 
 The following license strings are also valid and indicate other licensing not
 described above:
@@ -273,19 +274,19 @@ three source directives:
 
 In addition a destination directive *must* be provided:
 
-- `install_to`: The location where this section should be installed.
-  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Tutorial`, `Scenarios` (**v1.14**)
+- `install_to`: The target location where the matched file or directory should be installed.
+  -  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Tutorial`, `Scenarios` (**v1.14**)
   and `GameRoot` (which should be used sparingly, if at all).
-  Paths will be preserved, but directories will *only*
+  -  A path to a given subfolder location can be specified *only* under `GameData` (**v1.2**);
+  for example: `GameData/MyMod/Plugins`. The client *must* check this path and abort the install
+  if any attempts to traverse up directories are found (eg: `GameData/../Example`).
+  -  Subfolder paths under a matched directory will be preserved, but directories will *only*
   be created when installing to `GameData`, `Tutorial`, or `Scenarios`.
-
-(**v1.2**) For `GameData` *only* one *may* specify the path to a specific
-subfolder; for example: `GameData/MyMod/Plugins`. The client *must* check this
-path and abort the install if any attempts to traverse up directories are found
-(eg: `GameData/../Example`).
 
 In addition, any number of optional directives *may* be provided:
 
+- `as` : (**v1.18**) The name to give the matching directory or file when installed. Allows renaming directories or
+  files.
 - `filter` : A string, or list of strings, of file parts that should not
   be installed. These are treated as literal things which must match a
   file name or directory. Examples of filters may be `Thumbs.db`,
@@ -294,8 +295,8 @@ In addition, any number of optional directives *may* be provided:
   case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
   expression, it is not installed.
-- `find_matches_files` : If set to `true` then both `find` and
-  `find_regexp` will match files in addition to directories (**v1.16**).
+- `find_matches_files` : (**v1.16**) If set to `true` then both `find` and
+  `find_regexp` will match files in addition to directories.
 
 If no install sections are provided, a CKAN client *must* find the
 top-most directory in the archive that matches the module identifier,
@@ -307,7 +308,7 @@ A typical install directive only has `file` and `install_to` sections:
         {
             "file"       : "GameData/ExampleMod",
             "install_to" : "GameData"
-        },
+        }
     ]
 
 ##### comment
@@ -425,7 +426,7 @@ A list of mods which are suggested for installation alongside this mod.
 This is a weak recommendation, and by default these mods *will not* be
 installed unless the user requests otherwise.
 
-#### supports
+##### supports
 
 (**v1.2**) A list of mods which are supported by this mod.  This means that
 these mods may not interact or enhance this mod, but they will work correctly
@@ -449,7 +450,7 @@ are described. Unless specified otherwise, these are URLs:
 - `license` : The mod's license.
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
-- `kerbalstuff` : The mod on KerbalStuff.
+- `spacedock` : The mod on SpaceDock.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
@@ -459,7 +460,7 @@ Example resources:
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
         "repository"   : "http://github.com/pjf/DogeCoinFlag",
         "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
-        "kerbalstuff"  : "https://kerbalstuff.com/mod/269/Dogecoin%20Flag"
+        "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag"
     }
 
 While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
@@ -473,6 +474,10 @@ custom use fields, and will be ignored. For example:
 
 These fields are optional, and should only be used with good reason.
 Typical mods *should not* include these special use fields.
+
+##### kind
+
+Specifies the type of package the .ckan file delivers. This field defaults to `package`, the other option (and presently the only time the field is explicitly declared) is `metapackage`. Metapackages allow for a distributable .ckan file that has relationships to other mods while having no `download` of its own. **v1.6**
 
 ##### provides
 
@@ -505,6 +510,27 @@ downloading from the `download` URL. It is recommended that this field is
 only generated by automated tools (where it is encouraged),
 and not filled in by hand.
 
+##### download_hash
+
+If supplied, `download_hash` is an object of hash digests. Currently 
+SHA1 and SHA256 calculated hashes of the resulting file downloaded. 
+It is recommended that this field is only generated by automated 
+tools (where it is encouraged), and not filled in by hand.
+
+    "download_hash": {
+        "sha1": "1F4B3F21A77D4A302E3417A7C7A24A0B63740FC5",
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+
+##### download_content_type
+
+If supplied, `download_content_type` is the content type of the file
+downloaded from the `download` URL. It is recommended that this field is
+only generated by automated tools (where it is encouraged),
+and not filled in by hand.
+
+    "download_content_type": "application/zip"
+
 #### Extensions
 
 Any field starting with `x_` (an x, followed by an underscore) is considered
@@ -530,25 +556,6 @@ consumes `.netkan` files to produce `.ckan` files. `.netkan` files are a *strict
 The `$kref` field indicates that data should be filled in from an external service provider. The following `$kref`
 values are understood. Only *one* `$kref` field may be present in a `.netkan` file.
 
-###### `#/ckan/kerbalstuff/:ksid`
-
-Indicates that data should be fetched from KerbalStuff, using the `:ksid` provided. For example: `#/ckan/kerbalstuff/269`.
-
-When used, the following fields will be auto-filled if not already present:
-
-- `name`
-- `license`
-- `abstract`
-- `author`
-- `version`
-- `download`
-- `download_size`
-- `resources.homepage`
-- `resources.kerbalstuff`
-- `resources.repository`
-- `resources.x_screenshot`
-- `ksp_version`
-
 ###### `#/ckan/spacedock/:sdid`
 
 Indicates that data should be fetched from SpaceDock, using the `:sdid` provided. For example: `#/ckan/spacedock/269`.
@@ -562,8 +569,10 @@ When used, the following fields will be auto-filled if not already present:
 - `version`
 - `download`
 - `download_size`
+- `download_hash`
+- `download_content_type`
 - `resources.homepage`
-- `resources.kerbalstuff`
+- `resources.spacedock`
 - `resources.repository`
 - `resources.x_screenshot`
 - `ksp_version`
@@ -579,12 +588,19 @@ When used, the following fields will be auto-filled if not already present:
 - `version`
 - `download`
 - `download_size`
+- `download_hash`
+- `download_content_type`
 - `resources.repository`
 
 Optionally, one asset `:filter_regexp` directive *may* be provided:
 
 - `filter_regexp`: A string which is treated as  case-sensitive C# regular expressions which are matched against the
   name of the released artifact.
+
+An `x_netkan_github` field may be provided to customize how the metadata is fetched from GitHub. It is an `object` with the following fields:
+
+- `use_source_archive` (type: `boolean`) (default: `false`)<br/>
+  Specifies that the source ZIP of the repository itself will be used instead of any assets in the release.
 
 ###### `#/ckan/jenkins/:joburl`
 
@@ -596,6 +612,8 @@ The following fields will be auto-filled if not already present:
 - `version`
 - `download`
 - `download_size`
+- `download_hash`
+- `download_content_type`
 - `resources.ci`
 
 An `x_netkan_jenkins` field may be provided to customize how the metadata is fetched from the Jenkins server. It is
@@ -636,6 +654,8 @@ When used, the following fields will be auto-filled if not already present:
 
 - `download`
 - `download_size`
+- `download_hash`
+- `download_content_type`
 
 This method depends on the existence of an AVC `.version` file in the download file
 to determine:
@@ -653,11 +673,13 @@ authoritative metadata.
 
 The following conditions apply:
 - A metanekan may not reference another metanetkan, otherwise an error is produced.
-- An fields specified in the metanetkan will override any fields in the target netkan file.
+- Any fields specified in the metanetkan will override any fields in the target netkan file.
 
-An example `.netkan` excerpt:
+An example `.netkan` including all required fields for a valid metanetkan:
 ```json
 {
+    "spec_version": 1,
+    "identifier": "AwesomeMod",
     "$kref": "#/ckan/netkan/https://www.kspmods.example/AwesomeMod.netkan"
 }
 ```
@@ -756,13 +778,39 @@ The `x_netkan_override` field is used to override field values based on the valu
   it is equivalent to specifying `=`. In order for the override to match *all* the comparisons must be true. Therefore
   a range may be specified as such: `[ ">=1.0", "<2.0" ]`. A `string` may also be specified instead of an `array` in
   which case it is treated as an array with a single element equal to the value of the string.
+- `before` (type: `string`, transformation name)<br/>
+  The name of a transformation this override to happen directly before.
+- `after` (type: `string:, transformation name)<br/>
+  The name of a transformation this override to happen directly after.
 - `override` (type: `object`)<br/>
   An object whose fields will override the fields already present if a match occurs. No merging of values occurs, the
   values of the fields are entirely replaced.
 - `delete` (type: `array` of `string`)<br/>
   An array of strings which are the names of fields to remove if a match occurs.
 
-Override objects are processed sequentially and all matching overrides will be used.
+The possible values of `before` and `after` are:
+
+- `$none`
+- `$all`
+- `avc`
+- `download_attributes`
+- `epoch`
+- `forced_v`
+- `generated_by`
+- `github`
+- `http`
+- `internal_ckan`
+- `jenkins`
+- `metanetkan`
+- `optimus_prime`
+- `property_sort`
+- `spacedock`
+- `strip_netkan_metadata`
+- `version_edit`
+- `versioned_override`
+
+If no `before` or `after` is specified then the override occurs at a "reasonable" point in the transformation process.
+Most overrides should **not** specify a `before` or `after` unless there is a specific need to.
 
 When any metadata changes occur which are version specific, for example a new dependency is added, overrides are the
 recomended means of specifying them. Overrides may also be used to *stage* metadata changes, for example when new

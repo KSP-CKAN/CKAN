@@ -13,6 +13,7 @@
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine">
@@ -50,6 +51,11 @@
     <Compile Include="Exporters\IExporter.cs" />
     <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />
+    <Compile Include="GameVersionProviders\IKspBuildMap.cs" />
+    <Compile Include="GameVersionProviders\KspBuildIdVersionProvider.cs" />
+    <Compile Include="GameVersionProviders\KspVersionSource.cs" />
+    <Compile Include="GameVersionProviders\IGameVersionProvider.cs" />
+    <Compile Include="GameVersionProviders\KspBuildMap.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Net\IDownloader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,7 +67,6 @@
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
-    <Compile Include="Types\KSPVersion.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="Types\Kraken.cs" />
     <Compile Include="KSPManager.cs" />
@@ -83,6 +88,10 @@
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
+    <Compile Include="GameVersionProviders\KspReadmeVersionProvider.cs" />
+    <Compile Include="Versioning\KspVersion.cs" />
+    <Compile Include="Versioning\KspVersionBound.cs" />
+    <Compile Include="Versioning\KspVersionRange.cs" />
     <Compile Include="Win32Registry.cs" />
     <Compile Include="Types\FileType.cs" />
     <Compile Include="FileIdentifier.cs" />
@@ -99,10 +108,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="builds.json" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Types\GameComparator\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
