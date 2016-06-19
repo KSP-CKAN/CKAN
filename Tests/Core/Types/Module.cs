@@ -48,6 +48,9 @@ namespace Tests.Core.Types
             Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
+            
+            Assert.AreEqual("C5A224AC4397770C0B19B4A6417F6C5052191608", module.download_hash.sha1.ToString());
+            Assert.AreEqual("E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB", module.download_hash.sha256.ToString());
         }
 
         /// <summary>
