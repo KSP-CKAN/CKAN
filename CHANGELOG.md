@@ -14,22 +14,29 @@ All notable changes to this project will be documented in this file.
 - [Core] `install` stanzas can have an `as` property allowing directories and files to be renamed/moved on installation. (#1728 by: dbent; reviewed: techman83)
 - [GUI] Added "filter by description" search box. (#1632 by: politas; reviewed: pjf)
 - [CLI] `compare` command now checks positive and negative rather than -1/+1 (#1649 by: dbent; reviewed: Daz)
-- [GUI] In windows launch KSP_x64.exe by default rather than KSP.exe. (#1711 by plague006; reviewed: dbent)
+- [GUI] In windows launch `KSP_x64.exe` by default rather than `KSP.exe`. (#1711 by plague006; reviewed: dbent)
 - [Core] Unlicense added to CKAN as an option for mods. (#1737 by plague006; reviewed: techman83)
+- [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent; reviewed: techman83)
 
 ### Internal
 
-- [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent)
 - [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
-- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1597 by: plague006; reviewed: Daz)
-- [spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)
+- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1662,#1597 by: plague006; reviewed: Daz)
+- [Spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)
+- [Spec] Documented the `x_netkan_github` and `use_source_archive` options in NetKAN files. (#1774 by dbent; reviewed: plague006)
+- [Spec] Clarified the `install_to` directive. (#1771 by: politas; reviewed: plague006)
+- [Spec] Clarified example of a complete metanetkan file (#1753 by: plague006; reviewed: politas)
+- [Spec] Removed stray comma (#1736 by: plague006; reviewed: politas)
 - [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
-- [NetKAN] Catch ksp_version from SpaceDocks newly implemented game_version (#1655 by: dbent; reviewed: -)
+- [NetKAN] Catch `ksp_version` from SpaceDocks newly implemented `game_version` (#1655 by: dbent; reviewed: -)
 - [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
 - [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
 - [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
+- [NetKAN] Sensible defaults are used when fetching abstract and homepage from github. (#1726,#1723 by: dbent; reviewed: politas)
 - [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
 - [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
+- [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by plague006; reviewed: politas)
+- [Build] Support for mono 3.2.8 deprecated (#1715 by dbent; reviewed: techman83)
 
 ## v1.16.1
 
