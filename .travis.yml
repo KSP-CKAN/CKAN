@@ -3,6 +3,7 @@ language: csharp
 mono:
     - latest
     - 3.10.0
+    - 3.2.8
 
 # Travis has problems with nunit on 3.8.0, dunno why.
 #    - 3.8.0
