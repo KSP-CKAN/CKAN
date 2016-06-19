@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using CommandLine;
 
 namespace CKAN.CmdLine
@@ -130,14 +131,62 @@ namespace CKAN.CmdLine
 
         private int ListInstalls()
         {
-            User.RaiseMessage("Listing all known KSP installations:");
-            User.RaiseMessage(String.Empty);
+            string preferredGameDir = null;
 
-            int count = 1;
-            foreach (var instance in Manager.Instances)
+            var preferredInstance = Manager.GetPreferredInstance();
+
+            if (preferredInstance != null)
             {
-                User.RaiseMessage("{0}) \"{1}\" - {2}", count, instance.Key, instance.Value.GameDir());
-                count++;
+                preferredGameDir = preferredInstance.GameDir();
+            }
+
+            var output = Manager.Instances
+                .OrderByDescending(i => i.Value.GameDir() == preferredGameDir)
+                .ThenByDescending(i => i.Value.Version())
+                .ThenBy(i => i.Key)
+                .Select(i => new
+                {
+                    Name = i.Key,
+                    Version = i.Value.Version().ToString(),
+                    Default = i.Value.GameDir() == preferredGameDir ? "Yes" : "No",
+                    Path = i.Value.GameDir()
+                })
+                .ToList();
+
+            const string nameHeader = "Name";
+            const string versionHeader = "Version";
+            const string defaultHeader = "Default";
+            const string pathHeader = "Path";
+
+            var nameWidth = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
+            var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
+            var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
+            var pathWidth = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
+
+            const string columnFormat = "{0}  {1}  {2}  {3}";
+
+            User.RaiseMessage(string.Format(columnFormat,
+                nameHeader.PadRight(nameWidth),
+                versionHeader.PadRight(versionWidth),
+                defaultHeader.PadRight(defaultWidth),
+                pathHeader.PadRight(pathWidth)
+            ));
+
+            User.RaiseMessage(string.Format(columnFormat,
+                new string('-', nameWidth),
+                new string('-', versionWidth),
+                new string('-', defaultWidth),
+                new string('-', pathWidth)
+            ));
+
+            foreach (var line in output)
+            {
+                User.RaiseMessage(string.Format(columnFormat,
+                   line.Name.PadRight(nameWidth),
+                   line.Version.PadRight(versionWidth),
+                   line.Default.PadRight(defaultWidth),
+                   line.Path.PadRight(pathWidth)
+               ));
             }
 
             return Exit.OK;
