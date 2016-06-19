@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
 - [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by plague006; reviewed: politas)
 - [Build] Support for mono 3.2.8 deprecated (#1715 by dbent; reviewed: techman83)
+- [Core] Defend against corrupted KSP version numbers in old registries. (#1781 by pjf; reviewed: politas)
 
 ## v1.16.1
 

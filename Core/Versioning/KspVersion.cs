@@ -695,6 +695,14 @@ namespace CKAN.Versioning
                     return KspVersion.Any;
                 default:
                     KspVersion result;
+
+                    // For a little while, AVC files which didn't specify a full three-part
+                    // version number could result in versions like `1.1.`, which cause our
+                    // code to fail. Here we strip any trailing dot from the version number,
+                    // which makes them valid again before parsing. CKAN#1780
+
+                    value = Regex.Replace(value, @"\.$", "");
+
                     if (KspVersion.TryParse(value, out result))
                         return result;
                     else
