@@ -505,13 +505,15 @@ namespace CKAN
             }
 
             // We're only going to update the status of rows that either don't already exist,
-            // or which exist but have changed their latest version.
+            // or which exist but have changed their latest version
+            // or whose installation status has changed
             //
             // TODO: Will this catch a mod where the latest version number remains the same, but
             // another part of the metadata (eg: dependencies or description) has changed?
             IEnumerable<GUIMod> rowsToUpdate = modules.Where(
                 mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
-                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion);
+                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion ||
+                mod.IsInstalled != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).IsInstalled);
 
             // Let's update our list!
             foreach (var mod in rowsToUpdate)
