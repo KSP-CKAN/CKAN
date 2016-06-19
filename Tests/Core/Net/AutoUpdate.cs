@@ -13,6 +13,7 @@ namespace Tests.Core.AutoUpdate
 
         [Test]
         [Category("Online")]
+        [Category("FlakyNetwork")]
         // We expect a kraken when looking at a URL with no releases.
         public void FetchCkanUrl()
         {
