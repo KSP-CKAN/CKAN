@@ -111,7 +111,8 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
+                user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown. *: Broken. ");
+                // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 
             return Exit.OK;

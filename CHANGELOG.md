@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
+- [Cmdline] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
+
 ### Features
 
 ### Internal
