@@ -65,3 +65,8 @@ getting stuck on what appears to be a very standard .netkan
 (plague006) You say it like it'll only be the second time you've broken everything. :D
 
 -- CKAN#1662
+%
+It is truly amazing how many extensions to BDArmory are only compatible with a
+KSP version that BDArmory is not compatible with.
+
+    -- politas, NetKAN#4169
