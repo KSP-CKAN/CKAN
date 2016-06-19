@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - [Core] In certain cases a `NullReferenceException` could be produced inside error handling code when processing the registry. (#1700 by: keyspace, reviewed: dbent)
 - [GUI] Fix typo in export options. (#1718 by: dandrestor, reviewed: plague006)
 - [GUI] Fix unit of measure for download speed. (#1732 by: plague006, reviewed: dbent)
+- [Linux] Better menu integration of the CKAN launcher. (#1704 by: reavertm; reviewed: pjf)
 
 ### Features
 
