@@ -38,6 +38,7 @@ All notable changes to this project will be documented in this file.
 - [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by plague006; reviewed: politas)
 - [Build] Support for mono 3.2.8 deprecated (#1715 by dbent; reviewed: techman83)
 - [Core] Defend against corrupted KSP version numbers in old registries. (#1781 by pjf; reviewed: politas)
+- [GUI] Fixed spurious build warning (#1776 by politas; reviewed: pjf)
 
 ## v1.16.1
 
