@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -79,7 +80,10 @@ namespace CKAN.CmdLine
             user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
 
-            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0)
+            // Processes in Docker containers normally run as root.
+            // If we are running in a Docker container, do not require --asroot.
+            // Docker creates a .dockerenv file in the root of each container.
+            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerenv"))
             {
                 if (!options.AsRoot)
                 {
