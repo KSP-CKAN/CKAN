@@ -13,4 +13,4 @@ When an author gives us explicit and irrevocable permission via a legal document
 
 In some cases it's not possible to install mods via the CKAN and maintain the goodwill of the author(s). **The CKAN will not install any mod when the primary maintainer (or a significant group of maintainers when no primary is identifiable) requests the mod be removed from the CKAN.** 
 
-Additionally, CKAN will maintain a list of authors who have requested that their mods not be added to CKAN without their explicit request (on either a per-version or per mod level).
+Additionally, CKAN will maintain a list of authors who have requested that their mods not be added to CKAN without their explicit request (on either a per-version or per mod level). This list will be consulted as part of the approval/vetting stage for any metadata submission.
