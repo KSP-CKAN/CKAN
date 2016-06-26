@@ -11,6 +11,6 @@ Permissive licenses—which includes *every* license the CKAN is aware of that's
 
 When an author gives us explicit and irrevocable permission via a legal document to redistribute their work, we cannot in good faith de-index the mod and still act in the interests of our users. **Whenever possible, mods with permissive licenses will be preserved by the CKAN**, especially when alternate downloads to such mods exist, including those cached by the CKAN's own automated systems.
 
-It has become clear that in some cases, it is not possible to preserve mods with permissive licenses and have them remain under permissive licenses. Therefore, CKAN will not attempt to install permissively-licensed mods when the primary maintainer (or a significant group of maintainers if no single primary maintaner is easily identifiable) requests that the mod be taken off CKAN.
+In some cases it's not possible to install mods via the CKAN and maintain the goodwill of the author(s). **The CKAN will not install any mod when the primary maintainer (or a significant group of maintainers when no primary is identifiable) requests the mod be removed from the CKAN.** 
 
-Additionally, CKAN will maintain a list of authors who have requested that their mods not be added to CKAN without their explicit request. (On either a per-version or per mod level)
+Additionally, CKAN will maintain a list of authors who have requested that their mods not be added to CKAN without their explicit request (on either a per-version or per mod level).
