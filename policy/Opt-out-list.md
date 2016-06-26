@@ -7,3 +7,4 @@ KSP Community Form name | GitHub username
 ------------------------|-------------------
 RoverDude | BobPalmer
 Ferram4 | Ferram4
+CliftonM | CliftonMarien 
