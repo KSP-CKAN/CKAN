@@ -25,7 +25,11 @@ namespace CKAN.Versioning
             Value = value;
             Inclusive = inclusive;
 
-            _string = inclusive ? string.Format("[{0}]", value) : string.Format("({0})", value);
+            // Workaround an issue in old (<=3.2.x) versions of Mono that does not correctly handle null values
+            // returned from ToString().
+            var valueStr = value.ToString() ?? string.Empty;
+
+            _string = inclusive ? string.Format("[{0}]", valueStr) : string.Format("({0})", valueStr);
         }
 
         public override string ToString()
