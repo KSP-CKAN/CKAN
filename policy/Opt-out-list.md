@@ -7,6 +7,6 @@ KSP Community Forum name | GitHub username | Notes
 -----------|------------|--------------------------
 CliftonM | CliftonMarien | protest
 Ferram4 | Ferram4 | Complex mods with changing dependencies and installation details
-jrossignol | jrossignol | Self-managing metadata
+nightingale | jrossignol | Self-managing metadata
 RoverDude | BobPalmer | Self-managing metadata
 Sarbian | Sarbian | protest
