@@ -5,7 +5,6 @@ This is to meet the requirements of our [De-indexing mods from the CKAN](de-inde
 
 KSP Community Forum name | GitHub username | Notes
 -----------|------------|--------------------------
-CliftonM | CliftonMarien | protest
 Ferram4 | Ferram4 | Complex mods with changing dependencies and installation details
 nightingale | jrossignol | Self-managing metadata
 RoverDude | BobPalmer | Self-managing metadata
