@@ -414,6 +414,7 @@ namespace CKAN
 
                     ResetProgress();
                     ShowWaitDialog(false);
+                    SetEnabledState(false);
 
                     ClearLog();
                     m_TabController.RenameTab("WaitTabPage", "Updating CKAN");
