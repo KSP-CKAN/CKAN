@@ -272,21 +272,7 @@ namespace CKAN
                 try
                 {
                     log.Info("Making autoupdate call");
-                    AutoUpdate.Instance.FetchLatestReleaseInfo();
-                    var latest_version = AutoUpdate.Instance.LatestVersion;
-                    var current_version = new Version(Meta.Version());
-
-                    if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
-                    {
-                        log.Debug("Found higher ckan version");
-                        var release_notes = AutoUpdate.Instance.ReleaseNotes;
-                        var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
-                        if (dialog.ShowDialog() == DialogResult.OK)
-                        {
-                            log.Info("Start ckan update");
-                            AutoUpdate.Instance.StartUpdateProcess(true);
-                        }
-                    }
+                    UpdateCKAN();
                 }
                 catch (Exception exception)
                 {
@@ -404,6 +390,52 @@ namespace CKAN
             Conflicts = null;
 
             Filter((GUIModFilter)m_Configuration.ActiveFilter);
+        }
+
+        public bool UpdateCKAN()
+        {
+            AutoUpdate updater = AutoUpdate.Instance;
+            if (!updater.IsFetched())
+            {
+                updater.FetchLatestReleaseInfo();
+                if (!updater.IsFetched())
+                    return false;
+            }
+
+            Version currentVersion = new Version(Meta.Version());
+            if (updater.LatestVersion.IsGreaterThan(currentVersion))
+            {
+                log.Debug("Found higher ckan version");
+                var release_notes = updater.ReleaseNotes;
+                var dialog = new NewUpdateDialog(updater.LatestVersion.ToString(), release_notes);
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    log.Info("Start ckan update");
+
+                    ResetProgress();
+                    ShowWaitDialog(false);
+
+                    ClearLog();
+                    m_TabController.RenameTab("WaitTabPage", "Updating CKAN");
+                    SetDescription("Upgrading CKAN to " + updater.LatestVersion);
+
+                    BackgroundWorker CkanUpdateWorker = new BackgroundWorker
+                    {
+                        WorkerReportsProgress = true,
+                        WorkerSupportsCancellation = true
+                    };
+
+
+                    CkanUpdateWorker.DoWork += delegate
+                    {
+                        AutoUpdate.Instance.StartUpdateProcess(true);
+                    };
+
+                    CkanUpdateWorker.RunWorkerAsync();
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
