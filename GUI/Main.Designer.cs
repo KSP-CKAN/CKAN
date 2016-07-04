@@ -553,7 +553,6 @@ namespace CKAN
             // 
             // ModInfoTabControl
             // 
-            this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
             this.ModInfoTabControl.Controls.Add(this.ContentTabPage);
@@ -1042,7 +1041,7 @@ namespace CKAN
             // CancelChangesButton
             // 
             this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelChangesButton.Location = new System.Drawing.Point(859, 617);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
@@ -1054,7 +1053,7 @@ namespace CKAN
             // ConfirmChangesButton
             // 
             this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ConfirmChangesButton.Location = new System.Drawing.Point(940, 617);
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(75, 23);
@@ -1113,7 +1112,7 @@ namespace CKAN
             // CancelCurrentActionButton
             // 
             this.CancelCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelCurrentActionButton.Location = new System.Drawing.Point(940, 618);
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(75, 23);
@@ -1180,7 +1179,7 @@ namespace CKAN
             // RecommendedModsCancelButton
             // 
             this.RecommendedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RecommendedModsCancelButton.Location = new System.Drawing.Point(859, 617);
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(75, 23);
@@ -1192,7 +1191,7 @@ namespace CKAN
             // RecommendedModsContinueButton
             // 
             this.RecommendedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RecommendedModsContinueButton.Location = new System.Drawing.Point(940, 617);
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(75, 23);
@@ -1205,8 +1204,8 @@ namespace CKAN
             // 
             this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RecommendedModsToggleCheckbox.AutoSize = true;
-            this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(8, 620);
+            this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(92, 17);
             this.RecommendedModsToggleCheckbox.TabIndex = 9;
@@ -1275,7 +1274,7 @@ namespace CKAN
             // ChooseProvidedModsCancelButton
             // 
             this.ChooseProvidedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(857, 616);
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(75, 23);
@@ -1287,7 +1286,7 @@ namespace CKAN
             // ChooseProvidedModsContinueButton
             // 
             this.ChooseProvidedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(938, 616);
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(75, 23);

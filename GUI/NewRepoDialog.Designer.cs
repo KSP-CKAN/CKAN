@@ -43,7 +43,7 @@
             this.RepositoryGroupBox.Controls.Add(this.RepoCancel);
             this.RepositoryGroupBox.Controls.Add(this.RepoOK);
             this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
-            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 410);
@@ -62,7 +62,7 @@
             // RepoCancel
             // 
             this.RepoCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.RepoCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RepoCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RepoCancel.Location = new System.Drawing.Point(352, 380);
             this.RepoCancel.Name = "RepoCancel";
             this.RepoCancel.Size = new System.Drawing.Size(56, 26);
@@ -74,7 +74,7 @@
             // 
             this.RepoOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.RepoOK.Enabled = false;
-            this.RepoOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RepoOK.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RepoOK.Location = new System.Drawing.Point(414, 380);
             this.RepoOK.Name = "RepoOK";
             this.RepoOK.Size = new System.Drawing.Size(56, 26);

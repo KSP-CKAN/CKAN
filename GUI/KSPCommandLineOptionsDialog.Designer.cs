@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if(disposing && (components != null))
             {
                 components.Dispose();
             }
@@ -54,7 +54,7 @@
             // AcceptChangesButton
             // 
             this.AcceptChangesButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.AcceptChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AcceptChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.AcceptChangesButton.Location = new System.Drawing.Point(397, 51);
             this.AcceptChangesButton.Name = "AcceptChangesButton";
             this.AcceptChangesButton.Size = new System.Drawing.Size(75, 23);
@@ -65,7 +65,7 @@
             // CancelChangesButton
             // 
             this.CancelChangesButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelChangesButton.Location = new System.Drawing.Point(316, 51);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);

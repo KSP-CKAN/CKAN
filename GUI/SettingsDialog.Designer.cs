@@ -54,7 +54,7 @@
             // 
             // NewRepoButton
             // 
-            this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.NewRepoButton.Location = new System.Drawing.Point(6, 224);
             this.NewRepoButton.Name = "NewRepoButton";
             this.NewRepoButton.Size = new System.Drawing.Size(56, 26);
@@ -70,7 +70,7 @@
             this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
             this.RepositoryGroupBox.Controls.Add(this.NewRepoButton);
-            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 261);
@@ -81,7 +81,7 @@
             // DownRepoButton
             // 
             this.DownRepoButton.Enabled = false;
-            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
             this.DownRepoButton.Name = "DownRepoButton";
             this.DownRepoButton.Size = new System.Drawing.Size(56, 26);
@@ -93,7 +93,7 @@
             // UpRepoButton
             // 
             this.UpRepoButton.Enabled = false;
-            this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
             this.UpRepoButton.Name = "UpRepoButton";
             this.UpRepoButton.Size = new System.Drawing.Size(56, 26);
@@ -105,7 +105,7 @@
             // DeleteRepoButton
             // 
             this.DeleteRepoButton.Enabled = false;
-            this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.DeleteRepoButton.Location = new System.Drawing.Point(414, 224);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
             this.DeleteRepoButton.Size = new System.Drawing.Size(56, 26);
@@ -127,7 +127,7 @@
             // 
             this.CacheGroupBox.Controls.Add(this.ClearCKANCacheButton);
             this.CacheGroupBox.Controls.Add(this.CKANCacheLabel);
-            this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CacheGroupBox.Location = new System.Drawing.Point(12, 279);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
@@ -137,7 +137,7 @@
             // 
             // ClearCKANCacheButton
             // 
-            this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ClearCKANCacheButton.Location = new System.Drawing.Point(341, 16);
             this.ClearCKANCacheButton.Name = "ClearCKANCacheButton";
             this.ClearCKANCacheButton.Size = new System.Drawing.Size(129, 23);
@@ -165,7 +165,7 @@
             this.groupBox2.Controls.Add(this.LocalVersionLabel);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
-            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox2.Location = new System.Drawing.Point(12, 334);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(476, 105);
@@ -187,7 +187,7 @@
             // InstallUpdateButton
             // 
             this.InstallUpdateButton.Enabled = false;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.InstallUpdateButton.Location = new System.Drawing.Point(116, 76);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
             this.InstallUpdateButton.Size = new System.Drawing.Size(104, 23);
@@ -234,7 +234,7 @@
             // 
             // CheckForUpdatesButton
             // 
-            this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(6, 76);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
             this.CheckForUpdatesButton.Size = new System.Drawing.Size(104, 23);

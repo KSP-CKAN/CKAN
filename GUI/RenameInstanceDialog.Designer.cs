@@ -44,7 +44,7 @@
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.OKButton.Location = new System.Drawing.Point(232, 39);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
@@ -55,7 +55,7 @@
             // CancelRenameInstanceButton
             // 
             this.CancelRenameInstanceButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelRenameInstanceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelRenameInstanceButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelRenameInstanceButton.Location = new System.Drawing.Point(151, 39);
             this.CancelRenameInstanceButton.Name = "CancelRenameInstanceButton";
             this.CancelRenameInstanceButton.Size = new System.Drawing.Size(75, 23);

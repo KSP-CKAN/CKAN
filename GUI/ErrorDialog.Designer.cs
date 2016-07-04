@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if(disposing && (components != null))
             {
                 components.Dispose();
             }
@@ -54,7 +54,7 @@
             // 
             // DismissButton
             // 
-            this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.DismissButton.Location = new System.Drawing.Point(205, 136);
             this.DismissButton.Name = "DismissButton";
             this.DismissButton.Size = new System.Drawing.Size(75, 23);
