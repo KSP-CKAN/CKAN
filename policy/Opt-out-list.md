@@ -8,4 +8,4 @@ KSP Community Forum name | GitHub username | Notes
 Ferram4 | Ferram4 | Complex mods with changing dependencies and installation details
 nightingale | jrossignol | Self-managing metadata
 RoverDude | BobPalmer | Self-managing metadata
-Sarbian | Sarbian | protest
+Sarbian | Sarbian | Self-managing metadata
