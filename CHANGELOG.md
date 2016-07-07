@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Cmdline] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
+- [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent, reviewed postremus)
 
 ### Features
 
