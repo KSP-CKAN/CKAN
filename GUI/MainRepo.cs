@@ -47,28 +47,25 @@ namespace CKAN
                 m_User.displayYesNo = old_dialog;
             }
 
-            Util.Invoke(this, SwitchEnabledState);
+            Util.Invoke(this, delegate { SetEnabledState(false); });
 
             SetDescription("Contacting repository..");
             ClearLog();
             ShowWaitDialog();
         }
 
-        private bool _enabled = true;
-        private void SwitchEnabledState()
+        private void SetEnabledState(bool enabled)
         {
-            _enabled = !_enabled;
-            menuStrip1.Enabled = _enabled;
-            MainTabControl.Enabled = _enabled;
+            menuStrip1.Enabled = enabled;
+            MainTabControl.Enabled = enabled;
             /* Windows (7 & 8 only?) bug #1548 has extra facets. 
              * parent.childcontrol.Enabled = false seems to disable the parent,
              * if childcontrol had focus. Depending on optimization steps,
              * parent.childcontrol.Enabled = true does not necessarily
              * re-enable the parent.*/
-            if (_enabled)
+            if (enabled)
                 this.Focus();
         }
-
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
@@ -101,7 +98,7 @@ namespace CKAN
             AddStatusMessage("Repository successfully updated");
             ShowRefreshQuestion();
 
-            Util.Invoke(this, SwitchEnabledState);
+            Util.Invoke(this, delegate { SetEnabledState(true); });
             Util.Invoke(this, RecreateDialogs);
             Util.Invoke(this, ModList.Select);
         }
