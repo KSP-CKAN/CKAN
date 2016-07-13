@@ -28,7 +28,7 @@ namespace CKAN
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.kerbalspaceprogram.com/threads/100067");
+            System.Diagnostics.Process.Start("http://forum.kerbalspaceprogram.com/index.php?/topic/143140-*");
         }
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
