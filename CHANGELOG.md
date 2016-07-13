@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 - [Cmdline] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent; reviewed: pjf)
 - [GUI] About dialog pointing to new CKAN thread on forums (#1824 by: politas)
+- [GUI] Ignore ksp instances if we are launching the gui anyway (#1809 by: Postremus; reviewed: politas)
 
 ### Internal
 

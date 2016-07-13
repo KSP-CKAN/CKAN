@@ -141,10 +141,10 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 // Set a KSP directory by its path
                 manager.SetCurrentInstanceByPath(options.KSPdir);
             }
-            else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
+            else if (! (cmdline.action == "ksp" || cmdline.action == "version" || cmdline.action == "gui"))
             {
                 // Find whatever our preferred instance is.
-                // We don't do this on `ksp/version` commands, they don't need it.
+                // We don't do this on `ksp/version/gui` commands, they don't need it.
                 CKAN.KSP ksp = manager.GetPreferredInstance();
 
                 if (ksp == null)
