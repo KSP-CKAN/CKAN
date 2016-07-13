@@ -178,6 +178,9 @@ namespace CKAN
 
         private void ShowSelection(Dictionary<string, List<string>> selectable, bool suggest = false)
         {
+            if (installCanceled)
+                return;
+
             // If we're going to install something anyway, then don't list it in the
             // recommended list, since they can't de-select it anyway.
             foreach (var item in toInstall)
@@ -185,7 +188,7 @@ namespace CKAN
                 selectable.Remove(item);
             }
 
-            Dictionary<Module, string> mods = GetShowableMods(selectable);
+            Dictionary<CkanModule, string> mods = GetShowableMods(selectable);
 
             // If there are any mods that would be recommended, prompt the user to make
             // selections.
@@ -434,9 +437,9 @@ namespace CKAN
         /// </summary>
         /// <param name="mods"></param>
         /// <returns></returns>
-        private Dictionary<Module, string> GetShowableMods(Dictionary<string, List<string>> mods)
+        private Dictionary<CkanModule, string> GetShowableMods(Dictionary<string, List<string>> mods)
         {
-            Dictionary<Module, string> modules = new Dictionary<Module, string>();
+            Dictionary<CkanModule, string> modules = new Dictionary<CkanModule, string>();
 
             var opts = new RelationshipResolverOptions
             {
@@ -477,7 +480,7 @@ namespace CKAN
             return modules;
         }
 
-        private void UpdateRecommendedDialog(Dictionary<Module, string> mods, bool suggested = false)
+        private void UpdateRecommendedDialog(Dictionary<CkanModule, string> mods, bool suggested = false)
         {
             if (!suggested)
             {
@@ -501,7 +504,7 @@ namespace CKAN
             RecommendedModsListView.Items.Clear();
             foreach (var pair in mods)
             {
-                Module module = pair.Key;
+                CkanModule module = pair.Key;
                 ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key.name};
 
 
