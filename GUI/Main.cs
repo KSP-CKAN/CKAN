@@ -267,6 +267,8 @@ namespace CKAN
                 m_Configuration.Save();
             }
 
+            bool autoUpdating = false;
+
             if (m_Configuration.CheckForUpdatesOnLaunch)
             {
                 try
@@ -283,8 +285,8 @@ namespace CKAN
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
-                            log.Info("Start ckan update");
-                            AutoUpdate.Instance.StartUpdateProcess(true);
+                            UpdateCKAN();
+                            autoUpdating = true;
                         }
                     }
                 }
@@ -317,7 +319,8 @@ namespace CKAN
 
             CurrentInstanceUpdated();
 
-            if (m_Configuration.RefreshOnStartup)
+            // if we're autoUpdating then we shouldn't interfere progress tab
+            if (m_Configuration.RefreshOnStartup && !autoUpdating)
             {
                 UpdateRepo();
             }
@@ -404,6 +407,21 @@ namespace CKAN
             Conflicts = null;
 
             Filter((GUIModFilter)m_Configuration.ActiveFilter);
+        }
+
+        public void UpdateCKAN()
+        {
+            ResetProgress();
+            ShowWaitDialog(false);
+            SwitchEnabledState();
+            ClearLog();
+            m_TabController.RenameTab("WaitTabPage", "Updating CKAN");
+            SetDescription("Upgrading CKAN to " + AutoUpdate.Instance.LatestVersion);
+
+            log.Info("Start ckan update");
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, GUI.user);
+            bw.RunWorkerAsync();
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
