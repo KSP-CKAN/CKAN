@@ -105,6 +105,10 @@ namespace CKAN
             log.DebugFormat("Initialised {0}", CkanDir());
         }
 
+        #endregion
+
+        #region Destructors and Disposal
+
         /// <summary>
         /// Releases all resource used by the <see cref="CKAN.KSP"/> object.
         /// </summary>
@@ -118,14 +122,11 @@ namespace CKAN
                 Cache.Dispose();
         }
 
-        #endregion
 
-        #region Destructors and Disposal
-
-        public void Dispose()
-        {
-            this.RegistryManager.Dispose();
-        }
+        ///public void Dispose()
+        ///{
+        ///    this.RegistryManager.Dispose();
+        ///}
 
         #endregion
 
