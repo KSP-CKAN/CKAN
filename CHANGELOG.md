@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Cmdline] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent; reviewed: pjf)
+- [GUI] About dialog pointing to new CKAN thread on forums (#1824 by: politas)
 
 ### Internal
 
