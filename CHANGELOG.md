@@ -2,16 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v1.18.1
 
 ### Bugfixes
 
-- [Cmdline] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
+- [CLI] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
 - [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent, reviewed postremus)
 
 ### Features
 
-- [Cmdline] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent; reviewed: pjf)
+- [CLI] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent; reviewed: pjf)
+- [GUI] Auto-updater shows download progress (#1692 by: trakos, #1359 Postremus; reviewed: politas)
 - [GUI] About dialog pointing to new CKAN thread on forums (#1824 by: politas)
 - [GUI] Ignore ksp instances if we are launching the gui anyway (#1809 by: Postremus; reviewed: politas)
 
