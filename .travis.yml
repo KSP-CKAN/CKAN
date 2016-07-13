@@ -16,7 +16,7 @@ before_install:
 
 install:
     - sudo apt-get install mono-devel nunit-console libtest-most-perl libipc-system-simple-perl
-    - mozroots --import --ask-remove || true
+    - mozroots --sync --import || true
 
 script:
     - bin/build
