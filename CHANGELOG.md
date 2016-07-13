@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
+- [Build] Travis/Build: Prevent mozroots from asking for human input (#1825 by pjf; reviewed: politas)
+
 ## v1.18.0
 
 ### Bugfixes
