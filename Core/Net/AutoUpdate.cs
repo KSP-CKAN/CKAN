@@ -24,8 +24,8 @@ namespace CKAN
         private readonly Uri latestUpdaterReleaseApiUrl = new Uri(
             "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
 
-        private Uri fetchedUpdaterUrl;
-        private Uri fetchedCkanUrl;
+        private Tuple<Uri, long> fetchedUpdaterUrl;
+        private Tuple<Uri, long> fetchedCkanUrl;
 
         public Version LatestVersion { get; private set; }
         public string ReleaseNotes { get; private set; }
@@ -113,7 +113,7 @@ namespace CKAN
         /// and then launches the helper allowing us to upgrade.
         /// </summary>
         /// <param name="launchCKANAfterUpdate">If set to <c>true</c> launch CKAN after update.</param>
-        public void StartUpdateProcess(bool launchCKANAfterUpdate)
+        public void StartUpdateProcess(bool launchCKANAfterUpdate, IUser user = null)
         {
             if (!IsFetched())
             {
@@ -122,31 +122,24 @@ namespace CKAN
 
             var pid = Process.GetCurrentProcess().Id;
 
-            // download updater app
+            // download updater app and new ckan.exe
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-
-            var web = new WebClient();
-            web.Headers.Add("user-agent", Net.UserAgentString);
-            web.DownloadFile(fetchedUpdaterUrl, updaterFilename);
-
-            // download new ckan.exe
             string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            web.DownloadFile(fetchedCkanUrl, ckanFilename);
-
-            var path = Assembly.GetEntryAssembly().Location;
+            Net.DownloadWithProgress(new[]{
+                new Net.DownloadTarget(fetchedUpdaterUrl.Item1, updaterFilename, fetchedUpdaterUrl.Item2),
+                new Net.DownloadTarget(fetchedCkanUrl.Item1, ckanFilename, fetchedCkanUrl.Item2),
+            }, user);
 
             // run updater
-
             SetExecutable(updaterFilename);
-
-            var args = String.Format("{0} \"{1}\" \"{2}\" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch");
-
-            ProcessStartInfo processInfo = new ProcessStartInfo();
-            processInfo.Verb = "runas";
-            processInfo.FileName = updaterFilename;
-            processInfo.Arguments = args;
-            processInfo.UseShellExecute = false;
-            Process.Start(processInfo);
+            var path = Assembly.GetEntryAssembly().Location;
+            Process.Start(new ProcessStartInfo
+            {
+                Verb = "runas",
+                FileName = updaterFilename,
+                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
+                UseShellExecute = false
+            });
 
             // exit this ckan instance
             Environment.Exit(0);
@@ -157,14 +150,15 @@ namespace CKAN
         /// from the provided github API response
         /// </summary>
         /// <returns>The URL to the downloadable asset.</returns>
-        internal Uri RetrieveUrl(dynamic response)
-        {
+        internal Tuple<Uri, long> RetrieveUrl(dynamic response)
+        { 
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
             }
-            var assets = response.assets[0];
-            return new Uri(assets.browser_download_url.ToString());
+            var firstAsset = response.assets[0];
+            string url = firstAsset.browser_download_url.ToString();
+            return new Tuple<Uri, long>(new Uri(url), (long)firstAsset.size);
         }
 
         /// <summary>

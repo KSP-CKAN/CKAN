@@ -11,7 +11,7 @@ namespace Tests.Core.Net
     /// </summary>
 
     [TestFixture]
-    public class NetAsyncDownloader
+    public class NetAsyncModulesDownloader
     {
 
         private CKAN.Registry registry;
@@ -19,7 +19,7 @@ namespace Tests.Core.Net
         private CKAN.IDownloader async;
         private NetFileCache cache;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
         [SetUp]
         public void Setup()
@@ -39,7 +39,7 @@ namespace Tests.Core.Net
             CKAN.Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
 
             // Ready our downloader.
-            async = new CKAN.NetAsyncDownloader(new NullUser());
+            async = new CKAN.NetAsyncModulesDownloader(new NullUser());
 
             // General shortcuts
             cache = ksp.KSP.Cache;
@@ -54,7 +54,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncDownloader")]
+        [Category("NetAsyncModulesDownloader")]
         [Explicit]
         public void SingleDownload()
         {
@@ -90,7 +90,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncDownloader")]
+        [Category("NetAsyncModulesDownloader")]
         [Explicit]
         public void MultiDownload()
         {
@@ -113,7 +113,7 @@ namespace Tests.Core.Net
 
         [Test]
         [Category("Online")]
-        [Category("NetAsyncDownloader")]
+        [Category("NetAsyncModulesDownloader")]
         [Explicit]
         public void RandSdownload()
         {

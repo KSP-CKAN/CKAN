@@ -9,9 +9,10 @@ using System.Threading;
  *
  * This simple program is used to replace the local ckan.exe with the latest one i.e. auto-update.
  * It is a command-line tool only, meant to be invoked by the main CKAN process and not manually.
+ * Argument launch must be one of: launch, nolaunch
  *
  * Invoked as:
- * AutoUpdate.exe <running CKAN PID> <running CKAN path> <updated CKAN path>
+ * AutoUpdate.exe <running CKAN PID> <running CKAN path> <updated CKAN path> <launch>
  */
 
 namespace AutoUpdater
