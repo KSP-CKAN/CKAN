@@ -260,7 +260,7 @@
         "identifier" : {
             "description" : "Unique identifier for this mod.",
             "type"        : "string",
-            "pattern"     : "^[A-Za-z][A-Za-z0-9-]*$"
+            "pattern"     : "^[A-Za-z0-9-]*$"
         },
         "version" : {
             "description" : "A verison string",
