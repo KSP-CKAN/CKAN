@@ -15,7 +15,7 @@ namespace CKAN
     {
         private static readonly Dictionary<string, RegistryManager> singleton =
             new Dictionary<string, RegistryManager>();
-
+        
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
         public readonly string lockfile_path;
@@ -87,6 +87,15 @@ namespace CKAN
             // free managed (.NET core) objects when called with a true value here.
 
             ReleaseLock();
+            string directory = ksp.CkanDir();
+            if (singleton.ContainsKey(directory))
+            {
+                log.InfoFormat("Dispose of registry at {0}", directory);
+                if (!singleton.Remove(directory))
+                {
+                    throw new RegistryInUseKraken(directory);
+                }
+            }
         }
 
         /// <summary>
@@ -159,6 +168,14 @@ namespace CKAN
                 log.DebugFormat("Preparing to load registry at {0}", directory);
                 singleton[directory] = new RegistryManager(directory, ksp);
             }
+            ///else /// create a lock file in existing RegistryManager object.
+            ///{
+            ///    log.InfoFormat("Attempting to lock old registry at {0}", directory);
+            ///    if (! singleton[directory].GetLock())
+            ///    {
+            ///        throw new RegistryInUseKraken(directory);
+            ///    }
+            ///}
 
             return singleton[directory];
         }
