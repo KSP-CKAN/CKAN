@@ -980,12 +980,12 @@ namespace CKAN
             // KSPVersionLabel
             // 
             this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(862, 10);
+            this.KSPVersionLabel.Location = new System.Drawing.Point(788, 10);
             this.KSPVersionLabel.Name = "KSPVersionLabel";
-            this.KSPVersionLabel.Size = new System.Drawing.Size(146, 13);
+            this.KSPVersionLabel.Size = new System.Drawing.Size(227, 13);
             this.KSPVersionLabel.TabIndex = 8;
             this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
+            this.KSPVersionLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // FilterByNameLabel
             // 
