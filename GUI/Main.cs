@@ -65,6 +65,8 @@ namespace CKAN
 
         public MainModList mainModList { get; private set; }
 
+        public NavigationHistory<GUIMod> m_navHistory;
+
         public string[] m_CommandLineArgs;
 
         public GUIUser m_User;
@@ -162,6 +164,12 @@ namespace CKAN
             controlFactory = new ControlFactory();
             Instance = this;
             mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide, User);
+
+            m_navHistory = new NavigationHistory<GUIMod>();
+            m_navHistory.IsReadOnly = true; // read-only until the UI is started.
+                                            // we switch out of it at the end of OnLoad()
+                                            // when we call NavInit()
+
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
@@ -362,6 +370,10 @@ namespace CKAN
             
             CurrentInstance.RebuildKSPSubDir();
 
+            NavInit();  // initialize navigation. this should be called as late
+                        // as possible, once the UI is "settled" from its initial
+                        // load.
+
             log.Info("GUI started");
             base.OnLoad(e);
         }
@@ -454,6 +466,7 @@ namespace CKAN
             ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
+            NavSelectMod(module);
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
             UpdateModContentsTree(module);
@@ -1109,6 +1122,73 @@ namespace CKAN
         {
             OpenFileBrowser(e.Node);
         }
+
+        #region Navigation History
+
+        void NavInit()
+        {
+            m_navHistory.OnHistoryChange += NavOnHistoryChange;
+            m_navHistory.IsReadOnly = false;
+            var currentMod = GetSelectedModule();
+            if (currentMod != null)
+            {
+                m_navHistory.AddToHistory(currentMod);
+            }
+        }
+
+        void NavUpdateUI()
+        {
+            NavBackwardToolButton.Enabled = m_navHistory.CanNavigateBackward;
+            NavForwardToolButton.Enabled = m_navHistory.CanNavigateForward;
+        }
+
+        void NavSelectMod(GUIMod module)
+        {
+            m_navHistory.AddToHistory(module);
+        }
+
+        void NavGoBackward()
+        {
+            if (m_navHistory.CanNavigateBackward)
+            {
+                NavGoToMod(m_navHistory.NavigateBackward());
+            }
+        }
+
+        void NavGoForward()
+        {
+            if (m_navHistory.CanNavigateForward)
+            {
+                NavGoToMod(m_navHistory.NavigateForward());
+            }
+        }
+
+        void NavGoToMod(GUIMod module)
+        {
+            // focussing on a mod also causes navigation, but we don't
+            // want this to affect the history. so we switch to read-only
+            // mode.
+            m_navHistory.IsReadOnly = true;
+            FocusMod(module.Name, true);
+            m_navHistory.IsReadOnly = false;
+        }
+
+        void NavOnHistoryChange()
+        {
+            NavUpdateUI();
+        }
+
+        void NavBackwardToolButton_Click(object sender, EventArgs e)
+        {
+            NavGoBackward();
+        }
+
+        void NavForwardToolButton_Click(object sender, EventArgs e)
+        {
+            NavGoForward();
+        }
+
+        #endregion
     }
 
     public class GUIUser : NullUser

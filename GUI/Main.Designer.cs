@@ -59,6 +59,8 @@ namespace CKAN
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModList = new CKAN.MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -297,7 +299,9 @@ namespace CKAN
             this.RefreshToolButton,
             this.UpdateAllToolButton,
             this.ApplyToolButton,
-            this.FilterToolButton});
+            this.FilterToolButton,
+            this.NavBackwardToolButton,
+            this.NavForwardToolButton});
             this.menuStrip2.Location = new System.Drawing.Point(0, 3);
             this.menuStrip2.Name = "menuStrip2";
             this.menuStrip2.Size = new System.Drawing.Size(3917, 40);
@@ -405,6 +409,24 @@ namespace CKAN
             this.FilterAllButton.Size = new System.Drawing.Size(215, 22);
             this.FilterAllButton.Text = "All";
             this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            // 
+            // NavBackwardToolButton
+            // 
+            this.NavBackwardToolButton.Image = global::CKAN.Properties.Resources.backward;
+            this.NavBackwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.NavBackwardToolButton.Name = "NavBackwardToolButton";
+            this.NavBackwardToolButton.Size = new System.Drawing.Size(44, 36);
+            this.NavBackwardToolButton.ToolTipText = "Previous selected mod...";
+            this.NavBackwardToolButton.Click += new System.EventHandler(this.NavBackwardToolButton_Click);
+            // 
+            // NavForwardToolButton
+            // 
+            this.NavForwardToolButton.Image = global::CKAN.Properties.Resources.forward;
+            this.NavForwardToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.NavForwardToolButton.Name = "NavForwardToolButton";
+            this.NavForwardToolButton.Size = new System.Drawing.Size(44, 36);
+            this.NavForwardToolButton.ToolTipText = "Next selected mod...";
+            this.NavForwardToolButton.Click += new System.EventHandler(this.NavForwardToolButton_Click);
             // 
             // splitContainer1
             // 
@@ -1504,5 +1526,7 @@ namespace CKAN
         private ToolStripMenuItem cachedToolStripMenuItem;
         private Label IdentifierLabel;
         private Label MetadataIdentifierLabel;
+        private ToolStripMenuItem NavBackwardToolButton;
+        private ToolStripMenuItem NavForwardToolButton;
     }
 }

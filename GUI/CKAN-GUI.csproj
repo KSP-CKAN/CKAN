@@ -108,6 +108,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ModChange.cs" />
+    <Compile Include="NavigationHistory.cs" />
     <Compile Include="NewUpdateDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,7 +226,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="MainTabControl.cs" />
+    <Compile Include="MainTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -283,5 +286,9 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\backward.png" />
+    <Content Include="Resources\forward.png" />
   </ItemGroup>
 </Project>
