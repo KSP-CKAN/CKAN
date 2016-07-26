@@ -25,6 +25,15 @@
 
         public event HistoryChangeHandler OnHistoryChange;
 
+        public void InvokeOnHistoryChange()
+        {
+            var handler = OnHistoryChange;
+            if (handler != null)
+            {
+                handler();
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -95,7 +104,7 @@
             m_navigationHistory.Add(item);
             m_currentIndex++;
 
-            OnHistoryChange?.Invoke();
+            InvokeOnHistoryChange();
         }
 
         /// <summary>
@@ -115,7 +124,7 @@
             }
 
             m_currentIndex--;
-            OnHistoryChange?.Invoke();
+            InvokeOnHistoryChange();
 
             return m_navigationHistory[m_currentIndex];
         }
@@ -137,7 +146,7 @@
             }
 
             m_currentIndex++;
-            OnHistoryChange?.Invoke();
+            InvokeOnHistoryChange();
 
             return m_navigationHistory[m_currentIndex];
         }

@@ -365,5 +365,82 @@
 
             Assert.AreEqual(default(int), zero);
         }
+
+        [Test]
+        public void AddingToHistory_InvokesChangeEvent()
+        {
+            // arrange
+
+            var nav = new NavigationHistory<int>();
+            var eventCount = 0;
+
+            nav.OnHistoryChange += () =>
+            {
+                eventCount++;
+            };
+
+            // act
+
+            nav.AddToHistory(1);
+
+            // assert
+
+            Assert.AreEqual(1, eventCount);
+        }
+
+        [Test]
+        public void NavigatingBackward_InvokesChangeEvent()
+        {
+            // arrange
+
+            var nav = new NavigationHistory<int>();
+            var eventCount = 0;
+
+            nav.AddToHistory(1);
+            nav.AddToHistory(2);
+            nav.AddToHistory(3);
+
+            nav.OnHistoryChange += () =>
+            {
+                eventCount++;
+            };
+
+            // act
+
+            nav.NavigateBackward();
+
+            // assert
+
+            Assert.AreEqual(1, eventCount);
+        }
+
+        [Test]
+        public void NavigatingForward_InvokesChangeEvent()
+        {
+            // arrange
+
+            var nav = new NavigationHistory<int>();
+            var eventCount = 0;
+
+            nav.AddToHistory(1);
+            nav.AddToHistory(2);
+            nav.AddToHistory(3);
+
+            nav.NavigateBackward();
+            nav.NavigateBackward();
+
+            nav.OnHistoryChange += () =>
+            {
+                eventCount++;
+            };
+
+            // act
+
+            nav.NavigateForward();
+
+            // assert
+
+            Assert.AreEqual(1, eventCount);
+        }
     }
 }
