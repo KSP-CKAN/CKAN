@@ -234,7 +234,7 @@ namespace CKAN
                         "Please try a `ckan update` and try again.\r\n\r\n" +
                         "If this problem re-occurs, then it maybe a packaging bug.\r\n" +
                         "Please report it at:\r\n\r\n" +
-                        "https://github.com/KSP-CKAN/CKAN-meta/issues/new\r\n\r\n" +
+                        "https://github.com/KSP-CKAN/CKAN/issues/new\r\n\r\n" +
                         "Please including the following information in your report:\r\n\r\n" +
                         "File           : {0}\r\n" +
                         "Installing Mod : {1}\r\n" +
