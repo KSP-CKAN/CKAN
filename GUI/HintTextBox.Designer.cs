@@ -35,8 +35,10 @@ namespace CKAN
             // 
             // HintTextBox
             // 
+            this.SizeChanged += new System.EventHandler(this.HintTextBox_SizeChanged);
             this.TextChanged += new System.EventHandler(this.HintTextBox_TextChanged);
             this.ResumeLayout(false);
+
         }
 
         #endregion

@@ -187,6 +187,9 @@
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HintTextBox.resx">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
