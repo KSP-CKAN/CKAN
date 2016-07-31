@@ -151,6 +151,16 @@ namespace CKAN.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap textClear {
+            get {
+                object obj = ResourceManager.GetObject("textClear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap update {
             get {
                 object obj = ResourceManager.GetObject("update", resourceCulture);
