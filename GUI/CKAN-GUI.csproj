@@ -290,5 +290,6 @@
   <ItemGroup>
     <Content Include="Resources\backward.png" />
     <Content Include="Resources\forward.png" />
+    <Content Include="Resources\text-clear.png" />
   </ItemGroup>
 </Project>
