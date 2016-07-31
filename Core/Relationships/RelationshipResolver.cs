@@ -496,7 +496,7 @@ namespace CKAN
                 foreach (var conflict in conflicts)
                 {
                     var module = conflict.Key;
-                    dict[module] = string.Format("{0} conflicts with {1}\n\n{0}:\n{2}\n{1}:\n{3}",
+                    dict[module] = string.Format("{0} conflicts with {1}\r\n\r\n{0}:\r\n{2}\r\n{1}:\r\n{3}",
                         module.identifier, conflict.Value.identifier,
                         ReasonStringFor(module), ReasonStringFor(conflict.Value));
                     ;
@@ -562,7 +562,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Currently installed.\n"; }
+                get { return "  Currently installed.\r\n"; }
             }
         }
 
@@ -579,7 +579,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Requested by user.\n"; }
+                get { return "  Requested by user.\r\n"; }
             }
         }
 
@@ -593,7 +593,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Suggested by " + Parent.name + ".\n"; }
+                get { return "  Suggested by " + Parent.name + ".\r\n"; }
             }
         }
 
@@ -607,7 +607,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  To satisfy dependency from " + Parent.name + ".\n"; }
+                get { return "  To satisfy dependency from " + Parent.name + ".\r\n"; }
             }
         }
 
@@ -621,7 +621,7 @@ namespace CKAN
 
             public override string Reason
             {
-                get { return "  Recommended by " + Parent.name + ".\n"; }
+                get { return "  Recommended by " + Parent.name + ".\r\n"; }
             }
         }
     }

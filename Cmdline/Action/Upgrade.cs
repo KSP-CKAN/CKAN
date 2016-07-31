@@ -47,7 +47,7 @@ namespace CKAN.CmdLine
                     User.RaiseMessage("New CKAN version available - " + latestVersion);
                     var releaseNotes = AutoUpdate.Instance.ReleaseNotes;
                     User.RaiseMessage(releaseNotes);
-                    User.RaiseMessage("\n");
+                    User.RaiseMessage("\r\n");
 
                     if (User.RaiseYesNoDialog("Proceed with install?"))
                     {
@@ -63,7 +63,7 @@ namespace CKAN.CmdLine
                 return Exit.OK;
             }
 
-            User.RaiseMessage("\nUpgrading modules...\n");
+            User.RaiseMessage("\r\nUpgrading modules...\r\n");
 
             try
             {
@@ -122,7 +122,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Module {0} not found", kraken.module);
                 return Exit.ERROR;
             }
-            User.RaiseMessage("\nDone!\n");
+            User.RaiseMessage("\r\nDone!\r\n");
 
             return Exit.OK;
         }

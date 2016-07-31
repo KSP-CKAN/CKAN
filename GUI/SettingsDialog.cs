@@ -232,7 +232,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-                log.Warn("Exception caught in CheckForUpdates:\n"+ex);
+                log.Warn("Exception caught in CheckForUpdates:\r\n"+ex);
             }
         }
 

@@ -192,7 +192,7 @@ namespace CKAN
                         throw new Exception("Curl download failed with error " + result);
                     }
 
-                    Log.DebugFormat("Download from {0}:\n\n{1}", url, content);
+                    Log.DebugFormat("Download from {0}:\r\n\r\n{1}", url, content);
 
                     return content;
                 }

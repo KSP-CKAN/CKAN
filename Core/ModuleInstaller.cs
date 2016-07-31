@@ -181,7 +181,7 @@ namespace CKAN
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
 
-            User.RaiseMessage("About to install...\n");
+            User.RaiseMessage("About to install...\r\n");
 
             foreach (CkanModule module in modsToInstall)
             {
@@ -196,7 +196,7 @@ namespace CKAN
                 }
             }
 
-            bool ok = User.RaiseYesNoDialog("\nContinue?");
+            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
 
             if (!ok)
             {
@@ -249,7 +249,7 @@ namespace CKAN
                 ksp.ScanGameData();
             }
 
-            User.RaiseProgress("Done!\n", 100);
+            User.RaiseProgress("Done!\r\n", 100);
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace CKAN
                 return;
             }
 
-            User.RaiseMessage("About to remove:\n");
+            User.RaiseMessage("About to remove:\r\n");
 
             foreach (string mod in goners)
             {
@@ -738,7 +738,7 @@ namespace CKAN
                 User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
-            bool ok = User.RaiseYesNoDialog("\nContinue?");
+            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
 
             if (!ok)
             {
@@ -759,7 +759,7 @@ namespace CKAN
                 transaction.Complete();
             }
 
-            User.RaiseMessage("Done!\n");
+            User.RaiseMessage("Done!\r\n");
         }
 
         public void UninstallList(string mod)
@@ -939,7 +939,7 @@ namespace CKAN
                     //Maybe ModuleNotInstalled ?
                     if (registry_manager.registry.IsAutodetected(ident))
                     {
-                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying to install it.", ident));
+                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \r\n Please remove manually before trying to install it.", ident));
                     }
 
                     User.RaiseMessage("Installing previously uninstalled mod {0}", ident);

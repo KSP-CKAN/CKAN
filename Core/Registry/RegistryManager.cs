@@ -45,7 +45,7 @@ namespace CKAN
             }
             catch (InconsistentKraken kraken)
             {
-                log.ErrorFormat("Loaded registry with inconsistencies:\n\n{0}", kraken.InconsistenciesPretty);
+                log.ErrorFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.InconsistenciesPretty);
             }
         }
 

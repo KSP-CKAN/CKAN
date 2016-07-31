@@ -93,7 +93,7 @@ namespace CKAN.GameVersionProviders
             catch(Exception e)
             {
                 _log.WarnFormat("Could not parse build map");
-                _log.DebugFormat("{0}\n{1}", buildMapJson, e);
+                _log.DebugFormat("{0}\r\n{1}", buildMapJson, e);
                 return false;
             }
         }

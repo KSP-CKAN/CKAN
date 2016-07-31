@@ -41,10 +41,10 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\nKSP found at {0}\n", ksp.GameDir());
-                user.RaiseMessage("KSP Version: {0}\n", ksp.Version());
+                user.RaiseMessage("\r\nKSP found at {0}\r\n", ksp.GameDir());
+                user.RaiseMessage("KSP Version: {0}\r\n", ksp.Version());
 
-                user.RaiseMessage("Installed Modules:\n");
+                user.RaiseMessage("Installed Modules:\r\n");
             }
 
             if (exportFileType == null)
@@ -111,7 +111,7 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown. *: Broken. ");
+                user.RaiseMessage("\r\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown. *: Broken. ");
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 

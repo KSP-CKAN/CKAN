@@ -126,8 +126,8 @@ namespace CKAN
 
         internal static string FormatMessage(string requested, List<CkanModule> modules)
         {
-            string oops = string.Format("Too many mods provide {0}:\n", requested);
-            return oops + String.Join("\n* ", modules);
+            string oops = string.Format("Too many mods provide {0}:\r\n", requested);
+            return oops + String.Join("\r\n* ", modules);
         }
     }
 
@@ -143,8 +143,8 @@ namespace CKAN
         {
             get
             {
-                const string message = "The following inconsistencies were found:\n";
-                return message + String.Join("\n * ", inconsistencies);
+                const string message = "The following inconsistencies were found:\r\n";
+                return message + String.Join("\r\n * ", inconsistencies);
             }
         }
 
@@ -203,7 +203,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return "Uh oh, the following things went wrong when downloading...\n\n" + String.Join("\n", exceptions);
+            return "Uh oh, the following things went wrong when downloading...\r\n\r\n" + String.Join("\r\n", exceptions);
         }
     }
 
@@ -292,10 +292,10 @@ namespace CKAN
         public override string ToString()
         {
             return
-                "\nOh no! Our download failed with a certificate error!\n\n" +
-                "If you're on Linux, try running:\n" +
-                "\tmozroots --import --ask-remove\n" +
-                "on the command-line to update your certificate store, and try again.\n\n"
+                "\r\nOh no! Our download failed with a certificate error!\r\n\r\n" +
+                "If you're on Linux, try running:\r\n" +
+                "\tmozroots --import --ask-remove\r\n" +
+                "on the command-line to update your certificate store, and try again.\r\n\r\n"
             ;
         }
     }

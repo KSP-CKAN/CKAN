@@ -300,7 +300,7 @@ namespace CKAN
                 }
                 catch (Exception exception)
                 {
-                    m_User.RaiseError("Error in autoupdate: \n\t" + exception.Message + "");
+                    m_User.RaiseError("Error in autoupdate: \r\n\t" + exception.Message + "");
                     log.Error("Error in autoupdate", exception);
                 }
             }

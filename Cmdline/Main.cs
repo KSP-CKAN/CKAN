@@ -257,11 +257,11 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
                             user.RaiseMessage(
-                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\n",
+                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\r\n",
                                 String.Join(".", major, minor, patch),
                                 String.Join(".", rec_major, rec_minor, rec_patch)
                                 );
-                            user.RaiseMessage("Update recommend\n");
+                            user.RaiseMessage("Update recommend\r\n");
                         }
                     }
                 }
@@ -333,7 +333,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 {
                     user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
                     user.RaiseMessage("Use ckan.exe scan for more details");
-                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\n", next_command);
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
                 }
 
                 return Exit.ERROR;
