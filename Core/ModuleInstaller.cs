@@ -376,8 +376,8 @@ namespace CKAN
                 {
                     // Decorate the kraken with our module and re-throw
                     kraken.filename = ksp.ToRelativeGameDir(kraken.filename);
-                    kraken.installing_module = module;
-                    kraken.owning_module = registry_manager.registry.FileOwner(kraken.filename);
+                    kraken.installingModule = module;
+                    kraken.owningModule = registry_manager.registry.FileOwner(kraken.filename);
                     throw;
                 }
 
