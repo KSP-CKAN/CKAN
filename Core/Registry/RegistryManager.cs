@@ -13,7 +13,7 @@ namespace CKAN
 {
     public class RegistryManager : IDisposable
     {
-        private static readonly Dictionary<string, RegistryManager> singleton =
+        private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
         
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
@@ -88,10 +88,10 @@ namespace CKAN
 
             ReleaseLock();
             string directory = ksp.CkanDir();
-            if (singleton.ContainsKey(directory))
+            if (registryCache.ContainsKey(directory))
             {
                 log.InfoFormat("Dispose of registry at {0}", directory);
-                if (!singleton.Remove(directory))
+                if (!registryCache.Remove(directory))
                 {
                     throw new RegistryInUseKraken(directory);
                 }
@@ -163,21 +163,21 @@ namespace CKAN
         public static RegistryManager Instance(KSP ksp)
         {
             string directory = ksp.CkanDir();
-            if (!singleton.ContainsKey(directory))
+            if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                singleton[directory] = new RegistryManager(directory, ksp);
+                registryCache[directory] = new RegistryManager(directory, ksp);
             }
             ///else /// create a lock file in existing RegistryManager object.
             ///{
             ///    log.InfoFormat("Attempting to lock old registry at {0}", directory);
-            ///    if (! singleton[directory].GetLock())
+            ///    if (! registryCache[directory].GetLock())
             ///    {
             ///        throw new RegistryInUseKraken(directory);
             ///    }
             ///}
 
-            return singleton[directory];
+            return registryCache[directory];
         }
 
         /// <summary>
