@@ -18,9 +18,9 @@ namespace CKAN
         
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
-        public readonly string lockfile_path;
-        private FileStream lockfile_stream = null;
-        private StreamWriter lockfile_writer = null;
+        public readonly string lockfilePath;
+        private FileStream lockfileStream = null;
+        private StreamWriter lockfileWriter = null;
 
         private readonly TxFileManager file_transaction = new TxFileManager();
 
@@ -39,12 +39,12 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
-            lockfile_path = Path.Combine(path, "registry.json.locked");
+            lockfilePath = Path.Combine(path, "registry.json.locked");
 
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())
             {
-                throw new RegistryInUseKraken(lockfile_path);
+                throw new RegistryInUseKraken(lockfilePath);
             }
 
             LoadOrCreate();
@@ -117,12 +117,12 @@ namespace CKAN
         {
             try
             {
-                lockfile_stream = new FileStream(lockfile_path, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+                lockfileStream = new FileStream(lockfilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
                 // Write the current process ID to the file.
-                lockfile_writer = new StreamWriter(lockfile_stream);
-                lockfile_writer.Write(Process.GetCurrentProcess().Id);
-                lockfile_writer.Flush();
+                lockfileWriter = new StreamWriter(lockfileStream);
+                lockfileWriter.Write(Process.GetCurrentProcess().Id);
+                lockfileWriter.Flush();
             }
             catch (IOException)
             {
@@ -139,18 +139,18 @@ namespace CKAN
         {
             // We have to dispose our writer first, otherwise it cries when
             // it finds the stream is already disposed.
-            if (lockfile_writer != null)
+            if (lockfileWriter != null)
             {
-                lockfile_writer.Dispose();
-                lockfile_writer = null;
+                lockfileWriter.Dispose();
+                lockfileWriter = null;
             }
 
             // Disposing the writer also disposes the underlying stream,
             // but we're extra tidy just in case.
-            if (lockfile_stream != null)
+            if (lockfileStream != null)
             {
-                lockfile_stream.Dispose();
-                lockfile_stream = null;
+                lockfileStream.Dispose();
+                lockfileStream = null;
             }
 
 

@@ -302,17 +302,17 @@ namespace CKAN
 
     public class RegistryInUseKraken : Kraken
     {
-        readonly string lockfile_path;
+        readonly string lockfilePath;
 
-        public RegistryInUseKraken(string lockfile_path, string reason = null, Exception inner_exception = null)
+        public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)
         {
-            this.lockfile_path = lockfile_path;
+            this.lockfilePath = path;
         }
 
         public override string ToString()
         {
-            return String.Format("CKAN is already running for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfile_path);
+            return String.Format("CKAN is already running for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfilePath);
         }
     }
 }

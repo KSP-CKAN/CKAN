@@ -16,7 +16,7 @@ namespace Tests.Core.RegistryManager
             {
                 // TODO: Give the RegistryManager a way to read-only query
                 // the registry location.
-                string registryPath = ksp.KSP.RegistryManager.lockfile_path;
+                string registryPath = ksp.KSP.RegistryManager.lockfilePath;
 
                 // Let's try opening the same registry file a second time...
 
