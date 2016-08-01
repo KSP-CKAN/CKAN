@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Bugfixes
+
+- [GUI/CLI] Replace /n with /r/n in text messages, replaced CKAN-meta/issues links (#1846 by: DinCahill; reviewed: politas)
+
 ### Features
 
 - [GUI] Add Back and Forward buttons to the GUI to jump to selected mods (#1841 by: b-w; reviewed: politas)
