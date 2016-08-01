@@ -13,7 +13,7 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
         public const string UrlRegistrationArgument = "registerUrl";
 
-        private static string MimeAppsListPath = ".local/share/applications/mimeapps.list";
+        private static string MimeAppsListPath = "mimeapps.list";
         private static string ApplicationsPath = ".local/share/applications/";
         private const string HandlerFileName = "ckan-handler.desktop";
 
@@ -21,9 +21,18 @@ namespace CKAN
         {
             if (Platform.IsUnix)
             {
-                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                MimeAppsListPath = Path.Combine(home, MimeAppsListPath);
-                ApplicationsPath = Path.Combine(home, ApplicationsPath);
+                string XDGDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
+                if (XDGDataHome != null)
+                {
+                    ApplicationsPath = Path.Combine(XDGDataHome, "applications");
+                }
+                else
+                {
+                    string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    ApplicationsPath = Path.Combine(home, ApplicationsPath);
+                }
+                Directory.CreateDirectory(ApplicationsPath);
+                MimeAppsListPath = Path.Combine(ApplicationsPath, MimeAppsListPath);
             }
         }
 
@@ -126,7 +135,6 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             if (!File.Exists(MimeAppsListPath))
             {
                 log.InfoFormat("{0} does not exist, trying to create it", MimeAppsListPath);
-                Directory.CreateDirectory(ApplicationsPath);
                 File.WriteAllLines(MimeAppsListPath, new string[] { "[Default Applications]" });
             }
 
@@ -160,13 +168,6 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             parser.WriteFile(MimeAppsListPath, data);
 
             var handlerPath = Path.Combine(ApplicationsPath, HandlerFileName);
-            var handlerDirectory = Path.GetDirectoryName(handlerPath);
-
-            if (handlerDirectory == null || !Directory.Exists(handlerDirectory))
-            {
-                log.ErrorFormat("Error: {0} doesn't exist", handlerDirectory);
-                return;
-            }
 
             if (File.Exists(handlerPath))
             {
