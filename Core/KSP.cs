@@ -347,7 +347,7 @@ namespace CKAN
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
             
-            log.Debug("Cleaning cahce directory");
+            log.Debug("Cleaning cache directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
 
