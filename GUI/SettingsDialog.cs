@@ -36,8 +36,8 @@ namespace CKAN
 
             LocalVersionLabel.Text = Meta.Version();
 
-            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
-            RefreshOnStartupCheckbox.Checked = Main.Instance.m_Configuration.RefreshOnStartup;
+            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
+            RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
 
             UpdateCacheInfo();
         }
@@ -172,7 +172,7 @@ namespace CKAN
                 }
                 catch (Exception)
                 {
-                    Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
+                    Main.Instance.currentUser.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
             }
         }
@@ -244,14 +244,14 @@ namespace CKAN
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.m_Configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
-            Main.Instance.m_Configuration.Save();
+            Main.Instance.configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            Main.Instance.configuration.Save();
         }
 
         private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.m_Configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
-            Main.Instance.m_Configuration.Save();
+            Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
+            Main.Instance.configuration.Save();
         }
     }
 }

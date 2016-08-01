@@ -264,8 +264,8 @@ namespace CKAN
         // here? Is there a way we can check if that was set, and then access it directly from
         // our base class?
 
-        public ModNotInstalledKraken(string mod, string reason = null, Exception inner_exception = null)
-            : base(reason, inner_exception)
+        public ModNotInstalledKraken(string mod, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.mod = mod;
         }

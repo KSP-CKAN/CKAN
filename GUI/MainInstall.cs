@@ -11,7 +11,7 @@ namespace CKAN
     using ModChanges = List<ModChange>;
     public partial class Main
     {
-        private BackgroundWorker m_InstallWorker;
+        private BackgroundWorker installWorker;
 
 
         // used to signal the install worker that the user canceled the install process
@@ -72,21 +72,21 @@ namespace CKAN
             ShowSelection(recommended);
             ShowSelection(suggested, true);
 
-            m_TabController.HideTab("ChooseRecommendedModsTabPage");
+            tabController.HideTab("ChooseRecommendedModsTabPage");
 
             if (installCanceled)
             {
-                m_TabController.HideTab("WaitTabPage");
-                m_TabController.ShowTab("ManageModsTabPage");
+                tabController.HideTab("WaitTabPage");
+                tabController.ShowTab("ManageModsTabPage");
                 e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                 return;
             }
 
             // Now let's make all our changes.
 
-            m_TabController.RenameTab("WaitTabPage", "Status log");
-            m_TabController.ShowTab("WaitTabPage");
-            m_TabController.SetTabLock(true);
+            tabController.RenameTab("WaitTabPage", "Status log");
+            tabController.ShowTab("WaitTabPage");
+            tabController.SetTabLock(true);
 
 
             var downloader = new NetAsyncModulesDownloader(GUI.user);
@@ -191,15 +191,15 @@ namespace CKAN
             {
                 Util.Invoke(this, () => UpdateRecommendedDialog(selectable, suggest));
 
-                m_TabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                m_TabController.SetTabLock(true);
+                tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                tabController.SetTabLock(true);
 
                 lock (this)
                 {
                     Monitor.Wait(this);
                 }
 
-                m_TabController.SetTabLock(false);
+                tabController.SetTabLock(false);
             }
         }
 
@@ -312,7 +312,7 @@ namespace CKAN
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
             UpdateModsList();
-            m_TabController.SetTabLock(false);
+            tabController.SetTabLock(false);
 
             var result = (KeyValuePair<bool, ModChanges>) e.Result;
 
@@ -329,7 +329,7 @@ namespace CKAN
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
-                m_TabController.HideTab("ChangesetTabPage");
+                tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
             }
             else
@@ -435,7 +435,7 @@ namespace CKAN
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
                 RecommendedModsToggleCheckbox.Checked=true;
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
+                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
             }
             else
             {
@@ -444,7 +444,7 @@ namespace CKAN
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
                 RecommendedModsToggleCheckbox.Checked=false;
-                m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
+                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
 
 

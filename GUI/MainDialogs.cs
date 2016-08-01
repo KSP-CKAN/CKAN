@@ -8,16 +8,17 @@ namespace CKAN
 {
     public partial class Main
     {
-        private ErrorDialog m_ErrorDialog;
-        private SettingsDialog m_SettingsDialog;
-        private PluginsDialog m_PluginsDialog;
-        private YesNoDialog m_YesNoDialog = null;
+        private ErrorDialog errorDialog;
+        private SettingsDialog settingsDialog;
+        private PluginsDialog pluginsDialog;
+        private YesNoDialog yesNoDialog;
 
         public void RecreateDialogs()
         {
-            m_SettingsDialog = controlFactory.CreateControl<SettingsDialog>();
-            m_PluginsDialog = controlFactory.CreateControl<PluginsDialog>();
-            m_YesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+            errorDialog = controlFactory.CreateControl<ErrorDialog>();
+            settingsDialog = controlFactory.CreateControl<SettingsDialog>();
+            pluginsDialog = controlFactory.CreateControl<PluginsDialog>();
+            yesNoDialog = controlFactory.CreateControl<YesNoDialog>();
         }
 
         public void AddStatusMessage(string text, params object[] args)
@@ -28,12 +29,12 @@ namespace CKAN
 
         public void ErrorDialog(string text, params object[] args)
         {
-            m_ErrorDialog.ShowErrorDialog(String.Format(text, args));
+            errorDialog.ShowErrorDialog(String.Format(text, args));
         }
 
         public bool YesNoDialog(string text)
         {
-            return m_YesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
+            return yesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
 
         //Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop
@@ -49,8 +50,8 @@ namespace CKAN
             Util.Invoke(this, () =>
             {
                 UpdateProvidedModsDialog(kraken, task);
-                m_TabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                m_TabController.SetTabLock(true);
+                tabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                tabController.SetTabLock(true);
             });
             var module = await task.Task;
 
@@ -61,11 +62,11 @@ namespace CKAN
             }
             Util.Invoke(this, () =>
             {
-                m_TabController.SetTabLock(false);
+                tabController.SetTabLock(false);
 
-                m_TabController.HideTab("ChooseProvidedModsTabPage");
+                tabController.HideTab("ChooseProvidedModsTabPage");
 
-                m_TabController.ShowTab("ManageModsTabPage");
+                tabController.ShowTab("ManageModsTabPage");
             });
 
             if(module!=null)

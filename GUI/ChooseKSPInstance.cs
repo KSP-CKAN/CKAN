@@ -7,8 +7,8 @@ namespace CKAN
 {
     public partial class ChooseKSPInstance : Form
     {
-        private FolderBrowserDialog m_BrowseKSPFolder;
-        private RenameInstanceDialog m_RenameInstanceDialog;
+        private FolderBrowserDialog browseKspFolder;
+        private RenameInstanceDialog renameInstanceDialog;
         private readonly KSPManager manager;
 
         public ChooseKSPInstance()
@@ -18,7 +18,7 @@ namespace CKAN
 
             StartPosition = FormStartPosition.CenterScreen;
 
-            m_BrowseKSPFolder = new FolderBrowserDialog();
+            browseKspFolder = new FolderBrowserDialog();
 
             if (!manager.Instances.Any())
             {
@@ -49,10 +49,10 @@ namespace CKAN
 
         private void AddNewButton_Click(object sender, EventArgs e)
         {
-            if (m_BrowseKSPFolder.ShowDialog() == DialogResult.OK)
+            if (browseKspFolder.ShowDialog() == DialogResult.OK)
             {
                 KSP instance;
-                string path = m_BrowseKSPFolder.SelectedPath;
+                string path = browseKspFolder.SelectedPath;
                 try
                 {
                     instance = new KSP(path, GUI.user);
@@ -105,10 +105,10 @@ namespace CKAN
         {
             var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
 
-            m_RenameInstanceDialog = new RenameInstanceDialog();
-            if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
+            renameInstanceDialog = new RenameInstanceDialog();
+            if (renameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
+                manager.RenameInstance(instance, renameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
         }

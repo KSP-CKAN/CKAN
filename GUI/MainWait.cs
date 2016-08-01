@@ -13,7 +13,7 @@ namespace CKAN
 
         public void ShowWaitDialog(bool cancelable = true)
         {
-            m_TabController.ShowTab("WaitTabPage", 2);
+            tabController.ShowTab("WaitTabPage", 2);
 
             CancelCurrentActionButton.Enabled = cancelable;
 
@@ -31,7 +31,7 @@ namespace CKAN
             DialogProgressBar.Style = ProgressBarStyle.Continuous;
             RecreateDialogs();
 
-            m_TabController.SetActiveTab("ManageModsTabPage");
+            tabController.SetActiveTab("ManageModsTabPage");
 
             CancelCurrentActionButton.Enabled = false;
             DialogProgressBar.Value = 0;

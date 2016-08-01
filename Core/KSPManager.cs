@@ -306,7 +306,7 @@ namespace CKAN
 
     public class KSPManagerKraken : Kraken
     {
-        public KSPManagerKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        public KSPManagerKraken(string reason = null, Exception innerException = null) : base(reason, innerException)
         {
         }
     }
@@ -315,8 +315,8 @@ namespace CKAN
     {
         public string instance;
 
-        public InvalidKSPInstanceKraken(string instance, string reason = null, Exception inner_exception = null)
-            : base(reason, inner_exception)
+        public InvalidKSPInstanceKraken(string instance, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.instance = instance;
         }

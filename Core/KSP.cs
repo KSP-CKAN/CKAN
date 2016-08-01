@@ -153,16 +153,16 @@ namespace CKAN
         public static string FindGameDir()
         {
             // See if we can find KSP as part of a Steam install.
-            string ksp_steam_path = KSPPathUtils.KSPSteamPath();
+            string kspSteamPath = KSPPathUtils.KSPSteamPath();
 
-            if (ksp_steam_path != null)
+            if (kspSteamPath != null)
             {
-                if (IsKspDir(ksp_steam_path))
+                if (IsKspDir(kspSteamPath))
                 {
-                    return ksp_steam_path;
+                    return kspSteamPath;
                 }
 
-                log.DebugFormat("Have Steam, but KSP is not at \"{0}\".", ksp_steam_path);
+                log.DebugFormat("Have Steam, but KSP is not at \"{0}\".", kspSteamPath);
             }
 
             // Oh noes! We can't find KSP!

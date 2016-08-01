@@ -20,12 +20,12 @@ namespace CKAN
         private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
         {
             // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
-            if (this.m_Configuration.SortByColumnIndex < 2)
+            if (this.configuration.SortByColumnIndex < 2)
             {
                 return Sort(rows, CheckboxSorter);
             }
             // XXX: Same for Integer columns
-            else if (this.m_Configuration.SortByColumnIndex == 7)
+            else if (this.configuration.SortByColumnIndex == 7)
             {
                 return Sort(rows, IntegerSorter);
             }
@@ -36,10 +36,10 @@ namespace CKAN
         {
             var get_row_mod_name = new Func<DataGridViewRow, string>(row => ((GUIMod)row.Tag).Name);
             DataGridViewColumnHeaderCell header =
-                this.ModList.Columns[this.m_Configuration.SortByColumnIndex].HeaderCell;
+                this.ModList.Columns[this.configuration.SortByColumnIndex].HeaderCell;
 
             // The columns will be sorted by mod name in addition to whatever the current sorting column is
-            if (this.m_Configuration.SortDescending)
+            if (this.configuration.SortDescending)
             {
                 header.SortGlyphDirection = SortOrder.Descending;
                 return rows.OrderByDescending(sortFunction).ThenBy(get_row_mod_name);
@@ -56,7 +56,7 @@ namespace CKAN
         /// </summary>
         private string DefaultSorter(DataGridViewRow row)
         {
-                return row.Cells[this.m_Configuration.SortByColumnIndex].Value.ToString();
+                return row.Cells[this.configuration.SortByColumnIndex].Value.ToString();
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace CKAN
         /// </summary>
         private string CheckboxSorter(DataGridViewRow row)
         {
-            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+            var cell = row.Cells[this.configuration.SortByColumnIndex];
             if (cell.ValueType == typeof(bool))
             {
                 return (bool)cell.Value ? "a" : "b";
@@ -82,7 +82,7 @@ namespace CKAN
         /// </summary>
         private int IntegerSorter(DataGridViewRow row)
         {
-            var cell = row.Cells[this.m_Configuration.SortByColumnIndex];
+            var cell = row.Cells[this.configuration.SortByColumnIndex];
 
             if (cell.Value.ToString() == "N/A")
                 return -1;

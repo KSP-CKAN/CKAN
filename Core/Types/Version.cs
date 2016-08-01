@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace CKAN {
     /// <summary>
@@ -13,7 +14,7 @@ namespace CKAN {
     public class Version : IComparable<Version> {
         private readonly int epoch;
         private readonly string version;
-        private readonly string orig_string;
+        private readonly string originalString;
         // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
@@ -28,16 +29,16 @@ namespace CKAN {
         }
 
         public struct Comparison {
-            public int compare_to;
-            public string remainder1;
-            public string remainder2;
+            public int compareTo;
+            public string firstRemainder;
+            public string secondRemainder;
         }
 
         /// <summary>
         /// Creates a new version object from the `ToString()` representation of anything!
         /// </summary>
         public Version (string version) {
-            orig_string = version;
+            originalString = version;
 
             Match match = Regex.Match (
                 version,
@@ -58,7 +59,7 @@ namespace CKAN {
         /// funny characters.
         /// </summary>
         override public string ToString() {
-            return orig_string;
+            return originalString;
         }
 
         // When cast from a string.
@@ -71,7 +72,7 @@ namespace CKAN {
         /// <summary>
         /// Returns a negative value if this is less than that
         /// Returns a positive value if this is greater than that
-        /// Returns  0 if equal.
+        /// Returns 0 if equal.
         /// </summary>
         public int CompareTo(Version that) {
 
@@ -94,39 +95,39 @@ namespace CKAN {
             }
 
             Comparison comp;
-            comp.remainder1 = version;
-            comp.remainder2 = that.version;
+            comp.firstRemainder = version;
+            comp.secondRemainder = that.version;
 
             // Process our strings while there are characters remaining
-            while (comp.remainder1.Length > 0 && comp.remainder2.Length > 0) {
+            while (comp.firstRemainder.Length > 0 && comp.secondRemainder.Length > 0) {
 
                 // Start by comparing the string parts.
-                comp = StringComp (comp.remainder1, comp.remainder2);
+                comp = StringComp (comp.firstRemainder, comp.secondRemainder);
 
                 // If we've found a difference, return it.
-                if (comp.compare_to != 0) {
-                    cache.Add(tuple, comp.compare_to);
-                    return comp.compare_to;
+                if (comp.compareTo != 0) {
+                    cache.Add(tuple, comp.compareTo);
+                    return comp.compareTo;
                 }
 
                 // Otherwise, compare the number parts.
                 // It's okay not to check if our strings are exhausted, because
                 // if they are the exhausted parts will return zero.
 
-                comp = NumComp (comp.remainder1, comp.remainder2);
+                comp = NumComp (comp.firstRemainder, comp.secondRemainder);
 
                 // Again, return difference if found.
-                if (comp.compare_to != 0) {
-                    cache.Add(tuple, comp.compare_to);
-                    return comp.compare_to;
+                if (comp.compareTo != 0) {
+                    cache.Add(tuple, comp.compareTo);
+                    return comp.compareTo;
                 }
             }
 
             // Oh, we've run out of one or both strings.
 
 
-            if (comp.remainder1.Length == 0) {
-                if (comp.remainder2.Length == 0)
+            if (comp.firstRemainder.Length == 0) {
+                if (comp.secondRemainder.Length == 0)
                 {
                     cache.Add(tuple, 0);
                     return 0;
@@ -182,7 +183,7 @@ namespace CKAN {
 
         internal static Comparison StringComp(string v1, string v2)
         {
-            var comp = new Comparison {remainder1 = "", remainder2 = ""};
+            var comp = new Comparison {firstRemainder = "", secondRemainder = ""};
 
             // Our starting assumptions are that both versions are completely
             // strings, with no remainder. We'll then check if they're not.
@@ -198,7 +199,7 @@ namespace CKAN {
             {
                 if (Char.IsNumber(v1[i]))
                 {
-                    comp.remainder1 = v1.Substring(i);
+                    comp.firstRemainder = v1.Substring(i);
                     str1 = v1.Substring(0, i);
                     break;
                 }
@@ -208,7 +209,7 @@ namespace CKAN {
             {
                 if (Char.IsNumber(v2[i]))
                 {
-                    comp.remainder2 = v2.Substring(i);
+                    comp.secondRemainder = v2.Substring(i);
                     str2 = v2.Substring(0, i);
                     break;
                 }
@@ -220,31 +221,31 @@ namespace CKAN {
             {
                 if (str1[0] != '.' && str2[0] == '.')
                 {
-                    comp.compare_to = -1;
+                    comp.compareTo = -1;
                 }
                 else if (str1[0] == '.' && str2[0] != '.')
                 {
-                    comp.compare_to = 1;
+                    comp.compareTo = 1;
                 }
                 else if (str1[0] == '.' && str2[0] == '.')
                 {
                     if (str1.Length == 1 && str2.Length > 1)
                     {
-                        comp.compare_to = 1;
+                        comp.compareTo = 1;
                     }
                     else if (str1.Length > 1 && str2.Length == 1)
                     {
-                        comp.compare_to = -1;
+                        comp.compareTo = -1;
                     }
                 }
                 else
                 {
-                    comp.compare_to = String.CompareOrdinal(str1, str2);
+                    comp.compareTo = String.CompareOrdinal(str1, str2);
                 }
             }
             else
             {
-                comp.compare_to = String.CompareOrdinal(str1, str2);
+                comp.compareTo = String.CompareOrdinal(str1, str2);
             }
             return comp;
         }
@@ -255,26 +256,26 @@ namespace CKAN {
 
         internal static Comparison NumComp(string v1, string v2)
         {
-            var comp = new Comparison {remainder1 = "", remainder2 = ""};
+            var comp = new Comparison {firstRemainder = "", secondRemainder = ""};
 
             int minimum_length1 = 0;
             for (int i = 0; i < v1.Length; i++)
             {
                 if (!char.IsNumber(v1[i]))
                 {
-                    comp.remainder1 = v1.Substring(i);
+                    comp.firstRemainder = v1.Substring(i);
                     break;
                 }
 
                 minimum_length1++;
             }
-
+            
             int minimum_length2 = 0;
             for (int i = 0; i < v2.Length; i++)
             {
                 if (!char.IsNumber(v2[i]))
                 {
-                    comp.remainder2 = v2.Substring(i);
+                    comp.secondRemainder = v2.Substring(i);
                     break;
                 }
 
@@ -294,7 +295,7 @@ namespace CKAN {
                 integer2 = 0;
             }
 
-            comp.compare_to = integer1.CompareTo(integer2);
+            comp.compareTo = integer1.CompareTo(integer2);
             return comp;
         }
 

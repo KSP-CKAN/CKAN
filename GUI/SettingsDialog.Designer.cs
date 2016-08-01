@@ -39,6 +39,7 @@
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
@@ -46,7 +47,6 @@
             this.LocalVersionLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
-            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.RepositoryGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -151,7 +151,7 @@
             this.CKANCacheLabel.AutoSize = true;
             this.CKANCacheLabel.Location = new System.Drawing.Point(3, 21);
             this.CKANCacheLabel.Name = "CKANCacheLabel";
-            this.CKANCacheLabel.Size = new System.Drawing.Size(273, 13);
+            this.CKANCacheLabel.Size = new System.Drawing.Size(271, 13);
             this.CKANCacheLabel.TabIndex = 0;
             this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
             // 
@@ -172,6 +172,17 @@
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CKAN auto-update";
+            // 
+            // RefreshOnStartupCheckbox
+            // 
+            this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
+            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
+            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
+            this.RefreshOnStartupCheckbox.TabIndex = 7;
+            this.RefreshOnStartupCheckbox.Text = "Update repositories on launch";
+            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
+            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
             // 
             // CheckUpdateOnLaunchCheckbox
             // 
@@ -242,17 +253,6 @@
             this.CheckForUpdatesButton.Text = "Check for updates";
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
-            // 
-            // RefreshOnStartupCheckbox
-            // 
-            this.RefreshOnStartupCheckbox.AutoSize = true;
-            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
-            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
-            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(148, 17);
-            this.RefreshOnStartupCheckbox.TabIndex = 7;
-            this.RefreshOnStartupCheckbox.Text = "Refresh modlist on launch";
-            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
-            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
             // 
             // SettingsDialog
             // 

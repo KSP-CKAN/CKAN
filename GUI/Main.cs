@@ -38,19 +38,21 @@ namespace CKAN
 
     public partial class Main
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(Main));
+
         public delegate void ModChangedCallback(CkanModule module, GUIModChangeType change);
 
         public static event ModChangedCallback modChangedCallback;
 
-        public Configuration m_Configuration;
+        public Configuration configuration;
 
         public ControlFactory controlFactory;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Main));
-        public TabController m_TabController;
-        public volatile KSPManager manager;
+        public TabController tabController;
 
-        public PluginController m_PluginController;
+        public PluginController pluginController;
+
+        public volatile KSPManager manager;
 
         public KSP CurrentInstance
         {
@@ -65,27 +67,27 @@ namespace CKAN
 
         public MainModList mainModList { get; private set; }
 
-        public NavigationHistory<GUIMod> m_navHistory;
+        public NavigationHistory<GUIMod> navHistory;
 
-        public string[] m_CommandLineArgs;
+        public string[] commandLineArgs;
 
-        public GUIUser m_User;
+        public GUIUser currentUser;
 
-        private Timer filter_timer;
+        private Timer filterTimer;
 
         private DateTime lastSearchTime;
         private string lastSearchKey;
 
-        private IEnumerable<ModChange> change_set;
+        private IEnumerable<ModChange> currentChangeSet;
         private Dictionary<GUIMod, string> conflicts;
 
         private IEnumerable<ModChange> ChangeSet
         {
-            get { return change_set; }
+            get { return currentChangeSet; }
             set
             {
-                var orig = change_set;
-                change_set = value;
+                var orig = currentChangeSet;
+                currentChangeSet = value;
                 if(!ReferenceEquals(orig, value)) ChangeSetUpdated();
             }
         }
@@ -141,13 +143,13 @@ namespace CKAN
         {
             if (ChangeSet != null && ChangeSet.Any())
             {
-                UpdateChangesDialog(ChangeSet.ToList(), m_InstallWorker);
-                m_TabController.ShowTab("ChangesetTabPage", 1, false);
+                UpdateChangesDialog(ChangeSet.ToList(), installWorker);
+                tabController.ShowTab("ChangesetTabPage", 1, false);
                 ApplyToolButton.Enabled = true;
             }
             else
             {
-                m_TabController.HideTab("ChangesetTabPage");
+                tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
             }
         }
@@ -155,8 +157,8 @@ namespace CKAN
         public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
         {
             log.Info("Starting the GUI");
-            m_CommandLineArgs = cmdlineArgs;
-            m_User = User;
+            commandLineArgs = cmdlineArgs;
+            currentUser = User;
 
             User.displayMessage = AddStatusMessage;
             User.displayError = ErrorDialog;
@@ -165,15 +167,15 @@ namespace CKAN
             Instance = this;
             mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide, User);
 
-            m_navHistory = new NavigationHistory<GUIMod>();
-            m_navHistory.IsReadOnly = true; // read-only until the UI is started.
+            navHistory = new NavigationHistory<GUIMod>();
+            navHistory.IsReadOnly = true; // read-only until the UI is started.
                                             // we switch out of it at the end of OnLoad()
                                             // when we call NavInit()
 
             InitializeComponent();
 
             // We need to initialize error dialog first to display errors
-            m_ErrorDialog = controlFactory.CreateControl<ErrorDialog>();
+            errorDialog = controlFactory.CreateControl<ErrorDialog>();
 
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
@@ -190,7 +192,7 @@ namespace CKAN
                 }
             }
 
-            m_Configuration = Configuration.LoadOrCreateConfiguration
+            configuration = Configuration.LoadOrCreateConfiguration
                 (
                     Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                     Repo.default_ckan_repo.ToString()
@@ -203,8 +205,8 @@ namespace CKAN
             ModList.CurrentCellDirtyStateChanged += ModList_CurrentCellDirtyStateChanged;
             ModList.CellValueChanged += ModList_CellValueChanged;
 
-            m_TabController = new TabController(MainTabControl);
-            m_TabController.ShowTab("ManageModsTabPage");
+            tabController = new TabController(MainTabControl);
+            tabController.ShowTab("ManageModsTabPage");
 
             RecreateDialogs();
 
@@ -260,24 +262,24 @@ namespace CKAN
 
         protected override void OnLoad(EventArgs e)
         {
-            Location = m_Configuration.WindowLoc;
-            Size = m_Configuration.WindowSize;
+            Location = configuration.WindowLoc;
+            Size = configuration.WindowSize;
 
-            if (!m_Configuration.CheckForUpdatesOnLaunchNoNag)
+            if (!configuration.CheckForUpdatesOnLaunchNoNag)
             {
                 log.Debug("Asking user if they wish for autoupdates");
                 if (new AskUserForAutoUpdatesDialog().ShowDialog() == DialogResult.OK)
                 {
-                    m_Configuration.CheckForUpdatesOnLaunch = true;
+                    configuration.CheckForUpdatesOnLaunch = true;
                 }
 
-                m_Configuration.CheckForUpdatesOnLaunchNoNag = true;
-                m_Configuration.Save();
+                configuration.CheckForUpdatesOnLaunchNoNag = true;
+                configuration.Save();
             }
 
             bool autoUpdating = false;
 
-            if (m_Configuration.CheckForUpdatesOnLaunch)
+            if (configuration.CheckForUpdatesOnLaunch)
             {
                 try
                 {
@@ -300,7 +302,7 @@ namespace CKAN
                 }
                 catch (Exception exception)
                 {
-                    m_User.RaiseError("Error in autoupdate: \r\n\t" + exception.Message + "");
+                    currentUser.RaiseError("Error in autoupdate: \n\t" + exception.Message + "");
                     log.Error("Error in autoupdate", exception);
                 }
             }
@@ -310,25 +312,25 @@ namespace CKAN
             m_UpdateRepoWorker.RunWorkerCompleted += PostUpdateRepo;
             m_UpdateRepoWorker.DoWork += UpdateRepo;
 
-            m_InstallWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            m_InstallWorker.RunWorkerCompleted += PostInstallMods;
-            m_InstallWorker.DoWork += InstallMods;
+            installWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+            installWorker.RunWorkerCompleted += PostInstallMods;
+            installWorker.DoWork += InstallMods;
 
             m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             m_CacheWorker.RunWorkerCompleted += PostModCaching;
             m_CacheWorker.DoWork += CacheMod;
 
-            var old_YesNoDialog = m_User.displayYesNo;
-            m_User.displayYesNo = YesNoDialog;
-            URLHandlers.RegisterURLHandler(m_Configuration, m_User);
-            m_User.displayYesNo = old_YesNoDialog;
+            var old_YesNoDialog = currentUser.displayYesNo;
+            currentUser.displayYesNo = YesNoDialog;
+            URLHandlers.RegisterURLHandler(configuration, currentUser);
+            currentUser.displayYesNo = old_YesNoDialog;
 
             ApplyToolButton.Enabled = false;
 
             CurrentInstanceUpdated();
 
             // if we're autoUpdating then we shouldn't interfere progress tab
-            if (m_Configuration.RefreshOnStartup && !autoUpdating)
+            if (configuration.RefreshOnStartup && !autoUpdating)
             {
                 UpdateRepo();
             }
@@ -337,9 +339,9 @@ namespace CKAN
                 CurrentInstance.GameDir());
             KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
 
-            if (m_CommandLineArgs.Length >= 2)
+            if (commandLineArgs.Length >= 2)
             {
-                var identifier = m_CommandLineArgs[1];
+                var identifier = commandLineArgs[1];
                 if (identifier.StartsWith("//"))
                 {
                     identifier = identifier.Substring(2);
@@ -366,7 +368,7 @@ namespace CKAN
                 Directory.CreateDirectory(pluginsPath);
             }
 
-            m_PluginController = new PluginController(pluginsPath, true);
+            pluginController = new PluginController(pluginsPath, true);
             
             CurrentInstance.RebuildKSPSubDir();
 
@@ -387,16 +389,16 @@ namespace CKAN
                 return;
             }
 
-            m_Configuration.WindowLoc = Location;
+            configuration.WindowLoc = Location;
 
             // Copy window size to app settings
-            m_Configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
+            configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
 
             // Save the active filter
-            m_Configuration.ActiveFilter = (int)mainModList.ModFilter;
+            configuration.ActiveFilter = (int)mainModList.ModFilter;
 
             // Save settings
-            m_Configuration.Save();
+            configuration.Save();
             base.OnFormClosing(e);
         }
 
@@ -409,7 +411,7 @@ namespace CKAN
                 KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
             });
 
-            m_Configuration = Configuration.LoadOrCreateConfiguration
+            configuration = Configuration.LoadOrCreateConfiguration
             (
                 Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
@@ -418,7 +420,7 @@ namespace CKAN
             ChangeSet = null;
             Conflicts = null;
 
-            Filter((GUIModFilter)m_Configuration.ActiveFilter);
+            Filter((GUIModFilter)configuration.ActiveFilter);
         }
 
         public void UpdateCKAN()
@@ -427,13 +429,13 @@ namespace CKAN
             ShowWaitDialog(false);
             SwitchEnabledState();
             ClearLog();
-            m_TabController.RenameTab("WaitTabPage", "Updating CKAN");
+            tabController.RenameTab("WaitTabPage", "Updating CKAN");
             SetDescription("Upgrading CKAN to " + AutoUpdate.Instance.LatestVersion);
 
             log.Info("Start ckan update");
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, GUI.user);
-            bw.RunWorkerAsync();
+            BackgroundWorker updateWorker = new BackgroundWorker();
+            updateWorker.DoWork += (sender, args) => AutoUpdate.Instance.StartUpdateProcess(true, GUI.user);
+            updateWorker.RunWorkerAsync();
         }
 
         private void RefreshToolButton_Click(object sender, EventArgs e)
@@ -474,7 +476,7 @@ namespace CKAN
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
         {
-            m_TabController.ShowTab("ChangesetTabPage", 1);
+            tabController.ShowTab("ChangesetTabPage", 1);
         }
 
         private void ExitToolButton_Click(object sender, EventArgs e)
@@ -529,17 +531,17 @@ namespace CKAN
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
         private void RunFilterUpdateTimer() {
-            if (filter_timer == null)
+            if (filterTimer == null)
             {
-                filter_timer = new Timer();
-                filter_timer.Tick += OnFilterUpdateTimer;
-                filter_timer.Interval = 700;
-                filter_timer.Start();
+                filterTimer = new Timer();
+                filterTimer.Tick += OnFilterUpdateTimer;
+                filterTimer.Interval = 700;
+                filterTimer.Start();
             }
             else
             {
-                filter_timer.Stop();
-                filter_timer.Start();
+                filterTimer.Stop();
+                filterTimer.Start();
             }
         }
 
@@ -554,7 +556,7 @@ namespace CKAN
             mainModList.ModNameFilter = FilterByNameTextBox.Text;
             mainModList.ModAuthorFilter = FilterByAuthorTextBox.Text;
             mainModList.ModDescriptionFilter = FilterByDescriptionTextBox.Text;
-            filter_timer.Stop();
+            filterTimer.Stop();
         }
 
         /// <summary>
@@ -563,12 +565,12 @@ namespace CKAN
         private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             var new_sort_column = this.ModList.Columns[e.ColumnIndex];
-            var current_sort_column = this.ModList.Columns[this.m_Configuration.SortByColumnIndex];
+            var current_sort_column = this.ModList.Columns[this.configuration.SortByColumnIndex];
             // Reverse the sort order if the current sorting column is clicked again
-            this.m_Configuration.SortDescending = new_sort_column == current_sort_column ? !this.m_Configuration.SortDescending : false;
+            this.configuration.SortDescending = new_sort_column == current_sort_column ? !this.configuration.SortDescending : false;
             // Reset the glyph
             current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-            this.m_Configuration.SortByColumnIndex = new_sort_column.Index;
+            this.configuration.SortByColumnIndex = new_sort_column.Index;
             this.UpdateFilters(this);
         }
 
@@ -863,7 +865,7 @@ namespace CKAN
 
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var split = m_Configuration.CommandLineArguments.Split(' ');
+            var split = configuration.CommandLineArguments.Split(' ');
             if (split.Length == 0)
             {
                 return;
@@ -891,10 +893,10 @@ namespace CKAN
         private void KSPCommandlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var dialog = new KSPCommandLineOptionsDialog();
-            if (dialog.ShowKSPCommandLineOptionsDialog(m_Configuration.CommandLineArguments) == DialogResult.OK)
+            if (dialog.ShowKSPCommandLineOptionsDialog(configuration.CommandLineArguments) == DialogResult.OK)
             {
-                m_Configuration.CommandLineArguments = dialog.GetResult();
-                m_Configuration.Save();
+                configuration.CommandLineArguments = dialog.GetResult();
+                configuration.Save();
             }
         }
 
@@ -902,14 +904,14 @@ namespace CKAN
         {
             // Flipping enabled here hides the main form itself.
             Enabled = false;
-            m_SettingsDialog.ShowDialog();
+            settingsDialog.ShowDialog();
             Enabled = true;
         }
 
         private void pluginsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Enabled = false;
-            m_PluginsDialog.ShowDialog();
+            pluginsDialog.ShowDialog();
             Enabled = true;
         }
 
@@ -930,12 +932,12 @@ namespace CKAN
                 }
                 catch (Kraken kraken)
                 {
-                    m_User.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
+                    currentUser.RaiseError(kraken.Message + ": " + kraken.InnerException.Message);
                     return;
                 }
                 catch (Exception ex)
                 {
-                    m_User.RaiseError(ex.Message);
+                    currentUser.RaiseError(ex.Message);
                     return;
                 }
 
@@ -958,12 +960,12 @@ namespace CKAN
                 RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
                 install_ops.with_recommends = false;
 
-                m_InstallWorker.RunWorkerAsync(
+                installWorker.RunWorkerAsync(
                     new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                         changeset, install_ops));
-                m_Changeset = null;
+                changeSet = null;
 
-                UpdateChangesDialog(null, m_InstallWorker);
+                UpdateChangesDialog(null, installWorker);
                 ShowWaitDialog();
             }
         }
@@ -1127,39 +1129,39 @@ namespace CKAN
 
         void NavInit()
         {
-            m_navHistory.OnHistoryChange += NavOnHistoryChange;
-            m_navHistory.IsReadOnly = false;
+            navHistory.OnHistoryChange += NavOnHistoryChange;
+            navHistory.IsReadOnly = false;
             var currentMod = GetSelectedModule();
             if (currentMod != null)
             {
-                m_navHistory.AddToHistory(currentMod);
+                navHistory.AddToHistory(currentMod);
             }
         }
 
         void NavUpdateUI()
         {
-            NavBackwardToolButton.Enabled = m_navHistory.CanNavigateBackward;
-            NavForwardToolButton.Enabled = m_navHistory.CanNavigateForward;
+            NavBackwardToolButton.Enabled = navHistory.CanNavigateBackward;
+            NavForwardToolButton.Enabled = navHistory.CanNavigateForward;
         }
 
         void NavSelectMod(GUIMod module)
         {
-            m_navHistory.AddToHistory(module);
+            navHistory.AddToHistory(module);
         }
 
         void NavGoBackward()
         {
-            if (m_navHistory.CanNavigateBackward)
+            if (navHistory.CanNavigateBackward)
             {
-                NavGoToMod(m_navHistory.NavigateBackward());
+                NavGoToMod(navHistory.NavigateBackward());
             }
         }
 
         void NavGoForward()
         {
-            if (m_navHistory.CanNavigateForward)
+            if (navHistory.CanNavigateForward)
             {
-                NavGoToMod(m_navHistory.NavigateForward());
+                NavGoToMod(navHistory.NavigateForward());
             }
         }
 
@@ -1168,9 +1170,9 @@ namespace CKAN
             // focussing on a mod also causes navigation, but we don't
             // want this to affect the history. so we switch to read-only
             // mode.
-            m_navHistory.IsReadOnly = true;
+            navHistory.IsReadOnly = true;
             FocusMod(module.Name, true);
-            m_navHistory.IsReadOnly = false;
+            navHistory.IsReadOnly = false;
         }
 
         void NavOnHistoryChange()

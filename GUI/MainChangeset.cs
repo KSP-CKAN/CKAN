@@ -9,12 +9,12 @@ namespace CKAN
     public partial class Main
     {
 
-        private List<ModChange> m_Changeset;
+        private List<ModChange> changeSet;
 
         public void UpdateChangesDialog(List<ModChange> changeset, BackgroundWorker installWorker)
         {
-            m_Changeset = changeset;
-            m_InstallWorker = installWorker;
+            changeSet = changeset;
+            this.installWorker = installWorker;
             ChangesListView.Items.Clear();
 
             if (changeset == null)
@@ -26,9 +26,9 @@ namespace CKAN
             // and everything else (which right now is installing mods, but we may have
             // other types in the future).
 
-            m_Changeset = new List<ModChange>();
-            m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Remove));
-            m_Changeset.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Update));
+            changeSet = new List<ModChange>();
+            changeSet.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Remove));
+            changeSet.AddRange(changeset.Where(change => change.ChangeType == GUIModChangeType.Update));
 
             IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
                                                 && change.ChangeType != GUIModChangeType.Update);
@@ -37,7 +37,7 @@ namespace CKAN
             // after it.)
             CreateSortedModList(leftOver);
 
-            changeset = m_Changeset;
+            changeset = changeSet;
 
             foreach (var change in changeset)
             {
@@ -88,8 +88,8 @@ namespace CKAN
 
                 if (goDeeper)
                 {
-                    if (!m_Changeset.Any(c => c.Mod.Identifier == change.Mod.Identifier))
-                        m_Changeset.Add(change);
+                    if (!changeSet.Any(c => c.Mod.Identifier == change.Mod.Identifier))
+                        changeSet.Add(change);
                     CreateSortedModList(changes.Where(c => !(c.Reason is SelectionReason.UserRequested)), change);
                 }
             }
@@ -98,15 +98,15 @@ namespace CKAN
         private void CancelChangesButton_Click(object sender, EventArgs e)
         {
             UpdateModsList();
-            UpdateChangesDialog(null, m_InstallWorker);
-            m_TabController.ShowTab("ManageModsTabPage");
-            m_TabController.HideTab("ChangesetTabPage");
+            UpdateChangesDialog(null, installWorker);
+            tabController.ShowTab("ManageModsTabPage");
+            tabController.HideTab("ChangesetTabPage");
             ApplyToolButton.Enabled = false;
         }
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
         {
-            if (m_Changeset == null)
+            if (changeSet == null)
                 return;
 
             menuStrip1.Enabled = false;
@@ -117,12 +117,12 @@ namespace CKAN
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
             // TODO Work out why this is.
             var user_change_set = mainModList.ComputeUserChangeSet().ToList();
-            m_InstallWorker.RunWorkerAsync(
+            installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                     user_change_set, install_ops));
-            m_Changeset = null;
+            changeSet = null;
 
-            UpdateChangesDialog(null, m_InstallWorker);
+            UpdateChangesDialog(null, installWorker);
             ShowWaitDialog();
         }
 

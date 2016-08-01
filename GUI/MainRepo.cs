@@ -31,10 +31,10 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            var old_dialog = m_User.displayYesNo;
-            m_User.displayYesNo = YesNoDialog;
+            var old_dialog = currentUser.displayYesNo;
+            currentUser.displayYesNo = YesNoDialog;
 
-            m_TabController.RenameTab("WaitTabPage", "Updating repositories");
+            tabController.RenameTab("WaitTabPage", "Updating repositories");
 
             CurrentInstance.ScanGameData();
 
@@ -44,7 +44,7 @@ namespace CKAN
             }
             finally
             {
-                m_User.displayYesNo = old_dialog;
+                currentUser.displayYesNo = old_dialog;
             }
 
             Util.Invoke(this, SwitchEnabledState);
@@ -79,18 +79,18 @@ namespace CKAN
             }
             catch (UriFormatException ex)
             {
-                m_ErrorDialog.ShowErrorDialog(ex.Message);
+                errorDialog.ShowErrorDialog(ex.Message);
             }
             catch (MissingCertificateKraken ex)
             {
-                m_ErrorDialog.ShowErrorDialog(ex.ToString());
+                errorDialog.ShowErrorDialog(ex.ToString());
             }
             catch (Exception ex)
             {
-                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
+                errorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
             }
 
-            m_User.displayYesNo = null;
+            currentUser.displayYesNo = null;
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
@@ -108,16 +108,16 @@ namespace CKAN
 
         private void ShowRefreshQuestion()
         {
-            if (!m_Configuration.RefreshOnStartupNoNag)
+            if (!configuration.RefreshOnStartupNoNag)
             {
-                m_User.displayYesNo = YesNoDialog;
-                m_Configuration.RefreshOnStartupNoNag = true;
-                if (!m_User.displayYesNo("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
+                currentUser.displayYesNo = YesNoDialog;
+                configuration.RefreshOnStartupNoNag = true;
+                if (!currentUser.displayYesNo("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
                 {
-                    m_Configuration.RefreshOnStartup = false;
+                    configuration.RefreshOnStartup = false;
                 }
-                m_Configuration.Save();
-                m_User.displayYesNo = null;
+                configuration.Save();
+                currentUser.displayYesNo = null;
             }
         }
     }

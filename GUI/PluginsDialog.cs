@@ -30,7 +30,7 @@ namespace CKAN
 
         private void RefreshActivePlugins()
         {
-            var activePlugins = Main.Instance.m_PluginController.ActivePlugins;
+            var activePlugins = Main.Instance.pluginController.ActivePlugins;
 
             ActivePluginsListBox.Items.Clear();
             foreach (var plugin in activePlugins)
@@ -41,7 +41,7 @@ namespace CKAN
 
         private void RefreshDormantPlugins()
         {
-            var dormantPlugins = Main.Instance.m_PluginController.DormantPlugins;
+            var dormantPlugins = Main.Instance.pluginController.DormantPlugins;
 
             DormantPluginsListBox.Items.Clear();
             foreach (var plugin in dormantPlugins)
@@ -65,7 +65,7 @@ namespace CKAN
             }
 
             var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
-            Main.Instance.m_PluginController.DeactivatePlugin(plugin);
+            Main.Instance.pluginController.DeactivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -78,8 +78,8 @@ namespace CKAN
             }
 
             var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
-            Main.Instance.m_PluginController.DeactivatePlugin(plugin);
-            Main.Instance.m_PluginController.ActivatePlugin(plugin);
+            Main.Instance.pluginController.DeactivatePlugin(plugin);
+            Main.Instance.pluginController.ActivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -99,7 +99,7 @@ namespace CKAN
             }
 
             var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            Main.Instance.m_PluginController.ActivatePlugin(plugin);
+            Main.Instance.pluginController.ActivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -112,7 +112,7 @@ namespace CKAN
             }
 
             var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            Main.Instance.m_PluginController.UnloadPlugin(plugin);
+            Main.Instance.pluginController.UnloadPlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -122,7 +122,7 @@ namespace CKAN
             if (m_AddNewPluginDialog.ShowDialog() == DialogResult.OK)
             {
                 var path = m_AddNewPluginDialog.FileName;
-                Main.Instance.m_PluginController.AddNewAssemblyToPluginsPath(path);
+                Main.Instance.pluginController.AddNewAssemblyToPluginsPath(path);
                 RefreshDormantPlugins();
             }
         }
