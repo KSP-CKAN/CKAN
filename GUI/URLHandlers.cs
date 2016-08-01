@@ -126,6 +126,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             if (!File.Exists(MimeAppsListPath))
             {
                 log.InfoFormat("{0} does not exist, trying to create it", MimeAppsListPath);
+                Directory.CreateDirectory(ApplicationsPath);
                 File.WriteAllLines(MimeAppsListPath, new string[] { "[Default Applications]" });
             }
 
