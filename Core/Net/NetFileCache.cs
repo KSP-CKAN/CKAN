@@ -285,7 +285,7 @@ namespace CKAN
         // returns the 8-byte hash for a given url
         public static string CreateURLHash(Uri url)
         {
-            using (var sha1 = new SHA1Managed())
+            using (var sha1 = new SHA1Cng())
             {
                 byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
 

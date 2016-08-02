@@ -48,7 +48,7 @@ namespace CKAN
                 return null;
             }
 
-            SHA1 hasher = new SHA1CryptoServiceProvider();
+            SHA1 hasher = new SHA1Cng();
 
             // Even if we throw an exception, the using block here makes sure
             // we close our file.
