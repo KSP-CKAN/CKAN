@@ -15,6 +15,7 @@ StyleCop.Cache
 ckan.exe
 ks2ckan.exe
 netkan.exe
+*.exe.config
 *.exe.mdb
 .*.swp
 .fatten.out
