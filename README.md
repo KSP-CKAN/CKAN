@@ -16,7 +16,7 @@ for the correct version of Kerbal Space Program, alongside their dependencies, a
 
 CKAN is great for players _and_ for authors:
 - players can find new content and install it with just a few clicks;
-- modders don't have to worry about misinstall problems or outdated versions;
+- modders don't have to worry about common installation problems or outdated versions;
 
 The CKAN has been inspired by the solid and proven metadata formats from both the Debian project and the CPAN, each of which manages tens of thousands of packages.
 
