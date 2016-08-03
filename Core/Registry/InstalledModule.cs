@@ -48,16 +48,16 @@ namespace CKAN
                 return null;
             }
 
-            SHA1 hasher = new SHA1Cng();
-
             // Even if we throw an exception, the using block here makes sure
             // we close our file.
+            var shaSum = "";
+            using (var hasher = new SHA1Cng())
             using (var fh = File.OpenRead(path))
             {
-                string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
-                fh.Close();
-                return sha1;
+                shaSum += BitConverter.ToString(hasher.ComputeHash(fh));
             }
+
+            return shaSum;
         }
     }
 
