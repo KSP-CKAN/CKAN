@@ -7,17 +7,22 @@ using System.Linq;
 
 namespace CKAN
 {
-    public interface IWin32Registry : IDisposable
+    public interface IWin32Registry
     {
         string FindSteamPath();
+
         string AutoStartInstance { get; set; }
+
         void SetRegistryToInstances(SortedList<string, KSP> instances, string autoStartInstance);
+
         IEnumerable<Tuple<string, string>> GetInstances();
+
         string GetKSPBuilds();
+
         void SetKSPBuilds(string buildMap);
     }
 
-    public class Win32Registry : IWin32Registry
+    public class Win32Registry : IWin32Registry, IDisposable
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(Win32Registry));
 
@@ -39,6 +44,12 @@ namespace CKAN
             _currentUser = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32);
         }
 
+        public string FindSteamPath()
+        {
+            Log.DebugFormat("Checking for Steam registry key at {0}", SteamRegistryPath);
+            return GetRegistryValue<string>(SteamRegistryPath, String.Empty);
+        }
+
         public void Dispose()
         {
             if (_currentUser != null)
@@ -49,80 +60,12 @@ namespace CKAN
 
         private int InstanceCount
         {
-            get { return GetRegistryValue(@"KSPInstanceCount", 0); }
-        }
-
-        public string FindSteamPath()
-        {
-            try
-            {
-                Log.DebugFormat("Checking for Steam registry key {0}", SteamRegistryPath);
-
-                var result = GetRegistryValue<string>(SteamRegistryPath, String.Empty);
-                if (!String.IsNullOrEmpty(result)) {
-                    return result;
-                }
-
-                Log.Debug("Couldn't find Steam via registry key, trying other locations...");
-
-                // Not in the registry, or missing file, but that's cool. This should find it on Linux
-                var steamPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    ".local",
-                    "share",
-                    "Steam"
-                );
-
-                Log.DebugFormat("Looking for Steam in {0}", steamPath);
-
-                if (Directory.Exists(steamPath))
-                {
-                    Log.InfoFormat("Found Steam at {0}", steamPath);
-                    return steamPath;
-                }
-
-                // Try an alternative path.
-                steamPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    ".steam",
-                    "steam"
-                );
-
-                Log.DebugFormat("Looking for Steam in {0}", steamPath);
-
-                if (Directory.Exists(steamPath))
-                {
-                    Log.InfoFormat("Found Steam at {0}", steamPath);
-                    return steamPath;
-                }
-
-                // Ok - Perhaps we're running OSX?
-                steamPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    Path.Combine("Library", "Application Support", "Steam")
-                    );
-
-                Log.DebugFormat("Looking for Steam in {0}", steamPath);
-
-                if (Directory.Exists(steamPath))
-                {
-                    Log.InfoFormat("Found Steam at {0}", steamPath);
-                    return steamPath;
-                }
-
-                Log.Info("Steam not found on this system.");
-            }
-            catch (Exception e)
-            {
-                Log.Error("An error occured while trying to search the registry for a Steam install.", e);
-            }
-
-            return null;
+            get { return GetRegistryValue("KSPInstanceCount", 0); }
         }
 
         public string AutoStartInstance
         {
-            get { return GetRegistryValue(@"KSPAutoStartInstance", String.Empty); }
+            get { return GetRegistryValue("KSPAutoStartInstance", String.Empty); }
             set { SetAutoStartInstance(value ?? String.Empty); }
         }
 
@@ -137,10 +80,10 @@ namespace CKAN
             SetAutoStartInstance(autoStartInstance ?? String.Empty);
             SetNumberOfInstances(instances.Count);
 
-            foreach (var instance in instances.Select((instance,i)=>
-                new {number=i,name=instance.Key,path=instance.Value}))
-            {                
-                SetInstanceKeysTo(instance.number, instance.name, instance.path);                
+            foreach (var instance in instances.Select((instance, i) =>
+                new { number = i, name = instance.Key, path = instance.Value }))
+            {
+                SetInstanceKeysTo(instance.number, instance.name, instance.path);
             }
         }
 
@@ -170,10 +113,10 @@ namespace CKAN
         }
 
         private void SetInstanceKeysTo(int instance_number, string name, KSP ksp)
-        {            
+        {
             SetRegistryValue("KSPInstanceName_" + instance_number, name);
             SetRegistryValue("KSPInstancePath_" + instance_number, ksp.GameDir());
-        }        
+        }
 
         private void SetRegistryValue<T>(string key, T value)
         {

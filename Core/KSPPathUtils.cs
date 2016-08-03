@@ -1,9 +1,8 @@
+using log4net;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
-using log4net;
-using Microsoft.Win32;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -36,7 +35,68 @@ namespace CKAN
             }
 
             return null;
+        }
 
+        private static string FindSteamPath()
+        {
+            using (var registry = new Win32Registry())
+            {
+                var result = registry.FindSteamPath();
+                if (!String.IsNullOrEmpty(result))
+                {
+                    return result;
+                }
+
+                Log.Debug("Couldn't find Steam via registry key, trying other locations...");
+            }
+            // Not in the registry, or missing file, but that's cool. This should find it on Linux
+            var steamPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                ".local",
+                "share",
+                "Steam"
+            );
+
+            Log.DebugFormat("Looking for Steam in {0}", steamPath);
+
+            if (Directory.Exists(steamPath))
+            {
+                Log.InfoFormat("Found Steam at {0}", steamPath);
+                return steamPath;
+            }
+
+            // Try an alternative path.
+            steamPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                ".steam",
+                "steam"
+            );
+
+            Log.DebugFormat("Looking for Steam in {0}", steamPath);
+
+            if (Directory.Exists(steamPath))
+            {
+                Log.InfoFormat("Found Steam at {0}", steamPath);
+                return steamPath;
+            }
+
+            // Ok - Perhaps we're running OSX?
+            steamPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Path.Combine("Library", "Application Support", "Steam")
+                );
+
+            Log.DebugFormat("Looking for Steam in {0}", steamPath);
+
+            if (Directory.Exists(steamPath))
+            {
+                Log.InfoFormat("Found Steam at {0}", steamPath);
+                return steamPath;
+            }
+
+            Log.Info("Steam not found on this system.");
+
+            return null;
         }
 
         /// <summary>
@@ -49,7 +109,8 @@ namespace CKAN
             using (var registry = new Win32Registry())
             {
                 steamDir = registry.FindSteamPath();
-                if (steamDir == null) {
+                if (steamDir == null)
+                {
                     return null;
                 }
             }
@@ -112,7 +173,7 @@ namespace CKAN
 
         /// <summary>
         /// Gets the leading path elements. Ex: /a/b/c returns /a/b
-        /// 
+        ///
         /// Returns empty string if there is no leading path. (Eg: "Example.dll" -> "");
         /// </summary>
         /// <returns>The leading path elements.</returns>
