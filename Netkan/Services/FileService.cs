@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Services
 
         public string GetFileHashSha1(string filePath)
         {
-            using (FileStream fs = new FileStream(@filePath, FileMode.Open))
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
             using (BufferedStream bs = new BufferedStream(fs))
             using (var sha1 = new SHA1Cng())
             {
