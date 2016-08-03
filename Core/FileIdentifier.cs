@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.GZip;
+using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 
 namespace CKAN
@@ -152,13 +154,7 @@ namespace CKAN
             FileType type = FileType.Unknown;
 
             // Check the input.
-            if (stream == null)
-            {
-                return type;
-            }
-
-            // Make sure the stream supports seeking.
-            if (!stream.CanSeek)
+            if (stream == null || !stream.CanSeek)
             {
                 return type;
             }
@@ -168,16 +164,9 @@ namespace CKAN
             {
                 // This may contain a tar file inside, create a new stream and check.
                 stream.Seek (0, SeekOrigin.Begin);
-                using (ICSharpCode.SharpZipLib.GZip.GZipInputStream gz_stream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream (stream))
+                using (var deflatedStream = new GZipInputStream(stream))
                 {
-                    if (CheckTar(gz_stream))
-                    {
-                        type = FileType.TarGz;
-                    }
-                    else
-                    {
-                        type = FileType.GZip;
-                    }
+                    type = CheckTar(deflatedStream) ? FileType.TarGz : FileType.GZip;
                 }
             }
             else if (CheckTar(stream))
