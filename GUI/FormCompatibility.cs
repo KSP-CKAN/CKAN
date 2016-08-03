@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public class FormCompatibility : Form
+    public class MonoCompatibleForm : Form
     {
 
         // inheriting from this class ensures that forms are equally sized on windows and on linux/ macosx
@@ -16,7 +16,6 @@ namespace CKAN
                 ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
             }
         }
-
     }
 
 }

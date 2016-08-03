@@ -3,7 +3,7 @@
 namespace CKAN
 {
 
-    public partial class KSPCommandLineOptionsDialog : FormCompatibility
+    public partial class KSPCommandLineOptionsDialog : MonoCompatibleForm
     {
         public KSPCommandLineOptionsDialog()
         {

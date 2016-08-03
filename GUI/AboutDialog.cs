@@ -2,7 +2,7 @@
 
 namespace CKAN
 {
-    public partial class AboutDialog : FormCompatibility
+    public partial class AboutDialog : MonoCompatibleForm
     {
         public AboutDialog()
         {
