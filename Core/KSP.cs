@@ -25,9 +25,9 @@ namespace CKAN
 
         #region Fields and Properties
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(KSP));
 
-        private readonly string gamedir;
+        private readonly string gameDir;
         private KspVersion version;
 
         public NetFileCache Cache { get; private set; }
@@ -50,19 +50,19 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist.
         /// Throws a NotKSPDirKraken if directory is not a KSP install.
         /// </summary>
-        public KSP(string directory, IUser user)
+        public KSP(string gameDir, IUser user)
         {
             User = user;
 
             // Make sure our path is absolute and has normalised slashes.
-            directory = KSPPathUtils.NormalizePath(Path.GetFullPath(directory));
+            gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
 
-            if (! IsKspDir(directory))
+            if (! IsKspDir(gameDir))
             {
-                throw new NotKSPDirKraken(directory);
+                throw new NotKSPDirKraken(gameDir);
             }
             
-            gamedir = directory;
+            this.gameDir = gameDir;
             Init();
             Cache = new NetFileCache(DownloadCacheDir());
         }
@@ -72,7 +72,7 @@ namespace CKAN
         /// </summary>
         private void Init()
         {
-            log.DebugFormat("Initialising {0}", CkanDir());
+            Log.DebugFormat("Initialising {0}", CkanDir());
 
             if (! Directory.Exists(CkanDir()))
             {
@@ -102,7 +102,7 @@ namespace CKAN
                 foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
             }
 
-            log.DebugFormat("Initialised {0}", CkanDir());
+            Log.DebugFormat("Initialised {0}", CkanDir());
         }
 
         /// <summary>
@@ -132,13 +132,13 @@ namespace CKAN
             // In Perl, this is just `use FindBin qw($Bin);` Verbose enough, C#?
             string exe_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
+            Log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
 
             // Checking for a GameData directory probably isn't the best way to
             // detect KSP, but it works. More robust implementations welcome.
             if (IsKspDir(exe_dir))
             {
-                log.InfoFormat("KSP found at {0}", exe_dir);
+                Log.InfoFormat("KSP found at {0}", exe_dir);
                 return exe_dir;
             }
 
@@ -162,7 +162,7 @@ namespace CKAN
                     return ksp_steam_path;
                 }
 
-                log.DebugFormat("Have Steam, but KSP is not at \"{0}\".", ksp_steam_path);
+                Log.DebugFormat("Have Steam, but KSP is not at \"{0}\".", ksp_steam_path);
             }
 
             // Oh noes! We can't find KSP!
@@ -189,12 +189,12 @@ namespace CKAN
 
             if (version != null)
             {
-                log.DebugFormat("Found version {0}", version);
+                Log.DebugFormat("Found version {0}", version);
                 return version;
             }
             else
             {
-                log.Error("Could not find KSP version");
+                Log.Error("Could not find KSP version");
                 throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
             }
         }
@@ -238,7 +238,7 @@ namespace CKAN
 
         public string GameDir()
         {
-            return gamedir;
+            return gameDir;
         }
 
         public string GameData()
@@ -347,7 +347,7 @@ namespace CKAN
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
             
-            log.Debug("Cleaning cahce directory");
+            Log.Debug("Cleaning cahce directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
 
@@ -355,11 +355,11 @@ namespace CKAN
             {
                 if (Directory.Exists(file))
                 {
-                    log.DebugFormat("Skipping directory: {0}", file);
+                    Log.DebugFormat("Skipping directory: {0}", file);
                     continue;
                 }
 
-                log.DebugFormat("Deleting {0}", file);
+                Log.DebugFormat("Deleting {0}", file);
                 File.Delete(file);
             }
         }
@@ -423,18 +423,18 @@ namespace CKAN
 
         public override string ToString()
         {
-            return "KSP Install:" + gamedir;
+            return "KSP Install:" + gameDir;
         }
 
         public override bool Equals(object obj)
         {
             var other = obj as KSP;
-            return other != null ? gamedir.Equals(other.GameDir()) : base.Equals(obj);
+            return other != null ? gameDir.Equals(other.GameDir()) : base.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return gamedir.GetHashCode();
+            return gameDir.GetHashCode();
         }
     }
 
