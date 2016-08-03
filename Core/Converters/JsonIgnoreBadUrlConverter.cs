@@ -11,7 +11,7 @@ namespace CKAN
     /// </summary>
     public class JsonIgnoreBadUrlConverter : JsonConverter
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(JsonIgnoreBadUrlConverter));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(JsonIgnoreBadUrlConverter));
 
         public override object ReadJson(
             JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -27,7 +27,7 @@ namespace CKAN
             }
             catch
             {
-                log.InfoFormat("{0} is not a valid URL, ignoring", value);
+                Log.InfoFormat("{0} is not a valid URL, ignoring", value);
                 return null;
             }
         }
