@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI/CLI] Replace /n with /r/n in text messages, replaced CKAN-meta/issues links (#1846 by: DinCahill; reviewed: politas)
+- [GUI] Fix FIPS-mode exceptions on Domain-connected Windows PCs (#1845 by: politas, #1850 by: ayan4m1; reviewed: politas)
 
 ### Features
 

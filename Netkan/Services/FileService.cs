@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Services
         {
             using (FileStream fs = new FileStream(@filePath, FileMode.Open))
             using (BufferedStream bs = new BufferedStream(fs))
-            using (var sha1 = new SHA1Managed())
+            using (var sha1 = new SHA1Cng())
             {
                 byte[] hash = sha1.ComputeHash(bs);
 
