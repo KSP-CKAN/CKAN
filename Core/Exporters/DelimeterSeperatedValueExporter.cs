@@ -10,17 +10,17 @@ namespace CKAN.Exporters
                                             "{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}" +
                                             "{0}{11}{0}{12}{0}{13}{0}{14}{0}{15}" +
                                             "{0}{16}{0}{17}{0}{18}";
-        private readonly string _delimter;
+        private readonly string _delimiter;
 
         public DelimeterSeperatedValueExporter(Delimter delimter)
         {
             switch (delimter)
             {
                 case Delimter.Comma:
-                    _delimter = ",";
+                    _delimiter = ",";
                     break;
                 case Delimter.Tab:
-                    _delimter = "\t";
+                    _delimiter = "\t";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -32,7 +32,7 @@ namespace CKAN.Exporters
             using (var writer = new StreamWriter(stream))
             {
                 writer.WriteLine(WritePattern,
-                    _delimter,
+                    _delimiter,
                     "identifier",
                     "version",
                     "name",
@@ -56,7 +56,7 @@ namespace CKAN.Exporters
                 foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
                 {
                     writer.WriteLine(WritePattern,
-                        _delimter,
+                        _delimiter,
                         mod.Module.identifier,
                         mod.Module.version,
                         QuoteIfNecessary(mod.Module.name),
@@ -127,7 +127,7 @@ namespace CKAN.Exporters
 
         private string QuoteIfNecessary(string value)
         {
-            if (value != null && value.IndexOf(_delimter, StringComparison.Ordinal) >= 0)
+            if (value != null && value.IndexOf(_delimiter, StringComparison.Ordinal) >= 0)
             {
                 return "\"" + value + "\"";
             }
@@ -142,7 +142,5 @@ namespace CKAN.Exporters
             Comma,
             Tab
         }
-
-
     }
 }
