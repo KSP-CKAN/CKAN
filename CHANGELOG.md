@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI/CLI] Replace /n with /r/n in text messages, replaced CKAN-meta/issues links (#1846 by: DinCahill; reviewed: politas)
 - [GUI] Fix FIPS-mode exceptions on Domain-connected Windows PCs (#1845 by: politas, #1850 by: ayan4m1; reviewed: politas)
 - [All] Refactoring variables per project guidelines, Add Report Issue link in Help Menu, make SafeAdd safer, cleanup some Doco wording (#1849 by: ayan4m1; reviewed: politas)
+- [GUI] Resize KSP Version Label to keep in window (#1837 by; Telanor, #1854 by: politas; reviewed: ayan4m1)
 
 ### Features
 
