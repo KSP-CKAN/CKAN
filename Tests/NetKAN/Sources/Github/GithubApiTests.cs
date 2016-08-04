@@ -9,7 +9,7 @@ namespace Tests.NetKAN.Sources.Github
         // Ironically, despite the fact that these run on travis-ci, which is strongly integrated
         // to github, these sometimes cause test failures because github will throw random
         // 403s. (Hence we disable them in travis with --exclude=FlakyNetwork)
-        
+
         [Test]
         [Category("FlakyNetwork")]
         [Category("Online")]

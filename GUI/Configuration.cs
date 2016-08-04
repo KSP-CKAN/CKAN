@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 
 namespace CKAN
 {
-
     public class Configuration
     {
         public string CommandLineArguments = "";
@@ -21,12 +20,14 @@ namespace CKAN
 
         // Sort by the mod name (index = 2) column by default
         public int SortByColumnIndex = 2;
+
         public bool SortDescending = false;
 
         private string m_Path = "";
-        private Point m_window_loc = new Point(0,0);
+        private Point m_window_loc = new Point(0, 0);
+
         //Workaround for bug which miss-sets the window location.
-        // Here instead of in Main_FormClosing due to the misstaken 
+        // Here instead of in Main_FormClosing due to the misstaken
         // value possibly being written out to config file. After some time
         // it should be save to move. RLake 2015/05
         public Point WindowLoc
@@ -41,7 +42,7 @@ namespace CKAN
             }
             set { m_window_loc = value; }
         }
-        
+
         public Size WindowSize = new Size(1024, 500);
 
         public void Save()
@@ -56,8 +57,8 @@ namespace CKAN
                 var configuration = new Configuration
                 {
                     m_Path = path,
-                        CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
-                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
+                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
+                            Platform.IsMac ? "./KSP.app/Contents/MacOS/KSP" :
                             "KSP_x64.exe -single-instance"
                 };
 
@@ -69,25 +70,25 @@ namespace CKAN
 
         public static Configuration LoadConfiguration(string path)
         {
-            var serializer = new XmlSerializer(typeof (Configuration));
+            var serializer = new XmlSerializer(typeof(Configuration));
 
             Configuration configuration;
             using (var stream = new StreamReader(path))
             {
                 try
                 {
-                    configuration = (Configuration) serializer.Deserialize(stream);
+                    configuration = (Configuration)serializer.Deserialize(stream);
                 }
                 catch (System.Exception e)
                 {
                     string additionalErrorData = "";
 
-                    if(e is System.InvalidOperationException) // Exception thrown in Windows / .NET
+                    if (e is System.InvalidOperationException) // Exception thrown in Windows / .NET
                     {
-                        if(e.InnerException != null)
+                        if (e.InnerException != null)
                             additionalErrorData = ": " + e.InnerException.Message;
                     }
-                    else if(e is System.Xml.XmlException) // Exception thrown in Mono
+                    else if (e is System.Xml.XmlException) // Exception thrown in Mono
                     {
                         additionalErrorData = ": " + e.Message;
                     }
@@ -107,7 +108,7 @@ namespace CKAN
 
         public static void SaveConfiguration(Configuration configuration, string path)
         {
-            var serializer = new XmlSerializer(typeof (Configuration));
+            var serializer = new XmlSerializer(typeof(Configuration));
 
             using (var writer = new StreamWriter(path))
             {

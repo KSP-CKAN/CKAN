@@ -8,7 +8,6 @@ namespace CKAN
 {
     public partial class Main
     {
-
         private List<ModChange> m_Changeset;
 
         public void UpdateChangesDialog(List<ModChange> changeset, BackgroundWorker installWorker)
@@ -32,7 +31,7 @@ namespace CKAN
 
             IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
                                                 && change.ChangeType != GUIModChangeType.Update);
-            
+
             // Now make our list more human-friendly (dependencies for a mod are listed directly
             // after it.)
             CreateSortedModList(leftOver);
@@ -46,9 +45,9 @@ namespace CKAN
                     continue;
                 }
 
-                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Mod.Name, change.Mod.Version)};
+                var item = new ListViewItem { Text = String.Format("{0} {1}", change.Mod.Name, change.Mod.Version) };
 
-                var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
+                var sub_change_type = new ListViewItem.ListViewSubItem { Text = change.ChangeType.ToString() };
 
                 ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem();
                 description.Text = change.Reason.Reason.Trim();
@@ -74,13 +73,13 @@ namespace CKAN
         /// It arranges the changeset in a human-friendly order
         /// The requested mod is listed first, it's dependencies right after it
         /// So we get for example "ModuleRCSFX" directly after "USI Exploration Pack"
-        /// 
+        ///
         /// It is very likely that this is forward-compatible with new ChangeTypes's,
         /// like a a "reconfigure" changetype, but only the future will tell
         /// </summary>
         /// <param name="changes">Every leftover ModChange that should be sorted</param>
         /// <param name="parent"></param>
-        private void CreateSortedModList(IEnumerable<ModChange> changes, ModChange parent=null)
+        private void CreateSortedModList(IEnumerable<ModChange> changes, ModChange parent = null)
         {
             foreach (ModChange change in changes)
             {
@@ -125,6 +124,5 @@ namespace CKAN
             UpdateChangesDialog(null, m_InstallWorker);
             ShowWaitDialog();
         }
-
     }
 }

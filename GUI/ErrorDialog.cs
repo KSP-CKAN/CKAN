@@ -1,10 +1,9 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Windows.Forms;
-using log4net;
 
 namespace CKAN
 {
-
     public partial class ErrorDialog : MonoCompatibleForm
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(ErrorDialog));

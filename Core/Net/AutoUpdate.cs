@@ -1,22 +1,20 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net;
-using System.Reflection;
+﻿using CKAN.Types;
 using log4net;
 using Newtonsoft.Json;
-using CKAN.Types;
+using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 
 namespace CKAN
 {
-
     /// <summary>
     /// CKAN client auto-updating routines. This works in conjunction with the
     /// auto-update helper to allow users to upgrade.
     /// </summary>
     public class AutoUpdate
     {
-
         private readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
         private readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
@@ -151,7 +149,7 @@ namespace CKAN
         /// </summary>
         /// <returns>The URL to the downloadable asset.</returns>
         internal Tuple<Uri, long> RetrieveUrl(dynamic response)
-        { 
+        {
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
@@ -164,7 +162,7 @@ namespace CKAN
         /// <summary>
         /// Fetches the URL provided, and de-serialises the returned JSON
         /// data structure into a dynamic object.
-        /// 
+        ///
         /// May throw an exception (especially a WebExeption) on failure.
         /// </summary>
         /// <returns>A dynamic object representing the JSON we fetched.</returns>

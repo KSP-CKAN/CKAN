@@ -1,14 +1,13 @@
+using Autofac;
+using CKAN.Versioning;
+using log4net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using log4net;
-using Newtonsoft.Json;
-using System.Transactions;
-using Autofac;
-using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -16,10 +15,13 @@ namespace CKAN
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version max_version;
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version min_version;
+
         //Why is the identifier called name?
         public /* required */ string name;
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Version version;
 
@@ -64,11 +66,10 @@ namespace CKAN
                 if (version != null)
                     return version.ToString();
                 return string.Format("between {0} and {1} inclusive.",
-                    min_version != null ?min_version.ToString() : "any version",
+                    min_version != null ? min_version.ToString() : "any version",
                     max_version != null ? max_version.ToString() : "any version");
             }
         }
-
     }
 
     public class ResourcesDescriptor
@@ -111,16 +112,15 @@ namespace CKAN
     /// <summary>
     ///     Describes a CKAN module (ie, what's in the CKAN.schema file).
     /// </summary>
-    
+
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
     public class CkanModule : IEquatable<CkanModule>
     {
-
         #region Fields
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(CkanModule));
 
         private static readonly string[] required_fields =
         {
@@ -220,6 +220,7 @@ namespace CKAN
         [JsonIgnore]
         [JsonProperty("specVersion", Required = Required.Default)]
         private Version specVersion;
+
         // We integrated the Module and CkanModule into one class
         // Since spec_version was only required for CkanModule before
         // this change, we now need to make sure the user is converted
@@ -262,7 +263,7 @@ namespace CKAN
             }
         }
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -377,7 +378,6 @@ namespace CKAN
 
         private static bool validate_json_against_schema(string json)
         {
-
             log.Debug("In-client JSON schema validation unimplemented.");
             return true;
             // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
@@ -427,15 +427,15 @@ namespace CKAN
                 module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null)
-                        throw new ModuleNotFoundKraken(ident, version,
-                            string.Format("Cannot install {0}, version {1} not available", ident, version));
+                    throw new ModuleNotFoundKraken(ident, version,
+                        string.Format("Cannot install {0}, version {1} not available", ident, version));
             }
             else
                 module = registry.LatestAvailable(mod, ksp_version);
 
             if (module == null)
-                    throw new ModuleNotFoundKraken(mod, null,
-                        string.Format("Cannot install {0}, module not available", mod));
+                throw new ModuleNotFoundKraken(mod, null,
+                    string.Format("Cannot install {0}, module not available", mod));
             else
                 return module;
         }
@@ -467,7 +467,7 @@ namespace CKAN
             return new CkanModule(json, comparator);
         }
 
-        #endregion
+        #endregion Constructors
 
         /// <summary>
         /// Returns true if we conflict with the given module.
@@ -512,7 +512,6 @@ namespace CKAN
         {
             log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
 
-
             return _comparator.Compatible(version, this);
         }
 
@@ -520,7 +519,7 @@ namespace CKAN
         /// Returns a human readable string indicating the highest compatible
         /// version of KSP this module will run with. (Eg: 1.0.2, 1.0.2+,
         /// "All version", etc).
-        /// 
+        ///
         /// This is for *human consumption only*, as the strings may change in the
         /// future as we support additional locales.
         /// </summary>
@@ -535,7 +534,7 @@ namespace CKAN
             {
                 return ksp_version.ToString();
             }
-            else if (ksp_version_min != null )
+            else if (ksp_version_min != null)
             {
                 return ksp_version_min + "+";
             }
@@ -581,7 +580,6 @@ namespace CKAN
         {
             return Equals(other);
         }
-
 
         public static string ToJson(CkanModule module)
         {
@@ -657,4 +655,3 @@ namespace CKAN
         }
     }
 }
-

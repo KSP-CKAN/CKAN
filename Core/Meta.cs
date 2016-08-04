@@ -20,11 +20,11 @@ namespace CKAN
         {
             string version = BuildVersion();
 
-            #if (STABLE)
+#if (STABLE)
             version += " (stable)";
-            #else
+#else
             version += " (beta)";
-            #endif
+#endif
 
             return version;
         }
@@ -60,11 +60,11 @@ namespace CKAN
         /// </summary>
         public static bool IsStable()
         {
-            #if (STABLE)
+#if (STABLE)
             return true;
-            #else
+#else
             return false;
-            #endif
+#endif
         }
     }
 }

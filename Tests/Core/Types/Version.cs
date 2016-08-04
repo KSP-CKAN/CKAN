@@ -77,7 +77,7 @@ namespace Tests.Core.Types
             var v2 = new CKAN.Version("v6a5");
             Assert.That(v2.IsLessThan(v1));
             Assert.That(v1.IsGreaterThan(v2));
-            Assert.That(! v1.IsEqualTo(v2));
+            Assert.That(!v1.IsEqualTo(v2));
         }
 
         [Test]
@@ -129,13 +129,13 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.StringComp("foobar", "foobaz");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
 
             str = CKAN.Version.StringComp("barbaz", "foobar");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
 
@@ -159,7 +159,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.StringComp("42bar", "bar42");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("42bar", str.remainder1);
             Assert.AreEqual("42", str.remainder2);
 
@@ -171,7 +171,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.StringComp("f0bar", "foo1bar");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("0bar", str.remainder1);
             Assert.AreEqual("1bar", str.remainder2);
 
@@ -211,7 +211,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.NumComp("1", "2");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
 
@@ -223,7 +223,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.NumComp("001", "02");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
 
@@ -241,7 +241,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.NumComp("3foo", "7bar");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("foo", str.remainder1);
             Assert.AreEqual("bar", str.remainder2);
 
@@ -253,7 +253,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.NumComp("00foo11", "11foo00");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual("foo11", str.remainder1);
             Assert.AreEqual("foo00", str.remainder2);
 
@@ -277,7 +277,7 @@ namespace Tests.Core.Types
 
             str = CKAN.Version.NumComp("12.2", "101.0");
 
-            Assert.That(str.compare_to,Is.LessThan(0));
+            Assert.That(str.compare_to, Is.LessThan(0));
             Assert.AreEqual(".2", str.remainder1);
             Assert.AreEqual(".0", str.remainder2);
 
@@ -287,6 +287,5 @@ namespace Tests.Core.Types
             Assert.AreEqual("", str.remainder1);
             Assert.AreEqual("", str.remainder2);
         }
-
     }
 }

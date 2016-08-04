@@ -1,6 +1,6 @@
-﻿using System;
-using CKAN.Versioning;
+﻿using CKAN.Versioning;
 using NUnit.Framework;
+using System;
 
 #pragma warning disable 219, 414
 

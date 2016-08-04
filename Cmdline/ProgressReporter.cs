@@ -31,4 +31,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

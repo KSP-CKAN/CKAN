@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Tests.NetKAN.Transformers
 {

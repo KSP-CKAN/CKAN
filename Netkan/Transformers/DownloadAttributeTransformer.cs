@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Extensions;
 using log4net;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
                 if (file != null)
                 {
                     json["download_size"] = _fileService.GetSizeBytes(file);
-                    
+
                     json["download_hash"] = new JObject();
 
                     var download_hashJson = (JObject)json["download_hash"];

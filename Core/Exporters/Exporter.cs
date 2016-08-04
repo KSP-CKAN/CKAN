@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CKAN.Types;
+using System;
 using System.IO;
-using CKAN.Types;
 
 namespace CKAN.Exporters
 {
@@ -23,18 +23,23 @@ namespace CKAN.Exporters
                 case ExportFileType.PlainText:
                     _exporter = new PlainTextExporter();
                     break;
+
                 case ExportFileType.Markdown:
                     _exporter = new MarkdownExporter();
                     break;
+
                 case ExportFileType.BbCode:
                     _exporter = new BbCodeExporter();
                     break;
+
                 case ExportFileType.Csv:
                     _exporter = new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Comma);
                     break;
+
                 case ExportFileType.Tsv:
                     _exporter = new DelimeterSeperatedValueExporter(DelimeterSeperatedValueExporter.Delimter.Tab);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

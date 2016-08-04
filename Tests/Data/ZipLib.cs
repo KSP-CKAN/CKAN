@@ -1,6 +1,6 @@
-using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
+using System.IO;
 
 namespace Tests.Data
 {
@@ -28,4 +28,3 @@ namespace Tests.Data
         }
     }
 }
-

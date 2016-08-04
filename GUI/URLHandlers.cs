@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using IniParser;
+﻿using IniParser;
 using IniParser.Exceptions;
 using IniParser.Model;
 using log4net;
+using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace CKAN
 {
@@ -35,11 +35,11 @@ namespace CKAN
                 {
                     RegisterURLHandler_Linux();
                 }
-                else if(Platform.IsWindows)
+                else if (Platform.IsWindows)
                 {
                     try
                     {
-                       RegisterURLHandler_Win32();
+                        RegisterURLHandler_Win32();
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -65,7 +65,9 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
 
                         throw;
                     }
-                } else if (Platform.IsMac) {
+                }
+                else if (Platform.IsMac)
+                {
                     //TODO
                 }
             }
@@ -189,9 +191,5 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             parser.WriteFile(handlerPath, data);
             AutoUpdate.SetExecutable(handlerPath);
         }
-
     }
-
 }
-
-

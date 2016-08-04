@@ -1,9 +1,9 @@
+using CKAN;
+using CKAN.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using CKAN;
-using CKAN.Versioning;
 using Version = CKAN.Version;
 
 namespace Tests.Data
@@ -58,7 +58,6 @@ namespace Tests.Data
 
             return such_zip_very_corrupt_wow;
         }
-
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
@@ -390,7 +389,6 @@ namespace Tests.Data
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
         }
 
-
         public static string KspAvcJsonOneLineVersion()
         {
             return File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));
@@ -487,7 +485,7 @@ namespace Tests.Data
             {
                 name = Generator.Next().ToString(CultureInfo.InvariantCulture),
                 @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                identifier = identifier??Generator.Next().ToString(CultureInfo.InvariantCulture),
+                identifier = identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
                 spec_version = new Version(1.ToString(CultureInfo.InvariantCulture)),
                 ksp_version = ksp_version ?? KspVersion.Parse("0." + Generator.Next()),
                 version = version ?? new Version(Generator.Next().ToString(CultureInfo.InvariantCulture))
@@ -501,4 +499,3 @@ namespace Tests.Data
         }
     }
 }
-

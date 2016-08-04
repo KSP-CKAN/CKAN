@@ -1,6 +1,6 @@
+using log4net;
 using System.Collections.Generic;
 using System.Linq;
-using log4net;
 
 namespace CKAN
 {
@@ -9,7 +9,6 @@ namespace CKAN
     /// </summary>
     public static class SanityChecker
     {
-
         private static readonly ILog log = LogManager.GetLogger(typeof(SanityChecker));
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace CKAN
 
             Dictionary<string, List<string>> providers = ModulesToProvides(modules, dlls);
 
-            foreach (KeyValuePair<string,List<CkanModule>> entry in FindUnmetDependencies(modules, dlls))
+            foreach (KeyValuePair<string, List<CkanModule>> entry in FindUnmetDependencies(modules, dlls))
             {
                 foreach (CkanModule unhappy_mod in entry.Value)
                 {
@@ -54,7 +53,7 @@ namespace CKAN
                 foreach (var conflict in mod.conflicts)
                 {
                     // If nothing conflicts with us, skip.
-                    if (! providers.ContainsKey(conflict.name))
+                    if (!providers.ContainsKey(conflict.name))
                     {
                         continue;
                     }
@@ -88,7 +87,7 @@ namespace CKAN
                 throw new InconsistentKraken(errors);
             }
         }
-    
+
         /// <summary>
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
         /// </summary>
@@ -101,7 +100,7 @@ namespace CKAN
         /// Maps a list of modules and dlls to a dictionary of what's provided, and a list of
         /// identifiers that supply each.
         /// </summary>
-        // 
+        //
         // Eg: {
         //          LifeSupport => [ "TACLS", "Snacks" ]
         //          DogeCoinFlag => [ "DogeCoinFlag" ]
@@ -128,7 +127,7 @@ namespace CKAN
             // Add in our DLLs as things we know exist.
             foreach (string dll in dlls)
             {
-                if (! providers.ContainsKey(dll))
+                if (!providers.ContainsKey(dll))
                 {
                     providers[dll] = new List<string>();
                 }
@@ -142,7 +141,7 @@ namespace CKAN
         /// Given a list of modules and optional dlls, returns a dictionary of dependencies which are still not met.
         /// The dictionary keys are the un-met depdendencies, the values are the modules requesting them.
         /// </summary>
-        public static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, IEnumerable<string> dlls = null)
+        public static Dictionary<string, List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, IEnumerable<string> dlls = null)
         {
             return FindUnmetDependencies(modules, ModulesToProvides(modules, dlls));
         }
@@ -150,17 +149,17 @@ namespace CKAN
         /// <summary>
         /// Given a list of modules, and a dictionary of providers, returns a dictionary of depdendencies which have not been met.
         /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, Dictionary<string,List<string>> provided)
+        internal static Dictionary<string, List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, Dictionary<string, List<string>> provided)
         {
-            return FindUnmetDependencies(modules, new HashSet<string> (provided.Keys));
+            return FindUnmetDependencies(modules, new HashSet<string>(provided.Keys));
         }
 
         /// <summary>
         /// Given a list of modules, and a set of providers, returns a dictionary of dependencies which have not been met.
         /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, HashSet<string> provided)
+        internal static Dictionary<string, List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, HashSet<string> provided)
         {
-            var unmet = new Dictionary<string,List<CkanModule>> ();
+            var unmet = new Dictionary<string, List<CkanModule>>();
 
             // TODO: This doesn't examine versions, it should!
 
@@ -174,7 +173,7 @@ namespace CKAN
 
                 // If it does have dependencies, but we can't find anything that provides them,
                 // add them to our unmet list.
-                foreach (RelationshipDescriptor dep in mod.depends.Where(dep => ! provided.Contains(dep.name)))
+                foreach (RelationshipDescriptor dep in mod.depends.Where(dep => !provided.Contains(dep.name)))
                 {
                     if (!unmet.ContainsKey(dep.name))
                     {

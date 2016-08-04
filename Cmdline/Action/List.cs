@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CKAN.Exporters;
+﻿using CKAN.Exporters;
 using CKAN.Types;
 using log4net;
+using System;
+using System.Collections.Generic;
 
 namespace CKAN.CmdLine
 {
@@ -22,10 +19,9 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            ListOptions options = (ListOptions) raw_options;
+            ListOptions options = (ListOptions)raw_options;
 
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-
 
             ExportFileType? exportFileType = null;
 
@@ -126,18 +122,22 @@ namespace CKAN.CmdLine
             {
                 case "text":
                     return ExportFileType.PlainText;
+
                 case "markdown":
                     return ExportFileType.Markdown;
+
                 case "bbcode":
                     return ExportFileType.BbCode;
+
                 case "csv":
                     return ExportFileType.Csv;
+
                 case "tsv":
                     return ExportFileType.Tsv;
+
                 default:
                     return null;
             }
         }
     }
 }
-

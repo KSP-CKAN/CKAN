@@ -1,15 +1,14 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using log4net;
 
 namespace CKAN
 {
     public class PluginController
     {
-
         private static readonly ILog log = LogManager.GetLogger(typeof(PluginController));
 
         private string m_PluginsPath = "";
@@ -128,7 +127,7 @@ namespace CKAN
             {
                 try
                 {
-                    log.Debug("Initializing "+plugin.GetName());
+                    log.Debug("Initializing " + plugin.GetName());
                     plugin.Initialize();
                 }
                 catch (Exception ex)
@@ -190,7 +189,5 @@ namespace CKAN
 
         private HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
         private HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
-
     }
-
 }

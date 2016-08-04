@@ -1,11 +1,10 @@
-﻿using System;
-using CKAN.NetKAN;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
 using CKAN.NetKAN.Transformers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System;
 
 namespace Tests.NetKAN.Transformers
 {

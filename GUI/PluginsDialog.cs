@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace CKAN
@@ -64,7 +63,7 @@ namespace CKAN
                 return;
             }
 
-            var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
+            var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
             Main.Instance.m_PluginController.DeactivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
@@ -126,6 +125,5 @@ namespace CKAN
                 RefreshDormantPlugins();
             }
         }
-
     }
 }

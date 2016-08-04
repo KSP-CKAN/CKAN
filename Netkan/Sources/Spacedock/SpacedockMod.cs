@@ -1,21 +1,41 @@
+using Newtonsoft.Json;
 using System;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Sources.Spacedock
 {
     internal class SpacedockMod
     {
-        [JsonProperty] public int id; // SDID
-        [JsonProperty] public string license;
-        [JsonProperty] public string name;
-        [JsonProperty] public string short_description;
-        [JsonProperty] public string author;
-        [JsonProperty] public SDVersion[] versions;
-        [JsonProperty] public string website;
-        [JsonProperty] public string source_code;
-        [JsonProperty] public int default_version_id;
-        [JsonProperty] public SpacedockUser[] shared_authors;
+        [JsonProperty]
+        public int id; // SDID
+
+        [JsonProperty]
+        public string license;
+
+        [JsonProperty]
+        public string name;
+
+        [JsonProperty]
+        public string short_description;
+
+        [JsonProperty]
+        public string author;
+
+        [JsonProperty]
+        public SDVersion[] versions;
+
+        [JsonProperty]
+        public string website;
+
+        [JsonProperty]
+        public string source_code;
+
+        [JsonProperty]
+        public int default_version_id;
+
+        [JsonProperty]
+        public SpacedockUser[] shared_authors;
+
         [JsonConverter(typeof(SDVersion.JsonConvertFromRelativeSdUri))]
         public Uri background;
 

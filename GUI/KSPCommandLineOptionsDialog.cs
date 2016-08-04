@@ -2,7 +2,6 @@
 
 namespace CKAN
 {
-
     public partial class KSPCommandLineOptionsDialog : MonoCompatibleForm
     {
         public KSPCommandLineOptionsDialog()
@@ -24,5 +23,4 @@ namespace CKAN
             return AdditionalArguments.Text;
         }
     }
-
 }

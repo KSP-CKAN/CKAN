@@ -1,7 +1,5 @@
 ﻿using ICSharpCode.SharpZipLib.GZip;
-using System;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 
 namespace CKAN
@@ -79,7 +77,7 @@ namespace CKAN
             if (stream.CanSeek)
             {
                 // Rewind the stream to the origin of the file.
-                stream.Seek (0, SeekOrigin.Begin);
+                stream.Seek(0, SeekOrigin.Begin);
             }
 
             // Define the buffer and magic types to compare against.
@@ -87,7 +85,7 @@ namespace CKAN
             byte[] tar_identifier = { 0x75, 0x73, 0x74, 0x61, 0x72 };
 
             // Advance the stream position to offset 257. This method circumvents stream which can't seek.
-            for(int i = 0; i < 257; i++)
+            for (int i = 0; i < 257; i++)
             {
                 stream.ReadByte();
             }
@@ -163,7 +161,7 @@ namespace CKAN
             if (CheckGZip(stream))
             {
                 // This may contain a tar file inside, create a new stream and check.
-                stream.Seek (0, SeekOrigin.Begin);
+                stream.Seek(0, SeekOrigin.Begin);
                 using (var deflatedStream = new GZipInputStream(stream))
                 {
                     type = CheckTar(deflatedStream) ? FileType.TarGz : FileType.GZip;
@@ -207,7 +205,7 @@ namespace CKAN
             }
 
             // Identify the file using the stream method.
-            using (Stream stream = File.OpenRead (path))
+            using (Stream stream = File.OpenRead(path))
             {
                 type = IdentifyFile(stream);
             }

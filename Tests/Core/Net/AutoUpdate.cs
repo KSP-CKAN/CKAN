@@ -1,7 +1,5 @@
-﻿using System;
-using CKAN;
-using NUnit.Framework;
-using System.Net;
+﻿using NUnit.Framework;
+using System;
 
 namespace Tests.Core.AutoUpdate
 {

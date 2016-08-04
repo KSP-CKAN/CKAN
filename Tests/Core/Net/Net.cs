@@ -1,7 +1,7 @@
-using System;
-using System.IO;
 using CKAN;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 namespace Tests.Core.Net
 {
@@ -10,7 +10,8 @@ namespace Tests.Core.Net
     {
         // TODO: Test certificate errors. How?
         // URL we expect to always be up.
-        const string KnownURL = "http://example.com/";
+        private const string KnownURL = "http://example.com/";
+
         private static void BadDownload()
         {
             CKAN.Net.Download("cheese sandwich");
@@ -58,7 +59,7 @@ namespace Tests.Core.Net
                 }
             });
         }
-            
+
         [Test]
         [Category("Security")]
         public void SSLenforced()
@@ -67,9 +68,8 @@ namespace Tests.Core.Net
             // this test on that platform.
             if (Platform.IsWindows) return;
 
-            var curl = Curl.CreateEasy("https://example.com", (FileStream) null);
+            var curl = Curl.CreateEasy("https://example.com", (FileStream)null);
             Assert.IsTrue(curl.SslVerifyPeer, "We should enforce SSL");
         }
-
     }
 }

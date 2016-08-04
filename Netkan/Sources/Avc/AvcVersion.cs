@@ -13,13 +13,13 @@ namespace CKAN.NetKAN.Sources.Avc
         [JsonConverter(typeof(JsonAvcToVersion))]
         public Version version;
 
-        [JsonConverter(typeof (JsonAvcToKspVersion))]
+        [JsonConverter(typeof(JsonAvcToKspVersion))]
         public KspVersion ksp_version;
 
-        [JsonConverter(typeof (JsonAvcToKspVersion))]
+        [JsonConverter(typeof(JsonAvcToKspVersion))]
         public KspVersion ksp_version_min;
 
-        [JsonConverter(typeof (JsonAvcToKspVersion))]
+        [JsonConverter(typeof(JsonAvcToKspVersion))]
         public KspVersion ksp_version_max;
     }
 }

@@ -15,7 +15,7 @@ namespace Tests.NetKAN.Validators
         public void DoesNotThrowWhenInstallableFiles()
         {
             // Arrange
-             var mHttp = new Mock<IHttpService>();
+            var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))

@@ -30,18 +30,23 @@ namespace CKAN.NetKAN.Services
                     case FileType.ASCII:
                         extension = "txt";
                         break;
+
                     case FileType.GZip:
                         extension = "gz";
                         break;
+
                     case FileType.Tar:
                         extension = "tar";
                         break;
+
                     case FileType.TarGz:
                         extension = "tar.gz";
                         break;
+
                     case FileType.Zip:
                         extension = "zip";
                         break;
+
                     default:
                         extension = "ckan-package";
                         break;

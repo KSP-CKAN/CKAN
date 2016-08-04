@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using CKAN;
+﻿using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Spacedock;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 namespace Tests.NetKAN.Sources.Spacedock
 {

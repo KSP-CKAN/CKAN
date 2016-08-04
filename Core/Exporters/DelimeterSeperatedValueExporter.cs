@@ -10,6 +10,7 @@ namespace CKAN.Exporters
                                             "{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}" +
                                             "{0}{11}{0}{12}{0}{13}{0}{14}{0}{15}" +
                                             "{0}{16}{0}{17}{0}{18}";
+
         private readonly string _delimiter;
 
         public DelimeterSeperatedValueExporter(Delimter delimter)
@@ -19,9 +20,11 @@ namespace CKAN.Exporters
                 case Delimter.Comma:
                     _delimiter = ",";
                     break;
+
                 case Delimter.Tab:
                     _delimiter = "\t";
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

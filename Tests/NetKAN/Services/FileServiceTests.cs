@@ -1,6 +1,6 @@
-﻿using System.IO;
-using CKAN.NetKAN.Services;
+﻿using CKAN.NetKAN.Services;
 using NUnit.Framework;
+using System.IO;
 using Tests.Data;
 
 namespace Tests.NetKAN.Services
@@ -22,7 +22,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct file size."
             );
         }
-        
+
         [Test]
         public void GetsFileHashSha1Correctly()
         {
@@ -37,7 +37,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct file SHA1 hash."
             );
         }
-        
+
         [Test]
         public void GetsFileHashSha256Correctly()
         {
@@ -52,7 +52,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct file SHA256 hash."
             );
         }
-        
+
         [Test]
         public void GetsAsciiMimeCorrectly()
         {
@@ -67,7 +67,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct mimetype for a text file"
             );
         }
-        
+
         [Test]
         public void GetsGzipMimeCorrectly()
         {
@@ -82,7 +82,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct mimetype for a gzip file."
             );
         }
-        
+
         [Test]
         public void GetsTarMimeCorrectly()
         {
@@ -97,7 +97,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct mimetype for a tar file."
             );
         }
-        
+
         [Test]
         public void GetsTarGzMimeCorrectly()
         {
@@ -112,7 +112,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct mimetype for a tar.gz file."
             );
         }
-        
+
         [Test]
         public void GetsZipMimeCorrectly()
         {
@@ -127,7 +127,7 @@ namespace Tests.NetKAN.Services
                 "FileService should return the correct mimetype for a zipfile."
             );
         }
-        
+
         [Test]
         public void GetsUnknownMimeCorrectly()
         {

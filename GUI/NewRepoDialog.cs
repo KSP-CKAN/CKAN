@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 
 namespace CKAN
 {
-
-
     public partial class NewRepoDialog : Form
     {
         public NewRepoDialog()
@@ -50,13 +46,12 @@ namespace CKAN
                 return;
             }
 
-            RepoUrlTextBox.Text = (string) ReposListBox.SelectedItem;
+            RepoUrlTextBox.Text = (string)ReposListBox.SelectedItem;
         }
 
         private void RepoUrlTextBox_TextChanged(object sender, EventArgs e)
         {
             RepoOK.Enabled = RepoUrlTextBox.Text.Length != 0;
         }
-
     }
 }

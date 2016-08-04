@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
 {
@@ -16,7 +14,7 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            SearchOptions options = (SearchOptions) raw_options;
+            SearchOptions options = (SearchOptions)raw_options;
 
             // Check the input.
             if (String.IsNullOrWhiteSpace(options.search_term))
@@ -81,4 +79,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

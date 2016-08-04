@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace CKAN
 {
-
-    // With thanks to 
+    // With thanks to
     // https://stackoverflow.com/questions/18994685/how-to-handle-both-a-single-item-and-an-array-for-the-same-property-using-json-n
 
     public class JsonSingleOrArrayConverter<T> : JsonConverter
@@ -43,4 +42,3 @@ namespace CKAN
         }
     }
 }
-

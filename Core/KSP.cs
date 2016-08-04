@@ -1,3 +1,7 @@
+using Autofac;
+using CKAN.GameVersionProviders;
+using CKAN.Versioning;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,16 +10,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using Autofac;
-using CKAN.GameVersionProviders;
-using CKAN.Versioning;
-using log4net;
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]
 
 namespace CKAN
 {
-    
     /// <summary>
     ///     Everything for dealing with KSP itself.
     /// </summary>
@@ -42,7 +41,8 @@ namespace CKAN
             get { return RegistryManager.registry; }
         }
 
-        #endregion
+        #endregion Fields and Properties
+
         #region Construction and Initialisation
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace CKAN
             // Make sure our path is absolute and has normalised slashes.
             gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
 
-            if (! IsKspDir(gameDir))
+            if (!IsKspDir(gameDir))
             {
                 throw new NotKSPDirKraken(gameDir);
             }
-            
+
             this.gameDir = gameDir;
             Init();
             Cache = new NetFileCache(DownloadCacheDir());
@@ -74,7 +74,7 @@ namespace CKAN
         {
             Log.DebugFormat("Initialising {0}", CkanDir());
 
-            if (! Directory.Exists(CkanDir()))
+            if (!Directory.Exists(CkanDir()))
             {
                 User.RaiseMessage("Setting up CKAN for the first time...");
                 User.RaiseMessage("Creating {0}", CkanDir());
@@ -84,7 +84,7 @@ namespace CKAN
                 ScanGameData();
             }
 
-            if (! Directory.Exists(DownloadCacheDir()))
+            if (!Directory.Exists(DownloadCacheDir()))
             {
                 User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
@@ -118,7 +118,7 @@ namespace CKAN
                 Cache.Dispose();
         }
 
-        #endregion
+        #endregion Construction and Initialisation
 
         #region KSP Directory Detection and Versioning
 
@@ -178,7 +178,6 @@ namespace CKAN
             return Directory.Exists(Path.Combine(directory, "GameData"));
         }
 
-
         /// <summary>
         /// Detects the version of KSP in a given directory.
         /// Throws a NotKSPDirKraken if anything goes wrong.
@@ -217,7 +216,7 @@ namespace CKAN
                 return readmeVersionProvider.TryGetVersion(directory, out version) ? version : null;
             }
         }
-        
+
         /// <summary>
         /// Rebuilds the "Ships" directory inside the current KSP instance
         /// </summary>
@@ -232,7 +231,7 @@ namespace CKAN
             }
         }
 
-        #endregion
+        #endregion KSP Directory Detection and Versioning
 
         #region Things which would be better as Properties
 
@@ -335,7 +334,7 @@ namespace CKAN
             return version = DetectVersion(GameDir());
         }
 
-        #endregion
+        #endregion Things which would be better as Properties
 
         #region CKAN/GameData Directory Maintenance
 
@@ -346,7 +345,7 @@ namespace CKAN
         {
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
-            
+
             Log.Debug("Cleaning cahce directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
@@ -396,13 +395,13 @@ namespace CKAN
                 {
                     Registry.RegisterDll(this, dll);
                 }
-                    
+
                 tx.Complete();
             }
             RegistryManager.Save();
         }
 
-        #endregion
+        #endregion CKAN/GameData Directory Maintenance
 
         /// <summary>
         /// Returns path relative to this KSP's GameDir.
@@ -414,7 +413,7 @@ namespace CKAN
 
         /// <summary>
         /// Given a path relative to this KSP's GameDir, returns the
-        /// absolute path on the system. 
+        /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)
         {
@@ -437,5 +436,4 @@ namespace CKAN
             return gameDir.GetHashCode();
         }
     }
-
 }

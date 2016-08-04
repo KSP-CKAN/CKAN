@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-
 namespace CKAN
 {
     /// <summary>
@@ -55,7 +54,6 @@ namespace CKAN
         [DllImport("libc")]
         private static extern int uname(IntPtr buf);
 
-
         /// <summary>
         /// Are we on a Unix (including Linux, but *not* Mac) system.
         /// </summary>
@@ -70,7 +68,6 @@ namespace CKAN
         /// </summary>
         /// <value><c>true</c> if is mac; otherwise, <c>false</c>.</value>
         public static bool IsMac { get; private set; }
-
 
         /// <summary>
         /// Are we on a flavour of Windows? This is implemented internally by checking
@@ -102,7 +99,7 @@ namespace CKAN
             if (!IsMono) return false;
             Type type = Type.GetType("Mono.Runtime");
             string display_name =
-                (string) type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+                (string)type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
             return Regex.IsMatch(display_name, "^\\s*4\\.\\d+\\.\\d+\\s*\\(");
         }
     }

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -51,7 +51,7 @@ namespace CKAN
         /// <param name="license">License.</param>
         public License(string license)
         {
-            if (! valid_licenses.Contains(license))
+            if (!valid_licenses.Contains(license))
             {
                 throw new BadMetadataKraken(
                     null,
@@ -71,4 +71,3 @@ namespace CKAN
         }
     }
 }
-

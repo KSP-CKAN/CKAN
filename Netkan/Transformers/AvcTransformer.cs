@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -45,7 +45,7 @@ namespace CKAN.NetKAN.Transformers
                 {
                     json["version"] = "0"; // TODO: DBB: Dummy version necessary to the next statement doesn't throw
                 }
-                
+
                 var mod = CkanModule.FromJson(json.ToString());
 
                 if (noVersion)
@@ -90,7 +90,7 @@ namespace CKAN.NetKAN.Transformers
 
                     var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
                     var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
-                    
+
                     // Get the minimum and maximum KSP versions that are in the AVC file.
                     // Use specific KSP version if min/max don't exist.
                     var avcKspMin = avc.ksp_version_min ?? avc.ksp_version;

@@ -1,9 +1,9 @@
-﻿using System;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
 using log4net;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace CKAN.NetKAN.Transformers
 {

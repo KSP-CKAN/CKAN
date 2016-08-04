@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 namespace CKAN.Versioning
 {
@@ -31,7 +31,7 @@ namespace CKAN.Versioning
         /// Gets the value of the major component of the version number for the current <see cref="KspVersion"/>
         /// object.
         /// </summary>
-        public int Major {  get { return _major; } }
+        public int Major { get { return _major; } }
 
         /// <summary>
         /// Gets the value of the minor component of the version number for the current <see cref="KspVersion"/>
@@ -73,7 +73,7 @@ namespace CKAN.Versioning
         /// Gets whether or not the build component of the version number for the current <see cref="KspVersion"/>
         /// object is defined.
         /// </summary>
-        public bool IsBuildDefined {  get { return _build != Undefined; } }
+        public bool IsBuildDefined { get { return _build != Undefined; } }
 
         /// <summary>
         /// Indicates whether or not all components of the current <see cref="KspVersion"/> are defined.
@@ -238,7 +238,7 @@ namespace CKAN.Versioning
         /// </para>
         /// <para>
         /// For example, the version "1.0.0.0" would be equivalent to the range ["1.0.0.0", "1.0.0.0"], while the
-        /// version "1.0" would be equivalent to the range ["1.0.0.0", "1.1.0.0"). Where '[' and ']' represent 
+        /// version "1.0" would be equivalent to the range ["1.0.0.0", "1.1.0.0"). Where '[' and ']' represent
         /// inclusive bounds and '(' and ')' represent exclusive bounds.
         /// </para>
         /// </returns>
@@ -246,7 +246,7 @@ namespace CKAN.Versioning
         {
             KspVersionBound lower;
             KspVersionBound upper;
-        
+
             if (IsBuildDefined)
             {
                 lower = new KspVersionBound(this, inclusive: true);
@@ -402,7 +402,7 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(obj, null)) return false;
             if (ReferenceEquals(obj, this)) return true;
-            return obj is KspVersion && Equals((KspVersion) obj);
+            return obj is KspVersion && Equals((KspVersion)obj);
         }
 
         /// <summary>
@@ -414,9 +414,9 @@ namespace CKAN.Versioning
             unchecked
             {
                 var hashCode = _major.GetHashCode();
-                hashCode = (hashCode*397) ^ _minor.GetHashCode();
-                hashCode = (hashCode*397) ^ _patch.GetHashCode();
-                hashCode = (hashCode*397) ^ _build.GetHashCode();
+                hashCode = (hashCode * 397) ^ _minor.GetHashCode();
+                hashCode = (hashCode * 397) ^ _patch.GetHashCode();
+                hashCode = (hashCode * 397) ^ _build.GetHashCode();
                 return hashCode;
             }
         }
@@ -691,8 +691,10 @@ namespace CKAN.Versioning
             {
                 case null:
                     return null;
+
                 case "any":
                     return KspVersion.Any;
+
                 default:
                     KspVersion result;
 

@@ -1,6 +1,6 @@
-﻿using System.IO;
-using CKAN;
+﻿using CKAN;
 using NUnit.Framework;
+using System.IO;
 using Tests.Data;
 
 namespace Tests.Core

@@ -1,12 +1,12 @@
+using ChinhDo.Transactions;
+using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ChinhDo.Transactions;
-using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
@@ -15,7 +15,7 @@ namespace CKAN
         private static readonly Dictionary<string, RegistryManager> singleton =
             new Dictionary<string, RegistryManager>();
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         private readonly string path;
         private readonly TxFileManager file_transaction = new TxFileManager();
 
@@ -89,8 +89,6 @@ namespace CKAN
                     ksp
                     )
             };
-
-            
 
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);

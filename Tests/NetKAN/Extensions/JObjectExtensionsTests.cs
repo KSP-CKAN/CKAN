@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Tests.NetKAN.Extensions
 {

@@ -9,7 +9,7 @@ namespace Tests.NetKAN
     [TestFixture]
     public class NetkanOverride
     {
-        JObject such_metadata;
+        private JObject such_metadata;
 
         [SetUp]
         public void Setup()
@@ -33,7 +33,7 @@ namespace Tests.NetKAN
                     }
                 }]");
 
-            Assert.AreEqual("doge",new_metadata["author"].ToString(),"Override processed");
+            Assert.AreEqual("doge", new_metadata["author"].ToString(), "Override processed");
 
             // Make sure our original metadata iddn't change.
             OriginalAuthorUnchanged();
@@ -116,7 +116,6 @@ namespace Tests.NetKAN
                     ""delete"" : [ ""abstract"", ""author"" ]
                 }]");
 
-
             Assert.IsFalse(new_metadata.TryGetValue("abstract", out token));
             Assert.IsFalse(new_metadata.TryGetValue("author", out token));
         }
@@ -182,4 +181,3 @@ namespace Tests.NetKAN
         }
     }
 }
-

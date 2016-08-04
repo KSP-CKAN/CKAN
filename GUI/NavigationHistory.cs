@@ -9,8 +9,8 @@
     /// <typeparam name="T"></typeparam>
     public class NavigationHistory<T>
     {
-        readonly List<T> m_navigationHistory;
-        int m_currentIndex;
+        private readonly List<T> m_navigationHistory;
+        private int m_currentIndex;
 
         public NavigationHistory()
         {
@@ -34,7 +34,7 @@
             }
         }
 
-        #endregion
+        #endregion Events
 
         /// <summary>
         /// Indicates whether it's possible to navigate backwards.
@@ -79,17 +79,17 @@
             /*
              * This operation removes all history AHEAD of the current index,
              * adds a new item to the head of the list, and advances the index.
-             * 
+             *
              * Let's say this is your current state:
-             * 
+             *
              * =============
              * |x|y|z|a|b|c|
              * =============
              *      ^
-             * 
+             *
              * When you add an item to the history ('d'),
              * the next state will be:
-             * 
+             *
              * =========
              * |x|y|z|d|
              * =========

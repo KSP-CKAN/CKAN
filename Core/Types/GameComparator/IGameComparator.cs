@@ -14,4 +14,3 @@ namespace CKAN
         bool Compatible(KspVersion gameVersion, CkanModule module);
     }
 }
-

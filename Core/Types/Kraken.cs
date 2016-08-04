@@ -17,8 +17,8 @@ namespace CKAN
     {
         public string file;
 
-        public FileNotFoundKraken(string file, string reason = null, Exception inner_exception = null) 
-            :base(reason, inner_exception)
+        public FileNotFoundKraken(string file, string reason = null, Exception inner_exception = null)
+            : base(reason, inner_exception)
         {
             this.file = file;
         }
@@ -29,7 +29,7 @@ namespace CKAN
         public string directory;
 
         public DirectoryNotFoundKraken(string directory, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.directory = directory;
         }
@@ -57,7 +57,7 @@ namespace CKAN
 
         // TODO: Is there a way to set the stringify version of this?
         public ModuleNotFoundKraken(string module, string version = null, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.module = module;
             this.version = version;
@@ -69,7 +69,7 @@ namespace CKAN
         public string path;
 
         public NotKSPDirKraken(string path, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.path = path;
         }
@@ -78,7 +78,7 @@ namespace CKAN
     public class TransactionalKraken : Kraken
     {
         public TransactionalKraken(string reason = null, Exception inner_exception = null)
-            :base(reason,inner_exception)
+            : base(reason, inner_exception)
         {
         }
     }
@@ -92,7 +92,7 @@ namespace CKAN
         public CkanModule module;
 
         public BadMetadataKraken(CkanModule module, string reason = null, Exception inner_exception = null)
-            :base(reason,inner_exception)
+            : base(reason, inner_exception)
         {
             this.module = module;
         }
@@ -106,7 +106,7 @@ namespace CKAN
         public int requested_version;
 
         public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             requested_version = v;
         }
@@ -118,7 +118,7 @@ namespace CKAN
         public string requested;
 
         public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception inner_exception = null)
-            :base(FormatMessage(requested, modules), inner_exception)
+            : base(FormatMessage(requested, modules), inner_exception)
         {
             this.modules = modules;
             this.requested = requested;
@@ -149,13 +149,13 @@ namespace CKAN
         }
 
         public InconsistentKraken(ICollection<string> inconsistencies, Exception inner_exception = null)
-            :base(null, inner_exception)
+            : base(null, inner_exception)
         {
             this.inconsistencies = inconsistencies;
         }
 
         public InconsistentKraken(string inconsistency, Exception inner_exception = null)
-            :base(null, inner_exception)
+            : base(null, inner_exception)
         {
             inconsistencies = new List<string> { inconsistency };
         }
@@ -177,10 +177,11 @@ namespace CKAN
         // These aren't set at construction time, but exist so that we can decorate the
         // kraken as appropriate.
         public CkanModule installing_module;
+
         public string owning_module;
 
         public FileExistsKraken(string filename, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.filename = filename;
         }
@@ -196,9 +197,9 @@ namespace CKAN
         public List<Exception> exceptions;
 
         public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
-            exceptions = new List<Exception> (errors);
+            exceptions = new List<Exception>(errors);
         }
 
         public override string ToString()
@@ -214,7 +215,7 @@ namespace CKAN
     public class CancelledActionKraken : Kraken
     {
         public CancelledActionKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
         }
     }
@@ -226,7 +227,7 @@ namespace CKAN
     public class UnsupportedKraken : Kraken
     {
         public UnsupportedKraken(string reason, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
         }
     }
@@ -240,7 +241,7 @@ namespace CKAN
         public string path;
 
         public PathErrorKraken(string path, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.path = path;
         }
@@ -265,7 +266,7 @@ namespace CKAN
         // our base class?
 
         public ModNotInstalledKraken(string mod, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
             this.mod = mod;
         }
@@ -277,7 +278,7 @@ namespace CKAN
     public class BadCommandKraken : Kraken
     {
         public BadCommandKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
         }
     }
@@ -285,7 +286,7 @@ namespace CKAN
     public class MissingCertificateKraken : Kraken
     {
         public MissingCertificateKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+            : base(reason, inner_exception)
         {
         }
 

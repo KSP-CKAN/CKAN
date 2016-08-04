@@ -3,6 +3,9 @@
 //
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
+using log4net;
+using log4net.Config;
+using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,15 +14,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using log4net;
-using log4net.Config;
-using log4net.Core;
 
 namespace CKAN.CmdLine
 {
     internal class MainClass
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainClass));
 
         /*
          * When the STAThread is applied, it changes the apartment state of the current thread to be single threaded.
@@ -29,6 +29,7 @@ namespace CKAN.CmdLine
          * depending on the feature you're using, it may be using COM interop in order to communicate with
          * operating system components.  Good examples of this are the Clipboard and the File Dialogs.
          */
+
         [STAThread]
         public static int Main(string[] args)
         {
@@ -42,7 +43,7 @@ namespace CKAN.CmdLine
 
             if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
             {
-                // Start the gui with logging enabled #437 
+                // Start the gui with logging enabled #437
                 List<string> guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
                 args = guiCommand.ToArray();
@@ -121,7 +122,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
-            KSPManager manager= new KSPManager(user);
+            KSPManager manager = new KSPManager(user);
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
@@ -141,7 +142,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 // Set a KSP directory by its path
                 manager.SetCurrentInstanceByPath(options.KSPdir);
             }
-            else if (! (cmdline.action == "ksp" || cmdline.action == "version" || cmdline.action == "gui"))
+            else if (!(cmdline.action == "ksp" || cmdline.action == "version" || cmdline.action == "gui"))
             {
                 // Find whatever our preferred instance is.
                 // We don't do this on `ksp/version/gui` commands, they don't need it.
@@ -155,7 +156,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 }
                 else
                 {
-                    log.InfoFormat("Using KSP install at {0}",ksp.GameDir());
+                    log.InfoFormat("Using KSP install at {0}", ksp.GameDir());
                 }
             }
 
@@ -172,7 +173,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     break;
             }
 
-            #endregion
+            #endregion Aliases
 
             switch (cmdline.action)
             {
@@ -193,7 +194,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return (new Install(user)).RunCommand(manager.CurrentInstance, (InstallOptions)cmdline.options);
 
                 case "scan":
-                    return Scan(manager.CurrentInstance,user);
+                    return Scan(manager.CurrentInstance, user);
 
                 case "list":
                     return (new List(user)).RunCommand(manager.CurrentInstance, (ListOptions)cmdline.options);
@@ -215,16 +216,16 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return Clean(manager.CurrentInstance);
 
                 case "repair":
-                    var repair = new Repair(manager.CurrentInstance,user);
-                    return repair.RunSubCommand((SubCommandOptions) cmdline.options);
+                    var repair = new Repair(manager.CurrentInstance, user);
+                    return repair.RunSubCommand((SubCommandOptions)cmdline.options);
 
                 case "ksp":
                     var ksp = new KSP(manager, user);
-                    return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+                    return ksp.RunSubCommand((SubCommandOptions)cmdline.options);
 
                 case "repo":
-                    var repo = new Repo (manager, user);
-                    return repo.RunSubCommand((SubCommandOptions) cmdline.options);
+                    var repo = new Repo(manager, user);
+                    return repo.RunSubCommand((SubCommandOptions)cmdline.options);
 
                 case "compare":
                     return (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
@@ -245,7 +246,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                 if (display_name != null)
                 {
-                    var version_string = (string) display_name.Invoke(null, null);
+                    var version_string = (string)display_name.Invoke(null, null);
                     var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
 
                     if (match.Success)
@@ -314,7 +315,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
         /// <param name="user"></param>
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
-        private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command=null)
+        private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command = null)
         {
             try
             {
@@ -323,8 +324,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             }
             catch (InconsistentKraken kraken)
             {
-
-                if (next_command==null)
+                if (next_command == null)
                 {
                     user.RaiseError(kraken.InconsistenciesPretty);
                     user.RaiseError("The repo has not been saved.");

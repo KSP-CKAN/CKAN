@@ -1,8 +1,3 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
@@ -13,6 +8,11 @@ using log4net.Config;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace CKAN.NetKAN
 {
@@ -100,7 +100,7 @@ namespace CKAN.NetKAN
             {
                 Debugger.Launch();
             }
-                
+
             Options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, Options);
 

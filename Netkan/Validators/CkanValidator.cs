@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using System.Collections.Generic;
 
 namespace CKAN.NetKAN.Validators
 {

@@ -1,11 +1,11 @@
+using CKAN.Versioning;
+using log4net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using CKAN.Versioning;
-using log4net;
-using Newtonsoft.Json;
 
 namespace CKAN
 {
@@ -30,7 +30,7 @@ namespace CKAN
         {
             var mod = module_version.Values.FirstOrDefault();
             identifier = mod.identifier;
-            Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));
+            Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
         /// <param name="identifier">The module to keep track of</param>
@@ -39,7 +39,7 @@ namespace CKAN
             this.identifier = identifier;
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
         [JsonProperty]
@@ -50,7 +50,7 @@ namespace CKAN
         /// </summary>
         public void Add(CkanModule module)
         {
-            if(!module.identifier.Equals(identifier))
+            if (!module.identifier.Equals(identifier))
                 throw new ArgumentException(
                     string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
 
@@ -67,17 +67,17 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy. 
+        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy.
         /// </summary>
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
         /// <returns></returns>
-        public CkanModule Latest(KspVersion ksp_version = null, RelationshipDescriptor relationship=null)
-        {            
+        public CkanModule Latest(KspVersion ksp_version = null, RelationshipDescriptor relationship = null)
+        {
             var available_versions = new List<Version>(module_version.Keys);
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
-            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
+            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
 
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
             if (available_versions.Count == 0)
@@ -117,20 +117,19 @@ namespace CKAN
                 return version == null ? null : module_version[version];
             }
             else
-            {                
+            {
                 var version = available_versions.FirstOrDefault(v =>
                     relationship.version_within_bounds(v) &&
                     module_version[v].IsCompatibleKSP(ksp_version));
-                return version == null ? null : module_version[version];                
+                return version == null ? null : module_version[version];
             }
-            
         }
 
         /// <summary>
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
         public CkanModule ByVersion(Version v)
-        {            
+        {
             CkanModule module;
             module_version.TryGetValue(v, out module);
             return module;
@@ -144,7 +143,6 @@ namespace CKAN
     /// </summary>
     public class RecentVersionComparer : IComparer<Version>
     {
-
         public int Compare(Version x, Version y)
         {
             return y.CompareTo(x);

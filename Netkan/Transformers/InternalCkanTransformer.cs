@@ -1,8 +1,8 @@
-﻿using System;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using log4net;
+using System;
 
 namespace CKAN.NetKAN.Transformers
 {

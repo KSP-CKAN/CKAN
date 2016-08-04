@@ -1,13 +1,12 @@
+using CKAN.Versioning;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CKAN.Versioning;
-using log4net;
 
 namespace CKAN
 {
-
     // TODO: It would be lovely to get rid of the `without` fields,
     // and replace them with `with` fields. Humans suck at inverting
     // cases in their heads.
@@ -67,7 +66,6 @@ namespace CKAN
     // TODO: Add mechanism so that clients can add mods with relationshup other than UserAdded.
     // Currently only made to support the with_{} options.
 
-
     /// <summary>
     /// A class used to resolve relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
     /// </summary>
@@ -77,7 +75,8 @@ namespace CKAN
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
+        private static readonly ILog log = LogManager.GetLogger(typeof(RelationshipResolver));
+
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
 
@@ -85,6 +84,7 @@ namespace CKAN
         // as recreating them from reasons is no longer possible.
         private readonly List<KeyValuePair<CkanModule, CkanModule>> conflicts =
             new List<KeyValuePair<CkanModule, CkanModule>>();
+
         private readonly Dictionary<CkanModule, SelectionReason> reasons =
             new Dictionary<CkanModule, SelectionReason>(new NameComparer());
 
@@ -134,7 +134,7 @@ namespace CKAN
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
         public RelationshipResolver(IEnumerable<CkanModule> modules, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KspVersion kspversion):this(options,registry,kspversion)
+            KspVersion kspversion) : this(options, registry, kspversion)
         {
             AddModulesToInstall(modules);
         }
@@ -239,7 +239,7 @@ namespace CKAN
             // Even though we may resolve top-level suggests for our module,
             // we don't install suggestions all the down unless with_all_suggests
             // is true.
-            var sub_options = (RelationshipResolverOptions) options.Clone();
+            var sub_options = (RelationshipResolverOptions)options.Clone();
             sub_options.with_suggests = false;
 
             log.InfoFormat("Resolving dependencies for {0}", module.identifier);
@@ -297,8 +297,8 @@ namespace CKAN
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module,reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent,module));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
                         continue;
                     }
                     throw new InconsistentKraken(
@@ -309,7 +309,7 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
+                    if (descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
                         continue;
                     var module = registry.InstalledModule(dep_name).Module;
 
@@ -328,7 +328,7 @@ namespace CKAN
 
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
-                    .Where(mod=>descriptor1.version_within_bounds(mod.version) && MightBeInstallable(mod)).ToList();
+                    .Where(mod => descriptor1.version_within_bounds(mod.version) && MightBeInstallable(mod)).ToList();
 
                 if (candidates.Count == 0)
                 {
@@ -424,7 +424,7 @@ namespace CKAN
                 throw new ArgumentException("Already contains module:" + module.identifier);
             }
             modlist.Add(module.identifier, module);
-            if(!reasons.ContainsKey(module)) reasons.Add(module, reason);
+            if (!reasons.ContainsKey(module)) reasons.Add(module, reason);
 
             log.DebugFormat("Added {0}", module.identifier);
             // Stop here if it doesn't have any provide aliases.
@@ -474,7 +474,6 @@ namespace CKAN
             return installable;
         }
 
-
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
         /// </summary>
@@ -518,7 +517,7 @@ namespace CKAN
         public string ReasonStringFor(CkanModule mod)
         {
             var reason = ReasonFor(mod);
-            var is_root_type = reason.GetType() == typeof (SelectionReason.UserRequested)
+            var is_root_type = reason.GetType() == typeof(SelectionReason.UserRequested)
                 || reason.GetType() == typeof(SelectionReason.Installed);
             return is_root_type
                 ? reason.Reason
@@ -545,9 +544,9 @@ namespace CKAN
     {
         //Currently assumed to exist for any relationship other than useradded or installed
         public virtual CkanModule Parent { get; protected set; }
+
         //Should contain a newline at the end of the string.
         public abstract String Reason { get; }
-
 
         public class Installed : SelectionReason
         {

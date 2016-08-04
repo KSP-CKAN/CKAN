@@ -1,8 +1,8 @@
+using CKAN.Versioning;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Linq;
-using CKAN.Versioning;
+using System.Windows.Forms;
 
 namespace CKAN
 {
@@ -29,6 +29,7 @@ namespace CKAN
         // version of this mod can handle. The "Long" version also indicates
         // to the user if a mod upgrade would be required. (#1270)
         public string KSPCompatibility { get; private set; }
+
         public string KSPCompatibilityLong { get; private set; }
 
         public string KSPversion { get; private set; }
@@ -90,8 +91,7 @@ namespace CKAN
                 // If we can't find the mod in the CKAN, but we've a CkanModule installed, then
                 // use that.
                 if (IsCKAN)
-                    latest_available_for_any_ksp = (CkanModule) mod;
-                
+                    latest_available_for_any_ksp = (CkanModule)mod;
             }
 
             // If there's known information for this mod in any form, calculate the highest compatible
@@ -130,7 +130,7 @@ namespace CKAN
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
             Abstract = mod.@abstract;
-            
+
             // If we have homepage provided use that, otherwise use the spacedock page or the github repo so that users have somewhere to get more info than just the abstract.
 
             Homepage = "N/A";
@@ -157,8 +157,8 @@ namespace CKAN
             else if (mod.download_size / 1024.0 < 1)
                 DownloadSize = "1<KB";
             else
-                DownloadSize = mod.download_size / 1024+"";
-            
+                DownloadSize = mod.download_size / 1024 + "";
+
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
@@ -201,7 +201,7 @@ namespace CKAN
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            var old_value = (bool) update_cell.Value;
+            var old_value = (bool)update_cell.Value;
 
             bool value = set_value_to ?? old_value;
             IsUpgradeChecked = value;
@@ -223,7 +223,6 @@ namespace CKAN
             }
         }
 
-
         private bool Equals(GUIMod other)
         {
             return Equals(Name, other.Name);
@@ -234,7 +233,7 @@ namespace CKAN
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((GUIMod) obj);
+            return Equals((GUIMod)obj);
         }
 
         public override int GetHashCode()

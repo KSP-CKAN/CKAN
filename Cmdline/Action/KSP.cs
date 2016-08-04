@@ -1,7 +1,6 @@
+using CommandLine;
 using System;
 using System.Linq;
-using System.Text;
-using CommandLine;
 
 namespace CKAN.CmdLine
 {
@@ -20,19 +19,19 @@ namespace CKAN.CmdLine
 
         internal class KSPSubOptions : CommonOptions
         {
-            [VerbOption("list", HelpText="List KSP installs")]
+            [VerbOption("list", HelpText = "List KSP installs")]
             public CommonOptions ListOptions { get; set; }
 
-            [VerbOption("add", HelpText="Add a KSP install")]
+            [VerbOption("add", HelpText = "Add a KSP install")]
             public AddOptions AddOptions { get; set; }
 
-            [VerbOption("rename", HelpText="Rename a KSP install")]
+            [VerbOption("rename", HelpText = "Rename a KSP install")]
             public RenameOptions RenameOptions { get; set; }
 
-            [VerbOption("forget", HelpText="Forget a KSP install")]
+            [VerbOption("forget", HelpText = "Forget a KSP install")]
             public ForgetOptions ForgetOptions { get; set; }
 
-            [VerbOption("default", HelpText="Set the default KSP install")]
+            [VerbOption("default", HelpText = "Set the default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
         }
 
@@ -99,10 +98,10 @@ namespace CKAN.CmdLine
                 }
             }
 
-            #endregion
+            #endregion Aliases
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse);
+            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions(), Parse);
 
             // That line above will have set our 'option' and 'suboption' fields.
 

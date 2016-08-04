@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.IO;
 
 namespace CKAN
 {
@@ -57,8 +57,9 @@ namespace CKAN
                 {
                     instance = new KSP(path, GUI.user);
                 }
-                catch (NotKSPDirKraken){
-                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {path});
+                catch (NotKSPDirKraken)
+                {
+                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] { path });
                     return;
                 }
 
@@ -76,7 +77,7 @@ namespace CKAN
 
         private void UseSelectedInstance()
         {
-            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
 
             if (SetAsDefaultCheckbox.Checked)
             {
@@ -97,13 +98,13 @@ namespace CKAN
         private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
         {
             var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
-            if(has_instance)
+            if (has_instance)
                 UseSelectedInstance();
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
         {
-            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
 
             m_RenameInstanceDialog = new RenameInstanceDialog();
             if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
@@ -118,13 +119,11 @@ namespace CKAN
             var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
             manager.RemoveInstance(instance);
             UpdateInstancesList();
-
         }
 
         private void SetButtonsEnabled(bool has_instance)
         {
             ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
         }
-
     }
 }

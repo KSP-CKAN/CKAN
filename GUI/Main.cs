@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CKAN.Exporters;
+using CKAN.Properties;
+using CKAN.Types;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,10 +12,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CKAN.Exporters;
-using CKAN.Properties;
-using CKAN.Types;
-using log4net;
 using Timer = System.Windows.Forms.Timer;
 
 namespace CKAN
@@ -46,7 +46,7 @@ namespace CKAN
 
         public ControlFactory controlFactory;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Main));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Main));
         public TabController m_TabController;
         public volatile KSPManager manager;
 
@@ -86,7 +86,7 @@ namespace CKAN
             {
                 var orig = change_set;
                 change_set = value;
-                if(!ReferenceEquals(orig, value)) ChangeSetUpdated();
+                if (!ReferenceEquals(orig, value)) ChangeSetUpdated();
             }
         }
 
@@ -97,7 +97,7 @@ namespace CKAN
             {
                 var orig = conflicts;
                 conflicts = value;
-                if(orig != value) ConflictsUpdated();
+                if (orig != value) ConflictsUpdated();
             }
         }
 
@@ -105,7 +105,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var module = ((GUIMod) row.Tag);
+                var module = ((GUIMod)row.Tag);
                 string value;
 
                 if (Conflicts != null && Conflicts.TryGetValue(module, out value))
@@ -222,8 +222,9 @@ namespace CKAN
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                var yield_timer = new Timer {Interval = 2};
-                yield_timer.Tick += (sender, e) => {
+                var yield_timer = new Timer { Interval = 2 };
+                yield_timer.Tick += (sender, e) =>
+                {
                     Thread.Yield();
                 };
                 yield_timer.Start();
@@ -244,6 +245,7 @@ namespace CKAN
                 case (Keys.Control | Keys.F):
                     ActiveControl = FilterByNameTextBox;
                     return true;
+
                 case (Keys.Control | Keys.S):
                     if (ChangeSet != null && ChangeSet.Any())
                     {
@@ -367,7 +369,7 @@ namespace CKAN
             }
 
             m_PluginController = new PluginController(pluginsPath, true);
-            
+
             CurrentInstance.RebuildKSPSubDir();
 
             NavInit();  // initialize navigation. this should be called as late
@@ -445,7 +447,7 @@ namespace CKAN
         {
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var mod = ((GUIMod) row.Tag);
+                var mod = ((GUIMod)row.Tag);
                 if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
                 {
                     MarkModForUpdate(mod.Identifier);
@@ -463,7 +465,7 @@ namespace CKAN
 
             this.AddStatusMessage("");
 
-            ModInfoTabControl.Enabled = module!=null;
+            ModInfoTabControl.Enabled = module != null;
             if (module == null) return;
 
             NavSelectMod(module);
@@ -528,7 +530,8 @@ namespace CKAN
         /// key strokes being interpreted incorrectly when slowed down:
         /// http://mono.1490590.n4.nabble.com/Incorrect-missing-and-duplicate-keypress-events-td4658863.html
         /// </summary>
-        private void RunFilterUpdateTimer() {
+        private void RunFilterUpdateTimer()
+        {
             if (filter_timer == null)
             {
                 filter_timer = new Timer();
@@ -583,11 +586,12 @@ namespace CKAN
             {
                 case Keys.Home:
                     // First row
-                    cell = ModList.Rows [0].Cells [2];
+                    cell = ModList.Rows[0].Cells[2];
                     break;
+
                 case Keys.End:
                     // Last row
-                    cell = ModList.Rows [ModList.Rows.Count - 1].Cells [2];
+                    cell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
                     break;
             }
             if (cell != null)
@@ -617,7 +621,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier, uncheck: gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -707,9 +711,10 @@ namespace CKAN
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
-                        if(gui_mod.IsInstallChecked)
+                        if (gui_mod.IsInstallChecked)
                             last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
+
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
                         break;
@@ -855,11 +860,9 @@ namespace CKAN
                 return null;
             }
 
-
-            var module = ((GUIMod) selected_item.Tag);
+            var module = ((GUIMod)selected_item.Tag);
             return module;
         }
-
 
         private void launchKSPToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -870,7 +873,7 @@ namespace CKAN
             }
 
             var binary = split[0];
-            var args = string.Join(" ",split.Skip(1));
+            var args = string.Join(" ", split.Skip(1));
 
             try
             {
@@ -913,11 +916,9 @@ namespace CKAN
             Enabled = true;
         }
 
-
-
         private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog open_file_dialog = new OpenFileDialog {Filter = Resources.CKANFileFilter};
+            OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
 
             if (open_file_dialog.ShowDialog() == DialogResult.OK)
             {
@@ -950,7 +951,7 @@ namespace CKAN
 
                 var changeset = new List<ModChange>();
                 changeset.Add(new ModChange(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    new GUIMod(module, registry_manager.registry, CurrentInstance.Version()),
                     GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
@@ -1050,7 +1051,7 @@ namespace CKAN
             FocusMod(e.Node.Name, true);
         }
 
-        private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
+        private void FocusMod(string key, bool exactMatch, bool showAsFirst = false)
         {
             DataGridViewRow current_row = ModList.CurrentRow;
             int currentIndex = current_row != null ? current_row.Index : 0;
@@ -1066,7 +1067,7 @@ namespace CKAN
                 }
                 else
                 {
-                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
+                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                         mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                         mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
@@ -1125,7 +1126,7 @@ namespace CKAN
 
         #region Navigation History
 
-        void NavInit()
+        private void NavInit()
         {
             m_navHistory.OnHistoryChange += NavOnHistoryChange;
             m_navHistory.IsReadOnly = false;
@@ -1136,18 +1137,18 @@ namespace CKAN
             }
         }
 
-        void NavUpdateUI()
+        private void NavUpdateUI()
         {
             NavBackwardToolButton.Enabled = m_navHistory.CanNavigateBackward;
             NavForwardToolButton.Enabled = m_navHistory.CanNavigateForward;
         }
 
-        void NavSelectMod(GUIMod module)
+        private void NavSelectMod(GUIMod module)
         {
             m_navHistory.AddToHistory(module);
         }
 
-        void NavGoBackward()
+        private void NavGoBackward()
         {
             if (m_navHistory.CanNavigateBackward)
             {
@@ -1155,7 +1156,7 @@ namespace CKAN
             }
         }
 
-        void NavGoForward()
+        private void NavGoForward()
         {
             if (m_navHistory.CanNavigateForward)
             {
@@ -1163,7 +1164,7 @@ namespace CKAN
             }
         }
 
-        void NavGoToMod(GUIMod module)
+        private void NavGoToMod(GUIMod module)
         {
             // focussing on a mod also causes navigation, but we don't
             // want this to affect the history. so we switch to read-only
@@ -1173,22 +1174,22 @@ namespace CKAN
             m_navHistory.IsReadOnly = false;
         }
 
-        void NavOnHistoryChange()
+        private void NavOnHistoryChange()
         {
             NavUpdateUI();
         }
 
-        void NavBackwardToolButton_Click(object sender, EventArgs e)
+        private void NavBackwardToolButton_Click(object sender, EventArgs e)
         {
             NavGoBackward();
         }
 
-        void NavForwardToolButton_Click(object sender, EventArgs e)
+        private void NavForwardToolButton_Click(object sender, EventArgs e)
         {
             NavGoForward();
         }
 
-        #endregion
+        #endregion Navigation History
     }
 
     public class GUIUser : NullUser
@@ -1198,7 +1199,6 @@ namespace CKAN
         public Action<string, object[]> displayMessage;
         public Action<string, object[]> displayError;
         public DisplayYesNo displayYesNo;
-
 
         protected override bool DisplayYesNoDialog(string message)
         {

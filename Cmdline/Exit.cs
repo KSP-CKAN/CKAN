@@ -7,4 +7,3 @@ namespace CKAN.CmdLine
         public static readonly int BADOPT = 2;
     }
 }
-

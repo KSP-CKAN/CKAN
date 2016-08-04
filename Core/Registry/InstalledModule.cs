@@ -1,19 +1,19 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using Newtonsoft.Json;
 
 namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class InstalledModuleFile
     {
-
         // TODO: This class should also record file paths as well.
         // It's just sha1 now for registry compatibility.
 
-        [JsonProperty] private string sha1_sum;
+        [JsonProperty]
+        private string sha1_sum;
 
         public string Sha1
         {
@@ -64,7 +64,7 @@ namespace CKAN
     /// <summary>
     /// A simple class that represents an installed module. Includes the time of installation,
     /// the module itself, and a list of files installed with it.
-    /// 
+    ///
     /// Primarily used by the Registry class.
     /// </summary>
 
@@ -76,20 +76,25 @@ namespace CKAN
         // This rather awful looking code is because while we write to install_time,
         // we never read from it. That's cool, C#, because it *does* get serialised,
         // and in the future we will read from it.
-        #pragma warning disable 0414
-        [JsonProperty] private DateTime install_time;
-        #pragma warning restore 0414
+#pragma warning disable 0414
 
-        [JsonProperty] private CkanModule source_module;
+        [JsonProperty]
+        private DateTime install_time;
 
-//        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
+#pragma warning restore 0414
+
+        [JsonProperty]
+        private CkanModule source_module;
+
+        //        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
 
         // TODO: Our InstalledModuleFile already knows its path, so this could just
         // be a list. However we've left it as a dictionary for now to maintain
         // registry format compatibility.
-        [JsonProperty] private Dictionary<string, InstalledModuleFile> installed_files;
+        [JsonProperty]
+        private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files 
+        public IEnumerable<string> Files
         {
             get { return installed_files.Keys; }
         }
@@ -104,7 +109,7 @@ namespace CKAN
             get { return source_module; }
         }
 
-        #endregion
+        #endregion Fields and Properties
 
         #region Constructors
 
@@ -133,7 +138,7 @@ namespace CKAN
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Serialisation Fixes
 
@@ -160,6 +165,6 @@ namespace CKAN
             installed_files = normalised_installed_files;
         }
 
-        #endregion
+        #endregion Serialisation Fixes
     }
 }

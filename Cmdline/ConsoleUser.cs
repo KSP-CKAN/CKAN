@@ -1,6 +1,6 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Text.RegularExpressions;
-using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -9,6 +9,7 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUser));
 
         private bool m_Headless = false;
+
         public ConsoleUser(bool headless)
         {
             m_Headless = headless;
@@ -243,13 +244,14 @@ namespace CKAN.CmdLine
                 Console.Write("\r\n{0}", format);
             }
         }
+
         protected override void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)
         {
         }
+
         public override int WindowWidth
         {
             get { return Console.WindowWidth; }
         }
-
     }
 }

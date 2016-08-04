@@ -5,7 +5,6 @@ namespace CKAN
 {
     public class MonoCompatibleForm : Form
     {
-
         // inheriting from this class ensures that forms are equally sized on windows and on linux/ macosx
         private const int formHeightDifference = 24;
 
@@ -13,9 +12,8 @@ namespace CKAN
         {
             if (!Platform.IsWindows)
             {
-                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
+                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);
             }
         }
     }
-
 }

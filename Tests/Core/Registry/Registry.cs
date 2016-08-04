@@ -1,7 +1,7 @@
-using System.Transactions;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
+using System.Transactions;
 using Tests.Data;
 
 namespace Tests.Core.Registry
@@ -29,7 +29,6 @@ namespace Tests.Core.Registry
         {
             CKAN.Registry registry = CKAN.Registry.Empty();
             Assert.IsInstanceOf<CKAN.Registry>(registry);
-
         }
 
         [Test]
@@ -74,7 +73,6 @@ namespace Tests.Core.Registry
         [Test]
         public void LatestAvailable()
         {
-
             registry.AddAvailable(module);
 
             // Make sure it's there for 0.24.2
@@ -130,14 +128,14 @@ namespace Tests.Core.Registry
             using (var scope = new TransactionScope())
             {
                 registry.AddAvailable(module);
-                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier,null).identifier);
+                Assert.AreEqual(module.identifier, registry.LatestAvailable(identifier, null).identifier);
 
                 scope.Dispose(); // Rollback, our module should no longer be available.
             }
 
             Assert.Throws<ModuleNotFoundKraken>(delegate
             {
-                registry.LatestAvailable(identifier,null);
+                registry.LatestAvailable(identifier, null);
             });
         }
 
@@ -186,4 +184,3 @@ namespace Tests.Core.Registry
         }
     }
 }
-

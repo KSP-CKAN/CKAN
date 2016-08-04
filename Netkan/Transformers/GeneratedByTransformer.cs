@@ -1,6 +1,6 @@
-﻿using System;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using log4net;
+using System;
 
 namespace CKAN.NetKAN.Transformers
 {

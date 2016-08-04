@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using CKAN;
+﻿using CKAN;
 using NUnit.Framework;
+using System;
+using System.Linq;
 using Tests.Core;
 using Tests.Data;
 using Version = CKAN.Version;
@@ -17,7 +17,7 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
                 var registry = Registry.Empty();
                 var ckan_mod = TestData.kOS_014_module();
                 registry.AddAvailable(ckan_mod);
@@ -25,6 +25,7 @@ namespace Tests.GUI
                 Assert.False(mod.IsUpgradeChecked);
             }
         }
+
         [Test]
         public void HasUpdateReturnsTrueWhenUpdateAvailible()
         {
@@ -33,7 +34,7 @@ namespace Tests.GUI
                 var generatror = new RandomModuleGenerator(new Random(0451));
                 var old_version = generatror.GeneratorRandomModule(version: new Version("0.24"), ksp_version: tidy.KSP.Version());
                 var new_version = generatror.GeneratorRandomModule(version: new Version("0.25"), ksp_version: tidy.KSP.Version(),
-                    identifier:old_version.identifier);
+                    identifier: old_version.identifier);
                 var registry = Registry.Empty();
                 registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);
                 registry.AddAvailable(new_version);
