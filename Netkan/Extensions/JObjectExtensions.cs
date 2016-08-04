@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Extensions
                 return;
             }
 
-            if (token != null && token.HasValues && token.ToObject<object>() != null)
+            if (token != null && (token.HasValues || token.ToObject(typeof(object)) != null))
             {
                 jobject[propertyName] = jobject[propertyName] ?? token;
             }
