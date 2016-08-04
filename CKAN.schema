@@ -206,7 +206,7 @@
                     "as": {
                         "description" : "The name to give the matching directory or file when installed",
                         "type"        : "string",
-                        "pattern"     : "^[^/\\]+$"
+                        "pattern"     : "^[^\\/]+$"
                     },
                     "filter" : {
                         "description" : "List of files and directories that should be filtered from the install",
