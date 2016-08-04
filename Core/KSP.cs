@@ -27,7 +27,7 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
-        private readonly string gamedir;
+        private readonly string gameDir;
         private KspVersion version;
 
         public NetFileCache Cache { get; private set; }
@@ -50,19 +50,19 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist.
         /// Throws a NotKSPDirKraken if directory is not a KSP install.
         /// </summary>
-        public KSP(string directory, IUser user)
+        public KSP(string gameDir, IUser user)
         {
             User = user;
 
             // Make sure our path is absolute and has normalised slashes.
-            directory = KSPPathUtils.NormalizePath(Path.GetFullPath(directory));
+            gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
 
-            if (! IsKspDir(directory))
+            if (! IsKspDir(gameDir))
             {
-                throw new NotKSPDirKraken(directory);
+                throw new NotKSPDirKraken(gameDir);
             }
             
-            gamedir = directory;
+            this.gameDir = gameDir;
             Init();
             Cache = new NetFileCache(DownloadCacheDir());
         }
@@ -238,7 +238,7 @@ namespace CKAN
 
         public string GameDir()
         {
-            return gamedir;
+            return gameDir;
         }
 
         public string GameData()
@@ -423,18 +423,18 @@ namespace CKAN
 
         public override string ToString()
         {
-            return "KSP Install:" + gamedir;
+            return "KSP Install:" + gameDir;
         }
 
         public override bool Equals(object obj)
         {
             var other = obj as KSP;
-            return other != null ? gamedir.Equals(other.GameDir()) : base.Equals(obj);
+            return other != null ? gameDir.Equals(other.GameDir()) : base.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return gamedir.GetHashCode();
+            return gameDir.GetHashCode();
         }
     }
 
