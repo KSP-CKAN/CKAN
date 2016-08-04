@@ -1189,6 +1189,11 @@ namespace CKAN
         }
 
         #endregion
+
+        private void reportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/KSP-CKAN/NetKAN/issues/new");
+        }
     }
 
     public class GUIUser : NullUser
