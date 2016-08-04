@@ -36,13 +36,13 @@ Metadata is written in JSON and is simply a structure for the data and its struc
 
 ### Helping sort through issues
 
-At the time of this writing there are 257 open issues in CKAN and it can be very hard to keep track of which ones have resolved themselves over time, which are duplicates, etc.
+At the time of this writing there are more than 260 open issues in CKAN and it can be very hard to keep track of which ones have resolved themselves over time, which are duplicates, etc.
 
 Following up on all these issues is difficult, and any help is appreciated. Good starting-off points are the [issues][3] list, or the [waffle][4] (an alternate view of the issues list)
 
 ### Testing pre-release or in-progress features
 
-Sometimes features have been fully written but get stuck waiting for someone to test the properly. An hour here or there testing an in-progress feature for bugs would help immensely. Ask in our [chat channel][5] if you'd be interested.
+Sometimes features have been fully written but get stuck waiting for someone to test them properly. An hour here or there testing an in-progress feature for bugs would help immensely. Ask in our [chat channel][5] if you're interested.
 
 ### Keeping the wiki and other documentation up to date
 
@@ -67,4 +67,4 @@ CKAN isn't perfect and neither are its users. Answering questions in the [IRC ch
  [3]:https://github.com/KSP-CKAN/CKAN/issues
  [4]:https://waffle.io/ksp-ckan/ckan
  [5]:http://webchat.esper.net/?channels=ckan
- [6]:http://forum.kerbalspaceprogram.com/index.php?/topic/90246-the-comprehensive-kerbal-archive-network-ckan-package-manager-v1161-13-mar-2016/
+ [6]:http://forum.kerbalspaceprogram.com/index.php?/topic/143140-ckan-the-comprehensive-kerbal-archive-network-v1181-13-july-2016/
