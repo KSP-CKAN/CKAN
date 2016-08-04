@@ -2,6 +2,7 @@ using log4net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace CKAN
@@ -119,7 +120,7 @@ namespace CKAN
 
         private void SetRegistryValue<T>(string key, T value)
         {
-            Microsoft.Win32.Registry.SetValue(CKANRegistryPath, key, value);
+            _currentUser.SetValue(CKANRegistryPath + '\\' + key, value);
         }
 
         private T GetRegistryValue<T>(string key, T defaultValue)
