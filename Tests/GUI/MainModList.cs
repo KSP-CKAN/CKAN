@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CKAN;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CKAN;
-using NUnit.Framework;
 using Tests.Core;
 using Tests.Data;
 using ModuleInstaller = CKAN.ModuleInstaller;
@@ -32,6 +32,7 @@ namespace Tests.GUI
             item.ModNameFilter = "randomString";
             Assert.That(called_n == 2);
         }
+
         [Test]
         public void OnModTypeFilterChanges_CallsEventHandler()
         {
@@ -73,7 +74,7 @@ namespace Tests.GUI
                 mod2.IsInstallChecked = true;
 
                 var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
-                await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
+                await UtilStatic.Throws<InconsistentKraken>(async () => { await compute_change_set_from_mod_list; });
             }
         }
 
@@ -100,7 +101,6 @@ namespace Tests.GUI
             {
                 Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
             }
-
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Tests.GUI
                 var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
                 {
                     new RelationshipDescriptor {name = provide_ident}
-                },ksp_version:ksp_version);
+                }, ksp_version: ksp_version);
                 var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
                 , ksp_version: ksp_version);
                 var modb = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
@@ -158,9 +158,7 @@ namespace Tests.GUI
                         new ModChange(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install, null),
                         new ModChange(new GUIMod(modb,registry,ksp_version),GUIModChangeType.Install, null)
                     }, mod_list);
-
             }
         }
-
     }
 }

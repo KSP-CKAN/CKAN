@@ -1,31 +1,30 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using ChinhDo.Transactions;
+﻿using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using System.Text.RegularExpressions;
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
 using System.Security.Permissions;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
-
     /// <summary>
     /// A local cache dedicated to storing and retrieving files based upon their
     /// URL.
     /// </summary>
 
     // We require fancy permissions to use the FileSystemWatcher
-    [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     public class NetFileCache : IDisposable
     {
         private FileSystemWatcher watcher;
         private string[] cachedFiles;
         private string cachePath;
         private static readonly TxFileManager tx_file = new TxFileManager();
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetFileCache));
 
         public NetFileCache(string _cachePath)
         {
@@ -47,7 +46,7 @@ namespace CKAN
 
             watcher.NotifyFilter =
                 NotifyFilters.LastWrite | NotifyFilters.LastAccess | NotifyFilters.DirectoryName | NotifyFilters.FileName;
-            
+
             // If we spot any changes, we fire our event handler.
             watcher.Changed += new FileSystemEventHandler(OnCacheChanged);
             watcher.Created += new FileSystemEventHandler(OnCacheChanged);
@@ -88,7 +87,7 @@ namespace CKAN
         /// </summary>
         private void OnCacheChanged()
         {
-            cachedFiles = null;   
+            cachedFiles = null;
         }
 
         public string GetCachePath()
@@ -124,7 +123,7 @@ namespace CKAN
         /// <summary>
         /// Returns true if a file matching the given URL is cached, but makes no
         /// attempts to check if it's even valid. This is very fast.
-        /// 
+        ///
         /// Use IsCachedZip() for a slower but more reliable method.
         /// </summary>
         public bool IsMaybeCachedZip(Uri url)
@@ -196,7 +195,7 @@ namespace CKAN
 
             try
             {
-                using (ZipFile zip = new ZipFile (filename))
+                using (ZipFile zip = new ZipFile(filename))
                 {
                     // Perform CRC check.
                     if (zip.TestArchive(test_data))

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -136,6 +136,7 @@ namespace CKAN.NetKAN.Transformers
                         Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                         return new Metadata(json);
+
                     case 0:
                         throw new Exception("Could not find any matching artifacts");
                     default:

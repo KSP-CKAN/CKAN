@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using CKAN.Versioning;
+﻿using CKAN.Versioning;
+using System.Collections.Generic;
 
 namespace CKAN
 {
@@ -8,7 +8,7 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
-        IEnumerable<InstalledModule> InstalledModules { get;}
+        IEnumerable<InstalledModule> InstalledModules { get; }
         IEnumerable<string> InstalledDlls { get; }
 
         /// <summary>
@@ -47,7 +47,6 @@ namespace CKAN
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
         HashSet<string> FindReverseDependencies(IEnumerable<string> modules);
-
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.
@@ -95,7 +94,7 @@ namespace CKAN
     /// Helpers for <see cref="IRegistryQuerier"/>
     /// </summary>
     public static class IRegistryQuerierHelpers
-{
+    {
         /// <summary>
         /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, Version)"/>
         /// </summary>
@@ -140,7 +139,7 @@ namespace CKAN
                 return false;
             }
             if (newest_version == null) return false;
-            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false) 
+            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false)
                 && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
         }
     }

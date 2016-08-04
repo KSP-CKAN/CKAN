@@ -1,8 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class AboutDialog : FormCompatibility
+    public partial class AboutDialog : MonoCompatibleForm
     {
         public AboutDialog()
         {
@@ -13,27 +14,27 @@ namespace CKAN
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md");
+            Process.Start("https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md");
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/graphs/contributors");
+            Process.Start("https://github.com/KSP-CKAN/CKAN/graphs/contributors");
         }
 
         private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/");
+            Process.Start("https://github.com/KSP-CKAN/CKAN/");
         }
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.kerbalspaceprogram.com/index.php?/topic/143140-*");
+            Process.Start("http://forum.kerbalspaceprogram.com/index.php?/topic/143140-*");
         }
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://ksp-ckan.org");
+            Process.Start("http://ksp-ckan.org");
         }
     }
 }

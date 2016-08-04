@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CKAN.NetKAN.Sources.Avc;
+﻿using CKAN.NetKAN.Sources.Avc;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN.NetKAN.Services
 {
@@ -79,7 +79,7 @@ namespace CKAN.NetKAN.Services
         /// Locates a version file in the zipfile specified, and returns an AVC object.
         /// This requires a module object as we *first* search files we might install,
         /// falling back to a search of all files in the archive.
-        /// 
+        ///
         /// Returns null if no version is found.
         /// Throws a Kraken if too many versions are found.
         /// </summary>

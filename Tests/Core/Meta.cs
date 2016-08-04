@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using CKAN;
+﻿using CKAN;
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace Tests.Core
 {
@@ -42,4 +42,3 @@ namespace Tests.Core
         }
     }
 }
-

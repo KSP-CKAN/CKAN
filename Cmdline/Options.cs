@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using CommandLine;
+using System.Collections.Generic;
 
 namespace CKAN.CmdLine
 {
@@ -143,7 +143,7 @@ namespace CKAN.CmdLine
         public bool with_all_suggests { get; set; }
 
         // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
+        [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
     }
 
@@ -165,7 +165,7 @@ namespace CKAN.CmdLine
         public bool upgrade_all { get; set; }
 
         // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
+        [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
     }
 

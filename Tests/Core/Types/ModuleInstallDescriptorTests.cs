@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using CKAN;
-using NUnit.Framework;
-using Tests.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using System.Collections.Generic;
+using Tests.Data;
 
 namespace Tests.Core.Types
 {
@@ -38,14 +37,14 @@ namespace Tests.Core.Types
         }
 
         [Test]
-        [TestCase("/DogeCoinFlag", "DogeCoinFlag-1.01/GameData/DogeCoinFlag","Anchored")]
-        [TestCase("DogeCoinFlag", "DogeCoinFlag-1.01","Missing anchors")]
+        [TestCase("/DogeCoinFlag", "DogeCoinFlag-1.01/GameData/DogeCoinFlag", "Anchored")]
+        [TestCase("DogeCoinFlag", "DogeCoinFlag-1.01", "Missing anchors")]
         public void regexp_filter_1089(string regexp, string expected, string comment)
         {
             string json = @"{
                 ""install_to""  : ""GameData"",
                 ""find_regexp"" : """ + regexp + @"""
-            }"; 
+            }";
 
             var mid = JsonConvert.DeserializeObject<CKAN.ModuleInstallDescriptor>(json);
             var zip = new ZipFile(TestData.DogeCoinFlagZipWithExtras());
@@ -64,4 +63,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

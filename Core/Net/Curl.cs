@@ -1,10 +1,9 @@
-﻿using System;
+﻿using CurlSharp;
+using log4net;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CurlSharp;
-using log4net;
-
 
 namespace CKAN
 {
@@ -14,7 +13,7 @@ namespace CKAN
     public static class Curl
     {
         private static bool _initComplete;
-        private static readonly ILog Log = LogManager.GetLogger(typeof (Curl));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Curl));
 
         /// <summary>
         /// Has libcurl do all the work it needs to work correctly.
@@ -33,7 +32,7 @@ namespace CKAN
 
         /// <summary>
         /// Release any resources used by libcurl. NOT THREADSAFE AT ALL.
-        /// Do this after all other threads are done. 
+        /// Do this after all other threads are done.
         /// </summary>
         public static void CleanUp()
         {
@@ -41,14 +40,12 @@ namespace CKAN
             _initComplete = false;
         }
 
-
-
         /// <summary>
         /// Creates a CurlEasy object that calls the given writeback function
         /// when data is received.
         /// </summary>
         /// <returns>The CurlEasy obect</returns>
-        /// 
+        ///
         /// Adapted from MultiDemo.cs in the curlsharp repo
         public static CurlEasy CreateEasy(string url, CurlWriteCallback wf)
         {
@@ -92,7 +89,7 @@ namespace CKAN
         public static CurlEasy CreateEasy(string url, FileStream stream)
         {
             // Let's make a happy closure around this stream!
-            return CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
+            return CreateEasy(url, delegate (byte[] buf, int size, int nmemb, object extraData)
             {
                 stream.Write(buf, 0, size * nmemb);
                 return size * nmemb;
@@ -142,4 +139,3 @@ namespace CKAN
         }
     }
 }
-

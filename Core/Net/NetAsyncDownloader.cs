@@ -1,3 +1,5 @@
+using CurlSharp;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,8 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
-using CurlSharp;
-using log4net;
 
 namespace CKAN
 {
@@ -15,7 +15,6 @@ namespace CKAN
     /// </summary>
     public class NetAsyncDownloader
     {
-
         public IUser User { get; set; }
 
         // Private utility class for tracking downloads
@@ -43,18 +42,20 @@ namespace CKAN
             }
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
         private List<NetAsyncDownloaderDownloadPart> downloads;
         private int completed_downloads;
 
         //Used for inter-thread communication.
         private volatile bool download_canceled;
+
         private readonly ManualResetEvent complete_or_canceled;
 
         // Called on completion (including on error)
         // Called with ALL NULLS on error.
         public delegate void NetAsyncCompleted(Uri[] urls, string[] filenames, Exception[] errors);
+
         public NetAsyncCompleted onCompleted;
 
         // When using the curlsharp downloader, this contains all the threads
@@ -150,15 +151,15 @@ namespace CKAN
                 // Curl recommends xferinfofunction, but this doesn't seem to
                 // be supported by curlsharp, so we use the progress function
                 // instead.
-                easy.ProgressFunction = delegate(object extraData, double dlTotal, double dlNow, double ulTotal, double ulNow)
+                easy.ProgressFunction = delegate (object extraData, double dlTotal, double dlNow, double ulTotal, double ulNow)
                 {
-                    log.DebugFormat("Progress function called... {0}/{1}", dlNow,dlTotal);
+                    log.DebugFormat("Progress function called... {0}/{1}", dlNow, dlTotal);
 
                     int percent;
 
                     if (dlTotal > 0)
                     {
-                        percent = (int) dlNow * 100 / (int) dlTotal;
+                        percent = (int)dlNow * 100 / (int)dlTotal;
                     }
                     else
                     {
@@ -237,7 +238,7 @@ namespace CKAN
                 );
             }
         }
-        
+
         public void DownloadAndWait(ICollection<KeyValuePair<Uri, long>> urls)
         {
             // Start the download!
@@ -253,7 +254,6 @@ namespace CKAN
 
             download_canceled = false;
             complete_or_canceled.Reset();
-
 
             // If the user cancelled our progress, then signal that.
             // This *should* be harmless if we're using the curlsharp downloader,
@@ -341,9 +341,9 @@ namespace CKAN
             if (timeSpan.Seconds >= 3.0)
             {
                 long bytesChange = bytesDownloaded - download.lastProgressUpdateSize;
-                download.lastProgressUpdateSize = (int) bytesDownloaded;
+                download.lastProgressUpdateSize = (int)bytesDownloaded;
                 download.lastProgressUpdateTime = now;
-                download.bytesPerSecond = (int) bytesChange/timeSpan.Seconds;
+                download.bytesPerSecond = (int)bytesChange / timeSpan.Seconds;
             }
 
             download.size = bytesToDownload;
@@ -372,8 +372,8 @@ namespace CKAN
                 // Math.Ceiling was added to avoid showing 0 MiB left when finishing
                 User.RaiseProgress(
                     String.Format("{0} kbps - downloading - {1:f0} MB left",
-                        totalBytesPerSecond/1024,
-                        Math.Ceiling((double)totalBytesLeft/1024/1024)),
+                        totalBytesPerSecond / 1024,
+                        Math.Ceiling((double)totalBytesLeft / 1024 / 1024)),
                     totalPercentage);
             }
         }

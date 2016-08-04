@@ -98,7 +98,6 @@ namespace Tests.Core
             {
                 CKAN.KSPPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", null);
             }, "null root");
-
         }
 
         [Test]
@@ -106,31 +105,31 @@ namespace Tests.Core
         {
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP"),
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake", "/home/fionna/KSP"),
                 "Basic functionality"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP"),
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/", "/home/fionna/KSP"),
                 "Trailing slashes path"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake","/home/fionna/KSP/"),
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake", "/home/fionna/KSP/"),
                 "Trailing slashes root"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/","/home/fionna/KSP/"),
+                CKAN.KSPPathUtils.ToAbsolute("GameData/Cake/", "/home/fionna/KSP/"),
                 "Trailing slashes for all"
             );
 
             Assert.AreEqual(
                 "/home/fionna/KSP/GameData/Cake",
-                CKAN.KSPPathUtils.ToAbsolute(@"GameData\Cake\","/home/fionna/KSP"),
+                CKAN.KSPPathUtils.ToAbsolute(@"GameData\Cake\", "/home/fionna/KSP"),
                 "Swapped slashes"
             );
 
@@ -153,9 +152,6 @@ namespace Tests.Core
             {
                 CKAN.KSPPathUtils.ToAbsolute("/home/fionna/KSP/GameData/Cake", null);
             }, "null root");
-
         }
-
     }
 }
-

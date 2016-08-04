@@ -51,14 +51,14 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is KspVersionBound && Equals((KspVersionBound) obj);
+            return obj is KspVersionBound && Equals((KspVersionBound)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Value != null ? Value.GetHashCode() : 0)*397) ^ Inclusive.GetHashCode();
+                return ((Value != null ? Value.GetHashCode() : 0) * 397) ^ Inclusive.GetHashCode();
             }
         }
 

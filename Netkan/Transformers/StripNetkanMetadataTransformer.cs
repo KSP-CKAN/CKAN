@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using log4net;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -41,17 +41,18 @@ namespace CKAN.NetKAN.Transformers
                     propertiesToRemove.Add(property.Name);
                 }
                 else switch (property.Value.Type)
-                {
-                    case JTokenType.Object:
-                        Strip((JObject)property.Value);
-                        break;
-                    case JTokenType.Array:
-                        foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
-                        {
-                            Strip((JObject)element);
-                        }
-                        break;
-                }
+                    {
+                        case JTokenType.Object:
+                            Strip((JObject)property.Value);
+                            break;
+
+                        case JTokenType.Array:
+                            foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
+                            {
+                                Strip((JObject)element);
+                            }
+                            break;
+                    }
             }
 
             foreach (var property in propertiesToRemove)

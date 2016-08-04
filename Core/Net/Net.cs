@@ -1,3 +1,6 @@
+using ChinhDo.Transactions;
+using CurlSharp;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,9 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using ChinhDo.Transactions;
-using CurlSharp;
-using log4net;
 
 namespace CKAN
 {
@@ -19,7 +19,7 @@ namespace CKAN
     {
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
-        private static readonly ILog Log = LogManager.GetLogger(typeof (Net));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Net));
         private static readonly TxFileManager FileTransaction = new TxFileManager();
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace CKAN
             Log.DebugFormat("Downloading {0} to {1}", url, filename);
 
             var agent = MakeDefaultHttpClient();
-           
+
             try
             {
                 agent.DownloadFile(url, filename);
@@ -136,7 +136,7 @@ namespace CKAN
 
         public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
         {
-            var targets = new[] {new DownloadTarget(url, filename)};
+            var targets = new[] { new DownloadTarget(url, filename) };
             DownloadWithProgress(targets, user);
             return targets.First().filename;
         }
@@ -177,7 +177,7 @@ namespace CKAN
 
                 var content = string.Empty;
 
-                var client = Curl.CreateEasy(url, delegate(byte[] buf, int size, int nmemb, object extraData)
+                var client = Curl.CreateEasy(url, delegate (byte[] buf, int size, int nmemb, object extraData)
                 {
                     content += Encoding.UTF8.GetString(buf);
                     return size * nmemb;

@@ -1,3 +1,6 @@
+using CKAN;
+using ICSharpCode.SharpZipLib.Zip;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,9 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
-using CKAN;
-using ICSharpCode.SharpZipLib.Zip;
-using NUnit.Framework;
 using Tests.Data;
 
 namespace Tests.Core
@@ -88,7 +88,8 @@ namespace Tests.Core
             TestData.DogeCoinFlag_101_module_find()
         };
 
-        [Test][TestCaseSource("doge_mods")]
+        [Test]
+        [TestCaseSource("doge_mods")]
         public void FindInstallableFiles(CkanModule mod)
         {
             List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mod, dogezip, null);
@@ -117,7 +118,8 @@ namespace Tests.Core
             Assert.Contains("DogeCoinFlag-1.01/GameData/DogeCoinFlag/Flags/dogecoin.png", filenames);
         }
 
-        [Test][TestCaseSource("doge_mods")]
+        [Test]
+        [TestCaseSource("doge_mods")]
         public void FindInstallableFilesWithKSP(CkanModule mod)
         {
             using (var tidy = new DisposableKSP())
@@ -180,7 +182,8 @@ namespace Tests.Core
             }
         }
 
-        [Test][TestCaseSource("doge_mods")]
+        [Test]
+        [TestCaseSource("doge_mods")]
         // Make sure all our filters work.
         public void FindInstallableFilesWithFilter(CkanModule mod)
         {
@@ -372,7 +375,7 @@ namespace Tests.Core
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
 
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
@@ -413,7 +416,7 @@ namespace Tests.Core
                 Assert.AreEqual(1, ksp.KSP.Registry.Available(ksp.KSP.Version()).Count());
 
                 // Attempt to install it.
-                List<string> modules = new List<string> {TestData.DogeCoinFlag_101_module().identifier};
+                List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
                 CKAN.ModuleInstaller.GetInstance(ksp.KSP, NullUser.User).InstallList(modules, new RelationshipResolverOptions());
 
@@ -430,7 +433,7 @@ namespace Tests.Core
             // Create a new disposable KSP instance to run the test on.
             using (var ksp = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(ksp.KSP)){CurrentInstance = ksp.KSP};
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(ksp.KSP)) { CurrentInstance = ksp.KSP };
 
                 Debug.WriteLine(ksp.KSP.DownloadCacheDir());
                 Console.WriteLine(ksp.KSP.DownloadCacheDir());
@@ -443,7 +446,7 @@ namespace Tests.Core
                 ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
                 ksp.KSP.Registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
-                List<string> modules = new List<string> {TestData.DogeCoinFlag_101_module().identifier};
+                List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
                 CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).InstallList(modules, new RelationshipResolverOptions());
 
@@ -477,7 +480,7 @@ namespace Tests.Core
                         ksp.KSP.Registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
                         // Attempt to install it.
-                        List<string> modules = new List<string> {TestData.DogeCoinFlag_101_module().identifier};
+                        List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
 
                         CKAN.ModuleInstaller.GetInstance(ksp.KSP, NullUser.User).InstallList(modules, new RelationshipResolverOptions());
 
@@ -528,7 +531,6 @@ namespace Tests.Core
                 results = CKAN.ModuleInstaller.FindInstallableFiles(mod.install.First(), zip, ksp.KSP);
             }
 
-
             // Assert
             Assert.That(
                 results.Count(i => i.destination.EndsWith(string.Format("/{0}/AwesomeShip.craft", directory))) == 1,
@@ -565,7 +567,7 @@ namespace Tests.Core
                     ]
                 }")
             ;
-            
+
             List<InstallableFile> results;
             using (var ksp = new DisposableKSP())
             {
@@ -585,7 +587,5 @@ namespace Tests.Core
             Assert.AreEqual("GameData", stanza.install_to);
             Assert.AreEqual("DogeCoinFlag-1.01/GameData/DogeCoinFlag", stanza.file);
         }
-
     }
 }
-

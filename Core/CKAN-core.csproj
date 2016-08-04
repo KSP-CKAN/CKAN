@@ -22,8 +22,13 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -36,9 +41,6 @@
     </Reference>
     <Reference Include="CurlSharp">
       <HintPath>packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Autofac">
       <HintPath>packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>

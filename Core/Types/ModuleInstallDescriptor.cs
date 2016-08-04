@@ -1,18 +1,17 @@
+using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
-using Newtonsoft.Json;
-using System.IO;
 
 namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ModuleInstallDescriptor : ICloneable
     {
-
         #region Properties
 
         // Either file, find, or find_regexp is required, we check this manually at deserialise.
@@ -35,11 +34,11 @@ namespace CKAN
         public string @as;
 
         [JsonProperty("filter")]
-        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> filter;
 
         [JsonProperty("filter_regexp")]
-        [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> filter_regexp;
 
         [OnDeserialized]
@@ -66,7 +65,7 @@ namespace CKAN
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Constructors and clones
 
@@ -98,7 +97,7 @@ namespace CKAN
             return stanza.ConvertFindToFile(zipfile);
         }
 
-        #endregion
+        #endregion Constructors and clones
 
         /// <summary>
         /// Returns true if the path provided should be installed by this stanza.
@@ -121,7 +120,7 @@ namespace CKAN
             string wanted_filter = "^" + Regex.Escape(file) + "(/|$)";
 
             // If it doesn't match our install path, ignore it.
-            if (! Regex.IsMatch(normalised_path, wanted_filter))
+            if (!Regex.IsMatch(normalised_path, wanted_filter))
             {
                 return false;
             }
@@ -163,7 +162,7 @@ namespace CKAN
                 return this;
             }
 
-            var stanza = (ModuleInstallDescriptor) this.Clone();
+            var stanza = (ModuleInstallDescriptor)this.Clone();
 
             // Candidate top-level directories.
             var candidate_set = new HashSet<string>();
@@ -201,7 +200,7 @@ namespace CKAN
             // Sort to have shortest first. It's not *quite* top-level directory order,
             // but it's good enough for now.
             var candidates = new List<string>(candidate_set);
-            candidates.Sort((a,b) => a.Length.CompareTo(b.Length));
+            candidates.Sort((a, b) => a.Length.CompareTo(b.Length));
 
             if (candidates.Count == 0)
             {

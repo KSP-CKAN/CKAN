@@ -9,8 +9,8 @@ namespace CKAN
     /// </summary>
     public class GrasGameComparator : IGameComparator
     {
-        static readonly StrictGameComparator strict = new StrictGameComparator();
-        static readonly KspVersion v103 = KspVersion.Parse("1.0.3");
+        private static readonly StrictGameComparator strict = new StrictGameComparator();
+        private static readonly KspVersion v103 = KspVersion.Parse("1.0.3");
 
         public bool Compatible(KspVersion gameVersion, CkanModule module)
         {

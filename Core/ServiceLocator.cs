@@ -10,6 +10,7 @@ namespace CKAN
     public static class ServiceLocator
     {
         private static IContainer _container;
+
         public static IContainer Container
         {
             // NB: Totally not thread-safe.

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CKAN;
-using NUnit.Framework;
-using Tests.Data;
-using System.IO;
+﻿using CKAN;
 using CKAN.Versioning;
-using Tests.Core.Types;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Tests.Data;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 using Version = CKAN.Version;
 
@@ -53,13 +52,12 @@ namespace Tests.Core.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-            
+
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
                 null));
-
 
             options.procede_with_inconsistencies = true;
             var resolver = new RelationshipResolver(list, options, registry, null);
@@ -71,7 +69,6 @@ namespace Tests.Core.Relationships
 
         [Test]
         [Category("Version")]
-
         public void Constructor_WithConflictingModulesVersion_Throws()
         {
             var list = new List<string>();
@@ -286,7 +283,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -301,7 +297,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         // Right now our RR always returns the modules it was provided. However
@@ -309,7 +304,9 @@ namespace Tests.Core.Relationships
         // return a list *without* them. This isn't a hard error at the moment,
         // since ModuleInstaller.InstallList will ignore already installed mods, but
         // it would be nice to have. Discussed a little in GH #521.
-        [Test][Category("TODO")][Explicit]
+        [Test]
+        [Category("TODO")]
+        [Explicit]
         public void ModList_WithInstalledModules_DoesNotContainThem()
         {
             var list = new List<string>();
@@ -377,7 +374,6 @@ namespace Tests.Core.Relationships
             {
                 new RelationshipDescriptor {name=dependant.identifier}
             });
-
 
             list.Add(depender.identifier);
             list.Add(conflicts_with_dependant.identifier);
@@ -457,9 +453,7 @@ namespace Tests.Core.Relationships
                 mod_b,
                 depender
             });
-
         }
-
 
         [Test]
         public void Constructor_WithMissingDependants_Throws()
@@ -478,7 +472,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -495,7 +488,7 @@ namespace Tests.Core.Relationships
             {
                 new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
             });
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
 
             Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
@@ -503,7 +496,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -517,7 +509,7 @@ namespace Tests.Core.Relationships
             {
                 new RelationshipDescriptor {name = dependant.identifier, min_version = new Version(dep_min)}
             });
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
 
             Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
@@ -531,7 +523,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -554,7 +545,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -581,7 +571,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -599,7 +588,7 @@ namespace Tests.Core.Relationships
                 new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
             });
 
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
 
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
@@ -608,7 +597,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-            
         }
 
         [Test]
@@ -635,7 +623,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -662,7 +649,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -689,7 +675,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -709,7 +694,6 @@ namespace Tests.Core.Relationships
                 null));
         }
 
-
         [Test]
         public void ReasonFor_WithModsNotInList_ThrowsArgumentException()
         {
@@ -721,16 +705,15 @@ namespace Tests.Core.Relationships
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
 
             var mod_not_in_resolver_list = generator.GeneratorRandomModule();
-            CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);            
+            CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
             Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonFor(mod_not_in_resolver_list));
-            
         }
 
         [Test]
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
             var list = new List<string>();
-            var mod = generator.GeneratorRandomModule();                        
+            var mod = generator.GeneratorRandomModule();
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             AddToRegistry(mod);
@@ -747,8 +730,8 @@ namespace Tests.Core.Relationships
             var sugested = generator.GeneratorRandomModule();
             var mod =
                 generator.GeneratorRandomModule(sugests:
-                    new List<RelationshipDescriptor> {new RelationshipDescriptor {name = sugested.identifier}});
-            list.Add(mod.identifier);            
+                    new List<RelationshipDescriptor> { new RelationshipDescriptor { name = sugested.identifier } });
+            list.Add(mod.identifier);
             AddToRegistry(mod, sugested);
 
             options.with_all_suggests = true;
@@ -762,18 +745,17 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var list = new List<string>();            
+            var list = new List<string>();
             var sugested = generator.GeneratorRandomModule();
             var recommendedA = generator.GeneratorRandomModule();
             var recommendedB = generator.GeneratorRandomModule();
-            var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor> { new RelationshipDescriptor { name = sugested.identifier}});
+            var mod = generator.GeneratorRandomModule(sugests: new List<RelationshipDescriptor> { new RelationshipDescriptor { name = sugested.identifier } });
             list.Add(mod.identifier);
             sugested.recommends = new List<RelationshipDescriptor>
             { new RelationshipDescriptor {name=recommendedA.identifier},
               new RelationshipDescriptor { name = recommendedB.identifier}};
 
-            AddToRegistry(mod, sugested,recommendedA,recommendedB);
-
+            AddToRegistry(mod, sugested, recommendedA, recommendedB);
 
             options.with_all_suggests = true;
             options.with_recommends = true;
@@ -793,7 +775,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void AutodetectedCanSatisfyRelationships()
         {
-            using (var ksp = new DisposableKSP ())
+            using (var ksp = new DisposableKSP())
             {
                 registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.GameData(), "ModuleManager.dll"));
 

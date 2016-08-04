@@ -1,13 +1,18 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace CKAN
 {
     public class Repository
     {
-        [JsonIgnore] public static readonly string default_ckan_repo_name = "default";
-        [JsonIgnore] public static readonly Uri default_ckan_repo_uri = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.tar.gz");
-        [JsonIgnore] public static readonly Uri default_repo_master_list = new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/repositories.json");
+        [JsonIgnore]
+        public static readonly string default_ckan_repo_name = "default";
+
+        [JsonIgnore]
+        public static readonly Uri default_ckan_repo_uri = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.tar.gz");
+
+        [JsonIgnore]
+        public static readonly Uri default_repo_master_list = new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/repositories.json");
 
         public string name;
         public Uri uri;
@@ -42,5 +47,4 @@ namespace CKAN
             return String.Format("{0} ({1}, {2})", name, priority, uri);
         }
     }
-
 }

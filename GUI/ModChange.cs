@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CKAN
+﻿namespace CKAN
 {
     /// <summary>
     /// Everything the GUI needs to know about a change, including
@@ -21,7 +15,7 @@ namespace CKAN
             Mod = mod;
             ChangeType = changeType;
             Reason = reason;
-            
+
             if (Reason == null)
             {
                 // Hey, we don't have a Reason

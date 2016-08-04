@@ -58,7 +58,7 @@ namespace Tests.NetKAN.Transformers
             {
                 ksp_version = KspVersion.Parse("1.0.4"),
                 ksp_version_min = KspVersion.Parse("0.90"),
-                ksp_version_max  = KspVersion.Parse("1.0.3")
+                ksp_version_max = KspVersion.Parse("1.0.3")
             };
 
             var mHttp = new Mock<IHttpService>();

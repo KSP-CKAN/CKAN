@@ -1,11 +1,8 @@
-using System.CodeDom;
-using System.IO;
-using CKAN;
-using CKAN.NetKAN;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System.IO;
 using Tests.Data;
 
 namespace Tests.NetKAN
@@ -43,7 +40,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToKspVersion();
             string json = @"{""MAJOR"":-1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
+            var result = (KspVersion)converter.ReadJson(reader, null, null, null);
             Assert.That(!result.IsMajorDefined);
         }
 
@@ -53,9 +50,10 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToKspVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (KspVersion) converter.ReadJson(reader, null, null, null);
+            var result = (KspVersion)converter.ReadJson(reader, null, null, null);
             Assert.That(result, Is.EqualTo(KspVersion.Parse("1")));
         }
+
         [Test]
         public void WildcardPatch_VersionOnlyHasMajorMinor()
         {

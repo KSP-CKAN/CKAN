@@ -1,11 +1,10 @@
-﻿using System;
+﻿using CommandLine;
+using log4net;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json;
-using CommandLine;
-using CKAN;
-using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -16,13 +15,12 @@ namespace CKAN.CmdLine
 
     public class Repo : ISubCommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
 
         public KSPManager Manager { get; set; }
         public IUser User { get; set; }
         public string option;
         public object suboptions;
-
 
         public Repo(KSPManager manager, IUser user)
         {
@@ -32,19 +30,19 @@ namespace CKAN.CmdLine
 
         internal class RepoSubOptions : CommonOptions
         {
-            [VerbOption("available", HelpText="List (canonical) available repositories")]
+            [VerbOption("available", HelpText = "List (canonical) available repositories")]
             public CommonOptions AvailableOptions { get; set; }
 
-            [VerbOption("list", HelpText="List repositories")]
+            [VerbOption("list", HelpText = "List repositories")]
             public CommonOptions ListOptions { get; set; }
 
-            [VerbOption("add", HelpText="Add a repository")]
+            [VerbOption("add", HelpText = "Add a repository")]
             public AddOptions AddOptions { get; set; }
 
-            [VerbOption("forget", HelpText="Forget a repository")]
+            [VerbOption("forget", HelpText = "Forget a repository")]
             public ForgetOptions ForgetOptions { get; set; }
 
-            [VerbOption("default", HelpText="Set the default repository")]
+            [VerbOption("default", HelpText = "Set the default repository")]
             public DefaultOptions DefaultOptions { get; set; }
         }
 
@@ -107,9 +105,10 @@ namespace CKAN.CmdLine
                 }
             }
 
-            #endregion
+            #endregion Aliases
+
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions (), Parse);
+            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions(), Parse);
 
             // That line above will have set our 'option' and 'suboption' fields.
 
@@ -184,12 +183,12 @@ namespace CKAN.CmdLine
             SortedDictionary<string, Repository> repositories = Manager.CurrentInstance.Registry.Repositories;
 
             int maxNameLen = 0;
-            foreach(Repository repository in repositories.Values)
+            foreach (Repository repository in repositories.Values)
             {
                 maxNameLen = Math.Max(maxNameLen, repository.name.Length);
             }
 
-            foreach(Repository repository in repositories.Values)
+            foreach (Repository repository in repositories.Values)
             {
                 User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
             }
@@ -301,9 +300,9 @@ namespace CKAN.CmdLine
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
-            if (repositories.ContainsKey (Repository.default_ckan_repo_name))
+            if (repositories.ContainsKey(Repository.default_ckan_repo_name))
             {
-                repositories.Remove (Repository.default_ckan_repo_name);
+                repositories.Remove(Repository.default_ckan_repo_name);
             }
 
             repositories.Add(Repository.default_ckan_repo_name, new Repository(Repository.default_ckan_repo_name, Repository.default_ckan_repo_uri));
@@ -315,4 +314,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

@@ -1,9 +1,9 @@
-using System;
-using System.Linq;
-using System.Net;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
+using System.Net;
 
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
@@ -98,4 +98,3 @@ namespace CKAN.NetKAN.Sources.Github
         }
     }
 }
-

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
 {
@@ -16,7 +14,7 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            UpdateOptions options = (UpdateOptions) raw_options;
+            UpdateOptions options = (UpdateOptions)raw_options;
 
             List<CkanModule> available_prior = null;
 
@@ -70,10 +68,8 @@ namespace CKAN.CmdLine
             var prior = new HashSet<CkanModule>(modules_prior, new NameComparer());
             var post = new HashSet<CkanModule>(modules_post, new NameComparer());
 
-
             var added = new HashSet<CkanModule>(post.Except(prior, new NameComparer()));
             var removed = new HashSet<CkanModule>(prior.Except(post, new NameComparer()));
-
 
             var unchanged = post.Intersect(prior);//Default compare includes versions
             var updated = post.Except(unchanged).Except(added).Except(removed).ToList();
@@ -117,7 +113,7 @@ namespace CKAN.CmdLine
 
             user.RaiseMessage(message);
 
-            foreach(CkanModule module in modules)
+            foreach (CkanModule module in modules)
             {
                 user.RaiseMessage("{0} ({1})", module.name, module.identifier);
             }

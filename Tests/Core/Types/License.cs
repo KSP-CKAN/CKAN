@@ -25,4 +25,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

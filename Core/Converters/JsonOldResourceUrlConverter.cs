@@ -1,6 +1,6 @@
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace CKAN
 {
@@ -41,7 +41,5 @@ namespace CKAN
         {
             throw new NotImplementedException();
         }
-
     }
 }
-

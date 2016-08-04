@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using CKAN;
+﻿using CKAN;
 using log4net;
 using NUnit.Framework;
+using System.Collections.Generic;
 using Tests.Data;
 
 namespace Tests.Core.Net
@@ -13,13 +13,12 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloader
     {
-
         private CKAN.Registry registry;
         private DisposableKSP ksp;
         private CKAN.IDownloader async;
         private NetFileCache cache;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
 
         [SetUp]
         public void Setup()
@@ -76,7 +75,7 @@ namespace Tests.Core.Net
             Assert.IsFalse(cache.IsCached(kOS.download));
 
             //
-            log.InfoFormat("Downloading kOS from {0}",kOS.download);
+            log.InfoFormat("Downloading kOS from {0}", kOS.download);
 
             // Download our module.
             async.DownloadModules(
@@ -127,9 +126,7 @@ namespace Tests.Core.Net
 
             async.DownloadModules(cache, modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS.download),"Module download successful");
+            Assert.IsTrue(cache.IsCachedZip(rAndS.download), "Module download successful");
         }
-
     }
 }
-

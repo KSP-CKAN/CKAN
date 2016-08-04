@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using log4net;
+﻿using log4net;
+using System.Collections.Generic;
 
 namespace CKAN.CmdLine
 {
@@ -16,17 +14,16 @@ namespace CKAN.CmdLine
             User = user;
         }
 
-
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            UpgradeOptions options = (UpgradeOptions) raw_options;
+            UpgradeOptions options = (UpgradeOptions)raw_options;
 
             if (options.ckan_file != null)
-            {                
+            {
                 options.modules.Add(LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0 && ! options.upgrade_all)
+            if (options.modules.Count == 0 && !options.upgrade_all)
             {
                 // What? No files specified?
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
@@ -89,7 +86,7 @@ namespace CKAN.CmdLine
 
                                 // This may be an unindexed mod. If so,
                                 // skip rather than crash. See KSP-CKAN/CKAN#841.
-                                if(latest==null) continue;
+                                if (latest == null) continue;
 
                                 if (latest.version.IsGreaterThan(mod.Value))
                                 {
@@ -98,7 +95,6 @@ namespace CKAN.CmdLine
                                         latest.version, latest.identifier);
                                     to_upgrade.Add(latest);
                                 }
-
                             }
                             catch (ModuleNotFoundKraken)
                             {
@@ -106,7 +102,6 @@ namespace CKAN.CmdLine
                                     mod.Key);
                             }
                         }
-
                     }
 
                     ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User));
@@ -144,4 +139,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

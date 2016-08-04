@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-
 namespace CKAN
 {
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
     public static class Util
-    {                
+    {
         /// <summary>
         /// Invokes an action on the UI thread, or directly if we're
         /// on the UI thread.
@@ -49,10 +48,10 @@ namespace CKAN
         // hides the console window on windows
         // useful when running the GUI
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        private static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public static void HideConsoleWindow()
         {
@@ -90,7 +89,7 @@ namespace CKAN
         {
             // Default prefixes to try if not provided
             if (prefixes == null)
-                prefixes = new string[] {"http://", "https:// "};
+                prefixes = new string[] { "http://", "https:// " };
 
             try // opening the page normally
             {
@@ -99,7 +98,7 @@ namespace CKAN
             }
             catch (Exception) // something bad happened
             {
-                foreach (string prefixed_url in prefixes.Select(p=>p+url).Where(CheckURLValid))
+                foreach (string prefixed_url in prefixes.Select(p => p + url).Where(CheckURLValid))
                 {
                     try // with a new prefix
                     {
@@ -119,12 +118,12 @@ namespace CKAN
 }
 
 namespace CKAN
-{    
+{
     public static class UtilWithoutWinForm
     {
         public static bool IsInstallable(this GUIMod mod)
         {
-            if(mod==null) throw new ArgumentNullException();
+            if (mod == null) throw new ArgumentNullException();
             return !(mod.IsAutodetected || mod.IsIncompatible) || (!mod.IsAutodetected && mod.IsInstalled);
         }
     }

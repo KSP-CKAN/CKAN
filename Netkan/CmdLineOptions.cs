@@ -39,4 +39,3 @@ namespace CKAN.NetKAN
         public string File { get; set; }
     }
 }
-

@@ -1,7 +1,7 @@
-using System;
-using System.IO;
 using CKAN;
 using NUnit.Framework;
+using System;
+using System.IO;
 using Tests.Data;
 using Version = CKAN.Version;
 
@@ -18,7 +18,7 @@ namespace Tests.Core
         {
             ksp_dir = TestData.NewTempDir();
             TestData.CopyDirectory(TestData.good_ksp_dir(), ksp_dir);
-            ksp = new CKAN.KSP(ksp_dir,NullUser.User);
+            ksp = new CKAN.KSP(ksp_dir, NullUser.User);
         }
 
         [TearDown]
@@ -104,6 +104,5 @@ namespace Tests.Core
                 ksp.ToRelativeGameDir(absolute)
             );
         }
-
     }
 }

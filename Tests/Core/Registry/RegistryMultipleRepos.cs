@@ -13,4 +13,3 @@ namespace Tests.Core.Registry
         }
     }
 }
-

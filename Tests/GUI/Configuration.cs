@@ -1,6 +1,6 @@
-﻿using System.IO;
-using CKAN;
+﻿using CKAN;
 using NUnit.Framework;
+using System.IO;
 using Tests.Data;
 
 namespace Tests.GUI
@@ -8,7 +8,7 @@ namespace Tests.GUI
     [TestFixture]
     public class ConfigurationTests
     {
-        string tempDir;
+        private string tempDir;
 
         [TestFixtureSetUp]
         public void Setup()

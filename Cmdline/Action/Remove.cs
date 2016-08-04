@@ -19,8 +19,7 @@ namespace CKAN.CmdLine
         // Uninstalls a module, if it exists.
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-
-            RemoveOptions options = (RemoveOptions) raw_options;
+            RemoveOptions options = (RemoveOptions)raw_options;
 
             // Use one (or more!) regex to select the modules to remove
             if (options.regex)
@@ -84,4 +83,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

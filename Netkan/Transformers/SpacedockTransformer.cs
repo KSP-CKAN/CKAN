@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using CKAN.NetKAN.Extensions;
+﻿using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
 using log4net;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -76,9 +76,11 @@ namespace CKAN.NetKAN.Transformers
                     case "GPLv2":
                         json.SafeAdd("license", "GPL-2.0");
                         break;
+
                     case "GPLv3":
                         json.SafeAdd("license", "GPL-3.0");
                         break;
+
                     default:
                         json.SafeAdd("license", sdLicense);
                         break;

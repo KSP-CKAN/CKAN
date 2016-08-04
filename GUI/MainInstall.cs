@@ -9,10 +9,10 @@ using System.Windows.Forms;
 namespace CKAN
 {
     using ModChanges = List<ModChange>;
+
     public partial class Main
     {
         private BackgroundWorker m_InstallWorker;
-
 
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
@@ -28,7 +28,7 @@ namespace CKAN
             ClearLog();
 
             var opts =
-                (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
+                (KeyValuePair<ModChanges, RelationshipResolverOptions>)e.Argument;
 
             IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
@@ -46,9 +46,11 @@ namespace CKAN
                     case GUIModChangeType.Remove:
                         toUninstall.Add(change.Mod.Identifier);
                         break;
+
                     case GUIModChangeType.Update:
                         toUpgrade.Add(change.Mod.Identifier);
                         break;
+
                     case GUIModChangeType.Install:
                         toInstall.Add(change.Mod.Identifier);
                         break;
@@ -88,7 +90,6 @@ namespace CKAN
             m_TabController.ShowTab("WaitTabPage");
             m_TabController.SetTabLock(true);
 
-
             var downloader = new NetAsyncModulesDownloader(GUI.user);
             cancelCallback = () =>
             {
@@ -100,7 +101,6 @@ namespace CKAN
             //TODO: Cancellation should be handelt in the ModuleInstaller
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-
                 //Set the result to false/failed in case we return
                 e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                 SetDescription("Uninstalling selected mods");
@@ -145,7 +145,7 @@ namespace CKAN
             e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
         }
 
-        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble, 
+        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble,
             string identifier, IRegistryQuerier registry)
         {
             if (relations == null)
@@ -290,6 +290,7 @@ namespace CKAN
             }
             return true;
         }
+
         private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options, IDownloader downloader)
         {
             if (toInstall.Any())
@@ -314,7 +315,7 @@ namespace CKAN
             UpdateModsList();
             m_TabController.SetTabLock(false);
 
-            var result = (KeyValuePair<bool, ModChanges>) e.Result;
+            var result = (KeyValuePair<bool, ModChanges>)e.Result;
 
             if (result.Key)
             {
@@ -350,9 +351,11 @@ namespace CKAN
                         case GUIModChangeType.Install:
                             MarkModForInstall(opt.Mod.Identifier);
                             break;
+
                         case GUIModChangeType.Update:
                             MarkModForUpdate(opt.Mod.Identifier);
                             break;
+
                         case GUIModChangeType.Remove:
                             MarkModForInstall(opt.Mod.Identifier, true);
                             break;
@@ -365,6 +368,7 @@ namespace CKAN
         }
 
         private TaskCompletionSource<CkanModule> toomany_source;
+
         private void UpdateProvidedModsDialog(TooManyModsProvideKraken tooManyProvides, TaskCompletionSource<CkanModule> task)
         {
             toomany_source = task;
@@ -379,11 +383,10 @@ namespace CKAN
 
             foreach (CkanModule module in tooManyProvides.modules)
             {
-                ListViewItem item = new ListViewItem {Tag = module, Checked = false, Text = module.name};
-
+                ListViewItem item = new ListViewItem { Tag = module, Checked = false, Text = module.name };
 
                 ListViewItem.ListViewSubItem description =
-                    new ListViewItem.ListViewSubItem {Text = module.@abstract};
+                    new ListViewItem.ListViewSubItem { Text = module.@abstract };
 
                 item.SubItems.Add(description);
                 ChooseProvidedModsListView.Items.Add(item);
@@ -391,7 +394,6 @@ namespace CKAN
             ChooseProvidedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             ChooseProvidedModsContinueButton.Enabled = false;
         }
-
 
         private void ChooseProvidedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
@@ -404,10 +406,9 @@ namespace CKAN
 
             foreach (ListViewItem item in ChooseProvidedModsListView.Items.Cast<ListViewItem>()
                 .Where(item => item != e.Item && item.Checked))
-                {
-                    item.Checked = false;
-                }
-
+            {
+                item.Checked = false;
+            }
         }
 
         private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
@@ -422,7 +423,7 @@ namespace CKAN
                 if (item.Checked)
                 {
                     toomany_source.SetResult((CkanModule)item.Tag);
-            }
+                }
             }
         }
 
@@ -434,7 +435,7 @@ namespace CKAN
                     "The following modules have been recommended by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Recommended by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
-                RecommendedModsToggleCheckbox.Checked=true;
+                RecommendedModsToggleCheckbox.Checked = true;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
             }
             else
@@ -443,10 +444,9 @@ namespace CKAN
                     "The following modules have been suggested by one or more of the chosen modules:";
                 RecommendedModsListView.Columns[1].Text = "Suggested by:";
                 RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
-                RecommendedModsToggleCheckbox.Checked=false;
+                RecommendedModsToggleCheckbox.Checked = false;
                 m_TabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
-
 
             RecommendedModsListView.Items.Clear();
 
@@ -465,7 +465,7 @@ namespace CKAN
                         without_toomanyprovides_kraken = true
                     };
 
-                    var resolver = new RelationshipResolver(new List<string> {pair.Key}, opts,
+                    var resolver = new RelationshipResolver(new List<string> { pair.Key }, opts,
                         RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
                     if (!resolver.ModList().Any())
                     {
@@ -485,8 +485,7 @@ namespace CKAN
                     continue;
                 }
 
-                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key};
-
+                ListViewItem item = new ListViewItem { Tag = module, Checked = !suggested, Text = pair.Key };
 
                 ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem();
                 string recommendedByString = "";
@@ -510,7 +509,7 @@ namespace CKAN
 
                 item.SubItems.Add(recommendedBy);
 
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem {Text = module.@abstract};
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem { Text = module.@abstract };
 
                 item.SubItems.Add(description);
 
@@ -524,7 +523,7 @@ namespace CKAN
             {
                 if (item.Checked)
                 {
-                    var identifier = ((CkanModule) item.Tag).identifier;
+                    var identifier = ((CkanModule)item.Tag).identifier;
                     toInstall.Add(identifier);
                 }
             }

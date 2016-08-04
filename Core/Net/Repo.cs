@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Autofac;
 using ChinhDo.Transactions;
 using CKAN.GameVersionProviders;
@@ -11,6 +5,12 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -19,7 +19,7 @@ namespace CKAN
     /// </summary>
     public static class Repo
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
         private static TxFileManager file_transaction = new TxFileManager();
 
         // Forward to keep existing code compiling, will be removed soon.
@@ -69,7 +69,7 @@ namespace CKAN
                     if (exception == null)
                     {
                         // Had exception, walked exception tree, reached leaf, got stuck.
-                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename); 
+                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename);
                     }
                     else
                     {
@@ -169,14 +169,16 @@ namespace CKAN
 
             switch (type)
             {
-            case FileType.TarGz:
-                UpdateRegistryFromTarGz (repo_file, registry);
-                break;
-            case FileType.Zip:
-                UpdateRegistryFromZip (repo_file, registry);
-                break;
-            default:
-                break;
+                case FileType.TarGz:
+                    UpdateRegistryFromTarGz(repo_file, registry);
+                    break;
+
+                case FileType.Zip:
+                    UpdateRegistryFromZip(repo_file, registry);
+                    break;
+
+                default:
+                    break;
             }
 
             List<CkanModule> metadataChanges = new List<CkanModule>();
@@ -218,53 +220,53 @@ namespace CKAN
                     }
                     else
                     {
-                        if(metadata.install != null)
-                        for (int i = 0; i < metadata.install.Length; i++)
-                        {
-                            if (metadata.install[i].file != oldMetadata.install[i].file)
+                        if (metadata.install != null)
+                            for (int i = 0; i < metadata.install.Length; i++)
                             {
-                                same = false;
-                                break;
-                            }
+                                if (metadata.install[i].file != oldMetadata.install[i].file)
+                                {
+                                    same = false;
+                                    break;
+                                }
 
-                            if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
-                            {
-                                same = false;
-                                break;
-                            }
+                                if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
+                                {
+                                    same = false;
+                                    break;
+                                }
 
-                            if (metadata.install[i].@as != oldMetadata.install[i].@as)
-                            {
-                                same = false;
-                                break;
-                            }
+                                if (metadata.install[i].@as != oldMetadata.install[i].@as)
+                                {
+                                    same = false;
+                                    break;
+                                }
 
-                            if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
-                            {
-                                same = false;
-                                break;
-                            }
+                                if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
+                                {
+                                    same = false;
+                                    break;
+                                }
 
-                            if(metadata.install[i].filter != null)
-                            if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
-                            {
-                                same = false;
-                                break;
-                            }
+                                if (metadata.install[i].filter != null)
+                                    if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
+                                    {
+                                        same = false;
+                                        break;
+                                    }
 
-                            if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
-                            {
-                                same = false;
-                                break;
-                            }
+                                if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
+                                {
+                                    same = false;
+                                    break;
+                                }
 
-                            if(metadata.install[i].filter_regexp != null)
-                            if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
-                            {
-                                same = false;
-                                break;
+                                if (metadata.install[i].filter_regexp != null)
+                                    if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
+                                    {
+                                        same = false;
+                                        break;
+                                    }
                             }
-                        }
                     }
 
                     if (!same)
@@ -280,10 +282,10 @@ namespace CKAN
                 for (int i = 0; i < metadataChanges.Count; i++)
                 {
                     mods += metadataChanges[i].identifier + " "
-                        + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count-1) ? ", " : "");
+                        + metadataChanges[i].version.ToString() + ((i < metadataChanges.Count - 1) ? ", " : "");
                 }
 
-                if(user.RaiseYesNoDialog(String.Format(
+                if (user.RaiseYesNoDialog(String.Format(
                     @"The following mods have had their metadata changed since last update - {0}.
 It is advisable that you reinstall them in order to preserve consistency with the repository. Do you wish to reinstall now?", mods)))
                 {
@@ -385,7 +387,7 @@ It is advisable that you reinstall them in order to preserve consistency with th
                     string filename = entry.Name;
 
                     // Skip things we don't want.
-                    if (! Regex.IsMatch(filename, filter))
+                    if (!Regex.IsMatch(filename, filter))
                     {
                         log.DebugFormat("Skipping archive entry {0}", filename);
                         continue;

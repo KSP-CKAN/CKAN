@@ -17,9 +17,9 @@ using System.Threading;
 
 namespace AutoUpdater
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length != 4)
             {
@@ -45,7 +45,7 @@ namespace AutoUpdater
                     process.WaitForExit();
                 }
             }
-            catch (Exception) {}
+            catch (Exception) { }
 
             int retries = 8;
 
@@ -89,7 +89,8 @@ namespace AutoUpdater
 
         private static void MakeExecutable(string path)
         {
-            if (!IsOnWindows()) {
+            if (!IsOnWindows())
+            {
                 // TODO: It would be really lovely (and safer!) to use the native system
                 // call here: http://docs.go-mono.com/index.aspx?link=M:Mono.Unix.Native.Syscall.chmod
 
@@ -116,7 +117,7 @@ namespace AutoUpdater
         private static bool IsOnWindows()
         {
             PlatformID platform = Environment.OSVersion.Platform;
-            return platform != PlatformID.MacOSX && 
+            return platform != PlatformID.MacOSX &&
                 platform != PlatformID.Unix && platform != PlatformID.Xbox;
         }
     }

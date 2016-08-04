@@ -6,10 +6,9 @@ namespace Tests.Core.Types
     [TestFixture]
     public class ReleaseStatus
     {
-
         // These get used by our tests, but we have to disable 'used only once' (0414)
         // to stop the compiler from giving us warnings.
-        #pragma warning disable 0414
+#pragma warning disable 0414
 
         private static readonly string[] GoodStatuses = {
             "stable", "testing", "development"
@@ -21,9 +20,10 @@ namespace Tests.Core.Types
             "42"
         };
 
-        #pragma warning restore 0414
+#pragma warning restore 0414
 
-        [Test][TestCaseSource("GoodStatuses")]
+        [Test]
+        [TestCaseSource("GoodStatuses")]
         public void ReleaseGood(string status)
         {
             var release = new CKAN.ReleaseStatus(status);
@@ -31,7 +31,8 @@ namespace Tests.Core.Types
             Assert.AreEqual(status, release.ToString());
         }
 
-        [Test][TestCaseSource("BadStatuses")]
+        [Test]
+        [TestCaseSource("BadStatuses")]
         public void ReleaseBad(string status)
         {
             Assert.Throws<BadMetadataKraken>(delegate
@@ -49,4 +50,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using CKAN.NetKAN.Services;
+﻿using CKAN.NetKAN.Services;
 using log4net;
 using Newtonsoft.Json;
+using System;
+using System.Text.RegularExpressions;
 
 namespace CKAN.NetKAN.Sources.Spacedock
 {

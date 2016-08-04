@@ -11,7 +11,7 @@ namespace CKAN.Versioning
             new KspVersionRange(KspVersionBound.Unbounded, KspVersionBound.Unbounded);
 
         public KspVersionBound Lower { get; private set; }
-        public KspVersionBound Upper { get; private set;  }
+        public KspVersionBound Upper { get; private set; }
 
         public KspVersionRange(KspVersionBound lower, KspVersionBound upper)
         {
@@ -81,14 +81,14 @@ namespace CKAN.Versioning
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is KspVersionRange && Equals((KspVersionRange) obj);
+            return obj is KspVersionRange && Equals((KspVersionRange)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Lower != null ? Lower.GetHashCode() : 0)*397) ^ (Upper != null ? Upper.GetHashCode() : 0);
+                return ((Lower != null ? Lower.GetHashCode() : 0) * 397) ^ (Upper != null ? Upper.GetHashCode() : 0);
             }
         }
 

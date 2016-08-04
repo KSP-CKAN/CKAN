@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CKAN;
+using System;
 using System.IO;
-using CKAN;
 
 namespace Tests.Data
 {
@@ -47,4 +47,3 @@ namespace Tests.Data
         }
     }
 }
-

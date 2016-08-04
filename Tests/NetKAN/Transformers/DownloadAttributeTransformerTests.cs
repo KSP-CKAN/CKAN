@@ -1,11 +1,10 @@
-using System;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Transformers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -33,7 +32,7 @@ namespace Tests.NetKAN.Transformers
 
             mFileService.Setup(i => i.GetFileHashSha256(downloadFilePath))
                 .Returns(downloadHashSha256);
-            
+
             mFileService.Setup(i => i.GetSizeBytes(downloadFilePath))
                 .Returns(downloadSize);
 

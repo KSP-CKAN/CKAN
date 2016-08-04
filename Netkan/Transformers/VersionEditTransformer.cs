@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using CKAN.NetKAN.Model;
+﻿using CKAN.NetKAN.Model;
 using log4net;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Text.RegularExpressions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
                     json["version"] = new Regex(versionEditInfo.Find)
                         .Replace(versionEditInfo.Version, versionEditInfo.Replace);
                 }
-                else if(versionEditInfo.Strict)
+                else if (versionEditInfo.Strict)
                 {
                     throw new Kraken("Could not match version with find pattern");
                 }
@@ -61,6 +61,7 @@ namespace CKAN.NetKAN.Transformers
                             case JTokenType.String:
                                 find = (string)editProp;
                                 break;
+
                             case JTokenType.Object:
                                 var editObj = (JObject)editProp;
 
@@ -112,6 +113,7 @@ namespace CKAN.NetKAN.Transformers
                                 }
 
                                 break;
+
                             default:
                                 throw new Kraken(
                                     string.Format("Unrecognized `x_netkan_version_edit` value: {0}", editProp)

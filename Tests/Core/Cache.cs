@@ -1,7 +1,7 @@
-using System;
-using System.IO;
 using CKAN;
 using NUnit.Framework;
+using System;
+using System.IO;
 using Tests.Data;
 
 namespace Tests.Core
@@ -9,7 +9,7 @@ namespace Tests.Core
     [TestFixture]
     public class Cache
     {
-        private readonly string cache_dir = Path.Combine(TestData.DataDir(),"cache_test");
+        private readonly string cache_dir = Path.Combine(TestData.DataDir(), "cache_test");
 
         private NetFileCache cache;
 
@@ -56,8 +56,8 @@ namespace Tests.Core
             FileAssert.AreEqual(file, cached_file);
         }
 
-        [Test, TestCase("cheesy.zip","cheesy.zip"), TestCase("Foo-1-2.3","Foo-1-2.3"),
-            TestCase("Foo-1-2-3","Foo-1-2-3"), TestCase("Foo-..-etc-passwd","Foo-..-etc-passwd")]
+        [Test, TestCase("cheesy.zip", "cheesy.zip"), TestCase("Foo-1-2.3", "Foo-1-2.3"),
+            TestCase("Foo-1-2-3", "Foo-1-2-3"), TestCase("Foo-..-etc-passwd", "Foo-..-etc-passwd")]
         public void NamingHints(string hint, string appendage)
         {
             Uri url = new Uri("http://example.com/");
@@ -95,7 +95,7 @@ namespace Tests.Core
             }
             catch (DirectoryNotFoundKraken kraken)
             {
-                Assert.AreSame(dir,kraken.directory);
+                Assert.AreSame(dir, kraken.directory);
             }
         }
 
@@ -145,4 +145,3 @@ namespace Tests.Core
         }
     }
 }
-

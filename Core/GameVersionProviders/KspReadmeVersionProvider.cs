@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using CKAN.Versioning;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CKAN.Versioning;
 
 namespace CKAN.GameVersionProviders
 {

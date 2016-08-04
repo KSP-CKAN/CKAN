@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Services
 
         public string GetFileHashSha1(string filePath)
         {
-            using (FileStream fs = new FileStream(@filePath, FileMode.Open))
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
             using (BufferedStream bs = new BufferedStream(fs))
             using (var sha1 = new SHA1Cng())
             {
@@ -34,33 +34,38 @@ namespace CKAN.NetKAN.Services
                 return BitConverter.ToString(hash).Replace("-", "");
             }
         }
-        
+
         public string GetMimetype(string filePath)
         {
             string mimetype;
 
             switch (FileIdentifier.IdentifyFile(filePath))
             {
-                case FileType.ASCII: 
+                case FileType.ASCII:
                     mimetype = "text/plain";
                     break;
+
                 case FileType.GZip:
                     mimetype = "application/x-gzip";
                     break;
+
                 case FileType.Tar:
                     mimetype = "application/x-tar";
                     break;
+
                 case FileType.TarGz:
                     mimetype = "application/x-compressed-tar";
                     break;
+
                 case FileType.Zip:
                     mimetype = "application/zip";
                     break;
+
                 default:
                     mimetype = "application/octet-stream";
                     break;
             }
- 
+
             return mimetype;
         }
     }

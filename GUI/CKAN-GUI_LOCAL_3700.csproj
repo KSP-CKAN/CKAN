@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A79F9D54-315C-472B-928F-713A5860B2BE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CKAN</RootNamespace>
+    <AssemblyName>CKAN-GUI</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <ApplicationIcon>assets\ckan.ico</ApplicationIcon>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="INIFileParser">
+      <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AskUserForAutoUpdatesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AskUserForAutoUpdatesDialog.Designer.cs">
+      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChooseKSPInstance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChooseKSPInstance.Designer.cs">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExportOption.cs" />
+    <Compile Include="IGUIPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ControlFactory.cs" />
+    <Compile Include="ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCompatibility.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUIMod.cs" />
+    <Compile Include="KSPCommandLineOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainChangeset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainModInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModChange.cs" />
+    <Compile Include="NavigationHistory.cs" />
+    <Compile Include="NewUpdateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewUpdateDialog.Designer.cs">
+      <DependentUpon>NewUpdateDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginController.cs" />
+    <Compile Include="RenameInstanceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameInstanceDialog.Designer.cs">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PluginsDialog.Designer.cs">
+      <DependentUpon>PluginsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewRepoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewRepoDialog.Designer.cs">
+      <DependentUpon>NewRepoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TabController.cs" />
+    <Compile Include="URLHandlers.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainDialogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainInstall.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainModList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainRepo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YesNoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="YesNoDialog.Designer.cs">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AskUserForAutoUpdatesDialog.resx">
+      <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChooseKSPInstance.resx">
+      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
+      <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewUpdateDialog.resx">
+      <DependentUpon>NewUpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="RenameInstanceDialog.resx">
+      <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginsDialog.resx">
+      <DependentUpon>PluginsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewRepoDialog.resx">
+      <DependentUpon>NewRepoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YesNoDialog.resx">
+      <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="MainTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\apply.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <None Include="Resources\ksp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\CKAN-core.csproj">
+      <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
+      <Name>CKAN-core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\backward.png" />
+    <Content Include="Resources\forward.png" />
+  </ItemGroup>
+</Project>

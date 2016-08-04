@@ -11,11 +11,11 @@ namespace CKAN.CmdLine
 
         internal class RepairSubOptions : CommonOptions
         {
-            [VerbOption("registry", HelpText="Try to repair the CKAN registry")]
+            [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
             public CommonOptions Registry { get; set; }
         }
 
-        public Repair(CKAN.KSP current_instance,IUser user)
+        public Repair(CKAN.KSP current_instance, IUser user)
         {
             CurrentInstance = current_instance;
             User = user;
@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
             }
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse);
+            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions(), Parse);
 
             switch (option)
             {
@@ -62,4 +62,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

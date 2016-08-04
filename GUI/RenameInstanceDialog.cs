@@ -2,7 +2,7 @@
 
 namespace CKAN
 {
-    public partial class RenameInstanceDialog : FormCompatibility
+    public partial class RenameInstanceDialog : MonoCompatibleForm
     {
         public RenameInstanceDialog()
         {
