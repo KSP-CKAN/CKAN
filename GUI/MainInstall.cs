@@ -230,16 +230,16 @@ namespace CKAN
                 if (ex.owningModule != null)
                 {
                     GUI.user.RaiseMessage(
-                        "\nOh no! We tried to overwrite a file owned by another mod!\n" +
-                        "Please try a `ckan update` and try again.\n\n" +
-                        "If this problem re-occurs, then it maybe a packaging bug.\n" +
-                        "Please report it at:\n\n" +
+                        "\r\nOh no! We tried to overwrite a file owned by another mod!\r\n" +
+                        "Please try a `ckan update` and try again.\r\n\r\n" +
+                        "If this problem re-occurs, then it maybe a packaging bug.\r\n" +
+                        "Please report it at:\r\n\r\n" +
                         "https://github.com/KSP-CKAN/CKAN-meta/issues/new\n\n" +
-                        "Please including the following information in your report:\n\n" +
-                        "File           : {0}\n" +
-                        "Installing Mod : {1}\n" +
-                        "Owning Mod     : {2}\n" +
-                        "CKAN Version   : {3}\n",
+                        "Please including the following information in your report:\r\n\r\n" +
+                        "File           : {0}\r\n" +
+                        "Installing Mod : {1}\r\n" +
+                        "Owning Mod     : {2}\r\n" +
+                        "CKAN Version   : {3}\r\n",
                         ex.filename, ex.installingModule, ex.owningModule,
                         Meta.Version()
                         );
@@ -247,19 +247,19 @@ namespace CKAN
                 else
                 {
                     GUI.user.RaiseMessage(
-                        "\n\nOh no!\n\n" +
-                        "It looks like you're trying to install a mod which is already installed,\n" +
-                        "or which conflicts with another mod which is already installed.\n\n" +
-                        "As a safety feature, the CKAN will *never* overwrite or alter a file\n" +
-                        "that it did not install itself.\n\n" +
-                        "If you wish to install {0} via the CKAN,\n" +
-                        "then please manually uninstall the mod which owns:\n\n" +
-                        "{1}\n\n" + "and try again.\n",
+                        "\r\n\r\nOh no!\r\n\r\n" +
+                        "It looks like you're trying to install a mod which is already installed,\r\n" +
+                        "or which conflicts with another mod which is already installed.\r\n\r\n" +
+                        "As a safety feature, the CKAN will *never* overwrite or alter a file\r\n" +
+                        "that it did not install itself.\r\n\r\n" +
+                        "If you wish to install {0} via the CKAN,\r\n" +
+                        "then please manually uninstall the mod which owns:\r\n\r\n" +
+                        "{1}\r\n\r\n" + "and try again.\r\n",
                         ex.installingModule, ex.filename
                         );
                 }
 
-                GUI.user.RaiseMessage("Your GameData has been returned to its original state.\n");
+                GUI.user.RaiseMessage("Your GameData has been returned to its original state.\r\n");
                 return false;
             }
             catch (InconsistentKraken ex)
@@ -285,7 +285,7 @@ namespace CKAN
             }
             catch (DirectoryNotFoundKraken kraken)
             {
-                GUI.user.RaiseMessage("\n{0}", kraken.Message);
+                GUI.user.RaiseMessage("\r\n{0}", kraken.Message);
                 return false;
             }
             return true;
