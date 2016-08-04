@@ -1,10 +1,10 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using System.Reflection;
 
-namespace CKAN {
+namespace CKAN
+{
     /// <summary>
     /// Version comparison utilities.
     /// </summary>
@@ -15,7 +15,6 @@ namespace CKAN {
         private readonly int epoch;
         private readonly string version;
         private readonly string originalString;
-        // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
         public int EpochPart
