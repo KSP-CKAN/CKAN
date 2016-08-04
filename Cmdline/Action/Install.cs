@@ -127,7 +127,7 @@ namespace CKAN.CmdLine
                     mods[i] = String.Format("{0} ({1})", ex.modules[i].identifier, ex.modules[i].name);
                 }
 
-                string message = String.Format("Too many mods provide {0}. Please pick from the following:\n", ex.requested);
+                string message = String.Format("Too many mods provide {0}. Please pick from the following:\r\n", ex.requested);
 
                 int result;
 
@@ -188,7 +188,7 @@ namespace CKAN.CmdLine
                     );
                 }
 
-                user.RaiseMessage("Your GameData has been returned to its original state.\n");
+                user.RaiseMessage("Your GameData has been returned to its original state.\r\n");
                 return Exit.ERROR;
             }
             catch (InconsistentKraken ex)
