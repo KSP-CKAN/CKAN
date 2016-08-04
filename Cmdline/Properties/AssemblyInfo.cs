@@ -7,7 +7,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("MIT License - CKAN Team")]
+[assembly: AssemblyCopyright("Copyright CKAN Team, https://github.com/KSP-CKAN/CKAN\nCC-BY 4.0, LGPL, or MIT; you choose!")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".

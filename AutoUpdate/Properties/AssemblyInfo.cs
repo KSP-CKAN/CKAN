@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AutoUpdater")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright CKAN Team, https://github.com/KSP-CKAN/CKAN\nCC-BY 4.0, LGPL, or MIT; you choose!")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
