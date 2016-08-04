@@ -74,7 +74,7 @@ namespace CKAN
             // 
             this.InstallUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InstallUpdateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.InstallUpdateButton.Location = new System.Drawing.Point(339, 277);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
             this.InstallUpdateButton.Size = new System.Drawing.Size(75, 23);
@@ -86,7 +86,7 @@ namespace CKAN
             // 
             this.CancelUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CancelUpdateButton.Location = new System.Drawing.Point(258, 277);
             this.CancelUpdateButton.Name = "CancelUpdateButton";
             this.CancelUpdateButton.Size = new System.Drawing.Size(75, 23);

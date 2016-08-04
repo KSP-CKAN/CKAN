@@ -50,7 +50,7 @@
             this.groupBox1.Controls.Add(this.ReloadPluginButton);
             this.groupBox1.Controls.Add(this.DeactivateButton);
             this.groupBox1.Controls.Add(this.ActivePluginsListBox);
-            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(360, 173);
@@ -66,7 +66,7 @@
             this.groupBox2.Controls.Add(this.UnloadPluginButton);
             this.groupBox2.Controls.Add(this.ActivatePluginButton);
             this.groupBox2.Controls.Add(this.DormantPluginsListBox);
-            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupBox2.Location = new System.Drawing.Point(12, 187);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(360, 167);
