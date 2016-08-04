@@ -17,7 +17,6 @@ namespace CKAN
         private readonly string version;
         private readonly string orig_string;
 
-        // static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         public const string AutodetectedDllString = "autodetected dll";
 
         public int EpochPart
