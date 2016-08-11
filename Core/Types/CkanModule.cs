@@ -526,8 +526,6 @@ namespace CKAN
         /// </summary>
         public string HighestCompatibleKSP()
         {
-            string allVersions = "All versions";
-
             // Find the highest compatible KSP version
             if (ksp_version_max != null)
             {
@@ -535,26 +533,14 @@ namespace CKAN
             }
             else if (ksp_version != null)
             {
-                string versionString = ksp_version.ToString();
-                if(versionString == null)
-                {
-                    if(ksp_version.IsAny)
-                    {
-                        return allVersions;
-                    }
-                    else
-                    {
-                        throw new Kraken("No valid version string found, and IsAny is not true.");
-                    }
-                }
-                return versionString;
+                return ksp_version.ToString();
             }
             else if (ksp_version_min != null )
             {
                 return ksp_version_min + "+";
             }
 
-            return allVersions;
+            return "All versions";
         }
 
         /// <summary>
