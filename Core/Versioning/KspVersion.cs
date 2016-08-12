@@ -690,8 +690,9 @@ namespace CKAN.Versioning
             switch (value)
             {
                 case null:
-                case "any":
                     return null;
+                case "any":
+                    return KspVersion.Any;
                 default:
                     KspVersion result;
 
