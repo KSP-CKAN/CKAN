@@ -56,7 +56,9 @@ namespace CKAN
         /// </summary>
         private string DefaultSorter(DataGridViewRow row)
         {
-                return row.Cells[this.configuration.SortByColumnIndex].Value.ToString();
+            // changed so that it never returns null
+            var cellVal = row.Cells[configuration.SortByColumnIndex].Value as string;
+            return cellVal ?? string.Empty;
         }
 
         /// <summary>
