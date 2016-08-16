@@ -90,7 +90,7 @@ namespace CKAN
             string directory = ksp.CkanDir();
             if (registryCache.ContainsKey(directory))
             {
-                log.InfoFormat("Dispose of registry at {0}", directory);
+                log.DebugFormat("Dispose of registry at {0}", directory);
                 if (!registryCache.Remove(directory))
                 {
                     throw new RegistryInUseKraken(directory);
