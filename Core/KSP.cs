@@ -122,12 +122,6 @@ namespace CKAN
                 Cache.Dispose();
         }
 
-
-        ///public void Dispose()
-        ///{
-        ///    this.RegistryManager.Dispose();
-        ///}
-
         #endregion
 
         #region KSP Directory Detection and Versioning
