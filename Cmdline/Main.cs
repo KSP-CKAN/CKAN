@@ -198,7 +198,8 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 log.Info("Freeing resources");
 
                 // Release the registry lock file if possible.
-                if (manager.CurrentInstance != null)
+                // Check for existing objects using null conditional operator
+                if (manager?.CurrentInstance?.RegistryManager != null)
                 {
                     manager.CurrentInstance.RegistryManager.Dispose();
                 }
