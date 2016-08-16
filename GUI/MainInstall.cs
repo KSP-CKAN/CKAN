@@ -178,6 +178,9 @@ namespace CKAN
 
         private void ShowSelection(Dictionary<string, List<string>> selectable, bool suggest = false)
         {
+            if (installCanceled)
+                return;
+
             // If we're going to install something anyway, then don't list it in the
             // recommended list, since they can't de-select it anyway.
             foreach (var item in toInstall)
@@ -185,11 +188,13 @@ namespace CKAN
                 selectable.Remove(item);
             }
 
+            Dictionary<CkanModule, string> mods = GetShowableMods(selectable);
+
             // If there are any mods that would be recommended, prompt the user to make
             // selections.
-            if (selectable.Any())
+            if (mods.Any())
             {
-                Util.Invoke(this, () => UpdateRecommendedDialog(selectable, suggest));
+                Util.Invoke(this, () => UpdateRecommendedDialog(mods, suggest));
 
                 tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
                 tabController.SetTabLock(true);
@@ -422,11 +427,60 @@ namespace CKAN
                 if (item.Checked)
                 {
                     toomany_source.SetResult((CkanModule)item.Tag);
-            }
+                }
             }
         }
 
-        private void UpdateRecommendedDialog(Dictionary<string, List<string>> mods, bool suggested = false)
+        /// <summary>
+        /// Tries to get every mod in the Dictionary, which can be installed
+        /// It also transforms the Recommender list to a string
+        /// </summary>
+        /// <param name="mods"></param>
+        /// <returns></returns>
+        private Dictionary<CkanModule, string> GetShowableMods(Dictionary<string, List<string>> mods)
+        {
+            Dictionary<CkanModule, string> modules = new Dictionary<CkanModule, string>();
+
+            var opts = new RelationshipResolverOptions
+            {
+                with_all_suggests = false,
+                with_recommends = false,
+                with_suggests = false,
+                without_enforce_consistency = false,
+                without_toomanyprovides_kraken = true
+            };
+            
+            foreach (var pair in mods)
+            {
+                CkanModule module;
+
+                try
+                {
+                    var resolver = new RelationshipResolver(new List<string> { pair.Key }, opts,
+                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
+                    if (!resolver.ModList().Any())
+                    {
+                        continue;
+                    }
+
+                    module = RegistryManager.Instance(manager.CurrentInstance)
+                        .registry.LatestAvailable(pair.Key, CurrentInstance.Version());
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (module == null)
+                {
+                    continue;
+                }
+                modules.Add(module, String.Join(",", pair.Value.ToArray()));
+            }
+            return modules;
+        }
+
+        private void UpdateRecommendedDialog(Dictionary<CkanModule, string> mods, bool suggested = false)
         {
             if (!suggested)
             {
@@ -447,66 +501,14 @@ namespace CKAN
                 tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
             }
 
-
             RecommendedModsListView.Items.Clear();
-
             foreach (var pair in mods)
             {
-                CkanModule module;
-
-                try
-                {
-                    var opts = new RelationshipResolverOptions
-                    {
-                        with_all_suggests = false,
-                        with_recommends = false,
-                        with_suggests = false,
-                        without_enforce_consistency = false,
-                        without_toomanyprovides_kraken = true
-                    };
-
-                    var resolver = new RelationshipResolver(new List<string> {pair.Key}, opts,
-                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
-                    if (!resolver.ModList().Any())
-                    {
-                        continue;
-                    }
-
-                    module = RegistryManager.Instance(manager.CurrentInstance)
-                        .registry.LatestAvailable(pair.Key, CurrentInstance.Version());
-                }
-                catch
-                {
-                    continue;
-                }
-
-                if (module == null)
-                {
-                    continue;
-                }
-
-                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key};
+                CkanModule module = pair.Key;
+                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key.name};
 
 
-                ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem();
-                string recommendedByString = "";
-
-                bool first = true;
-                foreach (string mod in pair.Value)
-                {
-                    if (!first)
-                    {
-                        recommendedByString += ", ";
-                    }
-                    else
-                    {
-                        first = false;
-                    }
-
-                    recommendedByString += mod;
-                }
-
-                recommendedBy.Text = recommendedByString;
+                ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem() { Text = pair.Value };
 
                 item.SubItems.Add(recommendedBy);
 
