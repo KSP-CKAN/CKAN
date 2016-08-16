@@ -198,8 +198,8 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 log.Info("Freeing resources");
 
                 // Release the registry lock file if possible.
-                // Check for existing objects using null conditional operator
-                if (manager?.CurrentInstance?.RegistryManager != null)
+                // Check for existing objects without using null conditional operator to maintain Mono 3.2.8 compatibility
+                if (manager!= null && manager.CurrentInstance != null && manager.CurrentInstance.RegistryManager != null)
                 {
                     manager.CurrentInstance.RegistryManager.Dispose();
                 }
