@@ -208,7 +208,7 @@ namespace CKAN
             }
             catch (RegistryInUseKraken kraken)
             {
-                m_ErrorDialog.ShowErrorDialog(kraken.ToString());
+                errorDialog.ShowErrorDialog(kraken.ToString());
 
                 return;
             }
