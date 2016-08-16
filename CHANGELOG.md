@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Add Back and Forward buttons to the GUI to jump to selected mods (#1841 by: b-w; reviewed: politas)
+- [NetKAN] GitHub Transformer now extracts the repository name and transforms it to a usable ckan name (#1613 by: Olympic1; reviewed: pjf)
 
 ## v1.18.1
 

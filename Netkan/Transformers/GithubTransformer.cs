@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
@@ -76,6 +76,32 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("version", ghRelease.Version.ToString());
                     json.SafeAdd("author", ghRelease.Author);
                     json.SafeAdd("download", Uri.EscapeUriString(ghRelease.Download.ToString()));
+
+                    if (ghRef.Project.Contains("_"))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace("_", " "));
+                    }
+                    else if (ghRef.Project.Contains("-"))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace("-", " "));
+                    }
+                    else if (ghRef.Project.Contains("."))
+                    {
+                        json.SafeAdd("name", ghRef.Project.Replace(".", " "));
+                    }
+                    else
+                    {
+                        var repoName = ghRef.Project;
+                        for (var i = 1; i < repoName.Length - 1; ++i)
+                        {
+                            if (char.IsLower(repoName[i - 1]) && char.IsUpper(repoName[i]) || repoName[i - 1] != ' ' && char.IsUpper(repoName[i]) && char.IsLower(repoName[i + 1]))
+                            {
+                                repoName = repoName.Insert(i, " ");
+                            }
+                        }
+
+                        json.SafeAdd("name", repoName);
+                    }
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
