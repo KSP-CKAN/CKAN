@@ -8,7 +8,7 @@ namespace CKAN
     {
 
         string AutoStartInstance { get; set; }
-        void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance);
+        void SetRegistryToInstances(SortedList<string, KSP> instances, string autoStartInstance);
         IEnumerable<Tuple<string, string>> GetInstances();
         string GetKSPBuilds();
         void SetKSPBuilds(string buildMap);
@@ -35,13 +35,13 @@ namespace CKAN
 
         private Tuple<string, string> GetInstance(int i)
         {
-            return new Tuple<string, string>(GetRegistryValue("KSPInstanceName_" + i, ""),
-                GetRegistryValue("KSPInstancePath_" + i, ""));
+            return new Tuple<string, string>(GetRegistryValue("KSPInstanceName_" + i, string.Empty),
+                GetRegistryValue("KSPInstancePath_" + i, string.Empty));
         }
 
-        public void SetRegistryToInstances(SortedList<string, KSP> instances, string auto_start_instance)
+        public void SetRegistryToInstances(SortedList<string, KSP> instances, string autoStartInstance)
         {
-            SetAutoStartInstance(auto_start_instance ?? "");
+            SetAutoStartInstance(autoStartInstance ?? string.Empty);
             SetNumberOfInstances(instances.Count);
             
             foreach (var instance in instances.Select((instance,i)=>
@@ -58,7 +58,7 @@ namespace CKAN
 
         public string GetKSPBuilds()
         {
-            return GetRegistryValue(@"KSPBuilds", (string)null);
+            return GetRegistryValue("KSPBuilds", null as string);
         }
 
         public void SetKSPBuilds(string buildMap)
@@ -75,9 +75,9 @@ namespace CKAN
             }
         }
 
-        private void SetAutoStartInstance(string instance_name)
+        private void SetAutoStartInstance(string instanceName)
         {
-            SetRegistryValue(@"KSPAutoStartInstance", instance_name ?? String.Empty);
+            SetRegistryValue(@"KSPAutoStartInstance", instanceName ?? string.Empty);
         }
 
         private void SetNumberOfInstances(int count)
@@ -85,20 +85,20 @@ namespace CKAN
             SetRegistryValue(@"KSPInstanceCount", count);
         }
 
-        private void SetInstanceKeysTo(int instance_number, string name, KSP ksp)
+        private void SetInstanceKeysTo(int instanceIndex, string name, KSP ksp)
         {            
-            SetRegistryValue(@"KSPInstanceName_" + instance_number, name);
-            SetRegistryValue(@"KSPInstancePath_" + instance_number, ksp.GameDir());
+            SetRegistryValue(@"KSPInstanceName_" + instanceIndex, name);
+            SetRegistryValue(@"KSPInstancePath_" + instanceIndex, ksp.GameDir());
         }        
 
-        private void SetRegistryValue<T>(string key, T value)
+        private static void SetRegistryValue<T>(string key, T value)
         {
             Microsoft.Win32.Registry.SetValue(CKAN_KEY, key, value);
         }
 
-        private T GetRegistryValue<T>(string key, T default_value)
+        private static T GetRegistryValue<T>(string key, T defaultValue)
         {
-            return (T)Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, default_value);
+            return (T)Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, defaultValue);
         }
     }
 }
