@@ -26,13 +26,13 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            List<CkanModule> matching_mods = PerformSearch(ksp, options.search_term);
+            var matching_mods = PerformSearch(ksp, options.search_term);
 
             // Show how many matches we have.
-            user.RaiseMessage("Found " + matching_mods.Count.ToString() + " mods matching \"" + options.search_term + "\".");
+            user.RaiseMessage("Found " + matching_mods.Count().ToString() + " mods matching \"" + options.search_term + "\".");
 
             // Present the results.
-            if (matching_mods.Count == 0)
+            if (!matching_mods.Any())
             {
                 return Exit.OK;
             }
@@ -54,30 +54,22 @@ namespace CKAN.CmdLine
         /// <param name="term">The search term. Case insensitive.</param>
         public List<CkanModule> PerformSearch(CKAN.KSP ksp, string term)
         {
-            List<CkanModule> matching_mods = new List<CkanModule>();
-
-            // Get a list of available mods.
-            List<CkanModule> available_mods = ksp.Registry.Available(ksp.Version());
-
-            // Look for the search term in the list.
-            foreach (CkanModule mod in available_mods)
+            var registry = RegistryManager.Instance(ksp).registry;
+            return registry
+                .Available(ksp.Version())
+                .Where((module) =>
             {
                 // Extract the description. This is an optional field and may be null.
-                string mod_description = String.Empty;
+                string modDesc = string.Empty;
 
-                if (!String.IsNullOrEmpty(mod.description))
+                if (!string.IsNullOrEmpty(module.description))
                 {
-                    mod_description = mod.description;
+                    modDesc = module.description;
                 }
 
                 // Look for a match in each string.
-                if (mod.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || mod.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || mod_description.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                {
-                    matching_mods.Add(mod);
-                }
-            }
-
-            return matching_mods;
+                return module.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || module.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || modDesc.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1;
+            }).ToList();
         }
     }
 }

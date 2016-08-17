@@ -17,7 +17,7 @@ namespace CKAN
         private long m_cacheSize;
         private int m_cacheFileCount;
 
-        private List<Repository> m_sortedRepos = new List<Repository>();
+        private List<Repository> _sortedRepos = new List<Repository>();
 
         public SettingsDialog()
         {
@@ -46,21 +46,23 @@ namespace CKAN
         {
             // Give the Repository the priority it
             // currently has in the gui
-            for (int i = 0; i < m_sortedRepos.Count; i++)
+            for (int i = 0; i < _sortedRepos.Count; i++)
             {
-                m_sortedRepos[i].priority = i;
+                _sortedRepos[i].priority = i;
             }
 
-            m_sortedRepos = new List<Repository>(Main.Instance.CurrentInstance.Registry.Repositories.Values);
+            var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
+            var registry = manager.registry;
+            _sortedRepos = new List<Repository>(registry.Repositories.Values);
 
-            m_sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
+            _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
             ReposListBox.Items.Clear();
-            foreach (var repo in m_sortedRepos)
+            foreach (var repo in _sortedRepos)
             {
-                ReposListBox.Items.Add(String.Format("{0} | {1}", repo.name, repo.uri));
+                ReposListBox.Items.Add(string.Format("{0} | {1}", repo.name, repo.uri));
             }
 
-            Main.Instance.CurrentInstance.RegistryManager.Save();
+            manager.Save();
         }
 
         private void UpdateCacheInfo()
@@ -142,8 +144,9 @@ namespace CKAN
                 return;
             }
 
-            var item = m_sortedRepos[ReposListBox.SelectedIndex];
-            Main.Instance.CurrentInstance.Registry.Repositories.Remove(item.name);
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+            registry.Repositories.Remove(item.name);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
@@ -159,14 +162,15 @@ namespace CKAN
                     var name = repo[0].Trim();
                     var url = repo[1].Trim();
 
-                    SortedDictionary<string, Repository> repositories = Main.Instance.CurrentInstance.Registry.Repositories;
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                    SortedDictionary<string, Repository> repositories = registry.Repositories;
                     if (repositories.ContainsKey(name))
                     {
                         repositories.Remove(name);
                     }
 
-                    repositories.Add(name, new Repository(name, url, m_sortedRepos.Count));
-                    Main.Instance.CurrentInstance.Registry.Repositories = repositories;
+                    repositories.Add(name, new Repository(name, url, _sortedRepos.Count));
+                    registry.Repositories = repositories;
 
                     RefreshReposListBox();
                 }
@@ -189,9 +193,9 @@ namespace CKAN
                 return;
             }
 
-            var item = m_sortedRepos[ReposListBox.SelectedIndex];
-            m_sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            m_sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            _sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
             RefreshReposListBox();
         }
 
@@ -207,9 +211,9 @@ namespace CKAN
                 return;
             }
 
-            var item = m_sortedRepos[ReposListBox.SelectedIndex];
-            m_sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            m_sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            _sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
             RefreshReposListBox();
         }
 

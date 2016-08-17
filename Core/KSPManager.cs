@@ -237,7 +237,11 @@ namespace CKAN
             if (CurrentInstance != null)
             {
                 // Dispose of the old registry manager, to release the registry.
-                CurrentInstance.RegistryManager.Dispose();
+                var manager = RegistryManager.Instance(CurrentInstance);
+                if (manager != null)
+                {
+                    manager.Dispose();
+                }
             }
 
             CurrentInstance = instances[name];

@@ -25,7 +25,8 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 // Get a list of available modules prior to the update.
-                available_prior = ksp.Registry.Available(ksp.Version());
+                var registry = RegistryManager.Instance(ksp).registry;
+                available_prior = registry.Available(ksp.Version());
             }
 
             // If no repository is selected, select all.
@@ -54,7 +55,8 @@ namespace CKAN.CmdLine
 
             if (options.list_changes)
             {
-                PrintChanges(available_prior, ksp.Registry.Available(ksp.Version()));
+                var registry = RegistryManager.Instance(ksp).registry;
+                PrintChanges(available_prior, registry.Available(ksp.Version()));
             }
 
             return Exit.OK;

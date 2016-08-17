@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
             if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
             {
                 // Start the gui with logging enabled #437 
-                List<string> guiCommand = args.ToList();
+                var guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
                 args = guiCommand.ToArray();
             }
@@ -122,7 +122,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 return Exit.BADOPT;
             }
 
-            KSPManager manager= new KSPManager(user);
+            var manager = new KSPManager(user);
 
             if (options.KSP != null)
             {
@@ -178,33 +178,17 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             try
             {
-                log.InfoFormat("About to run action {0}",cmdline.action);
-                return RunAction(cmdline, options, args, user, manager);
+                using (var registry = RegistryManager.Instance(manager.CurrentInstance))
+                {
+                    log.InfoFormat("About to run action {0}", cmdline.action);
+                    return RunAction(cmdline, options, args, user, manager);
+                }
             }
             catch (RegistryInUseKraken kraken)
             {
                 log.Info("Registry in use detected");
                 user.RaiseMessage(kraken.ToString());
-
-                // By forcing the current instance to be null, we
-                // prevent the finally block from trying to do clean-up
-                // on a locked instance, which ironically throws another
-                // lock exception.
-                manager.CurrentInstance = null;
                 return Exit.ERROR;
-            }
-            finally
-            {
-                log.Info("Freeing resources");
-
-                // Release the registry lock file if possible.
-                // Check for existing objects without using null conditional operator to maintain Mono 3.2.8 compatibility
-                if (manager!= null && manager.CurrentInstance != null && manager.CurrentInstance.RegistryManager != null)
-                {
-                    manager.CurrentInstance.RegistryManager.Dispose();
-                }
-
-                log.Info("Resources freed");
             }
         }
 
