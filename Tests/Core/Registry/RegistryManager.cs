@@ -16,14 +16,18 @@ namespace Tests.Core.RegistryManager
             {
                 // TODO: Give the RegistryManager a way to read-only query
                 // the registry location.
-                string registryPath = ksp.KSP.RegistryManager.lockfilePath;
+                var manager = CKAN.RegistryManager.Instance(ksp.KSP);
+
+                Assert.IsNotNull(manager);
+
+                var registryPath = CKAN.RegistryManager.Instance(ksp.KSP).lockfilePath;
 
                 // Let's try opening the same registry file a second time...
 
                 Assert.IsTrue(TestLock(registryPath));
 
                 // And after we dispose the registry manager, the lock should be gone...
-                ksp.KSP.RegistryManager.Dispose();
+                manager.Dispose();
 
                 Assert.IsFalse(TestLock(registryPath));
             }

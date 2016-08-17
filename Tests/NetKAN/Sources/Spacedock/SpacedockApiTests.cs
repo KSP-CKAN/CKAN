@@ -38,12 +38,12 @@ namespace Tests.NetKAN.Sources.Spacedock
             var sut = new SpacedockApi(new CachingHttpService(_cache));
 
             // Act
-            var result = sut.GetMod(493); // PlaneMode
+            var result = sut.GetMod(20); // PlaneMode
 
             // Assert
             var latestVersion = result.Latest();
 
-            Assert.That(result.id, Is.EqualTo(493));
+            Assert.That(result.id, Is.EqualTo(20));
             Assert.That(result.author, Is.Not.Null);
             Assert.That(result.background, Is.Not.Null);
             Assert.That(result.license, Is.Not.Null);

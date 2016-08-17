@@ -21,7 +21,7 @@ namespace Tests.Core.Relationships
         {
             ksp = new DisposableKSP();
 
-            registry = ksp.KSP.Registry;
+            registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
             registry.ClearAvailable();
             registry.ClearDlls();
             registry.Installed().Clear();
