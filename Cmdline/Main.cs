@@ -176,19 +176,27 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             #endregion
 
-            try
+            //If we have found a preferred KSP instance, try to lock the registry
+            if (manager.CurrentInstance != null)
             {
-                using (var registry = RegistryManager.Instance(manager.CurrentInstance))
+                try
                 {
-                    log.InfoFormat("About to run action {0}", cmdline.action);
-                    return RunAction(cmdline, options, args, user, manager);
+                    using (var registry = RegistryManager.Instance(manager.CurrentInstance))
+                    {
+                        log.InfoFormat("About to run action {0}", cmdline.action);
+                        return RunAction(cmdline, options, args, user, manager);
+                    }
+                }
+                catch (RegistryInUseKraken kraken)
+                {
+                    log.Info("Registry in use detected");
+                    user.RaiseMessage(kraken.ToString());
+                    return Exit.ERROR;
                 }
             }
-            catch (RegistryInUseKraken kraken)
+            else // we have no preferred KSP instance, so no need to lock the registry
             {
-                log.Info("Registry in use detected");
-                user.RaiseMessage(kraken.ToString());
-                return Exit.ERROR;
+                return RunAction(cmdline, options, args, user, manager);
             }
         }
 
