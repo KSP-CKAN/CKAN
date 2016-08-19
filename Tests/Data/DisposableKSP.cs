@@ -41,9 +41,17 @@ namespace Tests.Data
 
         public void Dispose()
         {
-            Directory.Delete(disposable_dir, true);
             KSP.Dispose();
+            Directory.Delete(disposable_dir, true);
             KSP = null; // In case .Dispose() was called manually.
+        }
+
+        public void DisposeOfAllManagedKSPs(KSPManager kspManager)
+        {
+            foreach (var ksp in kspManager.Instances.Values)
+            {
+                ksp.Dispose();
+            }
         }
     }
 }

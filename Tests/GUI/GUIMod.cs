@@ -23,6 +23,7 @@ namespace Tests.GUI
                 registry.AddAvailable(ckan_mod);
                 var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version());
                 Assert.False(mod.IsUpgradeChecked);
+                tidy.DisposeOfAllManagedKSPs(manager);
             }
         }
         [Test]

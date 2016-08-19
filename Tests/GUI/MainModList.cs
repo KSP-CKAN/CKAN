@@ -74,6 +74,7 @@ namespace Tests.GUI
 
                 var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
                 await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
+                tidy.DisposeOfAllManagedKSPs(manager);
             }
         }
 
@@ -89,6 +90,7 @@ namespace Tests.GUI
                 registry.AddAvailable(ckan_mod);
                 var item = new MainModList(delegate { }, null);
                 Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version())));
+                tidy.DisposeOfAllManagedKSPs(manager);
             }
         }
 
@@ -120,6 +122,7 @@ namespace Tests.GUI
                     new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version())
                 });
                 Assert.That(mod_list, Has.Count.EqualTo(2));
+                tidy.DisposeOfAllManagedKSPs(manager);
             }
         }
 
