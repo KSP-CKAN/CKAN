@@ -113,6 +113,8 @@ namespace CKAN
                 Cache.Dispose();
                 Cache = null;
             }
+
+            // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
         }
 
         #endregion

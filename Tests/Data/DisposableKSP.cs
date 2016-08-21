@@ -10,8 +10,8 @@ namespace Tests.Data
     /// </summary>
     public class DisposableKSP : IDisposable
     {
-        private readonly string good_ksp = TestData.good_ksp_dir();
-        private readonly string disposable_dir;
+        private readonly string _goodKsp = TestData.good_ksp_dir();
+        private readonly string _disposableDir;
 
         public KSP KSP { get; private set; }
 
@@ -19,32 +19,40 @@ namespace Tests.Data
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
         /// Use .KSP to access the KSP object itself.
         /// </summary>
-        public DisposableKSP(string directory_to_clone = null, string registry_file = null)
+        public DisposableKSP(string directoryToClone = null, string registryFile = null)
         {
-            directory_to_clone = directory_to_clone ?? good_ksp;
-            disposable_dir = TestData.NewTempDir();
-            TestData.CopyDirectory(directory_to_clone, disposable_dir);
+            directoryToClone = directoryToClone ?? _goodKsp;
+            _disposableDir = TestData.NewTempDir();
+            TestData.CopyDirectory(directoryToClone, _disposableDir);
 
             // If we've been given a registry file, then copy it into position before
             // creating our KSP object.
 
-            if (registry_file != null)
+            if (registryFile != null)
             {
-                string registry_dir = Path.Combine(disposable_dir, "CKAN");
-                string registry_path = Path.Combine(registry_dir, "registry.json");
-                Directory.CreateDirectory(registry_dir);
-                File.Copy(registry_file, registry_path, true);
+                var registryDir = Path.Combine(_disposableDir, "CKAN");
+                var registryPath = Path.Combine(registryDir, "registry.json");
+                Directory.CreateDirectory(registryDir);
+                File.Copy(registryFile, registryPath, true);
             }
 
-            KSP = new KSP(disposable_dir, NullUser.User);
+            KSP = new KSP(_disposableDir, NullUser.User);
         }
 
         public void Dispose()
         {
-            RegistryManager.Instance(KSP).Dispose();
-            Directory.Delete(disposable_dir, true);
+            var registry = RegistryManager.Instance(KSP);
+            if (registry != null)
+            {
+                registry.Dispose();
+            }
+
+            //Now that the loickfile is closed, we can remove the directory
+            Directory.Delete(_disposableDir, true);
+
+            //proceed to dispose our wrapped KSP object
             KSP.Dispose();
-            KSP = null; // In case .Dispose() was called manually.
+            KSP = null;
         }
     }
 }

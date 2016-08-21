@@ -80,21 +80,23 @@ namespace CKAN
             GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(Boolean safeToAlsoFreeManagedObjects)
+        protected void Dispose(bool safeToAlsoFreeManagedObjects)
         {
             // Right now we just release our lock, and leave everything else
             // to the GC, but if we were implementing the full pattern we'd also
             // free managed (.NET core) objects when called with a true value here.
 
             ReleaseLock();
-            string directory = ksp.CkanDir();
-            if (registryCache.ContainsKey(directory))
+            var directory = ksp.CkanDir();
+            if (!registryCache.ContainsKey(directory))
             {
-                log.DebugFormat("Dispose of registry at {0}", directory);
-                if (!registryCache.Remove(directory))
-                {
-                    throw new RegistryInUseKraken(directory);
-                }
+                return;
+            }
+
+            log.DebugFormat("Dispose of registry at {0}", directory);
+            if (!registryCache.Remove(directory))
+            {
+                throw new RegistryInUseKraken(directory);
             }
         }
 
@@ -123,6 +125,7 @@ namespace CKAN
                 lockfileWriter = new StreamWriter(lockfileStream);
                 lockfileWriter.Write(Process.GetCurrentProcess().Id);
                 lockfileWriter.Flush();
+                // The lock file is now locked and open.
             }
             catch (IOException)
             {
