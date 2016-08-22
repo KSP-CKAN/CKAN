@@ -432,9 +432,6 @@ namespace Tests.Core
             {
                 KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(ksp.KSP)){CurrentInstance = ksp.KSP};
 
-                Debug.WriteLine(ksp.KSP.DownloadCacheDir());
-                Console.WriteLine(ksp.KSP.DownloadCacheDir());
-
                 Assert.IsTrue(Directory.Exists(ksp.KSP.DownloadCacheDir()));
 
                 string mod_file_path = Path.Combine(ksp.KSP.GameData(), mod_file_name);
@@ -455,6 +452,55 @@ namespace Tests.Core
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
+            }
+        }
+
+        [Test]
+        public void UninstallEmptyDirs()
+        {
+            string emptyFolderName = "DogeCoinFlag";
+
+            // Create a new disposable KSP instance to run the test on.
+            using (var ksp = new DisposableKSP())
+            {
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(ksp.KSP)){CurrentInstance = ksp.KSP};
+
+                Assert.IsTrue(Directory.Exists(ksp.KSP.DownloadCacheDir()));
+
+                string directoryPath = Path.Combine(ksp.KSP.GameData(), emptyFolderName);
+
+                // Install the base test mod.
+                ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+                ksp.KSP.Registry.AddAvailable(TestData.DogeCoinFlag_101_module());
+
+                List<string> modules = new List<string> {TestData.DogeCoinFlag_101_module().identifier};
+
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).InstallList(modules, new RelationshipResolverOptions());
+
+                modules.Clear();
+
+                // Install the plugin test mod.
+                ksp.KSP.Cache.Store(TestData.DogeCoinPlugin_module().download, TestData.DogeCoinPluginZip());
+                ksp.KSP.Registry.AddAvailable(TestData.DogeCoinPlugin_module());
+
+                modules.Add(TestData.DogeCoinPlugin_module().identifier);
+
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).InstallList(modules, new RelationshipResolverOptions());
+
+                modules.Clear();
+
+                // Check that the directory is installed.
+                Assert.IsTrue(Directory.Exists(directoryPath));
+
+                // Uninstall both mods.
+
+                modules.Add(TestData.DogeCoinFlag_101_module().identifier);
+                modules.Add(TestData.DogeCoinPlugin_module().identifier);
+
+                CKAN.ModuleInstaller.GetInstance(manager.CurrentInstance, NullUser.User).UninstallList(modules);
+
+                // Check that the directory has been deleted.
+                Assert.IsFalse(Directory.Exists(directoryPath));
             }
         }
 

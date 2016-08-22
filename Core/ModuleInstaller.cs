@@ -810,7 +810,10 @@ namespace CKAN
                         // This is the fastest way to do this test.
                         if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                         {
-                            directoriesToDelete.Add(path);
+                            if ( !(directoriesToDelete.Contains(path)))
+                            {
+                                directoriesToDelete.Add(path);
+                            }
                         }
                         else
                         {
@@ -840,6 +843,9 @@ namespace CKAN
                 // Remove from registry.
 
                 registry_manager.registry.DeregisterModule(ksp, modName);
+
+                // Our collection of directories may leave empty parent directories.
+                directoriesToDelete = AddParentDirectories(directoriesToDelete);
 
                 // Sort our directories from longest to shortest, to make sure we remove child directories
                 // before parents. GH #78.
@@ -880,6 +886,32 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Takes a collection of directories and adds all parent directories within the GameData structure.
+        /// </summary>
+        /// <param name="directories">The collection of directory path strings to examine </param>
+        private HashSet<string> AddParentDirectories(HashSet<string> directories )
+        {
+            var newDirectories = new HashSet<string>();
+            foreach (string directory in directories)
+            {
+                if ( directory.Contains(ksp.GameData()))
+                {
+                    var path = directory;
+                    while ((path != ksp.GameData()) & (path != null) & !newDirectories.Contains(path) )
+                    {
+                        newDirectories.Add(path);
+                        DirectoryInfo parent = Directory.GetParent(path);
+                        path = parent.FullName;
+                    }
+                }
+                else
+                {
+                    newDirectories.Add(directory);
+                }
+            }
+                return newDirectories;
+        }
         #region AddRemove
 
         /// <summary>

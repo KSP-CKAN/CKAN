@@ -59,6 +59,15 @@ namespace Tests.Data
             return such_zip_very_corrupt_wow;
         }
 
+        /// <summary>
+        /// Adds a plugins directory to the DogeCoinFlag directory to test.
+        /// </summary>
+        /// <returns>The coin plugin.</returns>
+        public static string DogeCoinPluginZip()
+        {
+            return Path.Combine(DataDir(), "DogeCoinPlugin.zip");
+        }
+
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
@@ -187,6 +196,46 @@ namespace Tests.Data
                     ""ksp_version"": ""0.25""
                 }
             ";
+        }
+
+        ///<summary>
+        /// DogeCoinPlugin info. This doesn't contain any bugs.
+        ///</summary>
+        public static string DogeCoinPlugin()
+        {
+            return @"
+                {
+                    ""spec_version"": ""v1.2"",
+                    ""identifier"": ""DogeCoinPlugin"",
+                    ""install"": [
+                        {
+                        ""file"": ""GameData/DogeCoinFlag/plugin"",
+                        ""install_to"": ""GameData/DogeCoinFlag"",
+                        ""filter"" : [ ""Thumbs.db"", ""README.md"" ],
+                        ""filter_regexp"" : ""\\.bak$""
+                        }
+                    ],
+                    ""resources"": {
+                        ""kerbalstuff"": {
+                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
+                        },
+                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
+                    },
+                    ""name"": ""Dogecoin Core Plugin"",
+                    ""license"": ""CC-BY"",
+                    ""abstract"": ""Such plugin. Very linkage. Dynamically Minmus! Wow!"",
+                    ""author"": ""politas"",
+                    ""version"": ""1.01"",
+                    ""download"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""download_size"": 53647,
+                    ""ksp_version"": ""0.25""
+                }
+            ";
+        }
+
+        public static CkanModule DogeCoinPlugin_module()
+        {
+            return CkanModule.FromJson(DogeCoinPlugin());
         }
 
         /// <summary>
