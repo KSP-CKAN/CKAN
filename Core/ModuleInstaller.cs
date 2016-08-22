@@ -799,14 +799,35 @@ namespace CKAN
                     {
                         FileAttributes attr = File.GetAttributes(path);
 
+                        // [This is] bitwise math. Basically, attr is some binary value with one bit meaning 
+                        // "this is a directory". The bitwise and & operator will return a binary value where
+                        // only the bits that are on (1) in both the operands are turned on. In this case 
+                        // doing a bitwise and operation against attr and the FileAttributes.Directory value
+                        // will return the value of FileAttributes.Directory if the Directory file attribute 
+                        // bit is turned on. See en.wikipedia.org/wiki/Bitwise_operation for a better 
+                        // explanation. – Kyle Trauberman Aug 30 '12 at 21:28 
+                        // (https://stackoverflow.com/questions/1395205/better-way-to-check-if-path-is-a-file-or-a-directory)
+                        // This is the fastest way to do this test.
                         if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                         {
                             directoriesToDelete.Add(path);
                         }
                         else
                         {
+                            // Add this files' directory to the list for deletion if it isn't already there.
+                            // Helps clean up directories when modules are uninstalled out of dependency order
+                            // Since we check for directory contents when deleting, this should purge empty
+                            // dirs, making less ModuleManager headaches for people.
+                            var directoryName = Path.GetDirectoryName(path);
+                            if ( !(directoriesToDelete.Contains(directoryName)))
+                            {
+                                directoriesToDelete.Add(directoryName);
+                            }
+
                             log.InfoFormat("Removing {0}", file);
                             file_transaction.Delete(path);
+
+
                         }
                     }
                     catch (Exception ex)
