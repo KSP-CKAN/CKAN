@@ -181,7 +181,8 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             User.RaiseMessage("Listing all known repositories:");
-            SortedDictionary<string, Repository> repositories = Manager.CurrentInstance.Registry.Repositories;
+            var manager = RegistryManager.Instance(Manager.CurrentInstance);
+            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
             foreach(Repository repository in repositories.Values)
@@ -199,7 +200,7 @@ namespace CKAN.CmdLine
 
         private int AddRepository(AddOptions options)
         {
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
 
             if (options.name == null)
             {
@@ -263,7 +264,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
             var registry = manager.registry;
             log.DebugFormat("About to forget repository '{0}'", options.name);
 
@@ -290,7 +291,7 @@ namespace CKAN.CmdLine
 
         private int DefaultRepository(DefaultOptions options)
         {
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
 
             if (options.uri == null)
             {

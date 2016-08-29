@@ -29,8 +29,7 @@ namespace Tests.Core.Net
 
             // Give us a registry to play with.
             ksp = new DisposableKSP();
-            registry = ksp.KSP.Registry;
-
+            registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
             registry.ClearAvailable();
             registry.ClearDlls();
             registry.Installed().Clear();

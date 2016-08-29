@@ -154,18 +154,18 @@ namespace CKAN
             }
         }
 
-        public Main(string[] cmdlineArgs, GUIUser User, bool showConsole)
+        public Main(string[] cmdlineArgs, GUIUser user, bool showConsole)
         {
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
-            currentUser = User;
+            currentUser = user;
 
-            User.displayMessage = AddStatusMessage;
-            User.displayError = ErrorDialog;
+            user.displayMessage = AddStatusMessage;
+            user.displayError = ErrorDialog;
 
             controlFactory = new ControlFactory();
             Instance = this;
-            mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide, User);
+            mainModList = new MainModList(source => UpdateFilters(this), TooManyModsProvide, user);
 
             navHistory = new NavigationHistory<GUIMod>();
             navHistory.IsReadOnly = true; // read-only until the UI is started.
@@ -179,7 +179,7 @@ namespace CKAN
 
             // We want to check our current instance is null first, as it may
             // have already been set by a command-line option.
-            Manager = new KSPManager(User);
+            Manager = new KSPManager(user);
             if (CurrentInstance == null && manager.GetPreferredInstance() == null)
             {
                 Hide();
@@ -197,6 +197,21 @@ namespace CKAN
                     Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                     Repo.default_ckan_repo.ToString()
                 );
+
+            // Check if there is any other instances already running.
+            // This is not entirely necessary, but we can show a nicer error message this way.
+            try
+            {
+                #pragma warning disable 219
+                var lockedReg = RegistryManager.Instance(CurrentInstance).registry;
+                #pragma warning restore 219
+            }
+            catch (RegistryInUseKraken kraken)
+            {
+                errorDialog.ShowErrorDialog(kraken.ToString());
+
+                return;
+            }
 
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             launchKSPToolStripMenuItem.MouseHover += (sender, args) => launchKSPToolStripMenuItem.ShowDropDown();
@@ -224,14 +239,20 @@ namespace CKAN
             // https://bugzilla.novell.com/show_bug.cgi?id=663433
             if (Platform.IsMac)
             {
-                var yield_timer = new Timer {Interval = 2};
-                yield_timer.Tick += (sender, e) => {
+                var timer = new Timer { Interval = 2 };
+                timer.Tick += (sender, e) => {
                     Thread.Yield();
                 };
-                yield_timer.Start();
+                timer.Start();
             }
 
             Application.Run(this);
+
+            var registry = RegistryManager.Instance(Manager.CurrentInstance);
+            if (registry != null)
+            {
+                registry.Dispose();
+            }
         }
 
         private void ModList_CurrentCellDirtyStateChanged(object sender, EventArgs e)

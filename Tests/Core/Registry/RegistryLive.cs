@@ -23,7 +23,7 @@ namespace Tests.Core.Registry
             temp_ksp = new DisposableKSP(null, test_registry);
 
             // Easy short-cut
-            registry = temp_ksp.KSP.Registry;
+            registry = CKAN.RegistryManager.Instance(temp_ksp.KSP).registry;
         }
 
         [TearDown]

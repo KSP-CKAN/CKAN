@@ -118,17 +118,21 @@
     <Compile Include="Core\KSPPathUtils.cs" />
     <Compile Include="Core\Meta.cs" />
     <Compile Include="Core\ModuleInstaller.cs" />
+    <Compile Include="Core\Net\AutoUpdate.cs" />
     <Compile Include="Core\Net\Net.cs" />
     <Compile Include="Core\Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Core\Net\Repo.cs" />
     <Compile Include="Core\Registry\Registry.cs" />
     <Compile Include="Core\Registry\RegistryLive.cs" />
+    <Compile Include="Core\Registry\RegistryManager.cs" />
     <Compile Include="Core\Registry\RegistryMultipleRepos.cs" />
     <Compile Include="Core\Relationships\RelationshipResolver.cs" />
     <Compile Include="Core\Relationships\SanityChecker.cs" />
+    <Compile Include="Core\Types\GameComparator.cs" />
     <Compile Include="Core\Types\License.cs" />
     <Compile Include="Core\Types\Module.cs" />
     <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
+    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
     <Compile Include="Core\Types\Version.cs" />
     <Compile Include="Core\Versioning\KspVersionBoundTests.cs" />
@@ -148,6 +152,7 @@
     <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
+    <Compile Include="NetKAN\NetkanOverride.cs" />
     <Compile Include="NetKAN\Services\FileServiceTests.cs" />
     <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
     <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
@@ -169,10 +174,6 @@
     <Compile Include="NetKAN\Validators\MatchingIdentifiersValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
-    <Compile Include="NetKAN\NetkanOverride.cs" />
-    <Compile Include="Core\Net\AutoUpdate.cs" />
-    <Compile Include="Core\Types\GameComparator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />

@@ -24,6 +24,11 @@ namespace Tests.Core
         [TearDown]
         public void TearDown()
         {
+            if (ksp != null)
+            {
+                ksp.Dispose();
+            }
+                    
             Directory.Delete(ksp_dir, true);
         }
 
@@ -59,28 +64,29 @@ namespace Tests.Core
         public void ScanDlls()
         {
             string path = Path.Combine(ksp.GameData(), "Example.dll");
+            var registry = CKAN.RegistryManager.Instance(ksp).registry;
 
-            Assert.IsFalse(ksp.Registry.IsInstalled("Example"), "Example should start uninstalled");
+            Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
 
             File.WriteAllText(path, "Not really a DLL, are we?");
 
             ksp.ScanGameData();
 
-            Assert.IsTrue(ksp.Registry.IsInstalled("Example"), "Example installed");
+            Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
-            Version version = ksp.Registry.InstalledVersion("Example");
+            Version version = registry.InstalledVersion("Example");
             Assert.IsInstanceOf<DllVersion>(version, "DLL detected as a DLL, not full mod");
 
             // Now let's do the same with different case.
 
             string path2 = Path.Combine(ksp.GameData(), "NewMod.DLL");
 
-            Assert.IsFalse(ksp.Registry.IsInstalled("NewMod"));
+            Assert.IsFalse(registry.IsInstalled("NewMod"));
             File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
 
             ksp.ScanGameData();
 
-            Assert.IsTrue(ksp.Registry.IsInstalled("NewMod"));
+            Assert.IsTrue(registry.IsInstalled("NewMod"));
         }
 
         [Test]

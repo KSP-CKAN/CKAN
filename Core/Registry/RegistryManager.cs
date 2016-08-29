@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,17 @@ using Newtonsoft.Json.Linq;
 
 namespace CKAN
 {
-    public class RegistryManager
+    public class RegistryManager : IDisposable
     {
-        private static readonly Dictionary<string, RegistryManager> singleton =
+        private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
-
+        
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
+        public readonly string lockfilePath;
+        private FileStream lockfileStream = null;
+        private StreamWriter lockfileWriter = null;
+
         private readonly TxFileManager file_transaction = new TxFileManager();
 
         // The only reason we have a KSP field is so we can pass it to the registry
@@ -34,6 +39,14 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
+            lockfilePath = Path.Combine(path, "registry.json.locked");
+
+            // Create a lock for this registry, so we cannot touch it again.
+            if (!GetLock())
+            {
+                throw new RegistryInUseKraken(lockfilePath);
+            }
+
             LoadOrCreate();
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
@@ -49,6 +62,103 @@ namespace CKAN
             }
         }
 
+        #region destruction
+
+        // See http://stackoverflow.com/a/538238/19422 for an awesome explanation of
+        // what's going on here.
+
+        /// <summary>
+        /// Releases all resource used by the <see cref="CKAN.RegistryManager"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.RegistryManager"/>. The
+        /// <see cref="Dispose"/> method leaves the <see cref="CKAN.RegistryManager"/> in an unusable state. After
+        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="CKAN.RegistryManager"/> so
+        /// the garbage collector can reclaim the memory that the <see cref="CKAN.RegistryManager"/> was occupying.</remarks>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool safeToAlsoFreeManagedObjects)
+        {
+            // Right now we just release our lock, and leave everything else
+            // to the GC, but if we were implementing the full pattern we'd also
+            // free managed (.NET core) objects when called with a true value here.
+
+            ReleaseLock();
+            var directory = ksp.CkanDir();
+            if (!registryCache.ContainsKey(directory))
+            {
+                return;
+            }
+
+            log.DebugFormat("Dispose of registry at {0}", directory);
+            if (!registryCache.Remove(directory))
+            {
+                throw new RegistryInUseKraken(directory);
+            }
+        }
+
+        /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="CKAN.RegistryManager"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~RegistryManager()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Tries to lock the registry by creating a lock file.
+        /// </summary>
+        /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
+        public bool GetLock()
+        {
+            try
+            {
+                lockfileStream = new FileStream(lockfilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
+
+                // Write the current process ID to the file.
+                lockfileWriter = new StreamWriter(lockfileStream);
+                lockfileWriter.Write(Process.GetCurrentProcess().Id);
+                lockfileWriter.Flush();
+                // The lock file is now locked and open.
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+            
+        /// <summary>
+        /// Release the lock by deleting the file, but only if we managed to create the file.
+        /// </summary>
+        public void ReleaseLock()
+        {
+            // We have to dispose our writer first, otherwise it cries when
+            // it finds the stream is already disposed.
+            if (lockfileWriter != null)
+            {
+                lockfileWriter.Dispose();
+                lockfileWriter = null;
+            }
+
+            // Disposing the writer also disposes the underlying stream,
+            // but we're extra tidy just in case.
+            if (lockfileStream != null)
+            {
+                lockfileStream.Dispose();
+                lockfileStream = null;
+            }
+
+
+        }
+
         /// <summary>
         /// Returns an instance of the registry manager for the KSP install.
         /// The file `registry.json` is assumed.
@@ -56,13 +166,21 @@ namespace CKAN
         public static RegistryManager Instance(KSP ksp)
         {
             string directory = ksp.CkanDir();
-            if (!singleton.ContainsKey(directory))
+            if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                singleton[directory] = new RegistryManager(directory, ksp);
+                registryCache[directory] = new RegistryManager(directory, ksp);
             }
+            ///else /// create a lock file in existing RegistryManager object.
+            ///{
+            ///    log.InfoFormat("Attempting to lock old registry at {0}", directory);
+            ///    if (! registryCache[directory].GetLock())
+            ///    {
+            ///        throw new RegistryInUseKraken(directory);
+            ///    }
+            ///}
 
-            return singleton[directory];
+            return registryCache[directory];
         }
 
         /// <summary>

@@ -32,16 +32,6 @@ namespace CKAN
 
         public NetFileCache Cache { get; private set; }
 
-        public RegistryManager RegistryManager
-        {
-            get { return RegistryManager.Instance(this); }
-        }
-
-        public Registry Registry
-        {
-            get { return RegistryManager.registry; }
-        }
-
         #endregion
         #region Construction and Initialisation
 
@@ -105,6 +95,10 @@ namespace CKAN
             log.DebugFormat("Initialised {0}", CkanDir());
         }
 
+        #endregion
+
+        #region Destructors and Disposal
+
         /// <summary>
         /// Releases all resource used by the <see cref="CKAN.KSP"/> object.
         /// </summary>
@@ -115,7 +109,12 @@ namespace CKAN
         public void Dispose()
         {
             if (Cache != null)
+            {
                 Cache.Dispose();
+                Cache = null;
+            }
+
+            // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
         }
 
         #endregion
@@ -372,9 +371,10 @@ namespace CKAN
         // TODO: This would likely be better in the Registry class itself.
         public void ScanGameData()
         {
+            var manager = RegistryManager.Instance(this);
             using (TransactionScope tx = CkanTransaction.CreateTransactionScope())
             {
-                Registry.ClearDlls();
+                manager.registry.ClearDlls();
 
                 // TODO: It would be great to optimise this to skip .git directories and the like.
                 // Yes, I keep my GameData in git.
@@ -394,12 +394,12 @@ namespace CKAN
 
                 foreach (string dll in files.Select(KSPPathUtils.NormalizePath))
                 {
-                    Registry.RegisterDll(this, dll);
+                    manager.registry.RegisterDll(this, dll);
                 }
                     
                 tx.Complete();
             }
-            RegistryManager.Save();
+            manager.Save();
         }
 
         #endregion

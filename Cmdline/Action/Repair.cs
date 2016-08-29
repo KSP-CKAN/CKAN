@@ -55,8 +55,9 @@ namespace CKAN.CmdLine
         /// </summary>
         private int Registry()
         {
-            CurrentInstance.Registry.Repair();
-            CurrentInstance.RegistryManager.Save();
+            var manager = RegistryManager.Instance(CurrentInstance);
+            manager.registry.Repair();
+            manager.Save();
             User.RaiseMessage("Registry repairs attempted. Hope it helped.");
             return Exit.OK;
         }
