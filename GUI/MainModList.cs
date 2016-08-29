@@ -58,7 +58,7 @@ namespace CKAN
         {
             // changed so that it never returns null
             var cellVal = row.Cells[configuration.SortByColumnIndex].Value as string;
-            return cellVal ?? string.Empty;
+            return string.IsNullOrWhiteSpace(cellVal) ? string.Empty : cellVal;
         }
 
         /// <summary>
