@@ -137,11 +137,10 @@ namespace CKAN
             }
         }
 
-        private void UpdateModsList(Boolean repo_updated = false)
+        public void UpdateModsList(Boolean repo_updated = false)
         {
             Util.Invoke(this, () => _UpdateModsList(repo_updated));
         }
-
 
         private void _UpdateModsList(bool repo_updated)
         {
