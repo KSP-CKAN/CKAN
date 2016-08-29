@@ -142,13 +142,13 @@
     <Compile Include="Data\TestData.cs" />
     <Compile Include="Data\ZipLib.cs" />
     <Compile Include="GUI\Configuration.cs" />
+    <Compile Include="GUI\GH1866.cs" />
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
     <Compile Include="GUI\NavigationHistoryTests.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
     <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
-    <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
     <Compile Include="NetKAN\NetkanOverride.cs" />
