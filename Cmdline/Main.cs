@@ -196,7 +196,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 {
                     log.Info("Registry in use detected");
                     user.RaiseMessage(kraken.ToString());
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
             }
             else // we have no preferred KSP instance, so no need to lock the registry
