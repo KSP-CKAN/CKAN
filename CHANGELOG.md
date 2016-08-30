@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't show suggested/recommended for mods that can't be installed (#1427 by: Postremus; reviewed: politas)
 - [Core] Remove empty directories when uninstalling mods (#1873 by: politas; reviewed ayan4m1)
 - [Core] Users are less able to run two copies of CKAN at the same time. (#1265 by: mgsdk, #1357 by pjf, #1828 by politas; reviewed: ayan4m1)
+- [NetKAN] Add Curse as a $kref source (#1608 by: airminer, Olympic1; reviewed: dbent, pjf, techman83, ayan4m1)
 
 ## v1.18.1
 
