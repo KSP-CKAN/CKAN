@@ -211,7 +211,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
         /// <returns>The exit status that should be returned to the system.</returns>
         private static int RunAction(Options cmdline, CommonOptions options, string[] args, IUser user, KSPManager manager)
         {
-            switch (cmdline.action)
+            switch (cmdline.action.ToLower())
             {
                 case "gui":
                     return Gui(options as GuiOptions, args);
