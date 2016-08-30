@@ -107,7 +107,6 @@
     <None Include="Data\registry.json" />
     <None Include="Data\test-sln.sh" />
     <None Include="packages.config" />
-    <None Include="Tests.v2.ncrunchproject" />
     <None Include="Data\CKAN-meta-badkan.tar.gz" />
   </ItemGroup>
   <ItemGroup>

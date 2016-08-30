@@ -17,6 +17,8 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly ICurseApi _api;
 
+        public string Name { get { return "curse"; } }
+
         public CurseTransformer(ICurseApi api)
         {
             _api = api;

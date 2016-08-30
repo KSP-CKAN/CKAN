@@ -8,7 +8,8 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     public class CurseFile
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (CurseFile));
+        //Not currently writing anything to the log in this collection.
+        //private static readonly ILog log = LogManager.GetLogger(typeof (CurseFile));
 
         internal CurseMod Mod;
 
