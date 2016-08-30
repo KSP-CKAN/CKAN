@@ -22,7 +22,7 @@ namespace CKAN.CmdLine
             {
                 // empty argument
                 user.RaiseMessage("show <module> - module name argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             // Check installed modules for an exact match.
@@ -58,7 +58,7 @@ namespace CKAN.CmdLine
                 {
                     // No matches found.
                     user.RaiseMessage("No close matches found.");
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
                 else if (matches.Count() == 1)
                 {
@@ -82,7 +82,7 @@ namespace CKAN.CmdLine
 
                     if (selection < 0)
                     {
-                        return Exit.BADOPT;
+                        return Exit.InvalidOption;
                     }
 
                     // Mark the selection as the one to show.
@@ -207,7 +207,7 @@ namespace CKAN.CmdLine
 
             user.RaiseMessage("\r\nFilename: {0}", file_uri_hash + "-" + file_name);
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         /// <summary>

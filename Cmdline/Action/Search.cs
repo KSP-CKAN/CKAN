@@ -23,7 +23,7 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError("No search term?");
 
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             var matching_mods = PerformSearch(ksp, options.search_term);
@@ -34,7 +34,7 @@ namespace CKAN.CmdLine
             // Present the results.
             if (!matching_mods.Any())
             {
-                return Exit.OK;
+                return Exit.Ok;
             }
 
             // Print each mod on a separate line.
@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(mod.identifier);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         /// <summary>

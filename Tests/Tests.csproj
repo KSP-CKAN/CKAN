@@ -148,7 +148,6 @@
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
     <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
-    <Compile Include="NetKAN\JenkinsTests.cs" />
     <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
     <Compile Include="NetKAN\NetkanOverride.cs" />

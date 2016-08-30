@@ -50,7 +50,7 @@ namespace CKAN.CmdLine
             {
                 // Handling the kraken means we have prettier output.
                 user.RaiseMessage(kraken.ToString());
-                return Exit.ERROR;
+                return Exit.Error;
             }
 
             if (options.list_changes)
@@ -59,7 +59,7 @@ namespace CKAN.CmdLine
                 PrintChanges(available_prior, registry.Available(ksp.Version()));
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         /// <summary>

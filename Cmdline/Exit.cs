@@ -1,10 +1,12 @@
+using System.ComponentModel;
+
 namespace CKAN.CmdLine
 {
     public static class Exit
     {
-        public static readonly int OK = 0;
-        public static readonly int ERROR = 1;
-        public static readonly int BADOPT = 2;
+        public const int Ok = 0;
+        public const int Error = 1;
+        public const int InvalidOption = 2;
     }
 }
 

@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
                             // We have no further ideas as what we can do with this Uri, tell the user.
                             user.RaiseError("Can not find file \"{0}\".", ckan_file);
                             user.RaiseError("Exiting.");
-                            return Exit.ERROR;
+                            return Exit.Error;
                         }
                     }
                     else
@@ -81,7 +81,7 @@ namespace CKAN.CmdLine
                 // What? No files specified?
                 user.RaiseMessage(
                     "Usage: ckan install [--with-suggests] [--with-all-suggests] [--no-recommends] [--headless] Mod [Mod2, ...]");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             // Prepare options. Can these all be done in the new() somehow?
@@ -109,13 +109,13 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("Module {0} required, but not listed in index, or not available for your version of KSP", ex.module);
                 user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
                 user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules");
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (BadMetadataKraken ex)
             {
                 user.RaiseMessage("Bad metadata detected for module {0}", ex.module);
                 user.RaiseMessage(ex.Message);
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (TooManyModsProvideKraken ex)
             {
@@ -139,14 +139,14 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage(e.Message);
 
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
 
                 if (result < 0)
                 {
                     user.RaiseMessage(String.Empty); // Looks tidier.
 
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
 
                 // Add the module to the list.
@@ -189,38 +189,38 @@ namespace CKAN.CmdLine
                 }
 
                 user.RaiseMessage("Your GameData has been returned to its original state.\r\n");
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (InconsistentKraken ex)
             {
                 // The prettiest Kraken formats itself for us.
                 user.RaiseMessage(ex.InconsistenciesPretty);
                 user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (CancelledActionKraken)
             {
                 user.RaiseMessage("Installation canceled at user request.");
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (MissingCertificateKraken kraken)
             {
                 // Another very pretty kraken.
                 user.RaiseMessage(kraken.ToString());
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (DownloadErrorsKraken)
             {
                 user.RaiseMessage("One or more files failed to download, stopped.");
-                return Exit.ERROR;
+                return Exit.Error;
             }
             catch (DirectoryNotFoundKraken kraken)
             {
                 user.RaiseMessage("\r\n{0}", kraken.Message);
-                return Exit.ERROR;
+                return Exit.Error;
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)

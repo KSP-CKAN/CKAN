@@ -115,7 +115,7 @@ namespace CKAN.CmdLine
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private static ExportFileType? GetExportFileType(string export)

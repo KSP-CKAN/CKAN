@@ -59,7 +59,7 @@ namespace CKAN.CmdLine
             manager.registry.Repair();
             manager.Save();
             User.RaiseMessage("Registry repairs attempted. Hope it helped.");
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 }
