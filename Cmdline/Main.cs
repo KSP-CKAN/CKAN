@@ -35,14 +35,15 @@ namespace CKAN.CmdLine
             // Launch debugger if the "--debugger" flag is present in the command line arguments.
             // We want to do this as early as possible so just check the flag manually, rather than doing the
             // more robust argument parsing.
-            if (args.Any(i => i == "--debugger"))
+            if (args.Any(i => i.ToLower() == "--debugger"))
             {
                 Debugger.Launch();
             }
 
-            if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
+            var debugFlags = new string[] { "--verbose", "-v", "--debug", "-d" };
+            if (args.Length == 1 && args.Any(i => debugFlags.Contains(i.ToLower())))
             {
-                // Start the gui with logging enabled #437 
+                // Start the gui with logging enabled #437
                 var guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
                 args = guiCommand.ToArray();
