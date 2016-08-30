@@ -15,8 +15,8 @@ before_install:
     - "sh -e /etc/init.d/xvfb start"
 
 install:
-    - sudo apt-get install mono-devel nunit-console libtest-most-perl libipc-system-simple-perl
-    - mozroots --sync --import || true
+    - sudo apt-get install mono-devel ca-certificates-mono nunit-console libtest-most-perl libipc-system-simple-perl
+    - cert-sync --quiet /etc/ssl/certs/ca-certificates.crt
 
 script:
     - bin/build
