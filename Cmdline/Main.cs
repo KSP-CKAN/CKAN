@@ -214,7 +214,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             switch (cmdline.action)
             {
                 case "gui":
-                    return Gui((GuiOptions)options, args);
+                    return Gui(options as GuiOptions, args);
 
                 case "version":
                     return Version(user);
