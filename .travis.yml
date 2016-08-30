@@ -16,7 +16,7 @@ before_install:
 
 install:
     - sudo apt-get install mono-devel ca-certificates-mono nunit-console libtest-most-perl libipc-system-simple-perl
-    - cert-sync /etc/ssl/certs/ca-certificates.crt --quiet
+    - cert-sync --quiet /etc/ssl/certs/ca-certificates.crt
 
 script:
     - bin/build
