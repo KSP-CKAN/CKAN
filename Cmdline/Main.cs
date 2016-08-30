@@ -76,8 +76,12 @@ namespace CKAN.CmdLine
             }
 
             // Process commandline options.
-
-            var options = (CommonOptions)cmdline.options;
+            var options = cmdline.options as CommonOptions;
+            if (options == null)
+            {
+                user = new ConsoleUser(false);
+                user.RaiseError("Could not parse command-line options!");
+            }
             user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
 
