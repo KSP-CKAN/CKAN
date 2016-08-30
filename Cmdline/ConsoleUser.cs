@@ -40,8 +40,8 @@ namespace CKAN.CmdLine
                     return false;
                 }
 
+                // y/n are matched case-insensitive
                 input = input.ToLower().Trim();
-
                 if (input.Equals("y") || input.Equals("yes"))
                 {
                     return true;
@@ -56,7 +56,7 @@ namespace CKAN.CmdLine
                     return true;
                 }
 
-                Console.Write("Invalid input. Please enter yes or no");
+                Console.Write(@"Invalid input. Please enter ""yes"" or ""no""");
             }
         }
 
