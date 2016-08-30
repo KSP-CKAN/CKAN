@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 User.RaiseMessage("  or   ckan upgrade --all");
                 User.RaiseMessage("  or   ckan upgrade ckan");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             if (!options.upgrade_all && options.modules[0] == "ckan")
@@ -60,7 +60,7 @@ namespace CKAN.CmdLine
                     User.RaiseMessage("You already have the latest version.");
                 }
 
-                return Exit.OK;
+                return Exit.Ok;
             }
 
             User.RaiseMessage("\r\nUpgrading modules...\r\n");
@@ -124,11 +124,11 @@ namespace CKAN.CmdLine
             catch (ModuleNotFoundKraken kraken)
             {
                 User.RaiseMessage("Module {0} not found", kraken.module);
-                return Exit.ERROR;
+                return Exit.Error;
             }
             User.RaiseMessage("\r\nDone!\r\n");
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)

@@ -71,16 +71,16 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("I can't do that, {0} isn't installed.", kraken.mod);
                     user.RaiseMessage("Try `ckan list` for a list of installed mods.");
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
             }
             else
             {
                 user.RaiseMessage("No mod selected, nothing to do");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 }

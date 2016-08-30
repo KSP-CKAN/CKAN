@@ -132,7 +132,7 @@ namespace CKAN.CmdLine
 
                 default:
                     User.RaiseMessage("Unknown command: repo {0}", option);
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
             }
         }
 
@@ -161,7 +161,7 @@ namespace CKAN.CmdLine
             catch
             {
                 User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
-                return Exit.ERROR;
+                return Exit.Error;
             }
 
             int maxNameLen = 0;
@@ -175,7 +175,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int ListRepositories()
@@ -195,7 +195,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int AddRepository(AddOptions options)
@@ -205,7 +205,7 @@ namespace CKAN.CmdLine
             if (options.name == null)
             {
                 User.RaiseMessage("add <name> [ <uri> ] - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             if (options.uri == null)
@@ -219,7 +219,7 @@ namespace CKAN.CmdLine
                 catch
                 {
                     User.RaiseError("Couldn't fetch CKAN repositories master list from {0}", Repository.default_repo_master_list.ToString());
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
 
                 foreach (Repository candidate in repositoryList.repositories)
@@ -235,7 +235,7 @@ namespace CKAN.CmdLine
                 if (options.uri == null)
                 {
                     User.RaiseMessage("Name {0} not found in master list, please provide name and uri.", options.name);
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
             }
 
@@ -245,7 +245,7 @@ namespace CKAN.CmdLine
             if (repositories.ContainsKey(options.name))
             {
                 User.RaiseMessage("Repository with name \"{0}\" already exists, aborting..", options.name);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             repositories.Add(options.name, new Repository(options.name, options.uri));
@@ -253,7 +253,7 @@ namespace CKAN.CmdLine
             User.RaiseMessage("Added repository '{0}' - '{1}'", options.name, options.uri);
             manager.Save();
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int ForgetRepository(ForgetOptions options)
@@ -261,7 +261,7 @@ namespace CKAN.CmdLine
             if (options.name == null)
             {
                 User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
@@ -277,7 +277,7 @@ namespace CKAN.CmdLine
                 if (name == null)
                 {
                     User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
                 User.RaiseMessage("Removing insensitive match \"{0}\"", name);
             }
@@ -286,7 +286,7 @@ namespace CKAN.CmdLine
             User.RaiseMessage("Successfully removed \"{0}\"", options.name);
             manager.Save();
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int DefaultRepository(DefaultOptions options)
@@ -296,7 +296,7 @@ namespace CKAN.CmdLine
             if (options.uri == null)
             {
                 User.RaiseMessage("default <uri> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, options.uri);
@@ -312,7 +312,7 @@ namespace CKAN.CmdLine
             User.RaiseMessage("Set {0} repository to '{1}'", Repository.default_ckan_repo_name, options.uri);
             manager.Save();
 
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 }

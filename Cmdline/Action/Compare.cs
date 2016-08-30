@@ -44,10 +44,10 @@
             {
                 user.RaiseMessage(
                     "Usage: ckan compare version1 version2");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 }

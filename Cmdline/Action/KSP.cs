@@ -125,7 +125,7 @@ namespace CKAN.CmdLine
 
                 default:
                     User.RaiseMessage("Unknown command: ksp {0}", option);
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
             }
         }
 
@@ -189,7 +189,7 @@ namespace CKAN.CmdLine
                ));
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int AddInstall(AddOptions options)
@@ -197,13 +197,13 @@ namespace CKAN.CmdLine
             if (options.name == null || options.path == null)
             {
                 User.RaiseMessage("add <name> <path> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             if (Manager.HasInstance(options.name))
             {
                 User.RaiseMessage("Install with name \"{0}\" already exists, aborting..", options.name);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             try
@@ -211,12 +211,12 @@ namespace CKAN.CmdLine
                 string path = options.path;
                 Manager.AddInstance(options.name, new CKAN.KSP(path, User));
                 User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
-                return Exit.OK;
+                return Exit.Ok;
             }
             catch (NotKSPDirKraken ex)
             {
                 User.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", ex.path);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
         }
 
@@ -225,19 +225,19 @@ namespace CKAN.CmdLine
             if (options.old_name == null || options.new_name == null)
             {
                 User.RaiseMessage("rename <old_name> <new_name> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             if (!Manager.HasInstance(options.old_name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.old_name);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             Manager.RenameInstance(options.old_name, options.new_name);
 
             User.RaiseMessage("Successfully renamed \"{0}\" to \"{1}\"", options.old_name, options.new_name);
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int ForgetInstall(ForgetOptions options)
@@ -245,19 +245,19 @@ namespace CKAN.CmdLine
             if (options.name == null)
             {
                 User.RaiseMessage("forget <name> - argument missing, perhaps you forgot it?");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             if (!Manager.HasInstance(options.name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", options.name);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             Manager.RemoveInstance(options.name);
 
             User.RaiseMessage("Successfully removed \"{0}\"", options.name);
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private int SetDefaultInstall(DefaultOptions options)
@@ -302,12 +302,12 @@ namespace CKAN.CmdLine
                 }
                 catch (Kraken)
                 {
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
 
                 if (result < 0)
                 {
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
 
                 name = Manager.Instances.ElementAt(result).Key;
@@ -316,13 +316,13 @@ namespace CKAN.CmdLine
             if (!Manager.Instances.ContainsKey(name))
             {
                 User.RaiseMessage("Couldn't find install with name \"{0}\", aborting..", name);
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             Manager.SetAutoStart(name);
 
             User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", name);
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 }

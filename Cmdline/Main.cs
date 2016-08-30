@@ -72,7 +72,7 @@ namespace CKAN.CmdLine
                 user = new ConsoleUser(false);
                 user.RaiseMessage("You are using CKAN version {0}", Meta.Version());
 
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             // Process commandline options.
@@ -94,7 +94,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseError(@"You are trying to run CKAN as root.
 This is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
                 else
                 {
@@ -124,7 +124,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             if (options.KSPdir != null && options.KSP != null)
             {
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
-                return Exit.BADOPT;
+                return Exit.InvalidOption;
             }
 
             var manager = new KSPManager(user);
@@ -140,7 +140,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 catch (InvalidKSPInstanceKraken)
                 {
                     user.RaiseMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'list-installs' to see known KSP installations", options.KSP);
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
                 }
             }
             else if (options.KSPdir != null)
@@ -158,7 +158,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 {
                     user.RaiseMessage("I don't know where KSP is installed.");
                     user.RaiseMessage("Use 'ckan ksp help' for assistance on setting this.");
-                    return Exit.ERROR;
+                    return Exit.Error;
                 }
                 else
                 {
@@ -268,7 +268,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
                 default:
                     user.RaiseMessage("Unknown command, try --help");
-                    return Exit.BADOPT;
+                    return Exit.InvalidOption;
             }
         }
 
@@ -316,14 +316,14 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             GUI.Main_(args, options.ShowConsole);
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private static int Version(IUser user)
         {
             user.RaiseMessage(Meta.Version());
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         private static int Available(CKAN.KSP current_instance, IUser user)
@@ -341,7 +341,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage(width > 0 ? entry.PadRight(width).Substring(0, width - 1) : entry);
             }
 
-            return Exit.OK;
+            return Exit.Ok;
         }
 
         /// <summary>
@@ -350,13 +350,13 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
         /// <param name="ksp_instance">The instance to scan</param>
         /// <param name="user"></param>
         /// <param name="next_command">Changes the output message if set.</param>
-        /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
+        /// <returns>Exit.Ok if instance is consistent, Exit.Error otherwise </returns>
         private static int Scan(CKAN.KSP ksp_instance, IUser user, string next_command=null)
         {
             try
             {
                 ksp_instance.ScanGameData();
-                return Exit.OK;
+                return Exit.Ok;
             }
             catch (InconsistentKraken kraken)
             {
@@ -373,14 +373,14 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
                 }
 
-                return Exit.ERROR;
+                return Exit.Error;
             }
         }
 
         private static int Clean(CKAN.KSP current_instance)
         {
             current_instance.CleanCache();
-            return Exit.OK;
+            return Exit.Ok;
         }
     }
 
