@@ -27,7 +27,7 @@ before_install:
 
 install:
     - sudo update-ca-certificates
-    - sudo cert-sync -q /etc/ssl/certs/ca-certificates.crt
+    - sudo cert-sync --quiet /etc/ssl/certs/ca-certificates.crt
     - nuget restore CKAN.sln
 
 script:
