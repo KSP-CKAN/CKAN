@@ -7,8 +7,6 @@ mono:
     - 4.2.4
     - 3.12.0
     - 3.10.0
-    - 3.8.0
-    - 3.2.8
 
 addons:
     apt:
@@ -19,7 +17,6 @@ addons:
             - libtest-most-perl
             - libipc-system-simple-perl
             - ca-certificates
-            - nuget
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
