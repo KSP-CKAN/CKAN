@@ -10,11 +10,11 @@ mono:
 addons:
     apt:
         packages:
-	    - git
-	    - mono-devel
-	    - nunit-console
-	    - libtest-most-perl
-	    - libipc-system-simple-perl
+            - git
+            - mono-devel
+            - nunit-console
+            - libtest-most-perl
+            - libipc-system-simple-perl
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
