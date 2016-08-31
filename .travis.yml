@@ -4,9 +4,17 @@ mono:
     - latest
     - 3.10.0
     - 3.2.8
+    # Travis has problems with nunit on 3.8.0, dunno why.
+    #- 3.8.0
 
-# Travis has problems with nunit on 3.8.0, dunno why.
-#    - 3.8.0
+addons:
+    apt:
+        packages:
+	    - git
+	    - mono-devel
+	    - nunit-console
+	    - libtest-most-perl
+	    - libipc-system-simple-perl
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
@@ -19,6 +27,7 @@ install:
     - mozroots --sync --import || true
 
 script:
+    - nuget restore CKAN.sln
     - bin/build
     - nunit-console --exclude=FlakyNetwork build/Tests/bin/Debug/CKAN.Tests.dll
     - prove  # Run all the tests in t/
