@@ -26,8 +26,6 @@ before_install:
     - sh -e /etc/init.d/xvfb start
 
 install:
-    - sudo update-ca-certificates
-    - sudo cert-sync --quiet /etc/ssl/certs/ca-certificates.crt
     - nuget restore CKAN.sln
 
 script:
