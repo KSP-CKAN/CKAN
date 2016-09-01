@@ -36,6 +36,9 @@ namespace CKAN
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception trying to configure logging!", e);
+
+                    // attempt to fall back to basic
+                    BasicConfigurator.Configure();
                 }
             }
         }
