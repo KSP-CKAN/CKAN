@@ -890,28 +890,39 @@ namespace CKAN
         /// Takes a collection of directories and adds all parent directories within the GameData structure.
         /// </summary>
         /// <param name="directories">The collection of directory path strings to examine </param>
-        private HashSet<string> AddParentDirectories(HashSet<string> directories )
+        public HashSet<string> AddParentDirectories(HashSet<string> directories)
         {
             var newDirectories = new HashSet<string>();
-            foreach (string directory in directories)
+            if (directories == null)
             {
-                if (directory.Contains(ksp.GameData()))
+                return newDirectories;
+            }
+
+            var normalGameData = KSPPathUtils.NormalizePath(ksp.GameData());
+            foreach (var directory in directories)
+            {
+                if (!directory.Contains(normalGameData))
                 {
-                    var path = directory;
-                    while ((path != ksp.GameData()) && !newDirectories.Contains(path))
-                    {
-                        newDirectories.Add(path);
-                        DirectoryInfo parent = Directory.GetParent(path);
-                        path = parent.FullName;
-                    }
+                    newDirectories.Add(KSPPathUtils.NormalizePath(directory));
                 }
-                else
+
+                var path = KSPPathUtils.NormalizePath(directory);
+                while ((path != normalGameData) && !newDirectories.Contains(path))
                 {
-                    newDirectories.Add(directory);
+                    newDirectories.Add(path);
+                    var parent = Directory.GetParent(path);
+                    if (parent == null)
+                    {
+                        log.Warn("ModuleInstaller tried to recurse above the filesystem root.");
+                        break;
+                    }
+
+                    path = KSPPathUtils.NormalizePath(parent.FullName);
                 }
             }
-                return newDirectories;
+            return newDirectories;
         }
+
         #region AddRemove
 
         /// <summary>
