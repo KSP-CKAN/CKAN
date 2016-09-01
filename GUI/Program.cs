@@ -19,6 +19,8 @@ namespace CKAN
 
         public static void Main_(string[] args, bool showConsole = false)
         {
+            Logging.Initialize();
+
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
