@@ -895,10 +895,10 @@ namespace CKAN
             var newDirectories = new HashSet<string>();
             foreach (string directory in directories)
             {
-                if ( directory.Contains(ksp.GameData()))
+                if (directory.Contains(ksp.GameData()))
                 {
                     var path = directory;
-                    while ((path != ksp.GameData()) & (path != null) & !newDirectories.Contains(path) )
+                    while ((path != ksp.GameData()) && !newDirectories.Contains(path))
                     {
                         newDirectories.Add(path);
                         DirectoryInfo parent = Directory.GetParent(path);
