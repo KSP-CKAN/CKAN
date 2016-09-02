@@ -100,7 +100,7 @@ namespace Tests.GUI
         }
 
         [Test]
-        public async void TestSimple()
+        public void TestSimple()
         {
             var modules = _registry.available_modules
                 .Select((mod) => new GUIMod(mod.Value.Latest(), _registry, _instance.KSP.Version()))
