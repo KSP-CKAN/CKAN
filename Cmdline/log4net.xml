@@ -22,6 +22,5 @@
   <root>
     <level value="INFO" />
     <appender-ref ref="CkanFile" />
-    <appender-ref ref="CkanConsole" />
   </root>
 </log4net>
