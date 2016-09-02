@@ -889,38 +889,39 @@ namespace CKAN
         /// <summary>
         /// Takes a collection of directories and adds all parent directories within the GameData structure.
         /// </summary>
-        /// <param name="directories">The collection of directory path strings to examine </param>
+        /// <param name="directories">The collection of directory path strings to examine</param>
         public HashSet<string> AddParentDirectories(HashSet<string> directories)
         {
-            var newDirectories = new HashSet<string>();
-            if (directories == null)
+            if (directories == null || directories.Count == 0)
             {
-                return newDirectories;
+                return new HashSet<string>();
             }
 
-            var normalGameData = KSPPathUtils.NormalizePath(ksp.GameData());
-            foreach (var directory in directories)
-            {
-                if (!directory.Contains(normalGameData))
+            var gameData = KSPPathUtils.NormalizePath(ksp.GameData());
+            return directories
+                .Where(dir => !string.IsNullOrWhiteSpace(dir))
+                // normalize before we deduplicate this list
+                .Select(KSPPathUtils.NormalizePath)
+                // remove any duplicate paths
+                .Distinct()
+                // get rid of paths that are above GameData
+                .Where(dir => dir.Length > gameData.Length)
+                .SelectMany(dir =>
                 {
-                    newDirectories.Add(KSPPathUtils.NormalizePath(directory));
-                }
-
-                var path = KSPPathUtils.NormalizePath(directory);
-                while ((path != normalGameData) && !newDirectories.Contains(path))
-                {
-                    newDirectories.Add(path);
-                    var parent = Directory.GetParent(path);
-                    if (parent == null)
+                    var results = new HashSet<string>();
+                    // remove the system paths, leaving everything after GameData/
+                    var relativeHead = KSPPathUtils.ToRelative(dir, gameData);
+                    var pathArray = relativeHead.Split('/');
+                    var builtPath = string.Empty;
+                    foreach (var path in pathArray)
                     {
-                        log.Warn("ModuleInstaller tried to recurse above the filesystem root.");
-                        break;
+                        builtPath += path + '/';
+                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameData));
                     }
-
-                    path = KSPPathUtils.NormalizePath(parent.FullName);
-                }
-            }
-            return newDirectories;
+                    return results;
+                })
+                .Where(dir => !string.IsNullOrWhiteSpace(dir))
+                .ToHashSet();
         }
 
         #region AddRemove

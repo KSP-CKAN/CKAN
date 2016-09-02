@@ -97,7 +97,7 @@ namespace Tests.Core
                 }).ToList();
 
                 // should only contain one path
-                Assert.AreEqual(result.Count, 1);
+                Assert.AreEqual(1, result.Count);
                 Assert.Contains(normalizedInstallDir, result);
             });
         }

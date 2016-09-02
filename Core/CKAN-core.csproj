@@ -51,6 +51,7 @@
     <Compile Include="Exporters\IExporter.cs" />
     <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="GameVersionProviders\IKspBuildMap.cs" />
     <Compile Include="GameVersionProviders\KspBuildIdVersionProvider.cs" />
     <Compile Include="GameVersionProviders\KspVersionSource.cs" />
