@@ -12,7 +12,9 @@ namespace Tests.GUI
 {
     /// <summary>
     /// This test attempts to reproduce the state of GitHub issue #1866
+    /// which involves sorting the GUI table by Max KSP Version and then performing a repo operation.
     /// </summary>
+    [Explicit]
     [TestFixture]
     public class GH1866
     {
@@ -23,6 +25,10 @@ namespace Tests.GUI
         private MainModList _modList;
         private MainModListGUI _listGui;
 
+
+        /*
+         * an exception would be thrown at the bottom of this
+         */
         /*var main = new Main(null, new GUIUser(), false);
         main.Manager = _manager;
         // first sort by name
@@ -40,9 +46,8 @@ namespace Tests.GUI
             changeList,
             new RelationshipResolverOptions(),
             new NetAsyncModulesDownloader(main.currentUser)
-        );
+        );*/
 
-        // throws Exception*/
         [TestFixtureSetUp]
         public void Up()
         {
