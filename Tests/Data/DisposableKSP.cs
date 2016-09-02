@@ -37,6 +37,7 @@ namespace Tests.Data
             }
 
             KSP = new KSP(_disposableDir, NullUser.User);
+            Logging.Initialize();
         }
 
         public void Dispose()
