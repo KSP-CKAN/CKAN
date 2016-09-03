@@ -919,7 +919,9 @@ namespace CKAN
                     var dirInfo = new DirectoryInfo(dir);
 
                     // this is a system root, do not touch it
-                    if (dirInfo.Parent == null)
+                    // the first check returns true on Windows
+                    // the second check returns true in Mono
+                    if (dirInfo.Parent == null || dirInfo.Parent == dirInfo)
                     {
                         return results;
                     }
