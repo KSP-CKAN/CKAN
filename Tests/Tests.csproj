@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="Core\Cache.cs" />
     <Compile Include="Core\FileIdentifier.cs" />
+    <Compile Include="Core\ModuleInstallerDirTest.cs" />
     <Compile Include="Core\KSP.cs" />
     <Compile Include="Core\KSPManager.cs" />
     <Compile Include="Core\KSPPathUtils.cs" />

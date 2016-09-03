@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [All] Refactoring variables per project guidelines, Add Report Issue link in Help Menu, make SafeAdd safer, cleanup some Doco wording (#1849 by: ayan4m1; reviewed: politas)
 - [GUI] Resize KSP Version Label to keep in window (#1837 by: Telanor, #1854 by: politas; reviewed: ayan4m1)
 - [GUI] Fix GUI exceptions when installing/uninstalling after sorting by KSP max version (#1882 by: ayan4m1; reviewed: politas)
+- [Core] Fix Windows-only NullReferenceException and add more ModuleInstaller tests (#1880 by: ayan4m1; reviewed: politas)
 
 ### Features
 

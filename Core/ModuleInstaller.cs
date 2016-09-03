@@ -386,6 +386,21 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Checks the path against a list of reserved game directories
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private bool IsReservedDirectory(string path)
+        {
+            return path == ksp.Tutorial() || path == ksp.ShipsVab()
+                    || path == ksp.ShipsSph() || path == ksp.Ships()
+                    || path == ksp.Scenarios() || path == ksp.GameData()
+                    || path == ksp.GameDir() || path == ksp.CkanDir()
+                    || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
+                    || path == ksp.ShipsThumbsSPH();
+        }
+
+        /// <summary>
         /// Given a stanza and an open zipfile, returns all files that would be installed
         /// for this stanza.
         ///
@@ -841,7 +856,6 @@ namespace CKAN
                 }
 
                 // Remove from registry.
-
                 registry_manager.registry.DeregisterModule(ksp, modName);
 
                 // Our collection of directories may leave empty parent directories.
@@ -853,14 +867,9 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
-                        // It is bad if any of this directories get's removed
+                        // It is bad if any of this directories gets removed
                         // So we protect them
-                        if (directory == ksp.Tutorial() || directory == ksp.ShipsVab()
-                            || directory == ksp.ShipsSph() || directory == ksp.Ships()
-                            || directory == ksp.Scenarios() || directory == ksp.GameData()
-                            || directory == ksp.GameDir() || directory == ksp.CkanDir()
-                            || directory == ksp.ShipsThumbs() || directory == ksp.ShipsThumbsVAB()
-                            || directory == ksp.ShipsThumbsSPH())
+                        if (IsReservedDirectory(directory))
                         {
                             continue;
                         }
@@ -889,29 +898,56 @@ namespace CKAN
         /// <summary>
         /// Takes a collection of directories and adds all parent directories within the GameData structure.
         /// </summary>
-        /// <param name="directories">The collection of directory path strings to examine </param>
-        private HashSet<string> AddParentDirectories(HashSet<string> directories )
+        /// <param name="directories">The collection of directory path strings to examine</param>
+        public HashSet<string> AddParentDirectories(HashSet<string> directories)
         {
-            var newDirectories = new HashSet<string>();
-            foreach (string directory in directories)
+            if (directories == null || directories.Count == 0)
             {
-                if ( directory.Contains(ksp.GameData()))
-                {
-                    var path = directory;
-                    while ((path != ksp.GameData()) & (path != null) & !newDirectories.Contains(path) )
-                    {
-                        newDirectories.Add(path);
-                        DirectoryInfo parent = Directory.GetParent(path);
-                        path = parent.FullName;
-                    }
-                }
-                else
-                {
-                    newDirectories.Add(directory);
-                }
+                return new HashSet<string>();
             }
-                return newDirectories;
+
+            var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
+            return directories
+                .Where(dir => !string.IsNullOrWhiteSpace(dir))
+                // normalize all paths before deduplicate
+                .Select(KSPPathUtils.NormalizePath)
+                // remove any duplicate paths
+                .Distinct()
+                .SelectMany(dir =>
+                {
+                    var results = new HashSet<string>();
+                    // adding in the DirectorySeparatorChar fixes attempts on Windows
+                    // to parse "X:" which resolves to Environment.CurrentDirectory
+                    var dirInfo = new DirectoryInfo(dir + Path.DirectorySeparatorChar);
+
+                    // if this is a parentless directory (Windows)
+                    // or if the Root equals the current directory (Mono)
+                    if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
+                    {
+                        return results;
+                    }
+
+                    if (!dir.StartsWith(gameDir))
+                    {
+                        dir = KSPPathUtils.ToAbsolute(dir, gameDir);
+                    }
+
+                    // remove the system paths, leaving the path under the instance directory
+                    var relativeHead = KSPPathUtils.ToRelative(dir, gameDir);
+                    var pathArray = relativeHead.Split('/');
+                    var builtPath = string.Empty;
+                    foreach (var path in pathArray)
+                    {
+                        builtPath += path + '/';
+                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
+                    }
+
+                    return results;
+                })
+                .Where(dir => !IsReservedDirectory(dir))
+                .ToHashSet();
         }
+
         #region AddRemove
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using CKAN;
+using NUnit.Framework;
 
 namespace Tests.Data
 {
@@ -10,6 +11,7 @@ namespace Tests.Data
     /// </summary>
     public class DisposableKSP : IDisposable
     {
+        private readonly string _failureMessage = "Unexpected exception trying to delete disposable test container.";
         private readonly string _goodKsp = TestData.good_ksp_dir();
         private readonly string _disposableDir;
 
@@ -47,8 +49,23 @@ namespace Tests.Data
                 registry.Dispose();
             }
 
-            //Now that the loickfile is closed, we can remove the directory
-            Directory.Delete(_disposableDir, true);
+            var i = 6;
+            while (--i < 0)
+            {
+                try
+                {
+                    // Now that the lockfile is closed, we can remove the directory
+                    Directory.Delete(_disposableDir, true);
+                }
+                catch (IOException)
+                {
+                    // We silently catch this exception because we expect failures
+                }
+                catch (Exception ex)
+                {
+                    throw new AssertionException(_failureMessage, ex);
+                }
+            }
 
             //proceed to dispose our wrapped KSP object
             KSP.Dispose();
