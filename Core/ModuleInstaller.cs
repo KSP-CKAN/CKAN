@@ -153,8 +153,7 @@ namespace CKAN
         )
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
-            List<CkanModule> modsToInstall = resolver.ModList();
-
+            var modsToInstall = resolver.ModList().ToList();
             InstallList(modsToInstall, options, downloader);
         }
 
@@ -175,7 +174,7 @@ namespace CKAN
         )
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
-            List<CkanModule> modsToInstall = resolver.ModList();
+            var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule> ();
 
             // TODO: All this user-stuff should be happening in another method!
@@ -923,7 +922,6 @@ namespace CKAN
         /// <param name="remove">Remove.</param>
         public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null, bool enforceConsistency = true)
         {
-
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
 
@@ -951,7 +949,7 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<string> identifiers, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             var options = new RelationshipResolverOptions();
 
@@ -960,9 +958,7 @@ namespace CKAN
             options.with_suggests = false;
 
             var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.Version());
-            List<CkanModule> upgrades = resolver.ModList();
-
-            Upgrade(upgrades, netAsyncDownloader, enforceConsistency);
+            Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
         }
 
         /// <summary>
@@ -970,7 +966,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
@@ -1030,7 +1026,7 @@ namespace CKAN
         /// <summary>
         /// Makes sure all the specified mods are downloaded.
         /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
+        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncModulesDownloader downloader)
         {
             List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
 

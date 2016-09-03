@@ -478,10 +478,9 @@ namespace CKAN
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
         /// </summary>
-        public List<CkanModule> ModList()
+        public IEnumerable<CkanModule> ModList()
         {
-            var modules = new HashSet<CkanModule>(modlist.Values);
-            return modules.ToList();
+            return new HashSet<CkanModule>(modlist.Values);
         }
 
         /// <summary>

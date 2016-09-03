@@ -294,7 +294,7 @@ Do you wish to reinstall now?", sb)))
                         {
                             installer.Upgrade(
                                 new[] { changedIdentifier },
-                                new NetAsyncDownloader(new NullUser()),
+                                new NetAsyncModulesDownloader(new NullUser()),
                                 enforceConsistency: false
                             );
                         }
