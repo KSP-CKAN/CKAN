@@ -399,7 +399,7 @@ namespace CKAN
                     
                 tx.Complete();
             }
-            manager.Save();
+            manager.Save(enforce_consistency: false);
         }
 
         #endregion

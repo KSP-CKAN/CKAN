@@ -171,14 +171,6 @@ namespace CKAN
                 log.DebugFormat("Preparing to load registry at {0}", directory);
                 registryCache[directory] = new RegistryManager(directory, ksp);
             }
-            ///else /// create a lock file in existing RegistryManager object.
-            ///{
-            ///    log.InfoFormat("Attempting to lock old registry at {0}", directory);
-            ///    if (! registryCache[directory].GetLock())
-            ///    {
-            ///        throw new RegistryInUseKraken(directory);
-            ///    }
-            ///}
 
             return registryCache[directory];
         }
