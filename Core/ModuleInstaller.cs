@@ -386,6 +386,21 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Checks the path against a list of reserved game directories
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private bool IsReservedDirectory(string path)
+        {
+            return path == ksp.Tutorial() || path == ksp.ShipsVab()
+                    || path == ksp.ShipsSph() || path == ksp.Ships()
+                    || path == ksp.Scenarios() || path == ksp.GameData()
+                    || path == ksp.GameDir() || path == ksp.CkanDir()
+                    || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
+                    || path == ksp.ShipsThumbsSPH();
+        }
+
+        /// <summary>
         /// Given a stanza and an open zipfile, returns all files that would be installed
         /// for this stanza.
         ///
@@ -410,7 +425,7 @@ namespace CKAN
             // Convert our stanza to a standard `file` type. This is a no-op if it's
             // already the basic type.
 
-            stanza = stanza.ConvertFindToFile(zipfile);
+           stanza = stanza.ConvertFindToFile(zipfile);
 
             if (stanza.install_to == "GameData" || stanza.install_to.StartsWith("GameData/"))
             {
@@ -841,7 +856,6 @@ namespace CKAN
                 }
 
                 // Remove from registry.
-
                 registry_manager.registry.DeregisterModule(ksp, modName);
 
                 // Our collection of directories may leave empty parent directories.
@@ -853,14 +867,9 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
-                        // It is bad if any of this directories get's removed
+                        // It is bad if any of this directories gets removed
                         // So we protect them
-                        if (directory == ksp.Tutorial() || directory == ksp.ShipsVab()
-                            || directory == ksp.ShipsSph() || directory == ksp.Ships()
-                            || directory == ksp.Scenarios() || directory == ksp.GameData()
-                            || directory == ksp.GameDir() || directory == ksp.CkanDir()
-                            || directory == ksp.ShipsThumbs() || directory == ksp.ShipsThumbsVAB()
-                            || directory == ksp.ShipsThumbsSPH())
+                        if (IsReservedDirectory(directory))
                         {
                             continue;
                         }
@@ -897,30 +906,42 @@ namespace CKAN
                 return new HashSet<string>();
             }
 
-            var gameData = KSPPathUtils.NormalizePath(ksp.GameData());
+            var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
-                // normalize before we deduplicate this list
+                // make all directory expressions absolute from the GameDir
                 .Select(KSPPathUtils.NormalizePath)
                 // remove any duplicate paths
                 .Distinct()
-                // get rid of paths that are above GameData
-                .Where(dir => dir.Length > gameData.Length)
                 .SelectMany(dir =>
                 {
                     var results = new HashSet<string>();
-                    // remove the system paths, leaving everything after GameData/
-                    var relativeHead = KSPPathUtils.ToRelative(dir, gameData);
+                    var dirInfo = new DirectoryInfo(dir);
+
+                    // this is a system root, do not touch it
+                    if (dirInfo.Parent == null)
+                    {
+                        return results;
+                    }
+
+                    if (!dir.StartsWith(gameDir))
+                    {
+                        dir = KSPPathUtils.ToAbsolute(dir, gameDir);
+                    }
+
+                    // remove the system paths, leaving the path under the instance directory
+                    var relativeHead = KSPPathUtils.ToRelative(dir, gameDir);
                     var pathArray = relativeHead.Split('/');
                     var builtPath = string.Empty;
                     foreach (var path in pathArray)
                     {
                         builtPath += path + '/';
-                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameData));
+                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
                     }
+
                     return results;
                 })
-                .Where(dir => !string.IsNullOrWhiteSpace(dir))
+                .Where(dir => !IsReservedDirectory(dir))
                 .ToHashSet();
         }
 

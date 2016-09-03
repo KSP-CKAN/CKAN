@@ -71,7 +71,7 @@ namespace Tests.Core
                 _installer.AddParentDirectories(null);
                 _installer.AddParentDirectories(new HashSet<string>());
                 _installer.AddParentDirectories(new HashSet<string>() { string.Empty });
-                var sysRoot = Path.GetPathRoot(Environment.CurrentDirectory);
+                var sysRoot = Path.GetPathRoot(Environment.CurrentDirectory) + Environment.NewLine;
                 _installer.AddParentDirectories(new HashSet<string>() { sysRoot });
             });
         }
