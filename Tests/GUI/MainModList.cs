@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CKAN;
@@ -57,23 +58,24 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
-
                 var registry = Registry.Empty();
                 var module = TestData.FireSpitterModule();
                 module.conflicts = new List<RelationshipDescriptor> { new RelationshipDescriptor { name = "kOS" } };
-                registry.AddAvailable(TestData.FireSpitterModule());
+                registry.AddAvailable(module);
                 registry.AddAvailable(TestData.kOS_014_module());
                 registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
 
-                var main_mod_list = new MainModList(null, null);
-                var mod = new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.Version());
-                var mod2 = new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version());
-                mod.IsInstallChecked = true;
+                var mainList = new MainModList(null, null, new GUIUser());
+                var mod = new GUIMod(module, registry, tidy.KSP.Version());
+                var mod2 = new GUIMod(TestData.kOS_014_module(), registry, tidy.KSP.Version());
+                var mods = new List<GUIMod>() { mod, mod2 };
+                mainList.ConstructModList(mods, true);
+                mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
                 mod2.IsInstallChecked = true;
+                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
+                    tidy.KSP.Version());
 
-                var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
-                await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
+                await UtilStatic.Throws<InconsistentKraken>(() => computeTask);
             }
         }
 
