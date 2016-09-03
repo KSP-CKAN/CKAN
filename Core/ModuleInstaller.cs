@@ -909,19 +909,20 @@ namespace CKAN
             var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
-                // make all directory expressions absolute from the GameDir
+                // normalize all paths before deduplicate
                 .Select(KSPPathUtils.NormalizePath)
                 // remove any duplicate paths
                 .Distinct()
                 .SelectMany(dir =>
                 {
                     var results = new HashSet<string>();
-                    var dirInfo = new DirectoryInfo(dir);
+                    // adding in the DirectorySeparatorChar fixes attempts on Windows
+                    // to parse "X:" which resolves to Environment.CurrentDirectory
+                    var dirInfo = new DirectoryInfo(dir + Path.DirectorySeparatorChar);
 
-                    // this is a system root, do not touch it
-                    // the first check returns true on Windows
-                    // the second check returns true in Mono
-                    if (dirInfo.Parent == null || dirInfo.Parent == dirInfo)
+                    // if this is a parentless directory (Windows)
+                    // or if the Root equals the current directory (Mono)
+                    if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
                     {
                         return results;
                     }
