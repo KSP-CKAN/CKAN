@@ -32,7 +32,7 @@ namespace CKAN
             {
                 foreach (CkanModule unhappy_mod in entry.Value)
                 {
-                    errors.Add(string.Format("{0} requires {1} but nothing provides it", unhappy_mod.identifier, entry.Key));
+                    errors.Add(string.Format("{0} depends on {1} but it is not listed in the index, or not available for your version of KSP.", unhappy_mod.identifier, entry.Key));
                 }
             }
 

@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Remove empty directories when uninstalling mods (#1873 by: politas; reviewed ayan4m1)
 - [Core] Users are less able to run two copies of CKAN at the same time. (#1265 by: mgsdk, #1357 by pjf, #1828 by politas; reviewed: ayan4m1)
 - [NetKAN] Add Curse as a $kref source (#1608 by: airminer, Olympic1; reviewed: dbent, pjf, techman83, ayan4m1)
+- [All] Relationship changes now prompt reinstalling (#1730 by: dbent, #1885 by: @ayan4m1; reviewed: plague006, pjf)
 
 ## v1.18.1
 

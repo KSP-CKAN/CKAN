@@ -334,10 +334,10 @@ namespace CKAN
                 {
                     if (!soft_resolve)
                     {
-                        log.ErrorFormat("Dependency on {0} found, but nothing provides it.", dep_name);
+                        log.ErrorFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", dep_name);
                         throw new ModuleNotFoundKraken(dep_name);
                     }
-                    log.InfoFormat("{0} is recommended/suggested, but nothing provides it.", dep_name);
+                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your version of KSP.", dep_name);
                     continue;
                 }
                 if (candidates.Count > 1)
@@ -478,10 +478,9 @@ namespace CKAN
         /// <summary>
         /// Returns a list of all modules to install to satisfy the changes required.
         /// </summary>
-        public List<CkanModule> ModList()
+        public IEnumerable<CkanModule> ModList()
         {
-            var modules = new HashSet<CkanModule>(modlist.Values);
-            return modules.ToList();
+            return new HashSet<CkanModule>(modlist.Values);
         }
 
         /// <summary>
