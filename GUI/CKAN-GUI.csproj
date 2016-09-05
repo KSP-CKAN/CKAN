@@ -77,6 +77,12 @@
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </Compile>
     <Compile Include="ExportOption.cs" />
+    <Compile Include="HintTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HintTextBox.Designer.cs">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="IGUIPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HintTextBox.resx">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
@@ -290,5 +299,6 @@
   <ItemGroup>
     <Content Include="Resources\backward.png" />
     <Content Include="Resources\forward.png" />
+    <Content Include="Resources\textClear.png" />
   </ItemGroup>
 </Project>

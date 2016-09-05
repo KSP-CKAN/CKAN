@@ -107,13 +107,13 @@ namespace CKAN
             this.StatusLabel = new System.Windows.Forms.Label();
             this.MainTabControl = new CKAN.MainTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
-            this.FilterByAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByAuthorTextBox = new HintTextBox();
             this.FilterByAuthorLabel = new System.Windows.Forms.Label();
             this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
-            this.FilterByNameTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByNameTextBox = new HintTextBox();
             this.FilterByDescriptionLabel = new System.Windows.Forms.Label();
-            this.FilterByDescriptionTextBox = new System.Windows.Forms.TextBox();
+            this.FilterByDescriptionTextBox = new HintTextBox();
             this.ChangesetTabPage = new System.Windows.Forms.TabPage();
             this.CancelChangesButton = new System.Windows.Forms.Button();
             this.ConfirmChangesButton = new System.Windows.Forms.Button();
@@ -1548,9 +1548,9 @@ namespace CKAN
         private TabPage ManageModsTabPage;
         private Label KSPVersionLabel;
         private Label FilterByNameLabel;
-        private TextBox FilterByNameTextBox;
+        private HintTextBox FilterByNameTextBox;
         private Label FilterByDescriptionLabel;
-        private TextBox FilterByDescriptionTextBox;
+        private HintTextBox FilterByDescriptionTextBox;
         private TabPage WaitTabPage;
         private Button CancelCurrentActionButton;
         private TextBox LogTextBox;
