@@ -118,11 +118,9 @@ namespace Tests.GUI
             // sort by version, this is the fuse-lighting
             _listGui.Sort(_listGui.Columns[6], ListSortDirection.Descending);
 
+            // mark the mod for install, after completion we will get an exception
             var otherModule = modules.First((mod) => mod.Identifier.Contains("kOS"));
-            var otherModRow = _listGui.Rows
-                .Cast<DataGridViewRow>()
-                .First((mod) => mod.Tag.Equals(otherModule));
-            otherModule.SetInstallChecked(otherModRow, true);
+            otherModule.IsInstallChecked = true;
 
             Assert.IsTrue(otherModule.IsInstallChecked);
             Assert.IsFalse(otherModule.IsInstalled);
