@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -14,7 +15,6 @@ namespace Tests.GUI
     /// This test attempts to reproduce the state of GitHub issue #1866
     /// which involves sorting the GUI table by Max KSP Version and then performing a repo operation.
     /// </summary>
-    [Explicit]
     [TestFixture]
     public class GH1866
     {
@@ -24,7 +24,6 @@ namespace Tests.GUI
         private Registry _registry;
         private MainModList _modList;
         private MainModListGUI _listGui;
-
 
         /*
          * an exception would be thrown at the bottom of this
@@ -73,7 +72,7 @@ namespace Tests.GUI
             _registry.AddAvailable(TestData.kOS_014_module());
 
             // test object
-            _modList = new MainModList(delegate { }, delegate { return null; });
+            _modList = new MainModList(null, null, _manager.User);
             _listGui = new MainModListGUI();
 
             // todo: refactor the column header code to allow mocking of the GUI without creating columns
@@ -99,6 +98,11 @@ namespace Tests.GUI
             Assert.IsNotNull(_modList);
         }
 
+        /// <summary>
+        /// This progression attempts to recreate the steps described these issues:
+        /// https://github.com/KSP-CKAN/CKAN/issues/1875
+        /// https://github.com/KSP-CKAN/CKAN/issues/1803
+        /// </summary>
         [Test]
         public void TestSimple()
         {
@@ -108,17 +112,33 @@ namespace Tests.GUI
 
             // varargs method signature means we must call .ToArray()
             _listGui.Rows.AddRange(_modList.ConstructModList(modules).ToArray());
-            Assert.AreEqual(3, _listGui.Rows.Count);
+            // the header row adds one to the count
+            Assert.AreEqual(modules.Count + 1, _listGui.Rows.Count);
 
             // sort by version, this is the fuse-lighting
             _listGui.Sort(_listGui.Columns[6], ListSortDirection.Descending);
 
-            var anyVersionModule = modules.First((mod) => mod.Identifier.Contains("Doge"));
-            var anyVersionRow = _listGui.Rows
+            var otherModule = modules.First((mod) => mod.Identifier.Contains("kOS"));
+            var otherModRow = _listGui.Rows
                 .Cast<DataGridViewRow>()
-                .First((mod) => mod.Tag.Equals(anyVersionModule));
-            anyVersionModule.SetInstallChecked(anyVersionRow, true);
-            Assert.IsTrue(anyVersionModule.IsInstallChecked);
+                .First((mod) => mod.Tag.Equals(otherModule));
+            otherModule.SetInstallChecked(otherModRow, true);
+
+            Assert.IsTrue(otherModule.IsInstallChecked);
+            Assert.IsFalse(otherModule.IsInstalled);
+
+            Assert.DoesNotThrow(() =>
+            {
+                // perform the install of the "other" module - now we need to sort
+                ModuleInstaller.GetInstance(_instance.KSP, _manager.User).InstallList(
+                    _modList.ComputeUserChangeSet().Select(change => change.Mod.ToCkanModule()).ToList(),
+                    new RelationshipResolverOptions(),
+                    new NetAsyncModulesDownloader(_manager.User)
+                );
+
+                // trying to refresh the GUI state will throw a NullReferenceException
+                _listGui.Refresh();
+            });
         }
     }
 }
