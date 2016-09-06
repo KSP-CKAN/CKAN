@@ -30,6 +30,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Infinity symbol
         /// </summary>
         public static readonly string infinity         = cp437s(0xec);
+        /// <summary>
+        /// +- symbol
+        /// </summary>
+        public static readonly string plusMinus        = cp437s(0xf1);
+        /// <summary>
+        /// >> symbol
+        /// </summary>
+        public static readonly string doubleGreater    = cp437s(0xaf);
+
 
         /// <summary>
         /// Hashed square box for drawing scrollbars

@@ -36,9 +36,6 @@
     <LangVersion>7</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\_build\lib\nuget\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="CurlSharp">
       <HintPath>..\lib\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
@@ -46,23 +43,28 @@
       <HintPath>..\_build\lib\nuget\ICSharpCode.SharpZipLib.Patched.0.86.5.1\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
       <HintPath>..\_build\lib\nuget\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.7.145.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\Moq.4.7.145\lib\net45\Moq.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
+      <HintPath>..\_build\lib\nuget\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Cache.cs" />
@@ -136,23 +138,12 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Data\CKAN-meta-badkan.tar.gz" />
-    <None Include="Data\CKAN-meta-badkan.zip" />
-    <None Include="Data\CKAN-meta-testkan.tar.gz" />
-    <None Include="Data\CKAN-meta-testkan.zip" />
     <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
     <None Include="Data\DogeCoinFlag-1.01-corrupt.zip" />
     <None Include="Data\DogeCoinFlag-1.01-LZMA.zip" />
     <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
-    <None Include="Data\DogeCoinFlag-1.01.zip" />
-    <None Include="Data\DogeCoinFlag-extra-files.zip" />
-    <None Include="Data\DogeCoinFlag-multiple-vrefs.netkan" />
-    <None Include="Data\DogeCoinFlag-no-vrefs.netkan" />
-    <None Include="Data\DogeCoinFlag-single-vref.netkan" />
     <None Include="Data\DogeCoinPlugin.zip" />
     <None Include="Data\FileIdentifier\random.bin" />
-    <None Include="Data\FileIdentifier\test_ascii.tmp" />
     <None Include="Data\FileIdentifier\test_gzip.gz" />
     <None Include="Data\FileIdentifier\test_tar.tar" />
     <None Include="Data\FileIdentifier\test_tar.tmp" />
@@ -185,6 +176,38 @@
     <Content Include="Data\KSP\KSP-0.25\buildID.txt" />
     <Content Include="Data\KSP\KSP-0.25\readme.txt" />
     <Content Include="Data\KSP\missing-gamedata\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Data\CKAN-meta-badkan.zip" />
+    <None Include="Data\CKAN-meta-testkan.tar.gz" />
+    <None Include="Data\CKAN-meta-testkan.zip" />
+    <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
+    <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
+    <None Include="Data\DogeCoinPlugin.zip" />
+    <None Include="Data\FileIdentifier\random.bin" />
+    <None Include="Data\FileIdentifier\test_gzip.gz" />
+    <None Include="Data\FileIdentifier\test_tar.tar" />
+    <None Include="Data\FileIdentifier\test_tar.tmp" />
+    <None Include="Data\FileIdentifier\test_targz.tar.gz" />
+    <None Include="Data\FileIdentifier\test_targz.tmp" />
+    <None Include="Data\FileIdentifier\test_zip.tmp" />
+    <None Include="Data\FileIdentifier\test_zip.zip" />
+    <None Include="Data\Firespitter-6.3.5.ckan" />
+    <None Include="Data\gh221.zip" />
+    <None Include="Data\ksp-avc-one-line.version" />
+    <None Include="Data\ksp-avc.version" />
+    <None Include="Data\KSP\KSP-0.25\GameData\README.md" />
+    <None Include="Data\KS\CustomAsteroids.json" />
+    <None Include="Data\KS\README.md" />
+    <None Include="Data\lib\CkanTests.pm" />
+    <None Include="Data\ModuleManager-2.5.1.ckan" />
+    <None Include="Data\ModuleManager-2.5.1.zip" />
+    <None Include="Data\README.md" />
+    <None Include="Data\registry.json" />
+    <None Include="Data\test-sln.sh" />
+    <None Include="packages.config" />
+    <None Include="Data\CKAN-meta-badkan.tar.gz" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">

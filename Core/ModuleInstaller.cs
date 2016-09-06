@@ -1096,6 +1096,99 @@ namespace CKAN
             );
         }
 
+        /// <summary>
+        /// Enacts listed Module Replacements to the specified versions for the user's KSP.
+        /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
+        /// Throws ModuleNotFoundKraken if a module is not installed.
+        /// </summary>
+        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, bool enforceConsistency = true)
+        {
+            log.Debug("Using Replace method");
+            List<CkanModule> modsToInstall = new List<CkanModule>();
+            var modsToRemove = new List<string>();
+            foreach (ModuleReplacement repl in replacements)
+            {
+                modsToInstall.Add(repl.ReplaceWith);
+                log.DebugFormat("We want to install {0} as a replacement for {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
+            }
+            // Start by making sure we've downloaded everything.
+            DownloadModules(modsToInstall, netAsyncDownloader);
+
+            // Our replacement involves removing the currently installed mods, then
+            // adding everything that needs installing (which may involve new mods to
+            // satisfy dependencies).
+
+
+            // Let's discover what we need to do with each module!
+            foreach (ModuleReplacement repl in replacements)
+            {
+                string ident = repl.ToReplace.identifier;
+                InstalledModule installedMod = registry_manager.registry.InstalledModule(ident);
+
+                if (installedMod == null)
+                {
+                    log.DebugFormat("Wait, {0} is not actually installed?", installedMod.identifier);
+                    //Maybe ModuleNotInstalled ?
+                    if (registry_manager.registry.IsAutodetected(ident))
+                    {
+                        throw new ModuleNotFoundKraken(ident, repl.ToReplace.version.ToString(), String.Format("Can't replace {0} as it was not installed by CKAN. \r\n Please remove manually before trying to install it.", ident));
+                    }
+
+                    throw new ModuleNotFoundKraken(ident, repl.ToReplace.version.ToString(), String.Format("Can't replace {0} as it is not installed. Please attempt to install {1} instead.", ident, repl.ReplaceWith.identifier));
+                }
+                else
+                {
+                    // Obviously, we need to remove the mod we are replacing
+                    modsToRemove.Add(repl.ToReplace.identifier);
+
+                    log.DebugFormat("Ok, we are removing {0}", repl.ToReplace.identifier);
+                    //Check whether our Replacement target is already installed
+                    InstalledModule installed_replacement = registry_manager.registry.InstalledModule(repl.ReplaceWith.identifier);
+
+                    // If replacement is not installed, we've already added it to modsToInstall above
+                    if (installed_replacement != null)
+                    {
+                        //Module already installed. We'll need to treat it as an upgrade.
+                        log.DebugFormat("It turns out {0} is already installed, we'll upgrade it.", installed_replacement.identifier);
+                        modsToRemove.Add(installed_replacement.identifier);
+
+                        CkanModule installed = installed_replacement.Module;
+                        if (installed.version.IsEqualTo(repl.ReplaceWith.version))
+                        {
+                            log.InfoFormat("{0} is already at the latest version, reinstalling to replace {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
+                        }
+                        else if (installed.version.IsGreaterThan(repl.ReplaceWith.version))
+                        {
+                            log.WarnFormat("Downgrading {0} from {1} to {2} to replace {3}", repl.ReplaceWith.identifier, repl.ReplaceWith.version, repl.ReplaceWith.version, repl.ToReplace.identifier);
+                        }
+                        else
+                        {
+                            log.InfoFormat("Upgrading {0} to {1} to replace {2}", repl.ReplaceWith.identifier, repl.ReplaceWith.version, repl.ToReplace.identifier);
+                        }
+                    }
+                    else
+                    {
+                        log.InfoFormat("Replacing {0} with {1} {2}", repl.ToReplace.identifier, repl.ReplaceWith.identifier, repl.ReplaceWith.version);
+                    }
+                }
+            }
+            var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry, ksp.VersionCriteria());
+            try
+            {
+                var resolvedModsToInstall = resolver.ModList().ToList();
+                AddRemove(
+                    resolvedModsToInstall,
+                    modsToRemove,
+                    enforceConsistency
+                );
+            }
+            catch (DependencyNotSatisfiedKraken kraken)
+            {
+                throw kraken;
+            }
+
+        }
+
         #endregion
 
         /// <summary>

@@ -212,5 +212,78 @@ namespace CKAN
             );
             return KspVersionRange.VersionSpan(minKsp, maxKsp);
         }
+
+        /// <summary>
+        /// Is the mod installed and does it have a replaced_by relationship with a compatible version
+        /// Check latest information on installed version of mod "identifier" and if it has a "replaced_by"
+        /// value, check if there is a compatible version of the linked mod
+        /// Given a mod identifier, return a ModuleReplacement containing the relevant replacement
+        /// if compatibility matches.
+        /// </summary>
+        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
+        {
+            // We only care about the installed version
+            CkanModule installedVersion;
+            try
+            {
+                installedVersion = querier.GetInstalledVersion(identifier);
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                return null;
+            }
+            return querier.GetReplacement(installedVersion, version);
+        }
+
+        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, CkanModule installedVersion, KspVersionCriteria version)
+        {
+            // Mod is not installed, so we don't care about replacements
+            if (installedVersion == null)
+                return null;
+            // No replaced_by relationship
+            if (installedVersion.replaced_by == null)
+                return null;
+
+            // Get the identifier from the replaced_by relationship, if it exists
+            ModuleRelationshipDescriptor replacedBy = installedVersion.replaced_by;
+
+            // Now we need to see if there is a compatible version of the replacement
+            try
+            {
+                ModuleReplacement replacement = new ModuleReplacement();
+                replacement.ToReplace = installedVersion;
+                if (installedVersion.replaced_by.version != null)
+                {
+                    replacement.ReplaceWith = querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version);
+                    if (replacement.ReplaceWith != null)
+                    {
+                        if (replacement.ReplaceWith.IsCompatibleKSP(version))
+                        {
+                            return replacement;
+                        }
+                    }
+                }
+                else
+                {
+                    replacement.ReplaceWith = querier.LatestAvailable(installedVersion.replaced_by.name, version);
+                    if (replacement.ReplaceWith != null)
+                    {
+                        if (installedVersion.replaced_by.min_version != null)
+                        {
+                            if (!replacement.ReplaceWith.version.IsLessThan(replacedBy.min_version))
+                            {
+                                return replacement;
+                            }
+                        }
+                        else return replacement;
+                    }
+                }
+                return null;
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                return null;
+            }
+        }
     }
 }

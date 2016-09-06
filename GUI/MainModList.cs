@@ -12,6 +12,19 @@ using log4net;
 
 namespace CKAN
 {
+    public enum GUIModFilter
+    {
+        Compatible               = 0,
+        Installed                = 1,
+        InstalledUpdateAvailable = 2,
+        NewInRepository          = 3,
+        NotInstalled             = 4,
+        Incompatible             = 5,
+        All                      = 6,
+        Cached                   = 7,
+        Replaceable              = 8
+    }
+
     public partial class Main
     {
         private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
@@ -19,10 +32,10 @@ namespace CKAN
             switch (this.configuration.SortByColumnIndex)
             {
                 // XXX: There should be a better way to identify checkbox columns than hardcoding their indices here
-                case 0: case 1: return Sort(rows, CheckboxSorter);
-                case 7:         return Sort(rows, DownloadSizeSorter);
-                case 8:         return Sort(rows, InstallDateSorter);
-                case 9:         return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
+                case 0: case 1: case 2: return Sort(rows, CheckboxSorter);
+                case 8:                 return Sort(rows, DownloadSizeSorter);
+                case 9:                 return Sort(rows, InstallDateSorter);
+                case 10:                return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
             }
             return Sort(rows, DefaultSorter);
         }
@@ -242,15 +255,17 @@ namespace CKAN
                     mainModList.CountModsByFilter(GUIModFilter.Installed));
                 FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-                FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
+                FilterToolButton.DropDownItems[3].Text = String.Format("Replaceable ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.Replaceable));
+                FilterToolButton.DropDownItems[4].Text = String.Format("Cached ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.Cached));
-                FilterToolButton.DropDownItems[4].Text = String.Format("Newly compatible ({0})",
+                FilterToolButton.DropDownItems[5].Text = String.Format("Newly compatible ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-                FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
+                FilterToolButton.DropDownItems[6].Text = String.Format("Not installed ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-                FilterToolButton.DropDownItems[6].Text = String.Format("Incompatible ({0})",
+                FilterToolButton.DropDownItems[7].Text = String.Format("Incompatible ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-                FilterToolButton.DropDownItems[7].Text = String.Format("All ({0})",
+                FilterToolButton.DropDownItems[8].Text = String.Format("All ({0})",
                     mainModList.CountModsByFilter(GUIModFilter.All));
 
                 UpdateAllToolButton.Enabled = has_any_updates;
@@ -357,11 +372,11 @@ namespace CKAN
 
                 case Keys.Space:
                     // If they've focused one of the checkbox columns, don't intercept
-                    if (ModList.CurrentCell.ColumnIndex > 1)
+                    if (ModList.CurrentCell.ColumnIndex > 2)
                     {
                         DataGridViewRow row = ModList.CurrentRow;
                         // Toggle Update column if enabled, otherwise Install
-                        for (int colIndex = 1; colIndex >= 0; --colIndex)
+                        for (int colIndex = 2; colIndex >= 0; --colIndex)
                         {
                             if (row?.Cells[colIndex] is DataGridViewCheckBoxCell)
                             {
@@ -460,7 +475,7 @@ namespace CKAN
                 if (!string.IsNullOrEmpty(cmd))
                     Process.Start(cmd);
             }
-            else if (column_index < 2)
+            else if (column_index <= 2)
             {
                 GUIMod gui_mod = row?.Tag as GUIMod;
                 if (gui_mod != null)
@@ -474,6 +489,9 @@ namespace CKAN
                             break;
                         case 1:
                             gui_mod.SetUpgradeChecked(row);
+                            break;
+                        case 2:
+                            gui_mod.SetReplaceChecked(row);
                             break;
                     }
                     await UpdateChangeSetAndConflicts(
@@ -541,6 +559,10 @@ namespace CKAN
                 return;
             base.SetSelectedRowCore(rowIndex, selected);
         }
+
+        //ImageList for Update/Changes Column
+        public System.Windows.Forms.ImageList ModChangesImageList { get; set; }
+
     }
 
     public class MainModList
@@ -648,6 +670,14 @@ namespace CKAN
                     case GUIModChangeType.Remove:
                         modules_to_remove.Add(change.Mod);
                         break;
+                    case GUIModChangeType.Replace:
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), version);
+                        if (repl != null)
+                        {
+                            modules_to_remove.Add(repl.ToReplace);
+                            modules_to_install.Add(repl.ReplaceWith);
+                        }
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -715,34 +745,19 @@ namespace CKAN
             var nameMatchesFilter = IsNameInNameFilter(mod);
             var authorMatchesFilter = IsAuthorInauthorFilter(mod);
             var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
-            var modMatchesType = IsModInFilter(mod);
+            var modMatchesType = IsModInFilter(ModFilter, mod);
             var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
             return isVisible;
         }
 
-
         public int CountModsByFilter(GUIModFilter filter)
         {
-            switch (filter)
+            if (filter == GUIModFilter.All)
             {
-                case GUIModFilter.Compatible:
-                    return Modules.Count(m => !m.IsIncompatible);
-                case GUIModFilter.Installed:
-                    return Modules.Count(m => m.IsInstalled);
-                case GUIModFilter.InstalledUpdateAvailable:
-                    return Modules.Count(m => m.HasUpdate);
-                case GUIModFilter.Cached:
-                    return Modules.Count(m => m.IsCached);
-                case GUIModFilter.NewInRepository:
-                    return Modules.Count(m => m.IsNew);
-                case GUIModFilter.NotInstalled:
-                    return Modules.Count(m => !m.IsInstalled);
-                case GUIModFilter.Incompatible:
-                    return Modules.Count(m => m.IsIncompatible);
-                case GUIModFilter.All:
-                    return Modules.Count();
+                // Don't check each one
+                return Modules.Count;
             }
-            throw new Kraken("Unknown filter type in CountModsByFilter");
+            return Modules.Count(m => IsModInFilter(filter, m));
         }
 
         /// <summary>
@@ -797,6 +812,18 @@ namespace CKAN
                     Value = "-"
                 };
 
+            var replacing = IsModInFilter(GUIModFilter.Replaceable, mod)
+                ? (DataGridViewCell) new DataGridViewCheckBoxCell()
+                {
+                    Value = myChange == null ? false
+                        : myChange.ChangeType == GUIModChangeType.Replace ? true
+                        : false
+                }
+                : new DataGridViewTextBoxCell()
+                {
+                    Value = "-"
+                };
+
             var name   = new DataGridViewTextBoxCell() {Value = mod.Name};
             var author = new DataGridViewTextBoxCell() {Value = mod.Authors};
 
@@ -827,12 +854,23 @@ namespace CKAN
             var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate                            };
             var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract                               };
 
-            item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
+            item.Cells.AddRange(selecting, updating, replacing, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
 
             selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
             updating.ReadOnly  = updating  is DataGridViewTextBoxCell;
 
             return item;
+        }
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary>
+        public string StripEpoch(string version)
+        {
+            // If our version number starts with a string of digits, followed by
+            // a colon, and then has no more colons, we're probably safe to assume
+            // the first string of digits is an epoch
+            return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
@@ -852,31 +890,22 @@ namespace CKAN
             return mod.Abstract.IndexOf(ModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
-
-        private bool IsModInFilter(GUIMod m)
+        private static bool IsModInFilter(GUIModFilter filter, GUIMod m)
         {
-            switch (ModFilter)
+            switch (filter)
             {
-                case GUIModFilter.Compatible:
-                    return !m.IsIncompatible;
-                case GUIModFilter.Installed:
-                    return m.IsInstalled;
-                case GUIModFilter.InstalledUpdateAvailable:
-                    return m.IsInstalled && m.HasUpdate;
-                case GUIModFilter.Cached:
-                    return m.IsCached;
-                case GUIModFilter.NewInRepository:
-                    return m.IsNew;
-                case GUIModFilter.NotInstalled:
-                    return !m.IsInstalled;
-                case GUIModFilter.Incompatible:
-                    return m.IsIncompatible;
-                case GUIModFilter.All:
-                    return true;
+                case GUIModFilter.Compatible:               return !m.IsIncompatible;
+                case GUIModFilter.Installed:                return m.IsInstalled;
+                case GUIModFilter.InstalledUpdateAvailable: return m.IsInstalled && m.HasUpdate;
+                case GUIModFilter.Cached:                   return m.IsCached;
+                case GUIModFilter.NewInRepository:          return m.IsNew;
+                case GUIModFilter.NotInstalled:             return !m.IsInstalled;
+                case GUIModFilter.Incompatible:             return m.IsIncompatible;
+                case GUIModFilter.Replaceable:              return m.IsInstalled && m.HasReplacement;
+                case GUIModFilter.All:                      return true;
+                default:                                    throw new Kraken($"Unknown filter type {filter} in IsModInFilter");
             }
-            throw new Kraken("Unknown filter type in IsModInFilter");
         }
-
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
             IEnumerable<ModChange> change_set, KspVersionCriteria ksp_version)
@@ -904,6 +933,14 @@ namespace CKAN
                         modules_to_remove.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Update:
+                        break;
+                    case GUIModChangeType.Replace:
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), ksp_version);
+                        if (repl != null)
+                        {
+                            modules_to_remove.Add(repl.ToReplace.identifier);
+                            modules_to_install.Add(repl.ReplaceWith.identifier);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -934,12 +971,13 @@ namespace CKAN
 
         public HashSet<ModChange> ComputeUserChangeSet()
         {
-            return new HashSet<ModChange>(Modules.
-                Where(mod => mod.IsInstallable()).
-                Select(mod => mod.GetRequestedChange()).
-                Where(change => change.HasValue).
-                Select(change => change.Value).
-                Select(change => new ModChange(change.Key, change.Value, null))
+            return new HashSet<ModChange>(
+                Modules
+                    .Where(mod => mod.IsInstallable())
+                    .Select(mod => mod.GetRequestedChange())
+                    .Where(change => change.HasValue)
+                    .Select(change => change.Value)
+                    .Select(change => new ModChange(change.Key, change.Value, null))
             );
         }
     }

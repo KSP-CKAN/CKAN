@@ -203,16 +203,20 @@ namespace CKAN.CmdLine
                     case "show":
                         return (new Show(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
+                    case "replace":
+                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        return (new Replace(manager, user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
+
+                    case "upgrade":
+                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        return (new Upgrade(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
+
                     case "search":
                         return (new Search(user)).RunCommand(GetGameInstance(manager), options);
 
                     case "uninstall":
                     case "remove":
                         return (new Remove(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "upgrade":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Upgrade(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "import":
                         return (new Import(manager, user)).RunCommand(GetGameInstance(manager), options);
@@ -232,6 +236,26 @@ namespace CKAN.CmdLine
             {
                 return printMissingInstanceError(user);
             }
+            finally
+            {
+                RegistryManager.DisposeAll();
+            }
+        }
+
+        internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)
+        {
+            CkanModule module = CkanModule.FromFile(ckan_file);
+
+            // We'll need to make some registry changes to do this.
+            RegistryManager registry_manager = RegistryManager.Instance(current_instance);
+
+            // Remove this version of the module in the registry, if it exists.
+            registry_manager.registry.RemoveAvailable(module);
+
+            // Sneakily add our version in...
+            registry_manager.registry.AddAvailable(module);
+
+            return module;
         }
 
         private static int printMissingInstanceError(IUser user)

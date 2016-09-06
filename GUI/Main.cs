@@ -17,26 +17,6 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace CKAN
 {
-    public enum GUIModFilter
-    {
-        Compatible = 0,
-        Installed = 1,
-        InstalledUpdateAvailable = 2,
-        NewInRepository = 3,
-        NotInstalled = 4,
-        Incompatible = 5,
-        All = 6,
-        Cached = 7
-    }
-
-    public enum GUIModChangeType
-    {
-        None = 0,
-        Install = 1,
-        Remove = 2,
-        Update = 3
-    }
-
     public partial class Main : Form
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
@@ -192,7 +172,8 @@ namespace CKAN
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                this.minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             // Initialize all user interaction dialogs.
@@ -744,6 +725,11 @@ namespace CKAN
             Filter(GUIModFilter.InstalledUpdateAvailable);
         }
 
+        private void FilterReplaceableButton_Click(object sender, EventArgs e)
+        {
+            Filter(GUIModFilter.Replaceable);
+        }
+
         private void cachedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Filter(GUIModFilter.Cached);
@@ -773,22 +759,18 @@ namespace CKAN
         {
             mainModList.ModFilter = filter;
 
-            if (filter == GUIModFilter.All)
-                FilterToolButton.Text = "Filter (All)";
-            else if (filter == GUIModFilter.Incompatible)
-                FilterToolButton.Text = "Filter (Incompatible)";
-            else if (filter == GUIModFilter.Installed)
-                FilterToolButton.Text = "Filter (Installed)";
-            else if (filter == GUIModFilter.InstalledUpdateAvailable)
-                FilterToolButton.Text = "Filter (Upgradeable)";
-            else if (filter == GUIModFilter.Cached)
-                FilterToolButton.Text = "Filter (Cached)";
-            else if (filter == GUIModFilter.NewInRepository)
-                FilterToolButton.Text = "Filter (New)";
-            else if (filter == GUIModFilter.NotInstalled)
-                FilterToolButton.Text = "Filter (Not installed)";
-            else
-                FilterToolButton.Text = "Filter (Compatible)";
+            switch (filter)
+            {
+                case GUIModFilter.All:                      FilterToolButton.Text = "Filter (All)";          break;
+                case GUIModFilter.Incompatible:             FilterToolButton.Text = "Filter (Incompatible)";  break;
+                case GUIModFilter.Installed:                FilterToolButton.Text = "Filter (Installed)";     break;
+                case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = "Filter (Upgradeable)";   break;
+                case GUIModFilter.Replaceable:              FilterToolButton.Text = "Filter (Replaceable)";   break;
+                case GUIModFilter.Cached:                   FilterToolButton.Text = "Filter (Cached)";        break;
+                case GUIModFilter.NewInRepository:          FilterToolButton.Text = "Filter (New)";           break;
+                case GUIModFilter.NotInstalled:             FilterToolButton.Text = "Filter (Not installed)"; break;
+                default:                                    FilterToolButton.Text = "Filter (Compatible)";    break;
+            }
         }
 
         private GUIMod GetSelectedModule()

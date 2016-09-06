@@ -147,26 +147,11 @@ namespace CKAN
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
-            Util.Invoke(MetadataModuleHomePageLinkLabel,
-                       () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
-
-            if (module.resources != null && module.resources.repository != null)
-            {
-                Util.Invoke(MetadataModuleGitHubLinkLabel,
-                    () => MetadataModuleGitHubLinkLabel.Text = module.resources.repository.ToString());
-            }
-            else
-            {
-                Util.Invoke(MetadataModuleGitHubLinkLabel,
-                    () => MetadataModuleGitHubLinkLabel.Text = "N/A");
-            }
-
-            if (module.release_status != null)
-            {
-                Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString());
-            }
-
+            Util.Invoke(MetadataModuleHomePageLinkLabel, () => MetadataModuleHomePageLinkLabel.Text = gui_module.Homepage.ToString());
+            Util.Invoke(MetadataModuleGitHubLinkLabel,() => MetadataModuleGitHubLinkLabel.Text = module.resources?.repository?.ToString() ?? "N/A");
+            Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status?.ToString() ?? "N/A");
             Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
+            Util.Invoke(ReplacementTextBox, () => ReplacementTextBox.Text = gui_module.ToModule()?.replaced_by?.ToString() ?? "N/A");
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)

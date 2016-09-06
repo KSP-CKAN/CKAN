@@ -1,3 +1,4 @@
+using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
@@ -31,6 +32,10 @@ namespace CKAN.ConsoleUI {
             ));
 
             generateList(plan.Install);
+            generateList(new HashSet<CkanModule>(
+                ReplacementIdentifiers(plan.Replace)
+                .Select(id => registry.InstalledModule(id).Module)
+            ));
 
             dependencyList = new ConsoleListBox<Dependency>(
                 1, 4, -1, -2,
@@ -144,6 +149,18 @@ namespace CKAN.ConsoleUI {
             foreach (CkanModule mod in inst) {
                 AddDependencies(inst, mod, mod.recommends, true);
                 AddDependencies(inst, mod, mod.suggests,   false);
+            }
+        }
+
+        private IEnumerable<string> ReplacementIdentifiers(IEnumerable<string> replaced_identifiers)
+        {
+            foreach (string replaced in replaced_identifiers) {
+                ModuleReplacement repl = registry.GetReplacement(
+                    replaced, manager.CurrentInstance.VersionCriteria()
+                );
+                if (repl != null) {
+                    yield return repl.ReplaceWith.identifier;
+                }
             }
         }
 

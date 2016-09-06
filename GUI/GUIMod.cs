@@ -14,6 +14,7 @@ namespace CKAN
         public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
         public bool HasUpdate { get; private set; }
+        public bool HasReplacement { get; private set; }
         public bool IsIncompatible { get; private set; }
         public bool IsAutodetected { get; private set; }
         public string Authors { get; private set; }
@@ -35,6 +36,7 @@ namespace CKAN
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
         public bool IsUpgradeChecked { get; private set; }
+        public bool IsReplaceChecked { get; private set; }
         public bool IsNew { get; set; }
         public bool IsCKAN { get; private set; }
         public string Abbrevation { get; private set; }
@@ -101,6 +103,7 @@ namespace CKAN
             Authors       = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
             HasUpdate      = registry.HasUpdate(mod.identifier, current_ksp_version);
+            HasReplacement = registry.GetReplacement(mod, current_ksp_version) != null;
             DownloadSize   = mod.download_size == 0 ? "N/A" : CkanModule.FmtSize(mod.download_size);
             IsIncompatible = IsIncompatible || !mod.IsCompatibleKSP(current_ksp_version);
 
@@ -223,6 +226,10 @@ namespace CKAN
             {
                 return new KeyValuePair<GUIMod, GUIModChangeType>(this, GUIModChangeType.Update);
             }
+            if (IsReplaceChecked)
+            {
+                return new KeyValuePair<GUIMod, GUIModChangeType>(this, GUIModChangeType.Replace);
+            }
             return null;
         }
 
@@ -243,10 +250,15 @@ namespace CKAN
                 case GUIModChangeType.Remove:
                     IsInstallChecked = false;
                     IsUpgradeChecked = false;
+                    IsReplaceChecked = false;
                     break;
                 case GUIModChangeType.Update:
                     IsInstallChecked = true;
                     IsUpgradeChecked = true;
+                    break;
+                case GUIModChangeType.Replace:
+                    IsInstallChecked = true;
+                    IsReplaceChecked = true;
                     break;
             }
         }
@@ -260,11 +272,15 @@ namespace CKAN
         {
             //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
             var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            var old_value = (bool) update_cell.Value;
+            if (update_cell != null)
+            {
+                var old_value = (bool) update_cell.Value;
 
-            bool value = set_value_to ?? old_value;
-            IsUpgradeChecked = value;
-            if (old_value != value) update_cell.Value = value;
+                bool value = set_value_to ?? old_value;
+                IsUpgradeChecked = value;
+                if (old_value != value)
+                    update_cell.Value = value;
+            }
         }
 
         public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
@@ -291,6 +307,20 @@ namespace CKAN
                         row.DataGridView.Refresh();
                     }
                 }
+            }
+        }
+
+        public void SetReplaceChecked(DataGridViewRow row, bool? set_value_to = null)
+        {
+            var replace_cell = row.Cells[2] as DataGridViewCheckBoxCell;
+            if (replace_cell != null)
+            {
+                var old_value = (bool) replace_cell.Value;
+
+                bool value = set_value_to ?? old_value;
+                IsReplaceChecked = value;
+                if (old_value != value)
+                    replace_cell.Value = value;
             }
         }
 

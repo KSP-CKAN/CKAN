@@ -23,7 +23,7 @@ namespace CKAN
             }
 
             // We're going to split our change-set into two parts: updated/removed mods,
-            // and everything else (which right now is installing mods, but we may have
+            // and everything else (which right now is replacing and installing mods, but we may have
             // other types in the future).
 
             changeSet = new List<ModChange>();
@@ -86,7 +86,10 @@ namespace CKAN
                 if (mod.IsInstallChecked != mod.IsInstalled)
                 {
                     mod.SetInstallChecked(row, mod.IsInstalled);
+
                 }
+                mod.SetUpgradeChecked(row, false);
+                mod.SetReplaceChecked(row, false);
             }
         }
 

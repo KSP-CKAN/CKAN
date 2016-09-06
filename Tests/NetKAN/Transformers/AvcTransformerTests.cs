@@ -1,4 +1,4 @@
-﻿using CKAN;
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
