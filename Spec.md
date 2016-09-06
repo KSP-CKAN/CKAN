@@ -479,7 +479,15 @@ only.
 A list of mods which *conflict* with this mod. The current mod
 *will not* be installed if any of these mods are already on the system.
 
-##### resources
+##### replaced-by
+
+(**v1.22**) This is a way to mark a specific mod identifier as being 
+obsoleted and tell the client what it has been *replaced by*. It contains a 
+list of mods that should be selected for installation if this mod is 
+selected for updating, while this mod is uninstalled. If this mod identifier 
+is brought back to life, an epoch change should be applied.
+
+#### resources
 
 The `resources` field describes additional information that a user or
 program may wish to know about the mod, but which are not required
