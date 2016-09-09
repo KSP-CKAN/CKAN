@@ -1458,7 +1458,7 @@ namespace CKAN
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(1306, 991);
+            this.MinimumSize = new System.Drawing.Size(1024, 700);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
             this.menuStrip1.ResumeLayout(false);
