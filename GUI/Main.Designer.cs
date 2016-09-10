@@ -984,6 +984,7 @@ namespace CKAN
             // 
             this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.StatusPanel.Controls.Add(this.StatusLabel);
+            this.StatusPanel.Controls.Add(this.KSPVersionLabel);
             this.StatusPanel.Location = new System.Drawing.Point(0, 1074);
             this.StatusPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.StatusPanel.Name = "StatusPanel";
@@ -996,9 +997,20 @@ namespace CKAN
             this.StatusLabel.Location = new System.Drawing.Point(0, 0);
             this.StatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(1196, 29);
+            this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // KSPVersionLabel
+            // 
+            this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.KSPVersionLabel.AutoSize = true;
+            this.KSPVersionLabel.Location = new System.Drawing.Point(1280, 15);
+            this.KSPVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.KSPVersionLabel.Name = "KSPVersionLabel";
+            this.KSPVersionLabel.Size = new System.Drawing.Size(230, 29);
+            this.KSPVersionLabel.TabIndex = 1;
+            this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
             // 
             // MainTabControl
             // 
@@ -1020,7 +1032,6 @@ namespace CKAN
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorLabel);
-            this.ManageModsTabPage.Controls.Add(this.KSPVersionLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameTextBox);
             this.ManageModsTabPage.Controls.Add(this.FilterByDescriptionLabel);
@@ -1055,17 +1066,6 @@ namespace CKAN
             this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
             this.FilterByAuthorLabel.TabIndex = 11;
             this.FilterByAuthorLabel.Text = "Filter by author name:";
-            // 
-            // KSPVersionLabel
-            // 
-            this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(1280, 15);
-            this.KSPVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.KSPVersionLabel.Name = "KSPVersionLabel";
-            this.KSPVersionLabel.Size = new System.Drawing.Size(230, 20);
-            this.KSPVersionLabel.TabIndex = 8;
-            this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
             // 
             // FilterByNameLabel
             // 
@@ -1458,7 +1458,7 @@ namespace CKAN
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(1024, 700);
+            this.MinimumSize = new System.Drawing.Size(1280, 700);
             this.Name = "Main";
             this.Text = "CKAN-GUI";
             this.menuStrip1.ResumeLayout(false);
