@@ -358,7 +358,6 @@ namespace CKAN
 
             Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
-            KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
 
             if (commandLineArgs.Length >= 2)
             {
@@ -429,7 +428,6 @@ namespace CKAN
             {
                 Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.Version(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
-                KSPVersionLabel.Text = String.Format("Kerbal Space Program {0}", CurrentInstance.Version());
             });
 
             configuration = Configuration.LoadOrCreateConfiguration

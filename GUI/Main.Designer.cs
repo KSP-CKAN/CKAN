@@ -109,7 +109,6 @@ namespace CKAN
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
             this.FilterByAuthorTextBox = new HintTextBox();
             this.FilterByAuthorLabel = new System.Windows.Forms.Label();
-            this.KSPVersionLabel = new System.Windows.Forms.Label();
             this.FilterByNameLabel = new System.Windows.Forms.Label();
             this.FilterByNameTextBox = new HintTextBox();
             this.FilterByDescriptionLabel = new System.Windows.Forms.Label();
@@ -984,7 +983,6 @@ namespace CKAN
             // 
             this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.StatusPanel.Controls.Add(this.StatusLabel);
-            this.StatusPanel.Controls.Add(this.KSPVersionLabel);
             this.StatusPanel.Location = new System.Drawing.Point(0, 1074);
             this.StatusPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.StatusPanel.Name = "StatusPanel";
@@ -1000,17 +998,6 @@ namespace CKAN
             this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
             this.StatusLabel.TabIndex = 0;
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // KSPVersionLabel
-            // 
-            this.KSPVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.KSPVersionLabel.AutoSize = true;
-            this.KSPVersionLabel.Location = new System.Drawing.Point(1280, 15);
-            this.KSPVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.KSPVersionLabel.Name = "KSPVersionLabel";
-            this.KSPVersionLabel.Size = new System.Drawing.Size(230, 29);
-            this.KSPVersionLabel.TabIndex = 1;
-            this.KSPVersionLabel.Text = "Kerbal Space Program 0.25.0";
             // 
             // MainTabControl
             // 
@@ -1546,7 +1533,6 @@ namespace CKAN
         private ToolStripMenuItem launchKSPToolStripMenuItem;
         private CKAN.MainTabControl MainTabControl;
         private TabPage ManageModsTabPage;
-        private Label KSPVersionLabel;
         private Label FilterByNameLabel;
         private HintTextBox FilterByNameTextBox;
         private Label FilterByDescriptionLabel;
