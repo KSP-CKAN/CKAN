@@ -118,8 +118,8 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.16'. Changes since spec `1`
-are marked with **v1.2** through to **v1.16** respectively. For maximum
+This document describes the CKAN specification 'v1.20'. Changes since spec `1`
+are marked with **v1.2** through to **v1.20** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -451,7 +451,7 @@ are described. Unless specified otherwise, these are URLs:
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
 - `spacedock` : The mod on SpaceDock.
-- `curse` : The mod on Curse.
+- `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
@@ -603,6 +603,8 @@ For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
 When used, the following fields will be auto-filled if not already present:
 
+- `name`
+- `abstract`
 - `author`
 - `version`
 - `download`
@@ -824,6 +826,7 @@ The possible values of `before` and `after` are:
 - `optimus_prime`
 - `property_sort`
 - `spacedock`
+- `curse`
 - `strip_netkan_metadata`
 - `version_edit`
 - `versioned_override`
