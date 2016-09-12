@@ -170,6 +170,11 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
+                "curse" : {
+                    "description" : "Project on Curse",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
                 "manual" : {
                     "description" : "Mod's manual",
                     "type"        : "string",
@@ -325,7 +330,10 @@
             "description" : "A license.",
             "enum" : [
                 "public-domain",
+                "AFL-3.0",
+                "AGPL-3.0",
                 "Apache", "Apache-1.0", "Apache-2.0",
+                "APSL-2.0",
                 "Artistic", "Artistic-1.0", "Artistic-2.0",
                 "BSD-2-clause", "BSD-3-clause", "BSD-4-clause",
                 "ISC",
@@ -343,7 +351,8 @@
                 "GFDL-1.0", "GFDL-1.1", "GFDL-1.2", "GFDL-1.3",
                 "GFDL-NIV-1.0", "GFDL-NIV-1.1", "GFDL-NIV-1.2", "GFDL-NIV-1.3",
                 "LPPL-1.0", "LPPL-1.1", "LPPL-1.2", "LPPL-1.3c",
-                "MPL-1.1",
+                "MPL-1.0", "MPL-1.1",
+                "Ms-PL", "Ms-RL",
                 "Perl",
                 "Python-2.0",
                 "QPL-1.0",

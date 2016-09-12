@@ -199,6 +199,8 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("- spacedock: {0}", Uri.EscapeUriString(module.resources.spacedock.ToString()));
                 if (module.resources.repository != null)
                     user.RaiseMessage("- repository: {0}", Uri.EscapeUriString(module.resources.repository.ToString()));
+                if (module.resources.curse != null)
+                    user.RaiseMessage("- curse: {0}", Uri.EscapeUriString(module.resources.curse.ToString()));
             }
 
             // Compute the CKAN filename.

@@ -451,16 +451,18 @@ are described. Unless specified otherwise, these are URLs:
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
 - `spacedock` : The mod on SpaceDock.
+- `curse` : The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
 
     "resources" : {
-        "homepage"     : "http://tinyurl.com/DogeCoinFlag",
+        "homepage"     : "https://tinyurl.com/DogeCoinFlag",
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
-        "repository"   : "http://github.com/pjf/DogeCoinFlag",
+        "repository"   : "https://github.com/pjf/DogeCoinFlag",
         "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
         "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag"
+        "curse"        : "https://kerbal.curseforge.com/projects/220221"
     }
 
 While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
@@ -575,6 +577,23 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.spacedock`
 - `resources.repository`
 - `resources.x_screenshot`
+- `ksp_version`
+
+###### `#/ckan/curse/:cid`
+
+Indicates that data should be fetched from Curse, using the `:cid` provided. For example: `#/ckan/curse/220221`.
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `license`
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `download_hash`
+- `download_content_type`
+- `resources.curse`
 - `ksp_version`
 
 ###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
