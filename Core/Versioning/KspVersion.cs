@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -638,6 +639,37 @@ namespace CKAN.Versioning
                 throw new ArgumentNullException("right");
 
             return left.CompareTo(right) >= 0;
+        }
+    }
+
+    public sealed partial class KspVersion
+    {
+        public static KspVersion Min(params KspVersion[] versions)
+        {
+            if (versions == null)
+                throw new ArgumentNullException("versions");
+
+            if (!versions.Any())
+                throw new ArgumentException("Value cannot be empty.", "versions");
+
+            if (versions.Any(i => i == null))
+                throw new ArgumentException("Value cannot contain null.", "versions");
+
+            return versions.Min();
+        }
+
+        public static KspVersion Max(params KspVersion[] versions)
+        {
+            if (versions == null)
+                throw new ArgumentNullException("versions");
+
+            if (!versions.Any())
+                throw new ArgumentException("Value cannot be empty.", "versions");
+
+            if (versions.Any(i => i == null))
+                throw new ArgumentException("Value cannot contain null.", "versions");
+
+            return versions.Max();
         }
     }
 
