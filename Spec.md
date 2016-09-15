@@ -118,8 +118,8 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.16'. Changes since spec `1`
-are marked with **v1.2** through to **v1.16** respectively. For maximum
+This document describes the CKAN specification 'v1.20'. Changes since spec `1`
+are marked with **v1.2** through to **v1.20** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -451,16 +451,18 @@ are described. Unless specified otherwise, these are URLs:
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.
 - `spacedock` : The mod on SpaceDock.
+- `curse` :  (**v1.20**) The mod on Curse.
 - `manual` : The mod's manual, if it exists.
 
 Example resources:
 
     "resources" : {
-        "homepage"     : "http://tinyurl.com/DogeCoinFlag",
+        "homepage"     : "https://tinyurl.com/DogeCoinFlag",
         "bugtracker"   : "https://github.com/pjf/DogeCoinFlag/issues",
-        "repository"   : "http://github.com/pjf/DogeCoinFlag",
+        "repository"   : "https://github.com/pjf/DogeCoinFlag",
         "ci"           : "https://ksp.sarbian.com/jenkins/DogecoinFlag"
         "spacedock"    : "https://spacedock.info/mod/269/Dogecoin%20Flag"
+        "curse"        : "https://kerbal.curseforge.com/projects/220221"
     }
 
 While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
@@ -577,6 +579,23 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.x_screenshot`
 - `ksp_version`
 
+###### `#/ckan/curse/:cid`
+
+Indicates that data should be fetched from Curse, using the `:cid` provided. For example: `#/ckan/curse/220221`.
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `license`
+- `author`
+- `version`
+- `download`
+- `download_size`
+- `download_hash`
+- `download_content_type`
+- `resources.curse`
+- `ksp_version`
+
 ###### `#/ckan/github/:user/:repo[/asset_match/:filter_regexp]`
 
 Indicates that data should be fetched from GitHub, using the `:user` and `:repo` provided.
@@ -584,6 +603,8 @@ For example: `#/ckan/github/pjf/DogeCoinFlag`.
 
 When used, the following fields will be auto-filled if not already present:
 
+- `name`
+- `abstract`
 - `author`
 - `version`
 - `download`
@@ -805,6 +826,7 @@ The possible values of `before` and `after` are:
 - `optimus_prime`
 - `property_sort`
 - `spacedock`
+- `curse`
 - `strip_netkan_metadata`
 - `version_edit`
 - `versioned_override`

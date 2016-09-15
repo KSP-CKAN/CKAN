@@ -155,7 +155,7 @@ namespace CKAN.NetKAN.Transformers
                     {
                         // In practice, the version specified in .version files tends to be unreliable, with authors
                         // forgetting to update it when new versions are released. Therefore if we have a version
-                        // specified from another source such as SpaceDock or a GitHub tag, don't overwrite it.
+                        // specified from another source such as SpaceDock, curse or a GitHub tag, don't overwrite it.
                         json.SafeAdd("version", avc.version.ToString());
                     }
 

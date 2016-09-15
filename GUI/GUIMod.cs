@@ -131,7 +131,7 @@ namespace CKAN
 
             Abstract = mod.@abstract;
             
-            // If we have homepage provided use that, otherwise use the spacedock page or the github repo so that users have somewhere to get more info than just the abstract.
+            // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
 
             Homepage = "N/A";
             if (mod.resources != null)
@@ -143,6 +143,10 @@ namespace CKAN
                 else if (mod.resources.spacedock != null)
                 {
                     Homepage = mod.resources.spacedock.ToString();
+                }
+                else if (mod.resources.curse != null)
+                {
+                    Homepage = mod.resources.curse.ToString();
                 }
                 else if (mod.resources.repository != null)
                 {

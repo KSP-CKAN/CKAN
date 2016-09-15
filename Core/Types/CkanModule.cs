@@ -84,6 +84,9 @@ namespace CKAN
 
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri spacedock;
+
+        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
+        public Uri curse;
     }
 
     public class DownloadHashesDescriptor

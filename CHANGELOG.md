@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Bugfixes
+- [GUI] Reduce MinimumSize for main window to 1280x700 (#1893 by: politas; reviewed: Postremus, techman83, ayan4m1, Olympic1)
+
+### Features
+- [Multiple] Add Curse to resources (#1897 by: Olympic1; reviewed: ayan4m1, politas)
+
 ## v1.20.0
 
 ### Bugfixes

@@ -51,11 +51,12 @@ namespace CKAN.NetKAN.Transformers
         {
             { "homepage", 0 },
             { "spacedock", 1 },
-            { "repository", 2 },
-            { "bugtracker", 3 },
-            { "ci", 4 },
-            { "license", 5 },
-            { "manual", 6 }
+            { "curse", 2 },
+            { "repository", 3 },
+            { "bugtracker", 4 },
+            { "ci", 5 },
+            { "license", 6 },
+            { "manual", 7 }
         };
 
         public string Name { get { return "property_sort"; } }
