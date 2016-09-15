@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using CKAN.Versioning;
+using log4net;
 
 namespace CKAN.GameVersionProviders
 {
@@ -12,6 +13,8 @@ namespace CKAN.GameVersionProviders
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
+        private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildIdVersionProvider));
+
         private readonly IKspBuildMap _kspBuildMap;
 
         public KspBuildIdVersionProvider(IKspBuildMap kspBuildMap)
@@ -21,19 +24,51 @@ namespace CKAN.GameVersionProviders
 
         public bool TryGetVersion(string directory, out KspVersion result)
         {
-            var buildIdPath = Path.Combine(directory, "buildID.txt");
-            var buildId64Path = Path.Combine(directory, "buildID64.txt");
+            KspVersion buildIdVersion;
+            var hasBuildId = TryGetVersionFromFile(Path.Combine(directory, "buildID.txt"), out buildIdVersion);
 
-            // If buildID64.txt exists, use it instead of buildID.txt
-            if (File.Exists(buildId64Path))
+            KspVersion buildId64Version;
+            var hasBuildId64 = TryGetVersionFromFile(Path.Combine(directory, "buildID64.txt"), out buildId64Version);
+
+            if (hasBuildId && hasBuildId64)
             {
-                buildIdPath = buildId64Path;
-            }
+                result = KspVersion.Max(buildIdVersion, buildId64Version);
 
-            if (File.Exists(buildIdPath))
+                if (buildIdVersion != buildId64Version)
+                {
+                    Log.WarnFormat(
+                        "Found different KSP versions in buildID.txt ({0}) and buildID64.txt ({1}), assuming {2}.",
+                        buildIdVersion,
+                        buildId64Version,
+                        result
+                    );
+                }
+
+                return true;
+            }
+            else if (hasBuildId64)
+            {
+                result = buildId64Version;
+                return true;
+            }
+            else if (hasBuildId)
+            {
+                result = buildIdVersion;
+                return true;
+            }
+            else
+            {
+                result = default(KspVersion);
+                return false;
+            }
+        }
+
+        private bool TryGetVersionFromFile(string file, out KspVersion result)
+        {
+            if (File.Exists(file))
             {
                 var match = File
-                    .ReadAllLines(buildIdPath)
+                    .ReadAllLines(file)
                     .Select(i => BuildIdPattern.Match(i))
                     .FirstOrDefault(i => i.Success);
 
