@@ -22,6 +22,13 @@ namespace CKAN.GameVersionProviders
         public bool TryGetVersion(string directory, out KspVersion result)
         {
             var buildIdPath = Path.Combine(directory, "buildID.txt");
+            var buildId64Path = Path.Combine(directory, "buildID64.txt");
+
+            // If buildID64.txt exists, use it instead of buildID.txt
+            if (File.Exists(buildId64Path))
+            {
+                buildIdPath = buildId64Path;
+            }
 
             if (File.Exists(buildIdPath))
             {
