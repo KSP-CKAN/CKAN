@@ -5,10 +5,16 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 ### Bugfixes
+- [Build] Update SharpZip dependency and remove old Newtonsoft.Json (#1879 by: ayan4m1; reviewed: politas)
+
+## v1.20.1
+
+### Bugfixes
 - [GUI] Reduce MinimumSize for main window to 1280x700 (#1893 by: politas; reviewed: Postremus, techman83, ayan4m1, Olympic1)
 
 ### Features
 - [Multiple] Add Curse to resources (#1897 by: Olympic1; reviewed: ayan4m1, politas)
+- [Core] Use maximum of buildID and buildID64 if both are available (#1900 by: dbent; reviewed: politas)
 
 ## v1.20.0
 

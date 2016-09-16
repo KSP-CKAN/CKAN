@@ -2130,7 +2130,7 @@ my $REPACK  = "Core/packages/ILRepack.1.25.0/tools/ILRepack.exe";
 my $TARGET  = "Debug";      # Even our releases contain debugging info
 my $OUTNAME = "ckan.exe";   # Or just `ckan` if we want to be unixy
 my $BUILD   = "$Bin/../build";
-my @SOURCE  = map { "$Bin/../$_"} qw(Core Cmdline GUI Netkan Tests AutoUpdate CKAN CKAN.sln);
+my @SOURCE  = map { "$Bin/../$_"} qw(Core Cmdline GUI Netkan Tests AutoUpdate packages CKAN.sln);
 my $METACLASS = "build/Core/Meta.cs";
 
 my @PROJECTS = qw(Cmdline Core GUI Netkan AutoUpdate Tests);
