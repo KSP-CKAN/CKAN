@@ -517,7 +517,7 @@ namespace CKAN
         public string ReasonStringFor(CkanModule mod)
         {
             var reason = ReasonFor(mod);
-            var is_root_type = reason.GetType() == typeof (SelectionReason.UserRequested)
+            var is_root_type = reason.GetType() == typeof(SelectionReason.UserRequested)
                 || reason.GetType() == typeof(SelectionReason.Installed);
             return is_root_type
                 ? reason.Reason
@@ -527,7 +527,7 @@ namespace CKAN
         public SelectionReason ReasonFor(CkanModule mod)
         {
             if (mod == null) throw new ArgumentNullException();
-            if (!ModList().Contains(mod))
+            if (!reasons.ContainsKey(mod) && !ModList().Contains(mod))
             {
                 throw new ArgumentException("Mod " + mod.identifier + " is not in the list");
             }
