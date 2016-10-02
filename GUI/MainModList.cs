@@ -370,13 +370,7 @@ namespace CKAN
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = false,
-                with_recommends = false,
-                //See #1371
-                //The code inside the while loop is only responsible for handling tmp resolution
-                //Inconsistencies are handled later,
-                //and this options are also disabled there
-                procede_with_inconsistencies = true,
-                without_enforce_consistency = true
+                with_recommends = false
             };
 
             foreach (var change in changeSet)
@@ -400,7 +394,6 @@ namespace CKAN
             }
             var installed_modules =
                 registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
-
 
             bool handled_all_to_many_provides = false;
             while (!handled_all_to_many_provides)
@@ -437,7 +430,6 @@ namespace CKAN
                 }
             }
 
-
             foreach (var dependency in registry.FindReverseDependencies(modules_to_remove.Select(mod=>mod.identifier)))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
@@ -445,6 +437,7 @@ namespace CKAN
                     installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
+
             //May throw InconsistentKraken
             //We want to allow InconstistencyKraken's
             //Because we use them to check if something conflicts
