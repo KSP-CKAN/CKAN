@@ -438,12 +438,6 @@ namespace CKAN
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
 
-            //May throw InconsistentKraken
-            //We want to allow InconstistencyKraken's
-            //Because we use them to check if something conflicts
-            options.procede_with_inconsistencies = false;
-            options.without_enforce_consistency = false;
-
             var resolver = new RelationshipResolver(options, registry, version);
             resolver.RemoveModsFromInstalledList(
                 changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()));
