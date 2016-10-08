@@ -299,6 +299,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\backward.png" />
     <Content Include="Resources\forward.png" />
     <Content Include="Resources\textClear.png" />

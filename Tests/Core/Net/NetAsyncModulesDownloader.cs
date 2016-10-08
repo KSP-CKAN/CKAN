@@ -57,9 +57,6 @@ namespace Tests.Core.Net
         [Explicit]
         public void SingleDownload()
         {
-            // Force log4net on.
-            // BasicConfigurator.Configure();
-            // LogManager.GetRepository().Threshold = Level.Debug;
             log.Info("Performing single download test.");
 
             // We know kOS is in the TestKAN data, and hosted in KS. Let's get it.

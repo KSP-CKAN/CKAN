@@ -60,6 +60,7 @@
     <Compile Include="GameVersionProviders\KspVersionSource.cs" />
     <Compile Include="GameVersionProviders\IGameVersionProvider.cs" />
     <Compile Include="GameVersionProviders\KspBuildMap.cs" />
+    <Compile Include="Logging.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
     <Compile Include="Net\IDownloader.cs" />
     <Compile Include="Net\NetAsyncDownloader.cs" />

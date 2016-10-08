@@ -48,8 +48,7 @@ namespace CKAN.CmdLine
                 args = guiCommand.ToArray();
             }
 
-            BasicConfigurator.Configure();
-            LogManager.GetRepository().Threshold = Level.Warn;
+            Logging.Initialize();
             log.Debug("CKAN started");
 
             Options cmdline;

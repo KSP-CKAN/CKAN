@@ -6,7 +6,7 @@
 
 [Click here to go to the CKAN wiki][5]
 
-**The CKAN Spec can be found [here](Spec.md)**.
+[Click here to view the CKAN metadata specification](Spec.md)
 
 ## What's the CKAN?
 
@@ -28,7 +28,7 @@ We very much welcome contributions, discussions, and especially pull-requests.
 ## The CKAN spec
 
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
-which comes with a corresponding [JSON Schema](CKAN.schema) which you can also find in the [Schema Store][8]
+which comes with a corresponding [JSON Schema](CKAN.schema) that you can also find in the [Schema Store][8]
 
 This repository includes a validator that you can use to [validate your files][3].
 
