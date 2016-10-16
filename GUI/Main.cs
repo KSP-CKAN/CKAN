@@ -125,14 +125,14 @@ namespace CKAN
                 }
                 else
                 {
-                    if (row.DefaultCellStyle.BackColor != Color.White)
+                    if (row.DefaultCellStyle.BackColor != SystemColors.ControlText)
                     {
                         foreach (DataGridViewCell cell in row.Cells)
                         {
                             cell.ToolTipText = null;
                         }
 
-                        row.DefaultCellStyle.BackColor = Color.White;
+                        row.DefaultCellStyle.BackColor = SystemColors.ControlText;
                         ModList.InvalidateRow(row.Index);
                     }
                 }
