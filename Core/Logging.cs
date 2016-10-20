@@ -2,6 +2,7 @@
 using System.IO;
 using log4net;
 using log4net.Config;
+using log4net.Core;
 
 namespace CKAN
 {
@@ -20,6 +21,7 @@ namespace CKAN
             if (!logConfig.Exists)
             {
                 BasicConfigurator.Configure();
+                LogManager.GetRepository().Threshold = Level.Warn;
             }
             else
             {
