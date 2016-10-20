@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Update SharpZip dependency and remove old Newtonsoft.Json (#1879 by: ayan4m1; reviewed: politas)
 - [Core] Make sure we're updating the build mappings on repository update (#1906 by: dbent; reviewed Olympic1)
 - [Core/GUI] Fix TargetInvocationException and improve mod conflict GUI test (#1371, #1373 by Postremus, #1908 by ayan4m1; reviewed: politas)
+- [Multiple] Fix default logging on fallback when no XML file (#1920 by politas; reviewed ayan4m1, mathuin)
 
 ### Features
 - [Multiple] Add log4net.xml, refactor logging init and log to file by default (#1881 by ayan4m1; reviewed: politas)
