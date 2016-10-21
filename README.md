@@ -48,6 +48,9 @@ If the metadata we have is incorrect please [open an issue][7] and let us know.
 
 If you want to contribute, please read our [CONTRIBUTING][4] file.
 
+---
+Note: Are you looking for the Open Data portal software called CKAN? If so, their GitHub repository is found [here][9].
+
 
  [1]:https://github.com/KSP-CKAN/CKAN/commits/master
  [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
@@ -57,3 +60,4 @@ If you want to contribute, please read our [CONTRIBUTING][4] file.
  [6]:https://github.com/KSP-CKAN/CKAN/issues/new
  [7]:https://github.com/KSP-CKAN/NetKAN/issues/new
  [8]:http://schemastore.org/json/
+ [9]:https://github.com/ckan/ckan
