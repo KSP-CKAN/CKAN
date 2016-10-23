@@ -4,12 +4,15 @@ using System.Xml.Serialization;
 
 namespace CKAN
 {
-
+    /// <summary>
+    /// Serializable application configuration
+    /// </summary>
     public class Configuration
     {
         public string CommandLineArguments = "";
         public bool AutoCloseWaitDialog = false;
         public bool URLHandlerNoNag = false;
+        public string BuildMapUrl = string.Empty;
 
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;

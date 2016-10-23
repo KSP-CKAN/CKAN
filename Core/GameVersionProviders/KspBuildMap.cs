@@ -11,15 +11,21 @@ namespace CKAN.GameVersionProviders
     // ReSharper disable once ClassNeverInstantiated.Global
     public sealed class KspBuildMap : IKspBuildMap
     {
-        // TODO: Need a way for the client to configure this
-        private static readonly Uri BuildMapUri =
-            new Uri("https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/builds.json");
-
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
+        private readonly string _buildUrl;
         private readonly object _buildMapLock = new object();
         private readonly IWin32Registry _registry;
-        private JBuilds _jBuilds;
+        private BuildMap _buildMap;
+
+        /// <summary>
+        /// Create a KSPBuildMap object with a user-configured update URL
+        /// </summary>
+        /// <param name="buildUrl"></param>
+        public KspBuildMap(string buildUrl)
+        {
+            _buildUrl = buildUrl;
+        }
 
         public KspVersion this[string buildId]
         {
@@ -28,7 +34,7 @@ namespace CKAN.GameVersionProviders
                 EnsureBuildMap();
 
                 string version;
-                return _jBuilds.Builds.TryGetValue(buildId, out version) ? KspVersion.Parse(version) : null;
+                return _buildMap.Builds.TryGetValue(buildId, out version) ? KspVersion.Parse(version) : null;
             }
         }
 
@@ -39,14 +45,13 @@ namespace CKAN.GameVersionProviders
 
         private void EnsureBuildMap()
         {
-            if (ReferenceEquals(_jBuilds, null))
+            if (!ReferenceEquals(_buildMap, null)) return;
+
+            lock(_buildMapLock)
             {
-                lock(_buildMapLock)
+                if (ReferenceEquals(_buildMap, null))
                 {
-                    if (ReferenceEquals(_jBuilds, null))
-                    {
-                        Refresh(useCachedVersion: true);
-                    }
+                    Refresh(useCachedVersion: true);
                 }
             }
         }
@@ -85,7 +90,7 @@ namespace CKAN.GameVersionProviders
         {
             try
             {
-                _jBuilds = JsonConvert.DeserializeObject<JBuilds>(buildMapJson);
+                _buildMap = JsonConvert.DeserializeObject<BuildMap>(buildMapJson);
                 return true;
             }
             catch(Exception e)
@@ -99,7 +104,7 @@ namespace CKAN.GameVersionProviders
         {
             try
             {
-                var json = Net.DownloadText(BuildMapUri);
+                var json = Net.DownloadText(_buildUrl);
 
                 if (TrySetBuildMap(json))
                 {
@@ -113,7 +118,7 @@ namespace CKAN.GameVersionProviders
             }
             catch (Exception e)
             {
-                Log.WarnFormat("Could not retrieve latest build map from: {0}", BuildMapUri);
+                Log.WarnFormat("Could not retrieve latest build map from: {0}", _buildUrl);
                 Log.Debug(e);
                 return false;
             }
@@ -161,11 +166,9 @@ namespace CKAN.GameVersionProviders
             }
         }
 
-        // ReSharper disable once ClassNeverInstantiated.Local
-        private sealed class JBuilds
+        private sealed class BuildMap
         {
             [JsonProperty("builds")]
-            // ReSharper disable once UnusedAutoPropertyAccessor.Local
             public Dictionary<string, string> Builds { get; set; }
         }
     }

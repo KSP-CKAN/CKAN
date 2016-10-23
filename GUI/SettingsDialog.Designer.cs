@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
             this.NewRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
+            this.BuildJsonTextBox = new System.Windows.Forms.TextBox();
+            this.BuildJsonLabel = new System.Windows.Forms.Label();
             this.DownRepoButton = new System.Windows.Forms.Button();
             this.UpRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
@@ -65,6 +67,8 @@
             // 
             // RepositoryGroupBox
             // 
+            this.RepositoryGroupBox.Controls.Add(this.BuildJsonTextBox);
+            this.RepositoryGroupBox.Controls.Add(this.BuildJsonLabel);
             this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
@@ -73,10 +77,26 @@
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
-            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 261);
+            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 281);
             this.RepositoryGroupBox.TabIndex = 8;
             this.RepositoryGroupBox.TabStop = false;
             this.RepositoryGroupBox.Text = "Metadata repositories";
+            // 
+            // BuildJsonTextBox
+            // 
+            this.BuildJsonTextBox.Location = new System.Drawing.Point(68, 256);
+            this.BuildJsonTextBox.Name = "BuildJsonTextBox";
+            this.BuildJsonTextBox.Size = new System.Drawing.Size(402, 20);
+            this.BuildJsonTextBox.TabIndex = 13;
+            // 
+            // BuildJsonLabel
+            // 
+            this.BuildJsonLabel.AutoSize = true;
+            this.BuildJsonLabel.Location = new System.Drawing.Point(7, 259);
+            this.BuildJsonLabel.Name = "BuildJsonLabel";
+            this.BuildJsonLabel.Size = new System.Drawing.Size(45, 13);
+            this.BuildJsonLabel.TabIndex = 12;
+            this.BuildJsonLabel.Text = "Buildlist:";
             // 
             // DownRepoButton
             // 
@@ -128,7 +148,7 @@
             this.CacheGroupBox.Controls.Add(this.ClearCKANCacheButton);
             this.CacheGroupBox.Controls.Add(this.CKANCacheLabel);
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CacheGroupBox.Location = new System.Drawing.Point(12, 279);
+            this.CacheGroupBox.Location = new System.Drawing.Point(12, 299);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
             this.CacheGroupBox.TabIndex = 9;
@@ -166,7 +186,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox2.Location = new System.Drawing.Point(12, 334);
+            this.groupBox2.Location = new System.Drawing.Point(12, 354);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(476, 105);
             this.groupBox2.TabIndex = 11;
@@ -258,7 +278,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 442);
+            this.ClientSize = new System.Drawing.Size(495, 466);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
@@ -266,8 +286,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsDialog";
             this.Text = "Settings";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsDialog_FormClosing);
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
             this.RepositoryGroupBox.ResumeLayout(false);
+            this.RepositoryGroupBox.PerformLayout();
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -296,5 +318,7 @@
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
         private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
+        private System.Windows.Forms.TextBox BuildJsonTextBox;
+        private System.Windows.Forms.Label BuildJsonLabel;
     }
 }

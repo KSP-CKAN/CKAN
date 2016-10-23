@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using log4net.Repository.Hierarchy;
@@ -12,52 +14,116 @@ namespace CKAN
 {
     public partial class SettingsDialog : Form
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SettingsDialog));
 
-        private long m_cacheSize;
-        private int m_cacheFileCount;
+        public static readonly string DefaultBuildUrl =
+            "https://raw.githubusercontent.com/KSP-CKAN/CKAN-meta/master/builds.json";
 
-        private List<Repository> _sortedRepos = new List<Repository>();
+        public Configuration Configuration;
+        public KSP Instance;
+        public string BuildUrl => BuildJsonTextBox.Text;
+        public List<Repository> Repos { get; private set; } = new List<Repository>();
+
+        private long _cacheSize;
+        private int _cacheFileCount;
 
         public SettingsDialog()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+
+            // allows later mocking of these variables
+            // todo: get rid of static Main.Instance
+            if (Main.Instance != null)
+            {
+                Configuration = Main.Instance.configuration;
+                Instance = Main.Instance.CurrentInstance;
+            }
+        }
+
+        public void Initialize()
+        {
+            UpdateDialog();
+            UpdateBuildMapUrl();
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
-            UpdateDialog();
+            Initialize();
+        }
+
+        public async void UpdateBuildMapUrl()
+        {
+            // only bother checking for validity if the value has been changed
+            if (Configuration.BuildMapUrl.Equals(BuildJsonTextBox.Text)) return;
+
+            if (!await EnsureValidBuildUrl())
+            {
+                // revert value to known default
+                BuildJsonTextBox.Text = DefaultBuildUrl;
+
+                // todo: warning dialog telling the user to fix the URL
+            }
+
+            Configuration.BuildMapUrl = string.IsNullOrWhiteSpace(BuildUrl)
+                ? BuildUrl
+                : DefaultBuildUrl;
         }
 
         public void UpdateDialog()
         {
             RefreshReposListBox();
 
+            BuildJsonTextBox.Text = string.IsNullOrWhiteSpace(Configuration.BuildMapUrl)
+                ? Configuration.BuildMapUrl
+                : DefaultBuildUrl;
             LocalVersionLabel.Text = Meta.Version();
 
-            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
-            RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
+            CheckUpdateOnLaunchCheckbox.Checked = Configuration.CheckForUpdatesOnLaunch;
+            RefreshOnStartupCheckbox.Checked = Configuration.RefreshOnStartup;
 
             UpdateCacheInfo();
+        }
+
+        private async Task<bool> EnsureValidBuildUrl()
+        {
+            // give ourselves a fighting chance at making the HTTP request
+            if (string.IsNullOrWhiteSpace(BuildJsonTextBox.Text))
+            {
+                BuildJsonTextBox.Text = DefaultBuildUrl;
+            }
+
+            // perform a dumb read of the configured URL
+            try
+            {
+                var simpleValidator = new WebClient();
+                await simpleValidator.DownloadStringTaskAsync(BuildJsonTextBox.Text);
+                // no need to validate the contents of the file, just whether or not the URL yields a response
+                return true;
+            }
+            catch (WebException e)
+            {
+                Log.Warn("Build map URL failed validation!", e);
+            }
+
+            return false;
         }
 
         private void RefreshReposListBox()
         {
             // Give the Repository the priority it
             // currently has in the gui
-            for (int i = 0; i < _sortedRepos.Count; i++)
+            for (var i = 0; i < Repos.Count; i++)
             {
-                _sortedRepos[i].priority = i;
+                Repos[i].priority = i;
             }
 
-            var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
+            var manager = RegistryManager.Instance(Instance);
             var registry = manager.registry;
-            _sortedRepos = new List<Repository>(registry.Repositories.Values);
-
-            _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
+            Repos = new List<Repository>(registry.Repositories.Values);
+            Repos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
             ReposListBox.Items.Clear();
-            foreach (var repo in _sortedRepos)
+            foreach (var repo in Repos)
             {
                 ReposListBox.Items.Add(string.Format("{0} | {1}", repo.name, repo.uri));
             }
@@ -67,47 +133,45 @@ namespace CKAN
 
         private void UpdateCacheInfo()
         {
-            m_cacheSize = 0;
-            m_cacheFileCount = 0;
-            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
+            _cacheSize = 0;
+            _cacheFileCount = 0;
 
-            var cacheDirectory = new DirectoryInfo(cachePath);
+            var cacheDirectory = new DirectoryInfo(Instance.DownloadCacheDir());
             foreach (var file in cacheDirectory.GetFiles())
             {
-                m_cacheFileCount++;
-                m_cacheSize += file.Length;
+                _cacheFileCount++;
+                _cacheSize += file.Length;
             }
 
-            CKANCacheLabel.Text = String.Format
+            CKANCacheLabel.Text = string.Format
             (
                 "There are currently {0} cached files using {1} MB in total",
-                m_cacheFileCount,
-                m_cacheSize / 1024 / 1024
+                _cacheFileCount,
+                _cacheSize / 1024 / 1024
             );
         }
 
         private void ClearCKANCacheButton_Click(object sender, EventArgs e)
         {
-            YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            string confirmationText = String.Format
+            var deleteConfirmationDialog = new YesNoDialog();
+            var confirmationText = string.Format
             (
                 "Do you really want to delete {0} cached files, freeing {1} MB?",
-                m_cacheFileCount, 
-                m_cacheSize / 1024 / 1024
+                _cacheFileCount, 
+                _cacheSize / 1024 / 1024
             );
 
             if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)
             {
-                var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-                foreach (var file in Directory.GetFiles(cachePath))
+                try
                 {
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    var cacheDir = Instance.DownloadCacheDir();
+                    Directory.Delete(cacheDir, true);
+                    Directory.CreateDirectory(cacheDir);
+                }
+                catch (Exception ex)
+                {
+                    Log.Info("Exception thrown trying to clean up cache directory", ex);
                 }
 
                 UpdateCacheInfo();
@@ -144,7 +208,7 @@ namespace CKAN
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            var item = Repos[ReposListBox.SelectedIndex];
             var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
             registry.Repositories.Remove(item.name);
             RefreshReposListBox();
@@ -169,7 +233,7 @@ namespace CKAN
                         repositories.Remove(name);
                     }
 
-                    repositories.Add(name, new Repository(name, url, _sortedRepos.Count));
+                    repositories.Add(name, new Repository(name, url, Repos.Count));
                     registry.Repositories = repositories;
 
                     RefreshReposListBox();
@@ -193,9 +257,9 @@ namespace CKAN
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            _sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
+            var item = Repos[ReposListBox.SelectedIndex];
+            Repos.RemoveAt(ReposListBox.SelectedIndex);
+            Repos.Insert(ReposListBox.SelectedIndex - 1, item);
             RefreshReposListBox();
         }
 
@@ -211,9 +275,9 @@ namespace CKAN
                 return;
             }
 
-            var item = _sortedRepos[ReposListBox.SelectedIndex];
-            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
-            _sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
+            var item = Repos[ReposListBox.SelectedIndex];
+            Repos.RemoveAt(ReposListBox.SelectedIndex);
+            Repos.Insert(ReposListBox.SelectedIndex + 1, item);
             RefreshReposListBox();
         }
 
@@ -236,7 +300,7 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-                log.Warn("Exception caught in CheckForUpdates:\r\n"+ex);
+                Log.Warn("Exception caught in CheckForUpdates:\r\n"+ex);
             }
         }
 
@@ -256,6 +320,11 @@ namespace CKAN
         {
             Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
             Main.Instance.configuration.Save();
+        }
+
+        private void SettingsDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            UpdateBuildMapUrl();
         }
     }
 }

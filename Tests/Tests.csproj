@@ -152,6 +152,7 @@
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
     <Compile Include="GUI\NavigationHistoryTests.cs" />
+    <Compile Include="GUI\Settings.cs" />
     <Compile Include="NetKAN\AVC.cs" />
     <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
     <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
