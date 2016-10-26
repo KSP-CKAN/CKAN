@@ -116,7 +116,9 @@ namespace CKAN.NetKAN.Services
 
                 for (var i = 0; i < files.Count; i++)
                 {
-                    if (files[i].Name == internalFilePath)
+                    Log.DebugFormat("Testing file '{0}' against path '{1}'", files[i].Name,internalFilePath);
+                    // Test for either an exact match or using the filespec as a regexp
+                    if (internalFilePath.Equals(files[i]?.Name) || Regex.IsMatch(files[i]?.Name, internalFilePath))
                     {
                         remoteIndex = i;
                         break;
