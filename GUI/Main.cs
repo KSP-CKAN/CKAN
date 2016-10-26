@@ -643,7 +643,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier, gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -728,21 +728,15 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        var checkCell = row.Cells[0] as DataGridViewCheckBoxCell;
-                        if (checkCell != null)
+                        gui_mod.SetInstallChecked(row);
+                        if (!gui_mod.IsIncompatible || !gui_mod.IsInstallChecked)
                         {
-                            var checkVal = (bool)checkCell.Value;
-                            // if the mod is being removed, allow it despite incompatibility
-                            // otherwise, prevent the change
-                            if (checkVal && mainModList.ModFilter != GUIModFilter.Incompatible)
-                            {
-                                gui_mod.SetInstallChecked(row);
+                            MarkModForInstall(gui_mod.Identifier);
+                        }
 
-                                if (gui_mod.IsInstallChecked)
-                                {
-                                    last_mod_to_have_install_toggled.Push(gui_mod);
-                                }
-                            }
+                        if (gui_mod.IsInstallChecked)
+                        {
+                            last_mod_to_have_install_toggled.Push(gui_mod);
                         }
                         break;
                     case 1:
