@@ -703,10 +703,6 @@ namespace CKAN
 
         private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (mainModList.ModFilter == GUIModFilter.Incompatible)
-            {
-                return;
-            }
             var row_index = e.RowIndex;
             var column_index = e.ColumnIndex;
 
@@ -733,8 +729,17 @@ namespace CKAN
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
-                        if(gui_mod.IsInstallChecked)
-                            last_mod_to_have_install_toggled.Push(gui_mod);
+                        if (gui_mod.IsInstallChecked)
+                        {
+                            if (mainModList.ModFilter == GUIModFilter.Incompatible)
+                            {
+                                gui_mod.IsInstallChecked = false;
+                            }
+                            else
+                            {
+                                last_mod_to_have_install_toggled.Push(gui_mod);
+                            }
+                        }
                         break;
                     case 1:
                         gui_mod.SetUpgradeChecked(row);
