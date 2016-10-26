@@ -86,7 +86,7 @@ namespace CKAN
         /// When our cache dirctory changes, we just clear the list of
         /// files we know about.
         /// </summary>
-        private void OnCacheChanged()
+        public void OnCacheChanged()
         {
             cachedFiles = null;   
         }

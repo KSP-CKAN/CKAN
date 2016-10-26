@@ -69,8 +69,7 @@ namespace CKAN
         {
             m_cacheSize = 0;
             m_cacheFileCount = 0;
-            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-
+            var cachePath = Main.Instance.CurrentInstance.DownloadCacheDir();
             var cacheDirectory = new DirectoryInfo(cachePath);
             foreach (var file in cacheDirectory.GetFiles())
             {
@@ -98,8 +97,7 @@ namespace CKAN
 
             if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)
             {
-                var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-                foreach (var file in Directory.GetFiles(cachePath))
+                foreach (var file in Directory.GetFiles(Main.Instance.CurrentInstance.DownloadCacheDir()))
                 {
                     try
                     {
@@ -109,6 +107,19 @@ namespace CKAN
                     {
                     }
                 }
+
+                // tell the cache object to nuke itself
+                Main.Instance.CurrentInstance.Cache.OnCacheChanged();
+
+                // forcibly tell all mod rows to re-check cache state
+                foreach (DataGridViewRow row in Main.Instance.ModList.Rows)
+                {
+                    var mod = row.Tag as GUIMod;
+                    mod?.UpdateIsCached();
+                }
+
+                // finally, clear the preview contents list
+                Main.Instance.UpdateModContentsTree(null, true);
 
                 UpdateCacheInfo();
             }
