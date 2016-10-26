@@ -192,7 +192,7 @@ namespace CKAN
                 UpdateModDependencyGraph(null);
         }
 
-        private void UpdateModContentsTree(CkanModule module, bool force = false)
+        public void UpdateModContentsTree(CkanModule module, bool force = false)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
             //Can be costly. For now only update when visible.
@@ -262,7 +262,7 @@ namespace CKAN
             e.Result = e.Argument;
         }
 
-        private void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
+        public void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
         {
             Util.Invoke(this, () => _PostModCaching((CkanModule)e.Result));
         }
@@ -271,6 +271,7 @@ namespace CKAN
         {
             HideWaitDialog(true);
 
+            GetSelectedModule()?.UpdateIsCached();;
             UpdateModContentsTree(module, true);
             RecreateDialogs();
         }

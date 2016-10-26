@@ -166,8 +166,17 @@ namespace CKAN
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
-            if (Main.Instance != null)
-                IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(mod.download);
+            UpdateIsCached();
+        }
+
+        public void UpdateIsCached()
+        {
+            if (Main.Instance.CurrentInstance == null)
+            {
+                return;
+            }
+
+            IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(Mod.download);
         }
 
         public CkanModule ToCkanModule()
