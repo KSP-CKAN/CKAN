@@ -171,7 +171,7 @@ namespace CKAN
 
         public void UpdateIsCached()
         {
-            if (Main.Instance.CurrentInstance == null)
+            if (Main.Instance?.CurrentInstance?.Cache == null || Mod?.download == null)
             {
                 return;
             }
