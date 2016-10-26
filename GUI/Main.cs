@@ -439,8 +439,8 @@ namespace CKAN
             }
 
             UpdateModsList();
-            ChangeSet = null;
-            Conflicts = null;
+            ChangeSet = new List<ModChange>();
+            Conflicts = new Dictionary<GUIMod, string>();
 
             Filter((GUIModFilter)configuration.ActiveFilter);
         }
@@ -728,16 +728,20 @@ namespace CKAN
                 switch (column_index)
                 {
                     case 0:
-                        gui_mod.SetInstallChecked(row);
-                        if (gui_mod.IsInstallChecked)
+                        var checkCell = row.Cells[0] as DataGridViewCheckBoxCell;
+                        if (checkCell != null)
                         {
-                            if (mainModList.ModFilter == GUIModFilter.Incompatible)
+                            var checkVal = (bool)checkCell.Value;
+                            // if the mod is being removed, allow it despite incompatibility
+                            // otherwise, prevent the change
+                            if (checkVal && mainModList.ModFilter != GUIModFilter.Incompatible)
                             {
-                                gui_mod.IsInstallChecked = false;
-                            }
-                            else
-                            {
-                                last_mod_to_have_install_toggled.Push(gui_mod);
+                                gui_mod.SetInstallChecked(row);
+
+                                if (gui_mod.IsInstallChecked)
+                                {
+                                    last_mod_to_have_install_toggled.Push(gui_mod);
+                                }
                             }
                         }
                         break;
