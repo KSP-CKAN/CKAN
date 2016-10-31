@@ -1,4 +1,4 @@
-# The Comprehensive Kerbal Archive Network (CKAN) 
+# The Comprehensive Kerbal Archive Network (CKAN)
 
 [![Downloads](https://img.shields.io/github/downloads/KSP-CKAN/CKAN/latest/total.svg)](https://github.com/KSP-CKAN/CKAN/releases/latest)
 
@@ -10,7 +10,7 @@
 
 ## What's the CKAN?
 
-The CKAN is a metadata respository and associated tools to allow you to find, install, and manage mods for Kerbal Space Program.
+The CKAN is a metadata repository and associated tools to allow you to find, install, and manage mods for Kerbal Space Program.
 It provides strong assurances that mods are installed in the way prescribed by their metadata files,
 for the correct version of Kerbal Space Program, alongside their dependencies, and without any conflicting mods.
 
