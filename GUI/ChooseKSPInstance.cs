@@ -7,35 +7,42 @@ namespace CKAN
 {
     public partial class ChooseKSPInstance : Form
     {
-        private FolderBrowserDialog browseKspFolder;
-        private RenameInstanceDialog renameInstanceDialog;
-        private readonly KSPManager manager;
+        private readonly KSPManager _manager;
+        private RenameInstanceDialog _renameInstanceDialog;
+        private readonly OpenFileDialog _instanceDialog = new OpenFileDialog()
+        {
+            AddExtension = false,
+            CheckFileExists = false,
+            CheckPathExists = false,
+            InitialDirectory = Environment.CurrentDirectory,
+            Filter = "KSP binaries (KSP*.exe)|KSP*.exe",
+            Multiselect = false
+        };
+
+        public bool HasSelections => KSPInstancesListView.SelectedItems.Count > 0;
 
         public ChooseKSPInstance()
         {
-            manager = Main.Instance.Manager;
+            _manager = Main.Instance.Manager;
             InitializeComponent();
 
             StartPosition = FormStartPosition.CenterScreen;
 
-            browseKspFolder = new FolderBrowserDialog();
-
-            if (!manager.Instances.Any())
+            if (!_manager.Instances.Any())
             {
-                manager.FindAndRegisterDefaultInstance();
+                _manager.FindAndRegisterDefaultInstance();
             }
 
             UpdateInstancesList();
-
-            SetButtonsEnabled(false);
+            UpdateButtonState();
         }
 
         private void UpdateInstancesList()
         {
-            SetButtonsEnabled(false);
             KSPInstancesListView.Items.Clear();
+            UpdateButtonState();
 
-            foreach (var instance in manager.Instances)
+            foreach (var instance in _manager.Instances)
             {
                 var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
 
@@ -49,24 +56,25 @@ namespace CKAN
 
         private void AddNewButton_Click(object sender, EventArgs e)
         {
-            if (browseKspFolder.ShowDialog() == DialogResult.OK)
-            {
-                KSP instance;
-                string path = browseKspFolder.SelectedPath;
-                try
-                {
-                    instance = new KSP(path, GUI.user);
-                }
-                catch (NotKSPDirKraken){
-                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {path});
-                    return;
-                }
+            if (_instanceDialog.ShowDialog() != DialogResult.OK) return;
+            if (!File.Exists(_instanceDialog.FileName)) return;
 
-                string instanceName = Path.GetFileName(path);
-                instanceName = manager.GetNextValidInstanceName(instanceName);
-                manager.AddInstance(instanceName, instance);
-                UpdateInstancesList();
+            KSP instance;
+            var path = Path.GetDirectoryName(_instanceDialog.FileName);
+            try
+            {
+                instance = new KSP(path, GUI.user);
             }
+            catch (NotKSPDirKraken)
+            {
+                GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] { path });
+                return;
+            }
+
+            var instanceName = Path.GetFileName(path);
+            instanceName = _manager.GetNextValidInstanceName(instanceName);
+            _manager.AddInstance(instanceName, instance);
+            UpdateInstancesList();
         }
 
         private void SelectButton_Click(object sender, EventArgs e)
@@ -76,55 +84,53 @@ namespace CKAN
 
         private void UseSelectedInstance()
         {
-            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                manager.SetAutoStart(instance);
+                _manager.SetAutoStart(instance);
             }
 
-            manager.SetCurrentInstance(instance);
+            _manager.SetCurrentInstance(instance);
             DialogResult = DialogResult.OK;
             Close();
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
-            SetButtonsEnabled(has_instance);
+            UpdateButtonState();
         }
 
         private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
         {
-            var has_instance = KSPInstancesListView.SelectedItems.Count != 0;
-            if(has_instance)
-                UseSelectedInstance();
+            if (HasSelections) UseSelectedInstance();
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
         {
-            var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
+            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
 
-            renameInstanceDialog = new RenameInstanceDialog();
-            if (renameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
-            {
-                manager.RenameInstance(instance, renameInstanceDialog.GetResult());
-                UpdateInstancesList();
-            }
+            // show the dialog, and only continue if the user selected "OK"
+            _renameInstanceDialog = new RenameInstanceDialog();
+            if (_renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK) return;
+
+            // proceed with instance rename
+            _manager.RenameInstance(instance, _renameInstanceDialog.GetResult());
+            UpdateInstancesList();
         }
 
         private void Forget_Click(object sender, EventArgs e)
         {
-            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
-            manager.RemoveInstance(instance);
-            UpdateInstancesList();
-
+            foreach (var instance in KSPInstancesListView.SelectedItems.OfType<ListViewItem>().Select(item => item.Tag as string))
+            {
+                _manager.RemoveInstance(instance);
+                UpdateInstancesList();
+            }
         }
 
-        private void SetButtonsEnabled(bool has_instance)
+        private void UpdateButtonState()
         {
-            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
+            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = _manager.Instances.Count > 0;
         }
-
     }
 }
