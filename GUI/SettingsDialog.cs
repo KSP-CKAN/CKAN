@@ -38,6 +38,7 @@ namespace CKAN
 
             CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
             RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
+            HideEpochsCheckbox.Checked = Main.Instance.configuration.HideEpochs;
 
             UpdateCacheInfo();
         }
@@ -266,6 +267,12 @@ namespace CKAN
         private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
+            Main.Instance.configuration.Save();
+        }
+
+        private void HideEpochsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.configuration.HideEpochs = HideEpochsCheckbox.Checked;
             Main.Instance.configuration.Save();
         }
     }

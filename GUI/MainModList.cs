@@ -537,15 +537,15 @@ namespace CKAN
 
                 var name_cell = new DataGridViewTextBoxCell {Value = mod.Name};
                 var author_cell = new DataGridViewTextBoxCell {Value = mod.Authors};
-                var installed_version_cell = new DataGridViewTextBoxCell {Value = mod.InstalledVersion};
-                var latest_version_cell = new DataGridViewTextBoxCell {Value = mod.LatestVersion};
+                var installed_version_no_epoch_cell = new DataGridViewTextBoxCell {Value = mod.InstalledVersionNoEpoch};
+                var latest_version_no_epoch_cell = new DataGridViewTextBoxCell {Value = mod.LatestVersionNoEpoch};
                 var description_cell = new DataGridViewTextBoxCell {Value = mod.Abstract};
                 var KSPCompatibility_cell = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
                 var size_cell = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
 
                 item.Cells.AddRange(installed_cell, update_cell,
                     name_cell, author_cell,
-                    installed_version_cell, latest_version_cell,
+                    installed_version_no_epoch_cell, latest_version_no_epoch_cell,
                     KSPCompatibility_cell, size_cell,
                     description_cell);
 
