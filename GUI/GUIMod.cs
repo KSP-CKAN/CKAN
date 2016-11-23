@@ -224,12 +224,13 @@ namespace CKAN
             /// Returns a version string shorn of any leading epoch as delimited by a single colon
             /// </summary> 
 
-            // If our version number starts with a string of digits, followed by 
-            // a colon, and then has no more colons, we're probably safe to assume 
-            // the first string of digits is an epoch
 
-            if (Main.Instance.configuration.HideEpochs)
+            if ( ( Main.Instance?.configuration == null ) || Main.Instance.configuration.HideEpochs )
             {
+                // If our version number starts with a string of digits, followed by 
+                // a colon, and then has no more colons, we're probably safe to assume 
+                // the first string of digits is an epoch
+
                 if (Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$"))
                 {
 

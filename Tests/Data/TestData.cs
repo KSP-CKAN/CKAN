@@ -500,6 +500,7 @@ namespace Tests.Data
               <URLHandlerNoNag>false</URLHandlerNoNag>
               <CheckForUpdatesOnLaunch>true</CheckForUpdatesOnLaunch>
               <CheckForUpdatesOnLaunchNoNag>true</CheckForUpdatesOnLaunchNoNag>
+              <HideEpochs>true</HideEpochs>
               <SortByColumnIndex>2</SortByColumnIndex>
               <SortDescending>false</SortDescending>
               <WindowSize>
