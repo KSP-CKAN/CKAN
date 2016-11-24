@@ -15,7 +15,7 @@ namespace CKAN
             CheckFileExists = false,
             CheckPathExists = false,
             InitialDirectory = Environment.CurrentDirectory,
-            Filter = "KSP binaries (KSP*.exe)|KSP*.exe",
+            Filter = "KSP binaries (KSP*.*)|KSP*.*",
             Multiselect = false
         };
 
