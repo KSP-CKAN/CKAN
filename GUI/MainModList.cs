@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CKAN.Versioning;
 
@@ -182,7 +183,7 @@ namespace CKAN
 
             // Update our mod listing. If we're doing a repo update, then we don't refresh
             // all (in case the user has selected changes they wish to apply).
-            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated);
+            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated, hideEpochs: configuration.HideEpochs);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
@@ -494,7 +495,8 @@ namespace CKAN
         /// <returns>The mod list.</returns>
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false)
+        /// <param name="hideEpochs">If true, remove epochs from the displayed versions</param>
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false, bool hideEpochs = false)
         {
 
             if (refreshAll || full_list_of_mod_rows == null)
@@ -510,8 +512,8 @@ namespace CKAN
             // another part of the metadata (eg: dependencies or description) has changed?
             IEnumerable<GUIMod> rowsToUpdate = modules.Where(
                 mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
-                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).LatestVersion ||
-                mod.IsInstalled != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod).IsInstalled);
+                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod)?.LatestVersion ||
+                mod.IsInstalled != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod)?.IsInstalled);
 
             // Let's update our list!
             foreach (var mod in rowsToUpdate)
@@ -519,43 +521,49 @@ namespace CKAN
                 full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
-                var installed_cell = mod.IsInstallable()
+                var selecting = mod.IsInstallable()
                     ? (DataGridViewCell) new DataGridViewCheckBoxCell()
                     : new DataGridViewTextBoxCell();
 
-                installed_cell.Value = mod.IsInstallable()
+                selecting.Value = mod.IsInstallable()
                     ? (object) mod.IsInstalled
                     : (mod.IsAutodetected ? "AD" : "-");
 
-                var update_cell = mod.HasUpdate && !mod.IsAutodetected
+                var updating = mod.HasUpdate && !mod.IsAutodetected
                     ? new DataGridViewCheckBoxCell()
                     : (DataGridViewCell) new DataGridViewTextBoxCell();
 
-                update_cell.Value = !mod.IsInstallable() || !mod.HasUpdate
+                updating.Value = !mod.IsInstallable() || !mod.HasUpdate
                     ? "-"
                     : (object) false;
 
-                var name_cell = new DataGridViewTextBoxCell {Value = mod.Name};
-                var author_cell = new DataGridViewTextBoxCell {Value = mod.Authors};
-                var installed_version_no_epoch_cell = new DataGridViewTextBoxCell {Value = mod.InstalledVersionNoEpoch};
-                var latest_version_no_epoch_cell = new DataGridViewTextBoxCell {Value = mod.LatestVersionNoEpoch};
-                var description_cell = new DataGridViewTextBoxCell {Value = mod.Abstract};
-                var KSPCompatibility_cell = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
-                var size_cell = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
+                var name = new DataGridViewTextBoxCell {Value = mod.Name};
+                var author = new DataGridViewTextBoxCell {Value = mod.Authors};
+                var installVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? StripEpoch(mod.InstalledVersion) : mod.InstalledVersion };
+                var latestVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? StripEpoch(mod.LatestVersion) : mod.LatestVersion };
+                var desc = new DataGridViewTextBoxCell {Value = mod.Abstract};
+                var compat = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
+                var size = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
 
-                item.Cells.AddRange(installed_cell, update_cell,
-                    name_cell, author_cell,
-                    installed_version_no_epoch_cell, latest_version_no_epoch_cell,
-                    KSPCompatibility_cell, size_cell,
-                    description_cell);
+                item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, desc);
 
-                installed_cell.ReadOnly = !mod.IsInstallable();
-                update_cell.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
+                selecting.ReadOnly = !mod.IsInstallable();
+                updating.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
 
-                
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }
             return full_list_of_mod_rows.Values;
+        }
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary> 
+        public string StripEpoch(string version)
+        {
+            // If our version number starts with a string of digits, followed by 
+            // a colon, and then has no more colons, we're probably safe to assume 
+            // the first string of digits is an epoch
+            return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)

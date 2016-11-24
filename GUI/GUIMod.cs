@@ -22,9 +22,7 @@ namespace CKAN
         public bool IsAutodetected { get; private set; }
         public string Authors { get; private set; }
         public string InstalledVersion { get; private set; }
-        public string InstalledVersionNoEpoch { get; private set; }
         public string LatestVersion { get; private set; }
-        public string LatestVersionNoEpoch { get; private set; }
         public string DownloadSize { get; private set; }
         public bool IsCached { get; private set; }
 
@@ -79,8 +77,6 @@ namespace CKAN
 
             InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
 
-            InstalledVersionNoEpoch = StripEpoch(InstalledVersion);
-
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
 
@@ -131,9 +127,6 @@ namespace CKAN
             {
                 LatestVersion = "-";
             }
-
-            LatestVersionNoEpoch = StripEpoch(LatestVersion);
-
 
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
@@ -216,32 +209,6 @@ namespace CKAN
         public static implicit operator CkanModule(GUIMod mod)
         {
             return mod.ToModule();
-        }
-
-        public string StripEpoch ( string version )
-        {
-            /// <summary>
-            /// Returns a version string shorn of any leading epoch as delimited by a single colon
-            /// </summary> 
-
-
-            if ( ( Main.Instance?.configuration == null ) || Main.Instance.configuration.HideEpochs )
-            {
-                // If our version number starts with a string of digits, followed by 
-                // a colon, and then has no more colons, we're probably safe to assume 
-                // the first string of digits is an epoch
-
-                if (Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$"))
-                {
-
-                    // Split the version into everything before the colon and everything after the colon
-                    // then replace the string with just everything after the colon
-
-                    return Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2");
-                }
-            }
-            return version;
-
         }
 
         public void SetUpgradeChecked(DataGridViewRow row, bool? set_value_to = null)
