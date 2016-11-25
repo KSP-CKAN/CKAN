@@ -68,8 +68,8 @@ namespace CKAN
             this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InstalledVersionNoEpoch = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LatestVersionNoEpoch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LatestVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -478,8 +478,8 @@ namespace CKAN
             this.UpdateCol,
             this.ModName,
             this.Author,
-            this.InstalledVersionNoEpoch,
-            this.LatestVersionNoEpoch,
+            this.InstalledVersion,
+            this.LatestVersion,
             this.KSPCompatibility,
             this.SizeCol,
             this.Description});
@@ -531,19 +531,19 @@ namespace CKAN
             // 
             // InstalledVersion
             // 
-            this.InstalledVersionNoEpoch.HeaderText = "Installed version";
-            this.InstalledVersionNoEpoch.Name = "InstalledVersionNoEpoch";
-            this.InstalledVersionNoEpoch.ReadOnly = true;
-            this.InstalledVersionNoEpoch.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.InstalledVersionNoEpoch.Width = 70;            
+            this.InstalledVersion.HeaderText = "Installed version";
+            this.InstalledVersion.Name = "InstalledVersion";
+            this.InstalledVersion.ReadOnly = true;
+            this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.InstalledVersion.Width = 70;            
             // 
             // LatestVersion
             // 
-            this.LatestVersionNoEpoch.HeaderText = "Latest version";
-            this.LatestVersionNoEpoch.Name = "LatestVersionNoEpoch";
-            this.LatestVersionNoEpoch.ReadOnly = true;
-            this.LatestVersionNoEpoch.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersionNoEpoch.Width = 70;
+            this.LatestVersion.HeaderText = "Latest version";
+            this.LatestVersion.Name = "LatestVersion";
+            this.LatestVersion.ReadOnly = true;
+            this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.LatestVersion.Width = 70;
             // 
             // KSPCompatibility
             // 
@@ -1586,8 +1586,8 @@ namespace CKAN
         private DataGridViewCheckBoxColumn UpdateCol;
         private DataGridViewTextBoxColumn ModName;
         private DataGridViewTextBoxColumn Author;
-        private DataGridViewTextBoxColumn InstalledVersionNoEpoch;
-        private DataGridViewTextBoxColumn LatestVersionNoEpoch;
+        private DataGridViewTextBoxColumn InstalledVersion;
+        private DataGridViewTextBoxColumn LatestVersion;
         private DataGridViewTextBoxColumn KSPCompatibility;
         private DataGridViewTextBoxColumn SizeCol;
         private DataGridViewTextBoxColumn Description;
