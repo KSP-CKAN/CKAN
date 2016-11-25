@@ -535,7 +535,7 @@ namespace CKAN
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.InstalledVersion.Width = 70;            
+            this.InstalledVersion.Width = 70;
             // 
             // LatestVersion
             // 
