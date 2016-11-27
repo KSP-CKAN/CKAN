@@ -39,7 +39,7 @@ namespace CKAN
             this.ksp = ksp;
 
             this.path = Path.Combine(path, "registry.json");
-            lockfilePath = Path.Combine(path, "registry.json.locked");
+            lockfilePath = Path.Combine(path, "registry.locked");
 
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())

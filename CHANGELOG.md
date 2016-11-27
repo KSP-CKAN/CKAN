@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 - [Multiple] Add log4net.xml, refactor logging init and log to file by default (#1881 by: ayan4m1; reviewed: politas)
 - [NetKAN] Add regexp second test for filespecs (#1919 by: politas; reviewed: ayan4m1)
+- [Core] Changed name of registry lock file to registry.lock (#1944 by: politas; reviewed: ayan4m1)
 
 ## v1.20.1
 
