@@ -84,14 +84,24 @@ namespace CKAN
 
         private void UseSelectedInstance()
         {
-            var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
+            if (KSPInstancesListView.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            var selected = KSPInstancesListView.SelectedItems[0];
+            var instName = selected?.Tag as string;
+            if (instName == null)
+            {
+                return;
+            }
 
             if (SetAsDefaultCheckbox.Checked)
             {
-                _manager.SetAutoStart(instance);
+                _manager.SetAutoStart(instName);
             }
 
-            _manager.SetCurrentInstance(instance);
+            _manager.SetCurrentInstance(instName);
             DialogResult = DialogResult.OK;
             Close();
         }
