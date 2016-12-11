@@ -1064,6 +1064,16 @@ namespace CKAN
             Process.Start(Instance.manager.CurrentInstance.GameDir());
         }
 
+        private void kSPInstanceSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var instanceSettingsDialog = new KspInstanceSettingsDialog(Instance.manager.CurrentInstance);
+            instanceSettingsDialog.ShowDialog();
+
+            UpdateModsList(repo_updated: false);
+        
+            Filter((GUIModFilter)configuration.ActiveFilter);
+        }
+
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             FilterByNameTextBox.Text = "";

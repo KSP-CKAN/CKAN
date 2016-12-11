@@ -121,14 +121,16 @@ namespace CKAN
 
         }
 
-        private void InstallSettingsButton_Click (object sender, EventArgs e){
-            
+        private void InstallSettingsButton_Click (object sender, EventArgs e)
+        {
+            var instanceName = (string)KSPInstancesListView.SelectedItems[0].Tag;
+            var instanceSettingsDialog = new KspInstanceSettingsDialog(manager.Instances[instanceName]);
+            instanceSettingsDialog.ShowDialog();
         }
 
         private void SetButtonsEnabled(bool has_instance)
         {
             ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = InstallSettingsButton.Enabled = has_instance;
         }
-
     }
 }

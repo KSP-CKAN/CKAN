@@ -1,4 +1,5 @@
 ﻿using CKAN.Versioning;
+using System;
 
 namespace CKAN
 {
@@ -43,16 +44,35 @@ namespace CKAN
                 else if (module.ksp_version_max != null)
                 {
                     var maxRange = module.ksp_version_max.ToVersionRange();
-
-                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Upper);
+                    //
+                    //e.g module.ksp_version_max.ToVersionRange() changes 1.0 to [1.0.0.0, 1.1.0.0) so we are
+                    //interested in Lower bound
+                    //
+                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Lower);
                 }
             }
             else
             {
                 return true;
             }
+            
+            if (!moduleRange.Upper.Value.IsAny && isBoundLower(moduleRange.Upper, gameVersionRange.Lower))
+            {
+                return false;
+            }
 
-            return moduleRange.IsSupersetOf(gameVersionRange);
+            if (!moduleRange.Lower.Value.IsAny && isBoundLower(gameVersionRange.Upper, moduleRange.Lower))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool isBoundLower(KspVersionBound val1, KspVersionBound val2)
+        {
+            return val1.Value < val2.Value || (val1.Value == val2.Value && !val1.Inclusive);
+                   
         }
     }
 }

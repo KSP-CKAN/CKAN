@@ -29,6 +29,7 @@ namespace CKAN
 
         private readonly string gameDir;
         private KspVersion version;
+        private List<KspVersion> compatibleVersions = new List<KspVersion>();
 
         public NetFileCache Cache { get; private set; }
 
@@ -93,6 +94,11 @@ namespace CKAN
             }
 
             log.DebugFormat("Initialised {0}", CkanDir());
+        }
+
+        public void SetCompatibleVersions(List<KspVersion> compatibleVersions)
+        {
+            this.compatibleVersions = compatibleVersions;
         }
 
         #endregion
@@ -337,7 +343,7 @@ namespace CKAN
 
         public KspVersionCriteria VersionCriteria ()
         {
-            return new KspVersionCriteria(version);
+            return new KspVersionCriteria(version, compatibleVersions);
         }
 
         #endregion

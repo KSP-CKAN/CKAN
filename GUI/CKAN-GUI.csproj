@@ -37,6 +37,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da" />
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
@@ -99,6 +100,12 @@
     </Compile>
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KspInstanceSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KspInstanceSettingsDialog.Designer.cs">
+      <DependentUpon>KspInstanceSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MainChangeset.cs">
       <SubType>Form</SubType>
@@ -188,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KspInstanceSettingsDialog.resx">
+      <DependentUpon>KspInstanceSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

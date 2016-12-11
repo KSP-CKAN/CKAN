@@ -12,6 +12,12 @@ namespace CKAN.Versioning
             this.versions.Add (v);
         }
 
+        public KspVersionCriteria(KspVersion v, List<KspVersion> compatibleVersions)
+        {
+            this.versions.Add(v);
+            this.versions.AddRange(compatibleVersions);
+        }
+
         public override int GetHashCode ()
         {
             return base.GetHashCode ();
