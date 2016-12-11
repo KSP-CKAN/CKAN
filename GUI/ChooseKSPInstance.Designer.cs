@@ -42,6 +42,7 @@
             this.RenameButton = new System.Windows.Forms.Button();
             this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
             this.ForgetButton = new System.Windows.Forms.Button();
+            this.InstallSettingsButton = new System.Windows.Forms.Button ();
             this.SuspendLayout();
             // 
             // KSPInstancesListView
@@ -143,12 +144,25 @@
             this.ForgetButton.UseVisualStyleBackColor = true;
             this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
             // 
+            // InstallSettings
+            // 
+            this.InstallSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstallSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallSettingsButton.Location = new System.Drawing.Point (75, 320);
+            this.InstallSettingsButton.Name = "InstallSettingsButton";
+            this.InstallSettingsButton.Size = new System.Drawing.Size (75, 23);
+            this.InstallSettingsButton.TabIndex = 6;
+            this.InstallSettingsButton.Text = "Settings";
+            this.InstallSettingsButton.UseVisualStyleBackColor = true;
+            this.InstallSettingsButton.Click += new System.EventHandler (this.InstallSettingsButton_Click);
+            // 
             // ChooseKSPInstance
             // 
             this.AcceptButton = this.SelectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 355);
+            this.Controls.Add (this.InstallSettingsButton);
             this.Controls.Add(this.ForgetButton);
             this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
@@ -174,5 +188,6 @@
         private System.Windows.Forms.Button RenameButton;
         private System.Windows.Forms.CheckBox SetAsDefaultCheckbox;
         private System.Windows.Forms.Button ForgetButton;
+        private System.Windows.Forms.Button InstallSettingsButton;
     }
 }

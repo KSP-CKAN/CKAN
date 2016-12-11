@@ -107,7 +107,7 @@ namespace CKAN
             ShowUserInconsistencies(registry_manager.registry, user);
 
             // Return how many we got!
-            return registry_manager.registry.Available(ksp.Version()).Count;
+            return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
         }
 
         public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, string repo = null)
@@ -414,7 +414,7 @@ Do you wish to reinstall now?", sb)))
             ShowUserInconsistencies(registry_manager.registry, user);
 
             // Return how many we got!
-            return registry_manager.registry.Available(ksp.Version()).Count;
+            return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
         }
 
         /// <summary>

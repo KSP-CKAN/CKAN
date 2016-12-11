@@ -110,6 +110,8 @@
     <Compile Include="Types\GameComparator\GrasGameComparator.cs" />
     <Compile Include="Types\GameComparator\StrictGameComparator.cs" />
     <Compile Include="Types\GameComparator\YoyoGameComparator.cs" />
+    <Compile Include="Versioning\KspVersionCriteria.cs" />
+    <Compile Include="Types\GameComparator\BaseGameComparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

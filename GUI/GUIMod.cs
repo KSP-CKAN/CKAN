@@ -47,7 +47,7 @@ namespace CKAN
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersion current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist

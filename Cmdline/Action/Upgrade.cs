@@ -86,7 +86,7 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if upgrades are available
-                                var latest = registry.LatestAvailable(mod.Key, ksp.Version());
+                                var latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
 
                                 // This may be an unindexed mod. If so,
                                 // skip rather than crash. See KSP-CKAN/CKAN#841.

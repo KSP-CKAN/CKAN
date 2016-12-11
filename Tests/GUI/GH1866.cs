@@ -107,7 +107,7 @@ namespace Tests.GUI
         public void TestSimple()
         {
             var modules = _registry.available_modules
-                .Select((mod) => new GUIMod(mod.Value.Latest(), _registry, _instance.KSP.Version()))
+                .Select((mod) => new GUIMod(mod.Value.Latest(), _registry, _instance.KSP.VersionCriteria()))
                 .ToList();
 
             // varargs method signature means we must call .ToArray()

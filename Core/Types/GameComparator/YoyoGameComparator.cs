@@ -8,7 +8,7 @@ namespace CKAN
     /// </summary>
     public class YoyoGameComparator : IGameComparator
     {
-        public bool Compatible(KspVersion gameVersion, CkanModule module)
+        public bool Compatible(KspVersionCriteria gameVersion, CkanModule module)
         {
             return true;
         }

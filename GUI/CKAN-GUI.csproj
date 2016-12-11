@@ -60,12 +60,6 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutDialog.Designer.cs">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="AskUserForAutoUpdatesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -239,6 +233,12 @@
     </Compile>
     <Compile Include="MainTabControl.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

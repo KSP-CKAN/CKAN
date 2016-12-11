@@ -152,7 +152,7 @@ namespace CKAN
             IDownloader downloader = null
         )
         {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             InstallList(modsToInstall, options, downloader);
         }
@@ -173,7 +173,7 @@ namespace CKAN
             IDownloader downloader = null
         )
         {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule> ();
 
@@ -993,7 +993,7 @@ namespace CKAN
             options.with_recommends = false;
             options.with_suggests = false;
 
-            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.Version());
+            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.VersionCriteria());
             Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
         }
 

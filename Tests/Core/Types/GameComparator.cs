@@ -32,7 +32,7 @@ namespace Tests.Core.Types
                 = KspVersion.Parse("1.0.4");
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace Tests.Core.Types
                 = KspVersion.Parse("1.0.3");
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Tests.Core.Types
             gameMod.ksp_version_strict = true;
 
             // Now test!
-            Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Tests.Core.Types
             var comparator = (CKAN.IGameComparator) Activator.CreateInstance(type);
 
             // The mod already starts off being incompatible, so just do the test. :)
-            Assert.AreEqual(expected, comparator.Compatible(gameVersion, gameMod));
+            Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
         }
     }
 }

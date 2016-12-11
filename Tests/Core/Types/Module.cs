@@ -1,5 +1,6 @@
 using System.Linq;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace Tests.Core.Types
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
-            Assert.IsTrue(module.IsCompatibleKSP("0.24.2"));
+            Assert.IsTrue(module.IsCompatibleKSP(new KspVersionCriteria (KspVersion.Parse("0.24.2"))));
         }
 
         [Test]

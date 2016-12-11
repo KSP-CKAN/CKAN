@@ -334,6 +334,12 @@ namespace CKAN
             return version = DetectVersion(GameDir());
         }
 
+
+        public KspVersionCriteria VersionCriteria ()
+        {
+            return new KspVersionCriteria(version);
+        }
+
         #endregion
 
         #region CKAN/GameData Directory Maintenance

@@ -26,7 +26,7 @@ namespace CKAN.CmdLine
             {
                 // Get a list of available modules prior to the update.
                 var registry = RegistryManager.Instance(ksp).registry;
-                available_prior = registry.Available(ksp.Version());
+                available_prior = registry.Available(ksp.VersionCriteria());
             }
 
             // If no repository is selected, select all.
@@ -56,7 +56,7 @@ namespace CKAN.CmdLine
             if (options.list_changes)
             {
                 var registry = RegistryManager.Instance(ksp).registry;
-                PrintChanges(available_prior, registry.Available(ksp.Version()));
+                PrintChanges(available_prior, registry.Available(ksp.VersionCriteria()));
             }
 
             return Exit.OK;

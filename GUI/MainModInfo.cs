@@ -111,13 +111,13 @@ namespace CKAN
                     try
                     {
                         var dependencyModule = registry.LatestAvailable
-                            (dependency.name, manager.CurrentInstance.Version());
+                            (dependency.name, manager.CurrentInstance.VersionCriteria());
                         UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
                     }
                     catch (ModuleNotFoundKraken)
                     {
                         List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name, manager.CurrentInstance.Version());
+                            (dependency.name, manager.CurrentInstance.VersionCriteria());
 
                         if (dependencyModules == null)
                         {
