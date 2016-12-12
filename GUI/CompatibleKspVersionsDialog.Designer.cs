@@ -77,7 +77,7 @@
             // gameVersionLabel
             // 
             this.gameVersionLabel.AutoSize = true;
-            this.gameVersionLabel.Location = new System.Drawing.Point(92, 32);
+            this.gameVersionLabel.Location = new System.Drawing.Point(86, 32);
             this.gameVersionLabel.Name = "gameVersionLabel";
             this.gameVersionLabel.Size = new System.Drawing.Size(53, 13);
             this.gameVersionLabel.TabIndex = 3;
@@ -204,6 +204,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(443, 364);
+            this.ControlBox = false;
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.gameLocationLabel);
             this.Controls.Add(this.label8);
@@ -221,7 +222,9 @@
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
             this.Name = "CompatibleKspVersionsDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Compatible Ksp Versions";
+            this.Shown += new System.EventHandler(this.CompatibleKspVersionsDialog_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -435,6 +435,13 @@ namespace CKAN
                 Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
+
+            if (CurrentInstance.compatibleVersionsAreFromPreviousKsp)
+            {
+                CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(CurrentInstance);
+                dialog.ShowDialog();
+            }
+
             UpdateModsList();
             ChangeSet = null;
             Conflicts = null;

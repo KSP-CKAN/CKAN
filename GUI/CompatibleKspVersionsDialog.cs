@@ -13,6 +13,7 @@ namespace CKAN
 
         public CompatibleKspVersionsDialog(KSP ksp)
         {
+
             this.ksp = ksp;
             InitializeComponent();
 
@@ -28,6 +29,17 @@ namespace CKAN
             SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);            
             SortAndAddVersionsToList(majorVersionsList, compatibleVersions);            
             SortAndAddVersionsToList(knownVersions, compatibleVersions);
+        }
+
+        private void CompatibleKspVersionsDialog_Shown(object sender, EventArgs e)
+        {
+            if (ksp.compatibleVersionsAreFromPreviousKsp)
+            {
+                MessageBox.Show("KSP has been updated since you last reviewed your compatible KSP versions. Please make sure that settings are correct.");
+                cancelButton.Visible = false;
+                gameVersionLabel.Text = ksp.Version().ToString() + " (previous game version: " + ksp.versionOfKspWhenCompatibleVersionsWereStored + ")";
+                gameVersionLabel.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         private static List<KspVersion> createMajorVersionsList(List<KspVersion> knownVersions)

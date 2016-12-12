@@ -48,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompatibleKspVersionsDto.cs" />
     <Compile Include="Exporters\BbCodeExporter.cs" />
     <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
     <Compile Include="Exporters\Exporter.cs" />
