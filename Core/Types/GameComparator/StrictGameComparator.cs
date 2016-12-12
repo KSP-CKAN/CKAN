@@ -44,11 +44,8 @@ namespace CKAN
                 else if (module.ksp_version_max != null)
                 {
                     var maxRange = module.ksp_version_max.ToVersionRange();
-                    //
-                    //e.g module.ksp_version_max.ToVersionRange() changes 1.0 to [1.0.0.0, 1.1.0.0) so we are
-                    //interested in Lower bound
-                    //
-                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Lower);
+
+                    moduleRange = new KspVersionRange(KspVersionBound.Unbounded, maxRange.Upper);
                 }
             }
             else

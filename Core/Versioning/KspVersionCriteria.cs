@@ -29,5 +29,10 @@ namespace CKAN.Versioning
 
             }
         }
+
+        public override String ToString()
+        {
+            return "[Versions: " + versions.ToString() + "]";
+        }
     }
 }

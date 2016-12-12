@@ -498,15 +498,7 @@ namespace CKAN
                 mod1.conflicts.Any(
                     conflict =>
                         mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
-        }
-
-        /// <summary>
-        /// Returns true if our mod is compatible with the KSP version specified.
-        /// </summary>
-        //public bool IsCompatibleKSP(string version)
-        //{
-        //    return IsCompatibleKSP(KspVersion.Parse(version));
-        //}
+        }       
 
         /// <summary>
         /// Returns true if our mod is compatible with the KSP version specified.
