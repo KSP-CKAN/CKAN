@@ -101,6 +101,11 @@ namespace CKAN
             this.compatibleVersions = compatibleVersions;
         }
 
+        public List<KspVersion> GetCompatibleVersions()
+        {
+            return new List<KspVersion>(this.compatibleVersions);
+        }
+
         #endregion
 
         #region Destructors and Disposal

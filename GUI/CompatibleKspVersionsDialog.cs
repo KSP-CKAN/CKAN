@@ -7,24 +7,53 @@ using System;
 
 namespace CKAN
 {
-    public partial class KspInstanceSettingsDialog : Form
+    public partial class CompatibleKspVersionsDialog : Form
     {
         private KSP ksp;
 
-        public KspInstanceSettingsDialog(KSP ksp)
+        public CompatibleKspVersionsDialog(KSP ksp)
         {
             this.ksp = ksp;
             InitializeComponent();
 
+            List<KspVersion> compatibleVersions = ksp.GetCompatibleVersions();
+
             gameVersionLabel.Text = ksp.Version().ToString();
             gameLocationLabel.Text = ksp.GameDir();
-            var knownVersions = ServiceLocator.Container.Resolve<IKspBuildMap>().getKnownVersions();
-            knownVersions.Reverse();
+            List<KspVersion> knownVersions = new List<KspVersion>(ServiceLocator.Container.Resolve<IKspBuildMap>().getKnownVersions());
+            List<KspVersion> majorVersionsList = createMajorVersionsList(knownVersions);
+            List<KspVersion> compatibleVersionsLeftOthers = new List<KspVersion>(compatibleVersions);
+            compatibleVersionsLeftOthers.RemoveAll((el)=>knownVersions.Contains(el) || majorVersionsList.Contains(el));
+
+            SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);            
+            SortAndAddVersionsToList(majorVersionsList, compatibleVersions);            
+            SortAndAddVersionsToList(knownVersions, compatibleVersions);
+        }
+
+        private static List<KspVersion> createMajorVersionsList(List<KspVersion> knownVersions)
+        {
+            Dictionary<KspVersion, bool> majorVersions = new Dictionary<KspVersion, bool>();
             foreach (var version in knownVersions)
+            {
+                KspVersion fullKnownVersion = version.ToVersionRange().Lower.Value;
+                KspVersion toAdd = new KspVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
+                if (!majorVersions.ContainsKey(toAdd))
+                {
+                    majorVersions.Add(toAdd, true);
+                }
+            }
+            return new List<KspVersion>(majorVersions.Keys);
+        }
+
+        private void SortAndAddVersionsToList(List<KspVersion> versions, List<KspVersion> compatibleVersions)
+        {
+            versions.Sort();
+            versions.Reverse();
+            foreach (var version in versions)
             {
                 if (!version.Equals(ksp.Version()))
                 {
-                    selectedVersionsCheckedListBox.Items.Add(version, false);
+                    selectedVersionsCheckedListBox.Items.Add(version, compatibleVersions.Contains(version));
                 }
             }
         }

@@ -124,7 +124,7 @@ namespace CKAN
         private void InstallSettingsButton_Click (object sender, EventArgs e)
         {
             var instanceName = (string)KSPInstancesListView.SelectedItems[0].Tag;
-            var instanceSettingsDialog = new KspInstanceSettingsDialog(manager.Instances[instanceName]);
+            var instanceSettingsDialog = new CompatibleKspVersionsDialog(manager.Instances[instanceName]);
             instanceSettingsDialog.ShowDialog();
         }
 

@@ -101,11 +101,11 @@
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="KspInstanceSettingsDialog.cs">
+    <Compile Include="CompatibleKspVersionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KspInstanceSettingsDialog.Designer.cs">
-      <DependentUpon>KspInstanceSettingsDialog.cs</DependentUpon>
+    <Compile Include="CompatibleKspVersionsDialog.Designer.cs">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MainChangeset.cs">
       <SubType>Form</SubType>
@@ -196,8 +196,8 @@
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="KspInstanceSettingsDialog.resx">
-      <DependentUpon>KspInstanceSettingsDialog.cs</DependentUpon>
+    <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

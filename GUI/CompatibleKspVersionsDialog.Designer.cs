@@ -1,6 +1,6 @@
 ﻿namespace CKAN
 {
-    partial class KspInstanceSettingsDialog
+    partial class CompatibleKspVersionsDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -47,17 +47,17 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 45);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 54);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(413, 35);
+            this.label1.Size = new System.Drawing.Size(306, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Assume that mods compatible with following KSP versions are also compatible with " +
-    "this installation:";
+            this.label1.Text = "Additionally install mods compatible with following KSP versions:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 27);
+            this.label2.Location = new System.Drawing.Point(11, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 1;
@@ -65,8 +65,9 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(12, 80);
+            this.label3.Location = new System.Drawing.Point(9, 296);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(401, 32);
             this.label3.TabIndex = 2;
@@ -76,7 +77,7 @@
             // gameVersionLabel
             // 
             this.gameVersionLabel.AutoSize = true;
-            this.gameVersionLabel.Location = new System.Drawing.Point(92, 27);
+            this.gameVersionLabel.Location = new System.Drawing.Point(92, 32);
             this.gameVersionLabel.Name = "gameVersionLabel";
             this.gameVersionLabel.Size = new System.Drawing.Size(53, 13);
             this.gameVersionLabel.TabIndex = 3;
@@ -87,8 +88,9 @@
             this.selectedVersionsCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectedVersionsCheckedListBox.CheckOnClick = true;
             this.selectedVersionsCheckedListBox.FormattingEnabled = true;
-            this.selectedVersionsCheckedListBox.Location = new System.Drawing.Point(18, 115);
+            this.selectedVersionsCheckedListBox.Location = new System.Drawing.Point(12, 79);
             this.selectedVersionsCheckedListBox.Name = "selectedVersionsCheckedListBox";
             this.selectedVersionsCheckedListBox.Size = new System.Drawing.Size(406, 124);
             this.selectedVersionsCheckedListBox.TabIndex = 4;
@@ -96,7 +98,7 @@
             // clearSelectionButton
             // 
             this.clearSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.clearSelectionButton.Location = new System.Drawing.Point(18, 247);
+            this.clearSelectionButton.Location = new System.Drawing.Point(12, 211);
             this.clearSelectionButton.Name = "clearSelectionButton";
             this.clearSelectionButton.Size = new System.Drawing.Size(92, 23);
             this.clearSelectionButton.TabIndex = 5;
@@ -107,7 +109,7 @@
             // addVersionToListButton
             // 
             this.addVersionToListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addVersionToListButton.Location = new System.Drawing.Point(349, 245);
+            this.addVersionToListButton.Location = new System.Drawing.Point(343, 209);
             this.addVersionToListButton.Name = "addVersionToListButton";
             this.addVersionToListButton.Size = new System.Drawing.Size(75, 23);
             this.addVersionToListButton.TabIndex = 6;
@@ -119,7 +121,7 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(112, 252);
+            this.label5.Location = new System.Drawing.Point(106, 216);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(93, 13);
             this.label5.TabIndex = 7;
@@ -128,7 +130,7 @@
             // addVersionToListTextBox
             // 
             this.addVersionToListTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addVersionToListTextBox.Location = new System.Drawing.Point(212, 247);
+            this.addVersionToListTextBox.Location = new System.Drawing.Point(206, 211);
             this.addVersionToListTextBox.Name = "addVersionToListTextBox";
             this.addVersionToListTextBox.Size = new System.Drawing.Size(131, 20);
             this.addVersionToListTextBox.TabIndex = 8;
@@ -136,7 +138,7 @@
             // label6
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label6.Location = new System.Drawing.Point(15, 276);
+            this.label6.Location = new System.Drawing.Point(9, 240);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(422, 32);
             this.label6.TabIndex = 9;
@@ -147,7 +149,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 309);
+            this.label7.Location = new System.Drawing.Point(9, 273);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(382, 13);
             this.label7.TabIndex = 10;
@@ -156,7 +158,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.Location = new System.Drawing.Point(362, 331);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
@@ -185,6 +187,7 @@
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelButton.Location = new System.Drawing.Point(281, 331);
             this.cancelButton.Name = "cancelButton";
@@ -194,7 +197,7 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // KspInstanceSettingsDialog
+            // CompatibleKspVersionsDialog
             // 
             this.AcceptButton = this.saveButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,8 +220,8 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
-            this.Name = "KspInstanceSettingsDialog";
-            this.Text = "Ksp Instance Settings";
+            this.Name = "CompatibleKspVersionsDialog";
+            this.Text = "Compatible Ksp Versions";
             this.ResumeLayout(false);
             this.PerformLayout();
 
