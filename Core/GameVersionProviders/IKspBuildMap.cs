@@ -7,7 +7,7 @@ namespace CKAN.GameVersionProviders
     {
         KspVersion this[string buildId] { get; }
 
-        List<KspVersion> getKnownVersions();
+        List<KspVersion> KnownVersions { get; }
 
         void Refresh();
     }

@@ -31,18 +31,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.gameVersionLabel = new System.Windows.Forms.Label();
-            this.selectedVersionsCheckedListBox = new System.Windows.Forms.CheckedListBox();
-            this.clearSelectionButton = new System.Windows.Forms.Button();
-            this.addVersionToListButton = new System.Windows.Forms.Button();
+            this.GameVersionLabel = new System.Windows.Forms.Label();
+            this.SelectedVersionsCheckedListBox = new System.Windows.Forms.CheckedListBox();
+            this.ClearSelectionButton = new System.Windows.Forms.Button();
+            this.AddVersionToListButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.addVersionToListTextBox = new System.Windows.Forms.TextBox();
+            this.AddVersionToListTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.saveButton = new System.Windows.Forms.Button();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.gameLocationLabel = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
+            this.GameLocationLabel = new System.Windows.Forms.Label();
+            this.CancelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -76,46 +76,46 @@
             // 
             // gameVersionLabel
             // 
-            this.gameVersionLabel.AutoSize = true;
-            this.gameVersionLabel.Location = new System.Drawing.Point(86, 32);
-            this.gameVersionLabel.Name = "gameVersionLabel";
-            this.gameVersionLabel.Size = new System.Drawing.Size(53, 13);
-            this.gameVersionLabel.TabIndex = 3;
-            this.gameVersionLabel.Text = "<version>";
+            this.GameVersionLabel.AutoSize = true;
+            this.GameVersionLabel.Location = new System.Drawing.Point(86, 32);
+            this.GameVersionLabel.Name = "gameVersionLabel";
+            this.GameVersionLabel.Size = new System.Drawing.Size(53, 13);
+            this.GameVersionLabel.TabIndex = 3;
+            this.GameVersionLabel.Text = "<version>";
             // 
             // selectedVersionsCheckedListBox
             // 
-            this.selectedVersionsCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.SelectedVersionsCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectedVersionsCheckedListBox.CheckOnClick = true;
-            this.selectedVersionsCheckedListBox.FormattingEnabled = true;
-            this.selectedVersionsCheckedListBox.Location = new System.Drawing.Point(12, 79);
-            this.selectedVersionsCheckedListBox.Name = "selectedVersionsCheckedListBox";
-            this.selectedVersionsCheckedListBox.Size = new System.Drawing.Size(406, 124);
-            this.selectedVersionsCheckedListBox.TabIndex = 4;
+            this.SelectedVersionsCheckedListBox.CheckOnClick = true;
+            this.SelectedVersionsCheckedListBox.FormattingEnabled = true;
+            this.SelectedVersionsCheckedListBox.Location = new System.Drawing.Point(12, 79);
+            this.SelectedVersionsCheckedListBox.Name = "selectedVersionsCheckedListBox";
+            this.SelectedVersionsCheckedListBox.Size = new System.Drawing.Size(406, 124);
+            this.SelectedVersionsCheckedListBox.TabIndex = 4;
             // 
             // clearSelectionButton
             // 
-            this.clearSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.clearSelectionButton.Location = new System.Drawing.Point(12, 211);
-            this.clearSelectionButton.Name = "clearSelectionButton";
-            this.clearSelectionButton.Size = new System.Drawing.Size(92, 23);
-            this.clearSelectionButton.TabIndex = 5;
-            this.clearSelectionButton.Text = "Clear selection";
-            this.clearSelectionButton.UseVisualStyleBackColor = true;
-            this.clearSelectionButton.Click += new System.EventHandler(this.clearSelectionButton_Click);
+            this.ClearSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ClearSelectionButton.Location = new System.Drawing.Point(12, 211);
+            this.ClearSelectionButton.Name = "clearSelectionButton";
+            this.ClearSelectionButton.Size = new System.Drawing.Size(92, 23);
+            this.ClearSelectionButton.TabIndex = 5;
+            this.ClearSelectionButton.Text = "Clear selection";
+            this.ClearSelectionButton.UseVisualStyleBackColor = true;
+            this.ClearSelectionButton.Click += new System.EventHandler(this.ClearSelectionButton_Click);
             // 
             // addVersionToListButton
             // 
-            this.addVersionToListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addVersionToListButton.Location = new System.Drawing.Point(343, 209);
-            this.addVersionToListButton.Name = "addVersionToListButton";
-            this.addVersionToListButton.Size = new System.Drawing.Size(75, 23);
-            this.addVersionToListButton.TabIndex = 6;
-            this.addVersionToListButton.Text = "Add";
-            this.addVersionToListButton.UseVisualStyleBackColor = true;
-            this.addVersionToListButton.Click += new System.EventHandler(this.addVersionToListButton_Click);
+            this.AddVersionToListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddVersionToListButton.Location = new System.Drawing.Point(343, 209);
+            this.AddVersionToListButton.Name = "addVersionToListButton";
+            this.AddVersionToListButton.Size = new System.Drawing.Size(75, 23);
+            this.AddVersionToListButton.TabIndex = 6;
+            this.AddVersionToListButton.Text = "Add";
+            this.AddVersionToListButton.UseVisualStyleBackColor = true;
+            this.AddVersionToListButton.Click += new System.EventHandler(this.AddVersionToListButton_Click);
             // 
             // label5
             // 
@@ -129,11 +129,11 @@
             // 
             // addVersionToListTextBox
             // 
-            this.addVersionToListTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addVersionToListTextBox.Location = new System.Drawing.Point(206, 211);
-            this.addVersionToListTextBox.Name = "addVersionToListTextBox";
-            this.addVersionToListTextBox.Size = new System.Drawing.Size(131, 20);
-            this.addVersionToListTextBox.TabIndex = 8;
+            this.AddVersionToListTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddVersionToListTextBox.Location = new System.Drawing.Point(206, 211);
+            this.AddVersionToListTextBox.Name = "addVersionToListTextBox";
+            this.AddVersionToListTextBox.Size = new System.Drawing.Size(131, 20);
+            this.AddVersionToListTextBox.TabIndex = 8;
             // 
             // label6
             // 
@@ -158,14 +158,14 @@
             // 
             // saveButton
             // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(362, 331);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(75, 23);
-            this.saveButton.TabIndex = 11;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveButton.Location = new System.Drawing.Point(362, 331);
+            this.SaveButton.Name = "saveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveButton.TabIndex = 11;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // label8
             // 
@@ -178,45 +178,45 @@
             // 
             // gameLocationLabel
             // 
-            this.gameLocationLabel.AutoSize = true;
-            this.gameLocationLabel.Location = new System.Drawing.Point(69, 11);
-            this.gameLocationLabel.Name = "gameLocationLabel";
-            this.gameLocationLabel.Size = new System.Drawing.Size(56, 13);
-            this.gameLocationLabel.TabIndex = 13;
-            this.gameLocationLabel.Text = "<location>";
+            this.GameLocationLabel.AutoSize = true;
+            this.GameLocationLabel.Location = new System.Drawing.Point(69, 11);
+            this.GameLocationLabel.Name = "gameLocationLabel";
+            this.GameLocationLabel.Size = new System.Drawing.Size(56, 13);
+            this.GameLocationLabel.TabIndex = 13;
+            this.GameLocationLabel.Text = "<location>";
             // 
             // cancelButton
             // 
-            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(281, 331);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 14;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelButton.Location = new System.Drawing.Point(281, 331);
+            this.CancelButton.Name = "cancelButton";
+            this.CancelButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelButton.TabIndex = 14;
+            this.CancelButton.Text = "Cancel";
+            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // CompatibleKspVersionsDialog
             // 
-            this.AcceptButton = this.saveButton;
+            this.AcceptButton = this.SaveButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cancelButton;
+            this.CancelButton = this.CancelButton;
             this.ClientSize = new System.Drawing.Size(443, 364);
             this.ControlBox = false;
-            this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.gameLocationLabel);
+            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.GameLocationLabel);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.addVersionToListTextBox);
+            this.Controls.Add(this.AddVersionToListTextBox);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.addVersionToListButton);
-            this.Controls.Add(this.clearSelectionButton);
-            this.Controls.Add(this.selectedVersionsCheckedListBox);
-            this.Controls.Add(this.gameVersionLabel);
+            this.Controls.Add(this.AddVersionToListButton);
+            this.Controls.Add(this.ClearSelectionButton);
+            this.Controls.Add(this.SelectedVersionsCheckedListBox);
+            this.Controls.Add(this.GameVersionLabel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -235,17 +235,17 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label gameVersionLabel;
-        private System.Windows.Forms.CheckedListBox selectedVersionsCheckedListBox;
-        private System.Windows.Forms.Button clearSelectionButton;
-        private System.Windows.Forms.Button addVersionToListButton;
+        private System.Windows.Forms.Label GameVersionLabel;
+        private System.Windows.Forms.CheckedListBox SelectedVersionsCheckedListBox;
+        private System.Windows.Forms.Button ClearSelectionButton;
+        private System.Windows.Forms.Button AddVersionToListButton;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox addVersionToListTextBox;
+        private System.Windows.Forms.TextBox AddVersionToListTextBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label gameLocationLabel;
-        private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Label GameLocationLabel;
+        private System.Windows.Forms.Button CancelButton;
     }
 }

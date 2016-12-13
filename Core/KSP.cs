@@ -30,9 +30,9 @@ namespace CKAN
 
         private readonly string gameDir;
         private KspVersion version;
-        private List<KspVersion> compatibleVersions = new List<KspVersion>();
-        public KspVersion versionOfKspWhenCompatibleVersionsWereStored { get; private set; }
-        public bool compatibleVersionsAreFromPreviousKsp { get { return compatibleVersions.Count > 0 && versionOfKspWhenCompatibleVersionsWereStored != Version(); } }
+        private List<KspVersion> _compatibleVersions = new List<KspVersion>();
+        public KspVersion VersionOfKspWhenCompatibleVersionsWereStored { get; private set; }
+        public bool CompatibleVersionsAreFromDifferentKsp { get { return _compatibleVersions.Count > 0 && VersionOfKspWhenCompatibleVersionsWereStored != Version(); } }
 
         public NetFileCache Cache { get; private set; }
 
@@ -103,7 +103,7 @@ namespace CKAN
 
         public void SetCompatibleVersions(List<KspVersion> compatibleVersions)
         {
-            this.compatibleVersions = compatibleVersions;
+            this._compatibleVersions = compatibleVersions;
             SaveCompatibleVersions();
         }
 
@@ -111,13 +111,13 @@ namespace CKAN
         {
             CompatibleKspVersionsDto compatibleKspVersionsDto = new CompatibleKspVersionsDto();
 
-            compatibleKspVersionsDto.versionOfKspWhenWritten = Version().ToString();
-            compatibleKspVersionsDto.compatibleKspVersions = compatibleVersions.Select(v => v.ToString()).ToList();
+            compatibleKspVersionsDto.VersionOfKspWhenWritten = Version().ToString();
+            compatibleKspVersionsDto.CompatibleKspVersions = _compatibleVersions.Select(v => v.ToString()).ToList();
 
             String json = JsonConvert.SerializeObject(compatibleKspVersionsDto);
             File.WriteAllText(CompatibleKspVersionsFile(), json);
 
-            this.versionOfKspWhenCompatibleVersionsWereStored = Version();
+            this.VersionOfKspWhenCompatibleVersionsWereStored = Version();
         }
 
         private void LoadCompatibleVersions()
@@ -128,8 +128,8 @@ namespace CKAN
                 string json = File.ReadAllText(path);
                 CompatibleKspVersionsDto compatibleKspVersionsDto = JsonConvert.DeserializeObject<CompatibleKspVersionsDto>(json);
 
-                compatibleVersions = compatibleKspVersionsDto.compatibleKspVersions.Select(v => KspVersion.Parse(v)).ToList();
-                this.versionOfKspWhenCompatibleVersionsWereStored = KspVersion.Parse(compatibleKspVersionsDto.versionOfKspWhenWritten);
+                _compatibleVersions = compatibleKspVersionsDto.CompatibleKspVersions.Select(v => KspVersion.Parse(v)).ToList();
+                this.VersionOfKspWhenCompatibleVersionsWereStored = KspVersion.Parse(compatibleKspVersionsDto.VersionOfKspWhenWritten);
             }
         }
 
@@ -140,7 +140,7 @@ namespace CKAN
 
         public List<KspVersion> GetCompatibleVersions()
         {
-            return new List<KspVersion>(this.compatibleVersions);
+            return new List<KspVersion>(this._compatibleVersions);
         }
 
         #endregion
@@ -385,7 +385,7 @@ namespace CKAN
 
         public KspVersionCriteria VersionCriteria ()
         {
-            return new KspVersionCriteria(version, compatibleVersions);
+            return new KspVersionCriteria(version, _compatibleVersions);
         }
 
         #endregion

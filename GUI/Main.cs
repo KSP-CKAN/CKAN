@@ -436,7 +436,7 @@ namespace CKAN
                 Repo.default_ckan_repo.ToString()
             );
 
-            if (CurrentInstance.compatibleVersionsAreFromPreviousKsp)
+            if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
             {
                 CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(CurrentInstance);
                 dialog.ShowDialog();

@@ -142,7 +142,7 @@
             this.ForgetButton.Text = "Forget";
             this.ForgetButton.UseVisualStyleBackColor = true;
             this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
-            //
+            // 
             // ChooseKSPInstance
             // 
             this.AcceptButton = this.SelectButton;

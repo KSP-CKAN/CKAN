@@ -53,12 +53,12 @@ namespace CKAN
                 return true;
             }
             
-            if (!moduleRange.Upper.Value.IsAny && isBoundLower(moduleRange.Upper, gameVersionRange.Lower))
+            if (!moduleRange.Upper.Value.IsAny && IsBoundLower(moduleRange.Upper, gameVersionRange.Lower))
             {
                 return false;
             }
 
-            if (!moduleRange.Lower.Value.IsAny && isBoundLower(gameVersionRange.Upper, moduleRange.Lower))
+            if (!moduleRange.Lower.Value.IsAny && IsBoundLower(gameVersionRange.Upper, moduleRange.Lower))
             {
                 return false;
             }
@@ -66,7 +66,7 @@ namespace CKAN
             return true;
         }
 
-        private bool isBoundLower(KspVersionBound val1, KspVersionBound val2)
+        private bool IsBoundLower(KspVersionBound val1, KspVersionBound val2)
         {
             return val1.Value < val2.Value || (val1.Value == val2.Value && !val1.Inclusive);
                    
