@@ -317,7 +317,5 @@
     <Content Include="Resources\backward.png" />
     <Content Include="Resources\forward.png" />
     <Content Include="Resources\textClear.png" />
-    <Content Include="Scripts\q.js" />
-    <Content Include="Scripts\q.min.js" />
   </ItemGroup>
 </Project>
