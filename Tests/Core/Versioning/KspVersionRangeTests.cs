@@ -71,6 +71,208 @@ namespace Tests.Core.Versioning
             }
         };
 
+        private static readonly object[] IntersectWithCases =
+        {
+            new object[]
+            {
+                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+                new KspVersionRange(new KspVersionBound(), new KspVersionBound()),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                ),
+                null
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true),
+                    new KspVersionBound(new KspVersion(1, 2, 3, 4), true)
+                ),
+                null
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                null
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1235), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1235), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+                null
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 1234), true)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+                null
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 1, 0, 0), true),
+                    new KspVersionBound(new KspVersion(1, 2, 0, 0), false)
+                ),
+                null
+            },
+        };
+
         private static readonly object[] IsSupersetOfCases =
         {
             new object[]
@@ -221,6 +423,16 @@ namespace Tests.Core.Versioning
         {
             // Act
             var result = vr.ToString();
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [TestCaseSource("IntersectWithCases")]
+        public void IntersectWithWorksCorrectly(KspVersionRange left, KspVersionRange right, KspVersionRange expected)
+        {
+            // Act
+            var result = left.IntersectWith(right);
 
             // Assert
             Assert.That(result, Is.EqualTo(expected));
