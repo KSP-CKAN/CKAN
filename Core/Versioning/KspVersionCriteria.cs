@@ -14,7 +14,9 @@ namespace CKAN.Versioning
 
         public KspVersionCriteria(KspVersion v, List<KspVersion> compatibleVersions)
         {
-            this.versions.Add(v);
+            if(v != null) { 
+                this.versions.Add(v);
+            }
             this.versions.AddRange(compatibleVersions);
         }
 
