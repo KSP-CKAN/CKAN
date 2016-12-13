@@ -18,15 +18,9 @@ namespace CKAN.Versioning
             this.versions.AddRange(compatibleVersions);
         }
 
-        public override int GetHashCode ()
-        {
-            return base.GetHashCode ();
-        }
-
         public List<KspVersion> Versions {
             get {
                 return versions;
-
             }
         }
 

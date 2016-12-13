@@ -37,7 +37,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da" />
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
@@ -315,5 +317,7 @@
     <Content Include="Resources\backward.png" />
     <Content Include="Resources\forward.png" />
     <Content Include="Resources\textClear.png" />
+    <Content Include="Scripts\q.js" />
+    <Content Include="Scripts\q.min.js" />
   </ItemGroup>
 </Project>
