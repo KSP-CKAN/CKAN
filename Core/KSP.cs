@@ -103,7 +103,7 @@ namespace CKAN
 
         public void SetCompatibleVersions(List<KspVersion> compatibleVersions)
         {
-            this._compatibleVersions = compatibleVersions;
+            this._compatibleVersions = compatibleVersions.Distinct().ToList();
             SaveCompatibleVersions();
         }
 
