@@ -271,6 +271,51 @@ namespace Tests.Core.Versioning
                 ),
                 null
             },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound()
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                )
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 5, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), true)
+                )
+            },
+            new object[]
+            {
+                new KspVersionRange(
+                    new KspVersionBound(),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 3, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                ),
+                new KspVersionRange(
+                    new KspVersionBound(new KspVersion(1, 0, 3, 0), true),
+                    new KspVersionBound(new KspVersion(1, 0, 4, 0), false)
+                )
+            }
         };
 
         private static readonly object[] IsSupersetOfCases =
@@ -376,7 +421,7 @@ namespace Tests.Core.Versioning
                     new KspVersionBound(new KspVersion(2, 0, 0, 0), true)
                 ),
                 true
-            }
+            },
         };
 
         [Test]

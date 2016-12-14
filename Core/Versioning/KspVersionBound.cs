@@ -94,7 +94,11 @@ namespace CKAN.Versioning
             if (versionBounds.Any(i => i == null))
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
 
-            return versionBounds.OrderBy(i => i.Value).ThenBy(i => i.Inclusive).First();
+            return versionBounds
+                .OrderBy(i => i == Unbounded)
+                .ThenBy(i => i.Value)
+                .ThenBy(i => i.Inclusive)
+                .First();
         }
 
         /// <summary>
@@ -115,7 +119,11 @@ namespace CKAN.Versioning
             if (versionBounds.Any(i => i == null))
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
 
-            return versionBounds.OrderByDescending(i => i.Value).ThenBy(i => i.Inclusive).First();
+            return versionBounds
+                .OrderBy(i => i == Unbounded)
+                .ThenByDescending(i => i.Value)
+                .ThenBy(i => i.Inclusive)
+                .First();
         }
     }
 }
