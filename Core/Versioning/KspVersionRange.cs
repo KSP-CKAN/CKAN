@@ -32,6 +32,17 @@ namespace CKAN.Versioning
             return _string;
         }
 
+        public KspVersionRange IntersectWith(KspVersionRange other)
+        {
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException("other");
+
+            var highestLow = KspVersionBound.Highest(Lower, other.Lower);
+            var lowestHigh = KspVersionBound.Lowest(Upper, other.Upper);
+
+            return IsEmpty(highestLow, lowestHigh) ? null : new KspVersionRange(highestLow, lowestHigh);
+        }
+
         public bool IsSupersetOf(KspVersionRange other)
         {
             if (ReferenceEquals(other, null))
@@ -46,6 +57,12 @@ namespace CKAN.Versioning
                 || (other.Upper.Value == Upper.Value && (Upper.Inclusive || !other.Upper.Inclusive));
 
             return lowerIsOkay && upperIsOkay;
+        }
+
+        private static bool IsEmpty(KspVersionBound lower, KspVersionBound upper)
+        {
+            return upper.Value < lower.Value ||
+                (lower.Value == upper.Value && (!lower.Inclusive || !upper.Inclusive));
         }
 
         private static string DeriveString(KspVersionRange versionRange)
