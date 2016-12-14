@@ -52,24 +52,8 @@ namespace CKAN
             {
                 return true;
             }
-            
-            if (!moduleRange.Upper.Value.IsAny && IsBoundLower(moduleRange.Upper, gameVersionRange.Lower))
-            {
-                return false;
-            }
 
-            if (!moduleRange.Lower.Value.IsAny && IsBoundLower(gameVersionRange.Upper, moduleRange.Lower))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool IsBoundLower(KspVersionBound val1, KspVersionBound val2)
-        {
-            return val1.Value < val2.Value || (val1.Value == val2.Value && !val1.Inclusive);
-                   
+            return gameVersionRange.IntersectWith(moduleRange) != null;
         }
     }
 }

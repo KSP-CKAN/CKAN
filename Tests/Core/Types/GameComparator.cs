@@ -97,6 +97,24 @@ namespace Tests.Core.Types
             new object[] { "1.1",           "1.1",          true },
             new object[] { "1.1",           "1.0",          false },
             new object[] { "1.0",           "1.1",          false },
+
+            new object[] { "1.0.4",         "1",            true },
+            new object[] { "1.0.4",         "1.0",          true },
+            new object[] { "1.0.4",         "1.0.4",        true },
+            new object[] { "1.0.4",         "1.0.4.1234",   true },
+            new object[] { "1.0.4",         "1.0.5",        false },
+            new object[] { "1.0.4",         "1.0.3",        false },
+            new object[] { "1.0.4",         "1.1",          false },
+            new object[] { "1.0.4",         "0.9",          false },
+
+            new object[] { "1",             "1",            true },
+            new object[] { "1",             "1.0",          true },
+            new object[] { "1",             "1.0.4",        true },
+            new object[] { "1",             "1.0.4.1234",   true },
+            new object[] { "1",             "2",            false },
+            new object[] { "1",             "2.1",          false },
+            new object[] { "1",             "0",            false },
+            new object[] { "1",             "0.9",          false },
         };
 
         [TestCaseSource("TestStrictGameComparatorCases")]
