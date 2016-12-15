@@ -81,7 +81,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
         }
 
-        private static readonly object[] TestStrictGameComparatorCases =
+        public static readonly object[] TestStrictGameComparatorCases =
         {
                         //MOD comapat.      //KSP           //expected
             new object[] { "1.0",           "1.0.4",        true },
@@ -129,7 +129,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expectedResult, comparator.Compatible(new KspVersionCriteria(KspVersion.Parse(gameVersion)), gameMod));
         }
 
-        private static readonly object[] TestStrictGameComparatorMinMaxCases =
+        public static readonly object[] TestStrictGameComparatorMinMaxCases =
         {
                         //Min comapat     //Max comapat     //KSP           //expected
             new object[] { "1.0.4",           null,           "1.0.3",       false },
