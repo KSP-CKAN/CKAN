@@ -141,6 +141,7 @@ namespace CKAN
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ChooseProvidedModsLabel = new System.Windows.Forms.Label();
+            this.compatibleKSPVersionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportAnIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -167,9 +168,9 @@ namespace CKAN
             this.ChooseRecommendedModsTabPage.SuspendLayout();
             this.ChooseProvidedModsTabPage.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // menuStrip1
-            // 
+            //
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -181,9 +182,9 @@ namespace CKAN
             this.menuStrip1.Size = new System.Drawing.Size(1544, 35);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            // 
+            //
             // fileToolStripMenuItem
-            // 
+            //
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectKSPInstallMenuItem,
             this.openKspDirectoryToolStripMenuItem,
@@ -194,59 +195,60 @@ namespace CKAN
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             this.fileToolStripMenuItem.Text = "File";
-            // 
+            //
             // selectKSPInstallMenuItem
-            // 
+            //
             this.selectKSPInstallMenuItem.Name = "selectKSPInstallMenuItem";
             this.selectKSPInstallMenuItem.Size = new System.Drawing.Size(281, 30);
             this.selectKSPInstallMenuItem.Text = "Select KSP Install...";
             this.selectKSPInstallMenuItem.Click += new System.EventHandler(this.selectKSPInstallMenuItem_Click);
-            // 
+            //
             // openKspDirectoryToolStripMenuItem
-            // 
+            //
             this.openKspDirectoryToolStripMenuItem.Name = "openKspDirectoryToolStripMenuItem";
             this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.openKspDirectoryToolStripMenuItem.Text = "Open KSP Directory";
             this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
-            // 
+            //
             // installFromckanToolStripMenuItem
-            // 
+            //
             this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
             this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.installFromckanToolStripMenuItem.Text = "Install from .ckan...";
             this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
-            // 
+            //
             // exportModListToolStripMenuItem
-            // 
+            //
             this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
             this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.exportModListToolStripMenuItem.Text = "&Export installed mods...";
             this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
-            // 
+            //
             // toolStripSeparator1
-            // 
+            //
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
-            // 
+            //
             // ExitToolButton
-            // 
+            //
             this.ExitToolButton.Name = "ExitToolButton";
             this.ExitToolButton.Size = new System.Drawing.Size(281, 30);
             this.ExitToolButton.Text = "Exit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
-            // 
+            //
             // settingsToolStripMenuItem
-            // 
+            //
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cKANSettingsToolStripMenuItem,
             this.pluginsToolStripMenuItem,
-            this.kSPCommandlineToolStripMenuItem});
+            this.kSPCommandlineToolStripMenuItem,
+            this.compatibleKSPVersionsToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(88, 29);
             this.settingsToolStripMenuItem.Text = "Settings";
-            // 
+            //
             // cKANSettingsToolStripMenuItem
-            // 
+            //
             this.cKANSettingsToolStripMenuItem.Name = "cKANSettingsToolStripMenuItem";
             this.cKANSettingsToolStripMenuItem.Size = new System.Drawing.Size(247, 30);
             this.cKANSettingsToolStripMenuItem.Text = "CKAN settings";
@@ -1431,9 +1433,15 @@ namespace CKAN
             this.reportAnIssueToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
             this.reportAnIssueToolStripMenuItem.Text = "Report an issue...";
             this.reportAnIssueToolStripMenuItem.Click += new System.EventHandler(this.reportAnIssueToolStripMenuItem_Click);
-            // 
+            //
+            // compatibleKSPVersionsToolStripMenuItem
+            //
+            this.compatibleKSPVersionsToolStripMenuItem.Name = "compatibleKSPVersionsToolStripMenuItem";
+            this.compatibleKSPVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
+            this.compatibleKSPVersionsToolStripMenuItem.Text = "Compatible KSP versions";
+            //
             // Main
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1544, 1038);
@@ -1597,5 +1605,6 @@ namespace CKAN
         private ToolStripMenuItem NavBackwardToolButton;
         private ToolStripMenuItem NavForwardToolButton;
         private ToolStripMenuItem reportAnIssueToolStripMenuItem;
+        private ToolStripMenuItem compatibleKSPVersionsToolStripMenuItem;
     }
 }
