@@ -36,7 +36,7 @@ namespace CKAN
             if (_ksp.CompatibleVersionsAreFromDifferentKsp)
             {
                 MessageBox.Show("KSP has been updated since you last reviewed your compatible KSP versions. Please make sure that settings are correct.");
-                CancelButton.Visible = false;
+                CancelChooseCompatibleVersionsButton.Visible = false;
                 GameVersionLabel.Text = _ksp.Version().ToString() + " (previous game version: " + _ksp.VersionOfKspWhenCompatibleVersionsWereStored + ")";
                 GameVersionLabel.ForeColor = System.Drawing.Color.Red;
             }
@@ -81,7 +81,7 @@ namespace CKAN
                 var version = KspVersion.Parse(AddVersionToListTextBox.Text);
                 SelectedVersionsCheckedListBox.Items.Insert(0, version);
             }
-            catch(FormatException ex)
+            catch(FormatException)
             {
                 MessageBox.Show("Version has invalid format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

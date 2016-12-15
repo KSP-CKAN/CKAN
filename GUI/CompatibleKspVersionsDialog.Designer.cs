@@ -42,7 +42,7 @@
             this.SaveButton = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.GameLocationLabel = new System.Windows.Forms.Label();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelChooseCompatibleVersionsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -187,25 +187,25 @@
             // 
             // cancelButton
             // 
-            this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(281, 331);
-            this.CancelButton.Name = "cancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 14;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelChooseCompatibleVersionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelChooseCompatibleVersionsButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelChooseCompatibleVersionsButton.Location = new System.Drawing.Point(281, 331);
+            this.CancelChooseCompatibleVersionsButton.Name = "cancelButton";
+            this.CancelChooseCompatibleVersionsButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelChooseCompatibleVersionsButton.TabIndex = 14;
+            this.CancelChooseCompatibleVersionsButton.Text = "Cancel";
+            this.CancelChooseCompatibleVersionsButton.UseVisualStyleBackColor = true;
+            this.CancelChooseCompatibleVersionsButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // CompatibleKspVersionsDialog
             // 
             this.AcceptButton = this.SaveButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.CancelButton;
+            this.CancelButton = this.CancelChooseCompatibleVersionsButton;
             this.ClientSize = new System.Drawing.Size(443, 364);
             this.ControlBox = false;
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelChooseCompatibleVersionsButton);
             this.Controls.Add(this.GameLocationLabel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.SaveButton);
@@ -246,6 +246,6 @@
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label GameLocationLabel;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelChooseCompatibleVersionsButton;
     }
 }
