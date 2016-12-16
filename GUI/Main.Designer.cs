@@ -1439,6 +1439,7 @@ namespace CKAN
             this.compatibleKSPVersionsToolStripMenuItem.Name = "compatibleKSPVersionsToolStripMenuItem";
             this.compatibleKSPVersionsToolStripMenuItem.Size = new System.Drawing.Size(233, 24);
             this.compatibleKSPVersionsToolStripMenuItem.Text = "Compatible KSP versions";
+            this.compatibleKSPVersionsToolStripMenuItem.Click += new System.EventHandler(this.CompatibleKspVersionsToolStripMenuItem_Click);
             //
             // Main
             //
