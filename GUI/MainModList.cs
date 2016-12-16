@@ -147,14 +147,14 @@ namespace CKAN
         {
             log.Debug("Updating the mod list");
 
-            KspVersion version = CurrentInstance.Version();
+            KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
-            var gui_mods = new HashSet<GUIMod>(registry.Available(version)
-                .Select(m => new GUIMod(m, registry, version)));
-            gui_mods.UnionWith(registry.Incompatible(version)
-                .Select(m => new GUIMod(m, registry, version)));
+            var gui_mods = new HashSet<GUIMod>(registry.Available(versionCriteria)
+                .Select(m => new GUIMod(m, registry, versionCriteria)));
+            gui_mods.UnionWith(registry.Incompatible(versionCriteria)
+                .Select(m => new GUIMod(m, registry, versionCriteria)));
             var installed = registry.InstalledModules
-                .Select(m => new GUIMod(m.Module, registry, version));
+                .Select(m => new GUIMod(m.Module, registry, versionCriteria));
 
             //Hashset does not define if add/unionwith replaces existing elements.
             //In this case that could cause a CkanModule to be replaced by a Module.
@@ -364,7 +364,7 @@ namespace CKAN
         /// <param name="version">The version of the current KSP install</param>
         public async Task<IEnumerable<ModChange>> ComputeChangeSetFromModList(
             IRegistryQuerier registry, HashSet<ModChange> changeSet, ModuleInstaller installer,
-            KspVersion version)
+            KspVersionCriteria version)
         {
             var modules_to_install = new HashSet<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
@@ -610,7 +610,7 @@ namespace CKAN
 
 
         public static Dictionary<GUIMod, string> ComputeConflictsFromModList(IRegistryQuerier registry,
-            IEnumerable<ModChange> change_set, KspVersion ksp_version)
+            IEnumerable<ModChange> change_set, KspVersionCriteria ksp_version)
         {
             var modules_to_install = new HashSet<string>();
             var modules_to_remove = new HashSet<string>();

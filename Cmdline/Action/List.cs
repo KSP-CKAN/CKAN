@@ -72,7 +72,7 @@ namespace CKAN.CmdLine
                         try
                         {
                             // Check if upgrades are available, and show appropriately.
-                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.Version());
+                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
 
                             log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
 

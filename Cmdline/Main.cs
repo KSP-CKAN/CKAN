@@ -322,7 +322,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
         private static int Available(CKAN.KSP current_instance, IUser user)
         {
-            List<CkanModule> available = RegistryManager.Instance(current_instance).registry.Available(current_instance.Version());
+            List<CkanModule> available = RegistryManager.Instance(current_instance).registry.Available(current_instance.VersionCriteria());
 
             user.RaiseMessage("Mods available for KSP {0}", current_instance.Version());
             user.RaiseMessage("");

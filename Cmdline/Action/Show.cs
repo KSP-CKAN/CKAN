@@ -38,7 +38,7 @@ namespace CKAN.CmdLine
             // Module was not installed, look for an exact match in the available modules,
             // either by "name" (the user-friendly display name) or by identifier
             CkanModule moduleToShow = registry
-                                      .Available(ksp.Version())
+                                      .Available(ksp.VersionCriteria())
                                       .SingleOrDefault(
                                             mod => mod.name == options.Modname
                                                 || mod.identifier == options.Modname

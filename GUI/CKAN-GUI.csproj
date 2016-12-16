@@ -37,6 +37,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
@@ -60,12 +63,6 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutDialog.Designer.cs">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="AskUserForAutoUpdatesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,6 +102,12 @@
     </Compile>
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CompatibleKspVersionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CompatibleKspVersionsDialog.Designer.cs">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MainChangeset.cs">
       <SubType>Form</SubType>
@@ -195,6 +198,9 @@
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -239,6 +245,12 @@
     </Compile>
     <Compile Include="MainTabControl.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

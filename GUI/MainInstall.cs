@@ -158,7 +158,7 @@ namespace CKAN
                     // the mod is not installed _and_
                     // the mod is not already in the install list
                     if (
-                        registry.LatestAvailable(mod.name, CurrentInstance.Version()) != null &&
+                        registry.LatestAvailable(mod.name, CurrentInstance.VersionCriteria()) != null &&
                         !registry.IsInstalled(mod.name) && !toInstall.Contains(mod.name))
                     {
                         // add it to the list of chooseAble mods we display to the user
@@ -457,14 +457,14 @@ namespace CKAN
                 try
                 {
                     var resolver = new RelationshipResolver(new List<string> { pair.Key }, opts,
-                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.Version());
+                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.VersionCriteria());
                     if (!resolver.ModList().Any())
                     {
                         continue;
                     }
 
                     module = RegistryManager.Instance(manager.CurrentInstance)
-                        .registry.LatestAvailable(pair.Key, CurrentInstance.Version());
+                        .registry.LatestAvailable(pair.Key, CurrentInstance.VersionCriteria());
                 }
                 catch
                 {

@@ -21,7 +21,7 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 var ckan_mod = TestData.kOS_014_module();
                 registry.AddAvailable(ckan_mod);
-                var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version());
+                var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria());
                 Assert.False(mod.IsUpgradeChecked);
             }
         }
@@ -38,7 +38,7 @@ namespace Tests.GUI
                 registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);
                 registry.AddAvailable(new_version);
 
-                var mod = new GUIMod(old_version, registry, tidy.KSP.Version());
+                var mod = new GUIMod(old_version, registry, tidy.KSP.VersionCriteria());
                 Assert.True(mod.HasUpdate);
             }
         }

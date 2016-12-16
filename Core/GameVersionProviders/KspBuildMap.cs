@@ -32,6 +32,20 @@ namespace CKAN.GameVersionProviders
             }
         }
 
+        public List<KspVersion> KnownVersions
+        {
+            get
+            {
+                EnsureBuildMap();
+                List<KspVersion> knownVersions = new List<KspVersion>();
+                foreach (var version in _jBuilds.Builds)
+                {
+                    knownVersions.Add(KspVersion.Parse(version.Value));
+                }
+                return knownVersions;
+            }
+        }
+
         public KspBuildMap(IWin32Registry registry)
         {
             _registry = registry;

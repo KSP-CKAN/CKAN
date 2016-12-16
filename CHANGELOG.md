@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Add regexp second test for filespecs (#1919 by: politas; reviewed: ayan4m1)
 - [Core] Changed name of registry lock file to registry.lock (#1944 by: politas; reviewed: ayan4m1)
 - [GUI] Modlist hides epochs by default (#1942 by: politas; reviewed: ayan4m1)
+- [Core/GUI] Let users select compatible KSP versions (#1957 by: grzegrzk; reviewed: dbent, politas)
+- [Core] Add IntersectWith method to KspVersionRange (#1958 by: dbent; reviewed: grzegrzk, politas)
 
 ## v1.20.1
 

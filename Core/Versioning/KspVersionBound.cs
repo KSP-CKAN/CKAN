@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace CKAN.Versioning
 {
@@ -70,6 +71,59 @@ namespace CKAN.Versioning
         public static bool operator !=(KspVersionBound left, KspVersionBound right)
         {
             return !Equals(left, right);
+        }
+    }
+
+    public sealed partial class KspVersionBound
+    {
+        /// <summary>
+        /// Returns the lowest of a set of <see cref="KspVersionBound"/> objects. Analagous to
+        /// <see cref="KspVersion.Min(KspVersion[])"/> but does not produce a stable sort because in the event of a
+        /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
+        /// </summary>
+        /// <param name="versionBounds">The set of <see cref="KspVersionBound"/> objects to compare.</param>
+        /// <returns>The lowest value in <see cref="versionBounds"/>.</returns>
+        public static KspVersionBound Lowest(params KspVersionBound[] versionBounds)
+        {
+            if (versionBounds == null)
+                throw new ArgumentNullException("versionBounds");
+
+            if (!versionBounds.Any())
+                throw new ArgumentException("Value cannot be empty.", "versionBounds");
+
+            if (versionBounds.Any(i => i == null))
+                throw new ArgumentException("Value cannot contain null.", "versionBounds");
+
+            return versionBounds
+                .OrderBy(i => i == Unbounded)
+                .ThenBy(i => i.Value)
+                .ThenBy(i => i.Inclusive)
+                .First();
+        }
+
+        /// <summary>
+        /// Returns the highest of a set of <see cref="KspVersionBound"/> objects. Analagous to
+        /// <see cref="KspVersion.Max(KspVersion[])"/> but does not produce a stable sort because in the event of a
+        /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
+        /// </summary>
+        /// <param name="versionBounds">The set of <see cref="KspVersionBound"/> objects to compare.</param>
+        /// <returns>The highest value in <see cref="versionBounds"/>.</returns>
+        public static KspVersionBound Highest(params KspVersionBound[] versionBounds)
+        {
+            if (versionBounds == null)
+                throw new ArgumentNullException("versionBounds");
+
+            if (!versionBounds.Any())
+                throw new ArgumentException("Value cannot be empty.", "versionBounds");
+
+            if (versionBounds.Any(i => i == null))
+                throw new ArgumentException("Value cannot contain null.", "versionBounds");
+
+            return versionBounds
+                .OrderBy(i => i == Unbounded)
+                .ThenByDescending(i => i.Value)
+                .ThenBy(i => i.Inclusive)
+                .First();
         }
     }
 }

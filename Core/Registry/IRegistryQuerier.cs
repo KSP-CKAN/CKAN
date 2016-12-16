@@ -16,7 +16,7 @@ namespace CKAN
         /// the specified version of KSP.
         /// </summary>
         // TODO: This name is misleading. It's more a LatestAvailable's'
-        List<CkanModule> Available(KspVersion ksp_version);
+        List<CkanModule> Available(KspVersionCriteria ksp_version);
 
         /// <summary>
         ///     Returns the latest available version of a module that
@@ -25,7 +25,7 @@ namespace CKAN
         ///     If no ksp_version is provided, the latest module for *any* KSP is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        CkanModule LatestAvailable(string identifier, KspVersion ksp_version, RelationshipDescriptor relationship_descriptor = null);
+        CkanModule LatestAvailable(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
 
         /// <summary>
         ///     Returns the latest available version of a module that satisifes the specified version and
@@ -34,7 +34,7 @@ namespace CKAN
         ///     Returns an empty list if nothing is available for our system, which includes if no such module exists.
         ///     If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        List<CkanModule> LatestAvailableWithProvides(string identifier, KspVersion ksp_version, RelationshipDescriptor relationship_descriptor = null);
+        List<CkanModule> LatestAvailableWithProvides(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
 
         /// <summary>
         ///     Checks the sanity of the registry, to ensure that all dependencies are met,
@@ -65,7 +65,7 @@ namespace CKAN
         ///     Returns a simple array of all incompatible modules for
         ///     the specified version of KSP.
         /// </summary>
-        List<CkanModule> Incompatible(KspVersion ksp_version);
+        List<CkanModule> Incompatible(KspVersionCriteria ksp_version);
 
         /// <summary>
         /// Returns a dictionary of all modules installed, along with their
@@ -128,7 +128,7 @@ namespace CKAN
         /// Is the mod installed and does it have a newer version compatible with version
         /// We can't update AD mods
         /// </summary>
-        public static bool HasUpdate(this IRegistryQuerier querier, string identifier, KspVersion version)
+        public static bool HasUpdate(this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
         {
             CkanModule newest_version;
             try

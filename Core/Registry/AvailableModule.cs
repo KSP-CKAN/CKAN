@@ -72,7 +72,7 @@ namespace CKAN
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
         /// <returns></returns>
-        public CkanModule Latest(KspVersion ksp_version = null, RelationshipDescriptor relationship=null)
+        public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
         {            
             var available_versions = new List<Version>(module_version.Keys);
             CkanModule module;

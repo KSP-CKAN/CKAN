@@ -806,7 +806,7 @@ namespace Tests.Core.Relationships
                     new CKAN.CkanModule[] { mod },
                     RelationshipResolver.DefaultOpts(),
                     registry,
-                    KspVersion.Parse("1.0.0")
+                    new KspVersionCriteria (KspVersion.Parse("1.0.0"))
                 );
             }
         }

@@ -435,6 +435,13 @@ namespace CKAN
                 Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
+
+            if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
+            {
+                CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(CurrentInstance);
+                dialog.ShowDialog();
+            }
+
             UpdateModsList();
             ChangeSet = null;
             Conflicts = null;
@@ -753,13 +760,13 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set =
                     await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer,
-                    CurrentInstance.Version());
+                    CurrentInstance.VersionCriteria());
             }
             catch (InconsistentKraken)
             {
                 //Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
                 user_change_set = mainModList.ComputeUserChangeSet();
-                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.Version());
+                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
                 full_change_set = null;
             }
             catch (TooManyModsProvideKraken)
@@ -971,7 +978,7 @@ namespace CKAN
 
                 var changeset = new List<ModChange>();
                 changeset.Add(new ModChange(
-                    new GUIMod(module,registry_manager.registry,CurrentInstance.Version()),
+                    new GUIMod(module,registry_manager.registry,CurrentInstance.VersionCriteria()),
                     GUIModChangeType.Install, null));
 
                 menuStrip1.Enabled = false;
@@ -1062,6 +1069,13 @@ namespace CKAN
         private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Instance.manager.CurrentInstance.GameDir());
+        }
+
+        private void CompatibleKspVersionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var instanceSettingsDialog = new CompatibleKspVersionsDialog(Instance.manager.CurrentInstance);
+            instanceSettingsDialog.ShowDialog();
+            UpdateModsList(repo_updated: false);
         }
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)

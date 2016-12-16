@@ -56,7 +56,7 @@ namespace CKAN.CmdLine
         {
             var registry = RegistryManager.Instance(ksp).registry;
             return registry
-                .Available(ksp.Version())
+                .Available(ksp.VersionCriteria())
                 .Where((module) =>
             {
                 // Extract the description. This is an optional field and may be null.

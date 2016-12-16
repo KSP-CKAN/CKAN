@@ -1,4 +1,5 @@
 ﻿using CKAN.Versioning;
+using System;
 
 namespace CKAN
 {
@@ -6,9 +7,9 @@ namespace CKAN
     /// Test to see if a module is compatible with the user's installed game,
     /// using strict tests.
     /// </summary>
-    public class StrictGameComparator : IGameComparator
+    public class StrictGameComparator : BaseGameComparator
     {
-        public bool Compatible(KspVersion gameVersion, CkanModule module)
+        public override bool SingleVersionsCompatible(KspVersion gameVersion, CkanModule module)
         {
             var gameVersionRange = gameVersion.ToVersionRange();
 
@@ -52,7 +53,7 @@ namespace CKAN
                 return true;
             }
 
-            return moduleRange.IsSupersetOf(gameVersionRange);
+            return gameVersionRange.IntersectWith(moduleRange) != null;
         }
     }
 }
