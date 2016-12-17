@@ -119,7 +119,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModInfo.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MainModInfo.Designer.cs">
+      <DependentUpon>MainModInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWait.cs">
       <SubType>Form</SubType>
@@ -213,6 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainAllModVersions.resx">
       <DependentUpon>MainAllModVersions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainModInfo.resx">
+      <DependentUpon>MainModInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewUpdateDialog.resx">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>

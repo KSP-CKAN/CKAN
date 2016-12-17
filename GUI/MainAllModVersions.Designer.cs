@@ -72,7 +72,7 @@
             listViewItem1});
             this.VersionsListView.Location = new System.Drawing.Point(3, 28);
             this.VersionsListView.Name = "VersionsListView";
-            this.VersionsListView.Size = new System.Drawing.Size(606, 101);
+            this.VersionsListView.Size = new System.Drawing.Size(533, 101);
             this.VersionsListView.TabIndex = 1;
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
@@ -80,7 +80,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(759, 28);
+            this.button1.Location = new System.Drawing.Point(686, 28);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -90,7 +90,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(758, 227);
+            this.button2.Location = new System.Drawing.Point(685, 227);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 3;
@@ -106,7 +106,7 @@
             this.Controls.Add(this.VersionsListView);
             this.Controls.Add(this.label1);
             this.Name = "MainAllModVersions";
-            this.Size = new System.Drawing.Size(837, 253);
+            this.Size = new System.Drawing.Size(764, 253);
             this.ResumeLayout(false);
             this.PerformLayout();
 
