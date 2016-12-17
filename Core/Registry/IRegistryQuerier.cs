@@ -28,6 +28,12 @@ namespace CKAN
         CkanModule LatestAvailable(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
 
         /// <summary>
+        ///     Returns all available version of a module.
+        /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
+        /// </summary>
+        List<CkanModule> AllAvailable(string identifier);
+
+        /// <summary>
         ///     Returns the latest available version of a module that satisifes the specified version and
         ///     optionally a RelationshipDescriptor. Takes into account module 'provides', which may
         ///     result in a list of alternatives being provided.

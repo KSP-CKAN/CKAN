@@ -97,7 +97,9 @@ namespace CKAN
             this.MetadataModuleKSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
+            this.AllModVersionsTabPage = new System.Windows.Forms.TabPage();
             this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
+            this.AllModVersions = new MainAllModVersions();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.ContentTabPage = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
@@ -159,6 +161,7 @@ namespace CKAN
             this.MetaDataUpperLayoutPanel.SuspendLayout();
             this.MetaDataLowerLayoutPanel.SuspendLayout();
             this.RelationshipTabPage.SuspendLayout();
+            this.AllModVersionsTabPage.SuspendLayout();
             this.ContentTabPage.SuspendLayout();
             this.StatusPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
@@ -576,6 +579,7 @@ namespace CKAN
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
             this.ModInfoTabControl.Controls.Add(this.ContentTabPage);
+            this.ModInfoTabControl.Controls.Add(this.AllModVersionsTabPage);
             this.ModInfoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModInfoTabControl.Location = new System.Drawing.Point(0, 0);
             this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -901,6 +905,19 @@ namespace CKAN
             this.RelationshipTabPage.Text = "Relationships";
             this.RelationshipTabPage.UseVisualStyleBackColor = true;
             //
+            // AllModVersionsTabPage
+            //
+            this.AllModVersionsTabPage.Controls.Add(this.AllModVersions);
+           // this.AllModVersionsTabPage.Location = new System.Drawing.Point(4, 32);
+          //  this.AllModVersionsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.AllModVersionsTabPage.Name = "AllModVersionsTabPage";
+           // this.AllModVersionsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+           // this.AllModVersionsTabPage.Size = new System.Drawing.Size(532, 853);
+            this.AllModVersionsTabPage.TabIndex = 1;
+            this.AllModVersionsTabPage.Text = "Versions";
+            this.AllModVersionsTabPage.UseVisualStyleBackColor = true;
+            this.AllModVersions.Dock = DockStyle.Fill;
+            //
             // ModuleRelationshipType
             //
             this.ModuleRelationshipType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -919,6 +936,18 @@ namespace CKAN
             this.ModuleRelationshipType.Size = new System.Drawing.Size(508, 28);
             this.ModuleRelationshipType.TabIndex = 1;
             this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
+
+            //
+            // AllModVersions
+            //
+          //  this.AllModVersions.Location = new System.Drawing.Point(9, 11);
+          //  this.AllModVersions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.AllModVersions.Name = "AllModVersions";
+           // this.AllModVersions.Size = new System.Drawing.Size(508, 790);
+            this.AllModVersions.Dock = DockStyle.Fill;
+           // this.AllModVersions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+           // | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Bottom)));
+          //  this.AllModVersions.TabIndex = 1;
             //
             // DependsGraphTree
             //
@@ -1476,6 +1505,7 @@ namespace CKAN
             this.MetaDataLowerLayoutPanel.ResumeLayout(false);
             this.MetaDataLowerLayoutPanel.PerformLayout();
             this.RelationshipTabPage.ResumeLayout(false);
+            this.AllModVersionsTabPage.ResumeLayout(false);
             this.ContentTabPage.ResumeLayout(false);
             this.StatusPanel.ResumeLayout(false);
             this.MainTabControl.ResumeLayout(false);
@@ -1517,6 +1547,7 @@ namespace CKAN
         private ToolStripMenuItem FilterIncompatibleButton;
         private TabControl ModInfoTabControl;
         private TabPage RelationshipTabPage;
+        private TabPage AllModVersionsTabPage;
         private TreeView DependsGraphTree;
         private TabPage ContentTabPage;
         private Label NotCachedLabel;
@@ -1539,6 +1570,7 @@ namespace CKAN
         private LinkLabel MetadataModuleGitHubLinkLabel;
         private Label MetadataModuleNameLabel;
         private ComboBox ModuleRelationshipType;
+        private MainAllModVersions AllModVersions;
         private ToolStripMenuItem launchKSPToolStripMenuItem;
         private CKAN.MainTabControl MainTabControl;
         private TabPage ManageModsTabPage;

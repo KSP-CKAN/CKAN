@@ -498,6 +498,7 @@ namespace CKAN
             UpdateModInfo(module);
             UpdateModDependencyGraph(module);
             UpdateModContentsTree(module);
+            AllModVersions.SelectedModule = module;
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
