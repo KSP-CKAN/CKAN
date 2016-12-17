@@ -639,7 +639,7 @@ namespace CKAN
             //
             this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MetadataModuleNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.MetadataModuleNameLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(4, 0);
             this.MetadataModuleNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
@@ -703,7 +703,7 @@ namespace CKAN
             //
             this.IdentifierLabel.AutoSize = true;
             this.IdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.IdentifierLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.IdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.IdentifierLabel.Location = new System.Drawing.Point(4, 322);
             this.IdentifierLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.IdentifierLabel.Name = "IdentifierLabel";
@@ -715,7 +715,7 @@ namespace CKAN
             //
             this.MetadataIdentifierLabel.AutoSize = true;
             this.MetadataIdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataIdentifierLabel.ForeColor = System.Drawing.Color.Black;
+            this.MetadataIdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataIdentifierLabel.Location = new System.Drawing.Point(93, 322);
             this.MetadataIdentifierLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MetadataIdentifierLabel.Name = "MetadataIdentifierLabel";
@@ -727,7 +727,7 @@ namespace CKAN
             //
             this.KSPCompatibilityLabel.AutoSize = true;
             this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.KSPCompatibilityLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.KSPCompatibilityLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.KSPCompatibilityLabel.Location = new System.Drawing.Point(4, 276);
             this.KSPCompatibilityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
@@ -739,7 +739,7 @@ namespace CKAN
             //
             this.ReleaseLabel.AutoSize = true;
             this.ReleaseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReleaseLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ReleaseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ReleaseLabel.Location = new System.Drawing.Point(4, 230);
             this.ReleaseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReleaseLabel.Name = "ReleaseLabel";
@@ -751,7 +751,7 @@ namespace CKAN
             //
             this.GitHubLabel.AutoSize = true;
             this.GitHubLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GitHubLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.GitHubLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.GitHubLabel.Location = new System.Drawing.Point(4, 184);
             this.GitHubLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.GitHubLabel.Name = "GitHubLabel";
@@ -763,7 +763,7 @@ namespace CKAN
             //
             this.HomePageLabel.AutoSize = true;
             this.HomePageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HomePageLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.HomePageLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.HomePageLabel.Location = new System.Drawing.Point(4, 138);
             this.HomePageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.HomePageLabel.Name = "HomePageLabel";
@@ -775,7 +775,7 @@ namespace CKAN
             //
             this.AuthorLabel.AutoSize = true;
             this.AuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AuthorLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.AuthorLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.AuthorLabel.Location = new System.Drawing.Point(4, 92);
             this.AuthorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.AuthorLabel.Name = "AuthorLabel";
@@ -787,7 +787,7 @@ namespace CKAN
             //
             this.LicenseLabel.AutoSize = true;
             this.LicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LicenseLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.LicenseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.LicenseLabel.Location = new System.Drawing.Point(4, 46);
             this.LicenseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LicenseLabel.Name = "LicenseLabel";
@@ -832,7 +832,7 @@ namespace CKAN
             //
             this.VersionLabel.AutoSize = true;
             this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.VersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.VersionLabel.Location = new System.Drawing.Point(4, 0);
             this.VersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.VersionLabel.Name = "VersionLabel";
