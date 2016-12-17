@@ -383,9 +383,9 @@ namespace CKAN
         }
 
 
-        public KspVersionCriteria VersionCriteria ()
+        public KspVersionCriteria VersionCriteria()
         {
-            return new KspVersionCriteria(version, _compatibleVersions);
+            return new KspVersionCriteria(Version(), _compatibleVersions);
         }
 
         #endregion

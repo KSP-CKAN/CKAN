@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using CKAN.CmdLine.Action;
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -252,6 +253,10 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 case "ksp":
                     var ksp = new KSP(manager, user);
                     return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
+
+                case "compat":
+                    var compat = new CompatSubCommand(manager, user);
+                    return compat.RunSubCommand((SubCommandOptions)cmdline.options);
 
                 case "repo":
                     var repo = new Repo (manager, user);
