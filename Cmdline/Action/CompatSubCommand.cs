@@ -145,10 +145,10 @@ namespace CKAN.CmdLine.Action
             [VerbOption("list", HelpText = "List compatible KSP versions")]
             public CompatListOptions List { get; set; }
 
-            [VerbOption("add", HelpText = "List compatible KSP versions")]
+            [VerbOption("add", HelpText = "Add version to KSP compatibility list")]
             public CompatAddOptions Add { get; set; }
 
-            [VerbOption("forget", HelpText = "List compatible KSP versions")]
+            [VerbOption("forget", HelpText = "Forget version on KSP compatibility list")]
             public CompatForgetOptions Forget { get; set; }
         }
 
