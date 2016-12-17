@@ -73,7 +73,7 @@ namespace CKAN
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MainModInfoTab = new MainModInfo();
+            this.ModInfoTabControl = new MainModInfo();
             this.StatusPanel = new System.Windows.Forms.Panel();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.MainTabControl = new CKAN.MainTabControl();
@@ -121,7 +121,7 @@ namespace CKAN
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
-            this.MainModInfoTab.SuspendLayout();
+            this.ModInfoTabControl.SuspendLayout();
             this.StatusPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.ManageModsTabPage.SuspendLayout();
@@ -422,7 +422,7 @@ namespace CKAN
             //
             // splitContainer1.Panel2
             //
-            this.splitContainer1.Panel2.Controls.Add(this.MainModInfoTab);
+            this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
             this.splitContainer1.Size = new System.Drawing.Size(1522, 836);
             this.splitContainer1.SplitterDistance = 1156;
             this.splitContainer1.SplitterWidth = 6;
@@ -534,12 +534,12 @@ namespace CKAN
             //
             // ModInfoTabControl
             //
-            this.MainModInfoTab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainModInfoTab.Location = new System.Drawing.Point(0, 0);
-            this.MainModInfoTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MainModInfoTab.Name = "MainModInfoTab";
-            this.MainModInfoTab.Size = new System.Drawing.Size(360, 836);
-            this.MainModInfoTab.TabIndex = 0;
+            this.ModInfoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModInfoTabControl.Location = new System.Drawing.Point(0, 0);
+            this.ModInfoTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ModInfoTabControl.Name = "ModInfoTabControl";
+            this.ModInfoTabControl.Size = new System.Drawing.Size(360, 836);
+            this.ModInfoTabControl.TabIndex = 0;
             //
             // StatusPanel
             //
@@ -1026,7 +1026,7 @@ namespace CKAN
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
-            this.MainModInfoTab.ResumeLayout();
+            this.ModInfoTabControl.ResumeLayout();
             this.StatusPanel.ResumeLayout(false);
             this.MainTabControl.ResumeLayout(false);
             this.ManageModsTabPage.ResumeLayout(false);
@@ -1127,6 +1127,6 @@ namespace CKAN
         private ToolStripMenuItem NavForwardToolButton;
         private ToolStripMenuItem reportAnIssueToolStripMenuItem;
         private ToolStripMenuItem compatibleKSPVersionsToolStripMenuItem;
-        private MainModInfo MainModInfoTab;
+        private MainModInfo ModInfoTabControl;
     }
 }

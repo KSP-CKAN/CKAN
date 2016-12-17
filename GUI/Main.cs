@@ -231,7 +231,7 @@ namespace CKAN
             }
 
             // Disable the modinfo controls until a mod has been choosen.
-            MainModInfoTab.SelectedModule = null;
+            ModInfoTabControl.SelectedModule = null;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while
@@ -487,7 +487,7 @@ namespace CKAN
 
             this.AddStatusMessage("");
 
-            this.MainModInfoTab.SelectedModule = module;
+            this.ModInfoTabControl.SelectedModule = module;
             if (module == null) return;
 
             NavSelectMod(module);
@@ -495,7 +495,7 @@ namespace CKAN
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
         {
-            MainModInfoTab.UpdateModContentsTree(module, force);
+            ModInfoTabControl.UpdateModContentsTree(module, force);
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)

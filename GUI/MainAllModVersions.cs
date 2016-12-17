@@ -21,7 +21,6 @@ namespace CKAN
             set
             {
                 this.VersionsListView.Items.Clear();
-               // this.VersionsListView.Height -= 10;
 
                 KSP currentInstance = Main.Instance.Manager.CurrentInstance;
                 var registry = RegistryManager.Instance(currentInstance).registry;
