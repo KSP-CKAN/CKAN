@@ -283,8 +283,8 @@ namespace CKAN
 
         protected override void OnLoad(EventArgs e)
         {
-            //Location = configuration.WindowLoc;
-            //Size = configuration.WindowSize;
+            Location = configuration.WindowLoc;
+            Size = configuration.WindowSize;
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag)
             {
@@ -335,11 +335,7 @@ namespace CKAN
 
             installWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             installWorker.RunWorkerCompleted += PostInstallMods;
-            installWorker.DoWork += InstallMods;
-
-            //m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            //m_CacheWorker.RunWorkerCompleted += PostModCaching;
-            //m_CacheWorker.DoWork += CacheMod;
+            installWorker.DoWork += InstallMods;          
 
             var old_YesNoDialog = currentUser.displayYesNo;
             currentUser.displayYesNo = YesNoDialog;
@@ -492,14 +488,9 @@ namespace CKAN
             this.AddStatusMessage("");
 
             this.MainModInfoTab.SelectedModule = module;
-            //ModInfoTabControl.Enabled = module!=null;
             if (module == null) return;
 
             NavSelectMod(module);
-            //UpdateModInfo(module);
-            //UpdateModDependencyGraph(module);
-            //UpdateModContentsTree(module);
-            //AllModVersions.SelectedModule = module;
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
@@ -855,28 +846,6 @@ namespace CKAN
                 FilterToolButton.Text = "Filter (Compatible)";
         }
 
-        //private void ContentsDownloadButton_Click(object sender, EventArgs e)
-        //{
-        //    var module = GetSelectedModule();
-        //    if (module == null || !module.IsCKAN) return;
-
-        //    ResetProgress();
-        //    ShowWaitDialog(false);
-        //    m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
-        //}
-
-        //private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        //{
-        //    Util.OpenLinkFromLinkLabel(sender as LinkLabel);
-        //}
-
-        //private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    GUIMod module = GetSelectedModule();
-        //    if (module == null) return;
-        //    UpdateModDependencyGraph(module);
-        //}
-
         private GUIMod GetSelectedModule()
         {
             if (ModList.SelectedRows.Count == 0)
@@ -1159,11 +1128,6 @@ namespace CKAN
             }
             RecommendedModsListView.Refresh();
         }
-
-        //private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        //{
-        //    OpenFileBrowser(e.Node);
-        //}
 
         #region Navigation History
 
