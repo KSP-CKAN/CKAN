@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Modlist hides epochs by default (#1942 by: politas; reviewed: ayan4m1)
 - [Core/GUI] Let users select compatible KSP versions (#1957 by: grzegrzk; reviewed: dbent, politas)
 - [Core] Add IntersectWith method to KspVersionRange (#1958 by: dbent; reviewed: grzegrzk, politas)
+- [GUI] Display all mod versions in ModInfo panel (#1961 by grzegrzk; reviewed: politas)
 
 ## v1.20.1
 

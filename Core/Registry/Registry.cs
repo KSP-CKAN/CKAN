@@ -510,6 +510,20 @@ namespace CKAN
         }
 
 
+        public List<CkanModule> AllAvailable(string module)
+        {
+            log.DebugFormat("Finding all available versions for {0}", module);
+            try
+            {
+                return available_modules[module].AllAvailable();
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ModuleNotFoundKraken(module);
+            }
+        }
+
+
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.LatestAvailableWithProvides" />

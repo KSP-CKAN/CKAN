@@ -36,7 +36,7 @@ namespace CKAN
         Update = 3
     }
 
-    public partial class Main
+    public partial class Main: Form
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 
@@ -231,7 +231,7 @@ namespace CKAN
             }
 
             // Disable the modinfo controls until a mod has been choosen.
-            ModInfoTabControl.Enabled = false;
+            ModInfoTabControl.SelectedModule = null;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while
@@ -335,11 +335,7 @@ namespace CKAN
 
             installWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             installWorker.RunWorkerCompleted += PostInstallMods;
-            installWorker.DoWork += InstallMods;
-
-            m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
-            m_CacheWorker.RunWorkerCompleted += PostModCaching;
-            m_CacheWorker.DoWork += CacheMod;
+            installWorker.DoWork += InstallMods;          
 
             var old_YesNoDialog = currentUser.displayYesNo;
             currentUser.displayYesNo = YesNoDialog;
@@ -491,13 +487,15 @@ namespace CKAN
 
             this.AddStatusMessage("");
 
-            ModInfoTabControl.Enabled = module!=null;
+            this.ModInfoTabControl.SelectedModule = module;
             if (module == null) return;
 
             NavSelectMod(module);
-            UpdateModInfo(module);
-            UpdateModDependencyGraph(module);
-            UpdateModContentsTree(module);
+        }
+
+        public void UpdateModContentsTree(CkanModule module, bool force = false)
+        {
+            ModInfoTabControl.UpdateModContentsTree(module, force);
         }
 
         private void ApplyToolButton_Click(object sender, EventArgs e)
@@ -848,28 +846,6 @@ namespace CKAN
                 FilterToolButton.Text = "Filter (Compatible)";
         }
 
-        private void ContentsDownloadButton_Click(object sender, EventArgs e)
-        {
-            var module = GetSelectedModule();
-            if (module == null || !module.IsCKAN) return;
-
-            ResetProgress();
-            ShowWaitDialog(false);
-            m_CacheWorker.RunWorkerAsync(module.ToCkanModule());
-        }
-
-        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Util.OpenLinkFromLinkLabel(sender as LinkLabel);
-        }
-
-        private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            GUIMod module = GetSelectedModule();
-            if (module == null) return;
-            UpdateModDependencyGraph(module);
-        }
-
         private GUIMod GetSelectedModule()
         {
             if (ModList.SelectedRows.Count == 0)
@@ -1078,11 +1054,11 @@ namespace CKAN
             UpdateModsList(repo_updated: false);
         }
 
-        private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        public void ResetFilterAndSelectModOnList(string key)
         {
             FilterByNameTextBox.Text = "";
             mainModList.ModNameFilter = "";
-            FocusMod(e.Node.Name, true);
+            FocusMod(key, true);
         }
 
         private void FocusMod(string key, bool exactMatch, bool showAsFirst=false)
@@ -1151,11 +1127,6 @@ namespace CKAN
                 }
             }
             RecommendedModsListView.Refresh();
-        }
-
-        private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            OpenFileBrowser(e.Node);
         }
 
         #region Navigation History

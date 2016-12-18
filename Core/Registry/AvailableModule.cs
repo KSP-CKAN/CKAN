@@ -135,6 +135,11 @@ namespace CKAN
             module_version.TryGetValue(v, out module);
             return module;
         }
+
+        public List<CkanModule> AllAvailable()
+        {
+            return new List<CkanModule>(module_version.Values);
+        }
     }
 
     /// <summary>
