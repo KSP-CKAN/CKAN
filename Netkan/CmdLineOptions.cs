@@ -13,6 +13,9 @@ namespace CKAN.NetKAN
         [Option('d', "debug", DefaultValue = false, HelpText = "Show debugging level messages. Implies verbose")]
         public bool Debug { get; set; }
 
+        [Option("debugger", HelpText = "Launch the debugger at start.")]
+        public bool Debugger { get; set; }
+
         [Option("outputdir", DefaultValue = ".", HelpText = "Output directory")]
         public string OutputDir { get; set; }
 
@@ -27,6 +30,9 @@ namespace CKAN.NetKAN
 
         [Option("prerelease", HelpText = "Index GitHub Prereleases")]
         public bool PreRelease { get; set; }
+
+        [Option("version", HelpText = "Display the netkan version number and exit.")]
+        public bool Version { get; set; }
 
         // TODO: How do we mark this as required?
         [ValueOption(0)]

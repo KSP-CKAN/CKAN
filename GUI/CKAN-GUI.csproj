@@ -23,7 +23,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -37,11 +37,19 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="INIFileParser">
       <HintPath>packages\ini-parser.2.1.1\lib\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,17 +61,8 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Transactions" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutDialog.Designer.cs">
-      <DependentUpon>AboutDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="AskUserForAutoUpdatesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +76,12 @@
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </Compile>
     <Compile Include="ExportOption.cs" />
+    <Compile Include="HintTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HintTextBox.Designer.cs">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="IGUIPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,15 +103,32 @@
     <Compile Include="KSPCommandLineOptionsDialog.Designer.cs">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CompatibleKspVersionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CompatibleKspVersionsDialog.Designer.cs">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainAllModVersions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MainAllModVersions.Designer.cs">
+      <DependentUpon>MainAllModVersions.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainChangeset.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainModInfo.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MainModInfo.Designer.cs">
+      <DependentUpon>MainModInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWait.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ModChange.cs" />
+    <Compile Include="NavigationHistory.cs" />
     <Compile Include="NewUpdateDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,12 +201,24 @@
     <EmbeddedResource Include="ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HintTextBox.resx">
+      <DependentUpon>HintTextBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="KSPCommandLineOptionsDialog.resx">
       <DependentUpon>KSPCommandLineOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
+      <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainAllModVersions.resx">
+      <DependentUpon>MainAllModVersions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainModInfo.resx">
+      <DependentUpon>MainModInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewUpdateDialog.resx">
       <DependentUpon>NewUpdateDialog.cs</DependentUpon>
@@ -223,6 +257,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="MainTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -281,5 +324,13 @@
       <Project>{3B9AEA22-FA3B-4E43-9283-EABDD81CF271}</Project>
       <Name>CKAN-core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\backward.png" />
+    <Content Include="Resources\forward.png" />
+    <Content Include="Resources\textClear.png" />
   </ItemGroup>
 </Project>

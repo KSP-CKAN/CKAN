@@ -149,12 +149,11 @@ namespace CKAN
         public void InstallList(
             List<string> modules,
             RelationshipResolverOptions options,
-            NetAsyncDownloader downloader = null
+            IDownloader downloader = null
         )
         {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
-            List<CkanModule> modsToInstall = resolver.ModList();
-
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
+            var modsToInstall = resolver.ModList().ToList();
             InstallList(modsToInstall, options, downloader);
         }
 
@@ -171,32 +170,32 @@ namespace CKAN
         public void InstallList(
             ICollection<CkanModule> modules,
             RelationshipResolverOptions options,
-            NetAsyncDownloader downloader = null
+            IDownloader downloader = null
         )
         {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.Version());
-            List<CkanModule> modsToInstall = resolver.ModList();
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
+            var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule> ();
 
             // TODO: All this user-stuff should be happening in another method!
             // We should just be installing mods as a transaction.
 
-            User.RaiseMessage("About to install...\n");
+            User.RaiseMessage("About to install...\r\n");
 
             foreach (CkanModule module in modsToInstall)
             {
                 if (!ksp.Cache.IsCachedZip(module.download))
                 {
-                    User.RaiseMessage(" * {0}", module);
+                    User.RaiseMessage(" * {0} {1}", module.name, module.version);
                     downloads.Add(module);
                 }
                 else
                 {
-                    User.RaiseMessage(" * {0} (cached)", module);
+                    User.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
                 }
             }
 
-            bool ok = User.RaiseYesNoDialog("\nContinue?");
+            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
 
             if (!ok)
             {
@@ -209,7 +208,7 @@ namespace CKAN
             {
                 if (downloader == null)
                 {
-                    downloader = new NetAsyncDownloader(User);
+                    downloader = new NetAsyncModulesDownloader(User);
                 }
 
                 downloader.DownloadModules(ksp.Cache, downloads);
@@ -249,7 +248,7 @@ namespace CKAN
                 ksp.ScanGameData();
             }
 
-            User.RaiseProgress("Done!\n", 100);
+            User.RaiseProgress("Done!\r\n", 100);
         }
 
         /// <summary>
@@ -376,13 +375,28 @@ namespace CKAN
                 {
                     // Decorate the kraken with our module and re-throw
                     kraken.filename = ksp.ToRelativeGameDir(kraken.filename);
-                    kraken.installing_module = module;
-                    kraken.owning_module = registry_manager.registry.FileOwner(kraken.filename);
+                    kraken.installingModule = module;
+                    kraken.owningModule = registry_manager.registry.FileOwner(kraken.filename);
                     throw;
                 }
 
                 return files.Select(x => x.destination);
             }
+        }
+
+        /// <summary>
+        /// Checks the path against a list of reserved game directories
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private bool IsReservedDirectory(string path)
+        {
+            return path == ksp.Tutorial() || path == ksp.ShipsVab()
+                    || path == ksp.ShipsSph() || path == ksp.Ships()
+                    || path == ksp.Scenarios() || path == ksp.GameData()
+                    || path == ksp.GameDir() || path == ksp.CkanDir()
+                    || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
+                    || path == ksp.ShipsThumbsSPH();
         }
 
         /// <summary>
@@ -426,20 +440,52 @@ namespace CKAN
                 installDir = ksp == null ? null : (KSPPathUtils.NormalizePath(ksp.GameData() + "/" + subDir));
                 makeDirs = true;
             }
+            else if (stanza.install_to.StartsWith("Ships"))
+            {
+                // Don't allow directory creation in ships directory
+                makeDirs = false;
+
+                switch (stanza.install_to)
+                {
+                    case "Ships":
+                        installDir = ksp == null ? null : ksp.Ships();
+                        break;
+                    case "Ships/VAB":
+                        installDir = ksp == null ? null : ksp.ShipsVab();
+                        break;
+                    case "Ships/SPH":
+                        installDir = ksp == null ? null : ksp.ShipsSph();
+                        break;
+                    case "Ships/@thumbs":
+                        installDir = ksp == null ? null : ksp.ShipsThumbs();
+                        break;
+                    case "Ships/@thumbs/VAB":
+                        installDir = ksp == null ? null : ksp.ShipsThumbsVAB();
+                        break;
+                    case "Ships/@thumbs/SPH":
+                        installDir = ksp == null ? null : ksp.ShipsThumbsSPH();
+                        break;
+                    default:
+                        throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
+                }
+            }
             else switch (stanza.install_to)
             {
-                case "Ships":
-                    installDir = ksp == null ? null : ksp.Ships();
-                    makeDirs = false; // Don't allow directory creation in ships directory
-                    break;
                 case "Tutorial":
                     installDir = ksp == null ? null : ksp.Tutorial();
                     makeDirs = true;
                     break;
+
+                case "Scenarios":
+                    installDir = ksp == null ? null : ksp.Scenarios();
+                    makeDirs = true;
+                    break;
+
                 case "GameRoot":
                     installDir = ksp == null ? null : ksp.GameDir();
                     makeDirs = false;
                     break;
+
                 default:
                     throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
             }
@@ -469,7 +515,7 @@ namespace CKAN
                     string outputName = entry.Name;
 
                     // Update our file info with the install location
-                    file_info.destination = TransformOutputName(stanza.file, outputName, installDir);
+                    file_info.destination = TransformOutputName(stanza.file, outputName, installDir, stanza.@as);
                 }
 
                 files.Add(file_info);
@@ -495,7 +541,7 @@ namespace CKAN
         /// <param name="file">The file directive of the stanza.</param>
         /// <param name="outputName">The name of the file to transform.</param>
         /// <param name="installDir">The installation dir where the file should end up with.</param>
-        internal static string TransformOutputName(string file, string outputName, string installDir)
+        internal static string TransformOutputName(string file, string outputName, string installDir, string @as)
         {
             string leadingPathToRemove = KSPPathUtils.GetLeadingPathElements(file);
 
@@ -507,6 +553,13 @@ namespace CKAN
             )
             {
                 leadingPathToRemove = file;
+
+                // It's unclear what the behavior should be in this special case if `as` is specified, therefore
+                // disallow it.
+                if (!string.IsNullOrWhiteSpace(@as))
+                {
+                    throw new BadMetadataKraken(null, "Cannot specify `as` if `file` is GameData or Ships.");
+                }
             }
 
             // If there's a leading path to remove, then we have some extra work that
@@ -524,6 +577,23 @@ namespace CKAN
                 }
                 // Strip off leading path name
                 outputName = Regex.Replace(outputName, leadingRegEx, "");
+            }
+
+            // If an `as` is specified, replace the first component in the file path with the value of `as`
+            // This works for both when `find` specifies a directory and when it specifies a file.
+            if (!string.IsNullOrWhiteSpace(@as))
+            {
+                if (!@as.Contains("/") && !@as.Contains("\\"))
+                {
+                    var components = outputName.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    components[0] = @as;
+
+                    outputName = string.Join("/", components);
+                }
+                else
+                {
+                    throw new BadMetadataKraken(null, "`as` may not include path seperators.");
+                }
             }
 
             // Return our snipped, normalised, and ready to go output filename!
@@ -668,14 +738,21 @@ namespace CKAN
             // Find all the things which need uninstalling.
             IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
 
-            User.RaiseMessage("About to remove:\n");
+            // If there us nothing to uninstall, skip out.
+            if (!goners.Any())
+            {
+                return;
+            }
+
+            User.RaiseMessage("About to remove:\r\n");
 
             foreach (string mod in goners)
             {
-                User.RaiseMessage(" * {0}", mod);
+                InstalledModule module = registry_manager.registry.InstalledModule(mod);
+                User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
-            bool ok = User.RaiseYesNoDialog("\nContinue?");
+            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
 
             if (!ok)
             {
@@ -696,7 +773,7 @@ namespace CKAN
                 transaction.Complete();
             }
 
-            User.RaiseMessage("Done!\n");
+            User.RaiseMessage("Done!\r\n");
         }
 
         public void UninstallList(string mod)
@@ -736,14 +813,38 @@ namespace CKAN
                     {
                         FileAttributes attr = File.GetAttributes(path);
 
+                        // [This is] bitwise math. Basically, attr is some binary value with one bit meaning 
+                        // "this is a directory". The bitwise and & operator will return a binary value where
+                        // only the bits that are on (1) in both the operands are turned on. In this case 
+                        // doing a bitwise and operation against attr and the FileAttributes.Directory value
+                        // will return the value of FileAttributes.Directory if the Directory file attribute 
+                        // bit is turned on. See en.wikipedia.org/wiki/Bitwise_operation for a better 
+                        // explanation. – Kyle Trauberman Aug 30 '12 at 21:28 
+                        // (https://stackoverflow.com/questions/1395205/better-way-to-check-if-path-is-a-file-or-a-directory)
+                        // This is the fastest way to do this test.
                         if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                         {
-                            directoriesToDelete.Add(path);
+                            if ( !(directoriesToDelete.Contains(path)))
+                            {
+                                directoriesToDelete.Add(path);
+                            }
                         }
                         else
                         {
+                            // Add this files' directory to the list for deletion if it isn't already there.
+                            // Helps clean up directories when modules are uninstalled out of dependency order
+                            // Since we check for directory contents when deleting, this should purge empty
+                            // dirs, making less ModuleManager headaches for people.
+                            var directoryName = Path.GetDirectoryName(path);
+                            if ( !(directoriesToDelete.Contains(directoryName)))
+                            {
+                                directoriesToDelete.Add(directoryName);
+                            }
+
                             log.InfoFormat("Removing {0}", file);
                             file_transaction.Delete(path);
+
+
                         }
                     }
                     catch (Exception ex)
@@ -754,8 +855,10 @@ namespace CKAN
                 }
 
                 // Remove from registry.
-
                 registry_manager.registry.DeregisterModule(ksp, modName);
+
+                // Our collection of directories may leave empty parent directories.
+                directoriesToDelete = AddParentDirectories(directoriesToDelete);
 
                 // Sort our directories from longest to shortest, to make sure we remove child directories
                 // before parents. GH #78.
@@ -763,9 +866,9 @@ namespace CKAN
                 {
                     if (!Directory.EnumerateFileSystemEntries(directory).Any())
                     {
-                        // Skip Ships/VAB ans Ships/SPH
-                        if (directory == KSPPathUtils.ToAbsolute("VAB", ksp.Ships())
-                            || directory == KSPPathUtils.ToAbsolute("SPH", ksp.Ships()))
+                        // It is bad if any of this directories gets removed
+                        // So we protect them
+                        if (IsReservedDirectory(directory))
                         {
                             continue;
                         }
@@ -791,6 +894,59 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Takes a collection of directories and adds all parent directories within the GameData structure.
+        /// </summary>
+        /// <param name="directories">The collection of directory path strings to examine</param>
+        public HashSet<string> AddParentDirectories(HashSet<string> directories)
+        {
+            if (directories == null || directories.Count == 0)
+            {
+                return new HashSet<string>();
+            }
+
+            var gameDir = KSPPathUtils.NormalizePath(ksp.GameDir());
+            return directories
+                .Where(dir => !string.IsNullOrWhiteSpace(dir))
+                // normalize all paths before deduplicate
+                .Select(KSPPathUtils.NormalizePath)
+                // remove any duplicate paths
+                .Distinct()
+                .SelectMany(dir =>
+                {
+                    var results = new HashSet<string>();
+                    // adding in the DirectorySeparatorChar fixes attempts on Windows
+                    // to parse "X:" which resolves to Environment.CurrentDirectory
+                    var dirInfo = new DirectoryInfo(dir + Path.DirectorySeparatorChar);
+
+                    // if this is a parentless directory (Windows)
+                    // or if the Root equals the current directory (Mono)
+                    if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
+                    {
+                        return results;
+                    }
+
+                    if (!dir.StartsWith(gameDir))
+                    {
+                        dir = KSPPathUtils.ToAbsolute(dir, gameDir);
+                    }
+
+                    // remove the system paths, leaving the path under the instance directory
+                    var relativeHead = KSPPathUtils.ToRelative(dir, gameDir);
+                    var pathArray = relativeHead.Split('/');
+                    var builtPath = string.Empty;
+                    foreach (var path in pathArray)
+                    {
+                        builtPath += path + '/';
+                        results.Add(KSPPathUtils.ToAbsolute(builtPath, gameDir));
+                    }
+
+                    return results;
+                })
+                .Where(dir => !IsReservedDirectory(dir))
+                .ToHashSet();
+        }
+
         #region AddRemove
 
         /// <summary>
@@ -800,13 +956,10 @@ namespace CKAN
         /// </summary>
         /// <param name="add">Add.</param>
         /// <param name="remove">Remove.</param>
-        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null)
+        public void AddRemove(IEnumerable<CkanModule> add = null, IEnumerable<string> remove = null, bool enforceConsistency = true)
         {
-
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
-
-            // TODO: Download our files.
 
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
@@ -821,7 +974,7 @@ namespace CKAN
                     Install(module);
                 }
 
-                registry_manager.Save();
+                registry_manager.Save(enforceConsistency);
 
                 tx.Complete();
             }
@@ -832,7 +985,7 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, NetAsyncDownloader netAsyncDownloader)
+        public void Upgrade(IEnumerable<string> identifiers, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             var options = new RelationshipResolverOptions();
 
@@ -840,10 +993,8 @@ namespace CKAN
             options.with_recommends = false;
             options.with_suggests = false;
 
-            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.Version());
-            List<CkanModule> upgrades = resolver.ModList();
-
-            Upgrade(upgrades, netAsyncDownloader);
+            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.VersionCriteria());
+            Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
         }
 
         /// <summary>
@@ -851,7 +1002,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncDownloader netAsyncDownloader)
+        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
@@ -873,7 +1024,7 @@ namespace CKAN
                     //Maybe ModuleNotInstalled ?
                     if (registry_manager.registry.IsAutodetected(ident))
                     {
-                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \n Please remove manually before trying to install it.", ident));
+                        throw new ModuleNotFoundKraken(ident, module.version.ToString(), String.Format("Can't upgrade {0} as it was not installed by CKAN. \r\n Please remove manually before trying to install it.", ident));
                     }
 
                     User.RaiseMessage("Installing previously uninstalled mod {0}", ident);
@@ -883,10 +1034,10 @@ namespace CKAN
                     // Module already installed. We'll need to remove it first.
                     to_remove.Add(module.identifier);
 
-                    Module installed = installed_mod.Module;
+                    CkanModule installed = installed_mod.Module;
                     if (installed.version.IsEqualTo(module.version))
                     {
-                        log.WarnFormat("{0} is already at the latest version, reinstalling", installed.identifier);
+                        log.InfoFormat("{0} is already at the latest version, reinstalling", installed.identifier);
                     }
                     else if (installed.version.IsGreaterThan(module.version))
                     {
@@ -901,7 +1052,8 @@ namespace CKAN
 
             AddRemove(
                 modules,
-                to_remove
+                to_remove,
+                enforceConsistency
             );
         }
 
@@ -910,7 +1062,7 @@ namespace CKAN
         /// <summary>
         /// Makes sure all the specified mods are downloaded.
         /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncDownloader downloader)
+        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncModulesDownloader downloader)
         {
             List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
 
@@ -919,16 +1071,5 @@ namespace CKAN
                 downloader.DownloadModules(ksp.Cache, downloads);
             }
         }
-
-        /// <summary>
-        /// Don't use this. Use Registry.FindReverseDependencies instead.
-        /// This method may be deprecated in the future.
-        /// </summary>
-        // Here for now to keep the GUI happy.
-        public HashSet<string> FindReverseDependencies(string module)
-        {
-            return registry_manager.registry.FindReverseDependencies(module);
-        }
-
     }
 }

@@ -40,7 +40,7 @@ namespace CKAN.Exporters
             }
         }
 
-        public void Export(Registry registry, Stream stream)
+        public void Export(IRegistryQuerier registry, Stream stream)
         {
             _exporter.Export(registry, stream);
         }

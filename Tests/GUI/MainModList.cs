@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Core;
 using Tests.Data;
@@ -57,23 +59,24 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
-
                 var registry = Registry.Empty();
                 var module = TestData.FireSpitterModule();
                 module.conflicts = new List<RelationshipDescriptor> { new RelationshipDescriptor { name = "kOS" } };
-                registry.AddAvailable(TestData.FireSpitterModule());
+                registry.AddAvailable(module);
                 registry.AddAvailable(TestData.kOS_014_module());
                 registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
 
-                var main_mod_list = new MainModList(null, null);
-                var mod = new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.Version());
-                var mod2 = new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version());
-                mod.IsInstallChecked = true;
+                var mainList = new MainModList(null, null, new GUIUser());
+                var mod = new GUIMod(module, registry, tidy.KSP.VersionCriteria());
+                var mod2 = new GUIMod(TestData.kOS_014_module(), registry, tidy.KSP.VersionCriteria());
+                var mods = new List<GUIMod>() { mod, mod2 };
+                mainList.ConstructModList(mods, true);
+                mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
                 mod2.IsInstallChecked = true;
+                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
+                    tidy.KSP.VersionCriteria());
 
-                var compute_change_set_from_mod_list = main_mod_list.ComputeChangeSetFromModList(registry, main_mod_list.ComputeUserChangeSet(), null, tidy.KSP.Version());
-                await UtilStatic.Throws<InconsistentKraken>(async ()=> { await compute_change_set_from_mod_list; });
+                await UtilStatic.Throws<InconsistentKraken>(() => computeTask);
             }
         }
 
@@ -88,7 +91,7 @@ namespace Tests.GUI
                 var registry = Registry.Empty();
                 registry.AddAvailable(ckan_mod);
                 var item = new MainModList(delegate { }, null);
-                Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.Version())));
+                Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria())));
             }
         }
 
@@ -116,8 +119,8 @@ namespace Tests.GUI
                 var main_mod_list = new MainModList(null, null);
                 var mod_list = main_mod_list.ConstructModList(new List<GUIMod>
                 {
-                    new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.Version()),
-                    new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.Version())
+                    new GUIMod(TestData.FireSpitterModule(), registry, manager.CurrentInstance.VersionCriteria()),
+                    new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
                 });
                 Assert.That(mod_list, Has.Count.EqualTo(2));
             }
@@ -147,16 +150,17 @@ namespace Tests.GUI
                 registry.AddAvailable(modb);
                 var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
                 var main_mod_list = new MainModList(null, async kraken => await Task.FromResult(choice_of_provide));
-                var a = new HashSet<KeyValuePair<GUIMod, GUIModChangeType>>
+                var a = new HashSet<ModChange>
                 {
-                    new KeyValuePair<GUIMod, GUIModChangeType>(new GUIMod(mod,registry,ksp_version),GUIModChangeType.Install)
+                    new ModChange(new GUIMod(mod,registry,new KspVersionCriteria(ksp_version)), GUIModChangeType.Install, null)
                 };
 
-                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, ksp_version);
+                var mod_list = await main_mod_list.ComputeChangeSetFromModList(registry, a, installer, new KspVersionCriteria (ksp_version));
                 CollectionAssert.AreEquivalent(
                     new[] {
-                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(mod,registry,ksp_version), GUIModChangeType.Install),
-                        new KeyValuePair<GUIMod,GUIModChangeType>(new GUIMod(modb,registry,ksp_version),GUIModChangeType.Install)}, mod_list);
+                        new ModChange(new GUIMod(mod,registry,new KspVersionCriteria(ksp_version)), GUIModChangeType.Install, null),
+                        new ModChange(new GUIMod(modb,registry,new KspVersionCriteria(ksp_version)),GUIModChangeType.Install, null)
+                    }, mod_list);
 
             }
         }

@@ -13,16 +13,23 @@
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine">
       <HintPath>packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.Patched.0.86.5\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -36,27 +43,37 @@
     <Reference Include="CurlSharp">
       <HintPath>packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Autofac">
+      <HintPath>packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompatibleKspVersionsDto.cs" />
     <Compile Include="Exporters\BbCodeExporter.cs" />
     <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
     <Compile Include="Exporters\Exporter.cs" />
     <Compile Include="Exporters\IExporter.cs" />
     <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GameVersionProviders\IKspBuildMap.cs" />
+    <Compile Include="GameVersionProviders\KspBuildIdVersionProvider.cs" />
+    <Compile Include="GameVersionProviders\KspVersionSource.cs" />
+    <Compile Include="GameVersionProviders\IGameVersionProvider.cs" />
+    <Compile Include="GameVersionProviders\KspBuildMap.cs" />
+    <Compile Include="Logging.cs" />
     <Compile Include="Net\AutoUpdate.cs" />
+    <Compile Include="Net\IDownloader.cs" />
+    <Compile Include="Net\NetAsyncDownloader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KSP.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="CkanTransaction.cs" />
     <Compile Include="Types\CKANVersion.cs" />
+    <Compile Include="Registry\IRegistryQuerier.cs" />
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
-    <Compile Include="Types\KSPVersion.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="Types\Kraken.cs" />
     <Compile Include="KSPManager.cs" />
@@ -68,27 +85,41 @@
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
     <Compile Include="Relationships\SanityChecker.cs" />
     <Compile Include="Net\Net.cs" />
-    <Compile Include="Net\NetAsyncDownloader.cs" />
+    <Compile Include="Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Relationships\RelationshipResolver.cs" />
     <Compile Include="Net\Repo.cs" />
     <Compile Include="Net\NetFileCache.cs" />
-    <Compile Include="Types\Module.cs" />
+    <Compile Include="Types\CkanModule.cs" />
     <Compile Include="Converters\JsonOldResourceUrlConverter.cs" />
     <Compile Include="Converters\JsonSimpleStringConverter.cs" />
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
+    <Compile Include="GameVersionProviders\KspReadmeVersionProvider.cs" />
+    <Compile Include="Versioning\KspVersion.cs" />
+    <Compile Include="Versioning\KspVersionBound.cs" />
+    <Compile Include="Versioning\KspVersionRange.cs" />
     <Compile Include="Win32Registry.cs" />
     <Compile Include="Types\FileType.cs" />
     <Compile Include="FileIdentifier.cs" />
     <Compile Include="Types\Repository.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Net\Curl.cs" />
+    <Compile Include="Converters\JsonIgnoreBadUrlConverter.cs" />
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Types\GameComparator\IGameComparator.cs" />
+    <Compile Include="Types\GameComparator\GrasGameComparator.cs" />
+    <Compile Include="Types\GameComparator\StrictGameComparator.cs" />
+    <Compile Include="Types\GameComparator\YoyoGameComparator.cs" />
+    <Compile Include="Versioning\KspVersionCriteria.cs" />
+    <Compile Include="Types\GameComparator\BaseGameComparator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="builds.json" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
 </Project>

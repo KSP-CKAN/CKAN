@@ -1,4 +1,6 @@
 build/
+/.vs/
+Screenshots/
 packages/
 CKAN/*/bin
 CKAN/*/obj
@@ -7,6 +9,7 @@ Tests/obj
 test-results
 *.userprefs
 *.csproj.user
+*.user
 TestResult.xml
 StyleCop.Cache
 ckan.exe
@@ -23,3 +26,4 @@ netkan.exe
 *.ncrunchproject
 *.ncrunchsolution
 *.pyc
+quotes.txt.dat

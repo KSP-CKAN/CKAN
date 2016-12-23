@@ -98,13 +98,12 @@ namespace CKAN
             {
                 // We check both null and "" as we can't write NULL to the registry, so we write an empty string instead
                 // This is neccessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the windows registry keys!
-                if (AutoStartInstance == "")
+                if (AutoStartInstance != "")
                 {
-                    return null;
-                }
-                if (HasInstance(AutoStartInstance))
-                {
-                    return instances[AutoStartInstance];
+                    if (HasInstance(AutoStartInstance))
+                    {
+                        return instances[AutoStartInstance];
+                    }
                 }
             }
 
@@ -234,6 +233,17 @@ namespace CKAN
                 throw new InvalidKSPInstanceKraken(name);
             }
 
+            //Don't try to Dispose a null CurrentInstance.
+            if (CurrentInstance != null)
+            {
+                // Dispose of the old registry manager, to release the registry.
+                var manager = RegistryManager.Instance(CurrentInstance);
+                if (manager != null)
+                {
+                    manager.Dispose();
+                }
+            }
+
             CurrentInstance = instances[name];
         }
 
@@ -307,7 +317,7 @@ namespace CKAN
 
     public class KSPManagerKraken : Kraken
     {
-        public KSPManagerKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        public KSPManagerKraken(string reason = null, Exception innerException = null) : base(reason, innerException)
         {
         }
     }
@@ -316,8 +326,8 @@ namespace CKAN
     {
         public string instance;
 
-        public InvalidKSPInstanceKraken(string instance, string reason = null, Exception inner_exception = null)
-            : base(reason, inner_exception)
+        public InvalidKSPInstanceKraken(string instance, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.instance = instance;
         }

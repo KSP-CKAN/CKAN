@@ -48,7 +48,7 @@ namespace CKAN
                 return null;
             }
 
-            SHA1 hasher = new SHA1CryptoServiceProvider();
+            SHA1 hasher = new SHA1Cng();
 
             // Even if we throw an exception, the using block here makes sure
             // we close our file.
@@ -62,7 +62,7 @@ namespace CKAN
     }
 
     /// <summary>
-    /// A simple clss that represents an installed module. Includes the time of installation,
+    /// A simple class that represents an installed module. Includes the time of installation,
     /// the module itself, and a list of files installed with it.
     /// 
     /// Primarily used by the Registry class.
@@ -80,7 +80,7 @@ namespace CKAN
         [JsonProperty] private DateTime install_time;
         #pragma warning restore 0414
 
-        [JsonProperty] private Module source_module;
+        [JsonProperty] private CkanModule source_module;
 
 //        private static readonly ILog log = LogManager.GetLogger(typeof(InstalledModule));
 
@@ -99,7 +99,7 @@ namespace CKAN
             get { return source_module.identifier; }
         }
 
-        public Module Module
+        public CkanModule Module
         {
             get { return source_module; }
         }
@@ -108,7 +108,7 @@ namespace CKAN
 
         #region Constructors
 
-        public InstalledModule(KSP ksp, Module module, IEnumerable<string> relative_files)
+        public InstalledModule(KSP ksp, CkanModule module, IEnumerable<string> relative_files)
         {
             install_time = DateTime.Now;
             source_module = module;

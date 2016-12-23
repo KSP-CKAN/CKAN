@@ -15,15 +15,24 @@ namespace CKAN
 
         #region Properties
 
-        // Either file or find is required, we check this manually at deserialise.
+        // Either file, find, or find_regexp is required, we check this manually at deserialise.
         [JsonProperty("file")]
         public string file;
 
         [JsonProperty("find")]
         public string find;
 
+        [JsonProperty("find_regexp")]
+        public string find_regexp;
+
+        [JsonProperty("find_matches_files")]
+        public bool find_matches_files;
+
         [JsonProperty("install_to", Required = Required.Always)]
         public string install_to;
+
+        [JsonProperty("as")]
+        public string @as;
 
         [JsonProperty("filter")]
         [JsonConverter(typeof (JsonSingleOrArrayConverter<string>))]
@@ -43,15 +52,17 @@ namespace CKAN
                 throw new BadMetadataKraken(null, "Install stanzas must have a file an install_to");
             }
 
-            // Make sure we have either a `file` or a `find` stanza.
-            if (file == null && find == null)
+            var setCount = new[] { file, find, find_regexp }.Count(i => i != null);
+
+            // Make sure we have either a `file`, `find`, or `find_regexp` stanza.
+            if (setCount == 0)
             {
-                throw new BadMetadataKraken(null, "Install stanzas require either a file or find directive");
+                throw new BadMetadataKraken(null, "Install stanzas require either a file, find, or find_regexp directive");
             }
 
-            if (file != null && find != null)
+            if (setCount > 1)
             {
-                throw new BadMetadataKraken(null, "Install stanzas may not include both file AND find directives");
+                throw new BadMetadataKraken(null, "Install stanzas must only include one of file, find, or find_regexp directives");
             }
         }
 
@@ -161,21 +172,30 @@ namespace CKAN
             // We can't just look for directories, because some zipfiles
             // don't include entries for directories, but still include entries
             // for the files they contain.
-
-            string filter = @"(?:^|/)" + Regex.Escape(this.find) + @"$";
+            string filter;
+            if (this.find != null)
+            {
+                filter = @"(?:^|/)" + Regex.Escape(this.find) + @"$";
+            }
+            else
+            {
+                filter = this.find_regexp;
+            }
 
             // Let's find that directory
 
             // Normalise our path.
-            var normalised = zipfile.Cast<ZipEntry>().Select(entry => Path.GetDirectoryName(entry.Name))
-                .Select(directory =>
+            var normalised = zipfile
+                .Cast<ZipEntry>()
+                .Select(entry => find_matches_files ? entry.Name : Path.GetDirectoryName(entry.Name))
+                .Select(entry =>
                 {
-                    var dir = directory.Replace('\\', '/');
+                    var dir = entry.Replace('\\', '/');
                     return Regex.Replace(dir, "/$", "");
                 });
 
             // If this looks like what we're after, remember it.
-            var directories = normalised.Where(directory => Regex.IsMatch(directory, filter, RegexOptions.IgnoreCase));
+            var directories = normalised.Where(entry => Regex.IsMatch(entry, filter, RegexOptions.IgnoreCase));
             candidate_set.UnionWith(directories);
 
             // Sort to have shortest first. It's not *quite* top-level directory order,
@@ -186,14 +206,15 @@ namespace CKAN
             if (candidates.Count == 0)
             {
                 throw new FileNotFoundKraken(
-                    this.find,
-                    String.Format("Could not find {0} directory in zipfile to install", this.find)
+                    this.find ?? this.find_regexp,
+                    String.Format("Could not find {0} entry in zipfile to install", this.find ?? this.find_regexp)
                 );
             }
 
-            // Fill in our stanza, and remove our old `find` info.
+            // Fill in our stanza, and remove our old `find` and `find_regexp` info.
             stanza.file = candidates[0];
             stanza.find = null;
+            stanza.find_regexp = null;
             return stanza;
         }
     }

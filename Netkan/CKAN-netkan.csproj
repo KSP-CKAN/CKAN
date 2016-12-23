@@ -7,54 +7,102 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>CKAN.NetKAN</RootNamespace>
     <AssemblyName>NetKAN</AssemblyName>
-    <StartupObject>CKAN.NetKAN.MainClass</StartupObject>
+    <StartupObject>CKAN.NetKAN.Program</StartupObject>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\Core\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Core\packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.Patched.0.86.5\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="CurlSharp">
-      <HintPath>..\Core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\CKAN\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\IModuleService.cs" />
+    <Compile Include="Services\CachingHttpService.cs" />
     <Compile Include="ConsoleUser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\JObjectExtensions.cs" />
+    <Compile Include="Extensions\VersionExtensions.cs" />
+    <Compile Include="Services\IHttpService.cs" />
+    <Compile Include="Services\ModuleService.cs" />
+    <Compile Include="Sources\Avc\AvcVersion.cs" />
+    <Compile Include="Sources\Avc\JsonAvcToKspVersion.cs" />
+    <Compile Include="Sources\Github\GithubApi.cs" />
+    <Compile Include="Sources\Github\GithubRef.cs" />
+    <Compile Include="Sources\Github\GithubRelease.cs" />
+    <Compile Include="Sources\Github\GithubRepo.cs" />
+    <Compile Include="Sources\Github\IGithubApi.cs" />
+    <Compile Include="Sources\Curse\ICurseApi.cs" />
+    <Compile Include="Sources\Curse\CurseFile.cs" />
+    <Compile Include="Sources\Curse\CurseApi.cs" />
+    <Compile Include="Sources\Curse\CurseError.cs" />
+    <Compile Include="Sources\Curse\CurseMod.cs" />
+    <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
+    <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockError.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
+    <Compile Include="Sources\Spacedock\SDVersion.cs" />
+    <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
+    <Compile Include="Transformers\AvcTransformer.cs" />
+    <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
+    <Compile Include="Transformers\ForcedVTransformer.cs" />
+    <Compile Include="Transformers\GeneratedByTransformer.cs" />
+    <Compile Include="Transformers\GithubTransformer.cs" />
+    <Compile Include="Transformers\HttpTransformer.cs" />
+    <Compile Include="Transformers\ITransformer.cs" />
+    <Compile Include="Model\Metadata.cs" />
+    <Compile Include="Model\RemoteRef.cs" />
+    <Compile Include="Transformers\InternalCkanTransformer.cs" />
+    <Compile Include="Transformers\JenkinsTransformer.cs" />
+    <Compile Include="Transformers\CurseTransformer.cs" />
+    <Compile Include="Transformers\SpacedockTransformer.cs" />
+    <Compile Include="Transformers\MetaNetkanTransformer.cs" />
+    <Compile Include="Transformers\NetkanTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MainClass.cs" />
-    <Compile Include="KS\KSAPI.cs" />
-    <Compile Include="KS\KSVersion.cs" />
-    <Compile Include="KS\KSMod.cs" />
-    <Compile Include="Github\GithubAPI.cs" />
-    <Compile Include="Github\GithubRelease.cs" />
-    <Compile Include="Jenkins\JenkinsAPI.cs" />
-    <Compile Include="Jenkins\JenkinsBuild.cs" />
-    <Compile Include="CkanInflator.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="CmdLineOptions.cs" />
-    <Compile Include="AVC\AVC.cs" />
-    <Compile Include="AVC\JsonAvcToKspVersion.cs" />
-    <Compile Include="Web.cs" />
+    <Compile Include="Transformers\OptimusPrimeTransformer.cs" />
+    <Compile Include="Transformers\VersionEditTransformer.cs" />
+    <Compile Include="Transformers\PropertySortTransformer.cs" />
+    <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
+    <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />
+    <Compile Include="Transformers\EpochTransformer.cs" />
+    <Compile Include="Validators\CkanValidator.cs" />
+    <Compile Include="Validators\HasIdentifierValidator.cs" />
+    <Compile Include="Validators\InstallsFilesValidator.cs" />
+    <Compile Include="Validators\IsCkanModuleValidator.cs" />
+    <Compile Include="Validators\IValidator.cs" />
+    <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
+    <Compile Include="Validators\NetkanValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="curl-ca-bundle.crt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

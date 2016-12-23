@@ -240,7 +240,7 @@ namespace CKAN.CmdLine
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                Console.Write("\n{0}", format);
+                Console.Write("\r\n{0}", format);
             }
         }
         protected override void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)

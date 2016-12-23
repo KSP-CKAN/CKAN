@@ -27,7 +27,7 @@ namespace CKAN.Exporters
             }
         }
 
-        public void Export(Registry registry, Stream stream)
+        public void Export(IRegistryQuerier registry, Stream stream)
         {
             using (var writer = new StreamWriter(stream))
             {
@@ -50,7 +50,8 @@ namespace CKAN.Exporters
                     "repository",
                     "homepage",
                     "bugtracker",
-                    "kerbalstuff"
+                    "spacedock",
+                    "curse"
                 );
 
                 foreach (var mod in registry.InstalledModules.OrderBy(i => i.Module.name))
@@ -74,7 +75,8 @@ namespace CKAN.Exporters
                         WriteRepository(mod.Module.resources),
                         WriteHomepage(mod.Module.resources),
                         WriteBugtracker(mod.Module.resources),
-                        WriteKerbalStuff(mod.Module.resources)
+                        WriteSpaceDock(mod.Module.resources),
+                        WriteCurse(mod.Module.resources)
                     );
                 }
             }
@@ -115,11 +117,21 @@ namespace CKAN.Exporters
             return string.Empty;
         }
 
-        private string WriteKerbalStuff(ResourcesDescriptor resources)
+        private string WriteSpaceDock(ResourcesDescriptor resources)
         {
-            if (resources != null && resources.kerbalstuff != null)
+            if (resources != null && resources.spacedock != null)
             {
-                return QuoteIfNecessary(resources.kerbalstuff.ToString());
+                return QuoteIfNecessary(resources.spacedock.ToString());
+            }
+
+            return string.Empty;
+        }
+
+        private string WriteCurse(ResourcesDescriptor resources)
+        {
+            if (resources != null && resources.curse != null)
+            {
+                return QuoteIfNecessary(resources.curse.ToString());
             }
 
             return string.Empty;

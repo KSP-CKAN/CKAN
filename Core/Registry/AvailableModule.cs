@@ -1,31 +1,59 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 
 namespace CKAN
 {
     /// <summary>
-    ///     Utility class to track version -> module mappings
+    /// Utility class to track version -> module mappings
     /// </summary>
+    /// <remarks>
+    /// Json must not contain AvailableModules which are empty
+    /// </remarks>
     public class AvailableModule
     {
+        [JsonIgnore]
+        private string identifier;
 
-        // TODO: It would be great for this have a field tracking which module we're
-        // working with, so we don't allow mixed modules in our list.
+        [JsonConstructor]
+        private AvailableModule()
+        {
+        }
+
+        [OnDeserialized]
+        internal void SetIdentifier(StreamingContext context)
+        {
+            var mod = module_version.Values.FirstOrDefault();
+            identifier = mod.identifier;
+            Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));
+        }
+
+        /// <param name="identifier">The module to keep track of</param>
+        public AvailableModule(string identifier)
+        {
+            this.identifier = identifier;
+        }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
         [JsonProperty]
-        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>();
+        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>(new RecentVersionComparer());
 
         /// <summary>
         /// Record the given module version as being available.
         /// </summary>
         public void Add(CkanModule module)
         {
+            if(!module.identifier.Equals(identifier))
+                throw new ArgumentException(
+                    string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
+
             log.DebugFormat("Adding {0}", module);
             module_version[module.version] = module;
         }
@@ -44,21 +72,20 @@ namespace CKAN
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
         /// <returns></returns>
-        public CkanModule Latest(KSPVersion ksp_version = null, RelationshipDescriptor relationship=null)
+        public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
         {            
             var available_versions = new List<Version>(module_version.Keys);
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
+
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
             if (available_versions.Count == 0)
             {
                 return null;
             }
 
-            // Sort most recent versions first.            
-            available_versions.Reverse();
-
+            // No restrictions? Great, we can just pick the first one!
             if (ksp_version == null && relationship == null)
             {
                 module = module_version[available_versions.First()];
@@ -66,6 +93,9 @@ namespace CKAN
                 log.DebugFormat("No KSP version restriction, {0} is most recent", module);
                 return module;
             }
+
+            // If there's no relationship to satisfy, we can just pick the first that is
+            // compatible with our version of KSP.
             if (relationship == null)
             {
                 // Time to check if there's anything that we can satisfy.
@@ -79,6 +109,8 @@ namespace CKAN
 
                 return null;
             }
+
+            // If we're here, then we have a relationship to satisfy, so things get more complex.
             if (ksp_version == null)
             {
                 var version = available_versions.FirstOrDefault(relationship.version_within_bounds);
@@ -102,6 +134,25 @@ namespace CKAN
             CkanModule module;
             module_version.TryGetValue(v, out module);
             return module;
+        }
+
+        public List<CkanModule> AllAvailable()
+        {
+            return new List<CkanModule>(module_version.Values);
+        }
+    }
+
+    /// <summary>
+    /// Commparer which sorts the most recent version first
+    /// Depends on the behaaviour of Version.CompareTo(Version)
+    /// to work correctly.
+    /// </summary>
+    public class RecentVersionComparer : IComparer<Version>
+    {
+
+        public int Compare(Version x, Version y)
+        {
+            return y.CompareTo(x);
         }
     }
 }

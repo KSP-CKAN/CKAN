@@ -176,6 +176,7 @@ namespace Tests.Core
         }
 
         public List<Tuple<string, string>> Instances { get; set; }
+        public string BuildMap { get; set; }
 
         public int InstanceCount
         {
@@ -198,16 +199,26 @@ namespace Tests.Core
             return Instances[i];
         }
 
-        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances, string auto_start_instance)
+        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances, string autoStartInstance)
         {
             Instances =
                 instances.Select(kvpair => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
-            AutoStartInstance = auto_start_instance;
+            AutoStartInstance = autoStartInstance;
         }
 
         public IEnumerable<Tuple<string, string>> GetInstances()
         {
             return Instances;
+        }
+
+        public string GetKSPBuilds()
+        {
+            return BuildMap;
+        }
+
+        public void SetKSPBuilds(string buildMap)
+        {
+            BuildMap = buildMap;
         }
     }
 }

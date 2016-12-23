@@ -1,4 +1,5 @@
 ﻿using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 
@@ -14,7 +15,7 @@ namespace Tests.Core.Registry
     {
         private static string test_registry = TestData.TestRegistry();
         private DisposableKSP temp_ksp;
-        private CKAN.Registry registry;
+        private CKAN.IRegistryQuerier registry;
 
         [SetUp]
         public void Setup()
@@ -23,7 +24,7 @@ namespace Tests.Core.Registry
             temp_ksp = new DisposableKSP(null, test_registry);
 
             // Easy short-cut
-            registry = temp_ksp.KSP.Registry;
+            registry = CKAN.RegistryManager.Instance(temp_ksp.KSP).registry;
         }
 
         [TearDown]
@@ -35,8 +36,8 @@ namespace Tests.Core.Registry
         [Test]
         public void LatestAvailable()
         {
-            CkanModule module = 
-                registry.LatestAvailable("AGExt", temp_ksp.KSP.Version());
+            CkanModule module =
+                registry.LatestAvailable("AGExt", new KspVersionCriteria (temp_ksp.KSP.Version()));
 
             Assert.AreEqual("AGExt", module.identifier);
             Assert.AreEqual("1.24a", module.version.ToString());

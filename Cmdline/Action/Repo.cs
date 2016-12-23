@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
@@ -180,7 +181,8 @@ namespace CKAN.CmdLine
         private int ListRepositories()
         {
             User.RaiseMessage("Listing all known repositories:");
-            SortedDictionary<string, Repository> repositories = Manager.CurrentInstance.Registry.Repositories;
+            var manager = RegistryManager.Instance(Manager.CurrentInstance);
+            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
             foreach(Repository repository in repositories.Values)
@@ -198,7 +200,7 @@ namespace CKAN.CmdLine
 
         private int AddRepository(AddOptions options)
         {
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
 
             if (options.name == null)
             {
@@ -256,25 +258,31 @@ namespace CKAN.CmdLine
 
         private int ForgetRepository(ForgetOptions options)
         {
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
-
             if (options.name == null)
             {
                 User.RaiseError("forget <name> - argument missing, perhaps you forgot it?");
                 return Exit.BADOPT;
             }
 
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
+            var registry = manager.registry;
             log.DebugFormat("About to forget repository '{0}'", options.name);
-            SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
-            // TODO make forgetting case insensitive, too
-            if (!(repositories.ContainsKey(options.name)))
+            var repos = registry.Repositories;
+
+            string name = options.name;
+            if (!repos.ContainsKey(options.name))
             {
-                User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
-                return Exit.BADOPT;
+                name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
+                if (name == null)
+                {
+                    User.RaiseMessage("Couldn't find repository with name \"{0}\", aborting..", options.name);
+                    return Exit.BADOPT;
+                }
+                User.RaiseMessage("Removing insensitive match \"{0}\"", name);
             }
 
-            repositories.Remove(options.name);
+            registry.Repositories.Remove(name);
             User.RaiseMessage("Successfully removed \"{0}\"", options.name);
             manager.Save();
 
@@ -283,7 +291,7 @@ namespace CKAN.CmdLine
 
         private int DefaultRepository(DefaultOptions options)
         {
-            RegistryManager manager = Manager.CurrentInstance.RegistryManager;
+            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
 
             if (options.uri == null)
             {

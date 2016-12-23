@@ -24,7 +24,7 @@ namespace CKAN.CmdLine
         {
             ListOptions options = (ListOptions) raw_options;
 
-            Registry registry = RegistryManager.Instance(ksp).registry;
+            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
 
 
             ExportFileType? exportFileType = null;
@@ -41,10 +41,10 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\nKSP found at {0}\n", ksp.GameDir());
-                user.RaiseMessage("KSP Version: {0}\n", ksp.Version());
+                user.RaiseMessage("\r\nKSP found at {0}\r\n", ksp.GameDir());
+                user.RaiseMessage("KSP Version: {0}\r\n", ksp.Version());
 
-                user.RaiseMessage("Installed Modules:\n");
+                user.RaiseMessage("Installed Modules:\r\n");
             }
 
             if (exportFileType == null)
@@ -72,7 +72,7 @@ namespace CKAN.CmdLine
                         try
                         {
                             // Check if upgrades are available, and show appropriately.
-                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.Version());
+                            CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
 
                             log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
 
@@ -111,7 +111,8 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown ");
+                user.RaiseMessage("\r\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown. *: Broken. ");
+                // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 
             return Exit.OK;

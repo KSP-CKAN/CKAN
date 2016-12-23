@@ -14,12 +14,19 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
+        public bool HideEpochs = true;
+
+        public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
+        public bool RefreshOnStartupNoNag = false;
+
+        public int ActiveFilter = 0;
+
         // Sort by the mod name (index = 2) column by default
         public int SortByColumnIndex = 2;
         public bool SortDescending = false;
 
-        private string m_Path = "";
-        private Point m_window_loc = new Point(0,0);
+        private string path = "";
+        private Point windowLocation = new Point(0,0);
         //Workaround for bug which miss-sets the window location.
         // Here instead of in Main_FormClosing due to the misstaken 
         // value possibly being written out to config file. After some time
@@ -28,20 +35,20 @@ namespace CKAN
         {
             get
             {
-                if (m_window_loc.X < 0 && m_window_loc.Y < 0)
+                if (windowLocation.X < 0 && windowLocation.Y < 0)
                 {
-                    m_window_loc = new Point(60, 30);
+                    windowLocation = new Point(60, 30);
                 }
-                return m_window_loc;
+                return windowLocation;
             }
-            set { m_window_loc = value; }
+            set { windowLocation = value; }
         }
         
         public Size WindowSize = new Size(1024, 500);
 
         public void Save()
         {
-            SaveConfiguration(this, m_Path);
+            SaveConfiguration(this, path);
         }
 
         public static Configuration LoadOrCreateConfiguration(string path, string defaultRepo)
@@ -50,10 +57,10 @@ namespace CKAN
             {
                 var configuration = new Configuration
                 {
-                    m_Path = path,
-                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64" :
-                                           Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
-                                                             "KSP.exe"
+                    path = path,
+                        CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
+                            Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
+                            "KSP_x64.exe -single-instance"
                 };
 
                 SaveConfiguration(configuration, path);
@@ -96,7 +103,7 @@ namespace CKAN
                 }
             }
 
-            configuration.m_Path = path;
+            configuration.path = path;
             return configuration;
         }
 

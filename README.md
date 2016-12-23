@@ -1,14 +1,18 @@
 # The Comprehensive Kerbal Archive Network (CKAN)
 
-[Click here to open a new CKAN issue](https://github.com/KSP-CKAN/CKAN/issues/new)
+[![Downloads](https://img.shields.io/github/downloads/KSP-CKAN/CKAN/latest/total.svg)](https://github.com/KSP-CKAN/CKAN/releases/latest)
 
-[Click here to go to the CKAN wiki](https://github.com/KSP-CKAN/CKAN/wiki)
+[Click here to open a new CKAN issue][6]
 
-**The CKAN Spec can be found [here](Spec.md)**.
+[Click here to go to the CKAN wiki][5]
+
+[Click here to view the CKAN metadata specification](Spec.md)
 
 ## What's the CKAN?
 
-The CKAN is a metadata respository and associated tools to allow you to find, install, and manage mods for Kerbal Space Program. It provides strong assurances that mods are installed in the way prescribed by their metadata files, for the correct version of Kerbal Space Program, alongside their dependencies, and without any conflicting mods.
+The CKAN is a metadata repository and associated tools to allow you to find, install, and manage mods for Kerbal Space Program.
+It provides strong assurances that mods are installed in the way prescribed by their metadata files,
+for the correct version of Kerbal Space Program, alongside their dependencies, and without any conflicting mods.
 
 CKAN is great for players _and_ for authors:
 - players can find new content and install it with just a few clicks;
@@ -24,9 +28,9 @@ We very much welcome contributions, discussions, and especially pull-requests.
 ## The CKAN spec
 
 At the core of the CKAN is the **[metadata specification](Spec.md)**,
-which comes with a corresponding [JSON Schema](CKAN.schema).
+which comes with a corresponding [JSON Schema](CKAN.schema) that you can also find in the [Schema Store][8]
 
-This repository includes a JSON schema validator that you can use to [validate your files][3].
+This repository includes a validator that you can use to [validate your files][3].
 
 ## CKAN for players
 
@@ -34,32 +38,26 @@ CKAN can download, install and update mods in just a few clicks. See the [User g
 
 ## CKAN for modders
 
-If you are an author, you might want to provide metadata to ensure that your mod installs correctly. While CKAN can usually figure out most of the metadata by itself, you can add your own file to provide dependencies, recommendations and installation instructions.
+While anyone can contribute metadata for your mod, we believe that you know your mod best.
+So while contributors will endeavor to be as accurate as possible, we would appreciate any efforts made by mod authors to ensure our metadata's accuracy.
+If the metadata we have is incorrect please [open an issue][7] and let us know.
 
-Check out the page about [adding a mod to the CKAN][4] on the wiki; you might also want to take a look at the [CKAN spec](Spec.md) and [CKAN schema](CKAN.schema), they can useful when writing your custom CKAN files.
+## Contributing to CKAN
 
-## Helping the development
+**No technical expertise is required to contribute to CKAN**
 
-The CKAN client is a C# application that targets Mono 4.0, and therefore it runs natively on all the major platforms
+If you want to contribute, please read our [CONTRIBUTING][4] file.
 
-Contributions are welcome:
+---
+Note: Are you looking for the Open Data portal software called CKAN? If so, their GitHub repository is found [here][9].
 
-* We have [a wiki][5] that you are encouraged to use and contribute to. You can find development instructions there.
-
-* Our [issues page][6]
-lists things that need doing, or are being worked upon. Feel free to
-add to this!
-
-* Hop onto the [#ckan][7] IRC
-channel (irc.esper.net) to chat with the team, lend a hand, or
-ask questions.
-
-* Ask the authors of your favourite mods to join the CKAN: [adding a mod to the CKAN][4] is very easy and will only take a few minutes.
 
  [1]:https://github.com/KSP-CKAN/CKAN/commits/master
  [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
- [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#testing-your-file
- [4]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN
+ [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#verifying-metadata-files
+ [4]:https://github.com/KSP-CKAN/CKAN/blob/master/CONTRIBUTING.md
  [5]:https://github.com/KSP-CKAN/CKAN/wiki
- [6]:https://github.com/KSP-CKAN/CKAN/issues
- [7]:http://webchat.esper.net/?channels=ckan
+ [6]:https://github.com/KSP-CKAN/CKAN/issues/new
+ [7]:https://github.com/KSP-CKAN/NetKAN/issues/new
+ [8]:http://schemastore.org/json/
+ [9]:https://github.com/ckan/ckan

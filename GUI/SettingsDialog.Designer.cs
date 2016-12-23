@@ -39,6 +39,8 @@
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
+            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
@@ -73,7 +75,7 @@
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 261);
-            this.RepositoryGroupBox.TabIndex = 8;
+            this.RepositoryGroupBox.TabIndex = 12;
             this.RepositoryGroupBox.TabStop = false;
             this.RepositoryGroupBox.Text = "Metadata repositories";
             // 
@@ -119,7 +121,7 @@
             this.ReposListBox.Location = new System.Drawing.Point(6, 19);
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(464, 199);
-            this.ReposListBox.TabIndex = 8;
+            this.ReposListBox.TabIndex = 9;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
             // 
             // CacheGroupBox
@@ -130,7 +132,7 @@
             this.CacheGroupBox.Location = new System.Drawing.Point(12, 279);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
-            this.CacheGroupBox.TabIndex = 9;
+            this.CacheGroupBox.TabIndex = 10;
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "CKAN Cache";
             // 
@@ -150,12 +152,14 @@
             this.CKANCacheLabel.AutoSize = true;
             this.CKANCacheLabel.Location = new System.Drawing.Point(3, 21);
             this.CKANCacheLabel.Name = "CKANCacheLabel";
-            this.CKANCacheLabel.Size = new System.Drawing.Size(273, 13);
+            this.CKANCacheLabel.Size = new System.Drawing.Size(271, 13);
             this.CKANCacheLabel.TabIndex = 0;
-            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MiB";
+            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.HideEpochsCheckbox);
+            this.groupBox2.Controls.Add(this.RefreshOnStartupCheckbox);
             this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
             this.groupBox2.Controls.Add(this.InstallUpdateButton);
             this.groupBox2.Controls.Add(this.LatestVersionLabel);
@@ -170,6 +174,28 @@
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CKAN auto-update";
+            // 
+            // HideEpochsCheckbox
+            // 
+            this.HideEpochsCheckbox.AutoSize = true;
+            this.HideEpochsCheckbox.Location = new System.Drawing.Point(275, 70);
+            this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
+            this.HideEpochsCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.HideEpochsCheckbox.TabIndex = 8;
+            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list\r\n(Requires Restart)";
+            this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
+            this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
+            // 
+            // RefreshOnStartupCheckbox
+            // 
+            this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
+            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
+            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
+            this.RefreshOnStartupCheckbox.TabIndex = 7;
+            this.RefreshOnStartupCheckbox.Text = "Update repositories on launch";
+            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
+            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
             // 
             // CheckUpdateOnLaunchCheckbox
             // 
@@ -282,5 +308,7 @@
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
+        private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
+        private System.Windows.Forms.CheckBox HideEpochsCheckbox;
     }
 }

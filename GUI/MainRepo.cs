@@ -31,20 +31,44 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            m_User.displayYesNo = YesNoDialog;
+            var old_dialog = currentUser.displayYesNo;
+            currentUser.displayYesNo = YesNoDialog;
 
-            m_TabController.RenameTab("WaitTabPage", "Updating repositories");
+            tabController.RenameTab("WaitTabPage", "Updating repositories");
 
             CurrentInstance.ScanGameData();
 
-            m_UpdateRepoWorker.RunWorkerAsync();
+            try
+            {
+                m_UpdateRepoWorker.RunWorkerAsync();
+            }
+            finally
+            {
+                currentUser.displayYesNo = old_dialog;
+            }
 
-            Util.Invoke(this, () => Enabled = false);
+            Util.Invoke(this, SwitchEnabledState);
 
             SetDescription("Contacting repository..");
             ClearLog();
             ShowWaitDialog();
         }
+
+        private bool _enabled = true;
+        private void SwitchEnabledState()
+        {
+            _enabled = !_enabled;
+            menuStrip1.Enabled = _enabled;
+            MainTabControl.Enabled = _enabled;
+            /* Windows (7 & 8 only?) bug #1548 has extra facets. 
+             * parent.childcontrol.Enabled = false seems to disable the parent,
+             * if childcontrol had focus. Depending on optimization steps,
+             * parent.childcontrol.Enabled = true does not necessarily
+             * re-enable the parent.*/
+            if (_enabled)
+                this.Focus();
+        }
+
 
         private void UpdateRepo(object sender, DoWorkEventArgs e)
         {
@@ -55,33 +79,46 @@ namespace CKAN
             }
             catch (UriFormatException ex)
             {
-                m_ErrorDialog.ShowErrorDialog(ex.Message);
+                errorDialog.ShowErrorDialog(ex.Message);
             }
             catch (MissingCertificateKraken ex)
             {
-                m_ErrorDialog.ShowErrorDialog(ex.ToString());
+                errorDialog.ShowErrorDialog(ex.ToString());
             }
             catch (Exception ex)
             {
-                m_ErrorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
+                errorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
             }
 
-            m_User.displayYesNo = null;
+            currentUser.displayYesNo = null;
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            SetDescription("Scanning for manually installed mods");
-            CurrentInstance.ScanGameData();
-
             UpdateModsList(repo_updated: true);
 
             HideWaitDialog(true);
             AddStatusMessage("Repository successfully updated");
+            ShowRefreshQuestion();
 
-            Util.Invoke(ModList, () => ModList.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells));
-            Util.Invoke(this, () => Enabled = true);
+            Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
+            Util.Invoke(this, ModList.Select);
+        }
+
+        private void ShowRefreshQuestion()
+        {
+            if (!configuration.RefreshOnStartupNoNag)
+            {
+                currentUser.displayYesNo = YesNoDialog;
+                configuration.RefreshOnStartupNoNag = true;
+                if (!currentUser.displayYesNo("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
+                {
+                    configuration.RefreshOnStartup = false;
+                }
+                configuration.Save();
+                currentUser.displayYesNo = null;
+            }
         }
     }
 }

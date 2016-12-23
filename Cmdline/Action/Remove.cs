@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
                 List<string> selectedModules = new List<string>();
 
                 // Get the list of installed modules
-                Registry registry = RegistryManager.Instance(ksp).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
                 var installed = new SortedDictionary<string, Version>(registry.Installed(false));
 
                 // Try every regex on every installed module:
@@ -47,6 +47,17 @@ namespace CKAN.CmdLine
                 // Replace the regular expressions with the selected modules
                 // and continue removal as usual
                 options.modules = selectedModules;
+            }
+
+            if (options.rmall)
+            {
+                log.Debug("Removing all mods");
+                // Get the list of installed modules
+                IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
+                var installed = new SortedDictionary<string, Version>(registry.Installed(false));
+
+                // Add it to the list that should be uninstalled.
+                options.modules.AddRange(installed.Keys);
             }
 
             if (options.modules != null && options.modules.Count > 0)

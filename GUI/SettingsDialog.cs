@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -15,6 +16,8 @@ namespace CKAN
 
         private long m_cacheSize;
         private int m_cacheFileCount;
+
+        private List<Repository> _sortedRepos = new List<Repository>();
 
         public SettingsDialog()
         {
@@ -33,36 +36,41 @@ namespace CKAN
 
             LocalVersionLabel.Text = Meta.Version();
 
-            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.m_Configuration.CheckForUpdatesOnLaunch;
+            CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
+            RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
+            HideEpochsCheckbox.Checked = Main.Instance.configuration.HideEpochs;
 
             UpdateCacheInfo();
         }
 
         private void RefreshReposListBox()
         {
-            List<Repository> sortedRepos = new List<Repository>();
-            foreach (var item in Main.Instance.CurrentInstance.Registry.Repositories)
+            // Give the Repository the priority it
+            // currently has in the gui
+            for (int i = 0; i < _sortedRepos.Count; i++)
             {
-                sortedRepos.Add(item.Value);
+                _sortedRepos[i].priority = i;
             }
 
-            sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
+            var manager = RegistryManager.Instance(Main.Instance.CurrentInstance);
+            var registry = manager.registry;
+            _sortedRepos = new List<Repository>(registry.Repositories.Values);
 
+            _sortedRepos.Sort((repo1, repo2) => repo1.priority.CompareTo(repo2.priority));
             ReposListBox.Items.Clear();
-            foreach (var item in sortedRepos)
+            foreach (var repo in _sortedRepos)
             {
-                ReposListBox.Items.Add(item);
+                ReposListBox.Items.Add(string.Format("{0} | {1}", repo.name, repo.uri));
             }
 
-            Main.Instance.CurrentInstance.RegistryManager.Save();
+            manager.Save();
         }
 
         private void UpdateCacheInfo()
         {
             m_cacheSize = 0;
             m_cacheFileCount = 0;
-            var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-
+            var cachePath = Main.Instance.CurrentInstance.DownloadCacheDir();
             var cacheDirectory = new DirectoryInfo(cachePath);
             foreach (var file in cacheDirectory.GetFiles())
             {
@@ -72,7 +80,7 @@ namespace CKAN
 
             CKANCacheLabel.Text = String.Format
             (
-                "There are currently {0} files in the cache for a total of {1} MiB",
+                "There are currently {0} cached files using {1} MB in total",
                 m_cacheFileCount,
                 m_cacheSize / 1024 / 1024
             );
@@ -83,15 +91,14 @@ namespace CKAN
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
             (
-                "Do you really want to delete {0} files from the cache for a total of {1} MiB?",
+                "Do you really want to delete {0} cached files, freeing {1} MB?",
                 m_cacheFileCount, 
                 m_cacheSize / 1024 / 1024
             );
 
             if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)
             {
-                var cachePath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "downloads");
-                foreach (var file in Directory.GetFiles(cachePath))
+                foreach (var file in Directory.GetFiles(Main.Instance.CurrentInstance.DownloadCacheDir()))
                 {
                     try
                     {
@@ -101,6 +108,19 @@ namespace CKAN
                     {
                     }
                 }
+
+                // tell the cache object to nuke itself
+                Main.Instance.CurrentInstance.Cache.OnCacheChanged();
+
+                // forcibly tell all mod rows to re-check cache state
+                foreach (DataGridViewRow row in Main.Instance.ModList.Rows)
+                {
+                    var mod = row.Tag as GUIMod;
+                    mod?.UpdateIsCached();
+                }
+
+                // finally, clear the preview contents list
+                Main.Instance.UpdateModContentsTree(null, true);
 
                 UpdateCacheInfo();
             }
@@ -136,8 +156,9 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
-            Main.Instance.CurrentInstance.Registry.Repositories.Remove(item.name);
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+            registry.Repositories.Remove(item.name);
             RefreshReposListBox();
             DeleteRepoButton.Enabled = false;
         }
@@ -153,20 +174,21 @@ namespace CKAN
                     var name = repo[0].Trim();
                     var url = repo[1].Trim();
 
-                    SortedDictionary<string, Repository> repositories = Main.Instance.CurrentInstance.Registry.Repositories;
+                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+                    SortedDictionary<string, Repository> repositories = registry.Repositories;
                     if (repositories.ContainsKey(name))
                     {
                         repositories.Remove(name);
                     }
 
-                    repositories.Add(name, new Repository(name, url));
-                    Main.Instance.CurrentInstance.Registry.Repositories = repositories;
+                    repositories.Add(name, new Repository(name, url, _sortedRepos.Count));
+                    registry.Repositories = repositories;
 
                     RefreshReposListBox();
                 }
                 catch (Exception)
                 {
-                    Main.Instance.m_User.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
+                    Main.Instance.currentUser.RaiseError("Invalid repo format - should be \"<name> | <url>\"");
                 }
             }
         }
@@ -183,9 +205,9 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
-            var aboveItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex - 1];
-            item.priority = aboveItem.priority - 1;
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            _sortedRepos.Insert(ReposListBox.SelectedIndex - 1, item);
             RefreshReposListBox();
         }
 
@@ -201,9 +223,9 @@ namespace CKAN
                 return;
             }
 
-            var item = (Repository)ReposListBox.SelectedItem;
-            var belowItem = (Repository)ReposListBox.Items[ReposListBox.SelectedIndex + 1];
-            item.priority = belowItem.priority + 1;
+            var item = _sortedRepos[ReposListBox.SelectedIndex];
+            _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
+            _sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
             RefreshReposListBox();
         }
 
@@ -211,9 +233,9 @@ namespace CKAN
         {
             try
             {
-                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
-
-                if (latestVersion.IsGreaterThan(new Version(Meta.Version())))
+                AutoUpdate.Instance.FetchLatestReleaseInfo();
+                var latestVersion = AutoUpdate.Instance.LatestVersion;
+                if (latestVersion.IsGreaterThan(new Version(Meta.Version())) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
                 }
@@ -226,19 +248,32 @@ namespace CKAN
             }
             catch (Exception ex)
             {
-                log.Warn("Exception caught in CheckForUpdates:\n"+ex);
+                log.Warn("Exception caught in CheckForUpdates:\r\n"+ex);
             }
         }
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            AutoUpdate.StartUpdateProcess(true);
+            Hide();
+            Main.Instance.UpdateCKAN();
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Main.Instance.m_Configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
-            Main.Instance.m_Configuration.Save();
+            Main.Instance.configuration.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
+            Main.Instance.configuration.Save();
+        }
+
+        private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.configuration.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
+            Main.Instance.configuration.Save();
+        }
+
+        private void HideEpochsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.configuration.HideEpochs = HideEpochsCheckbox.Checked;
+            Main.Instance.configuration.Save();
         }
     }
 }

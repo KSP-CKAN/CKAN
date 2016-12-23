@@ -79,6 +79,9 @@ namespace CKAN.CmdLine
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public SubCommandOptions Repo { get; set; }
 
+        [VerbOption("compat", HelpText = "Manage KSP version compatibility")]
+        public SubCommandOptions Compat { get; set; }
+
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
 
@@ -220,6 +223,9 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
+
+        [Option("all", HelpText = "Remove all installed mods.")]
+        public bool rmall { get; set; }
     }
 
     internal class ShowOptions : CommonOptions

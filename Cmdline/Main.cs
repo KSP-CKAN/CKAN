@@ -6,10 +6,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using CKAN.CmdLine.Action;
 using log4net;
 using log4net.Config;
 using log4net.Core;
@@ -39,8 +41,15 @@ namespace CKAN.CmdLine
                 Debugger.Launch();
             }
 
-            BasicConfigurator.Configure();
-            LogManager.GetRepository().Threshold = Level.Warn;
+            if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
+            {
+                // Start the gui with logging enabled #437 
+                var guiCommand = args.ToList();
+                guiCommand.Insert(0, "gui");
+                args = guiCommand.ToArray();
+            }
+
+            Logging.Initialize();
             log.Debug("CKAN started");
 
             Options cmdline;
@@ -71,7 +80,10 @@ namespace CKAN.CmdLine
             user = new ConsoleUser(options.Headless);
             CheckMonoVersion(user, 3, 1, 0);
 
-            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0)
+            // Processes in Docker containers normally run as root.
+            // If we are running in a Docker container, do not require --asroot.
+            // Docker creates a .dockerenv file in the root of each container.
+            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerenv"))
             {
                 if (!options.AsRoot)
                 {
@@ -102,7 +114,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 Net.UserAgentString = options.NetUserAgent;
             }
 
-            // TODO: Allow the user to specify just a directory.
             // User provided KSP instance
 
             if (options.KSPdir != null && options.KSP != null)
@@ -110,7 +121,9 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
                 return Exit.BADOPT;
             }
-            KSPManager manager= new KSPManager(user);
+
+            var manager = new KSPManager(user);
+
             if (options.KSP != null)
             {
                 // Set a KSP directory by its alias.
@@ -128,13 +141,12 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
             else if (options.KSPdir != null)
             {
                 // Set a KSP directory by its path
-
                 manager.SetCurrentInstanceByPath(options.KSPdir);
             }
-            else if (! (cmdline.action == "ksp" || cmdline.action == "version"))
+            else if (! (cmdline.action == "ksp" || cmdline.action == "version" || cmdline.action == "gui"))
             {
                 // Find whatever our preferred instance is.
-                // We don't do this on `ksp/version` commands, they don't need it.
+                // We don't do this on `ksp/version/gui` commands, they don't need it.
                 CKAN.KSP ksp = manager.GetPreferredInstance();
 
                 if (ksp == null)
@@ -164,6 +176,36 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
             #endregion
 
+            //If we have found a preferred KSP instance, try to lock the registry
+            if (manager.CurrentInstance != null)
+            {
+                try
+                {
+                    using (var registry = RegistryManager.Instance(manager.CurrentInstance))
+                    {
+                        log.InfoFormat("About to run action {0}", cmdline.action);
+                        return RunAction(cmdline, options, args, user, manager);
+                    }
+                }
+                catch (RegistryInUseKraken kraken)
+                {
+                    log.Info("Registry in use detected");
+                    user.RaiseMessage(kraken.ToString());
+                    return Exit.ERROR;
+                }
+            }
+            else // we have no preferred KSP instance, so no need to lock the registry
+            {
+                return RunAction(cmdline, options, args, user, manager);
+            }
+        }
+
+        /// <summary>
+        /// Run whatever action the user has provided
+        /// </summary>
+        /// <returns>The exit status that should be returned to the system.</returns>
+        private static int RunAction(Options cmdline, CommonOptions options, string[] args, IUser user, KSPManager manager)
+        {
             switch (cmdline.action)
             {
                 case "gui":
@@ -212,12 +254,16 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     var ksp = new KSP(manager, user);
                     return ksp.RunSubCommand((SubCommandOptions) cmdline.options);
 
+                case "compat":
+                    var compat = new CompatSubCommand(manager, user);
+                    return compat.RunSubCommand((SubCommandOptions)cmdline.options);
+
                 case "repo":
                     var repo = new Repo (manager, user);
                     return repo.RunSubCommand((SubCommandOptions) cmdline.options);
 
                 case "compare":
-                    return (new Compare()).RunCommand(manager.CurrentInstance, cmdline.options);
+                    return (new Compare(user)).RunCommand(manager.CurrentInstance, cmdline.options);
 
                 default:
                     user.RaiseMessage("Unknown command, try --help");
@@ -247,11 +293,11 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                         if (major < rec_major || (major == rec_major && minor < rec_minor))
                         {
                             user.RaiseMessage(
-                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\n",
+                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\r\n",
                                 String.Join(".", major, minor, patch),
                                 String.Join(".", rec_major, rec_minor, rec_patch)
                                 );
-                            user.RaiseMessage("Update recommend\n");
+                            user.RaiseMessage("Update recommend\r\n");
                         }
                     }
                 }
@@ -281,7 +327,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
         private static int Available(CKAN.KSP current_instance, IUser user)
         {
-            List<CkanModule> available = RegistryManager.Instance(current_instance).registry.Available(current_instance.Version());
+            List<CkanModule> available = RegistryManager.Instance(current_instance).registry.Available(current_instance.VersionCriteria());
 
             user.RaiseMessage("Mods available for KSP {0}", current_instance.Version());
             user.RaiseMessage("");
@@ -323,7 +369,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 {
                     user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
                     user.RaiseMessage("Use ckan.exe scan for more details");
-                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\n", next_command);
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
                 }
 
                 return Exit.ERROR;

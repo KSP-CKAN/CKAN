@@ -8,7 +8,7 @@ namespace CKAN
     /// </summary>
     public class Kraken : Exception
     {
-        public Kraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        public Kraken(string reason = null, Exception innerException = null) : base(reason, innerException)
         {
         }
     }
@@ -17,8 +17,8 @@ namespace CKAN
     {
         public string file;
 
-        public FileNotFoundKraken(string file, string reason = null, Exception inner_exception = null) 
-            :base(reason, inner_exception)
+        public FileNotFoundKraken(string file, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.file = file;
         }
@@ -28,8 +28,8 @@ namespace CKAN
     {
         public string directory;
 
-        public DirectoryNotFoundKraken(string directory, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public DirectoryNotFoundKraken(string directory, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.directory = directory;
         }
@@ -45,7 +45,7 @@ namespace CKAN
         // parent constructors by default. This sort of thing is unacceptable in a modern
         // programming langauge.
 
-        public BadInstallLocationKraken(string reason = null, Exception inner_exception = null) : base(reason, inner_exception)
+        public BadInstallLocationKraken(string reason = null, Exception innerException = null) : base(reason, innerException)
         {
         }
     }
@@ -56,8 +56,8 @@ namespace CKAN
         public string version;
 
         // TODO: Is there a way to set the stringify version of this?
-        public ModuleNotFoundKraken(string module, string version = null, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public ModuleNotFoundKraken(string module, string version = null, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.module = module;
             this.version = version;
@@ -68,8 +68,8 @@ namespace CKAN
     {
         public string path;
 
-        public NotKSPDirKraken(string path, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public NotKSPDirKraken(string path, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.path = path;
         }
@@ -77,8 +77,8 @@ namespace CKAN
 
     public class TransactionalKraken : Kraken
     {
-        public TransactionalKraken(string reason = null, Exception inner_exception = null)
-            :base(reason,inner_exception)
+        public TransactionalKraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
@@ -91,8 +91,8 @@ namespace CKAN
     {
         public CkanModule module;
 
-        public BadMetadataKraken(CkanModule module, string reason = null, Exception inner_exception = null)
-            :base(reason,inner_exception)
+        public BadMetadataKraken(CkanModule module, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.module = module;
         }
@@ -103,12 +103,12 @@ namespace CKAN
     /// </summary>
     public class RegistryVersionNotSupportedKraken : Kraken
     {
-        public int requested_version;
+        public int requestVersion;
 
-        public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public RegistryVersionNotSupportedKraken(int v, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
-            requested_version = v;
+            requestVersion = v;
         }
     }
 
@@ -117,8 +117,8 @@ namespace CKAN
         public List<CkanModule> modules;
         public string requested;
 
-        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception inner_exception = null)
-            :base(FormatMessage(requested, modules), inner_exception)
+        public TooManyModsProvideKraken(string requested, List<CkanModule> modules, Exception innerException = null)
+            : base(FormatMessage(requested, modules), innerException)
         {
             this.modules = modules;
             this.requested = requested;
@@ -126,8 +126,8 @@ namespace CKAN
 
         internal static string FormatMessage(string requested, List<CkanModule> modules)
         {
-            string oops = string.Format("Too many mods provide {0}:\n", requested);
-            return oops + String.Join("\n* ", modules);
+            string oops = string.Format("Too many mods provide {0}:\r\n", requested);
+            return oops + String.Join("\r\n* ", modules);
         }
     }
 
@@ -143,19 +143,19 @@ namespace CKAN
         {
             get
             {
-                const string message = "The following inconsistencies were found:\n";
-                return message + String.Join("\n * ", inconsistencies);
+                const string message = "The following inconsistencies were found:\r\n";
+                return message + String.Join("\r\n * ", inconsistencies);
             }
         }
 
-        public InconsistentKraken(ICollection<string> inconsistencies, Exception inner_exception = null)
-            :base(null, inner_exception)
+        public InconsistentKraken(ICollection<string> inconsistencies, Exception innerException = null)
+            : base(null, innerException)
         {
             this.inconsistencies = inconsistencies;
         }
 
-        public InconsistentKraken(string inconsistency, Exception inner_exception = null)
-            :base(null, inner_exception)
+        public InconsistentKraken(string inconsistency, Exception innerException = null)
+            : base(null, innerException)
         {
             inconsistencies = new List<string> { inconsistency };
         }
@@ -176,11 +176,11 @@ namespace CKAN
 
         // These aren't set at construction time, but exist so that we can decorate the
         // kraken as appropriate.
-        public CkanModule installing_module;
-        public string owning_module;
+        public CkanModule installingModule;
+        public string owningModule;
 
-        public FileExistsKraken(string filename, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public FileExistsKraken(string filename, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.filename = filename;
         }
@@ -195,15 +195,15 @@ namespace CKAN
     {
         public List<Exception> exceptions;
 
-        public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
-            exceptions = new List<Exception> (errors);
+            exceptions = new List<Exception>(errors);
         }
 
         public override string ToString()
         {
-            return "Uh oh, the following things went wrong when downloading...\n\n" + String.Join("\n", exceptions);
+            return "Uh oh, the following things went wrong when downloading...\r\n\r\n" + String.Join("\r\n", exceptions);
         }
     }
 
@@ -213,8 +213,8 @@ namespace CKAN
     /// </summary>
     public class CancelledActionKraken : Kraken
     {
-        public CancelledActionKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public CancelledActionKraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
@@ -225,8 +225,8 @@ namespace CKAN
     /// </summary>
     public class UnsupportedKraken : Kraken
     {
-        public UnsupportedKraken(string reason, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public UnsupportedKraken(string reason, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
@@ -239,8 +239,8 @@ namespace CKAN
     {
         public string path;
 
-        public PathErrorKraken(string path, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public PathErrorKraken(string path, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.path = path;
         }
@@ -264,8 +264,8 @@ namespace CKAN
         // here? Is there a way we can check if that was set, and then access it directly from
         // our base class?
 
-        public ModNotInstalledKraken(string mod, string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public ModNotInstalledKraken(string mod, string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
             this.mod = mod;
         }
@@ -276,27 +276,43 @@ namespace CKAN
     /// </summary>
     public class BadCommandKraken : Kraken
     {
-        public BadCommandKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public BadCommandKraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
     }
 
     public class MissingCertificateKraken : Kraken
     {
-        public MissingCertificateKraken(string reason = null, Exception inner_exception = null)
-            :base(reason, inner_exception)
+        public MissingCertificateKraken(string reason = null, Exception innerException = null)
+            : base(reason, innerException)
         {
         }
 
         public override string ToString()
         {
             return
-                "\nOh no! Our download failed with a certificate error!\n\n" +
-                "If you're on Linux, try running:\n" +
-                "\tmozroots --import --ask-remove\n" +
-                "on the command-line to update your certificate store, and try again.\n\n"
+                "\r\nOh no! Our download failed with a certificate error!\r\n\r\n" +
+                "If you're on Linux, try running:\r\n" +
+                "\tmozroots --import --ask-remove\r\n" +
+                "on the command-line to update your certificate store, and try again.\r\n\r\n"
             ;
+        }
+    }
+
+    public class RegistryInUseKraken : Kraken
+    {
+        readonly string lockfilePath;
+
+        public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
+            :base(reason, inner_exception)
+        {
+            this.lockfilePath = path;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("CKAN is already running for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfilePath);
         }
     }
 }

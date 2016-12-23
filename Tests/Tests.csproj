@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,30 +35,38 @@
     <RootNamespace>Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CurlSharp">
       <HintPath>..\Core\packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Core\packages\SharpZipLib-9478d50\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.Patched.0.86.5\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\Core\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\Core\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    <Reference Include="Moq, Version=4.5.21.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.5.21\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\Core\packages\Newtonsoft.Json.6.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\CKAN-meta-badkan.zip" />
@@ -103,44 +112,75 @@
     <None Include="Data\registry.json" />
     <None Include="Data\test-sln.sh" />
     <None Include="packages.config" />
-    <None Include="Tests.v2.ncrunchproject" />
     <None Include="Data\CKAN-meta-badkan.tar.gz" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Cache.cs" />
     <Compile Include="Core\FileIdentifier.cs" />
+    <Compile Include="Core\ModuleInstallerDirTest.cs" />
     <Compile Include="Core\KSP.cs" />
     <Compile Include="Core\KSPManager.cs" />
     <Compile Include="Core\KSPPathUtils.cs" />
     <Compile Include="Core\Meta.cs" />
     <Compile Include="Core\ModuleInstaller.cs" />
+    <Compile Include="Core\Net\AutoUpdate.cs" />
     <Compile Include="Core\Net\Net.cs" />
-    <Compile Include="Core\Net\NetAsyncDownloader.cs" />
+    <Compile Include="Core\Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Core\Net\Repo.cs" />
     <Compile Include="Core\Registry\Registry.cs" />
     <Compile Include="Core\Registry\RegistryLive.cs" />
+    <Compile Include="Core\Registry\RegistryManager.cs" />
     <Compile Include="Core\Registry\RegistryMultipleRepos.cs" />
     <Compile Include="Core\Relationships\RelationshipResolver.cs" />
     <Compile Include="Core\Relationships\SanityChecker.cs" />
-    <Compile Include="Core\Types\KSPVersion.cs" />
+    <Compile Include="Core\Types\GameComparator.cs" />
     <Compile Include="Core\Types\License.cs" />
     <Compile Include="Core\Types\Module.cs" />
-    <Compile Include="Core\Types\ModuleInstallDescriptor.cs" />
+    <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
+    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
     <Compile Include="Core\Types\Version.cs" />
+    <Compile Include="Core\Versioning\KspVersionBoundTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionJsonConverterTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionRangeTests.cs" />
+    <Compile Include="Core\Versioning\KspVersionTests.cs" />
     <Compile Include="Data\DisposableKSP.cs" />
     <Compile Include="Data\TestData.cs" />
     <Compile Include="Data\ZipLib.cs" />
     <Compile Include="GUI\Configuration.cs" />
+    <Compile Include="GUI\GH1866.cs" />
     <Compile Include="GUI\GUIMod.cs" />
     <Compile Include="GUI\MainModList.cs" />
+    <Compile Include="GUI\NavigationHistoryTests.cs" />
     <Compile Include="NetKAN\AVC.cs" />
-    <Compile Include="NetKAN\GitHubTests.cs" />
-    <Compile Include="NetKAN\JenkinsTests.cs" />
-    <Compile Include="NetKAN\KSMod.cs" />
+    <Compile Include="NetKAN\Extensions\JObjectExtensionsTests.cs" />
+    <Compile Include="NetKAN\Extensions\VersionExtensionsTests.cs" />
+    <Compile Include="NetKAN\SDMod.cs" />
     <Compile Include="NetKAN\MainClass.cs" />
+    <Compile Include="NetKAN\NetkanOverride.cs" />
+    <Compile Include="NetKAN\Services\FileServiceTests.cs" />
+    <Compile Include="NetKAN\Services\ModuleServiceTests.cs" />
+    <Compile Include="NetKAN\Sources\Curse\CurseApiTests.cs" />
+    <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
+    <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />
+    <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\CurseTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\DownloadAttributeTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\GeneratedByTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\GithubTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\HttpTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\InternalCkanTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\MetaNetkanTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\SpacedockTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\StripNetkanMetadataTransformerTests.cs" />
+    <Compile Include="NetKAN\Transformers\VersionEditTransformerTests.cs" />
+    <Compile Include="NetKAN\Validators\CkanValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\HasIdentifierValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\InstallsFilesValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\IsCkanModuleValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\MatchingIdentifiersValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Core\Types\RelationshipDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />

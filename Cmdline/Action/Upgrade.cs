@@ -38,20 +38,21 @@ namespace CKAN.CmdLine
             if (!options.upgrade_all && options.modules[0] == "ckan")
             {
                 User.RaiseMessage("Querying the latest CKAN version");
-                var latestVersion = AutoUpdate.FetchLatestCkanVersion();
+                AutoUpdate.Instance.FetchLatestReleaseInfo();
+                var latestVersion = AutoUpdate.Instance.LatestVersion;
                 var currentVersion = new Version(Meta.Version());
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
                     User.RaiseMessage("New CKAN version available - " + latestVersion);
-                    var releaseNotes = AutoUpdate.FetchLatestCkanVersionReleaseNotes();
+                    var releaseNotes = AutoUpdate.Instance.ReleaseNotes;
                     User.RaiseMessage(releaseNotes);
-                    User.RaiseMessage("\n");
+                    User.RaiseMessage("\r\n");
 
                     if (User.RaiseYesNoDialog("Proceed with install?"))
                     {
                         User.RaiseMessage("Upgrading CKAN, please wait..");
-                        AutoUpdate.StartUpdateProcess(false);
+                        AutoUpdate.Instance.StartUpdateProcess(false);
                     }
                 }
                 else
@@ -62,13 +63,14 @@ namespace CKAN.CmdLine
                 return Exit.OK;
             }
 
-            User.RaiseMessage("\nUpgrading modules...\n");
+            User.RaiseMessage("\r\nUpgrading modules...\r\n");
 
             try
             {
                 if (options.upgrade_all)
                 {
-                    var installed = new Dictionary<string, Version>(ksp.Registry.Installed());
+                    var registry = RegistryManager.Instance(ksp).registry;
+                    var installed = new Dictionary<string, Version>(registry.Installed());
                     var to_upgrade = new List<CkanModule>();
 
                     foreach (KeyValuePair<string, Version> mod in installed)
@@ -84,11 +86,14 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if upgrades are available
-                                CkanModule latest = ksp.Registry.LatestAvailable(mod.Key, ksp.Version());
+                                var latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
 
                                 // This may be an unindexed mod. If so,
                                 // skip rather than crash. See KSP-CKAN/CKAN#841.
-                                if(latest==null) continue;
+                                if (latest == null)
+                                {
+                                    continue;
+                                }
 
                                 if (latest.version.IsGreaterThan(mod.Value))
                                 {
@@ -108,12 +113,12 @@ namespace CKAN.CmdLine
 
                     }
 
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User));
                 }
                 else
                 {
                     // TODO: These instances all need to go.
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
                 }
             }
             catch (ModuleNotFoundKraken kraken)
@@ -121,7 +126,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Module {0} not found", kraken.module);
                 return Exit.ERROR;
             }
-            User.RaiseMessage("\nDone!\n");
+            User.RaiseMessage("\r\nDone!\r\n");
 
             return Exit.OK;
         }

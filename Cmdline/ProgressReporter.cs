@@ -26,7 +26,7 @@ namespace CKAN.CmdLine
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                user.RaiseMessage("\n{0}", message);
+                user.RaiseMessage("\r\n{0}", message);
             }
         }
     }

@@ -13,6 +13,20 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
         public const string UrlRegistrationArgument = "registerUrl";
 
+        private static string MimeAppsListPath = ".local/share/applications/mimeapps.list";
+        private static string ApplicationsPath = ".local/share/applications/";
+        private const string HandlerFileName = "ckan-handler.desktop";
+
+        static URLHandlers()
+        {
+            if (Platform.IsUnix)
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                MimeAppsListPath = Path.Combine(home, MimeAppsListPath);
+                ApplicationsPath = Path.Combine(home, ApplicationsPath);
+            }
+        }
+
         public static void RegisterURLHandler(Configuration config, IUser user)
         {
             try
@@ -58,6 +72,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             catch (Exception ex)
             {
                 log.ErrorFormat("There was an error while registering the URL handler for ckan:// - {0}", ex.Message);
+                log.ErrorFormat("{0}", ex.StackTrace);
             }
         }
 
@@ -98,37 +113,46 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
                 ("", System.Reflection.Assembly.GetExecutingAssembly().Location + " gui %1");
         }
 
-        private const string MimeAppsListPath = "~/.local/share/applications/mimeapps.list";
-        private const string ApplicationsPath = "~/.local/share/applications/";
-        private const string HandlerFileName = "ckan-handler.desktop";
-
         private static void RegisterURLHandler_Linux()
         {
             var parser = new FileIniDataParser();
+
+            // Yes, 'Assigment' is the spelling used by the library.
+            parser.Parser.Configuration.AssigmentSpacer = "";
             IniData data;
 
             log.InfoFormat("Trying to register URL handler");
 
+            if (!File.Exists(MimeAppsListPath))
+            {
+                log.InfoFormat("{0} does not exist, trying to create it", MimeAppsListPath);
+                File.WriteAllLines(MimeAppsListPath, new string[] { "[Default Applications]" });
+            }
+
             try
             {
-                data = parser.ReadFile(MimeAppsListPath); //();
+                data = parser.ReadFile(MimeAppsListPath);
             }
             catch (DirectoryNotFoundException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (FileNotFoundException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
             catch (ParsingException ex)
             {
-                log.WarnFormat("Skipping URL handler: {0}", ex.Message);
+                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
                 return;
             }
 
+            if (data["Added Associations"] == null)
+            {
+                data.Sections.AddSection("Added Associations");
+            }
             data["Added Associations"].RemoveKey("x-scheme-handler/ckan");
             data["Added Associations"].AddKey("x-scheme-handler/ckan", HandlerFileName);
 
@@ -153,7 +177,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             data.Sections.AddSection("Desktop Entry");
             data["Desktop Entry"].AddKey("Version", "1.0");
             data["Desktop Entry"].AddKey("Type", "Application");
-            data["Desktop Entry"].AddKey("Exec", System.Reflection.Assembly.GetExecutingAssembly().Location + " gui %u");
+            data["Desktop Entry"].AddKey("Exec", "mono \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" gui %u");
             data["Desktop Entry"].AddKey("Icon", "ckan");
             data["Desktop Entry"].AddKey("StartupNotify", "true");
             data["Desktop Entry"].AddKey("Terminal", "false");
@@ -163,6 +187,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             data["Desktop Entry"].AddKey("Comment", "Launch CKAN");
 
             parser.WriteFile(handlerPath, data);
+            AutoUpdate.SetExecutable(handlerPath);
         }
 
     }

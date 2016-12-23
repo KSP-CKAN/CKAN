@@ -1,6 +1,10 @@
+using System.Linq;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tests.Core.Types
 {
@@ -12,15 +16,17 @@ namespace Tests.Core.Types
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
-            Assert.IsTrue(module.IsCompatibleKSP("0.24.2"));
+            Assert.IsTrue(module.IsCompatibleKSP(new KspVersionCriteria (KspVersion.Parse("0.24.2"))));
         }
 
         [Test]
         public void StandardName()
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
-
             Assert.AreEqual(module.StandardName(), "kOS-0.14.zip");
+
+            CkanModule module2 = CkanModule.FromJson(TestData.kOS_014_with_invalid_version_characters());
+            Assert.AreEqual(module2.StandardName(), "kOS-0-14-0.zip");
         }
 
         [Test]
@@ -28,8 +34,24 @@ namespace Tests.Core.Types
         {
             CkanModule module = CkanModule.FromJson (TestData.kOS_014 ());
 
-            // TODO: Test all the metadata here!
+            Assert.AreEqual("kOS - Kerbal OS", module.name);
+            Assert.AreEqual("kOS", module.identifier);
+            Assert.AreEqual("A programming and automation environment for KSP craft.", module.@abstract);
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download.ToString());
+            Assert.AreEqual("GPL-3.0", module.license.First().ToString());
+            Assert.AreEqual("0.14", module.version.ToString());
+            Assert.AreEqual("stable", module.release_status.ToString());
+            Assert.AreEqual("0.24.2", module.ksp_version.ToString());
+
+            Assert.That(module.install.First().file, Is.EqualTo("GameData/kOS"));
+            Assert.That(module.install.First().install_to, Is.EqualTo("GameData"));
+
+            Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
+            
+            Assert.AreEqual("C5A224AC4397770C0B19B4A6417F6C5052191608", module.download_hash.sha1.ToString());
+            Assert.AreEqual("E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB", module.download_hash.sha256.ToString());
         }
 
         /// <summary>
@@ -144,6 +166,31 @@ namespace Tests.Core.Types
 
             Assert.AreEqual(1, mod.license.Count, "Uni-license");
             Assert.AreEqual("GPL-3.0", mod.license[0].ToString());
+        }
+
+        [Test]
+        public void bad_resource_1208()
+        {
+            JObject metadata = JObject.Parse(TestData.kOS_014());
+
+            // Guess which string totally isn't a valid Url? This one.
+            metadata["resources"]["homepage"] = "https://included%in%the%download";
+
+            CkanModule mod = CkanModule.FromJson(metadata.ToString());
+
+            Assert.IsNotNull(mod);
+            Assert.IsNull(mod.resources.homepage);
+        }
+
+        [Test]
+        public void good_resource_1208()
+        {
+            CkanModule mod = CkanModule.FromJson(TestData.kOS_014());
+
+            Assert.AreEqual(
+                "http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13",
+                mod.resources.homepage.ToString()
+            );
         }
     }
 }

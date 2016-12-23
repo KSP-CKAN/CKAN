@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CKAN
 {
     public partial class ChooseKSPInstance : Form
     {
-        private FolderBrowserDialog m_BrowseKSPFolder;
-        private RenameInstanceDialog m_RenameInstanceDialog;
+        private FolderBrowserDialog browseKspFolder;
+        private RenameInstanceDialog renameInstanceDialog;
         private readonly KSPManager manager;
 
         public ChooseKSPInstance()
@@ -17,7 +18,7 @@ namespace CKAN
 
             StartPosition = FormStartPosition.CenterScreen;
 
-            m_BrowseKSPFolder = new FolderBrowserDialog();
+            browseKspFolder = new FolderBrowserDialog();
 
             if (!manager.Instances.Any())
             {
@@ -48,19 +49,21 @@ namespace CKAN
 
         private void AddNewButton_Click(object sender, EventArgs e)
         {
-            if (m_BrowseKSPFolder.ShowDialog() == DialogResult.OK)
+            if (browseKspFolder.ShowDialog() == DialogResult.OK)
             {
                 KSP instance;
+                string path = browseKspFolder.SelectedPath;
                 try
                 {
-                    instance = new KSP(m_BrowseKSPFolder.SelectedPath, GUI.user);
+                    instance = new KSP(path, GUI.user);
                 }
                 catch (NotKSPDirKraken){
-                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {m_BrowseKSPFolder.SelectedPath});
+                    GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] {path});
                     return;
                 }
 
-                string instanceName = manager.GetNextValidInstanceName("New instance");
+                string instanceName = Path.GetFileName(path);
+                instanceName = manager.GetNextValidInstanceName(instanceName);
                 manager.AddInstance(instanceName, instance);
                 UpdateInstancesList();
             }
@@ -102,15 +105,15 @@ namespace CKAN
         {
             var instance = (string) KSPInstancesListView.SelectedItems[0].Tag;
 
-            m_RenameInstanceDialog = new RenameInstanceDialog();
-            if (m_RenameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
+            renameInstanceDialog = new RenameInstanceDialog();
+            if (renameInstanceDialog.ShowRenameInstanceDialog(instance) == DialogResult.OK)
             {
-                manager.RenameInstance(instance, m_RenameInstanceDialog.GetResult());
+                manager.RenameInstance(instance, renameInstanceDialog.GetResult());
                 UpdateInstancesList();
             }
         }
 
-        private void Delete_Click(object sender, EventArgs e)
+        private void Forget_Click(object sender, EventArgs e)
         {
             var instance = (string)KSPInstancesListView.SelectedItems[0].Tag;
             manager.RemoveInstance(instance);
@@ -120,7 +123,7 @@ namespace CKAN
 
         private void SetButtonsEnabled(bool has_instance)
         {
-            DeleteButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
+            ForgetButton.Enabled = RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = has_instance;
         }
 
     }
