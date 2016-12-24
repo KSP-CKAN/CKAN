@@ -43,6 +43,9 @@
     <Reference Include="CurlSharp">
       <HintPath>packages\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac">
+      <HintPath>packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompatibleKspVersionsDto.cs" />
