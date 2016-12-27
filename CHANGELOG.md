@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## v1.22.0
+
 ### Bugfixes
 - [Build] Update SharpZip dependency and remove old Newtonsoft.Json (#1879 by: ayan4m1; reviewed: politas)
 - [Core] Make sure we're updating the build mappings on repository update (#1906 by: dbent; reviewed Olympic1)
