@@ -218,7 +218,8 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                     return (new Update(user)).RunCommand(manager.CurrentInstance, (UpdateOptions)cmdline.options);
 
                 case "available":
-                    return Available(manager.CurrentInstance, user);
+                    return (new Available(user)).RunCommand(manager.CurrentInstance, (AvailableOptions)cmdline.options);
+                    //return Available(manager.CurrentInstance, user);
 
                 case "install":
                     Scan(manager.CurrentInstance, user, cmdline.action);
@@ -321,24 +322,6 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
         private static int Version(IUser user)
         {
             user.RaiseMessage(Meta.Version());
-
-            return Exit.OK;
-        }
-
-        private static int Available(CKAN.KSP current_instance, IUser user)
-        {
-            List<CkanModule> available = RegistryManager.Instance(current_instance).registry.Available(current_instance.VersionCriteria());
-
-            user.RaiseMessage("Mods available for KSP {0}", current_instance.Version());
-            user.RaiseMessage("");
-
-            var width = user.WindowWidth;
-
-            foreach (CkanModule module in available)
-            {
-                string entry = String.Format("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
-                user.RaiseMessage(width > 0 ? entry.PadRight(width).Substring(0, width - 1) : entry);
-            }
 
             return Exit.OK;
         }
