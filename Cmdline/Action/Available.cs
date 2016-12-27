@@ -25,6 +25,7 @@ namespace CKAN.CmdLine
             try
             {
                 var width = user.WindowWidth;
+                log.InfoFormat("Found console width {0}", width);
                 return width;
             }
             catch (Kraken)
