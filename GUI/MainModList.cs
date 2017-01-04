@@ -411,6 +411,12 @@ namespace CKAN
                 {
                     kraken = k;
                 }
+                catch (InconsistentKraken k)
+                {
+                    user.RaiseError("{0}\r\nYou may need to uninstall and reinstall the " +
+                                    "conflicting mods", k.InconsistenciesPretty);
+                    return null;
+                }
                 catch (ModuleNotFoundKraken k)
                 {
                     //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
