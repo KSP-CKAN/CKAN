@@ -413,9 +413,10 @@ namespace CKAN
                 }
                 catch (InconsistentKraken k)
                 {
+                    Console.Write(k.InconsistenciesPretty);
                     user.RaiseError("{0}\r\nYou may need to uninstall and reinstall the " +
                                     "conflicting mods", k.InconsistenciesPretty);
-                    return null;
+                    throw k;
                 }
                 catch (ModuleNotFoundKraken k)
                 {

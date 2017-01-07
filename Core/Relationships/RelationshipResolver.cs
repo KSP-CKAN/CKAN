@@ -167,6 +167,8 @@ namespace CKAN
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
             log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
 
+            List<string> inconsistencies = new List<string>();
+
             // Start by figuring out what versions we're installing, and then
             // adding them to the list. This *must* be pre-populated with all
             // user-specified modules, as they may be supplying things that provide
@@ -186,13 +188,19 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module,
+                        inconsistencies.Add(string.Format("{0} conflicts with {1}, can't install both.", module,
                             listed_mod));
                     }
                 }
 
                 user_requested_mods.Add(module);
                 Add(module, new SelectionReason.UserRequested());
+            }
+
+            if (inconsistencies.Count() > 0)
+            {
+                InconsistentKraken k = new InconsistentKraken(inconsistencies);
+                throw k;
             }
 
             // Now that we've already pre-populated the modlist, we can resolve
