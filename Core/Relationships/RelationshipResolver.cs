@@ -163,11 +163,11 @@ namespace CKAN
         /// <param name="modules">Modules to attempt to install</param>
         public void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {
+            List<string> inconsistencies = new List<string>();
+
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
             log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
-
-            private List<string> _inconsistencies = new List<string>();
 
             // Start by figuring out what versions we're installing, and then
             // adding them to the list. This *must* be pre-populated with all
@@ -188,7 +188,7 @@ namespace CKAN
                     }
                     else
                     {
-                        _inconsistencies.Add(string.Format("{0} conflicts with {1}, can't install both.", module,
+                        inconsistencies.Add(string.Format("{0} conflicts with {1}, can't install both.", module,
                             listed_mod));
                     }
                 }
@@ -197,9 +197,9 @@ namespace CKAN
                 Add(module, new SelectionReason.UserRequested());
             }
 
-            if (_inconsistencies.Count() > 0)
+            if (inconsistencies.Count() > 0)
             {
-                InconsistentKraken k = new InconsistentKraken(_inconsistencies);
+                InconsistentKraken k = new InconsistentKraken(inconsistencies);
                 throw k;
             }
 
