@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Bugfixes
+- [CLI] Removed non-functioning code on available command (#1966 by: poltas; reviewed: dbent)
+
 ## v1.22.1
 
 ### Bugfixes
