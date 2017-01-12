@@ -396,15 +396,15 @@ namespace CKAN
             var installed_modules =
                 registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
 
-            bool handled_all_to_many_provides = false;
-            while (!handled_all_to_many_provides)
+            bool handled_all_too_many_provides = false;
+            while (!handled_all_too_many_provides)
             {
                 //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
                 TooManyModsProvideKraken kraken;
                 try
                 {
                     new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
-                    handled_all_to_many_provides = true;
+                    handled_all_too_many_provides = true;
                     continue;
                 }
                 catch (TooManyModsProvideKraken k)

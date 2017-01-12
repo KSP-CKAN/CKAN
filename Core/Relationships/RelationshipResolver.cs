@@ -163,7 +163,7 @@ namespace CKAN
         /// <param name="modules">Modules to attempt to install</param>
         public void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {
-            List<string> inconsistencies = new List<string>();
+            var inconsistencies = new List<string>();
 
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
@@ -199,8 +199,7 @@ namespace CKAN
 
             if (inconsistencies.Count() > 0)
             {
-                InconsistentKraken k = new InconsistentKraken(inconsistencies);
-                throw k;
+                throw new InconsistentKraken(inconsistencies);
             }
 
             // Now that we've already pre-populated the modlist, we can resolve
