@@ -666,8 +666,8 @@ An example `.netkan` excerpt:
     }
 }
 ```
-
 ###### `#/ckan/http/:url`
+
 
 Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
 
@@ -710,18 +710,21 @@ An example `.netkan` including all required fields for a valid metanetkan:
 The `$vref` field indicates that version data should be filled in from an external service provider. Only *one*
 `$vref` field may be present in a document.
 
-###### `#/ckan/ksp-avc`
+###### `#/ckan/ksp-avc[[/path]/avcfilename.version]`
 
 If present, a `$vref` symbol of `#/ckan/ksp-avc` states that version
 information should be retrieved from an embedded KSP-AVC `.version` file in the
 file downloaded by the `download` field. The following conditions apply:
 
-* Only `.version` files that would be *installed* for this mod are considered.
+* Only `.version` files that would be *installed* for this mod are considered. (In theory. Transformer ordering may cause files outside the installed folders being considered)
 * It is an error if more than one `.version` file would be considered.
 * It is an error if the `.version` file does not validate according to
   [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm).
 * The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
+* Netkan will first attempt to use anything after `ksp-avc` as a literal 
+   path within the zip file, and if that fails, will use the string as a 
+   regexp to search for a matching file to use.
 
 When used, the following fields are auto-generated:
 
@@ -732,6 +735,10 @@ When used, the following fields are auto-generated:
 Version information is generated in such a way as to ensure maximum compatibility. For example if the `.version` file
 specifies that the mod is compatible with KSP version `1.0.2` but the existing `version` specifies `1.0.5` then the
 version information generated will give a `ksp_version_min` of `1.0.2` and a `ksp_version_max` of `1.0.5`.
+
+If (and only if) no mod version number has been identified (eg a `#/ckan/http/:url`), then the following field will also be auto-generated:
+
+- `version`
 
 ##### `x_netkan_epoch`
 
