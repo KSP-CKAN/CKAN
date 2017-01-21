@@ -35,7 +35,7 @@ RUN chmod +x /root/cleanup.sh
 RUN echo 'trap /root/cleanup.sh EXIT\n\
   ckan()\n\
   {\n\
-    mono /build/CmdLine.exe "$@" --kspdir /kspdir --headless\n\
+    mono /build/ckan.exe "$@" --kspdir /kspdir --headless\n\
   }\n\
   ckan update\n\
 ' >> /root/.bashrc
@@ -54,6 +54,9 @@ RUN mkdir /kspdir
 VOLUME ["/kspdir"]
 COPY . /source
 WORKDIR /source
-RUN nuget restore -NonInteractive
-RUN xbuild /property:Configuration=Release /property:OutDir=/build/
+ARG config
+ENV config ${config:-Release}
+RUN ./build --configuration=${config}
+RUN mkdir /build
+RUN cp _build/repack/${config}/ckan.exe /build/ckan.exe
 ENTRYPOINT ["/root/entrypoint.sh"]

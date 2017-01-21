@@ -9,13 +9,14 @@ namespace Tests.Core
     [TestFixture]
     public class Cache
     {
-        private readonly string cache_dir = Path.Combine(TestData.DataDir(),"cache_test");
+        private string cache_dir;
 
         private NetFileCache cache;
 
         [SetUp]
         public void MakeCache()
         {
+            cache_dir = TestData.NewTempDir();
             Directory.CreateDirectory(cache_dir);
             cache = new NetFileCache(cache_dir);
         }

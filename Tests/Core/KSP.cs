@@ -26,9 +26,13 @@ namespace Tests.Core
         {
             if (ksp != null)
             {
+                // Manually dispose of RegistryManager
+                // For some reason the KSP instance doesn't do this itself causing test failures because the registry
+                // lock file is still in use. So just dispose of it ourselves.
+                CKAN.RegistryManager.Instance(ksp).Dispose();
                 ksp.Dispose();
             }
-                    
+            
             Directory.Delete(ksp_dir, true);
         }
 

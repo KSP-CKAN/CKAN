@@ -307,7 +307,7 @@ namespace CKAN
                     log.Info("Making autoupdate call");
                     AutoUpdate.Instance.FetchLatestReleaseInfo();
                     var latest_version = AutoUpdate.Instance.LatestVersion;
-                    var current_version = new Version(Meta.Version());
+                    var current_version = new Version(Meta.GetVersion());
 
                     if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
                     {
@@ -352,7 +352,7 @@ namespace CKAN
                 UpdateRepo();
             }
 
-            Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.Version(), CurrentInstance.Version(),
+            Text = String.Format("CKAN {0} - KSP {1}  --  {2}", Meta.GetVersion(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
 
             if (commandLineArgs.Length >= 2)
@@ -422,7 +422,7 @@ namespace CKAN
         {
             Util.Invoke(this, () =>
             {
-                Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.Version(), CurrentInstance.Version(),
+                Text = String.Format("CKAN {0} - KSP {1}    --    {2}", Meta.GetVersion(), CurrentInstance.Version(),
                 CurrentInstance.GameDir());
             });
 

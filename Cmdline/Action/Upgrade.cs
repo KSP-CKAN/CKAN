@@ -40,7 +40,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Querying the latest CKAN version");
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-                var currentVersion = new Version(Meta.Version());
+                var currentVersion = new Version(Meta.GetVersion(VersionFormat.Short));
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {

@@ -69,7 +69,7 @@ namespace CKAN.CmdLine
             {
                 // Our help screen will already be shown. Let's add some extra data.
                 user = new ConsoleUser(false);
-                user.RaiseMessage("You are using CKAN version {0}", Meta.Version());
+                user.RaiseMessage("You are using CKAN version {0}", Meta.GetVersion(VersionFormat.Full));
 
                 return Exit.BADOPT;
             }
@@ -321,7 +321,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
 
         private static int Version(IUser user)
         {
-            user.RaiseMessage(Meta.Version());
+            user.RaiseMessage(Meta.GetVersion(VersionFormat.Full));
 
             return Exit.OK;
         }

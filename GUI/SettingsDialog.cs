@@ -34,7 +34,7 @@ namespace CKAN
         {
             RefreshReposListBox();
 
-            LocalVersionLabel.Text = Meta.Version();
+            LocalVersionLabel.Text = Meta.GetVersion();
 
             CheckUpdateOnLaunchCheckbox.Checked = Main.Instance.configuration.CheckForUpdatesOnLaunch;
             RefreshOnStartupCheckbox.Checked = Main.Instance.configuration.RefreshOnStartup;
@@ -235,7 +235,7 @@ namespace CKAN
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-                if (latestVersion.IsGreaterThan(new Version(Meta.Version())) && AutoUpdate.Instance.IsFetched())
+                if (latestVersion.IsGreaterThan(new Version(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
                 }

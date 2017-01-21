@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v1.22.2-dev
 
 ### Bugfixes
 - [CLI] Removed non-functioning code on available command (#1966 by: poltas; reviewed: dbent)
+
+### Features
+- [Build] Use Cake for build and overhaul/cleanup build (#1589 by: dbent; reviewed: techman83, politas)
+- [Build] Docker updates to support cake! (#1988 by: mathuin; reviewed; reviewed: dbent)
 
 ## v1.22.1
 
