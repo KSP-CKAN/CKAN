@@ -339,7 +339,7 @@ namespace CKAN
             this.FilterNotInstalledButton,
             this.FilterIncompatibleButton,
             this.FilterAllButton});
-            this.FilterToolButton.Image = global::CKAN.Properties.Resources.search;
+            this.FilterToolButton.Image = global::CKAN.Properties.Resources.filter;
             this.FilterToolButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.FilterToolButton.Name = "FilterToolButton";
             this.FilterToolButton.Size = new System.Drawing.Size(226, 66);
