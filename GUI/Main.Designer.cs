@@ -67,7 +67,7 @@ namespace CKAN
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModList = new CKAN.MainModListGUI();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Update = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -452,7 +452,7 @@ namespace CKAN
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
-            this.Update,
+            this.UpdateCol,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -485,10 +485,10 @@ namespace CKAN
             // 
             // Update
             // 
-            this.Update.HeaderText = "Update";
-            this.Update.Name = "Update";
-            this.Update.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Update.Width = 46;
+            this.UpdateCol.HeaderText = "Update";
+            this.UpdateCol.Name = "Update";
+            this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.UpdateCol.Width = 46;
             // 
             // ModName
             // 
@@ -1126,7 +1126,6 @@ namespace CKAN
         private ToolStripMenuItem reportAnIssueToolStripMenuItem;
         private ToolStripMenuItem compatibleKSPVersionsToolStripMenuItem;
         private MainModInfo ModInfoTabControl;
-        private DataGridViewCheckBoxColumn Update;
         private HintTextBox FilterByAuthorTextBox;
     }
 }
