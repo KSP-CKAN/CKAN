@@ -83,14 +83,8 @@ namespace CKAN
                 downloads.Add(download);
             }
 
-            if (Platform.IsWindows)
-            {
-                DownloadNative();
-            }
-            else
-            {
-                DownloadCurl();
-            }
+            DownloadNative();
+
         }
 
         /// <summary>
