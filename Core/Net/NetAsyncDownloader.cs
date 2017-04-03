@@ -83,7 +83,14 @@ namespace CKAN
                 downloads.Add(download);
             }
 
-            DownloadNative();
+            // adding chicken bits
+            if (Platform.IsWindows || System.Environment.GetEnvironmentVariable("KSP_CKAN_USE_CURL") != null) {
+                DownloadNative();
+            }
+            else
+            {
+                DownloadCurl();
+            }
 
         }
 
