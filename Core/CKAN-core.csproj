@@ -53,7 +53,11 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NJsonSchema, Version=9.10.6.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\NJsonSchema.9.10.6\lib\net45\NJsonSchema.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
@@ -132,10 +136,12 @@
     <Compile Include="Win32Registry.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="builds.json" />
+    <EmbeddedResource Include="CKAN.schema" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

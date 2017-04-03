@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using NJsonSchema;
 using Autofac;
 using CKAN.Versioning;
 using log4net;
@@ -292,6 +295,13 @@ namespace CKAN
         {
             _comparator = comparator;
 
+            var errors = ValidateAgainstSchema(json);
+            if (errors.Result.Any())
+            {
+                var message = "Validation against the schema failed.\n" + string.Join("\n  ", errors);
+                throw new BadMetadataKraken(null, message);
+            }
+
             try
             {
                 // Use the json string to populate our object
@@ -364,6 +374,33 @@ namespace CKAN
             license = license ?? new List<License> { License.UnknownLicense };
             @abstract = @abstract ?? string.Empty;
             name = name ?? string.Empty;
+        }
+
+        static CkanModule()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream(SchemaPath))
+            using (var reader = new StreamReader(stream))
+            {
+                var result = reader.ReadToEnd();
+                MetadataSchema = JsonSchema4.FromSampleJson(result);
+            }
+        }
+
+        private static readonly string SchemaPath = "CKAN.CKAN.schema";
+        private static readonly JsonSchema4 MetadataSchema;
+
+        private static async Task<IList<string>> ValidateAgainstSchema(string json)
+        {
+            JsonSchema4 schema = await JsonSchema4.FromJsonAsync(json);
+
+            IList<string> errorList = new List<string>();
+            var errors = schema.Validate(MetadataSchema.ToJson());
+
+            foreach (var error in errors)
+                errorList.Add(error.ToString());
+
+            return errorList;
         }
 
         /// <summary>
