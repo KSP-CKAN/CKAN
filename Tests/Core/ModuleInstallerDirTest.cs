@@ -27,7 +27,7 @@ namespace Tests.Core
         /// Prep environment by setting up a single mod in
         /// a disposable KSP instance.
         /// </summary>
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void SetUp()
         {
             _testModule = TestData.DogeCoinFlag_101_module();

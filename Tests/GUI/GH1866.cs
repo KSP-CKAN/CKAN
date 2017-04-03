@@ -47,7 +47,7 @@ namespace Tests.GUI
             new NetAsyncModulesDownloader(main.currentUser)
         );*/
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Up()
         {
             _instance = new DisposableKSP();
@@ -84,7 +84,7 @@ namespace Tests.GUI
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void Down()
         {
             _instance.Dispose();

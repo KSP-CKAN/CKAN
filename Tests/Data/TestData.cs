@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using CKAN;
 using CKAN.Versioning;
 using Version = CKAN.Version;
@@ -12,12 +13,14 @@ namespace Tests.Data
     {
         public static string DataDir()
         {
-            // TODO: Have this actually walk our directory structure and find
-            // t/data. This means we can relocate our test executable and
-            // things will still work.
-            string current = Directory.GetCurrentDirectory();
-
-            return Path.Combine(current, "../../../../../Tests/Data");
+            // FIXME: Come up with a better solution for test data
+            // 1. This is fragile with respect to changes in directory structure.
+            // 2. This forces us to disable ReSharper's test assembly shadow copying
+            // 3. "Quick" solution is to embed test data as an archive and extract it on demand to a known temporary location.
+            //    But this makes updates hard.
+            // 4. A better, but much harder solution, is to not require harded files on disk for any of our tests, but that's
+            //    a lot of work.
+            return Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "../../../../../Tests/Data");
         }
 
         public static string DataDir(string file)

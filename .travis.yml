@@ -26,7 +26,7 @@ before_install:
 
 script:
     - ./build --configuration=$BUILD_CONFIGURATION
-    - ./build test+only --configuration=$BUILD_CONFIGURATION --exclude=FlakyNetwork
+    - ./build test+only --configuration=$BUILD_CONFIGURATION --where="cat!=FlakyNetwork"
 
 deploy:
     # Releases (which are tagged) go to github
