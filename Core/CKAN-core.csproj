@@ -33,6 +33,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.4.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\_build\lib\nuget\Autofac.4.4.0\lib\net45\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\_build\lib\nuget\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
     </Reference>
@@ -55,9 +58,6 @@
     </Reference>
     <Reference Include="CurlSharp">
       <HintPath>..\lib\curlsharp-v0.5.1-2-gd2d5699\CurlSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Autofac">
-      <HintPath>..\_build\lib\nuget\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
