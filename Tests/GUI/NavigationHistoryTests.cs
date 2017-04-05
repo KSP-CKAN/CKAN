@@ -39,7 +39,7 @@
             Assert.IsFalse(nav.CanNavigateForward);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NavigatingBackward_WhenUnable_ThrowsException()
         {
             // arrange
@@ -48,14 +48,14 @@
 
             // act
 
-            nav.NavigateBackward();
+            TestDelegate act = () => nav.NavigateBackward();
 
             // assert
 
-            Assert.Fail();
+            Assert.Throws<InvalidOperationException>(act);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void NavigatingForward_WhenUnable_ThrowsException()
         {
             // arrange
@@ -64,11 +64,11 @@
 
             // act
 
-            nav.NavigateForward();
+            TestDelegate act = () => nav.NavigateForward();
 
             // assert
 
-            Assert.Fail();
+            Assert.Throws<InvalidOperationException>(act);
         }
 
         [Test]

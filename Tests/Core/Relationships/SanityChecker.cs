@@ -16,7 +16,7 @@ namespace Tests.Core.Relationships
         private CKAN.Registry registry;
         private DisposableKSP ksp;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             ksp = new DisposableKSP();

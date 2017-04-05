@@ -26,10 +26,10 @@ namespace Tests.NetKAN
         }
 
         [Test]
-        [TestCase("/mod/42/Example/download/1.23", Result="https://spacedock.info/mod/42/Example/download/1.23")]
-        [TestCase("/mod/42/Example%20With%20Spaces/download/1.23", Result="https://spacedock.info/mod/42/Example%20With%20Spaces/download/1.23")]
-        [TestCase("/mod/42/Example With Spaces/download/1.23", Result="https://spacedock.info/mod/42/Example%20With%20Spaces/download/1.23")]
-        [TestCase("/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93",Result="https://spacedock.info/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93")]
+        [TestCase("/mod/42/Example/download/1.23", ExpectedResult="https://spacedock.info/mod/42/Example/download/1.23")]
+        [TestCase("/mod/42/Example%20With%20Spaces/download/1.23", ExpectedResult = "https://spacedock.info/mod/42/Example%20With%20Spaces/download/1.23")]
+        [TestCase("/mod/42/Example With Spaces/download/1.23", ExpectedResult = "https://spacedock.info/mod/42/Example%20With%20Spaces/download/1.23")]
+        [TestCase("/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93", ExpectedResult = "https://spacedock.info/mod/79/Salyut%20Stations%20%26%20Soyuz%20Ferries/download/0.93")]
         // GH #816: Ensure URLs with & are encoded correctly.
         public string SD_URL_encode_816(string path)
         {

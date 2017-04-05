@@ -7,8 +7,9 @@ env:
     - BUILD_CONFIGURATION=Release
 
 mono:
+    - 4.8.0
     - 4.6.2
-    - 4.2.4
+    - 4.4.2
     - 4.0.5
 
 addons:
@@ -26,7 +27,7 @@ before_install:
 
 script:
     - ./build --configuration=$BUILD_CONFIGURATION
-    - ./build test+only --configuration=$BUILD_CONFIGURATION --exclude=FlakyNetwork
+    - ./build test+only --configuration=$BUILD_CONFIGURATION --where="cat!=FlakyNetwork"
 
 deploy:
     # Releases (which are tagged) go to github
@@ -38,7 +39,7 @@ deploy:
       on:
         repo: KSP-CKAN/CKAN
         tags: true
-        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 4.6.2
+        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 4.8.0
         # all_branches needed as a workaround for travis-ci#1675
         all_branches: true
 
@@ -55,7 +56,7 @@ deploy:
       on:
         repo: KSP-CKAN/CKAN
         branch: master
-        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 4.6.2
+        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 4.8.0
 
 notifications:
   irc:

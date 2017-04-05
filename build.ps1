@@ -7,7 +7,7 @@ Param (
 )
 
 # Globals
-$NugetVersion       = "2.8.6"
+$NugetVersion       = "4.0.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
 $BuildDir           = "${RootDir}/_build"

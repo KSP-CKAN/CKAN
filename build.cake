@@ -1,6 +1,6 @@
-#addin "nuget:?package=Cake.SemVer&version=1.0.6"
+#addin "nuget:?package=Cake.SemVer&version=1.0.14"
 #tool "nuget:?package=ILRepack&version=2.0.12"
-#tool "nuget:?package=NUnit.Runners&version=2.6.4"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.6.1"
 
 using System.Text.RegularExpressions;
 using Semver;
@@ -112,7 +112,7 @@ Task("Test+Only")
 Task("Test-UnitTests+Only")
     .Does(() =>
 {
-    var exclude = Argument<string>("exclude", null);
+    var where = Argument<string>("where", null);
 
     var testFile = outDirectory
         .Combine("CKAN.Tests")
@@ -127,9 +127,9 @@ Task("Test-UnitTests+Only")
 
     CreateDirectory(nunitOutputDirectory);
 
-    NUnit(testFile.FullPath, new NUnitSettings {
-        Exclude = exclude,
-        ResultsFile = nunitOutputDirectory.CombineWithFilePath("TestResult.xml")
+    NUnit3(testFile.FullPath, new NUnit3Settings {
+        Where = where,
+        Results = nunitOutputDirectory.CombineWithFilePath("TestResult.xml")
     });
 });
 

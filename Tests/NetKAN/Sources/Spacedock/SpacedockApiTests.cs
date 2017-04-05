@@ -14,7 +14,7 @@ namespace Tests.NetKAN.Sources.Spacedock
     {
         private NetFileCache _cache;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetup()
         {
             var tempDirectory = Path.Combine(Path.GetTempPath(), "CKAN", Guid.NewGuid().ToString("N"));
@@ -24,7 +24,7 @@ namespace Tests.NetKAN.Sources.Spacedock
             _cache = new NetFileCache(tempDirectory);
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
             Directory.Delete(_cache.GetCachePath(), recursive: true);
