@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 - [Build] Use Cake for build and overhaul/cleanup build (#1589 by: dbent; reviewed: techman83, politas)
 - [Build] Docker updates to support cake! (#1988 by: mathuin; reviewed; reviewed: dbent)
+- [Build] Update Build packages (#2028 by: dbent; reviewed: Olympic1)
 
 ## v1.22.1
 

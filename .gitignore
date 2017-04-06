@@ -1,7 +1,7 @@
 /packages/
 /_build/
 /.vs/
-Screenshots/
+/Screenshots/
 test-results
 *.userprefs
 *.csproj.user
