@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/KSP-CKAN/CKAN.png?label=ready&title=Ready)](https://waffle.io/KSP-CKAN/CKAN)
 # The Comprehensive Kerbal Archive Network (CKAN)
 
 [![Downloads](https://img.shields.io/github/downloads/KSP-CKAN/CKAN/latest/total.svg)](https://github.com/KSP-CKAN/CKAN/releases/latest)
