@@ -197,7 +197,7 @@ namespace CKAN
                 Context = new System.Runtime.Serialization.StreamingContext(
                     System.Runtime.Serialization.StreamingContextStates.Other,
                     ksp
-                    )
+                )
             };
 
             
