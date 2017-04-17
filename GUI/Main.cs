@@ -398,8 +398,11 @@ namespace CKAN
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            //Only close the window, when the user has access to the "Exit" of the menu
-            if (!menuStrip1.Enabled)
+            // Only close the window, when the user has access to the "Exit" of the menu
+            // and if he is allowed to cancel the current action
+            // This will for example close the windows during an installation
+            // while it will stop the closing during a refresh
+            if (!menuStrip1.Enabled && !CancelCurrentActionButton.Enabled)
             {
                 e.Cancel = true;
                 return;
