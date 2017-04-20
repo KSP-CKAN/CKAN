@@ -85,6 +85,12 @@ and the
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
             "repository"   : "https://github.com/camlost2/AJE"
         },
+        "categories" : {
+            "type"        : "physics",
+            "description" : "resources",
+            "description" : "atmospheric",
+            "description" : "engines"
+        },
         "install" : [
             {
                 "file"       : "AJE-1.6",
@@ -371,6 +377,30 @@ KSP `1.0.4` (but not any other version) when `ksp_version_strict` is false.
 This field defaults to `false`, including for `spec_version`s less than
 `v1.16`, however CKAN clients prior to `v1.16` would only perform strict
 checking.
+
+##### categories
+
+The `categories` field describes keywords that a user or program may use to
+classify or filter the mod in a list, but which are not required.
+One or more of either of the following fields may be used:
+
+- `type` : Keywords which define how the mod interacts with or alters KSP
+- `description` : Keywords which further describe what has been added or
+changed from stock gameplay
+
+Example categories:
+
+    "categories" : {
+        "type"        : "physics",
+        "type"        : "parts",
+        "description" : "oceanic",
+        "description" : "thermal",
+        "description" : "science"
+    }
+
+The first defined keyword in each category field should be considered the
+most important and used to populate a sortable column, though it is intended
+that all included category fields will be indexed and filterable.
 
 ### Relationships
 
