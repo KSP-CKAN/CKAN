@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 - [CLI] Removed non-functioning code on available command (#1966 by: poltas; reviewed: dbent)
 - [core] Switch Linux and MacOS to native C# downloads (#2023 by: politas; reviewed: pjf)
+- [NetKAN] Convert spaces to %20 in Curse URLs (#2041 by: politas)
 
 ### Features
 - [Build] Use Cake for build and overhaul/cleanup build (#1589 by: dbent; reviewed: techman83, politas)
