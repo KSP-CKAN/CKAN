@@ -7,7 +7,7 @@ Param (
 )
 
 # Globals
-$NugetVersion       = "4.0.0"
+$NugetVersion       = "4.1.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
 $BuildDir           = "${RootDir}/_build"
@@ -29,7 +29,7 @@ if (!(Test-Path $NugetExe)) {
 }
 
 # Install build packages
-Invoke-Expression "${NugetExe} install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`"" 
+Invoke-Expression "${NugetExe} install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
 
 # Build args
 $cakeArgs = @()
