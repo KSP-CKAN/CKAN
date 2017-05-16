@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v1.22.2-dev
 
 ### Bugfixes
-- [CLI] Removed non-functioning code on available command (#1966 by: poltas; reviewed: dbent)
+- [CLI] Removed non-functioning code on available command (#1966 by: politas; reviewed: dbent)
 - [core] Switch Linux and MacOS to native C# downloads (#2023 by: politas; reviewed: pjf)
 - [NetKAN] Convert spaces to %20 in Curse URLs (#2041 by: politas)
 
@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Docker updates to support cake! (#1988 by: mathuin; reviewed; reviewed: dbent)
 - [Build] Update Build packages (#2028 by: dbent; reviewed: Olympic1)
 - [Build] Update Build for Mono 5.0.0 (#2049 by: dbent; reviewed: politas)
+- [Build] Update Update build (#2050 by: dbent; reviewed: politas)
 
 ## v1.22.1
 
