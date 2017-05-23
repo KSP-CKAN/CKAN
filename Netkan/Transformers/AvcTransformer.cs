@@ -60,13 +60,13 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.Info("Found internal AVC version file");
 
-                    if (Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
-                    {
-                        Log.InfoFormat("Found remote AVC version file at {0}", avc.Url);
+                    var remoteUri = GetRemoteAvcUri(avc);
 
+                    if (remoteUri != null)
+                    {
                         try
                         {
-                            var remoteJson = Net.DownloadText(avc.Url);
+                            var remoteJson = Net.DownloadText(remoteUri);
                             var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
 
                             if (avc.version.CompareTo(remoteAvc.version) == 0)
@@ -170,6 +170,67 @@ namespace CKAN.NetKAN.Transformers
             {
                 return metadata;
             }
+        }
+
+        private static Uri GetRemoteAvcUri(AvcVersion avc)
+        {
+            if (!Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
+                return null;
+
+            var remoteUri = new Uri(avc.Url);
+
+            Log.InfoFormat("Remote AVC version file at: {0}", remoteUri);
+
+            // Authors may use the URI of the GitHub file page instead of the URL to the actual raw file.
+            // Detect that case and automatically transform the remote URL to one we can use.
+            // This is hacky and fragile but it's basically what KSP-AVC itself does in its
+            // FormatCompatibleUrl(string) method so we have to go along with the flow:
+            // https://github.com/CYBUTEK/KSPAddonVersionChecker/blob/ff94000144a666c8ff637c71b802e1baee9c15cd/KSP-AVC/AddonInfo.cs#L199
+            // However, this implementation is more robust as it actually parses the URI rather than doing
+            // basic string replacements.
+            if (string.Compare(remoteUri.Host, "github.com", StringComparison.OrdinalIgnoreCase) == 0)
+            {
+                // We expect a non-raw URI to be in one of two forms:
+                //  1. https://github.com/<USER>/<PROJECT>/blob/<BRANCH>/<PATH>
+                //  2. https://github.com/<USER>/<PROJECT>/tree/<BRANCH>/<PATH>
+                //
+                // Therefore, we expect at least six segments in the path:
+                //  1. "/"
+                //  2. "<USER>/"
+                //  3. "<PROJECT>/"
+                //  4. "blob/" or "tree/"
+                //  5. "<BRANCH>/"
+                //  6+. "<PATH>"
+                //
+                // And that the forth segment (index 3) is either "blob/" or "tree/"
+
+                var remoteUriBuilder = new UriBuilder(remoteUri)
+                {
+                    // Replace host with raw host
+                    Host = "raw.githubusercontent.com"
+                };
+
+                // Check that the path is what we expect
+                var segments = remoteUri.Segments.ToList();
+                
+                if (segments.Count < 6 ||
+                    string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0 &&
+                    string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    Log.WarnFormat("Remote non-raw GitHub URL is in an unknown format, using as is.");
+                    return remoteUri;
+                }
+
+                // Remove "blob/" or "tree/" segment from raw URI
+                segments.RemoveAt(3);
+                remoteUriBuilder.Path = string.Join("", segments);
+
+                Log.InfoFormat("Canonicalized non-raw GitHub URL to: {0}", remoteUriBuilder.Uri);
+
+                return remoteUriBuilder.Uri;
+            }
+
+            return remoteUri;
         }
     }
 }
