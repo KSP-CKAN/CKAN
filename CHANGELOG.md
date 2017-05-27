@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.22.2-dev
+## v1.22.3-dev
+
+
+## v1.22.2
 
 ### Bugfixes
 - [CLI] Removed non-functioning code on available command (#1966 by: politas; reviewed: dbent)
@@ -15,6 +18,8 @@ All notable changes to this project will be documented in this file.
 - [Build] Update Build packages (#2028 by: dbent; reviewed: Olympic1)
 - [Build] Update Build for Mono 5.0.0 (#2049 by: dbent; reviewed: politas)
 - [Build] Update Update build (#2050 by: dbent; reviewed: politas)
+- [core] Update KSP builds (#2056 by: Olympic1; reviewed: linuxgurugamer)
+- [NetKAN] Canonicalize non-raw GitHub URIs (#2054 by: dbent; reviewed: politas)
 
 ## v1.22.1
 
