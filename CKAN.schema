@@ -261,6 +261,10 @@
             "required": [ "kind" ]
         }
     ],
+    "oneOf": [
+        { "required": [ "ksp_version" ] },
+        { "required": [ "ksp_version_max" ] }
+    ],
     "definitions" : {
         "identifier" : {
             "description" : "Unique identifier for this mod.",
