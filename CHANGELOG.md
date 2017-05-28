@@ -2,8 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.22.3-dev
+## v1.22.3
 
+### Bugfixes
+- [core] Fix broken Chicken bits from #2023 (#2058 by: politas)
 
 ## v1.22.2
 
