@@ -11,6 +11,7 @@ namespace CKAN
     {
         static readonly StrictGameComparator strict = new StrictGameComparator ();
         static readonly KspVersion v103 = KspVersion.Parse ("1.0.3");
+        private IGameComparatorExemptions _gameComparatorExemptions = new GameComparatorExemptions();
 
         public override bool Compatible (KspVersionCriteria gameVersionCriteria, CkanModule module)
         {
@@ -18,12 +19,13 @@ namespace CKAN
             if (strict.Compatible (gameVersionCriteria, module))
                 return true;
 
+            bool isExempt = _gameComparatorExemptions.IsExempt(module);
             // If we're in strict mode, and it's not strictly compatible, then it's
             // not compatible.
             if (module.ksp_version_strict)
-                return false;
+                return (false || isExempt);
 
-            return base.Compatible (gameVersionCriteria, module);
+            return (base.Compatible(gameVersionCriteria, module) || isExempt);
         }
 
         public override bool SingleVersionsCompatible (KspVersion gameVersion, CkanModule module){
