@@ -67,4 +67,4 @@ CKAN isn't perfect and neither are its users. Answering questions in the [IRC ch
  [3]:https://github.com/KSP-CKAN/CKAN/issues
  [4]:https://waffle.io/ksp-ckan/ckan
  [5]:http://webchat.esper.net/?channels=ckan
- [6]:http://forum.kerbalspaceprogram.com/index.php?/topic/143140-ckan-the-comprehensive-kerbal-archive-network-v1181-13-july-2016/
+ [6]:http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan-the-comprehensive-kerbal-archive-network
