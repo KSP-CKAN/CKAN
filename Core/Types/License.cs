@@ -9,6 +9,9 @@ namespace CKAN
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public class License
     {
+        static License _unknownLicense;
+        public static License UnknownLicense => _unknownLicense ?? (_unknownLicense = new License("unknown"));
+
         // TODO: It would be lovely for our build system to write these for us.
         private static readonly HashSet<string> valid_licenses = new HashSet<string> {
             "public-domain",

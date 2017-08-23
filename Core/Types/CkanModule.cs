@@ -410,6 +410,9 @@ namespace CKAN
             //
             //            JObject obj = JObject.Parse(json);
             //            return obj.IsValid(metadata_schema);
+            license = license ?? new List<License> { License.UnknownLicense };
+            @abstract = @abstract ?? string.Empty;
+            name = name ?? string.Empty;
         }
 
         /// <summary>
