@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using log4net;
-using Newtonsoft.Json;
-using System.Transactions;
 using Autofac;
 using CKAN.Versioning;
+using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
