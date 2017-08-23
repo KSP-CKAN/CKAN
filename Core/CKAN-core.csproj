@@ -91,6 +91,7 @@
     <Compile Include="Types\CKANVersion.cs" />
     <Compile Include="Registry\IRegistryQuerier.cs" />
     <Compile Include="Types\ExportFileType.cs" />
+    <Compile Include="Types\ModuleResolution.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Types\Version.cs" />
     <Compile Include="Types\Kraken.cs" />
