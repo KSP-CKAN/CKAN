@@ -288,11 +288,6 @@ namespace CKAN
         {
             _comparator = comparator;
 
-            if (!validate_json_against_schema(json))
-            {
-                throw new BadMetadataKraken(null, "Validation against spec failed");
-            }
-
             try
             {
                 // Use the json string to populate our object
@@ -362,54 +357,6 @@ namespace CKAN
                 throw new InvalidModuleAttributesException("ksp_version mixed with ksp_version_(min|max)", this);
             }
 
-            if (license == null)
-            {
-                license = new List<License> { new License("unknown") };
-            }
-
-            if (@abstract == null)
-            {
-                @abstract = "";
-            }
-
-            if (name == null)
-            {
-                name = "";
-            }
-        }
-
-        private static bool validate_json_against_schema(string json)
-        {
-
-            log.Debug("In-client JSON schema validation unimplemented.");
-            return true;
-            // due to Newtonsoft Json not supporting v4 of the standard, we can't actually do this :(
-
-            //            if (metadata_schema == null)
-            //            {
-            //                string schema = "";
-            //
-            //                try
-            //                {
-            //                    schema = File.ReadAllText(metadata_schema_path);
-            //                }
-            //                catch (Exception)
-            //                {
-            //                    if (!metadata_schema_missing_warning_fired)
-            //                    {
-            //                        User.Error("Couldn't open metadata schema at \"{0}\", will not validate metadata files",
-            //                            metadata_schema_path);
-            //                        metadata_schema_missing_warning_fired = true;
-            //                    }
-            //
-            //                    return true;
-            //                }
-            //
-            //                metadata_schema = JsonSchema.Parse(schema);
-            //            }
-            //
-            //            JObject obj = JObject.Parse(json);
-            //            return obj.IsValid(metadata_schema);
             license = license ?? new List<License> { License.UnknownLicense };
             @abstract = @abstract ?? string.Empty;
             name = name ?? string.Empty;
