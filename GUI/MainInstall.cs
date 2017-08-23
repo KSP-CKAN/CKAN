@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Types;
 
 namespace CKAN
 {
@@ -96,6 +97,31 @@ namespace CKAN
                 installCanceled = true;
             };
 
+            GUI.user.RaiseMessage("About to install...\r\n");
+
+            // FIXME: here we should heat up the cache with any mods we're going to install, because 
+            // when this transaction types out it fucks up everything else.
+            var resolvedMods = installer.ResolveModules(toInstall, opts.Value);
+
+            foreach (var module in resolvedMods.CachedModules)
+            {
+                GUI.user.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
+            }
+
+            foreach (var module in resolvedMods.UncachedModules)
+            {
+                GUI.user.RaiseMessage(" * {0} {1}", module.name, module.version);
+            }
+
+            if (!GUI.user.RaiseYesNoDialog("\r\nContinue?"))
+            {
+                throw new CancelledActionKraken("User declined install list");
+            }
+
+            GUI.user.RaiseMessage(String.Empty); // Just to look tidy.
+
+            installer.EnsureCache(resolvedMods.UncachedModules);
+
             //Transaction is needed here to revert changes when an installation is cancelled
             //TODO: Cancellation should be handelt in the ModuleInstaller
             using (var transaction = CkanTransaction.CreateTransactionScope())
@@ -126,7 +152,7 @@ namespace CKAN
                         e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                         return;
                     }
-                    var ret = InstallList(toInstall, opts.Value, downloader);
+                    var ret = InstallList(resolvedMods, opts.Value);
                     if (!ret)
                     {
                         // install failed for some reason, error message is already displayed to the user
@@ -295,15 +321,14 @@ namespace CKAN
             }
             return true;
         }
-        private bool InstallList(HashSet<string> toInstall, RelationshipResolverOptions options, IDownloader downloader)
+        private bool InstallList(ModuleResolution modules, RelationshipResolverOptions options)
         {
             if (toInstall.Any())
             {
                 // actual magic happens here, we run the installer with our mod list
                 var module_installer = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user);
                 module_installer.onReportModInstalled = OnModInstalled;
-                return WasSuccessful(
-                    () => module_installer.InstallList(toInstall.ToList(), options, downloader));
+                return WasSuccessful(() => module_installer.InstallList(modules, options));
             }
 
             return true;

@@ -8,6 +8,7 @@ using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using CKAN.Types;
 
 namespace CKAN
 {
@@ -247,6 +248,46 @@ namespace CKAN
             }
 
             User.RaiseProgress("Done!\r\n", 100);
+        }
+
+        public ModuleResolution ResolveModules(IEnumerable<string> modules, RelationshipResolverOptions options)
+        {
+            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
+            return new ModuleResolution(resolver.ModList(), m => ksp.Cache.IsCachedZip(m.download));
+        }
+
+        public void EnsureCache(List<CkanModule> modules, IDownloader downloader = null)
+        {
+            if (!modules.Any())
+            {
+                return;
+            }
+
+            downloader = downloader ?? new NetAsyncModulesDownloader(User);
+            downloader.DownloadModules(ksp.Cache, modules);
+        }
+
+        public void InstallList(ModuleResolution modules, RelationshipResolverOptions options)
+        {
+            // We're about to install all our mods; so begin our transaction.
+            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
+            {
+                var enumeratedMods = modules.Select((m, i) => new { Idx = i, Module = m });
+                foreach (var item in enumeratedMods)
+                {
+                    var percentComplete = (item.Idx * 100) / modules.Count;
+                    User.RaiseProgress(string.Format("Installing mod \"{0}\"", item.Module), percentComplete);
+                    Install(item.Module);
+                }
+
+                User.RaiseProgress("Updating registry", 70);
+
+                registry_manager.Save(!options.without_enforce_consistency);
+
+                User.RaiseProgress("Commiting filesystem changes", 80);
+
+                transaction.Complete();
+            }
         }
 
         /// <summary>
