@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 - [core] Fix broken Chicken bits from #2023 (#2058 by: politas)
+- [GUI] Update Forum Thread link to new thread (#2079 by: politas; reviewed: linuxgurugamer)
+- [core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
 
 ## v1.22.2
 
