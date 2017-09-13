@@ -1,13 +1,17 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+## v1.22.4-PRE
+
+### Bugfixes
+- [GUI] Update Forum Thread link to new thread (#2079 by: politas; reviewed: linuxgurugamer)
+- [core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
+- [CLI] Fix crash in "ckan available" with curly braces in mod name (#2111 by: HebaruSan; reviewed: politas)
 
 ## v1.22.3
 
 ### Bugfixes
 - [core] Fix broken Chicken bits from #2023 (#2058 by: politas)
-- [GUI] Update Forum Thread link to new thread (#2079 by: politas; reviewed: linuxgurugamer)
-- [core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
 
 ## v1.22.2
 
