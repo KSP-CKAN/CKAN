@@ -200,10 +200,14 @@ namespace CKAN
                     )
             };
 
-            
-
-            string json = File.ReadAllText(path);
+            var json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
+
+            if (registry.available_modules.Count == 0 && registry.InstalledModules.Any())
+            {
+                throw new ArgumentOutOfRangeException("available_modules", "Mods are installed, yet there are no available modules.");
+            }
+
             log.DebugFormat("Loaded CKAN registry at {0}", path);
         }
 
@@ -213,12 +217,7 @@ namespace CKAN
             {
                 Load();
             }
-            catch (FileNotFoundException)
-            {
-                Create();
-                Load();
-            }
-            catch (DirectoryNotFoundException)
+            catch (Exception)
             {
                 Create();
                 Load();
