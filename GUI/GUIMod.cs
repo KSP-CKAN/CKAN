@@ -213,7 +213,8 @@ namespace CKAN
 
         public void SetUpgradeChecked(DataGridViewRow row, bool? newValue = null)
         {
-            if (!(row.Cells[1] is DataGridViewCheckBoxCell updateCell))
+            var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
+            if (updateCell == null)
             {
                 throw new Kraken("Expected second column to contain a checkbox.");
             }
@@ -226,7 +227,8 @@ namespace CKAN
 
         public void SetInstallChecked(DataGridViewRow row, bool? newValue = null)
         {
-            if (!(row.Cells[0] is DataGridViewCheckBoxCell installCell))
+            var installCell = row.Cells[0] as DataGridViewCheckBoxCell;
+            if (installCell == null)
             {
                 throw new Kraken("Expected first column to contain a checkbox.");
             }

@@ -711,8 +711,8 @@ namespace CKAN
             }
 
             var registryManager = RegistryManager.Instance(CurrentInstance);
-
-            if (!(sender is DataGridView grid))
+            var grid = sender as DataGridView;
+            if (sender == null)
             {
                 throw new Kraken("Could not find DataGridView!");
             }
