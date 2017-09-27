@@ -729,10 +729,6 @@ namespace CKAN
                 {
                     case 0:
                         gui_mod.SetInstallChecked(row);
-                        if (!gui_mod.IsIncompatible || !gui_mod.IsInstallChecked)
-                        {
-                            MarkModForInstall(gui_mod.Identifier);
-                        }
 
                         if (gui_mod.IsInstallChecked)
                         {

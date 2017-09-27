@@ -13,8 +13,6 @@ namespace CKAN
 {
     public partial class Main
     {
-        public bool CanApplyChanges => ApplyToolButton.Enabled;
-
         private void UpdateFilters(Main control)
         {
             Util.Invoke(control, _UpdateFilters);
