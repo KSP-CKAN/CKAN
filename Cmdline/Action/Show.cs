@@ -187,7 +187,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("- {0}", prov);
             }
 
-            var missingDeps = ksp.Registry.MissingDependencies((CKAN.CkanModule)module, ksp.Version());
+            var missingDeps = RegistryManager.Instance(ksp).registry.MissingDependencies((CKAN.CkanModule)module, ksp.Version());
             if (missingDeps.Count() > 0)
             {
                 user.RaiseMessage("\nUnsatisfied dependencies:");

@@ -404,7 +404,7 @@ namespace CKAN
         /// Returns the missing dependencies for a given module.
         /// If this returns an empty list, it's installable.
         /// </summary>
-        public List<RelationshipDescriptor> MissingDependencies(CkanModule mod, KSPVersion ksp_version)
+        public List<RelationshipDescriptor> MissingDependencies(CkanModule mod, KspVersion ksp_version)
         {
             // This mod does not depend on anything, so there are no missing deps
             if (mod.depends == null) return new List<RelationshipDescriptor>();
