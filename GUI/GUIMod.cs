@@ -211,32 +211,34 @@ namespace CKAN
             return mod.ToModule();
         }
 
-        public void SetUpgradeChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetUpgradeChecked(DataGridViewRow row, bool? newValue = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
-            var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            var old_value = (bool) update_cell.Value;
+            if (!(row.Cells[1] is DataGridViewCheckBoxCell updateCell))
+            {
+                throw new Kraken("Expected second column to contain a checkbox.");
+            }
+            var oldValue = (bool) updateCell.Value;
 
-            bool value = set_value_to ?? old_value;
+            var value = newValue ?? oldValue;
             IsUpgradeChecked = value;
-            if (old_value != value) update_cell.Value = value;
+            if (oldValue != value) updateCell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetInstallChecked(DataGridViewRow row, bool? newValue = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
-            var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            bool changeTo = set_value_to != null ? (bool)set_value_to : (bool)install_cell.Value;
+            if (!(row.Cells[0] is DataGridViewCheckBoxCell installCell))
+            {
+                throw new Kraken("Expected first column to contain a checkbox.");
+            }
+
+            var changeTo = newValue ?? (bool)installCell.Value;
             //Need to do this check here to prevent an infinite loop
             //which is at least happening on Linux
             //TODO: Elimate the cause
-            if (changeTo != IsInstallChecked)
-            {
-                IsInstallChecked = changeTo;
-                install_cell.Value = IsInstallChecked;
-            }
+            if (changeTo == IsInstallChecked) return;
+            IsInstallChecked = changeTo;
+            installCell.Value = IsInstallChecked;
         }
-
 
         private bool Equals(GUIMod other)
         {
