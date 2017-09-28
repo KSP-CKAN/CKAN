@@ -155,55 +155,44 @@ namespace CKAN
         /// installation.
         /// Returns `this` if already of a `file` type.
         /// </summary>
+        /// <param name="zipfile">Downloaded ZIP file containing the mod</param>
         public ModuleInstallDescriptor ConvertFindToFile(ZipFile zipfile)
         {
             // If we're already a file type stanza, then we have nothing to do.
             if (this.file != null)
-            {
                 return this;
-            }
-
-            var stanza = (ModuleInstallDescriptor) this.Clone();
-
-            // Candidate top-level directories.
-            var candidate_set = new HashSet<string>();
 
             // Match *only* things with our find string as a directory.
             // We can't just look for directories, because some zipfiles
             // don't include entries for directories, but still include entries
             // for the files they contain.
-            string filter;
-            if (this.find != null)
-            {
-                filter = @"(?:^|/)" + Regex.Escape(this.find) + @"$";
-            }
-            else
-            {
-                filter = this.find_regexp;
-            }
+            Regex inst_filt = this.find != null
+                ? new Regex(@"(?:^|/)" + Regex.Escape(this.find) + @"$")
+                : new Regex(this.find_regexp);
 
-            // Let's find that directory
-
-            // Normalise our path.
-            var normalised = zipfile
-                .Cast<ZipEntry>()
-                .Select(entry => find_matches_files ? entry.Name : Path.GetDirectoryName(entry.Name))
-                .Select(entry =>
+            // Find the shortest directory path that matches our filter,
+            // including all parent directories of all entries.
+            string shortest = null;
+            foreach (ZipEntry entry in zipfile)
+            {
+                bool is_file = !entry.IsDirectory;
+                // Normalize path before searching (path separator as '/', no trailing separator)
+                for (string path = Regex.Replace(entry.Name.Replace('\\', '/'), "/$", "");
+                        !string.IsNullOrEmpty(path);
+                        path = Path.GetDirectoryName(path), is_file = false)
                 {
-                    var dir = entry.Replace('\\', '/');
-                    return Regex.Replace(dir, "/$", "");
-                });
 
-            // If this looks like what we're after, remember it.
-            var directories = normalised.Where(entry => Regex.IsMatch(entry, filter, RegexOptions.IgnoreCase));
-            candidate_set.UnionWith(directories);
+                    // Skip file paths if not allowed
+                    if (!find_matches_files && is_file)
+                        continue;
 
-            // Sort to have shortest first. It's not *quite* top-level directory order,
-            // but it's good enough for now.
-            var candidates = new List<string>(candidate_set);
-            candidates.Sort((a,b) => a.Length.CompareTo(b.Length));
-
-            if (candidates.Count == 0)
+                    // Is this a shorter matching path?
+                    if ((string.IsNullOrEmpty(shortest) || path.Length < shortest.Length)
+                            && inst_filt.IsMatch(path))
+                        shortest = path;
+                }
+            }
+            if (string.IsNullOrEmpty(shortest))
             {
                 throw new FileNotFoundKraken(
                     this.find ?? this.find_regexp,
@@ -212,8 +201,9 @@ namespace CKAN
             }
 
             // Fill in our stanza, and remove our old `find` and `find_regexp` info.
-            stanza.file = candidates[0];
-            stanza.find = null;
+            ModuleInstallDescriptor stanza = (ModuleInstallDescriptor) this.Clone();
+            stanza.file        = shortest;
+            stanza.find        = null;
             stanza.find_regexp = null;
             return stanza;
         }
