@@ -167,8 +167,8 @@ namespace CKAN
             // don't include entries for directories, but still include entries
             // for the files they contain.
             Regex inst_filt = this.find != null
-                ? new Regex(@"(?:^|/)" + Regex.Escape(this.find) + @"$")
-                : new Regex(this.find_regexp);
+                ? new Regex(@"(?:^|/)" + Regex.Escape(this.find) + @"$", RegexOptions.IgnoreCase)
+                : new Regex(this.find_regexp, RegexOptions.IgnoreCase);
 
             // Find the shortest directory path that matches our filter,
             // including all parent directories of all entries.
