@@ -19,17 +19,17 @@ $CakeVersion        = (Select-Xml -Xml ([xml](Get-Content $PackagesConfigFile)) 
 $CakeExe            = "${PackagesDir}/Cake.${CakeVersion}/Cake.exe"
 
 # Download NuGet
-$nugetDir = Split-Path $NugetExe -Parent
-if (!(Test-Path $nugetDir)) {
+$NugetDir = Split-Path "$NugetExe" -Parent
+if (!(Test-Path "$NugetDir")) {
     mkdir $nugetDir > $null
 }
 
-if (!(Test-Path $NugetExe)) {
+if (!(Test-Path "$NugetExe")) {
     (New-Object System.Net.WebClient).DownloadFile("https://dist.nuget.org/win-x86-commandline/v${NugetVersion}/nuget.exe", $NugetExe)
 }
 
 # Install build packages
-Invoke-Expression "${NugetExe} install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
+Invoke-Expression "& '${NugetExe}' install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
 
 # Build args
 $cakeArgs = @()
@@ -47,5 +47,5 @@ if ($UseExperimental) {
 }
 
 # Run Cake
-Invoke-Expression "${CakeExe} ${cakeArgs} ${RemainingArgs}"
+Invoke-Expression "& '${CakeExe}' ${cakeArgs} ${RemainingArgs}"
 exit $LASTEXITCODE
