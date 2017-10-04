@@ -45,7 +45,7 @@ namespace Tests.Core.Types
             string json = @"{
                 ""install_to""  : ""GameData"",
                 ""find_regexp"" : """ + regexp + @"""
-            }"; 
+            }";
 
             var mid = JsonConvert.DeserializeObject<CKAN.ModuleInstallDescriptor>(json);
             var zip = new ZipFile(TestData.DogeCoinFlagZipWithExtras());
@@ -53,6 +53,28 @@ namespace Tests.Core.Types
             mid = mid.ConvertFindToFile(zip);
 
             Assert.AreEqual(expected, mid.file, comment);
+        }
+
+        /// <summary>
+        /// Test that an install clause with a find property will find a directory in a zip
+        /// even if that directory doesn't have its own entry or a file directly within it.
+        ///
+        /// Covers:  https://github.com/KSP-CKAN/CKAN/pull/2120
+        /// </summary>
+        /// <param name="find_str">Directory to find in zip</param>
+        /// <param name="zip_file_path">Path to DogeCoinFlag zip file with no directory entries</param>
+        [Test]
+        [TestCase("DogeCoinFlag", "DogeCoinFlag-1.01-no-dir-entries.zip")]
+        public void find_without_directory_entry(string find_str, string zip_file_path)
+        {
+            ModuleInstallDescriptor find_descrip = JsonConvert.DeserializeObject<ModuleInstallDescriptor>(
+                @"{ ""install_to"": ""GameData"", ""find"": """ + find_str + @""" }"
+            );
+            ZipFile zf = new ZipFile(TestData.DataDir(zip_file_path));
+
+            ModuleInstallDescriptor file_descrip = find_descrip.ConvertFindToFile(zf);
+            Assert.IsNull(   file_descrip.find);
+            Assert.IsNotNull(file_descrip.file);
         }
 
         private static void test_filter(List<string> filter, string message)
@@ -64,4 +86,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

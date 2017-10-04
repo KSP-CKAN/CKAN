@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - [core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
 - [CLI] Fix crash in "ckan available" with curly braces in mod name (#2111 by: HebaruSan; reviewed: politas)
 - [core] Check grandparent+ directories for find and find_regexp (#2120 by: HebaruSan; reviewed: politas)
+- [core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
 
 ## v1.22.3
 
