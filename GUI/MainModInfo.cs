@@ -133,6 +133,7 @@ namespace CKAN
                 Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
             }
 
+            Util.Invoke(MetadataModuleUrlLabel, () => MetadataModuleUrlLabel.Text = module.download.ToString());
             Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
         }
 
