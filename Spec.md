@@ -85,12 +85,12 @@ and the
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
             "repository"   : "https://github.com/camlost2/AJE"
         },
-        "categories" : {
-            "type"        : "physics",
-            "description" : "resources",
-            "description" : "atmospheric",
-            "description" : "engines"
-        },
+        "categories" : [
+            { "main" : "physics" },
+            { "sub"  : "resources" },
+            { "sub"  : "atmospheric" },
+            { "sub"  : "engines" }
+        ],
         "install" : [
             {
                 "file"       : "AJE-1.6",
@@ -384,19 +384,19 @@ The `categories` field describes keywords that a user or program may use to
 classify or filter the mod in a list, but which are not required.
 One or more of either of the following fields may be used:
 
-- `type` : Keywords which define how the mod interacts with or alters KSP
-- `description` : Keywords which further describe what has been added or
-changed from stock gameplay
+- `main` : Keywords which define how the mod interacts with or alters KSP
+- `sub` : Keywords which further describe what has been added or changed
+from stock gameplay
 
 Example categories:
 
-    "categories" : {
-        "type"        : "physics",
-        "type"        : "parts",
-        "description" : "oceanic",
-        "description" : "thermal",
-        "description" : "science"
-    }
+    "categories" : [
+        { "main" : "physics" },
+        { "main" : "parts" },
+        { "sub"  : "oceanic" },
+        { "sub"  : "thermal" },
+        { "sub"  : "science" }
+    ]
 
 The first defined keyword in each category field should be considered the
 most important and used to populate a sortable column, though it is intended

@@ -112,16 +112,20 @@
         },
         "categories" : {
             "description" : "A series of descriptive keywords to provide quick filtering and organization",
-            "properties" : {
-                "type" : {
-                    "description" : "Keywords which define how the mod interacts with or alters KSP",
-                    "enum" : [ "plugin", "library", "physics", "parts", "config", "program", "other" ]
-                },
-                "description" : {
-                    "description" : "Keywords which further describe what has been added or changed from stock gameplay",
-                    "enum" : [ "informational", "control", "convenience", "graphics", "sound", "unmanned", "manned", "technology", "career", "sandbox", "resources", "pods", "fueltanks", "engines", "command", "structural", "coupling", "payload", "aerodynamic", "ground", "thermal", "electrical", "science", "utility", "oceanic", "terrain", "atmospheric", "orbital", "interplanetary" ]
+            "type"        : "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "main" : {
+                        "description" : "Keywords which define how the mod interacts with or alters KSP",
+                        "enum" : [ "plugin", "library", "physics", "parts", "config", "program", "other" ]
+                    },
+                    "sub" : {
+                        "description" : "Keywords which further describe what has been added or changed from stock gameplay",
+                        "enum" : [ "informational", "control", "convenience", "graphics", "sound", "unmanned", "manned", "technology", "career", "sandbox", "resources", "pods", "fueltanks", "engines", "command", "structural", "coupling", "payload", "aerodynamic", "ground", "thermal", "electrical", "science", "utility", "oceanic", "terrain", "atmospheric", "orbital", "interplanetary" ]
+                    }
                 }
-            },
+            }
         },
         "depends" : {
             "description" : "Optional list of dependencies",
