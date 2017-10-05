@@ -232,7 +232,7 @@ namespace CKAN
                 );
             }
 
-            if (! path.StartsWith(root))
+            if (!path.StartsWith(root, StringComparison.CurrentCultureIgnoreCase))
             {
                 throw new PathErrorKraken(
                     path,
@@ -266,10 +266,7 @@ namespace CKAN
 
             if (Path.IsPathRooted(path))
             {
-                throw new PathErrorKraken(
-                    path,
-                    String.Format("{0} is already absolute", path)
-                );
+                return path;
             }
 
             if (!Path.IsPathRooted(root))
