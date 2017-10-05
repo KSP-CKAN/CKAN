@@ -266,7 +266,10 @@ namespace CKAN
 
             if (Path.IsPathRooted(path))
             {
-                return path;
+                throw new PathErrorKraken(
+                    path,
+                    String.Format("{0} is already absolute", path)
+                );
             }
 
             if (!Path.IsPathRooted(root))
