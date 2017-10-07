@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Fix crash in "ckan available" with curly braces in mod name (#2111 by: HebaruSan; reviewed: politas)
 - [core] Check grandparent+ directories for find and find_regexp (#2120 by: HebaruSan; reviewed: politas)
 - [core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
+- [Build] Fix build.ps1 script failing when spaces exist in source path (#2121 by: ayan4m1; reviewed: dbent)
 
 ## v1.22.3
 
