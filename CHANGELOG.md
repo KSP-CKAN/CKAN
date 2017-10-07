@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
 - [Build] Fix build.ps1 script failing when spaces exist in source path (#2121 by: ayan4m1; reviewed: dbent)
 - [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
+- [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by ayan4m1; reviewed: politas)
 
 ## v1.22.3
 
