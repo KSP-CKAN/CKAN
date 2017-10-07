@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [core] Check grandparent+ directories for find and find_regexp (#2120 by: HebaruSan; reviewed: politas)
 - [core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
 - [Build] Fix build.ps1 script failing when spaces exist in source path (#2121 by: ayan4m1; reviewed: dbent)
+- [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
 
 ## v1.22.3
 

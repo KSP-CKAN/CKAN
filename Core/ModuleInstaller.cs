@@ -969,7 +969,7 @@ namespace CKAN
                         return results;
                     }
 
-                    if (!dir.StartsWith(gameDir))
+                    if (!dir.StartsWith(gameDir, StringComparison.CurrentCultureIgnoreCase))
                     {
                         dir = KSPPathUtils.ToAbsolute(dir, gameDir);
                     }

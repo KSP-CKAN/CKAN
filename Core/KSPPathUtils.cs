@@ -232,7 +232,7 @@ namespace CKAN
                 );
             }
 
-            if (! path.StartsWith(root))
+            if (!path.StartsWith(root, StringComparison.CurrentCultureIgnoreCase))
             {
                 throw new PathErrorKraken(
                     path,
