@@ -523,6 +523,14 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Return the latest game version compatible with the given mod.
+        /// </summary>
+        /// <param name="identifier">Name of mod to check</param>
+        public KspVersion LatestCompatibleKSP(string identifier)
+        {
+            return available_modules[identifier].LatestCompatibleKSP();
+        }
 
 
         /// <summary>

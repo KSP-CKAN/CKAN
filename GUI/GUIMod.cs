@@ -89,14 +89,13 @@ namespace CKAN
                 // use that.
                 if (IsCKAN)
                     latestAvailableForAnyVersion = (CkanModule) mod;
-                
             }
 
             // If there's known information for this mod in any form, calculate the highest compatible
             // KSP.
             if (latestAvailableForAnyVersion != null)
             {
-                KSPCompatibility = KSPCompatibilityLong = latestAvailableForAnyVersion.HighestCompatibleKSP();
+                KSPCompatibility = KSPCompatibilityLong = registry.LatestCompatibleKSP(mod.identifier)?.ToString() ?? "";
 
                 // If the mod we have installed is *not* the mod we have installed, or we don't know
                 // what we have installed, indicate that an upgrade would be needed.
@@ -128,7 +127,7 @@ namespace CKAN
             KSPversion = kspVersion != null ? kspVersion.ToString() : "-";
 
             Abstract = mod.@abstract;
-            
+
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
 
             Homepage = "N/A";
@@ -160,7 +159,7 @@ namespace CKAN
                 DownloadSize = "1<KB";
             else
                 DownloadSize = mod.download_size / 1024+"";
-            
+
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
 
