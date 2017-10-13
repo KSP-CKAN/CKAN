@@ -42,12 +42,9 @@ namespace CKAN
         public bool IsCKAN { get; private set; }
         public string Abbrevation { get; private set; }
 
-        public string Version
-        {
-            get { return IsInstalled ? InstalledVersion : LatestVersion; }
-        }
+        public string Version => IsInstalled ? InstalledVersion : LatestVersion;
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria currentKspVersion)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
@@ -55,58 +52,58 @@ namespace CKAN
             Mod = mod;
             IsInstalled = registry.IsInstalled(mod.identifier, false);
             IsInstallChecked = IsInstalled;
-            HasUpdate = registry.HasUpdate(mod.identifier, current_ksp_version);
-            IsIncompatible = !mod.IsCompatibleKSP(current_ksp_version);
+            HasUpdate = registry.HasUpdate(mod.identifier, currentKspVersion);
+            IsIncompatible = !mod.IsCompatibleKSP(currentKspVersion);
             IsAutodetected = registry.IsAutodetected(mod.identifier);
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
-            var installed_version = registry.InstalledVersion(mod.identifier);
-            Version latest_version = null;
-            var ksp_version = mod.ksp_version;
+            var installedVersion = registry.InstalledVersion(mod.identifier);
+            Version latestVersion = null;
+            var kspVersion = mod.ksp_version;
 
             try
             {
-                var latest_available = registry.LatestAvailable(mod.identifier, current_ksp_version);
-                if (latest_available != null)
-                    latest_version = latest_available.version;
+                var latestAvailable = registry.LatestAvailable(mod.identifier, currentKspVersion);
+                if (latestAvailable != null)
+                    latestVersion = latestAvailable.version;
             }
             catch (ModuleNotFoundKraken)
             {
-                latest_version = installed_version;
+                latestVersion = installedVersion;
             }
 
-            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
+            InstalledVersion = installedVersion != null ? installedVersion.ToString() : "-";
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
 
-            CkanModule latest_available_for_any_ksp = null;
+            CkanModule latestAvailableForAnyVersion = null;
 
             try
             {
-                latest_available_for_any_ksp = registry.LatestAvailable(mod.identifier, null);
+                latestAvailableForAnyVersion = registry.LatestAvailable(mod.identifier, null);
             }
             catch
             {
                 // If we can't find the mod in the CKAN, but we've a CkanModule installed, then
                 // use that.
                 if (IsCKAN)
-                    latest_available_for_any_ksp = (CkanModule) mod;
+                    latestAvailableForAnyVersion = (CkanModule) mod;
                 
             }
 
             // If there's known information for this mod in any form, calculate the highest compatible
             // KSP.
-            if (latest_available_for_any_ksp != null)
+            if (latestAvailableForAnyVersion != null)
             {
-                KSPCompatibility = KSPCompatibilityLong = latest_available_for_any_ksp.HighestCompatibleKSP();
+                KSPCompatibility = KSPCompatibilityLong = latestAvailableForAnyVersion.HighestCompatibleKSP();
 
                 // If the mod we have installed is *not* the mod we have installed, or we don't know
                 // what we have installed, indicate that an upgrade would be needed.
-                if (installed_version == null || !latest_available_for_any_ksp.version.IsEqualTo(installed_version))
+                if (installedVersion == null || !latestAvailableForAnyVersion.version.IsEqualTo(installedVersion))
                 {
                     KSPCompatibilityLong = string.Format("{0} (using mod version {1})",
-                        KSPCompatibility, latest_available_for_any_ksp.version);
+                        KSPCompatibility, latestAvailableForAnyVersion.version);
                 }
             }
             else
@@ -115,20 +112,20 @@ namespace CKAN
                 KSPCompatibility = KSPCompatibilityLong = "unknown";
             }
 
-            if (latest_version != null)
+            if (latestVersion != null)
             {
-                LatestVersion = latest_version.ToString();
+                LatestVersion = latestVersion.ToString();
             }
-            else if (latest_available_for_any_ksp != null)
+            else if (latestAvailableForAnyVersion != null)
             {
-                LatestVersion = latest_available_for_any_ksp.version.ToString();
+                LatestVersion = latestAvailableForAnyVersion.version.ToString();
             }
             else
             {
                 LatestVersion = "-";
             }
 
-            KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
+            KSPversion = kspVersion != null ? kspVersion.ToString() : "-";
 
             Abstract = mod.@abstract;
             
@@ -196,8 +193,8 @@ namespace CKAN
         {
             if (IsInstalled ^ IsInstallChecked)
             {
-                var change_type = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
-                return new KeyValuePair<GUIMod, GUIModChangeType>(this, change_type);
+                var changeType = IsInstalled ? GUIModChangeType.Remove : GUIModChangeType.Install;
+                return new KeyValuePair<GUIMod, GUIModChangeType>(this, changeType);
             }
             if (IsInstalled && (IsInstallChecked && HasUpdate && IsUpgradeChecked))
             {
@@ -211,32 +208,36 @@ namespace CKAN
             return mod.ToModule();
         }
 
-        public void SetUpgradeChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetUpgradeChecked(DataGridViewRow row, bool? newValue = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[1] is DataGridViewCheckBoxCell);
-            var update_cell = row.Cells[1] as DataGridViewCheckBoxCell;
-            var old_value = (bool) update_cell.Value;
+            var updateCell = row.Cells[1] as DataGridViewCheckBoxCell;
+            if (updateCell == null)
+            {
+                throw new Kraken("Expected second column to contain a checkbox.");
+            }
+            var oldValue = (bool) updateCell.Value;
 
-            bool value = set_value_to ?? old_value;
+            var value = newValue ?? oldValue;
             IsUpgradeChecked = value;
-            if (old_value != value) update_cell.Value = value;
+            if (oldValue != value) updateCell.Value = value;
         }
 
-        public void SetInstallChecked(DataGridViewRow row, bool? set_value_to = null)
+        public void SetInstallChecked(DataGridViewRow row, bool? newValue = null)
         {
-            //Contract.Requires<ArgumentException>(row.Cells[0] is DataGridViewCheckBoxCell);
-            var install_cell = row.Cells[0] as DataGridViewCheckBoxCell;
-            bool changeTo = set_value_to != null ? (bool)set_value_to : (bool)install_cell.Value;
+            var installCell = row.Cells[0] as DataGridViewCheckBoxCell;
+            if (installCell == null)
+            {
+                throw new Kraken("Expected first column to contain a checkbox.");
+            }
+
+            var changeTo = newValue ?? (bool)installCell.Value;
             //Need to do this check here to prevent an infinite loop
             //which is at least happening on Linux
             //TODO: Elimate the cause
-            if (changeTo != IsInstallChecked)
-            {
-                IsInstallChecked = changeTo;
-                install_cell.Value = IsInstallChecked;
-            }
+            if (changeTo == IsInstallChecked) return;
+            IsInstallChecked = changeTo;
+            installCell.Value = IsInstallChecked;
         }
-
 
         private bool Equals(GUIMod other)
         {
@@ -247,8 +248,7 @@ namespace CKAN
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((GUIMod) obj);
+            return obj.GetType() == GetType() && Equals((GUIMod) obj);
         }
 
         public override int GetHashCode()

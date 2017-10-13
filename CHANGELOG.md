@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Fix build.ps1 script failing when spaces exist in source path (#2121 by: ayan4m1; reviewed: dbent)
 - [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
 - [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by ayan4m1; reviewed: politas)
+- [GUI] Allow uninstall of incompatible mods in GUI (#1929 by ayan4m1; reviewed: politas)
 
 ## v1.22.3
 
