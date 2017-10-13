@@ -471,11 +471,10 @@ namespace CKAN
         public string HighestCompatibleKSP()
         {
             KspVersion v = LatestCompatibleKSP();
-            if (v.IsAny) {
+            if (v.IsAny)
                 return "All versions";
-            } else {
+            else
                 return v.ToString();
-            }
         }
 
         /// <summary>
@@ -485,14 +484,13 @@ namespace CKAN
         public KspVersion LatestCompatibleKSP()
         {
             // Find the highest compatible KSP version
-            if (ksp_version_max != null) {
+            if (ksp_version_max != null)
                 return ksp_version_max;
-            } else if (ksp_version != null) {
+            else if (ksp_version != null)
                 return ksp_version;
-            } else {
+            else
                 // No upper limit.
                 return KspVersion.Any;
-            }
         }
 
         /// <summary>

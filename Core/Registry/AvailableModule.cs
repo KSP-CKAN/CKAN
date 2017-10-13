@@ -132,14 +132,14 @@ namespace CKAN
         public KspVersion LatestCompatibleKSP()
         {
             KspVersion best = null;
-            foreach (var pair in module_version) {
+            foreach (var pair in module_version)
+            {
                 KspVersion v = pair.Value.LatestCompatibleKSP();
-                if (v.IsAny) {
+                if (v.IsAny)
                     // Can't get later than Any, so stop
                     return v;
-                } else if (best == null || best < v) {
+                else if (best == null || best < v)
                     best = v;
-                }
             }
             return best;
         }
