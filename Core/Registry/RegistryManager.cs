@@ -15,7 +15,7 @@ namespace CKAN
     {
         private static readonly Dictionary<string, RegistryManager> registryCache =
             new Dictionary<string, RegistryManager>();
-        
+
         private static readonly ILog log = LogManager.GetLogger(typeof (RegistryManager));
         private readonly string path;
         public readonly string lockfilePath;
@@ -112,6 +112,63 @@ namespace CKAN
         #endregion
 
         /// <summary>
+        /// If the lock file exists, it contains the id of the owning process.
+        /// If there is no process with that id, then the lock file is stale.
+        /// If there IS a process with that id, there are two possibilities:
+        ///   1. It's actually the CKAN process that owns the lock
+        ///   2. It's some other process that got the same id by coincidence
+        /// If #1, it's definitely not stale.
+        /// If #2, it's stale, but we don't know that.
+        /// Since we can't tell the difference between #1 and #2, we need to
+        /// keep the lock file.
+        /// If we encounter any other errors (permissions, corrupt file, etc.),
+        /// then we need to keep the file.
+        /// </summary>
+        private void CheckStaleLock()
+        {
+            if (File.Exists(lockfilePath))
+            {
+                string contents;
+                try
+                {
+                    contents = File.ReadAllText(lockfilePath);
+                }
+                catch
+                {
+                    // If we can't read the file, we can't check whether it's stale.
+                    return;
+                }
+                Int32 pid;
+                if (Int32.TryParse(contents, out pid))
+                {
+                    // File contains a valid integer.
+                    try
+                    {
+                        // Try to find the corresponding process.
+                        Process.GetProcessById(pid);
+                        // If no exception is thrown, then a process with this id
+                        // is running, and it's not safe to delete the lock file.
+                        // We are done.
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        // ArgumentException means the process doesn't exist,
+                        // so the lock file is stale and we can delete it.
+                        try
+                        {
+                            File.Delete(lockfilePath);
+                        }
+                        catch
+                        {
+                            // If we can't delete the file, then all this was for naught,
+                            // but at least we haven't crashed.
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Tries to lock the registry by creating a lock file.
         /// </summary>
         /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
@@ -119,6 +176,8 @@ namespace CKAN
         {
             try
             {
+                CheckStaleLock();
+
                 lockfileStream = new FileStream(lockfilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
                 // Write the current process ID to the file.
@@ -134,7 +193,7 @@ namespace CKAN
 
             return true;
         }
-            
+
         /// <summary>
         /// Release the lock by deleting the file, but only if we managed to create the file.
         /// </summary>
@@ -200,7 +259,7 @@ namespace CKAN
                     )
             };
 
-            
+
 
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
