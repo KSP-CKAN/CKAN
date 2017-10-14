@@ -1,7 +1,7 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
-## v1.22.4-PRE
+## v1.22.4
 
 ### Bugfixes
 - [GUI] Update Forum Thread link to new thread (#2079 by: politas; reviewed: linuxgurugamer)
