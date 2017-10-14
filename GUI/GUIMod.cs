@@ -95,7 +95,7 @@ namespace CKAN
             // KSP.
             if (latestAvailableForAnyVersion != null)
             {
-                KSPCompatibility = KSPCompatibilityLong = registry.LatestCompatibleKSP(mod.identifier)?.ToString() ?? "";
+                KSPCompatibility = KSPCompatibilityLong = registry.LatestCompatibleKSP(mod.identifier)?.ToString() ?? mod.LatestCompatibleKSP().ToString();
 
                 // If the mod we have installed is *not* the mod we have installed, or we don't know
                 // what we have installed, indicate that an upgrade would be needed.
