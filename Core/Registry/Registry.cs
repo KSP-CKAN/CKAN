@@ -529,7 +529,9 @@ namespace CKAN
         /// <param name="identifier">Name of mod to check</param>
         public KspVersion LatestCompatibleKSP(string identifier)
         {
-            return available_modules[identifier].LatestCompatibleKSP();
+            return available_modules.ContainsKey(identifier)
+                ? available_modules[identifier].LatestCompatibleKSP()
+                : null;
         }
 
 
