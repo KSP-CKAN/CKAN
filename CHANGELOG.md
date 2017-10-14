@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
 - [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by ayan4m1; reviewed: politas)
 - [GUI] Allow uninstall of incompatible mods in GUI (#1929 by ayan4m1; reviewed: politas)
+- [core] Loop to find max KSP version instead of assuming ordering (#2131 by hebaruSan; reviewed: politas)
 
 ## v1.22.3
 

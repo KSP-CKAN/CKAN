@@ -28,6 +28,12 @@ namespace CKAN
         CkanModule LatestAvailable(string identifier, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null);
 
         /// <summary>
+        /// Returns the max game version that is compatible with the given mod.
+        /// </summary>
+        /// <param name="identifier">Name of mod to check</param>
+        KspVersion LatestCompatibleKSP(string identifier);
+
+        /// <summary>
         ///     Returns all available version of a module.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
@@ -146,7 +152,7 @@ namespace CKAN
                 return false;
             }
             if (newest_version == null) return false;
-            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false) 
+            return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false)
                 && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
         }
     }

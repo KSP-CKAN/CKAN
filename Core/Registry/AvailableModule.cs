@@ -67,17 +67,17 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy. 
+        /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy.
         /// </summary>
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
         /// <returns></returns>
         public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
-        {            
+        {
             var available_versions = new List<Version>(module_version.Keys);
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
-            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);            
+            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
 
             // Uh oh, nothing available. Maybe this existed once, but not any longer.
             if (available_versions.Count == 0)
@@ -117,20 +117,38 @@ namespace CKAN
                 return version == null ? null : module_version[version];
             }
             else
-            {                
+            {
                 var version = available_versions.FirstOrDefault(v =>
                     relationship.version_within_bounds(v) &&
                     module_version[v].IsCompatibleKSP(ksp_version));
-                return version == null ? null : module_version[version];                
+                return version == null ? null : module_version[version];
             }
-            
+        }
+
+        /// <summary>
+        /// Returns the latest game version that is compatible with this mod.
+        /// Checks all versions of the mod.
+        /// </summary>
+        public KspVersion LatestCompatibleKSP()
+        {
+            KspVersion best = null;
+            foreach (var pair in module_version)
+            {
+                KspVersion v = pair.Value.LatestCompatibleKSP();
+                if (v.IsAny)
+                    // Can't get later than Any, so stop
+                    return v;
+                else if (best == null || best < v)
+                    best = v;
+            }
+            return best;
         }
 
         /// <summary>
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
         public CkanModule ByVersion(Version v)
-        {            
+        {
             CkanModule module;
             module_version.TryGetValue(v, out module);
             return module;
