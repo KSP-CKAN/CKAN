@@ -195,8 +195,9 @@ namespace CKAN
             //
             this.ExitToolButton.Name = "ExitToolButton";
             this.ExitToolButton.Size = new System.Drawing.Size(281, 30);
-            this.ExitToolButton.Text = "Exit";
+            this.ExitToolButton.Text = "E&xit";
             this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
+            this.ExitToolButton.ShortcutKeys = Keys.Control | Keys.Q;
             //
             // settingsToolStripMenuItem
             //

@@ -15,6 +15,9 @@ All notable changes to this project will be documented in this file.
 - [GUI] Allow uninstall of incompatible mods in GUI (#1929 by ayan4m1; reviewed: politas)
 - [core] Loop to find max KSP version instead of assuming ordering (#2131 by hebaruSan; reviewed: politas)
 
+### Features
+- [GUI] Quit on ctrl-q and alt-f,x (#2132 by hebaruSan; reviewed: politas)
+
 ## v1.22.3
 
 ### Bugfixes
