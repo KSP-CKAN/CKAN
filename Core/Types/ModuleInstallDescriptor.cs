@@ -179,7 +179,7 @@ namespace CKAN
                 // Normalize path before searching (path separator as '/', no trailing separator)
                 for (string path = Regex.Replace(entry.Name.Replace('\\', '/'), "/$", "");
                         !string.IsNullOrEmpty(path);
-                        path = Path.GetDirectoryName(path), is_file = false)
+                        path = Path.GetDirectoryName(path).Replace('\\', '/'), is_file = false)
                 {
 
                     // Skip file paths if not allowed
