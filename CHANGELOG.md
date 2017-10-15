@@ -1,6 +1,10 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+## v1.24.0-PRE
+
+### Bugfixes
+- [GUI] Fix search box tab order (#2141 by HebaruSan; reviewed: politas)
 
 ## v1.22.5
 
