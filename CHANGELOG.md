@@ -1,6 +1,13 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
+## v1.22.5
+
+### Bugfixes
+- [GUI] Fix crash on startup (#2138 by HebaruSan; reviewed: Olympic1)
+- [Core] Fix exception installing some mods (#2137 by HebaruSan; reviewed: Olympic1)
+
 ## v1.22.4
 
 ### Bugfixes
@@ -13,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
 - [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by ayan4m1; reviewed: politas)
 - [GUI] Allow uninstall of incompatible mods in GUI (#1929 by ayan4m1; reviewed: politas)
-- [core] Loop to find max KSP version instead of assuming ordering (#2131 by hebaruSan; reviewed: politas)
+- [core] Loop to find max KSP version instead of assuming ordering (#2131 by HebaruSan; reviewed: politas)
 
 ### Features
 - [GUI] Quit on ctrl-q and alt-f,x (#2132 by hebaruSan; reviewed: politas)
