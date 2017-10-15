@@ -596,27 +596,6 @@ namespace CKAN
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             //
-            // FilterByAuthorTextBox
-            //
-            this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(543, 74);
-            this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
-            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(185, 26);
-            this.FilterByAuthorTextBox.TabIndex = 10;
-            this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
-            //
-            // FilterByAuthorLabel
-            //
-            this.FilterByAuthorLabel.AutoSize = true;
-            this.FilterByAuthorLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByAuthorLabel.Location = new System.Drawing.Point(372, 77);
-            this.FilterByAuthorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
-            this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
-            this.FilterByAuthorLabel.TabIndex = 11;
-            this.FilterByAuthorLabel.Text = "Filter by author name:";
-            //
             // FilterByNameLabel
             //
             this.FilterByNameLabel.AutoSize = true;
@@ -635,8 +614,29 @@ namespace CKAN
             this.FilterByNameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByNameTextBox.Name = "FilterByNameTextBox";
             this.FilterByNameTextBox.Size = new System.Drawing.Size(185, 26);
-            this.FilterByNameTextBox.TabIndex = 9;
+            this.FilterByNameTextBox.TabIndex = 11;
             this.FilterByNameTextBox.TextChanged += new System.EventHandler(this.FilterByNameTextBox_TextChanged);
+            //
+            // FilterByAuthorLabel
+            //
+            this.FilterByAuthorLabel.AutoSize = true;
+            this.FilterByAuthorLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByAuthorLabel.Location = new System.Drawing.Point(372, 77);
+            this.FilterByAuthorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByAuthorLabel.Name = "FilterByAuthorLabel";
+            this.FilterByAuthorLabel.Size = new System.Drawing.Size(162, 20);
+            this.FilterByAuthorLabel.TabIndex = 12;
+            this.FilterByAuthorLabel.Text = "Filter by author name:";
+            //
+            // FilterByAuthorTextBox
+            //
+            this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByAuthorTextBox.Location = new System.Drawing.Point(543, 74);
+            this.FilterByAuthorTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByAuthorTextBox.Name = "FilterByAuthorTextBox";
+            this.FilterByAuthorTextBox.Size = new System.Drawing.Size(185, 26);
+            this.FilterByAuthorTextBox.TabIndex = 13;
+            this.FilterByAuthorTextBox.TextChanged += new System.EventHandler(this.FilterByAuthorTextBox_TextChanged);
             //
             // FilterByDescriptionLabel
             //
@@ -646,7 +646,7 @@ namespace CKAN
             this.FilterByDescriptionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByDescriptionLabel.Name = "FilterByDescriptionLabel";
             this.FilterByDescriptionLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByDescriptionLabel.TabIndex = 10;
+            this.FilterByDescriptionLabel.TabIndex = 14;
             this.FilterByDescriptionLabel.Text = "Filter by description:";
             //
             // FilterByDescriptionTextBox
@@ -656,7 +656,7 @@ namespace CKAN
             this.FilterByDescriptionTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDescriptionTextBox.Name = "FilterByDescriptionTextBox";
             this.FilterByDescriptionTextBox.Size = new System.Drawing.Size(185, 26);
-            this.FilterByDescriptionTextBox.TabIndex = 9;
+            this.FilterByDescriptionTextBox.TabIndex = 15;
             this.FilterByDescriptionTextBox.TextChanged += new System.EventHandler(this.FilterByDescriptionTextBox_TextChanged);
             //
             // ChangesetTabPage
