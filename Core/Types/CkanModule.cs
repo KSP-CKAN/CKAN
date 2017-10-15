@@ -294,7 +294,7 @@ namespace CKAN
             }
             catch (JsonException ex)
             {
-                throw new BadMetadataKraken(null, "JSON deserialization error", ex);
+                throw new BadMetadataKraken(null, string.Format("JSON deserialization error: {0}", ex.Message), ex);
             }
 
             // NOTE: Many of these tests may be better in our Deserialisation handler.
@@ -580,6 +580,15 @@ namespace CKAN
         public override string ToString()
         {
             return string.Format("{0} {1}", identifier, version);
+        }
+
+        public string DescribeInstallStanzas()
+        {
+            List<string> descriptions = new List<string>();
+            foreach (ModuleInstallDescriptor mid in install) {
+                descriptions.Add(mid.DescribeMatch());
+            }
+            return string.Join(", ", descriptions);
         }
     }
 

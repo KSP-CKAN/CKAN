@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
@@ -49,7 +50,7 @@ namespace CKAN
             // this check now that we're doing better json-fu above.
             if (install_to == null)
             {
-                throw new BadMetadataKraken(null, "Install stanzas must have a file an install_to");
+                throw new BadMetadataKraken(null, "Install stanzas must have an install_to");
             }
 
             var setCount = new[] { file, find, find_regexp }.Count(i => i != null);
@@ -206,6 +207,21 @@ namespace CKAN
             stanza.find        = null;
             stanza.find_regexp = null;
             return stanza;
+        }
+
+        public string DescribeMatch()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(file)) {
+                sb.AppendFormat("file=\"{0}\"", file);
+            }
+            if (!string.IsNullOrEmpty(find)) {
+                sb.AppendFormat("find=\"{0}\"", find);
+            }
+            if (!string.IsNullOrEmpty(find_regexp)) {
+                sb.AppendFormat("find_regexp=\"{0}\"", find_regexp);
+            }
+            return sb.ToString();
         }
     }
 }

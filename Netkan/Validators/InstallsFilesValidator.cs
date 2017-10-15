@@ -20,10 +20,13 @@ namespace CKAN.NetKAN.Validators
             var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
 
             // Make sure this would actually generate an install.
-            
+
             if (!_moduleService.HasInstallableFiles(mod, file))
             {
-                throw new Kraken("Module contains no files to install.");
+                throw new Kraken(string.Format(
+                    "Module contains no files matching: {0}",
+                    mod.DescribeInstallStanzas()
+                ));
             }
         }
     }
