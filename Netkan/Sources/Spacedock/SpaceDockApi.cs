@@ -29,7 +29,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
             if (error.error)
             {
-                var errorMessage = string.Format("Could not get the mod from SD, reason: {0}.", error.reason);
+                var errorMessage = string.Format("Could not get the mod from SpaceDock, reason: {0}", error.reason);
                 throw new Kraken(errorMessage);
             }
 
@@ -42,7 +42,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// </summary>
         public static Uri ExpandPath(string route)
         {
-            Log.DebugFormat("Expanding {0} to full SD URL", route);
+            Log.DebugFormat("Expanding {0} to full SpaceDock URL", route);
 
             // Alas, this isn't as simple as it may sound. For some reason
             // some—but not all—SD mods don't work the same way if the path provided

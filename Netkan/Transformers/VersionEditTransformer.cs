@@ -31,9 +31,13 @@ namespace CKAN.NetKAN.Transformers
                     json["version"] = new Regex(versionEditInfo.Find)
                         .Replace(versionEditInfo.Version, versionEditInfo.Replace);
                 }
-                else if(versionEditInfo.Strict)
+                else if (versionEditInfo.Strict)
                 {
-                    throw new Kraken("Could not match version with find pattern");
+                    throw new Kraken(string.Format(
+                        "Could not match version {0} with find pattern {1}",
+                        versionEditInfo.Version,
+                        versionEditInfo.Find
+                    ));
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);

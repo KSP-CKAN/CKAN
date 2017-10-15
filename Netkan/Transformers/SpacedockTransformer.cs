@@ -92,13 +92,13 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                resourcesJson.SafeAdd("homepage", Normalize(sdMod.website));
-                resourcesJson.SafeAdd("repository", Normalize(sdMod.source_code));
+                TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
+                TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
                 resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
 
                 if (sdMod.background != null)
                 {
-                    resourcesJson.SafeAdd("x_screenshot", Normalize(sdMod.background));
+                    TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -109,9 +109,16 @@ namespace CKAN.NetKAN.Transformers
             return metadata;
         }
 
-        private static string Normalize(Uri uri)
+        private void TryAddResourceURL(string identifier, JObject resources, string key, string rawURL)
         {
-            return Normalize(uri.ToString());
+            if (!string.IsNullOrEmpty(rawURL)) {
+                string normalized = Normalize(rawURL);
+                if (!string.IsNullOrEmpty(normalized)) {
+                    resources.SafeAdd(key, normalized);
+                } else {
+                    Log.WarnFormat("Could not normalize URL from {0}: {1}", identifier, rawURL);
+                }
+            }
         }
 
         /// <summary>
@@ -123,11 +130,6 @@ namespace CKAN.NetKAN.Transformers
         /// </returns>
         private static string Normalize(string uri)
         {
-            if (uri == null)
-            {
-                return null;
-            }
-
             Log.DebugFormat("Escaping {0}", uri);
 
             var escaped = Uri.EscapeUriString(uri);
@@ -155,7 +157,6 @@ namespace CKAN.NetKAN.Transformers
             }
             else
             {
-                Log.WarnFormat("Could not normalize URL: {0}", uri);
                 return null;
             }
         }
