@@ -36,7 +36,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                Log.InfoFormat("Executing Interal AVC transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var noVersion = metadata.Version == null;
@@ -45,7 +45,7 @@ namespace CKAN.NetKAN.Transformers
                 {
                     json["version"] = "0"; // TODO: DBB: Dummy version necessary to the next statement doesn't throw
                 }
-                
+
                 var mod = CkanModule.FromJson(json.ToString());
 
                 if (noVersion)
@@ -90,7 +90,7 @@ namespace CKAN.NetKAN.Transformers
 
                     var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
                     var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
-                    
+
                     // Get the minimum and maximum KSP versions that are in the AVC file.
                     // Use specific KSP version if min/max don't exist.
                     var avcKspMin = avc.ksp_version_min ?? avc.ksp_version;
@@ -212,7 +212,7 @@ namespace CKAN.NetKAN.Transformers
 
                 // Check that the path is what we expect
                 var segments = remoteUri.Segments.ToList();
-                
+
                 if (segments.Count < 6 ||
                     string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0 &&
                     string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0)

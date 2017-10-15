@@ -228,7 +228,7 @@ namespace CKAN
             bool changeTo = set_value_to != null ? (bool)set_value_to : (bool)install_cell.Value;
             //Need to do this check here to prevent an infinite loop
             //which is at least happening on Linux
-            //TODO: Elimate the cause
+            //TODO: Eliminate the cause
             if (changeTo != IsInstallChecked)
             {
                 IsInstallChecked = changeTo;

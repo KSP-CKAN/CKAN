@@ -79,7 +79,7 @@ namespace CKAN.NetKAN.Services
         /// Locates a version file in the zipfile specified, and returns an AVC object.
         /// This requires a module object as we *first* search files we might install,
         /// falling back to a search of all files in the archive.
-        /// 
+        ///
         /// Returns null if no version is found.
         /// Throws a Kraken if too many versions are found.
         /// </summary>
@@ -116,7 +116,7 @@ namespace CKAN.NetKAN.Services
 
                 for (var i = 0; i < files.Count; i++)
                 {
-                    Log.DebugFormat("Testing file '{0}' against path '{1}'", files[i].Name,internalFilePath);
+                    Log.DebugFormat("Testing file '{0}' against path '{1}'", files[i].Name, internalFilePath);
                     // Test for either an exact match or using the filespec as a regexp
                     if (internalFilePath.Equals(files[i]?.Name) || Regex.IsMatch(files[i]?.Name, internalFilePath))
                     {
@@ -138,7 +138,7 @@ namespace CKAN.NetKAN.Services
             else if (files.Count > 1)
             {
                 throw new Kraken(
-                    string.Format("Too may .version files located: {0}",
+                    string.Format("Too many .version files located: {0}",
                               string.Join(", ", files.Select(x => x.Name))));
             }
 

@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Sources.Github
             foreach (var release in releases)
             {
                 // First, check for prerelease status...
-                if (reference.UsePrelease == (bool)release["prerelease"])
+                if (reference.UsePrerelease == (bool)release["prerelease"])
                 {
                     var version = new Version((string)release["tag_name"]);
                     var author = (string)release["author"]["login"];
@@ -98,4 +98,3 @@ namespace CKAN.NetKAN.Sources.Github
         }
     }
 }
-

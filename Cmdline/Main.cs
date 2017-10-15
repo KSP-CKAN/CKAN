@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
 
             if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
             {
-                // Start the gui with logging enabled #437 
+                // Start the gui with logging enabled #437
                 var guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
                 args = guiCommand.ToArray();
@@ -157,7 +157,7 @@ This is a bad idea and there is absolutely no good reason to do it. Please run C
                 }
                 else
                 {
-                    log.InfoFormat("Using KSP install at {0}",ksp.GameDir());
+                    log.InfoFormat("Using KSP install at {0}", ksp.GameDir());
                 }
             }
 

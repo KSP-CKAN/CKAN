@@ -102,7 +102,7 @@ namespace CKAN
             if (ModList == null) return;
 
             // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
-            // To make the filtering process faster, Copy the list of rows. Filter out the hidden and replace t
+            // To make the filtering process faster, Copy the list of rows. Filter out the hidden and replace the
             // rows in DataGridView.
 
             var rows = new DataGridViewRow[mainModList.full_list_of_mod_rows.Count];
@@ -187,7 +187,7 @@ namespace CKAN
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
-            //TODO Consider using smart enum patten so stuff like this is easier
+            //TODO Consider using smart enum pattern so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Compatible));
             FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
@@ -557,11 +557,11 @@ namespace CKAN
 
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary> 
+        /// </summary>
         public string StripEpoch(string version)
         {
-            // If our version number starts with a string of digits, followed by 
-            // a colon, and then has no more colons, we're probably safe to assume 
+            // If our version number starts with a string of digits, followed by
+            // a colon, and then has no more colons, we're probably safe to assume
             // the first string of digits is an epoch
             return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
         }

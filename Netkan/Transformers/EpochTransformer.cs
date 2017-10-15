@@ -23,7 +23,7 @@ namespace CKAN.NetKAN.Transformers
             JToken epoch;
             if (json.TryGetValue("x_netkan_epoch", out epoch))
             {
-                Log.InfoFormat("Executing Epoch transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing epoch transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 uint epochNumber;
@@ -37,8 +37,8 @@ namespace CKAN.NetKAN.Transformers
                 }
                 else
                 {
-                    Log.Error("Invaild epoch: " + epoch);
-                    throw new BadMetadataKraken(null, "Invaild epoch: " + epoch + "In " + json["identifier"]);
+                    Log.Error("Invalid epoch: " + epoch);
+                    throw new BadMetadataKraken(null, "Invalid epoch: " + epoch + "In " + json["identifier"]);
                 }
             }
 

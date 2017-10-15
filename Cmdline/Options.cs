@@ -114,7 +114,7 @@ namespace CKAN.CmdLine
         [Option("headless", DefaultValue = null, HelpText = "Set to disable all prompts")]
         public bool Headless { get; set; }
 
-        [Option("asroot", DefaultValue = null, HelpText = "Allows CKAN to run as root on Linux- based systems")]
+        [Option("asroot", DefaultValue = null, HelpText = "Allows CKAN to run as root on Linux-based systems")]
         public bool AsRoot { get; set; }
     }
 

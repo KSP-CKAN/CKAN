@@ -99,8 +99,8 @@ namespace CKAN
 
             GUI.user.RaiseMessage("About to install...\r\n");
 
-            // FIXME: here we should heat up the cache with any mods we're going to install, because 
-            // when this transaction types out it fucks up everything else.
+            // FIXME: here we should heat up the cache with any mods we're going to install, because
+            // when this transaction types out it messes up everything else.
             var resolvedMods = installer.ResolveModules(toInstall, opts.Value);
 
             foreach (var module in resolvedMods.CachedModules)
@@ -123,7 +123,7 @@ namespace CKAN
             installer.EnsureCache(resolvedMods.UncachedModules);
 
             //Transaction is needed here to revert changes when an installation is cancelled
-            //TODO: Cancellation should be handelt in the ModuleInstaller
+            //TODO: Cancellation should be handled in the ModuleInstaller
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
 
@@ -171,7 +171,7 @@ namespace CKAN
             e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
         }
 
-        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble, 
+        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble,
             string identifier, IRegistryQuerier registry)
         {
             if (relations == null)
@@ -474,7 +474,7 @@ namespace CKAN
                 without_enforce_consistency = false,
                 without_toomanyprovides_kraken = true
             };
-            
+
             foreach (var pair in mods)
             {
                 CkanModule module;

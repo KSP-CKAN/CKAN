@@ -128,7 +128,7 @@ namespace CKAN
             {
                 try
                 {
-                    log.Debug("Initializing "+plugin.GetName());
+                    log.Debug("Initializing " + plugin.GetName());
                     plugin.Initialize();
                 }
                 catch (Exception ex)

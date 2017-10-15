@@ -163,7 +163,7 @@ namespace CKAN
                     }
                     else
                     {
-                        log.Debug("Unknown download size, skipping progress..");
+                        log.Debug("Unknown download size, skipping progress.");
                         return 0;
                     }
 

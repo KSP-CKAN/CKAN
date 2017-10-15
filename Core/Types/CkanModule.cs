@@ -63,7 +63,7 @@ namespace CKAN
                 if (version != null)
                     return version.ToString();
                 return string.Format("between {0} and {1} inclusive.",
-                    min_version != null ?min_version.ToString() : "any version",
+                    min_version != null ? min_version.ToString() : "any version",
                     max_version != null ? max_version.ToString() : "any version");
             }
         }

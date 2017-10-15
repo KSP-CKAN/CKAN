@@ -303,7 +303,7 @@ namespace CKAN
                     }
                     throw new InconsistentKraken(
                         string.Format(
-                            "{0} requires a version {1}. However a incompatible version, {2}, is in the resolver",
+                            "{0} requires a version {1}. However an incompatible version, {2}, is in the resolver",
                             dep_name, descriptor.RequiredVersion, module.version));
                 }
 
@@ -322,7 +322,7 @@ namespace CKAN
                     }
                     throw new InconsistentKraken(
                         string.Format(
-                            "{0} requires a version {1}. However a incompatible version, {2}, is already installed",
+                            "{0} requires a version {1}. However an incompatible version, {2}, is already installed",
                             dep_name, descriptor.RequiredVersion, registry.InstalledVersion(dep_name)));
                 }
 
@@ -357,7 +357,7 @@ namespace CKAN
                         List<CkanModule> provide = candidates.Where(can => old_stanza.Where(relation => can.identifier == relation.name).Any()).ToList();
                         if (!provide.Any() || provide.Count() > 1)
                         {
-                            //We still have either nothing, or too my to pick from
+                            //We still have either nothing, or too many to pick from
                             //Just throw the TMP now
                             throw new TooManyModsProvideKraken(dep_name, candidates);
                         }
