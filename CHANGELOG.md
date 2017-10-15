@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 - [GUI] Fix search box tab order (#2141 by HebaruSan; reviewed: politas)
+- [core] Check for stale lock files (#2139 by HebaruSan; reviewed: politas)
 
 ## v1.22.5
 
