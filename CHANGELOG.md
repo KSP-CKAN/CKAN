@@ -1,72 +1,84 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
 ## v1.24.0-PRE
 
 ### Bugfixes
-- [GUI] Fix search box tab order (#2141 by HebaruSan; reviewed: politas)
-- [core] Check for stale lock files (#2139 by HebaruSan; reviewed: politas)
 
-## v1.22.5
+- [GUI] Fix search box tab order (#2141 by: HebaruSan; reviewed: politas)
+- [Core] Check for stale lock files (#2139 by: HebaruSan; reviewed: politas)
+- [NetKAN] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)
 
-### Bugfixes
-- [GUI] Fix crash on startup (#2138 by HebaruSan; reviewed: Olympic1)
-- [Core] Fix exception installing some mods (#2137 by HebaruSan; reviewed: Olympic1)
-
-## v1.22.4
+## v1.22.5 (Xichang)
 
 ### Bugfixes
+
+- [GUI] Fix crash on startup (#2138 by: HebaruSan; reviewed: Olympic1)
+- [Core] Fix exception installing some mods (#2137 by: HebaruSan; reviewed: Olympic1)
+
+## v1.22.4 (Uchinoura)
+
+### Bugfixes
+
 - [GUI] Update Forum Thread link to new thread (#2079 by: politas; reviewed: linuxgurugamer)
-- [core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
+- [Core] Move downloads outside of gui transaction (#2073 by: archer884; reviewed: politas)
 - [CLI] Fix crash in "ckan available" with curly braces in mod name (#2111 by: HebaruSan; reviewed: politas)
-- [core] Check grandparent+ directories for find and find_regexp (#2120 by: HebaruSan; reviewed: politas)
-- [core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
+- [Core] Check grandparent+ directories for find and find_regexp (#2120 by: HebaruSan; reviewed: politas)
+- [Core] Add test to cover missing directory entries (#2125 by: HebaruSan; reviewed: politas)
 - [Build] Fix build.ps1 script failing when spaces exist in source path (#2121 by: ayan4m1; reviewed: dbent)
-- [core] Perform directory root comparison in case-insensitive way (#2122 by ayan4m1; reviewed: politas)
-- [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by ayan4m1; reviewed: politas)
-- [GUI] Allow uninstall of incompatible mods in GUI (#1929 by ayan4m1; reviewed: politas)
-- [core] Loop to find max KSP version instead of assuming ordering (#2131 by HebaruSan; reviewed: politas)
+- [Core] Perform directory root comparison in case-insensitive way (#2122 by: ayan4m1; reviewed: politas)
+- [Build] Expand .gitignore to handle packages in subdirectories and build output (#2116 by: ayan4m1; reviewed: politas)
+- [GUI] Allow uninstall of incompatible mods in GUI (#1929 by: ayan4m1; reviewed: politas)
+- [Core] Loop to find max KSP version instead of assuming ordering (#2131 by: HebaruSan; reviewed: politas)
 
 ### Features
-- [GUI] Quit on ctrl-q and alt-f,x (#2132 by hebaruSan; reviewed: politas)
 
-## v1.22.3
+- [GUI] Quit on ctrl-q and alt-f,x (#2132 by: HebaruSan; reviewed: politas)
 
-### Bugfixes
-- [core] Fix broken Chicken bits from #2023 (#2058 by: politas)
-
-## v1.22.2
+## v1.22.3 (Mahia (bugfix release))
 
 ### Bugfixes
+
+- [Core] Fix broken Chicken bits from #2023 (#2058 by: politas; reviewed: -)
+
+## v1.22.2 (Mahia)
+
+### Bugfixes
+
 - [CLI] Removed non-functioning code on available command (#1966 by: politas; reviewed: dbent)
-- [core] Switch Linux and MacOS to native C# downloads (#2023 by: politas; reviewed: pjf)
-- [NetKAN] Convert spaces to %20 in Curse URLs (#2041 by: politas)
+- [Core] Switch Linux and MacOS to native C# downloads (#2023 by: politas; reviewed: pjf)
+- [NetKAN] Convert spaces to %20 in Curse URLs (#2041 by: politas; reviewed: -)
 
 ### Features
+
 - [Build] Use Cake for build and overhaul/cleanup build (#1589 by: dbent; reviewed: techman83, politas)
-- [Build] Docker updates to support cake! (#1988 by: mathuin; reviewed; reviewed: dbent)
+- [Build] Docker updates to support cake! (#1988 by: mathuin; reviewed: dbent)
 - [Build] Update Build packages (#2028 by: dbent; reviewed: Olympic1)
 - [Build] Update Build for Mono 5.0.0 (#2049 by: dbent; reviewed: politas)
 - [Build] Update Update build (#2050 by: dbent; reviewed: politas)
-- [core] Update KSP builds (#2056 by: Olympic1; reviewed: linuxgurugamer)
+- [Core] Update KSP builds (#2056 by: Olympic1; reviewed: linuxgurugamer)
 - [NetKAN] Canonicalize non-raw GitHub URIs (#2054 by: dbent; reviewed: politas)
 
-## v1.22.1
+## v1.22.1 (Georgy)
 
 ### Bugfixes
+
 - [GUI] Fix for black rows in GUI on conflicting mods. (#1968 by: Rohaq; reviewed: politas)
 
-## v1.22.0
+## v1.22.0 (Valentina)
 
 ### Bugfixes
+
 - [Build] Update SharpZip dependency and remove old Newtonsoft.Json (#1879 by: ayan4m1; reviewed: politas)
-- [Core] Make sure we're updating the build mappings on repository update (#1906 by: dbent; reviewed Olympic1)
-- [Core/GUI] Fix TargetInvocationException and improve mod conflict GUI test (#1371, #1373 by: Postremus, #1908 by ayan4m1; reviewed: politas)
-- [Multiple] Fix default logging on fallback when no XML file (#1920 by: politas; reviewed ayan4m1, mathuin)
+- [Core] Make sure we're updating the build mappings on repository update (#1906 by: dbent; reviewed: Olympic1)
+- [Core/GUI] Fix TargetInvocationException and improve mod conflict GUI test (#1371, #1373 by: Postremus, #1908 by: ayan4m1; reviewed: politas)
+- [Multiple] Fix default logging on fallback when no XML file (#1920 by: politas; reviewed: ayan4m1, mathuin)
 - [GUI] Update UI State on cache events (#1930 by: ayan4m1; reviewed: politas)
 - [GUI] Use SystemColors to source various UI colors (#1926 by: ayan4m1; reviewed: politas)
 
 ### Features
+
 - [Multiple] Add log4net.xml, refactor logging init and log to file by default (#1881 by: ayan4m1; reviewed: politas)
 - [NetKAN] Add regexp second test for filespecs (#1919 by: politas; reviewed: ayan4m1)
 - [Core] Changed name of registry lock file to registry.lock (#1944 by: politas; reviewed: ayan4m1)
@@ -76,16 +88,18 @@ All notable changes to this project will be documented in this file.
 - [GUI] Display all mod versions in ModInfo panel (#1961 by: grzegrzk; reviewed: politas)
 - [GUI] Use OpenFileDialog instead of FolderBrowserDialog in instance selector (#1939 by: ayan4m1; reviewed: politas)
 
-## v1.20.1
+## v1.20.1 (Alexey)
 
 ### Bugfixes
+
 - [GUI] Reduce MinimumSize for main window to 1280x700 (#1893 by: politas; reviewed: Postremus, techman83, ayan4m1, Olympic1)
 
 ### Features
+
 - [Multiple] Add Curse to resources (#1897 by: Olympic1; reviewed: ayan4m1, politas)
 - [Core] Use maximum of buildID and buildID64 if both are available (#1900 by: dbent; reviewed: politas)
 
-## v1.20.0
+## v1.20.0 (Yuri)
 
 ### Bugfixes
 
@@ -101,31 +115,31 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add Back and Forward buttons to the GUI to jump to selected mods (#1841 by: b-w; reviewed: politas)
 - [NetKAN] GitHub Transformer now extracts the repository name and transforms it to a usable ckan name (#1613 by: Olympic1; reviewed: pjf)
 - [GUI] Don't show suggested/recommended for mods that can't be installed (#1427 by: Postremus; reviewed: politas)
-- [Core] Remove empty directories when uninstalling mods (#1873 by: politas; reviewed ayan4m1)
-- [Core] Users are less able to run two copies of CKAN at the same time. (#1265 by: mgsdk, #1357 by pjf, #1828 by politas; reviewed: ayan4m1)
+- [Core] Remove empty directories when uninstalling mods (#1873 by: politas; reviewed: ayan4m1)
+- [Core] Users are less able to run two copies of CKAN at the same time. (#1265 by: mgsdk, #1357 by: pjf, #1828 by: politas; reviewed: ayan4m1)
 - [NetKAN] Add Curse as a $kref source (#1608 by: airminer, Olympic1; reviewed: dbent, pjf, techman83, ayan4m1)
-- [All] Relationship changes now prompt reinstalling (#1730 by: dbent, #1885 by: @ayan4m1; reviewed: plague006, pjf)
-- [GUI] Add "X" icon to filter text boxes that clears the control (#1883 by ayan4m1; reviewed: politas)
+- [All] Relationship changes now prompt reinstalling (#1730 by: dbent, #1885 by: ayan4m1; reviewed: plague006, pjf)
+- [GUI] Add "X" icon to filter text boxes that clears the control (#1883 by: ayan4m1; reviewed: politas)
 
-## v1.18.1
+## v1.18.1 (StarTrammier)
 
 ### Bugfixes
 
 - [CLI] Improve legend on `ckan list` functionality. (#1664 by: politas; reviewed: pjf)
-- [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent, reviewed postremus)
+- [Core] Workaround string.Format() bug in old Mono versions (#1784 by: dbent, reviewed: postremus)
 
 ### Features
 
 - [CLI] `ckan.exe ksp list` now prints its output as a table and includes the version of the installation and its default status. (#1656 by: dbent; reviewed: pjf)
-- [GUI] Auto-updater shows download progress (#1692 by: trakos, #1359 Postremus; reviewed: politas)
-- [GUI] About dialog pointing to new CKAN thread on forums (#1824 by: politas)
+- [GUI] Auto-updater shows download progress (#1692 by: trakos, #1359 by: Postremus; reviewed: politas)
+- [GUI] About dialog pointing to new CKAN thread on forums (#1824 by: politas; reviewed: -)
 - [GUI] Ignore ksp instances if we are launching the gui anyway (#1809 by: Postremus; reviewed: politas)
 
 ### Internal
 
-- [Build] Travis/Build: Prevent mozroots from asking for human input (#1825 by pjf; reviewed: politas)
+- [Build] Travis/Build: Prevent mozroots from asking for human input (#1825 by: pjf; reviewed: politas)
 
-## v1.18.0
+## v1.18.0 (StarTram)
 
 ### Bugfixes
 
@@ -139,36 +153,36 @@ All notable changes to this project will be documented in this file.
 - [Core] `install` stanzas can have an `as` property allowing directories and files to be renamed/moved on installation. (#1728 by: dbent; reviewed: techman83)
 - [GUI] Added "filter by description" search box. (#1632 by: politas; reviewed: pjf)
 - [CLI] `compare` command now checks positive and negative rather than -1/+1 (#1649 by: dbent; reviewed: Daz)
-- [GUI] In windows launch `KSP_x64.exe` by default rather than `KSP.exe`. (#1711 by plague006; reviewed: dbent)
-- [Core] Unlicense added to CKAN as an option for mods. (#1737 by plague006; reviewed: techman83)
+- [GUI] In windows launch `KSP_x64.exe` by default rather than `KSP.exe`. (#1711 by: plague006; reviewed: dbent)
+- [Core] Unlicense added to CKAN as an option for mods. (#1737 by: plague006; reviewed: techman83)
 - [Core] CKAN will now read BuildID.txt for more accurate KSP versions (#1645 by: dbent; reviewed: techman83)
 
 ### Internal
 
 - [Multiple] Removed various references and code for processing mods on KerbalStuff. Thank you, Sircmpwn, for providing us with such a great service for so long. (#1615 by: Olympic1; reviewed: pjf)
-- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1662,#1597 by: plague006; reviewed: Daz)
+- [Spec] Updated Spec with the `kind` field which was introduced in v1.6. (#1662, #1597 by: plague006; reviewed: Daz)
 - [Spec] ckan.schema now enforces structure of install directives (#1578 by: Zane6888; reviewed: pjf, Daz)
-- [Spec] Documented the `x_netkan_github` and `use_source_archive` options in NetKAN files. (#1774 by dbent; reviewed: plague006)
+- [Spec] Documented the `x_netkan_github` and `use_source_archive` options in NetKAN files. (#1774 by: dbent; reviewed: plague006)
 - [Spec] Clarified the `install_to` directive. (#1771 by: politas; reviewed: plague006)
 - [Spec] Clarified example of a complete metanetkan file (#1753 by: plague006; reviewed: politas)
 - [Spec] Removed stray comma (#1736 by: plague006; reviewed: politas)
-- [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz )
+- [NetKAN] Catch ValueErrors rather than printing the trace (#1648 by: techman83; reviewed: Daz)
 - [NetKAN] Catch `ksp_version` from SpaceDocks newly implemented `game_version` (#1655 by: dbent; reviewed: -)
-- [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; fixes: #1674)
+- [NetKAN] Allow specifying when an override is executed (#1684 by: dbent; reviewed: techman83)
 - [NetKAN] Redirects to the download file are now resolved when using HTTP $krefs (#1696 by: dbent, reviewed: techman83)
 - [NetKAN] Remote AVC files will be used in preference to ones stored in the archive if they have the same version (#1701 by: dbent, reviewed: techman83)
-- [NetKAN] Sensible defaults are used when fetching abstract and homepage from github. (#1726,#1723 by: dbent; reviewed: politas)
+- [NetKAN] Sensible defaults are used when fetching abstract and homepage from github. (#1726, #1723 by: dbent; reviewed: politas)
 - [NetKAN] Add Download Attribute Transformer (#1710 by: techman83; reviewed: dbent)
 - [NetKAN] Add ksp_version_strict to property sort order (#1722 by: dbent; reviewed: plague006)
-- [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by plague006; reviewed: politas)
-- [Build] Support for mono 3.2.8 deprecated (#1715 by dbent; reviewed: techman83)
-- [Build] Added support for building the CKAN client into a docker container. (#1747 by mathuin; reviewed: pjf)
-- [Build] Continuous integration is less susceptible to third-party network errors. (#1782 by pjf; reviewed: techman83)
-- [Core] Defend against corrupted KSP version numbers in old registries. (#1781 by pjf; reviewed: politas)
-- [Core] Support for upcoming download hash functionality in client. (#1752 by plague006; reviewed: pjf)
-- [GUI] Fixed spurious build warning (#1776 by politas; reviewed: pjf)
+- [Docs] Updated `CONTRIBUTING.md` and `README.md` documentation. (#1748 by: plague006; reviewed: politas)
+- [Build] Support for mono 3.2.8 deprecated (#1715 by: dbent; reviewed: techman83)
+- [Build] Added support for building the CKAN client into a docker container. (#1747 by: mathuin; reviewed: pjf)
+- [Build] Continuous integration is less susceptible to third-party network errors. (#1782 by: pjf; reviewed: techman83)
+- [Core] Defend against corrupted KSP version numbers in old registries. (#1781 by: pjf; reviewed: politas)
+- [Core] Support for upcoming download hash functionality in client. (#1752 by: plague006; reviewed: pjf)
+- [GUI] Fixed spurious build warning (#1776 by: politas; reviewed: pjf)
 
-## v1.16.1
+## v1.16.1 (Plasma Window)
 
 ### Bugfixes
 
@@ -190,11 +204,11 @@ All notable changes to this project will be documented in this file.
 - [Spec] Updated Spec with newer `netkan.exe` features. (#1581 by: dbent; reviewed: Dazpoet)
 - [NetKAN] `netkan.exe` now has support for downloading GitHub sources of a release. (#1587 by: dbent; reviewed: Olympic1)
 - [NetKAN] `netkan.exe` checks for malformed url's and prevents them from being added to the metadata. (#1580 by: dbent; reviewed: Olympic1)
-- [NetKAN] `netkan.exe` will now add all authors listed on SpaceDock (#1600,#1620 by: dbent; reviewed: techman83)
+- [NetKAN] `netkan.exe` will now add all authors listed on SpaceDock (#1600, #1620 by: dbent; reviewed: techman83)
 - [Core] Spelling mistake in documentation fixed (#1623 by: Dazpoet; reviewed: pjf)
-- [Reporting] Creation of an issues template to help with bug reporting. (#1596 and #1598 by plague006, Shuudoushi; reviewed: Dazpoet, Olympic1)
+- [Reporting] Creation of an issues template to help with bug reporting. (#1596, #1598 by: plague006, Shuudoushi; reviewed: Dazpoet, Olympic1)
 
-## v1.16.0
+## v1.16.0 (Ringshne)
 
 ### Bugfixes
 
@@ -202,16 +216,16 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL #1444, pjf #1481)
-- [Core] `find` and `find_regexp` install directives will match files as well as directories if the `find_matches_files` field is set to `true`. (dbent #1241)
+- [Core] Better detection of KSP installs in non-standard Steam locations (LarsOL, #1444; pjf, #1481)
+- [Core] `find` and `find_regexp` install directives will match files as well as directories if the `find_matches_files` field is set to `true`. (dbent, #1241)
 - [Core/GUI] Missing directories in `Ships` will be recreated as needed. (Wetmelon, #1525)
-- [Core] Framework added to allow fuzzy version checking, including "you're on your own" comparisons where KSP version checks are disabled. Updated spec to include `ksp_version_strict`, which enforces strict versioning. (pjf #1499)
+- [Core] Framework added to allow fuzzy version checking, including "you're on your own" comparisons where KSP version checks are disabled. Updated spec to include `ksp_version_strict`, which enforces strict versioning. (pjf, #1499)
 - [Core] Thumbs subdirectories in `Ships` can now be directly targeted by install stanzas. (Postremus, #1448)
 
 ### Internal
 
-- [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent)
-- [NetKAN] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent)
+- [NetKAN] `netkan.exe` will now sort `conflicts` relationships next to other relationships. (dbent, #1496)
+- [NetKAN] `netkan.exe` now has much better support for Jenkins CI servers, allowing full automation. (dbent, #1512)
 
 ## v1.14.3 (Haumea)
 
@@ -250,7 +264,7 @@ All notable changes to this project will be documented in this file.
 
 ### Internal
 
-- [Updater] Checking for updates takes less network resources, and is more resilient to malformed release notes. (Postremus #1410; pjf #1453)
+- [Updater] Checking for updates takes less network resources, and is more resilient to malformed release notes. (Postremus, #1410; pjf, #1453)
 - [Core] We now cache the results of cache look-ups (so you can cache while you cache... faster). (pjf, #1454)
 
 ## v1.14.1 (Eris)
