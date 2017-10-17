@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.22.6-PRE
+## v1.22.6
 
 ### Bugfixes
 - [GUI] REVERT: Allow uninstall of incompatible mods in GUI (#1929 by: ayan4m1; reviewed: politas)
