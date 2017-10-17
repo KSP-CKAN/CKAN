@@ -378,29 +378,29 @@ This field defaults to `false`, including for `spec_version`s less than
 `v1.16`, however CKAN clients prior to `v1.16` would only perform strict
 checking.
 
-##### categories
+##### tags
 
-The `categories` field describes keywords that a user or program may use to
-classify or filter the mod in a list, but which are not required.
-One or more of either of the following fields may be used:
+The `tags` field describes keywords that a user or program may use to
+classify or filter the mod in a list, but which are not required. These
+may include general tags which define how the mod interacts with or alters
+KSP or specific tags defining what has been added or changed from stock
+gameplay. Tags may contain lowercase alphanumeric characters or hyphens.
 
-- `main` : Keywords which define how the mod interacts with or alters KSP
-- `sub` : Keywords which further describe what has been added or changed
-from stock gameplay
+Example tags:
 
-Example categories:
-
-    "categories" : [
-        { "main" : "physics" },
-        { "main" : "parts" },
-        { "sub"  : "oceanic" },
-        { "sub"  : "thermal" },
-        { "sub"  : "science" }
+    "tags" : [
+        "physics",
+        "parts",
+        "oceanic",
+        "thermal",
+        "science",
+        "my-1-custom-tag"
     ]
 
-The first defined keyword in each category field should be considered the
-most important and used to populate a sortable column, though it is intended
-that all included category fields will be indexed and filterable.
+The first defined keyword listed in the tag field which matches one of a
+predefined set of 'standard' tags should be considered the most important
+and used to populate a sortable column, though it is intended that all
+included tags will be indexed and searchable.
 
 ### Relationships
 

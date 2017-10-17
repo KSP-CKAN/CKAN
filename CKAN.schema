@@ -110,21 +110,12 @@
             "description" : "Optional enforcement of strict version checks (defaults to false)",
             "type"        : "boolean"
         },
-        "categories" : {
+        "tags" : {
             "description" : "A series of descriptive keywords to provide quick filtering and organization",
             "type"        : "array",
             "items" : {
-                "type" : "object",
-                "properties" : {
-                    "main" : {
-                        "description" : "Keywords which define how the mod interacts with or alters KSP",
-                        "enum" : [ "plugin", "library", "physics", "parts", "config", "program", "other" ]
-                    },
-                    "sub" : {
-                        "description" : "Keywords which further describe what has been added or changed from stock gameplay",
-                        "enum" : [ "informational", "control", "convenience", "graphics", "sound", "unmanned", "manned", "technology", "career", "sandbox", "resources", "pods", "fueltanks", "engines", "command", "structural", "coupling", "payload", "aerodynamic", "ground", "thermal", "electrical", "science", "utility", "oceanic", "terrain", "atmospheric", "orbital", "interplanetary" ]
-                    }
-                }
+                "type" : "string",
+                "pattern" : "^[a-z-]+$"
             }
         },
         "depends" : {
