@@ -2,13 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.22.6
+## v1.23.0-PRE
+
+## v1.22.6 (Guiana)
 
 ### Bugfixes
-- [GUI] REVERT: Allow uninstall of incompatible mods in GUI (#1929 by: ayan4m1; reviewed: politas)
 - [GUI] Fix search box tab order (#2141 by: HebaruSan; reviewed: politas)
 - [Core] Check for stale lock files (#2139 by: HebaruSan; reviewed: politas)
 - [NetKAN] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)
+- [GUI] REVERT #1929: Allow uninstall of incompatible mods in GUI (#2150 by: politas)
 
 ## v1.22.5 (Xichang)
 
