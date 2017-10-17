@@ -209,12 +209,12 @@ namespace CKAN
             UpdateFilters(this);
         }
 
-        public void MarkModForInstall(string identifier, bool installed = false)
+        public void MarkModForInstall(string identifier, bool uncheck = false)
         {
-            Util.Invoke(this, () => _MarkModForInstall(identifier, installed));
+            Util.Invoke(this, () => _MarkModForInstall(identifier, uncheck));
         }
 
-        private void _MarkModForInstall(string identifier, bool install)
+        private void _MarkModForInstall(string identifier, bool uninstall)
         {
             if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
             {
@@ -225,7 +225,7 @@ namespace CKAN
             var mod = (GUIMod)row.Tag;
             if (mod.Identifier == identifier)
             {
-                mod.SetInstallChecked(row, install);
+                mod.SetInstallChecked(row, !uninstall);
             }
         }
 

@@ -439,8 +439,8 @@ namespace CKAN
             }
 
             UpdateModsList();
-            ChangeSet = new List<ModChange>();
-            Conflicts = new Dictionary<GUIMod, string>();
+            ChangeSet = null;
+            Conflicts = null;
 
             Filter((GUIModFilter)configuration.ActiveFilter);
         }
@@ -643,7 +643,7 @@ namespace CKAN
                     var gui_mod = ((GUIMod)current_row.Tag);
                     if (gui_mod.IsInstallable())
                     {
-                        MarkModForInstall(gui_mod.Identifier, gui_mod.IsInstallChecked);
+                        MarkModForInstall(gui_mod.Identifier,uncheck:gui_mod.IsInstallChecked);
                     }
                 }
                 e.Handled = true;
@@ -703,47 +703,45 @@ namespace CKAN
 
         private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            var rowIndex = e.RowIndex;
-            var columnIndex = e.ColumnIndex;
-            if (rowIndex < 0 || columnIndex < 0)
+            if (mainModList.ModFilter == GUIModFilter.Incompatible)
             {
                 return;
             }
+            var row_index = e.RowIndex;
+            var column_index = e.ColumnIndex;
 
-            var registryManager = RegistryManager.Instance(CurrentInstance);
-            var grid = sender as DataGridView;
-            if (sender == null)
+            if (row_index < 0 || column_index < 0)
             {
-                throw new Kraken("Could not find DataGridView!");
+                return;
             }
+            var registry_manager = RegistryManager.Instance(CurrentInstance);
 
-            var row = grid.Rows[rowIndex];
-            var gridCell = row.Cells[columnIndex];
+            var grid = sender as DataGridView;
 
-            if (gridCell is DataGridViewLinkCell)
+            var row = grid.Rows[row_index];
+            var grid_view_cell = row.Cells[column_index];
+
+            if (grid_view_cell is DataGridViewLinkCell)
             {
-                var cell = gridCell as DataGridViewLinkCell;
+                var cell = grid_view_cell as DataGridViewLinkCell;
                 Process.Start(cell.Value.ToString());
             }
-            else if (columnIndex < 2)
+            else if (column_index < 2)
             {
-                var guiMod = ((GUIMod)row.Tag);
-                switch (columnIndex)
+                var gui_mod = ((GUIMod)row.Tag);
+                switch (column_index)
                 {
                     case 0:
-                        guiMod.SetInstallChecked(row);
-
-                        if (guiMod.IsInstallChecked)
-                        {
-                            lastModToggled.Push(guiMod);
-                        }
+                        gui_mod.SetInstallChecked(row);
+                        if(gui_mod.IsInstallChecked)
+                            last_mod_to_have_install_toggled.Push(gui_mod);
                         break;
                     case 1:
-                        guiMod.SetUpgradeChecked(row);
+                        gui_mod.SetUpgradeChecked(row);
                         break;
                 }
 
-                var registry = registryManager.registry;
+                var registry = registry_manager.registry;
                 await UpdateChangeSetAndConflicts(registry);
             }
         }
@@ -781,7 +779,7 @@ namespace CKAN
                 new_conflicts = Conflicts;
                 full_change_set = ChangeSet;
             }
-            lastModToggled.Clear();
+            last_mod_to_have_install_toggled.Clear();
             Conflicts = new_conflicts;
             ChangeSet = full_change_set;
         }
