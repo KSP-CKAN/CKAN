@@ -85,11 +85,13 @@ and the
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
             "repository"   : "https://github.com/camlost2/AJE"
         },
-        "categories" : [
-            { "main" : "physics" },
-            { "sub"  : "resources" },
-            { "sub"  : "atmospheric" },
-            { "sub"  : "engines" }
+        "tags" : [
+            "physics",
+            "resources",
+            "atmospheric",
+            "engines",
+            "nasa-enginesim",
+            "b9-turbofans"
         ],
         "install" : [
             {
