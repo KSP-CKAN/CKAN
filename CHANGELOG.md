@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.23.0-PRE
+## v1.22.7-PRE
+
+### Bugfixes
+- [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 
 ## v1.22.6 (Guiana)
 
