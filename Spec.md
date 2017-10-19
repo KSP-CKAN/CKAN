@@ -382,11 +382,12 @@ checking.
 
 ##### tags
 
-The `tags` field describes keywords that a user or program may use to
-classify or filter the mod in a list, but which are not required. These
-may include general tags which define how the mod interacts with or alters
-KSP or specific tags defining what has been added or changed from stock
-gameplay. Tags may contain lowercase alphanumeric characters or hyphens.
+(**v1.24**) The `tags` field describes keywords that a user or program may
+use to classify or filter the mod in a list, but which are not required.
+These may include general tags which define how the mod interacts with or
+alters KSP or specific tags defining what has been added or changed from
+stock gameplay. Tags may contain lowercase alphanumeric characters or
+hyphens.
 
 Example tags:
 
@@ -401,8 +402,8 @@ Example tags:
 
 The first defined keyword listed in the tag field which matches one of a
 predefined set of 'standard' tags should be considered the most important
-and used to populate a sortable column, though it is intended that all
-included tags will be indexed and searchable.
+and used to populate a sortable column in online indices, though it is
+intended that all included tags will be indexed and searchable.
 
 ### Relationships
 
