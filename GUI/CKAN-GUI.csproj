@@ -350,6 +350,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\backward.png" />
+    <Content Include="Resources\filter.png" />
     <Content Include="Resources\forward.png" />
     <Content Include="Resources\textClear.png" />
   </ItemGroup>
