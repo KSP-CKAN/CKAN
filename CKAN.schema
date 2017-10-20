@@ -110,6 +110,14 @@
             "description" : "Optional enforcement of strict version checks (defaults to false)",
             "type"        : "boolean"
         },
+        "tags" : {
+            "description" : "A series of descriptive keywords to provide quick filtering and organization",
+            "type"        : "array",
+            "items" : {
+                "type" : "string",
+                "pattern" : "^[a-z0-9-]+$"
+            }
+        },
         "depends" : {
             "description" : "Optional list of dependencies",
             "$ref"        : "#/definitions/relationship"

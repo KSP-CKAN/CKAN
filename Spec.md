@@ -85,6 +85,14 @@ and the
             "homepage"     : "http://forum.kerbalspaceprogram.com/threads/70008",
             "repository"   : "https://github.com/camlost2/AJE"
         },
+        "tags" : [
+            "physics",
+            "resources",
+            "atmospheric",
+            "engines",
+            "nasa-enginesim",
+            "b9-turbofans"
+        ],
         "install" : [
             {
                 "file"       : "AJE-1.6",
@@ -371,6 +379,31 @@ KSP `1.0.4` (but not any other version) when `ksp_version_strict` is false.
 This field defaults to `false`, including for `spec_version`s less than
 `v1.16`, however CKAN clients prior to `v1.16` would only perform strict
 checking.
+
+##### tags
+
+(**v1.24**) The `tags` field describes keywords that a user or program may
+use to classify or filter the mod in a list, but which are not required.
+These may include general tags which define how the mod interacts with or
+alters KSP or specific tags defining what has been added or changed from
+stock gameplay. Tags may contain lowercase alphanumeric characters or
+hyphens.
+
+Example tags:
+
+    "tags" : [
+        "physics",
+        "parts",
+        "oceanic",
+        "thermal",
+        "science",
+        "my-1-custom-tag"
+    ]
+
+The first defined keyword listed in the tag field which matches one of a
+predefined set of 'standard' tags should be considered the most important
+and used to populate a sortable column in online indices, though it is
+intended that all included tags will be indexed and searchable.
 
 ### Relationships
 

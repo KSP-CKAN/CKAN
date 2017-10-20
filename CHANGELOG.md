@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.22.7-PRE
 
+## Features
+- [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
+
 ### Bugfixes
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 
