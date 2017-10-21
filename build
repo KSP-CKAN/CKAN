@@ -40,7 +40,7 @@ if [ ! -f "$nugetExe" ]; then
     curl -L "https://dist.nuget.org/win-x86-commandline/v${nugetVersion}/nuget.exe" --output "$nugetExe"
 fi
 
-mono "$nugetExe" install "$packagesConfigFile" -OutputDirectory "$packagesDir"
+mono "$nugetExe" restore "$packagesConfigFile" -OutputDirectory "$packagesDir"
 
 cakeArgs=""
 

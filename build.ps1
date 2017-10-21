@@ -30,7 +30,7 @@ if (!(Test-Path "$NugetExe")) {
 }
 
 # Install build packages
-Invoke-Expression "& '${NugetExe}' install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
+Invoke-Expression "& '${NugetExe}' restore `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
 
 # Build args
 $cakeArgs = @()
