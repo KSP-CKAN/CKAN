@@ -150,7 +150,7 @@ namespace CKAN
                         // is running, and it's not safe to delete the lock file.
                         // We are done.
                     }
-                    catch (ArgumentException ex)
+                    catch (ArgumentException)
                     {
                         // ArgumentException means the process doesn't exist,
                         // so the lock file is stale and we can delete it.
