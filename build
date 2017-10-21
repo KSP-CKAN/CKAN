@@ -19,7 +19,7 @@ if [ $# -gt 1 ]; then
     done
 fi
 
-nugetVersion="4.1.0"
+nugetVersion="4.4.0"
 useExperimental=false
 rootDir=$(dirname $0)
 scriptFile="$rootDir/build.cake"

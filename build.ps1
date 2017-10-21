@@ -7,7 +7,7 @@ Param (
 )
 
 # Globals
-$NugetVersion       = "4.1.0"
+$NugetVersion       = "4.4.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
 $ScriptFile         = "${RootDir}/build.cake"
