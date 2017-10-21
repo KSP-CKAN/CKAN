@@ -21,6 +21,13 @@ Task("Default")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
 
+
+Task("Debug")
+    .IsDependentOn("Default");
+
+Task("Release")
+    .IsDependentOn("Default");
+
 Task("Ckan")
     .IsDependentOn("Repack-Ckan");
 
@@ -156,6 +163,26 @@ Task("Version")
     .Does(() =>
 {
     Information(GetVersion().ToString());
+});
+
+Setup(context =>
+{
+    var argConfiguration = Argument<string>("configuration");
+
+    if (string.Equals(target, "Release", StringComparison.OrdinalIgnoreCase))
+    {
+        if (argConfiguration != null)
+            Warning($"Ignoring configuration argument: '{argConfiguration}'");
+
+        configuration = "Release";
+    }
+    else if (string.Equals(target, "Debug", StringComparison.OrdinalIgnoreCase))
+    {
+        if (argConfiguration != null)
+            Warning($"Ignoring configuration argument: '{argConfiguration}'");
+
+        configuration = "Debug";
+    }
 });
 
 Teardown(context =>
