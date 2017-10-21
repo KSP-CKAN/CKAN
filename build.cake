@@ -77,7 +77,7 @@ Task("Repack-Ckan")
     ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CmdLine.exe"), assemblyPaths,
         new ILRepackSettings
         {
-            Libs = new List<FilePath> { cmdLineBinDirectory.ToString() },
+            Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },
             TargetPlatform = TargetPlatformVersion.v4
         }
     );
@@ -95,7 +95,7 @@ Task("Repack-Netkan")
     ILRepack(netkanFile, netkanBinDirectory.CombineWithFilePath("NetKAN.exe"), assemblyPaths,
         new ILRepackSettings
         {
-            Libs = new List<FilePath> { netkanBinDirectory.ToString() },
+            Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },
         }
     );
 
@@ -130,7 +130,7 @@ Task("Test-UnitTests+Only")
 
     NUnit3(testFile.FullPath, new NUnit3Settings {
         Where = where,
-        Results = nunitOutputDirectory.CombineWithFilePath("TestResult.xml")
+        Work = nunitOutputDirectory
     });
 });
 
