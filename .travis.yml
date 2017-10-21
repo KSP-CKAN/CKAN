@@ -3,8 +3,11 @@ language: csharp
 sudo: required
 
 env:
-    - BUILD_CONFIGURATION=Debug
-    - BUILD_CONFIGURATION=Release
+    global:
+        - BUILD_RELEASE_MONO_VERSION=5.4.0
+    matrix:
+        - BUILD_CONFIGURATION=Debug
+        - BUILD_CONFIGURATION=Release
 
 mono:
     - 5.4.0
@@ -42,7 +45,7 @@ deploy:
       on:
         repo: KSP-CKAN/CKAN
         tags: true
-        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 5.4.0
+        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = $BUILD_RELEASE_MONO_VERSION
         # all_branches needed as a workaround for travis-ci#1675
         all_branches: true
 
@@ -59,7 +62,7 @@ deploy:
       on:
         repo: KSP-CKAN/CKAN
         branch: master
-        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = 5.4.0
+        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = $BUILD_RELEASE_MONO_VERSION
 
 notifications:
   irc:
