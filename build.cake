@@ -1,4 +1,5 @@
-#addin "nuget:?package=Cake.SemVer&version=1.0.14"
+#addin "nuget:?package=Cake.SemVer&version=2.0.0"
+#addin "nuget:?package=semver&version=2.0.4"
 #tool "nuget:?package=ILRepack&version=2.0.13"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.6.1"
 
