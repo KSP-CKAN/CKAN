@@ -10,6 +10,7 @@ Param (
 $NugetVersion       = "4.1.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
+$ScriptFile         = "${RootDir}/build.cake"
 $BuildDir           = "${RootDir}/_build"
 $ToolsDir           = "${BuildDir}/tools"
 $PackagesDir        = "${BuildDir}/lib/nuget"
@@ -47,5 +48,5 @@ if ($UseExperimental) {
 }
 
 # Run Cake
-Invoke-Expression "& '${CakeExe}' ${cakeArgs} ${RemainingArgs}"
+Invoke-Expression "& '${CakeExe}' '${ScriptFile}' ${cakeArgs} ${RemainingArgs}"
 exit $LASTEXITCODE

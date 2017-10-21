@@ -350,4 +350,10 @@
     <Content Include="Resources\forward.png" />
     <Content Include="Resources\textClear.png" />
   </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+          Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'"/>
+  </Target>
 </Project>
