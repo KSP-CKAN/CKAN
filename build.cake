@@ -167,7 +167,7 @@ Task("Version")
 
 Setup(context =>
 {
-    var argConfiguration = Argument<string>("configuration");
+    var argConfiguration = Argument<string>("configuration", null);
 
     if (string.Equals(target, "Release", StringComparison.OrdinalIgnoreCase))
     {
