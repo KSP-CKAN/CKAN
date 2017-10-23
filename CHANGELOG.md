@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## Features
 - [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
+- [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
 
 ### Bugfixes
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)

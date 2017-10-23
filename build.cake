@@ -1,6 +1,7 @@
-#addin "nuget:?package=Cake.SemVer&version=1.0.14"
+#addin "nuget:?package=Cake.SemVer&version=2.0.0"
+#addin "nuget:?package=semver&version=2.0.4"
 #tool "nuget:?package=ILRepack&version=2.0.13"
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.6.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.7.0"
 
 using System.Text.RegularExpressions;
 using Semver;
@@ -19,6 +20,13 @@ var netkanFile = repackDirectory.Combine(configuration).CombineWithFilePath("net
 Task("Default")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
+
+
+Task("Debug")
+    .IsDependentOn("Default");
+
+Task("Release")
+    .IsDependentOn("Default");
 
 Task("Ckan")
     .IsDependentOn("Repack-Ckan");
@@ -76,7 +84,7 @@ Task("Repack-Ckan")
     ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CmdLine.exe"), assemblyPaths,
         new ILRepackSettings
         {
-            Libs = new List<FilePath> { cmdLineBinDirectory.ToString() },
+            Libs = new List<DirectoryPath> { cmdLineBinDirectory.ToString() },
             TargetPlatform = TargetPlatformVersion.v4
         }
     );
@@ -94,7 +102,7 @@ Task("Repack-Netkan")
     ILRepack(netkanFile, netkanBinDirectory.CombineWithFilePath("NetKAN.exe"), assemblyPaths,
         new ILRepackSettings
         {
-            Libs = new List<FilePath> { netkanBinDirectory.ToString() },
+            Libs = new List<DirectoryPath> { netkanBinDirectory.ToString() },
         }
     );
 
@@ -129,7 +137,7 @@ Task("Test-UnitTests+Only")
 
     NUnit3(testFile.FullPath, new NUnit3Settings {
         Where = where,
-        Results = nunitOutputDirectory.CombineWithFilePath("TestResult.xml")
+        Work = nunitOutputDirectory
     });
 });
 
@@ -155,6 +163,26 @@ Task("Version")
     .Does(() =>
 {
     Information(GetVersion().ToString());
+});
+
+Setup(context =>
+{
+    var argConfiguration = Argument<string>("configuration", null);
+
+    if (string.Equals(target, "Release", StringComparison.OrdinalIgnoreCase))
+    {
+        if (argConfiguration != null)
+            Warning($"Ignoring configuration argument: '{argConfiguration}'");
+
+        configuration = "Release";
+    }
+    else if (string.Equals(target, "Debug", StringComparison.OrdinalIgnoreCase))
+    {
+        if (argConfiguration != null)
+            Warning($"Ignoring configuration argument: '{argConfiguration}'");
+
+        configuration = "Debug";
+    }
 });
 
 Teardown(context =>

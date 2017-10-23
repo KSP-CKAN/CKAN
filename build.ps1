@@ -7,9 +7,10 @@ Param (
 )
 
 # Globals
-$NugetVersion       = "4.1.0"
+$NugetVersion       = "4.4.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
+$ScriptFile         = "${RootDir}/build.cake"
 $BuildDir           = "${RootDir}/_build"
 $ToolsDir           = "${BuildDir}/tools"
 $PackagesDir        = "${BuildDir}/lib/nuget"
@@ -29,7 +30,7 @@ if (!(Test-Path "$NugetExe")) {
 }
 
 # Install build packages
-Invoke-Expression "& '${NugetExe}' install `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
+Invoke-Expression "& '${NugetExe}' restore `"${PackagesConfigFile}`" -OutputDirectory `"${PackagesDir}`""
 
 # Build args
 $cakeArgs = @()
@@ -47,5 +48,5 @@ if ($UseExperimental) {
 }
 
 # Run Cake
-Invoke-Expression "& '${CakeExe}' ${cakeArgs} ${RemainingArgs}"
+Invoke-Expression "& '${CakeExe}' '${ScriptFile}' ${cakeArgs} ${RemainingArgs}"
 exit $LASTEXITCODE
