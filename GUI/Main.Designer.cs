@@ -474,7 +474,7 @@ namespace CKAN
             // UpdateCol
             //
             this.UpdateCol.HeaderText = "Update";
-            this.UpdateCol.Name = "Update";
+            this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.UpdateCol.Width = 46;
             //
