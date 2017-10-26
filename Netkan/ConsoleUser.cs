@@ -72,9 +72,6 @@ namespace CKAN
                 Console.Write("\r\n{0}", format);
             }
         }
-        protected override void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)
-        {
-        }
 
     }
 }

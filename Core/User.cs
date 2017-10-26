@@ -16,7 +16,6 @@ namespace CKAN
 
         void RaiseProgress(string message, int percent);
         void RaiseMessage(string message, params object[] url);
-        void RaiseDownloadsCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors);
     }
 
     //Can be used in tests to supress output or as a base class for other types of user.
@@ -37,10 +36,6 @@ namespace CKAN
             return true;
         }
 
-        protected virtual void DisplayMessage(string message, params object[] args)
-        {
-        }
-
         protected virtual int DisplaySelectionDialog(string message, params object[] args)
         {
             return 0;
@@ -54,18 +49,8 @@ namespace CKAN
         {
         }
 
-        protected virtual void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)
+        protected virtual void DisplayMessage(string message, params object[] args)
         {
-        }
-
-        public void RaiseMessage(string message, params object[] args)
-        {
-            DisplayMessage(message, args);
-        }
-
-        public void RaiseProgress(string message, int percent)
-        {
-            ReportProgress(message, percent);
         }
 
         public bool RaiseYesNoDialog(string question)
@@ -83,9 +68,15 @@ namespace CKAN
             DisplayError(message, args);
         }
 
-        public void RaiseDownloadsCompleted(Uri[] file_urls, string[] file_paths, Exception[] errors)
+        public void RaiseProgress(string message, int percent)
         {
-            ReportDownloadsComplete(file_urls, file_paths, errors);
+            ReportProgress(message, percent);
         }
+
+        public void RaiseMessage(string message, params object[] args)
+        {
+            DisplayMessage(message, args);
+        }
+
     }
 }
