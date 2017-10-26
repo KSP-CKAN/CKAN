@@ -302,7 +302,7 @@ namespace CKAN
 
     public class RegistryInUseKraken : Kraken
     {
-        readonly string lockfilePath;
+        public readonly string lockfilePath;
 
         public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)

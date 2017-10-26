@@ -137,6 +137,9 @@ namespace CKAN.CmdLine
                     case "gui":
                         return Gui((GuiOptions)options, args);
 
+                    case "consoleui":
+                        return ConsoleUi(args);
+
                     case "version":
                         return Version(user);
 
@@ -207,6 +210,11 @@ namespace CKAN.CmdLine
             GUI.Main_(args, options.ShowConsole);
 
             return Exit.OK;
+        }
+
+        private static int ConsoleUi(string[] args)
+        {
+           return CKAN.ConsoleUI.ConsoleUI.Main_(args);
         }
 
         private static int Version(IUser user)

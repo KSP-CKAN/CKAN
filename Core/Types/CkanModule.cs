@@ -501,6 +501,22 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns machine readable object indicating the highest compatible
+        /// version of KSP this module will run with.
+        /// </summary>
+        public KspVersion EarliestCompatibleKSP()
+        {
+            // Find the highest compatible KSP version
+            if (ksp_version_min != null)
+                return ksp_version_min;
+            else if (ksp_version != null)
+                return ksp_version;
+            else
+                // No lower limit.
+                return KspVersion.Any;
+        }
+
+        /// <summary>
         /// Returns true if this module provides the functionality requested.
         /// </summary>
         public bool DoesProvide(string identifier)
