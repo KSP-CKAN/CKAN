@@ -335,7 +335,7 @@ namespace CKAN
 
             installWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             installWorker.RunWorkerCompleted += PostInstallMods;
-            installWorker.DoWork += InstallMods;          
+            installWorker.DoWork += InstallMods;
 
             var old_YesNoDialog = currentUser.displayYesNo;
             currentUser.displayYesNo = YesNoDialog;
@@ -385,7 +385,7 @@ namespace CKAN
             }
 
             pluginController = new PluginController(pluginsPath, true);
-            
+
             CurrentInstance.RebuildKSPSubDir();
 
             NavInit();  // initialize navigation. this should be called as late
@@ -1077,7 +1077,7 @@ namespace CKAN
                 }
                 else
                 {
-                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) || 
+                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                         mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
                         mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
                 }
@@ -1237,9 +1237,5 @@ namespace CKAN
             Main.Instance.SetProgress(percent);
         }
 
-        public override int WindowWidth
-        {
-            get { return -1; }
-        }
     }
 }

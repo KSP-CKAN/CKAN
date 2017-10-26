@@ -246,10 +246,6 @@ namespace CKAN.CmdLine
         protected override void ReportDownloadsComplete(Uri[] urls, string[] filenames, Exception[] errors)
         {
         }
-        public override int WindowWidth
-        {
-            get { return Console.WindowWidth; }
-        }
 
     }
 }
