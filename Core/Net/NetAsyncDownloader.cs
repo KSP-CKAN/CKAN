@@ -238,7 +238,7 @@ namespace CKAN
                 );
             }
         }
-        
+
         public void DownloadAndWait(ICollection<KeyValuePair<Uri, long>> urls)
         {
             // Start the download!
@@ -319,7 +319,6 @@ namespace CKAN
             }
             // Signal that we're done.
             complete_or_canceled.Set();
-            User.RaiseDownloadsCompleted(file_urls, file_paths, errors);
         }
 
         /// <summary>

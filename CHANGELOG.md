@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 - [Build] Fix build errors for UpdateCol (#2153 by: politas; reviewed: Olympic1)
+- [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
 
 ## v1.22.6 (Guiana)
 
