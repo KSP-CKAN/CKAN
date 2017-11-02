@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Spec] Add CC-BY-ND licence options (#2160 by: MoreRobustThanYou; reviewed: Olympic1, politas)
 - [GUI] Change icon on filter button to something filter-y (#2156 by: politas; reviewed: HebaruSan)
 - [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
+- [Build] Establish a .gitattributes file (#2169 by: Olympic1; reviewed: politas)
 
 ### Bugfixes
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
