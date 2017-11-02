@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.22.7-PRE
+## v1.24.0-PRE
 
 ## Features
 - [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
 - [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
 - [Spec] Add CC-BY-ND licence options (#2160 by: MoreRobustThanYou; reviewed: Olympic1, politas)
 - [GUI] Change icon on filter button to something filter-y (#2156 by: politas; reviewed: HebaruSan)
+- [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
 
 ### Bugfixes
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)

@@ -295,14 +295,22 @@ In addition, any number of optional directives *may* be provided:
 
 - `as` : (**v1.18**) The name to give the matching directory or file when installed. Allows renaming directories or
   files.
-- `filter` : A string, or list of strings, of file parts that should not
+- `filter` : A string, or list of strings, of file parts that should *not*
   be installed. These are treated as literal things which must match a
   file name or directory. Examples of filters may be `Thumbs.db`,
   or `Source`. Filters are considered case-insensitive.
 - `filter_regexp` : A string, or list of strings, which are treated as
   case-sensitive C# regular expressions which are matched against the
   full paths from the installing zip-file. If a file matches the regular
-  expression, it is not installed.
+  expression, it is *not* installed.
+- `include_only` : (**v1.24**) A string, or list of strings, of file parts that should
+  be installed. These are treated as literal things which must match a
+  file name or directory. Examples of this may be `Settings.cfg`,
+  or `Plugin`. These are considered case-insensitive.
+- `include_only_regexp` : (**v1.24**) A string, or list of strings, which are treated as
+  case-sensitive C# regular expressions which are matched against the
+  full paths from the installing zip-file. If a file matches the regular
+  expression, it is installed.
 - `find_matches_files` : (**v1.16**) If set to `true` then both `find` and
   `find_regexp` will match files in addition to directories.
 
@@ -755,8 +763,8 @@ file downloaded by the `download` field. The following conditions apply:
   [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm).
 * The `KSP_VERSION` field for the `.version` file will be ignored if the
   `KSP_VERSION_MIN` and `KSP_VERSION_MAX` fields are set.
-* Netkan will first attempt to use anything after `ksp-avc` as a literal 
-   path within the zip file, and if that fails, will use the string as a 
+* Netkan will first attempt to use anything after `ksp-avc` as a literal
+   path within the zip file, and if that fails, will use the string as a
    regexp to search for a matching file to use.
 
 When used, the following fields are auto-generated:
