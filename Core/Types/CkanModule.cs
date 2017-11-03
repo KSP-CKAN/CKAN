@@ -166,6 +166,9 @@ namespace CKAN
         [JsonProperty("depends", NullValueHandling = NullValueHandling.Ignore)]
         public List<RelationshipDescriptor> depends;
 
+        [JsonProperty("replaced_by")]
+        public RelationshipDescriptor replaced_by;
+
         [JsonProperty("download")]
         public Uri download;
 
@@ -406,6 +409,7 @@ namespace CKAN
         );
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
+        /// TODO: Catch and display errors
         public static CkanModule FromFile(string filename)
         {
             string json = File.ReadAllText(filename);
