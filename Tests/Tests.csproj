@@ -67,19 +67,6 @@
     <None Include="Data\CKAN-meta-badkan.zip" />
     <None Include="Data\CKAN-meta-testkan.tar.gz" />
     <None Include="Data\CKAN-meta-testkan.zip" />
-    <None Include="Data\data\DogeCoinFlag-1.01-corrupt.zip" />
-    <None Include="Data\data\DogeCoinFlag-1.01.zip" />
-    <None Include="Data\data\DogeCoinFlag-extra-files.zip" />
-    <None Include="Data\data\Firespitter-6.3.5.ckan" />
-    <None Include="Data\data\gh221.zip" />
-    <None Include="Data\data\ksp-avc.version" />
-    <None Include="Data\data\KSP\KSP-0.25\GameData\README.md" />
-    <None Include="Data\data\KS\CustomAsteroids.json" />
-    <None Include="Data\data\KS\README.md" />
-    <None Include="Data\data\ModuleManager-2.5.1.ckan" />
-    <None Include="Data\data\ModuleManager-2.5.1.zip" />
-    <None Include="Data\data\README.md" />
-    <None Include="Data\data\registry.json" />
     <None Include="Data\DogeCoinFlag-1.01-corrupt.zip" />
     <None Include="Data\DogeCoinFlag-1.01.zip" />
     <None Include="Data\DogeCoinFlag-extra-files.zip" />
@@ -179,10 +166,6 @@
   <ItemGroup>
     <Content Include="Data\CKAN.sln" />
     <Content Include="Data\cmdline.t" />
-    <Content Include="Data\data\CKAN.sln" />
-    <Content Include="Data\data\KSP\bad-KSP\readme.txt" />
-    <Content Include="Data\data\KSP\KSP-0.25\readme.txt" />
-    <Content Include="Data\data\KSP\missing-gamedata\readme.txt" />
     <Content Include="Data\FileIdentifier\test_ascii.txt" />
     <Content Include="Data\KSP\bad-KSP\readme.txt" />
     <Content Include="Data\KSP\KSP-0.25\readme.txt" />
