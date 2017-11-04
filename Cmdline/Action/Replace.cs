@@ -66,11 +66,10 @@ namespace CKAN.CmdLine
                                     replacement.ToReplace.identifier, replacement.ToReplace.version);
                                 to_replace.Add(replacement);
                             }
-
                         }
                         catch (ModuleNotFoundKraken)
                         {
-                            log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
+                            log.InfoFormat("{0} is installed, but it is not in the registry",
                                 mod.Key);
                         }
                     }
@@ -91,14 +90,18 @@ namespace CKAN.CmdLine
                                 if (registry.HasReplacement(mod, ksp.VersionCriteria()))
                                 {
                                     // Replaceable
-                                    CkanModule ReplaceWith = registry.LatestAvailable(modToReplace.replaced_by.name, ksp.VersionCriteria());
                                     ModuleReplacement replacement = new ModuleReplacement();
                                     replacement.ToReplace = modToReplace;
-                                    replacement.ReplaceWith = ReplaceWith;
+                                    replacement.ReplaceWith = registry.LatestAvailable(modToReplace.replaced_by.name, ksp.VersionCriteria());
                                     log.InfoFormat("Replacement {0} {1} found for {2} {3}",
                                         replacement.ReplaceWith.identifier, replacement.ReplaceWith.version,
                                         replacement.ToReplace.identifier, replacement.ToReplace.version);
                                     to_replace.Add(replacement);
+                                }
+                                else
+                                {
+                                    log.InfoFormat("Cannot replace {0}, {1} is not available for this KSP version",
+                                        mod, modToReplace.replaced_by.name);
                                 }
                             }
                             catch (ModuleNotFoundKraken)
