@@ -6,7 +6,6 @@
 *.gitignore     text
 *.md            text
 *.txt           text
-LICENSE         text
 
 # Java
 *.json          text
