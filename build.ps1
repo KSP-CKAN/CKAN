@@ -10,14 +10,14 @@ Param (
 $NugetVersion       = "4.4.0"
 $UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
-$ScriptFile         = "${RootDir}/build.cake"
-$BuildDir           = "${RootDir}/_build"
-$ToolsDir           = "${BuildDir}/tools"
-$PackagesDir        = "${BuildDir}/lib/nuget"
-$NugetExe           = "${ToolsDir}/NuGet/${NugetVersion}/nuget.exe"
-$PackagesConfigFile = "${RootDir}/packages.config"
+$ScriptFile         = "${RootDir}\build.cake"
+$BuildDir           = "${RootDir}\_build"
+$ToolsDir           = "${BuildDir}\tools"
+$PackagesDir        = "${BuildDir}\lib\nuget"
+$NugetExe           = "${ToolsDir}\NuGet\${NugetVersion}\nuget.exe"
+$PackagesConfigFile = "${RootDir}\packages.config"
 $CakeVersion        = (Select-Xml -Xml ([xml](Get-Content $PackagesConfigFile)) -XPath "//package[@id='Cake'][1]/@version").Node.Value
-$CakeExe            = "${PackagesDir}/Cake.${CakeVersion}/Cake.exe"
+$CakeExe            = "${PackagesDir}\Cake.${CakeVersion}\Cake.exe"
 
 # Download NuGet
 $NugetDir = Split-Path "$NugetExe" -Parent
