@@ -50,7 +50,7 @@ namespace CKAN.CmdLine
                 foreach (KeyValuePair<string, Version> mod in installed)
                 {
                     Version current_version = mod.Value;
-
+                    string modInfo = string.Format("{0} {1}", mod.Key, mod.Value);
                     string bullet = "*";
 
                     if (current_version is ProvidesVersion)
@@ -61,7 +61,7 @@ namespace CKAN.CmdLine
                     else if (current_version is DllVersion)
                     {
                         // Autodetected dll
-                        bullet = "-";
+                        bullet = "A";
                     }
                     else
                     {
@@ -81,6 +81,14 @@ namespace CKAN.CmdLine
                             {
                                 // Up to date
                                 bullet = "-";
+                                //Check if mod is replaceable
+                                CkanModule replacement = registry.LatestAvailable(registry.GetInstalledVersion(mod.Key).replaced_by.name, ksp.VersionCriteria());
+                                if (replacement != null)
+                                {
+                                    // Replaceable
+                                    bullet = ">";
+                                    modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
+                                }
                             }
                             else if (latest.version.IsGreaterThan(mod.Value))
                             {
@@ -95,7 +103,7 @@ namespace CKAN.CmdLine
                         }
                     }
 
-                    user.RaiseMessage("{0} {1} {2}", bullet, mod.Key, mod.Value);
+                    user.RaiseMessage("{0} {1}", bullet, modInfo);
                 }
             }
             else
@@ -107,7 +115,7 @@ namespace CKAN.CmdLine
 
             if (!(options.porcelain) && exportFileType == null)
             {
-                user.RaiseMessage("\r\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. ?: Unknown. *: Broken. ");
+                user.RaiseMessage("\r\nLegend: -: Up to date. X: Incompatible. ^: Upgradable. >: Replaceable\n        A: Authodetected. ?: Unknown. *: Broken. ");
                 // Broken mods are in a state that CKAN doesn't understand, and therefore can't handle automatically
             }
 
