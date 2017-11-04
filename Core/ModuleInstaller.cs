@@ -1164,7 +1164,7 @@ namespace CKAN
                         {
                             log.InfoFormat("{0} is already at the latest version, reinstalling to replace {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
                         }
-                        else if (installed.version.IsGreaterThan(module.version))
+                        else if (installed.version.IsGreaterThan(repl.ReplaceWith.version))
                         {
                             log.WarnFormat("Downgrading {0} from {1} to {2} to replace {3}", repl.ReplaceWith.identifier, repl.ReplaceWith.version, repl.ReplaceWith.version, repl.ToReplace.identifier);
                         }

@@ -58,12 +58,13 @@ namespace CKAN.CmdLine
                             if (registry.HasReplacement(mod.Key, ksp.VersionCriteria()))
                             {
                                 // Replaceable
-                                CkanModule toReplace = registry.GetModuleByVersion(mod.Key, mod.Value);
-                                CkanModule replacement = registry.LatestAvailable(toReplace.replaced_by.name, ksp.VersionCriteria());
+                                ModuleReplacement replacement = new ModuleReplacement();
+                                replacement.ToReplace = registry.GetModuleByVersion(mod.Key, mod.Value);
+                                replacement.ReplaceWith = registry.LatestAvailable(replacement.ToReplace.replaced_by.name, ksp.VersionCriteria());
                                 log.InfoFormat("Replacement {0} {1} found for {2} {3}",
-                                    replacement.identifier, replacement.version,
-                                    toReplace.identifier, toReplace.version);
-                                to_replace.Add(toReplace);
+                                    replacement.ReplaceWith.identifier, replacement.ReplaceWith.version,
+                                    replacement.ToReplace.identifier, replacement.ToReplace.version);
+                                to_replace.Add(replacement);
                             }
 
                         }
@@ -90,18 +91,20 @@ namespace CKAN.CmdLine
                                 if (registry.HasReplacement(mod, ksp.VersionCriteria()))
                                 {
                                     // Replaceable
-                                    CkanModule replacement = registry.LatestAvailable(toReplace.replaced_by.name, ksp.VersionCriteria());
+                                    CkanModule ReplaceWith = registry.LatestAvailable(modToReplace.replaced_by.name, ksp.VersionCriteria());
+                                    ModuleReplacement replacement = new ModuleReplacement();
+                                    replacement.ToReplace = modToReplace;
+                                    replacement.ReplaceWith = ReplaceWith;
                                     log.InfoFormat("Replacement {0} {1} found for {2} {3}",
-                                        replacement.identifier, replacement.version,
-                                        modToReplace.identifier, modToReplace.version);
-                                    to_replace.Add(modToReplace);
+                                        replacement.ReplaceWith.identifier, replacement.ReplaceWith.version,
+                                        replacement.ToReplace.identifier, replacement.ToReplace.version);
+                                    to_replace.Add(replacement);
                                 }
-
                             }
                             catch (ModuleNotFoundKraken)
                             {
-                                log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
-                                    mod);
+                                log.InfoFormat("{0} is installed, but its replacement {1} is not in the registry",
+                                    mod, modToReplace.replaced_by.name);
                             }
                         }
                     }
