@@ -647,6 +647,24 @@ namespace Tests.Core
             }
         }
 
+        [Test]
+        public void SuccessfulReplacement()
+        {
+            //Need to set up an installed DogeCoinFlag-101replaced mod that can validly be replaced by DogeTokenFlag-101
+
+            // Assert that DogeCoinFlag has been removed and DogeTokenFlag has been installed
+            Assert.True;
+        }
+
+        [Test]
+        public void UnsuccessfulReplacement()
+        {
+            //Need to set up an installed DogeCoinFlag-101-replaced mod in a KSP version too low for DogeTokenFlag-101
+
+            // Assert that DogeCoinFlag has not been removed and DogeTokenFlag has not been installed
+            Assert.True;
+        }
+
 
         private static void TestDogeCoinStanza(ModuleInstallDescriptor stanza)
         {
