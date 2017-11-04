@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                Log.InfoFormat("Executing Download Attribute transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing Download attribute transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
                 if (file != null)
                 {
                     json["download_size"] = _fileService.GetSizeBytes(file);
-                    
+
                     json["download_hash"] = new JObject();
 
                     var download_hashJson = (JObject)json["download_hash"];

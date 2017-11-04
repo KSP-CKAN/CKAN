@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Transformers
                 var curseMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var latestVersion = curseMod.Latest();
 
-                Log.InfoFormat("Found Curse Mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion());
+                Log.InfoFormat("Found Curse mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion());
 
                 // Only pre-fill version info if there's none already. GH #199
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)

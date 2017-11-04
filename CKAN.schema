@@ -300,7 +300,7 @@
             "pattern"     : "^[A-Za-z0-9-]*$"
         },
         "version" : {
-            "description" : "A verison string",
+            "description" : "A version string",
             "type"        : "string"
         },
         "ksp_version" : {

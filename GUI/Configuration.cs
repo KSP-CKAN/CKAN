@@ -27,8 +27,8 @@ namespace CKAN
 
         private string path = "";
         private Point windowLocation = new Point(0,0);
-        //Workaround for bug which miss-sets the window location.
-        // Here instead of in Main_FormClosing due to the misstaken 
+        //Workaround for bug which mis-sets the window location.
+        // Here instead of in Main_FormClosing due to the mistaken
         // value possibly being written out to config file. After some time
         // it should be save to move. RLake 2015/05
         public Point WindowLoc
@@ -43,7 +43,7 @@ namespace CKAN
             }
             set { windowLocation = value; }
         }
-        
+
         public Size WindowSize = new Size(1024, 500);
 
         public void Save()

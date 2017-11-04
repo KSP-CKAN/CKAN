@@ -36,7 +36,7 @@ namespace CKAN.NetKAN.Transformers
 
                 if (internalJson != null)
                 {
-                    Log.InfoFormat("Executing Internal CKAN transformation with {0}", metadata.Kref);
+                    Log.InfoFormat("Executing internal CKAN transformation with {0}", metadata.Kref);
                     Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                     foreach (var property in internalJson.Properties())

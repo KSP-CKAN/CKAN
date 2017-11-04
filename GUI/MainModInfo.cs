@@ -49,7 +49,7 @@ namespace CKAN
                     var module = value;
                     ModInfoTabControl.Enabled = module != null;
                     if (module == null) return;
-                    
+
                     UpdateModInfo(module);
                     UpdateModDependencyGraph(module);
                     UpdateModContentsTree(module);
@@ -370,7 +370,7 @@ namespace CKAN
             if (File.Exists(location))
             {
                 //We need the Folder of the file
-                //Otherwise the OS would try to open the file in it's default application
+                //Otherwise the OS would try to open the file in its default application
                 location = Path.GetDirectoryName(location);
             }
 

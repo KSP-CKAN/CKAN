@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Transformers
         {
             var json = metadata.Json();
 
-            Log.InfoFormat("Executing Strip Netkan Metadata transformation with {0}", metadata.Kref);
+            Log.InfoFormat("Executing strip Netkan metadata transformation with {0}", metadata.Kref);
             Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
             Strip(json);

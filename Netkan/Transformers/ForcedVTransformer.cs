@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Transformers
             JToken forceV;
             if (json.TryGetValue("x_netkan_force_v", out forceV) && (bool)forceV)
             {
-                Log.InfoFormat("Executing Forced-V transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing forced-v transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 // Force a 'v' in front of the version string if it's not there

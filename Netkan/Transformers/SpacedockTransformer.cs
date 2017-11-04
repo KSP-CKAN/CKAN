@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var latestVersion = sdMod.Latest();
 
-                Log.InfoFormat("Found SpaceDock Mod: {0} {1}", sdMod.name, latestVersion.friendly_version);
+                Log.InfoFormat("Found SpaceDock mod: {0} {1}", sdMod.name, latestVersion.friendly_version);
 
                 // Only pre-fill version info if there's none already. GH #199
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
