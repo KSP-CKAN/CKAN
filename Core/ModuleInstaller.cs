@@ -1107,6 +1107,86 @@ namespace CKAN
             );
         }
 
+        /// <summary>
+        /// Enacts listed Module Replacements to the specified versions for the user's KSP.
+        /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
+        /// Throws ModuleNotFoundKraken if a module is not installed.
+        /// </summary>
+        public void Replace(IEnumerable<ModuleReplacement> replacements, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
+        {
+            List<CkanModule> modsToInstall = new List<CkanModule>();
+            foreach (ModuleReplacement repl in replacements)
+            {
+                modsToInstall.Add(repl.ReplaceWith);
+            }
+            // Start by making sure we've downloaded everything.
+            DownloadModules(modsToInstall, netAsyncDownloader);
+
+            // Our replacement involves removing the currently installed mods, then
+            // adding everything that needs installing (which may involve new mods to
+            // satisfy dependencies). 
+            var to_remove = new List<string>();
+
+            // Let's discover what we need to do with each module!
+            foreach (ModuleReplacement repl in replacements)
+            {
+                string ident = repl.ToReplace.identifier;
+                InstalledModule installed_mod = registry_manager.registry.InstalledModule(ident);
+                CkanModule ReplaceWith = repl.ReplaceWith;
+
+                if (installed_mod == null)
+                {
+                    //Maybe ModuleNotInstalled ?
+                    if (registry_manager.registry.IsAutodetected(ident))
+                    {
+                        throw new ModuleNotFoundKraken(ident, repl.ToReplace.version.ToString(), String.Format("Can't replace {0} as it was not installed by CKAN. \r\n Please remove manually before trying to install it.", ident));
+                    }
+
+                    throw new ModuleNotFoundKraken(ident, repl.ToReplace.version.ToString(), String.Format("Can't replace {0} as it is not installed. Please attempt to install {1} instead.", ident, repl.ReplaceWith.identifier));
+                }
+                else
+                {
+                    // Obviously, we need to remove the  we are replaceing
+                    to_remove.Add(repl.ToReplace.identifier);
+
+                    //Check whether our Replacement target is already installed
+                    InstalledModule installed_replacement = registry_manager.registry.InstalledModule(repl.ReplaceWith.identifier);
+
+                    // If replacement is not installed, we've already added it to modsToInstall above
+                    if (installed_mod != null)
+                    {
+                        //Module already installed. We'll need to treat it as an upgrade.
+
+                        to_remove.Add(installed_replacement.identifier);
+
+                        CkanModule installed = installed_replacement.Module;
+                        if (installed.version.IsEqualTo(repl.ReplaceWith.version))
+                        {
+                            log.InfoFormat("{0} is already at the latest version, reinstalling to replace {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
+                        }
+                        else if (installed.version.IsGreaterThan(module.version))
+                        {
+                            log.WarnFormat("Downgrading {0} from {1} to {2} to replace {3}", repl.ReplaceWith.identifier, repl.ReplaceWith.version, repl.ReplaceWith.version, repl.ToReplace.identifier);
+                        }
+                        else
+                        {
+                            log.InfoFormat("Upgrading {0} to {1} to replace {2}", repl.ReplaceWith.identifier, repl.ReplaceWith.version, repl.ToReplace.identifier);
+                        }
+                    }
+                    else
+                    {
+                        log.InfoFormat("Replacing {0} with {1} {2}", repl.ToReplace.identifier, repl.ReplaceWith.identifier, repl.ReplaceWith.version);
+                    }
+                }
+            }
+
+            AddRemove(
+                modsToInstall,
+                to_remove,
+                enforceConsistency
+            );
+        }
+
         #endregion
 
         /// <summary>
