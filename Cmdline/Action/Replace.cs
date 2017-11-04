@@ -7,7 +7,7 @@ namespace CKAN.CmdLine
 {
     public class Replace : ICommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Replace));
 
         public IUser User { get; set; }
 
@@ -15,6 +15,7 @@ namespace CKAN.CmdLine
         {
             User = user;
         }
+
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
@@ -35,61 +36,29 @@ namespace CKAN.CmdLine
 
             User.RaiseMessage("\r\nReplacing modules...\r\n");
             var registry = RegistryManager.Instance(ksp).registry;
+            var to_replace = new List<ModuleReplacement>();
 
-            try
+            if (options.replace_all)
             {
-                if (options.replace_all)
-                {
-                    
-                    var installed = new Dictionary<string, Version>(registry.Installed());
-                    var to_replace = new List<ModuleReplacement>();
+                var installed = new Dictionary<string, Version>(registry.Installed());
 
-                    foreach (KeyValuePair<string, Version> mod in installed)
+                foreach (KeyValuePair<string, Version> mod in installed)
+                {
+                    Version current_version = mod.Value;
+
+                    if ((current_version is ProvidesVersion) || (current_version is DllVersion))
                     {
-                        Version current_version = mod.Value;
-
-                        if ((current_version is ProvidesVersion) || (current_version is DllVersion))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                // Check if replacement is available
-                                if (registry.HasReplacement(mod.Key, ksp.VersionCriteria()))
-                                {
-                                    // Replaceable
-                                    CkanModule toReplace = registry.GetModuleByVersion(mod.Key, mod.Value);
-                                    CkanModule replacement = registry.LatestAvailable(toReplace.replaced_by.name, ksp.VersionCriteria());
-                                    log.InfoFormat("Replacement {0} {1} found for {2} {3}",
-                                        replacement.identifier, replacement.version,
-                                        toReplace.identifier, toReplace.version);
-                                    to_replace.Add(toReplace);
-                                }
-
-                            }
-                            catch (ModuleNotFoundKraken)
-                            {
-                                log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
-                                    mod.Key);
-                            }
-                        }
+                        continue;
                     }
-                    ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
-                }
-                else
-                {
-                    var to_replace = new List<ModuleReplacement>();
-                    foreach (string mod in options.modules)
+                    else
                     {
                         try
                         {
-                            CkanModule toReplace = registry.GetInstalledVersion(mod);
                             // Check if replacement is available
-                            if (registry.HasReplacement(mod, ksp.VersionCriteria()))
+                            if (registry.HasReplacement(mod.Key, ksp.VersionCriteria()))
                             {
                                 // Replaceable
+                                CkanModule toReplace = registry.GetModuleByVersion(mod.Key, mod.Value);
                                 CkanModule replacement = registry.LatestAvailable(toReplace.replaced_by.name, ksp.VersionCriteria());
                                 log.InfoFormat("Replacement {0} {1} found for {2} {3}",
                                     replacement.identifier, replacement.version,
@@ -101,18 +70,49 @@ namespace CKAN.CmdLine
                         catch (ModuleNotFoundKraken)
                         {
                             log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
-                                mod);
+                                mod.Key);
                         }
                     }
-                    // TODO: These instances all need to go.
-                    ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
                 }
             }
-            catch (ModuleNotFoundKraken kraken)
+            else
             {
-                User.RaiseMessage("Module {0} not found", kraken.module);
-                return Exit.ERROR;
+                foreach (string mod in options.modules)
+                {
+                    try
+                    {
+                        CkanModule modToReplace = registry.GetInstalledVersion(mod);
+                        if ( modToReplace != null) 
+                        {
+                            try
+                            {
+                                // Check if replacement is available
+                                if (registry.HasReplacement(mod, ksp.VersionCriteria()))
+                                {
+                                    // Replaceable
+                                    CkanModule replacement = registry.LatestAvailable(toReplace.replaced_by.name, ksp.VersionCriteria());
+                                    log.InfoFormat("Replacement {0} {1} found for {2} {3}",
+                                        replacement.identifier, replacement.version,
+                                        modToReplace.identifier, modToReplace.version);
+                                    to_replace.Add(modToReplace);
+                                }
+
+                            }
+                            catch (ModuleNotFoundKraken)
+                            {
+                                log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
+                                    mod);
+                            }
+                        }
+                    }
+                    catch (ModuleNotFoundKraken kraken)
+                    {
+                        User.RaiseMessage("Module {0} not found", kraken.module);
+                    }                                           
+                }
             }
+            // TODO: These instances all need to go.
+            ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
             User.RaiseMessage("\r\nDone!\r\n");
 
             return Exit.OK;

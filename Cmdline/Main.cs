@@ -160,6 +160,10 @@ namespace CKAN.CmdLine
                     case "list":
                         return (new List(user)).RunCommand(GetGameInstance(manager), (ListOptions)cmdline.options);
 
+                    case "replace":
+                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        return (new Replace(user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
+
                     case "show":
                         return (new Show(user)).RunCommand(GetGameInstance(manager), (ShowOptions)cmdline.options);
 
