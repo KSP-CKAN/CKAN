@@ -43,7 +43,6 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.5.0, Culture=neutral, PublicKeyToken=9dea7c6e17aa31ff, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\ICSharpCode.SharpZipLib.Patched.0.86.5\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\_build\lib\nuget\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -59,7 +58,6 @@
       <HintPath>..\_build\lib\nuget\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
@@ -108,8 +106,8 @@
     <None Include="Data\README.md" />
     <None Include="Data\registry.json" />
     <None Include="Data\test-sln.sh" />
-    <None Include="packages.config" />
     <None Include="Data\CKAN-meta-badkan.tar.gz" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Cache.cs" />
