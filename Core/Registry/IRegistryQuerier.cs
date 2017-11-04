@@ -220,7 +220,7 @@ namespace CKAN
             }
             if (replaceWith == null) return false;
             return !new List<string>(querier.InstalledDlls).Contains(identifier)
-                && replaceWith.version.IsGreaterThan(replacedBy.min_version);           
+                && ! replaceWith.version.IsLessThan(replacedBy.min_version);
         }
     }
 }

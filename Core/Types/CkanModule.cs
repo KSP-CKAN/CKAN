@@ -70,6 +70,12 @@ namespace CKAN
 
     }
 
+    public class ModuleReplacement
+    {
+        public CkanModule ToReplace;
+        public CkanModule ReplaceWith;
+    }
+
     public class ResourcesDescriptor
     {
         [JsonProperty("repository", NullValueHandling = NullValueHandling.Ignore)]

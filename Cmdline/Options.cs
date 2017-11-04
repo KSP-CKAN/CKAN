@@ -381,7 +381,31 @@ namespace CKAN.CmdLine
         public List<string> modules { get; set; }
     }
 
-    internal class ScanOptions : InstanceSpecificOptions { }
+    internal class ReplaceOptions : InstanceSpecificOptions
+    {
+        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
+        public string ckan_file { get; set; }
+
+        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
+
+        [Option("all", HelpText = "Replace all available replaced modules")]
+        public bool replace_all { get; set; }
+
+        // TODO: How do we provide helptext on this?
+        [ValueList(typeof (List<string>))]
+        public List<string> modules { get; set; }
+    }
+
+    internal class ScanOptions : InstanceSpecificOptions
+    {
+    }
 
     internal class ListOptions : InstanceSpecificOptions
     {
