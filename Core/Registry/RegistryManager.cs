@@ -47,9 +47,12 @@ namespace CKAN
                 throw new RegistryInUseKraken(lockfilePath);
             }
 
-            try {
+            try
+            {
                 LoadOrCreate();
-            } catch {
+            }
+            catch
+            {
                 // Clean up the lock file
                 Dispose(false);
                 throw;
