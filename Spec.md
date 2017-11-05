@@ -483,12 +483,17 @@ A list of mods which *conflict* with this mod. The current mod
 
 (**v1.24**) This is a way to mark a specific mod identifier as being
 obsoleted and tell the client what it has been *replaced by*. It contains a
-single mod that should be selected for installation if this mod is
-selected for updating, while this mod is uninstalled. If this mod identifier
+single mod that should be selected for installation if a replace command is
+performed on this mod, while this mod is uninstalled. If this mod identifier
 is brought back to life, an epoch change should be applied. A *replaced_by*
 relationship should be added to the final release of the mod being replaced.
 The listed mod should include a "provides" relationship either to this mod,
 or one of this mod's listed "provides".
+
+replaced_by differs from other relationships in two ways:
+
+- It is *not* an array. Only a single mod can be defined as the replacement.
+- Only "version" and "min_version" are permitted as options.
 
 #### resources
 
