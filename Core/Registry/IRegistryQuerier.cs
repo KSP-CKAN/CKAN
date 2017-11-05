@@ -219,8 +219,21 @@ namespace CKAN
                 return false;
             }
             if (replaceWith == null) return false;
-            return !new List<string>(querier.InstalledDlls).Contains(identifier)
-                && ! replaceWith.version.IsLessThan(replacedBy.min_version);
+
+            // We definitely have a replacement mod which is compatible with our KSP Version Criteria
+            // If we have any mod version constrainsts, check them now.
+            if (replacedBy.min_version != null)
+            {
+                return !new List<string>(querier.InstalledDlls).Contains(identifier) && !replaceWith.version.IsLessThan(replacedBy.min_version);
+            }
+            else if (replacedBy.version != null)
+            {
+                return !new List<string>(querier.InstalledDlls).Contains(identifier) && replaceWith.version.Equals(replacedBy.version);
+            }
+            else
+            {
+                return !new List<string>(querier.InstalledDlls).Contains(identifier);
+            }
         }
     }
 }

@@ -33,7 +33,8 @@ namespace CKAN
         None = 0,
         Install = 1,
         Remove = 2,
-        Update = 3
+        Update = 3,
+        Replace = 4
     }
 
     public partial class Main: Form

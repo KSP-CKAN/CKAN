@@ -69,25 +69,40 @@ namespace CKAN.CmdLine
                         {
                             // Check if upgrades are available, and show appropriately.
                             CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
-
+                            CkanModule current = registry.GetInstalledVersion(mod.Key);
+                                
                             log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
 
                             if (latest == null)
                             {
                                 // Not compatible!
                                 bullet = "X";
+                                //Check if mod is replaceable
+                                if ( current.replaced_by != null)
+                                {
+                                    CkanModule replacement = registry.LatestAvailable(current.replaced_by.name, ksp.VersionCriteria());
+                                    if (replacement != null)
+                                    {
+                                        // Replaceable
+                                        bullet = ">";
+                                        modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
+                                    }
+                                }
                             }
                             else if (latest.version.IsEqualTo(current_version))
                             {
                                 // Up to date
                                 bullet = "-";
                                 //Check if mod is replaceable
-                                CkanModule replacement = registry.LatestAvailable(registry.GetInstalledVersion(mod.Key).replaced_by.name, ksp.VersionCriteria());
-                                if (replacement != null)
+                                if ( current.replaced_by != null)
                                 {
-                                    // Replaceable
-                                    bullet = ">";
-                                    modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
+                                    CkanModule replacement = registry.LatestAvailable(current.replaced_by.name, ksp.VersionCriteria());
+                                    if (replacement != null)
+                                    {
+                                        // Replaceable
+                                        bullet = ">";
+                                        modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
+                                    }
                                 }
                             }
                             else if (latest.version.IsGreaterThan(mod.Value))

@@ -40,6 +40,7 @@ namespace CKAN.CmdLine
 
             if (options.replace_all)
             {
+                log.Debug("Running Replace all");
                 var installed = new Dictionary<string, Version>(registry.Installed());
 
                 foreach (KeyValuePair<string, Version> mod in installed)
@@ -54,6 +55,7 @@ namespace CKAN.CmdLine
                     {
                         try
                         {
+                            log.DebugFormat("Testing {0} {1} for possible replacement", mod.Key, mod.Value);
                             // Check if replacement is available
                             if (registry.HasReplacement(mod.Key, ksp.VersionCriteria()))
                             {
@@ -81,9 +83,11 @@ namespace CKAN.CmdLine
                 {
                     try
                     {
+                        log.DebugFormat("Checking that {0} is installed", mod);
                         CkanModule modToReplace = registry.GetInstalledVersion(mod);
                         if ( modToReplace != null) 
                         {
+                            log.DebugFormat("Testing {0} {1} for possible replacement", modToReplace.identifier, modToReplace.version);
                             try
                             {
                                 // Check if replacement is available

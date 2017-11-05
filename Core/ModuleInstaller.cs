@@ -1114,10 +1114,12 @@ namespace CKAN
         /// </summary>
         public void Replace(IEnumerable<ModuleReplacement> replacements, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
+            log.Debug("Using Replace method");
             List<CkanModule> modsToInstall = new List<CkanModule>();
             foreach (ModuleReplacement repl in replacements)
             {
                 modsToInstall.Add(repl.ReplaceWith);
+                log.DebugFormat("We want to install {0} as a replacement for {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
             }
             // Start by making sure we've downloaded everything.
             DownloadModules(modsToInstall, netAsyncDownloader);
@@ -1136,6 +1138,7 @@ namespace CKAN
 
                 if (installed_mod == null)
                 {
+                    log.DebugFormat("Wait, {0} is not actually installed?", installed_mod.identifier);
                     //Maybe ModuleNotInstalled ?
                     if (registry_manager.registry.IsAutodetected(ident))
                     {
@@ -1146,17 +1149,18 @@ namespace CKAN
                 }
                 else
                 {
-                    // Obviously, we need to remove the  we are replaceing
+                    // Obviously, we need to remove the mod we are replacing
                     to_remove.Add(repl.ToReplace.identifier);
 
+                    log.DebugFormat("Ok, we are removing {0}", repl.ToReplace.identifier);
                     //Check whether our Replacement target is already installed
                     InstalledModule installed_replacement = registry_manager.registry.InstalledModule(repl.ReplaceWith.identifier);
 
                     // If replacement is not installed, we've already added it to modsToInstall above
-                    if (installed_mod != null)
+                    if (installed_replacement != null)
                     {
                         //Module already installed. We'll need to treat it as an upgrade.
-
+                        log.DebugFormat("It turns out {0} is already installed, we'll upgrade it.", installed_replacement.identifier);
                         to_remove.Add(installed_replacement.identifier);
 
                         CkanModule installed = installed_replacement.Module;
