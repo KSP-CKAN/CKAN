@@ -57,60 +57,60 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\IFileService.cs" />
-    <Compile Include="Services\IModuleService.cs" />
-    <Compile Include="Services\CachingHttpService.cs" />
+    <Compile Include="CmdLineOptions.cs" />
     <Compile Include="ConsoleUser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Constants.cs" />
     <Compile Include="Extensions\JObjectExtensions.cs" />
     <Compile Include="Extensions\VersionExtensions.cs" />
+    <Compile Include="Model\Metadata.cs" />
+    <Compile Include="Model\RemoteRef.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CachingHttpService.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IHttpService.cs" />
+    <Compile Include="Services\IModuleService.cs" />
     <Compile Include="Services\ModuleService.cs" />
     <Compile Include="Sources\Avc\AvcVersion.cs" />
     <Compile Include="Sources\Avc\JsonAvcToKspVersion.cs" />
+    <Compile Include="Sources\Curse\CurseApi.cs" />
+    <Compile Include="Sources\Curse\CurseError.cs" />
+    <Compile Include="Sources\Curse\CurseFile.cs" />
+    <Compile Include="Sources\Curse\CurseMod.cs" />
+    <Compile Include="Sources\Curse\ICurseApi.cs" />
     <Compile Include="Sources\Github\GithubApi.cs" />
     <Compile Include="Sources\Github\GithubRef.cs" />
     <Compile Include="Sources\Github\GithubRelease.cs" />
     <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
-    <Compile Include="Sources\Curse\ICurseApi.cs" />
-    <Compile Include="Sources\Curse\CurseFile.cs" />
-    <Compile Include="Sources\Curse\CurseApi.cs" />
-    <Compile Include="Sources\Curse\CurseError.cs" />
-    <Compile Include="Sources\Curse\CurseMod.cs" />
     <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
+    <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
     <Compile Include="Sources\Spacedock\SpacedockError.cs" />
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
-    <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
+    <Compile Include="Transformers\CurseTransformer.cs" />
     <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
+    <Compile Include="Transformers\EpochTransformer.cs" />
     <Compile Include="Transformers\ForcedVTransformer.cs" />
     <Compile Include="Transformers\GeneratedByTransformer.cs" />
     <Compile Include="Transformers\GithubTransformer.cs" />
     <Compile Include="Transformers\HttpTransformer.cs" />
-    <Compile Include="Transformers\ITransformer.cs" />
-    <Compile Include="Model\Metadata.cs" />
-    <Compile Include="Model\RemoteRef.cs" />
     <Compile Include="Transformers\InternalCkanTransformer.cs" />
+    <Compile Include="Transformers\ITransformer.cs" />
     <Compile Include="Transformers\JenkinsTransformer.cs" />
-    <Compile Include="Transformers\CurseTransformer.cs" />
-    <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\MetaNetkanTransformer.cs" />
     <Compile Include="Transformers\NetkanTransformer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="CmdLineOptions.cs" />
     <Compile Include="Transformers\OptimusPrimeTransformer.cs" />
-    <Compile Include="Transformers\VersionEditTransformer.cs" />
     <Compile Include="Transformers\PropertySortTransformer.cs" />
-    <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
+    <Compile Include="Transformers\SpacedockTransformer.cs" />
     <Compile Include="Transformers\StripNetkanMetadataTransformer.cs" />
-    <Compile Include="Transformers\EpochTransformer.cs" />
+    <Compile Include="Transformers\VersionEditTransformer.cs" />
+    <Compile Include="Transformers\VersionedOverrideTransformer.cs" />
     <Compile Include="Validators\CkanValidator.cs" />
     <Compile Include="Validators\HasIdentifierValidator.cs" />
     <Compile Include="Validators\InstallsFilesValidator.cs" />
@@ -119,7 +119,6 @@
     <Compile Include="Validators\MatchingIdentifiersValidator.cs" />
     <Compile Include="Validators\NetkanValidator.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="curl-ca-bundle.crt">
@@ -133,6 +132,7 @@
       <Name>CKAN-core</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <Exec Command="powershell ../build.ps1 Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
     <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo" Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
