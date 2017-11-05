@@ -47,7 +47,13 @@ namespace CKAN
                 throw new RegistryInUseKraken(lockfilePath);
             }
 
-            LoadOrCreate();
+            try {
+                LoadOrCreate();
+            } catch {
+                // Clean up the lock file
+                Dispose(false);
+                throw;
+            }
 
             // We don't cause an inconsistency error to stop the registry from being loaded,
             // because then the user can't do anything to correct it. However we're
