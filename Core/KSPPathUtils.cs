@@ -127,7 +127,7 @@ namespace CKAN
 
             //Default steam libary
             string installPath = KSPDirectory(steamPath);
-            if(installPath != null)
+            if (installPath != null)
             {
                 return installPath;
             }

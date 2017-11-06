@@ -74,7 +74,7 @@ namespace CKAN
 
         public void SetActiveTab(string name)
         {
-            if(m_TabControl.InvokeRequired)
+            if (m_TabControl.InvokeRequired)
             {
                 m_TabControl.Invoke(new MethodInvoker(() => _SetActiveTab(name)));
             }
@@ -144,10 +144,10 @@ namespace CKAN
                 args.Cancel = true;
             }
             else if (Platform.IsMac)
-            { 
+            {
                 if (args.Action == TabControlAction.Deselecting && args.TabPage != null)
                 {
-                    // Have to set visibility to false on children controls on hidden tabs because they don't 
+                    // Have to set visibility to false on children controls on hidden tabs because they don't
                     // always heed parent visibility on Mac OS X https://bugzilla.xamarin.com/show_bug.cgi?id=3124
                     foreach (Control control in args.TabPage.Controls)
                     {
@@ -162,7 +162,7 @@ namespace CKAN
                         control.Visible = true;
 
                         // Have to specifically tell the mod list's panel to refresh
-                        // after things settle out because otherwise it doesn't 
+                        // after things settle out because otherwise it doesn't
                         // when coming back to the mods tab from updating the repo
                         if (control is SplitContainer)
                         {

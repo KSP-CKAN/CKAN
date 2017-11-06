@@ -72,7 +72,7 @@ namespace CKAN
 
         private void AddVersionToListButton_Click(object sender, System.EventArgs e)
         {
-            if(AddVersionToListTextBox.Text.Length == 0)
+            if (AddVersionToListTextBox.Text.Length == 0)
             {
                 return;
             }
@@ -81,7 +81,7 @@ namespace CKAN
                 var version = KspVersion.Parse(AddVersionToListTextBox.Text);
                 SelectedVersionsCheckedListBox.Items.Insert(0, version);
             }
-            catch(FormatException)
+            catch (FormatException)
             {
                 MessageBox.Show("Version has invalid format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

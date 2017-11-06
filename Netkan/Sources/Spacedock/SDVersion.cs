@@ -49,7 +49,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
             /// </summary>
             public static string ExpandVersionIfNeeded(string version)
             {
-                if (Regex.IsMatch(version,@"^\d+\.\d+$"))
+                if (Regex.IsMatch(version, @"^\d+\.\d+$"))
                 {
                     // Two part string, add our .0
                     return version + ".0";
@@ -78,7 +78,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
             )
             {
-                if(reader.Value!=null)
+                if (reader.Value != null)
                     return SpacedockApi.ExpandPath(reader.Value.ToString());
                 return null;
 

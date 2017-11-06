@@ -42,7 +42,7 @@ namespace CKAN
                 {
                     return false;
                 }
-                Console.Write("Invaild input. Please enter yes or no");
+                Console.Write("Invalid input. Please enter yes or no");
             }
         }
 

@@ -904,7 +904,7 @@ namespace CKAN
                         // needs it.
                         //
                         // This works around GH #251.
-                        // The filesystem boundry bug is described in https://transactionalfilemgr.codeplex.com/workitem/20
+                        // The filesystem boundary bug is described in https://transactionalfilemgr.codeplex.com/workitem/20
 
                         log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);

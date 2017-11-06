@@ -207,12 +207,12 @@ namespace CKAN.CmdLine
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
-            foreach(Repository repository in repositories.Values)
+            foreach (Repository repository in repositories.Values)
             {
                 maxNameLen = Math.Max(maxNameLen, repository.name.Length);
             }
 
-            foreach(Repository repository in repositories.Values)
+            foreach (Repository repository in repositories.Values)
             {
                 User.RaiseMessage("  {0}: {1}: {2}", repository.name.PadRight(maxNameLen), repository.priority, repository.uri);
             }

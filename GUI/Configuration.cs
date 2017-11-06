@@ -110,12 +110,12 @@ namespace CKAN
                 {
                     string additionalErrorData = "";
 
-                    if(e is System.InvalidOperationException) // Exception thrown in Windows / .NET
+                    if (e is System.InvalidOperationException) // Exception thrown in Windows / .NET
                     {
-                        if(e.InnerException != null)
+                        if (e.InnerException != null)
                             additionalErrorData = ": " + e.InnerException.Message;
                     }
-                    else if(e is System.Xml.XmlException) // Exception thrown in Mono
+                    else if (e is System.Xml.XmlException) // Exception thrown in Mono
                     {
                         additionalErrorData = ": " + e.Message;
                     }

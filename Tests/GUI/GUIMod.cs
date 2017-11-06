@@ -18,7 +18,7 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)){CurrentInstance = tidy.KSP};
+                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) {CurrentInstance = tidy.KSP};
                 var registry = Registry.Empty();
                 var ckan_mod = TestData.kOS_014_module();
                 registry.AddAvailable(ckan_mod);

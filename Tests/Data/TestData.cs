@@ -667,7 +667,7 @@ namespace Tests.Data
             KspVersion ksp_version = null,
             List<RelationshipDescriptor> conflicts = null,
             List<RelationshipDescriptor> depends = null,
-            List<RelationshipDescriptor> sugests = null,
+            List<RelationshipDescriptor> suggests = null,
             List<String> provides = null,
             string identifier = null,
             ModuleVersion version = null)
@@ -684,7 +684,7 @@ namespace Tests.Data
             mod.ksp_version_max = mod.ksp_version_min = null;
             mod.conflicts = conflicts;
             mod.depends = depends;
-            mod.suggests = sugests;
+            mod.suggests = suggests;
             mod.provides = provides;
             return mod;
         }

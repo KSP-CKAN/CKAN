@@ -7,11 +7,13 @@ namespace CKAN {
 
     public class JsonSimpleStringConverter : JsonConverter {
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
             writer.WriteValue (value.ToString ());
         }
-    
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
 
             // If we find a null, then that might be okay, so we pass it down to our
             // activator. Otherwise we convert to string, since that's our job.
@@ -19,7 +21,8 @@ namespace CKAN {
             return Activator.CreateInstance (objectType, value);
         }
 
-        public override bool CanConvert(Type objectType) {
+        public override bool CanConvert(Type objectType)
+        {
             // We *only* want to be triggered for types that have explicitly
             // set an attribute in their class saying they can be converted.
             // By returning false here, we declare we're not interested in participating
@@ -28,4 +31,3 @@ namespace CKAN {
         }
     }
 }
-

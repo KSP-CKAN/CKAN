@@ -299,7 +299,7 @@ Do you wish to reinstall now?", sb)))
             var aSorted = a.OrderBy(i => i.name).ToList();
             var bSorted = b.OrderBy(i => i.name).ToList();
 
-            for(var i = 0; i < a.Count; i++)
+            for (var i = 0; i < a.Count; i++)
             {
                 var aRel = aSorted[i];
                 var bRel = bSorted[i];

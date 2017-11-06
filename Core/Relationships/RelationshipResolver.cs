@@ -48,7 +48,7 @@ namespace CKAN
         /// solutions are non-installable, so mostly of use to provide user
         /// feedback when things go wrong.
         /// </summary>
-        public bool procede_with_inconsistencies = false;
+        public bool proceed_with_inconsistencies = false;
 
         /// <summary>
         /// If true, then if a module has no versions that are compatible with
@@ -209,7 +209,7 @@ namespace CKAN
                 var mods = modlist.Values.Concat(installed_modules).Where(listed_mod => listed_mod.ConflictsWith(module));
                 foreach (CkanModule listed_mod in mods)
                 {
-                    if (options.procede_with_inconsistencies)
+                    if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(listed_mod, module));
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, listed_mod));
@@ -337,10 +337,10 @@ namespace CKAN
                     if (descriptor.WithinBounds(module.version))
                         continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
-                    if (options.procede_with_inconsistencies)
+                    if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module,reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent,module));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
                         continue;
                     }
                     throw new InconsistentKraken(
@@ -351,13 +351,11 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    var installedVersion = registry.InstalledVersion(dep_name);
-
-                    if (descriptor.WithinBounds(installedVersion))
+                    if (descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
                         continue;
 
                     //TODO Ideally we could check here if it can be replaced by the version we want.
-                    if (options.procede_with_inconsistencies)
+                    if (options.proceed_with_inconsistencies)
                     {
                         // If the installed version is an UnmanagedModuleVersion (DLL or DLC) we can't do this since
                         // they don't have real Modules.
@@ -443,7 +441,7 @@ namespace CKAN
                 }
                 else
                 {
-                    if (options.procede_with_inconsistencies)
+                    if (options.proceed_with_inconsistencies)
                     {
                         Add(candidate, reason);
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(conflicting_mod, candidate));
@@ -476,7 +474,8 @@ namespace CKAN
                 throw new ArgumentException("Already contains module:" + module.identifier);
             }
             modlist.Add(module.identifier, module);
-            if(!reasons.ContainsKey(module)) reasons.Add(module, reason);
+            if (!reasons.ContainsKey(module))
+                reasons.Add(module, reason);
 
             log.DebugFormat("Added {0}", module.identifier);
             // Stop here if it doesn't have any provide aliases.

@@ -401,7 +401,7 @@ namespace CKAN
                 );
             }
 
-            // Check everything in the spec if defined.
+            // Check everything in the spec is defined.
             // TODO: This *can* and *should* be done with JSON attributes!
 
             foreach (string field in required_fields)
@@ -696,7 +696,8 @@ namespace CKAN
         public string DescribeInstallStanzas()
         {
             List<string> descriptions = new List<string>();
-            foreach (ModuleInstallDescriptor mid in install) {
+            foreach (ModuleInstallDescriptor mid in install)
+            {
                 descriptions.Add(mid.DescribeMatch());
             }
             return string.Join(", ", descriptions);

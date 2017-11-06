@@ -29,8 +29,7 @@ namespace CKAN.Properties {
         private static global::System.Globalization.CultureInfo resourceCulture;
 
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
-        }
+        internal Resources() { }
 
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
@@ -38,7 +37,8 @@ namespace CKAN.Properties {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CKAN.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }

@@ -316,7 +316,7 @@ namespace CKAN.CmdLine
                     keys[i + defaultInstancePresent] = String.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
                 }
 
-                // Mark the default intance for the user.
+                // Mark the default instance for the user.
                 if (!String.IsNullOrWhiteSpace(defaultInstance))
                 {
                     keys[0] = Manager.Instances.IndexOfKey(defaultInstance);

@@ -830,7 +830,7 @@ namespace CKAN
             var options = new RelationshipResolverOptions
             {
                 without_toomanyprovides_kraken = true,
-                procede_with_inconsistencies = true,
+                proceed_with_inconsistencies = true,
                 without_enforce_consistency = true,
                 with_recommends = false
             };

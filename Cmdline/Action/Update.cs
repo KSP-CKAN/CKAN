@@ -117,7 +117,7 @@ namespace CKAN.CmdLine
 
             user.RaiseMessage(message);
 
-            foreach(CkanModule module in modules)
+            foreach (CkanModule module in modules)
             {
                 user.RaiseMessage("{0} ({1})", module.name, module.identifier);
             }

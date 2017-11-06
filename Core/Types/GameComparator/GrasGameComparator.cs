@@ -26,8 +26,9 @@ namespace CKAN
             return base.Compatible (gameVersionCriteria, module);
         }
 
-        public override bool SingleVersionsCompatible (KspVersion gameVersion, CkanModule module){
-            
+        public override bool SingleVersionsCompatible (KspVersion gameVersion, CkanModule module)
+        {
+
             // Otherwise, check if it's "generally recognise as safe".
 
             // If we're running KSP 1.0.4, then allow the mod to run if we would have

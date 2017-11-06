@@ -18,15 +18,16 @@ namespace CKAN.Versioning
 
         public KspVersionCriteria(KspVersion v, List<KspVersion> compatibleVersions)
         {
-            if(v != null)
-            { 
+            if (v != null)
+            {
                 this._versions.Add(v);
             }
             this._versions.AddRange(compatibleVersions);
             this._versions = this._versions.Distinct().ToList();
         }
 
-        public IList<KspVersion> Versions {
+        public IList<KspVersion> Versions
+        {
             get
             {
                 return _versions.AsReadOnly();

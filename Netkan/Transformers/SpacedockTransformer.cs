@@ -111,11 +111,15 @@ namespace CKAN.NetKAN.Transformers
 
         private void TryAddResourceURL(string identifier, JObject resources, string key, string rawURL)
         {
-            if (!string.IsNullOrEmpty(rawURL)) {
+            if (!string.IsNullOrEmpty(rawURL))
+            {
                 string normalized = Normalize(rawURL);
-                if (!string.IsNullOrEmpty(normalized)) {
+                if (!string.IsNullOrEmpty(normalized))
+                {
                     resources.SafeAdd(key, normalized);
-                } else {
+                }
+                else
+                {
                     Log.WarnFormat("Could not normalize URL from {0}: {1}", identifier, rawURL);
                 }
             }

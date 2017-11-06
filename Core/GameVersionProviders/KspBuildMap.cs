@@ -102,7 +102,7 @@ namespace CKAN.GameVersionProviders
                 _jBuilds = JsonConvert.DeserializeObject<JBuilds>(buildMapJson);
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.WarnFormat("Could not parse build map");
                 Log.DebugFormat("{0}\n{1}", buildMapJson, e);
@@ -140,7 +140,7 @@ namespace CKAN.GameVersionProviders
                 var json = _registry.GetKSPBuilds();
                 return json != null && TrySetBuildMap(json);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.WarnFormat("Could not retrieve build map from registry");
                 Log.Debug(e);
@@ -167,7 +167,7 @@ namespace CKAN.GameVersionProviders
                     return false;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.WarnFormat("Could not retrieve build map from embedded resource");
                 Log.Debug(e);

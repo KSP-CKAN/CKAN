@@ -468,7 +468,7 @@ namespace CKAN
         {
             Main.Instance.HideWaitDialog(true);
 
-            SelectedModule?.UpdateIsCached(); ;
+            SelectedModule?.UpdateIsCached();
             UpdateModContentsTree(module, true);
             Main.Instance.RecreateDialogs();
         }
@@ -476,7 +476,7 @@ namespace CKAN
         /// <summary>
         /// Opens the file browser of the users system
         /// with the folder of the clicked node opened
-        /// TODO: Open a file broweser with the file selected
+        /// TODO: Open a file browser with the file selected
         /// </summary>
         /// <param name="node">A node of the ContentsPreviewTree</param>
         internal void OpenFileBrowser(TreeNode node)

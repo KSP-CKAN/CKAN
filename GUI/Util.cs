@@ -90,7 +90,7 @@ namespace CKAN
         {
             // Default prefixes to try if not provided
             if (prefixes == null)
-                prefixes = new string[] {"http://", "https:// "};
+                prefixes = new string[] { "http://", "https://" };
 
             try // opening the page normally
             {

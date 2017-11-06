@@ -84,7 +84,7 @@ namespace CKAN
             byte[] tar_identifier = { 0x75, 0x73, 0x74, 0x61, 0x72 };
 
             // Advance the stream position to offset 257. This method circumvents stream which can't seek.
-            for(int i = 0; i < 257; i++)
+            for (int i = 0; i < 257; i++)
             {
                 stream.ReadByte();
             }

@@ -76,7 +76,7 @@ namespace CKAN
                 }
                 else if (Platform.IsMac)
                 {
-                    // TODO
+                    //TODO
                 }
             }
             catch (Exception ex)
