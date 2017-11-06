@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Fix build errors for UpdateCol (#2153 by: politas; reviewed: Olympic1)
 - [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
 - [Auto-updater] Move AskForAutoUpdates dialog to center of screen (#2165 by: politas; reviewed: Olympic1)
+- [Core] Clean up registry lock file after parse failure (#2175 by: HebaruSan; reviewed: politas)
 
 ## v1.22.6 (Guiana)
 
