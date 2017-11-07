@@ -241,9 +241,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         private List<ScreenObject> objects    = new List<ScreenObject>();
         private int                focusIndex = 0;
 
-        private Dictionary<ConsoleKeyInfo, KeyAction> bindings = new Dictionary<ConsoleKeyInfo, KeyAction>();
-        private List<ScreenTip>                       tips     = new List<ScreenTip>();
-        private                 object screenLock   = new object();
+        private Dictionary<ConsoleKeyInfo, KeyAction> bindings   = new Dictionary<ConsoleKeyInfo, KeyAction>();
+        private List<ScreenTip>                       tips       = new List<ScreenTip>();
+        private object                                screenLock = new object();
 
         private static readonly string tipSeparator = $" {Symbols.vertLine} ";
     }

@@ -28,8 +28,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="focused">Framework parameter not relevant to this object</param>
         public override void Draw(bool focused)
         {
-            int t = GetTop();
-            int l = GetLeft();
+            int l = GetLeft(), t = GetTop();
             int w = GetRight() - l + 1;
 
             double percent = percentFunc == null ? 0 : percentFunc();
