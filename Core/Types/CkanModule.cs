@@ -501,12 +501,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns machine readable object indicating the highest compatible
+        /// Returns machine readable object indicating the lowest compatible
         /// version of KSP this module will run with.
         /// </summary>
         public KspVersion EarliestCompatibleKSP()
         {
-            // Find the highest compatible KSP version
+            // Find the lowest compatible KSP version
             if (ksp_version_min != null)
                 return ksp_version_min;
             else if (ksp_version != null)
