@@ -52,14 +52,14 @@ namespace CKAN.ConsoleUI {
 
             if (first) {
                 AddTip("Alt+X", "Quit");
-                AddBinding(Keys.AltX, (object sender, EventArgs args) => false);
+                AddBinding(Keys.AltX, (object sender) => false);
             } else {
                 AddTip("Esc", "Quit");
-                AddBinding(Keys.Escape, (object sender, EventArgs args) => false);
+                AddBinding(Keys.Escape, (object sender) => false);
             }
 
             AddTip("Enter", "Select");
-            AddBinding(Keys.Enter, (object sender, EventArgs args) => {
+            AddBinding(Keys.Enter, (object sender) => {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
                     $"Loading instance {InstallName(manager, kspList.Selection)}...",
@@ -81,25 +81,25 @@ namespace CKAN.ConsoleUI {
             });
 
             kspList.AddTip("A", "Add");
-            kspList.AddBinding(Keys.A, (object sender, EventArgs args) => {
+            kspList.AddBinding(Keys.A, (object sender) => {
                 LaunchSubScreen(new KSPAddScreen(manager));
                 kspList.SetData(manager.Instances.Values);
                 return true;
             });
             kspList.AddTip("R", "Remove");
-            kspList.AddBinding(Keys.R, (object sender, EventArgs args) => {
+            kspList.AddBinding(Keys.R, (object sender) => {
                 manager.RemoveInstance(InstallName(manager, kspList.Selection));
                 kspList.SetData(manager.Instances.Values);
                 return true;
             });
             kspList.AddTip("E", "Edit");
-            kspList.AddBinding(Keys.E, (object sender, EventArgs args) => {
+            kspList.AddBinding(Keys.E, (object sender) => {
                 LaunchSubScreen(new KSPEditScreen(manager, kspList.Selection));
                 return true;
             });
 
             kspList.AddTip("D", "Default");
-            kspList.AddBinding(Keys.D, (object sender, EventArgs args) => {
+            kspList.AddBinding(Keys.D, (object sender) => {
                 string name = InstallName(manager, kspList.Selection);
                 if (name == manager.AutoStartInstance) {
                     manager.ClearAutoStart();

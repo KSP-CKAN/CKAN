@@ -51,7 +51,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Delegate type for key bindings
         /// </summary>
-        public delegate bool KeyAction(object sender, EventArgs args);
+        public delegate bool KeyAction(object sender);
 
         /// <summary>
         /// Bind an action to a key
@@ -132,10 +132,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Draw();
                 ConsoleKeyInfo k = Console.ReadKey(true);
                 if (bindings.ContainsKey(k)) {
-                    done = !bindings[k](this, new EventArgs());
+                    done = !bindings[k](this);
                 } else if (objects.Count > 0) {
                     if (objects[focusIndex].Bindings.ContainsKey(k)) {
-                        done = !objects[focusIndex].Bindings[k](this, new EventArgs());
+                        done = !objects[focusIndex].Bindings[k](this);
                     } else {
                         objects[focusIndex].OnKeyPress(k);
                     }

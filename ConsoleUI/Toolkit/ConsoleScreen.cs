@@ -19,7 +19,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 "F10", "Menu",
                 () => GetMainMenu() != null
             );
-            AddBinding(Keys.F10, (object sender, EventArgs args) => {
+            AddBinding(Keys.F10, (object sender) => {
                 ConsolePopupMenu m = GetMainMenu();
                 bool val = true;
                 if (m != null) {
@@ -85,11 +85,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                 string.Join("", messagePieces) + question,
                 new List<string>() {"Yes", "No"}
             );
-            d.AddBinding(Keys.Y, (object sender, EventArgs args) => {
+            d.AddBinding(Keys.Y, (object sender) => {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender, EventArgs args) => {
+            d.AddBinding(Keys.N, (object sender) => {
                 d.PressButton(1);
                 return false;
             });

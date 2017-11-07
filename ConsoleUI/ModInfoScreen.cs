@@ -93,13 +93,13 @@ namespace CKAN.ConsoleUI {
             }
 
             AddTip("Esc", "Back");
-            AddBinding(Keys.Escape, (object sender, EventArgs args) => false);
+            AddBinding(Keys.Escape, (object sender) => false);
 
             AddTip(
                 "Alt+D", "Download",
                 () => !manager.CurrentInstance.Cache.IsMaybeCachedZip(mod.download)
             );
-            AddBinding(Keys.AltD, (object sender, EventArgs args) => {
+            AddBinding(Keys.AltD, (object sender) => {
                 Download();
                 return true;
             });

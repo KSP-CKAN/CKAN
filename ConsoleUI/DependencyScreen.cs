@@ -52,7 +52,7 @@ namespace CKAN.ConsoleUI {
                 1, 0, ListSortDirection.Descending
             );
             dependencyList.AddTip("+", "Toggle");
-            dependencyList.AddBinding(Keys.Plus, (object sender, EventArgs args) => {
+            dependencyList.AddBinding(Keys.Plus, (object sender) => {
                 ChangePlan.toggleContains(accepted, dependencyList.Selection.identifier);
                 return true;
             });
@@ -60,12 +60,12 @@ namespace CKAN.ConsoleUI {
             AddObject(dependencyList);
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender, EventArgs args) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 return false;
             });
 
             AddTip("Alt+A", "Accept");
-            AddBinding(Keys.AltA, (object sender, EventArgs args) => {
+            AddBinding(Keys.AltA, (object sender) => {
                 foreach (string name in accepted) {
                     plan.Install.Add(name);
                 }

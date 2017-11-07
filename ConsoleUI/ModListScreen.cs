@@ -118,39 +118,39 @@ namespace CKAN.ConsoleUI {
             AddObject(searchBox);
             AddObject(moduleList);
 
-            AddBinding(Keys.AltX,  (object sender, EventArgs args) => false);
-            AddBinding(Keys.F1,    (object sender, EventArgs args) => Help());
-            AddBinding(Keys.AltH,  (object sender, EventArgs args) => Help());
-            AddBinding(Keys.AltU,  (object sender, EventArgs args) => UpdateRegistry());
-            AddBinding(Keys.CtrlU, (object sender, EventArgs args) => UpgradeAll());
+            AddBinding(Keys.AltX,  (object sender) => false);
+            AddBinding(Keys.F1,    (object sender) => Help());
+            AddBinding(Keys.AltH,  (object sender) => Help());
+            AddBinding(Keys.AltU,  (object sender) => UpdateRegistry());
+            AddBinding(Keys.CtrlU, (object sender) => UpgradeAll());
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
-            searchBox.AddBinding(Keys.DownArrow, (object sender, EventArgs args) => {
+            searchBox.AddBinding(Keys.DownArrow, (object sender) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.UpArrow, (object sender, EventArgs args) => {
+            searchBox.AddBinding(Keys.UpArrow, (object sender) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.PageUp, (object sender, EventArgs args) => {
+            searchBox.AddBinding(Keys.PageUp, (object sender) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.PageDown, (object sender, EventArgs args) => {
+            searchBox.AddBinding(Keys.PageDown, (object sender) => {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.Enter, (object sender, EventArgs args) => {
+            searchBox.AddBinding(Keys.Enter, (object sender) => {
                 SetFocus(moduleList);
                 return true;
             });
 
-            moduleList.AddBinding(Keys.CtrlF, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.CtrlF, (object sender) => {
                 SetFocus(searchBox);
                 return true;
             });
-            moduleList.AddBinding(Keys.Escape, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.Escape, (object sender) => {
                 searchBox.Clear();
                 return true;
             });
@@ -158,7 +158,7 @@ namespace CKAN.ConsoleUI {
             moduleList.AddTip("Enter", "Details",
                 () => moduleList.Selection != null
             );
-            moduleList.AddBinding(Keys.Enter, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.Enter, (object sender) => {
                 if (moduleList.Selection != null) {
                     LaunchSubScreen(new ModInfoScreen(manager, plan, moduleList.Selection));
                 }
@@ -175,7 +175,7 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
                     && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
             );
-            moduleList.AddBinding(Keys.Plus, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.Plus, (object sender) => {
                 if (moduleList.Selection != null) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection.identifier);
@@ -191,7 +191,7 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
                     && (registry.IsInstalled(moduleList.Selection.identifier, false))
             );
-            moduleList.AddBinding(Keys.Minus, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.Minus, (object sender) => {
                 if (moduleList.Selection != null && registry.IsInstalled(moduleList.Selection.identifier, false)) {
                     plan.ToggleRemove(moduleList.Selection.identifier);
                 }
@@ -200,7 +200,7 @@ namespace CKAN.ConsoleUI {
 
             moduleList.AddTip("Alt+A", "Apply changes", plan.NonEmpty
             );
-            moduleList.AddBinding(Keys.AltA, (object sender, EventArgs args) => {
+            moduleList.AddBinding(Keys.AltA, (object sender) => {
                 ApplyChanges();
                 return true;
             });

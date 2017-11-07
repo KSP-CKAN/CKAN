@@ -20,7 +20,7 @@ namespace CKAN.ConsoleUI {
             manager = mgr;
 
             AddTip("Alt+A", "Accept");
-            AddBinding(Keys.AltA, (object sender, EventArgs args) => {
+            AddBinding(Keys.AltA, (object sender) => {
                 if (Valid()) {
                     Save();
                     // Close screen
@@ -32,7 +32,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("Esc", "Cancel");
-            AddBinding(Keys.Escape, (object sender, EventArgs args) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 // Discard changes
                 return false;
             });

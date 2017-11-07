@@ -56,10 +56,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                 },
                 0, 0, ListSortDirection.Ascending
             );
-            choices.AddBinding(Keys.Enter, (object sender, EventArgs args) => {
+            choices.AddBinding(Keys.Enter, (object sender) => {
                 return false;
             });
-            choices.AddBinding(Keys.Escape, (object sender, EventArgs args) => {
+            choices.AddBinding(Keys.Escape, (object sender) => {
                 cancelled = true;
                 return false;
             });
