@@ -333,9 +333,14 @@ namespace CKAN.ConsoleUI {
             }
         }
 
+        private static string SameVersionString(KspVersion v)
+        {
+            return v.IsAny ? "all versions" : v.ToString();
+        }
+
         private static string VersionSpan(KspVersion minKsp, KspVersion maxKsp)
         {
-            return minKsp == maxKsp ? $"KSP {minKsp.IsAny ? "all versions" : minKsp.ToString()}"
+            return minKsp == maxKsp ? $"KSP {SameVersionString(minKsp)}"
                 :  minKsp.IsAny     ? $"KSP {maxKsp} and earlier"
                 :  maxKsp.IsAny     ? $"KSP {minKsp} and later"
                 :                     $"KSP {minKsp} - {maxKsp}";
