@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CKAN.Versioning;
@@ -104,8 +105,77 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
+            if (mod.resources != null) {
+                List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>();
+
+                if (mod.resources.homepage != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Home page",  "", "Open the home page URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.homepage)
+                    ));
+                }
+                if (mod.resources.repository != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Repository", "", "Open the repository URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.repository)
+                    ));
+                }
+                if (mod.resources.bugtracker != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Bugtracker", "", "Open the bug tracker URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.bugtracker)
+                    ));
+                }
+                if (mod.resources.spacedock != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "SpaceDock",  "", "Open the SpaceDock URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.spacedock)
+                    ));
+                }
+                if (mod.resources.curse != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        "Curse",      "", "Open the Curse URL in a browser",
+                        true,
+                        () => LaunchURL(mod.resources.curse)
+                    ));
+                }
+
+                if (opts.Count > 0) {
+                    mainMenu = new ConsolePopupMenu(opts);
+                }
+            }
+
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
             CenterHeader = () => "Mod Details";
+        }
+
+        protected override ConsolePopupMenu GetMainMenu()
+        {
+            return mainMenu;
+        }
+
+        private bool LaunchURL(Uri u)
+        {
+            // I'm getting error output on Linux, because this runs xdg-open which
+            // calls chromium-browser which prints a bunch of stuff about plugins that
+            // no one cares about.  Which corrupts the screen.
+            // But redirecting stdout requires UseShellExecute=false, which doesn't
+            // support launching URLs!  .NET's API design has painted us into a corner.
+            // So instead we display a popup dialog for the garbage to print all over,
+            // then wait 1.5 seconds and refresh the screen when it closes.
+            ConsoleMessageDialog d = new ConsoleMessageDialog("Launching...", new List<string>());
+            d.Run(() => {
+                Process.Start(new ProcessStartInfo() {
+                    UseShellExecute = true,
+                    FileName        = u.ToString()
+                });
+                System.Threading.Thread.Sleep(1500);
+            });
+            return true;
         }
 
         private int addDependencies(int top = 8)
@@ -408,6 +478,7 @@ namespace CKAN.ConsoleUI {
         private IRegistryQuerier registry;
         private ChangePlan       plan;
         private CkanModule       mod;
+        private ConsolePopupMenu mainMenu;
     }
 
     /// <summary>
