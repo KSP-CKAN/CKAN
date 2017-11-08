@@ -57,12 +57,11 @@ namespace CKAN.CmdLine
                         {
                             log.DebugFormat("Testing {0} {1} for possible replacement", mod.Key, mod.Value);
                             // Check if replacement is available
-                            if (registry.HasReplacement(mod.Key, ksp.VersionCriteria()))
+
+                            ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                            if (replacement != null)
                             {
                                 // Replaceable
-                                ModuleReplacement replacement = new ModuleReplacement();
-                                replacement.ToReplace = registry.GetModuleByVersion(mod.Key, mod.Value);
-                                replacement.ReplaceWith = registry.LatestAvailable(replacement.ToReplace.replaced_by.name, ksp.VersionCriteria());
                                 log.InfoFormat("Replacement {0} {1} found for {2} {3}",
                                     replacement.ReplaceWith.identifier, replacement.ReplaceWith.version,
                                     replacement.ToReplace.identifier, replacement.ToReplace.version);
@@ -71,7 +70,7 @@ namespace CKAN.CmdLine
                         }
                         catch (ModuleNotFoundKraken)
                         {
-                            log.InfoFormat("{0} is installed, but it is not in the registry",
+                            log.InfoFormat("{0} is installed, but it or its replacement is not in the registry",
                                 mod.Key);
                         }
                     }
@@ -91,22 +90,17 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if replacement is available
-                                if (registry.HasReplacement(mod, ksp.VersionCriteria()))
+                                ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                                if (replacement != null)
                                 {
                                     // Replaceable
-                                    ModuleReplacement replacement = new ModuleReplacement();
-                                    replacement.ToReplace = modToReplace;
-                                    replacement.ReplaceWith = registry.LatestAvailable(modToReplace.replaced_by.name, ksp.VersionCriteria());
                                     log.InfoFormat("Replacement {0} {1} found for {2} {3}",
                                         replacement.ReplaceWith.identifier, replacement.ReplaceWith.version,
                                         replacement.ToReplace.identifier, replacement.ToReplace.version);
                                     to_replace.Add(replacement);
                                 }
-                                else
-                                {
-                                    log.InfoFormat("Cannot replace {0}, {1} is not available for this KSP version",
-                                        mod, modToReplace.replaced_by.name);
-                                }
+                                log.InfoFormat("Attempt to replace {0} failed, replacement {1} is not compatible",
+                                    mod, modToReplace.replaced_by.name);
                             }
                             catch (ModuleNotFoundKraken)
                             {

@@ -187,11 +187,11 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Is the mod installed and does it have a replaced_by relationship with a compatible version
-        /// Check latest information on installed version of mod "identifier" and if it has a "replaced_by"
-        /// value, check if there is a compatible version of the linked mod
+        /// Given a mod identifier, return a ModuleReplacement containing the trelevant replacement 
+        /// if compatibility matches.
         /// </summary>
-        public static bool HasReplacement(this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
+
+        public static ModuleReplacement GetReplacement( this IRegistryQuerier querier, string identifier, KspVersionCriteria version)
         {
             // We only care about the installed version
             CkanModule installedVersion;
@@ -205,34 +205,44 @@ namespace CKAN
             }
             if (installedVersion == null) return false;  // Mod is not installed, so we don't care about replacements
             //get the identifier from the replaced_by relationship, if it exists
-            RelationshipDescriptor replacedBy;
-            replacedBy = installedVersion.replaced_by;
-            if (replacedBy == null) return false; // No replaced_by relationship
+            RelationshipDescriptor replacedBy = installedVersion.replaced_by;
+            if (installedVersion.replaced_by == null) return false; // No replaced_by relationship
             // Now we need to see if there is a compatible version of the replacement
-            CkanModule replaceWith;
             try
             {
-                replaceWith = querier.LatestAvailable(replacedBy.name, version);
+                ModuleReplacement replacement = new ModuleReplacement();
+                replacement.ToReplace = installedVersion;
+                if (installedVersion.replaced_by.version != null)
+                {
+                    replacement.ReplaceWith = querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version);
+                    if (replacement.ReplaceWith != null)
+                    {
+                        if (replacement.ReplaceWith.IsCompatibleKSP(version))
+                        {
+                            return replacement;
+                        }
+                    }
+                }
+                else 
+                {
+                    replacement.ReplaceWith = querier.LatestAvailable(installedVersion.replaced_by.name, versionCriteria);
+                    if (replacement.ReplaceWith != null)
+                    {
+                        if (installedVersion.replaced_by.min_version != null)
+                        {
+                            if (!replacement.ReplaceWith.version.IsLessThan(replacedBy.min_version))
+                            {
+                                return replacement;
+                            }
+                        }
+                        else return replacement;                      
+                    }
+                }
+                return null;
             }
             catch (ModuleNotFoundKraken)
             {
-                return false;
-            }
-            if (replaceWith == null) return false;
-
-            // We definitely have a replacement mod which is compatible with our KSP Version Criteria
-            // If we have any mod version constrainsts, check them now.
-            if (replacedBy.min_version != null)
-            {
-                return !new List<string>(querier.InstalledDlls).Contains(identifier) && !replaceWith.version.IsLessThan(replacedBy.min_version);
-            }
-            else if (replacedBy.version != null)
-            {
-                return !new List<string>(querier.InstalledDlls).Contains(identifier) && replaceWith.version.Equals(replacedBy.version);
-            }
-            else
-            {
-                return !new List<string>(querier.InstalledDlls).Contains(identifier);
+                return null;
             }
         }
     }

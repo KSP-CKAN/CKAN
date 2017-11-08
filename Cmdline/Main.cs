@@ -163,20 +163,20 @@ namespace CKAN.CmdLine
                     case "show":
                         return (new Show(user)).RunCommand(GetGameInstance(manager), (ShowOptions)cmdline.options);
 
+                    case "replace":
+                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        return (new Replace(user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
+
+                    case "upgrade":
+                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        return (new Upgrade(user)).RunCommand(GetGameInstance(manager), cmdline.options);
+
                     case "search":
                         return (new Search(user)).RunCommand(GetGameInstance(manager), options);
 
                     case "uninstall":
                     case "remove":
                         return (new Remove(user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "upgrade":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Upgrade(user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "replace":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Replace(user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
 
                     case "clean":
                         return Clean(GetGameInstance(manager));

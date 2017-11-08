@@ -70,7 +70,7 @@ namespace CKAN.CmdLine
                             // Check if upgrades are available, and show appropriately.
                             CkanModule latest = registry.LatestAvailable(mod.Key, ksp.VersionCriteria());
                             CkanModule current = registry.GetInstalledVersion(mod.Key);
-                                
+                            
                             log.InfoFormat("Latest {0} is {1}", mod.Key, latest);
 
                             if (latest == null)
@@ -78,15 +78,11 @@ namespace CKAN.CmdLine
                                 // Not compatible!
                                 bullet = "X";
                                 //Check if mod is replaceable
-                                if ( current.replaced_by != null)
+                                string newModInfo = ReplacmentModInfo (current.replaced_by, registry, ksp.VersionCriteria());
+                                if ( newModInfo != null)
                                 {
-                                    CkanModule replacement = registry.LatestAvailable(current.replaced_by.name, ksp.VersionCriteria());
-                                    if (replacement != null)
-                                    {
-                                        // Replaceable
-                                        bullet = ">";
-                                        modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
-                                    }
+                                    bullet = ">";
+                                    modInfo = string.Format("{0} > {1}", modInfo, newModInfo);
                                 }
                             }
                             else if (latest.version.IsEqualTo(current_version))
@@ -94,15 +90,11 @@ namespace CKAN.CmdLine
                                 // Up to date
                                 bullet = "-";
                                 //Check if mod is replaceable
-                                if ( current.replaced_by != null)
+                                string newModInfo = ReplacmentModInfo (current.replaced_by, registry, ksp.VersionCriteria());
+                                if ( newModInfo != null)
                                 {
-                                    CkanModule replacement = registry.LatestAvailable(current.replaced_by.name, ksp.VersionCriteria());
-                                    if (replacement != null)
-                                    {
-                                        // Replaceable
-                                        bullet = ">";
-                                        modInfo = string.Format("{0} {1} > {2} {3}", mod.Key, mod.Value, replacement.name, replacement.version);
-                                    }
+                                    bullet = ">";
+                                    modInfo = string.Format("{0} > {1}", modInfo, newModInfo);
                                 }
                             }
                             else if (latest.version.IsGreaterThan(mod.Value))
@@ -136,6 +128,56 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private string ReplacmentModInfo (RelationshipDescriptor replacedBy, IRegistryQuerier registry, Versioning.KspVersionCriteria versionCriteria)
+        {
+            if ( replacedBy != null)
+            {
+                try
+                {
+                    if (replacedBy.min_version != null)
+                    {
+                        CkanModule replacement = registry.LatestAvailable(replacedBy.name, versionCriteria);
+                        if (replacement != null)
+                        {
+                            if (!replacement.version.IsLessThan(replacedBy.min_version))
+                            {
+                                // Replaceable
+                                return string.Format("{0} {1}", replacement.name, replacement.version);
+                            }
+                        }
+                    }
+                    else if (replacedBy.version != null)
+                    {
+                        CkanModule replacement = registry.GetModuleByVersion(replacedBy.name, replacedBy.version);
+                        if (replacement != null)
+                        {
+                            if (replacement.IsCompatibleKSP(versionCriteria))
+                            {
+                                // Replaceable
+                                return string.Format("{0} {1}", replacement.name, replacement.version);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        CkanModule replacement = registry.LatestAvailable(replacedBy.name, versionCriteria);
+                        if (replacement != null)
+                        {
+                            // Replaceable
+                            return string.Format("{0} {1}", replacement.name, replacement.version);
+                        }
+                    }
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    log.InfoFormat("Specified replacement mod {0} is not in the registry", replacedBy.name);
+                    return null;
+                }                        
+            } 
+            return null;
+        }
+
 
         private static ExportFileType? GetExportFileType(string export)
         {
