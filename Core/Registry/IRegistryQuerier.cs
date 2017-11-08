@@ -201,12 +201,12 @@ namespace CKAN
             }
             catch (ModuleNotFoundKraken)
             {
-                return false;
+                return null;
             }
-            if (installedVersion == null) return false;  // Mod is not installed, so we don't care about replacements
+            if (installedVersion == null) return null;  // Mod is not installed, so we don't care about replacements
             //get the identifier from the replaced_by relationship, if it exists
             RelationshipDescriptor replacedBy = installedVersion.replaced_by;
-            if (installedVersion.replaced_by == null) return false; // No replaced_by relationship
+            if (installedVersion.replaced_by == null) return null; // No replaced_by relationship
             // Now we need to see if there is a compatible version of the replacement
             try
             {
@@ -225,7 +225,7 @@ namespace CKAN
                 }
                 else 
                 {
-                    replacement.ReplaceWith = querier.LatestAvailable(installedVersion.replaced_by.name, versionCriteria);
+                    replacement.ReplaceWith = querier.LatestAvailable(installedVersion.replaced_by.name, version);
                     if (replacement.ReplaceWith != null)
                     {
                         if (installedVersion.replaced_by.min_version != null)

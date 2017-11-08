@@ -90,7 +90,7 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if replacement is available
-                                ModuleReplacement replacement = registry.GetReplacement(mod.Key, ksp.VersionCriteria());
+                                ModuleReplacement replacement = registry.GetReplacement(mod, ksp.VersionCriteria());
                                 if (replacement != null)
                                 {
                                     // Replaceable
