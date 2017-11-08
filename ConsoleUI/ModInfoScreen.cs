@@ -153,6 +153,13 @@ namespace CKAN.ConsoleUI {
             CenterHeader = () => "Mod Details";
         }
 
+        /// <summary>
+        /// Return the menu of resource URLs
+        /// </summary>
+        /// <returns>
+        /// Main menu object created in the constructor,
+        /// or null if the mod defines no URLs
+        /// </returns>
         protected override ConsolePopupMenu GetMainMenu()
         {
             return mainMenu;
