@@ -17,13 +17,13 @@ namespace CKAN
         #region Properties
 
         // Either file, find, or find_regexp is required, we check this manually at deserialise.
-        [JsonProperty("file")]
+        [JsonProperty("file", NullValueHandling = NullValueHandling.Ignore)]
         public string file;
 
-        [JsonProperty("find")]
+        [JsonProperty("find", NullValueHandling = NullValueHandling.Ignore)]
         public string find;
 
-        [JsonProperty("find_regexp")]
+        [JsonProperty("find_regexp", NullValueHandling = NullValueHandling.Ignore)]
         public string find_regexp;
 
         [JsonProperty("find_matches_files")]
@@ -32,22 +32,22 @@ namespace CKAN
         [JsonProperty("install_to", Required = Required.Always)]
         public string install_to;
 
-        [JsonProperty("as")]
+        [JsonProperty("as", NullValueHandling = NullValueHandling.Ignore)]
         public string @as;
 
-        [JsonProperty("filter")]
+        [JsonProperty("filter", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> filter;
 
-        [JsonProperty("filter_regexp")]
+        [JsonProperty("filter_regexp", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> filter_regexp;
 
-        [JsonProperty("include_only")]
+        [JsonProperty("include_only", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> include_only;
 
-        [JsonProperty("include_only_regexp")]
+        [JsonProperty("include_only_regexp", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> include_only_regexp;
 
