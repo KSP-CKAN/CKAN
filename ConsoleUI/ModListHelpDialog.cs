@@ -14,7 +14,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public ModListHelpDialog() : base()
         {
-            SetDimensions(9, 4, -9, -3);
+            SetDimensions(9, 3, -9, -3);
 
             int btnW = 10;
             int btnL = (Console.WindowWidth - btnW) / 2;
@@ -31,6 +31,7 @@ namespace CKAN.ConsoleUI {
             symbolTb.AddLine("==============");
             symbolTb.AddLine($"{installed}    Installed");
             symbolTb.AddLine($"{upgradable}  Upgradeable");
+            symbolTb.AddLine($"{replaceable}  Replaceable");
             symbolTb.AddLine($"!  Unavailable");
             symbolTb.AddLine(" ");
             symbolTb.AddLine("Basic Keys");
@@ -65,6 +66,7 @@ namespace CKAN.ConsoleUI {
 
         private static readonly string installed    = Symbols.checkmark;
         private static readonly string upgradable   = Symbols.greaterEquals;
+        private static readonly string replaceable  = Symbols.doubleGreater;
     }
 
 }

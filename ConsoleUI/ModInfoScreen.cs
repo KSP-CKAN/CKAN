@@ -299,14 +299,45 @@ namespace CKAN.ConsoleUI {
 
                     if (latestIsInstalled) {
 
-                        addVersionBox(
-                            boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                            () => $"Latest/Installed {instTime.ToString("d")}",
-                            () => ConsoleTheme.Current.ActiveFrameFg,
-                            true,
-                            new List<CkanModule>() {inst}
+                        ModuleReplacement mr = registry.GetReplacement(
+                            mod.identifier,
+                            manager.CurrentInstance.VersionCriteria()
                         );
-                        boxTop += boxH;
+
+                        if (mr != null) {
+
+                            // Show replaced_by
+                            addVersionBox(
+                                boxLeft, boxTop, boxRight, boxTop + boxH - 1,
+                                () => $"Replaced by {mr.ReplaceWith.identifier}",
+                                () => ConsoleTheme.Current.AlertFrameFg,
+                                false,
+                                new List<CkanModule>() {mr.ReplaceWith}
+                            );
+                            boxTop += boxH;
+
+                            addVersionBox(
+                                boxLeft, boxTop, boxRight, boxTop + boxH - 1,
+                                () => $"Installed {instTime.ToString("d")}",
+                                () => ConsoleTheme.Current.ActiveFrameFg,
+                                true,
+                                new List<CkanModule>() {inst}
+                            );
+                            boxTop += boxH;
+
+                        } else {
+
+                            addVersionBox(
+                                boxLeft, boxTop, boxRight, boxTop + boxH - 1,
+                                () => $"Latest/Installed {instTime.ToString("d")}",
+                                () => ConsoleTheme.Current.ActiveFrameFg,
+                                true,
+                                new List<CkanModule>() {inst}
+                            );
+                            boxTop += boxH;
+
+                        }
+
 
                     } else {
 

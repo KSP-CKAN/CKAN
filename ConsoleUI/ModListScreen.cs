@@ -171,6 +171,10 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
                     && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
             );
+            moduleList.AddTip("+", "Replace",
+                () => moduleList.Selection != null
+                    && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
+            );
             moduleList.AddBinding(Keys.Plus, (object sender) => {
                 if (moduleList.Selection != null) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
@@ -178,6 +182,8 @@ namespace CKAN.ConsoleUI {
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
                             && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())) {
                         plan.ToggleUpgrade(moduleList.Selection.identifier);
+                    } else if (registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                        plan.ToggleReplace(moduleList.Selection.identifier);
                     }
                 }
                 return true;
@@ -520,6 +526,8 @@ namespace CKAN.ConsoleUI {
                 case InstallStatus.Installed:    return installed;
                 case InstallStatus.Installing:   return installing;
                 case InstallStatus.NotInstalled: return notinstalled;
+                case InstallStatus.Replaceable:  return replaceable;
+                case InstallStatus.Replacing:    return replacing;
                 default:                         return "";
             }
         }
@@ -554,6 +562,8 @@ namespace CKAN.ConsoleUI {
         private static readonly string upgradable   = Symbols.greaterEquals;
         private static readonly string upgrading    = "^";
         private static readonly string removing     = "-";
+        private static readonly string replaceable  = Symbols.doubleGreater;
+        private static readonly string replacing    = Symbols.plusMinus;
     }
 
     /// <summary>
@@ -600,11 +610,21 @@ namespace CKAN.ConsoleUI {
         }
 
         /// <summary>
+        /// Add or remove a mod from the replace list
+        /// </summary>
+        /// <param name="identifier">The mod to Replace</param>
+        public void ToggleReplace(string identifier)
+        {
+            Remove.Remove(identifier);
+            toggleContains(Replace, identifier);
+        }
+
+        /// <summary>
         /// Return true if we are planning to make any changes, false otherwise
         /// </summary>
         public bool NonEmpty()
         {
-             return Install.Count > 0 || Upgrade.Count > 0 || Remove.Count > 0;
+             return Install.Count > 0 || Upgrade.Count > 0 || Remove.Count > 0 || Replace.Count > 0;
         }
 
         /// <summary>
@@ -640,6 +660,10 @@ namespace CKAN.ConsoleUI {
                     } else {
                         return InstallStatus.Upgradeable;
                     }
+                } else if (Replace.Contains(identifier)) {
+                    return InstallStatus.Replacing;
+                } else if (registry.GetReplacement(identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                    return InstallStatus.Replaceable;
                 } else if (!IsAnyAvailable(registry, identifier)) {
                     return InstallStatus.Unavailable;
                 } else {
@@ -702,6 +726,11 @@ namespace CKAN.ConsoleUI {
         /// Mods we're planning to remove
         /// </summary>
         public readonly HashSet<string> Remove  = new HashSet<string>();
+
+        /// <summary>
+        /// Mods we're planning to replace with successor mods
+        /// </summary>
+        public readonly HashSet<string> Replace = new HashSet<string>();
     }
 
     /// <summary>
@@ -743,5 +772,16 @@ namespace CKAN.ConsoleUI {
         /// This mod is installed and we are planning to upgrade it
         /// </summary>
         Upgrading,
+
+        /// <summary>
+        /// This mod is installed and can be replaced by a successor mod
+        /// </summary>
+        Replaceable,
+
+        /// <summary>
+        /// This mod is installed and we are planning to replace it
+        /// </summary>
+        Replacing,
+
     };
 }

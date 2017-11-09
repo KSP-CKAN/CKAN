@@ -26,6 +26,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// >= symbol
         /// </summary>
         public static readonly string greaterEquals    = cp437s(0xf2);
+        /// <summary>
+        /// +- symbol
+        /// </summary>
+        public static readonly string plusMinus        = cp437s(0xf1);
+        /// <summary>
+        /// >> symbol
+        /// </summary>
+        public static readonly string doubleGreater    = cp437s(0xaf);
+
 
         /// <summary>
         /// Hashed square box for drawing scrollbars

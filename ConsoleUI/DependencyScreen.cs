@@ -31,6 +31,7 @@ namespace CKAN.ConsoleUI {
             ));
 
             generateList(plan.Install);
+            generateList(new HashSet<string>(ReplacementIdentifiers(plan.Replace)));
 
             dependencyList = new ConsoleListBox<Dependency>(
                 1, 4, -1, -2,
@@ -133,6 +134,18 @@ namespace CKAN.ConsoleUI {
                 if (m != null) {
                     AddDependencies(inst, mod, m.recommends, true);
                     AddDependencies(inst, mod, m.suggests,   false);
+                }
+            }
+        }
+
+        private IEnumerable<string> ReplacementIdentifiers(IEnumerable<string> replaced_identifiers)
+        {
+            foreach (string replaced in replaced_identifiers) {
+                ModuleReplacement repl = registry.GetReplacement(
+                    replaced, manager.CurrentInstance.VersionCriteria()
+                );
+                if (repl != null) {
+                    yield return repl.ReplaceWith.identifier;
                 }
             }
         }
