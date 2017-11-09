@@ -41,13 +41,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.SetCursorPosition(l, t);
             Console.Write(doubleBorder ? Symbols.upperLeftCornerDouble  : Symbols.upperLeftCorner);
             if (title.Length > 0) {
-                int topLeftSidePad = (w - 4 - title.Length) / 2;
+                int topLeftSidePad  = (w - 4 - title.Length) / 2;
                 int topRightSidePad = (w - 4 - title.Length) - topLeftSidePad;
-                if (topLeftSidePad < 0) {
-                    topLeftSidePad = 0;
-                }
-                if (topRightSidePad < 0) {
+                if (topLeftSidePad < 0 || topRightSidePad < 0) {
+                    topLeftSidePad  = 0;
                     topRightSidePad = 0;
+                    title = title.Substring(0, w - 4);
                 }
                 Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, topLeftSidePad));
                 Console.Write($" {title} ");
