@@ -198,8 +198,7 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("Alt+A", "Apply changes", plan.NonEmpty
-            );
+            moduleList.AddTip("Alt+A", "Apply changes", plan.NonEmpty);
             moduleList.AddBinding(Keys.AltA, (object sender) => {
                 ApplyChanges();
                 return true;
@@ -217,7 +216,7 @@ namespace CKAN.ConsoleUI {
                 () => {
                     int days = daysSinceUpdated(registryFilePath());
                     return days <  1 ? ""
-                         :  days == 1 ? $"Updated at least {days} day ago"
+                        :  days == 1 ? $"Updated at least {days} day ago"
                         :              $"Updated at least {days} days ago";
                 },
                 () => {
@@ -437,6 +436,7 @@ namespace CKAN.ConsoleUI {
         {
             ModListHelpDialog hd = new ModListHelpDialog();
             hd.Run();
+            DrawBackground();
             return true;
         }
 

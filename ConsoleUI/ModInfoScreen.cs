@@ -55,7 +55,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 3, 5, 12,
-                () => $"Download:",
+                () => "Download:",
                 () => ConsoleTheme.Current.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
