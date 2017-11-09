@@ -57,6 +57,17 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
+            dependencyList.AddTip("Enter", "Details");
+            dependencyList.AddBinding(Keys.Enter, (object sender) => {
+                if (dependencyList.Selection != null) {
+                    LaunchSubScreen(new ModInfoScreen(
+                        manager, plan,
+                        registry.LatestAvailable(dependencyList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
+                    ));
+                }
+                return true;
+            });
+
             AddObject(dependencyList);
 
             AddTip("Esc", "Cancel");
