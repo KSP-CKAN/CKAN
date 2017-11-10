@@ -172,7 +172,7 @@ namespace CKAN
         [JsonProperty("depends", NullValueHandling = NullValueHandling.Ignore)]
         public List<RelationshipDescriptor> depends;
 
-        [JsonProperty("replaced_by")]
+        [JsonProperty("replaced_by", NullValueHandling = NullValueHandling.Ignore)]
         public RelationshipDescriptor replaced_by;
 
         [JsonProperty("download")]
