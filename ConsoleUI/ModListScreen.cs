@@ -1,9 +1,7 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.ComponentModel;
-using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {

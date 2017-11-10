@@ -1,8 +1,6 @@
 using System;
-using System.Text;
 using System.ComponentModel;
 using System.Collections.Generic;
-using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI.Toolkit {
 

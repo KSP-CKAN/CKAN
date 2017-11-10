@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using CKAN.ConsoleUI.Toolkit;
-
 namespace CKAN.ConsoleUI {
 
     /// <summary>
