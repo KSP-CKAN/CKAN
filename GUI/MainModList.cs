@@ -554,10 +554,28 @@ namespace CKAN
                 selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
                 updating.ReadOnly = updating is  DataGridViewTextBoxCell;
 
+                // TODO1888 : Add ContextMenuStrip Property for context menu and OnMouseHover to show selected action and conflict info
+                 
+                //ToolStripMenuItem ModRightClickMenu = new ToolStripMenuItem();
+
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }
             return full_list_of_mod_rows.Values;
         }
+
+        //TODO1888 Define ModContextMenu
+
+        //TODO1888 Setup OnMouseHover over the Update/Change column
+        //Not sure if this is the right place to add this definition, 
+        //   see https://msdn.microsoft.com/en-us/library/system.windows.forms.datagridviewrow.contextmenustrip(v=vs.110).aspx
+        // private DataGridViewCellEventArgs mouseLocation; 
+
+//        private void dataGridView_CellMouseEnter(object sender,
+//            DataGridViewCellEventArgs location)
+//        {
+//            mouseLocation = location;
+//        }
+
 
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
