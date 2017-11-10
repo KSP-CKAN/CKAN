@@ -1,4 +1,3 @@
-﻿using System;
 using System.Transactions;
 
 namespace CKAN

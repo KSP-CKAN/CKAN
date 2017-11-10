@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading;
-using CurlSharp;
 using log4net;
 
 namespace CKAN
@@ -22,7 +18,7 @@ namespace CKAN
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
-        
+
         private List<CkanModule> modules;
         private readonly NetAsyncDownloader downloader;
 

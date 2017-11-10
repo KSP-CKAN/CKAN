@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -22,7 +20,7 @@ namespace CKAN.CmdLine
             UpgradeOptions options = (UpgradeOptions) raw_options;
 
             if (options.ckan_file != null)
-            {                
+            {
                 options.modules.Add(LoadCkanFromFile(ksp, options.ckan_file).identifier);
             }
 
@@ -148,4 +146,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

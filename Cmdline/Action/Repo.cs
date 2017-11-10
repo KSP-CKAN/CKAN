@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
-using CKAN;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -316,4 +315,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

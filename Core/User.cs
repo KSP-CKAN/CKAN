@@ -1,8 +1,6 @@
 // Communicate with the user (status messages, yes/no questions, etc)
 // This class will proxy to either the GUI or cmdline functionality.
 
-using System;
-
 namespace CKAN
 {
 

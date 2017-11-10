@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -15,7 +14,7 @@ namespace CKAN
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
-        
+
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             WebClient client = new WebClient();
@@ -60,7 +59,7 @@ namespace CKAN
             _enabled = !_enabled;
             menuStrip1.Enabled = _enabled;
             MainTabControl.Enabled = _enabled;
-            /* Windows (7 & 8 only?) bug #1548 has extra facets. 
+            /* Windows (7 & 8 only?) bug #1548 has extra facets.
              * parent.childcontrol.Enabled = false seems to disable the parent,
              * if childcontrol had focus. Depending on optimization steps,
              * parent.childcontrol.Enabled = true does not necessarily

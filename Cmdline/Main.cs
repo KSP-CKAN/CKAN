@@ -4,7 +4,6 @@
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using CKAN.CmdLine.Action;
 using log4net;
-using log4net.Config;
 using log4net.Core;
 
 namespace CKAN.CmdLine
