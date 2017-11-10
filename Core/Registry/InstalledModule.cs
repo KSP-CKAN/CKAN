@@ -13,7 +13,8 @@ namespace CKAN
         // TODO: This class should also record file paths as well.
         // It's just sha1 now for registry compatibility.
 
-        [JsonProperty] private string sha1_sum;
+        [JsonProperty("sha1_sum", NullValueHandling = NullValueHandling.Ignore)]
+        private string sha1_sum;
 
         public string Sha1
         {
@@ -64,7 +65,7 @@ namespace CKAN
     /// <summary>
     /// A simple class that represents an installed module. Includes the time of installation,
     /// the module itself, and a list of files installed with it.
-    /// 
+    ///
     /// Primarily used by the Registry class.
     /// </summary>
 
@@ -89,7 +90,7 @@ namespace CKAN
         // registry format compatibility.
         [JsonProperty] private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files 
+        public IEnumerable<string> Files
         {
             get { return installed_files.Keys; }
         }
