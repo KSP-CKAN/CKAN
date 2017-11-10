@@ -19,8 +19,8 @@ namespace CKAN.ConsoleUI {
         {
             manager = mgr;
 
-            AddTip("Alt+A", "Accept");
-            AddBinding(Keys.AltA, (object sender) => {
+            AddTip("F2", "Accept");
+            AddBinding(Keys.F2, (object sender) => {
                 if (Valid()) {
                     Save();
                     // Close screen

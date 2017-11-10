@@ -26,16 +26,17 @@ namespace CKAN.ConsoleUI
         /// and by other parts of CKAN that want to launch the console UI.
         /// </summary>
         /// <param name="args">Command line arguments</param>
+        /// <param name="debug">True if debug options should be available, false otherwise</param>
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(string[] args)
+        public static int Main_(string[] args, bool debug = false)
         {
             Logging.Initialize();
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
 
-            new ConsoleCKAN();
+            new ConsoleCKAN(debug);
 
             return 0;
         }

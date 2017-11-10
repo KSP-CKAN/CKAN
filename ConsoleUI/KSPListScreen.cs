@@ -15,7 +15,7 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen.
         /// </summary>
         /// <param name="mgr">KSP manager object for getting hte Instances</param>
-        /// <param name="first">If true, this is the first screen after the splash, so Alt+X exits, else Esc exits</param>
+        /// <param name="first">If true, this is the first screen after the splash, so Ctrl+Q exits, else Esc exits</param>
         public KSPListScreen(KSPManager mgr, bool first = false)
         {
             manager = mgr;
@@ -51,8 +51,9 @@ namespace CKAN.ConsoleUI {
             );
 
             if (first) {
-                AddTip("Alt+X", "Quit");
-                AddBinding(Keys.AltX, (object sender) => false);
+                AddTip("Ctrl+Q", "Quit");
+                AddBinding(Keys.AltX,  (object sender) => false);
+                AddBinding(Keys.CtrlQ, (object sender) => false);
             } else {
                 AddTip("Esc", "Quit");
                 AddBinding(Keys.Escape, (object sender) => false);

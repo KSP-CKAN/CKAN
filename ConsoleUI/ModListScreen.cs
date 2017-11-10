@@ -17,8 +17,10 @@ namespace CKAN.ConsoleUI {
         /// Initialize the screen
         /// </summary>
         /// <param name="mgr">KSP manager object containing the current instance</param>
-        public ModListScreen(KSPManager mgr)
+        /// <param name="dbg">True if debug options should be available, false otherwise</param>
+        public ModListScreen(KSPManager mgr, bool dbg)
         {
+            debug    = dbg;
             manager  = mgr;
             registry = RegistryManager.Instance(manager.CurrentInstance).registry;
 
@@ -118,10 +120,12 @@ namespace CKAN.ConsoleUI {
             AddObject(searchBox);
             AddObject(moduleList);
 
+            AddBinding(Keys.CtrlQ, (object sender) => false);
             AddBinding(Keys.AltX,  (object sender) => false);
             AddBinding(Keys.F1,    (object sender) => Help());
             AddBinding(Keys.AltH,  (object sender) => Help());
-            AddBinding(Keys.AltU,  (object sender) => UpdateRegistry());
+            AddBinding(Keys.F5,    (object sender) => UpdateRegistry());
+            AddBinding(Keys.CtrlR, (object sender) => UpdateRegistry());
             AddBinding(Keys.CtrlU, (object sender) => UpgradeAll());
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
@@ -198,8 +202,8 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("Alt+A", "Apply changes", plan.NonEmpty);
-            moduleList.AddBinding(Keys.AltA, (object sender) => {
+            moduleList.AddTip("F9", "Apply changes", plan.NonEmpty);
+            moduleList.AddBinding(Keys.F9, (object sender) => {
                 ApplyChanges();
                 return true;
             });
@@ -235,38 +239,75 @@ namespace CKAN.ConsoleUI {
             CenterHeader = () => $"KSP {manager.CurrentInstance.Version().ToString()} ({KSPListScreen.InstallName(manager, manager.CurrentInstance)})";
         }
 
+        // Alt+H doesn't work on Mac, but F1 does, and we need
+        // an option other than F1 for terminals that open their own help.
+        private static readonly string helpKey = Platform.IsMac
+            ? "F1"
+            : "F1, Alt+H";
+
         /// <summary>
         /// Return the main menu
         /// </summary>
         protected override ConsolePopupMenu GetMainMenu()
         {
             if (mainMenu == null && moduleList != null) {
-                mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
-                    new ConsoleMenuOption("Sort...",               "", "Change the sorting of the list of mods",
+                List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
+                    new ConsoleMenuOption("Sort...",                    "",
+                        "Change the sorting of the list of mods",
                         true, null, null, moduleList.SortMenu()),
                     null,
-                    new ConsoleMenuOption("Update registry",  "Alt+U", "Refresh the list of mods",
+                    new ConsoleMenuOption("Refresh mod list", "F5, Ctrl+R",
+                        "Refresh the list of mods",
                         true, UpdateRegistry),
-                    new ConsoleMenuOption("Upgrade all",     "Ctrl+U", "Mark all available updates for installation",
+                    new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
+                        "Mark all available updates for installation",
                         true, UpgradeAll),
-                    new ConsoleMenuOption("Audit recommendations", "", "List mods suggested and recommended by installed mods",
+                    new ConsoleMenuOption("Audit recommendations",      "",
+                        "List mods suggested and recommended by installed mods",
                         true, ViewSuggestions),
-                    new ConsoleMenuOption("Scan KSP dir",          "", "Check for manually installed mods",
+                    new ConsoleMenuOption("Scan KSP dir",               "",
+                        "Check for manually installed mods",
                         true, ScanForMods),
-                    new ConsoleMenuOption("Export installed...",   "", "Save your mod list",
+                    new ConsoleMenuOption("Export installed...",        "",
+                        "Save your mod list",
                         true, ExportInstalled),
                     null,
-                    new ConsoleMenuOption("Select KSP install...", "", "Switch to a different game instance",
+                    new ConsoleMenuOption("Select KSP install...",      "",
+                        "Switch to a different game instance",
                         true, SelectInstall),
                     null,
-                    new ConsoleMenuOption("Help",         "F1, Alt+H", "Tips & tricks",
+                    new ConsoleMenuOption("Help",                  helpKey,
+                        "Tips & tricks",
                         true, Help),
                     null,
-                    new ConsoleMenuOption("Quit",             "Alt+X", "Exit to DOS",
+                    new ConsoleMenuOption("Quit",                 "Ctrl+Q",
+                        "Exit to DOS",
                         true, () => false)
-                });
+                };
+                if (debug) {
+                    opts.Add(null);
+                    opts.Add(new ConsoleMenuOption("DEBUG: Capture key...", "",
+                        "Print details of how your system reports a keystroke for debugging",
+                        true, CaptureKey));
+                }
+                mainMenu = new ConsolePopupMenu(opts);
             }
             return mainMenu;
+        }
+
+        private bool CaptureKey()
+        {
+            ConsoleKeyInfo k = default(ConsoleKeyInfo);
+            ConsoleMessageDialog keyprompt = new ConsoleMessageDialog("Press a key", new List<string>());
+            keyprompt.Run(() => {
+                k = Console.ReadKey(true);
+            });
+            ConsoleMessageDialog output = new ConsoleMessageDialog(
+                $"Key: {k.Key,18}\nKeyChar:           0x{(int)k.KeyChar:x2}\nModifiers: {k.Modifiers,12}",
+                new List<string> {"OK"}
+            );
+            output.Run();
+            return true;
         }
 
         private bool UpgradeAll()
@@ -493,6 +534,7 @@ namespace CKAN.ConsoleUI {
 
         private KSPManager       manager;
         private IRegistryQuerier registry;
+        private bool             debug;
 
         private ConsoleField               searchBox;
         private ConsoleListBox<CkanModule> moduleList;

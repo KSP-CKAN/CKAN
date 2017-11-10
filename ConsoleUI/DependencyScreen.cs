@@ -75,8 +75,8 @@ namespace CKAN.ConsoleUI {
                 return false;
             });
 
-            AddTip("Alt+A", "Accept");
-            AddBinding(Keys.AltA, (object sender) => {
+            AddTip("F9", "Accept");
+            AddBinding(Keys.F9, (object sender) => {
                 foreach (string name in accepted) {
                     plan.Install.Add(name);
                 }

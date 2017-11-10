@@ -11,7 +11,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         private const char WindowsEnter = (System.Char)13;
         /// <summary>
         /// Representation of enter key for key bindings
-        /// FUTURE: Which one does MacOS use? Is it hopefully 10?
         /// </summary>
         public static readonly ConsoleKeyInfo Enter = new ConsoleKeyInfo(
             Platform.IsWindows ? WindowsEnter : LinuxEnter,
@@ -30,6 +29,27 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public static readonly ConsoleKeyInfo F1 = new ConsoleKeyInfo(
             (System.Char)0, ConsoleKey.F1, false, false, false
+        );
+
+        /// <summary>
+        /// Representation of F2 for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo F2 = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.F2, false, false, false
+        );
+
+        /// <summary>
+        /// Representation of F5 for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo F5 = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.F5, false, false, false
+        );
+
+        /// <summary>
+        /// Representation of F9 for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo F9 = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.F9, false, false, false
         );
 
         /// <summary>
@@ -68,13 +88,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
-        /// Representation of delete key for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo Delete = new ConsoleKeyInfo(
-            (System.Char)0, ConsoleKey.Delete, false, false, false
-        );
-
-        /// <summary>
         /// Representation of plus key for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo Plus = new ConsoleKeyInfo(
@@ -93,17 +106,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
-        /// Representation of Alt+A for key bindings
+        /// Representation of Ctrl+D for key bindings
         /// </summary>
-        public static readonly ConsoleKeyInfo AltA = new ConsoleKeyInfo(
-            (System.Char)'a', ConsoleKey.A, false, true, false
-        );
-
-        /// <summary>
-        /// Representation of Alt+D for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo AltD = new ConsoleKeyInfo(
-            (System.Char)'d', ConsoleKey.D, false, true, false
+        public static readonly ConsoleKeyInfo CtrlD = new ConsoleKeyInfo(
+            (System.Char)4, ConsoleKey.D, false, false, true
         );
 
         /// <summary>
@@ -114,6 +120,27 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Ctrl+Q for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlQ = new ConsoleKeyInfo(
+            (System.Char)17, ConsoleKey.Q, false, false, true
+        );
+
+        /// <summary>
+        /// Representation of Ctrl+R for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlR = new ConsoleKeyInfo(
+            (System.Char)18, ConsoleKey.R, false, false, true
+        );
+
+        /// <summary>
+        /// Representation of Ctrl+U for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlU = new ConsoleKeyInfo(
+            (System.Char)21, ConsoleKey.U, false, false, true
+        );
+
+        /// <summary>
         /// Representation of Alt+H for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo AltH = new ConsoleKeyInfo(
@@ -121,21 +148,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
-        /// Representation of Alt+U for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo AltU = new ConsoleKeyInfo(
-            (System.Char)'u', ConsoleKey.U, false, true, false
-        );
-
-        /// <summary>
-        /// Representation of Ctrl+U for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo CtrlU = new ConsoleKeyInfo(
-            (System.Char)0x15, ConsoleKey.U, false, false, true
-        );
-
-        /// <summary>
         /// Representation of Alt+X for key bindings
+        /// Does not work on MacOSX, so we
         /// </summary>
         public static readonly ConsoleKeyInfo AltX = new ConsoleKeyInfo(
             (System.Char)'x', ConsoleKey.X, false, true, false
@@ -170,24 +184,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
-        /// Representation of letter 'i' for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo I = new ConsoleKeyInfo(
-            (System.Char)'i', ConsoleKey.I, false, false, false
-        );
-
-        /// <summary>
         /// Representation of letter 'r' for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo R = new ConsoleKeyInfo(
             (System.Char)'r', ConsoleKey.R, false, false, false
-        );
-
-        /// <summary>
-        /// Representation of letter 'u' for key bindings
-        /// </summary>
-        public static readonly ConsoleKeyInfo U = new ConsoleKeyInfo(
-            (System.Char)'u', ConsoleKey.U, false, false, false
         );
 
         /// <summary>

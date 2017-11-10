@@ -13,7 +13,7 @@ namespace CKAN.ConsoleUI {
         /// Starts with a splash screen, then instance selection if no default,
         /// then list of mods.
         /// </summary>
-        public ConsoleCKAN()
+        public ConsoleCKAN(bool debug)
         {
             // KSPManager only uses its IUser object to construct KSP objects,
             // which only use it to inform the user about the creation of the CKAN/ folder.
@@ -29,7 +29,7 @@ namespace CKAN.ConsoleUI {
                     new KSPListScreen(manager, true).Run();
                 }
                 if (manager.CurrentInstance != null) {
-                    new ModListScreen(manager).Run();
+                    new ModListScreen(manager, debug).Run();
                 }
 
             }
