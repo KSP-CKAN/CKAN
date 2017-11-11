@@ -75,6 +75,7 @@ namespace CKAN
         public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
         {
             var available_versions = new List<Version>(module_version.Keys);
+            available_versions.Sort(new RecentVersionComparer());
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
