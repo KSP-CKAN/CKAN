@@ -237,14 +237,16 @@ namespace CKAN
 
         public void _MarkModForUpdate(string identifier)
         {
-            foreach (DataGridViewRow row in ModList.Rows)
+            if (!mainModList.full_list_of_mod_rows.ContainsKey(identifier))
             {
-                var mod = (GUIMod) row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    (row.Cells[1] as DataGridViewCheckBoxCell).Value = true;
-                    break;
-                }
+                return;
+            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+
+            var mod = (GUIMod)row.Tag;
+            if (mod.Identifier == identifier)
+            {
+                mod.SetUpgradeChecked(row, true);
             }
         }
     }
