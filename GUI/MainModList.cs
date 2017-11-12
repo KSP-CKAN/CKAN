@@ -529,8 +529,7 @@ namespace CKAN
                             : myChange.ChangeType == GUIModChangeType.Remove  ? false
                             : mod.IsInstalled
                     } : new DataGridViewTextBoxCell() {
-                        Value    = mod.IsAutodetected ? "AD" : "-",
-                        ReadOnly = true
+                        Value    = mod.IsAutodetected ? "AD" : "-"
                     };
 
                 var updating = mod.IsInstallable() && mod.HasUpdate
@@ -539,8 +538,7 @@ namespace CKAN
                             : myChange.ChangeType == GUIModChangeType.Update ? true
                             : false
                     } : new DataGridViewTextBoxCell() {
-                        Value    = "-",
-                        ReadOnly = true
+                        Value    = "-"
                     };
 
                 var name = new DataGridViewTextBoxCell {Value = mod.Name};
@@ -552,6 +550,9 @@ namespace CKAN
                 var size = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
 
                 item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, desc);
+
+                selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
+                updating.ReadOnly = updating is  DataGridViewTextBoxCell;
 
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }
