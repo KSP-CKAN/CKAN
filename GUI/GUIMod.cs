@@ -41,6 +41,24 @@ namespace CKAN
         public bool IsCKAN { get; private set; }
         public string Abbrevation { get; private set; }
 
+        /// <summary>
+        /// Return whether this mod is installable.
+        /// Used for determining whether to show a checkbox in the leftmost column.
+        /// </summary>
+        /// <returns>
+        /// False if the mod is auto detected,
+        /// otherwise true if it's compatible or already installed,
+        /// otherwise false.
+        /// </returns>
+        public bool IsInstallable()
+        {
+            // Auto detected mods are never installable
+            if (IsAutodetected)
+                return false;
+            // Compatible mods are installable, but so are mods that are already installed
+            return !IsIncompatible || IsInstalled;
+        }
+
         public string Version
         {
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
@@ -253,5 +271,6 @@ namespace CKAN
         {
             return (Name != null ? Name.GetHashCode() : 0);
         }
+
     }
 }

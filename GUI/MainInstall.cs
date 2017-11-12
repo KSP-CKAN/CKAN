@@ -341,10 +341,11 @@ namespace CKAN
 
         private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateModsList();
-            tabController.SetTabLock(false);
+            KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
 
-            var result = (KeyValuePair<bool, ModChanges>) e.Result;
+            UpdateModsList(false, result.Value);
+
+            tabController.SetTabLock(false);
 
             if (result.Key)
             {
@@ -370,24 +371,6 @@ namespace CKAN
                 SetDescription("An error occurred, check the log for information");
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
-
-                var opts = result.Value;
-
-                foreach (ModChange opt in opts)
-                {
-                    switch (opt.ChangeType)
-                    {
-                        case GUIModChangeType.Install:
-                            MarkModForInstall(opt.Mod.Identifier);
-                            break;
-                        case GUIModChangeType.Update:
-                            MarkModForUpdate(opt.Mod.Identifier);
-                            break;
-                        case GUIModChangeType.Remove:
-                            MarkModForInstall(opt.Mod.Identifier, true);
-                            break;
-                    }
-                }
             }
 
             Util.Invoke(this, () => Enabled = true);

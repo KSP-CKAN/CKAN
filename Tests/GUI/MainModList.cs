@@ -70,7 +70,7 @@ namespace Tests.GUI
                 var mod = new GUIMod(module, registry, tidy.KSP.VersionCriteria());
                 var mod2 = new GUIMod(TestData.kOS_014_module(), registry, tidy.KSP.VersionCriteria());
                 var mods = new List<GUIMod>() { mod, mod2 };
-                mainList.ConstructModList(mods, true);
+                mainList.ConstructModList(mods, null, true);
                 mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
                 mod2.IsInstallChecked = true;
                 var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
