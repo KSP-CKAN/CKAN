@@ -6,7 +6,7 @@
     {
         "USERNAME":"YourGitHubUserName",
         "REPOSITORY":"YourGitHubRepository",
-        "ALLOW_PRE_RELEASE":false,
+        "ALLOW_PRE_RELEASE":false
     },
     "VERSION":
     {
