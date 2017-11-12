@@ -28,7 +28,7 @@ namespace CKAN
         [OnDeserialized]
         internal void SetIdentifier(StreamingContext context)
         {
-            var mod = module_version.Values.FirstOrDefault();
+            var mod = module_version.Values.LastOrDefault();
             identifier = mod.identifier;
             Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));
         }
@@ -42,15 +42,17 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (AvailableModule));
 
         // The map of versions -> modules, that's what we're about!
+        // First element is the oldest version, last is the newest.
         [JsonProperty]
-        internal SortedDictionary<Version, CkanModule> module_version = new SortedDictionary<Version, CkanModule>(new RecentVersionComparer());
+        internal SortedDictionary<Version, CkanModule> module_version =
+            new SortedDictionary<Version, CkanModule>();
 
         /// <summary>
         /// Record the given module version as being available.
         /// </summary>
         public void Add(CkanModule module)
         {
-            if(!module.identifier.Equals(identifier))
+            if (!module.identifier.Equals(identifier))
                 throw new ArgumentException(
                     string.Format("This AvailableModule is for tracking {0} not {1}", identifier, module.identifier));
 
@@ -85,22 +87,22 @@ namespace CKAN
                 return null;
             }
 
-            // No restrictions? Great, we can just pick the first one!
+            // No restrictions? Great, we can just pick the latest one!
             if (ksp_version == null && relationship == null)
             {
-                module = module_version[available_versions.First()];
+                module = module_version[available_versions.Last()];
 
                 log.DebugFormat("No KSP version restriction, {0} is most recent", module);
                 return module;
             }
 
-            // If there's no relationship to satisfy, we can just pick the first that is
+            // If there's no relationship to satisfy, we can just pick the latest that is
             // compatible with our version of KSP.
             if (relationship == null)
             {
                 // Time to check if there's anything that we can satisfy.
                 var version =
-                    available_versions.FirstOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
+                    available_versions.LastOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
                 if (version != null)
                     return module_version[version];
 
@@ -113,12 +115,12 @@ namespace CKAN
             // If we're here, then we have a relationship to satisfy, so things get more complex.
             if (ksp_version == null)
             {
-                var version = available_versions.FirstOrDefault(relationship.version_within_bounds);
+                var version = available_versions.LastOrDefault(relationship.version_within_bounds);
                 return version == null ? null : module_version[version];
             }
             else
             {
-                var version = available_versions.FirstOrDefault(v =>
+                var version = available_versions.LastOrDefault(v =>
                     relationship.version_within_bounds(v) &&
                     module_version[v].IsCompatibleKSP(ksp_version));
                 return version == null ? null : module_version[version];
@@ -156,21 +158,10 @@ namespace CKAN
 
         public List<CkanModule> AllAvailable()
         {
-            return new List<CkanModule>(module_version.Values);
+            // Some code may expect this to be sorted in descending order
+            return new List<CkanModule>(module_version.Values.Reverse());
         }
+
     }
 
-    /// <summary>
-    /// Commparer which sorts the most recent version first
-    /// Depends on the behaaviour of Version.CompareTo(Version)
-    /// to work correctly.
-    /// </summary>
-    public class RecentVersionComparer : IComparer<Version>
-    {
-
-        public int Compare(Version x, Version y)
-        {
-            return y.CompareTo(x);
-        }
-    }
 }
