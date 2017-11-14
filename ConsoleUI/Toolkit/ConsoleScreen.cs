@@ -16,15 +16,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             AddTip(
                 "F10", "Menu",
-                () => GetMainMenu() != null
+                () => mainMenu != null
             );
             AddBinding(Keys.F10, (object sender) => {
-                ConsolePopupMenu m = GetMainMenu();
                 bool val = true;
-                if (m != null) {
+                if (mainMenu != null) {
                     DrawSelectedHamburger();
 
-                    val = m.Run(Console.WindowWidth - 1, 1);
+                    val = mainMenu.Run(Console.WindowWidth - 1, 1);
 
                     DrawBackground();
                 }
@@ -45,14 +44,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
-        /// Return menu object for the F10 key bind
-        /// </summary>
-        protected virtual ConsolePopupMenu GetMainMenu()
-        {
-            return null;
-        }
-
-        /// <summary>
         /// Function returning text to be shown at the left edge of the top header bar
         /// </summary>
         protected Func<string> LeftHeader   = () => "";
@@ -60,6 +51,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Function returning text to be shown in the center of the top header bar
         /// </summary>
         protected Func<string> CenterHeader = () => "";
+        /// <summary>
+        /// Menu to open for F10 from the hamburger icon of this screen
+        /// </summary>
+        protected ConsolePopupMenu mainMenu = null;
 
         // IUser
 
@@ -220,7 +215,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.Write(LeftCenterRight(
                 " " + LeftHeader(),
                 CenterHeader(),
-                GetMainMenu() != null ? hamburger : "",
+                mainMenu != null ? hamburger : "",
                 Console.WindowWidth
             ));
         }

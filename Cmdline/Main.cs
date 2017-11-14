@@ -138,7 +138,7 @@ namespace CKAN.CmdLine
                         return Gui((GuiOptions)options, args);
 
                     case "consoleui":
-                        return ConsoleUi(args);
+                        return ConsoleUi(options, args);
 
                     case "version":
                         return Version(user);

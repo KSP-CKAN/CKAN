@@ -14,7 +14,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">KSP manager containing the instances, needed for saving changes</param>
         /// <param name="initName">Initial value of name field</param>
         /// <param name="initPath">Initial value of path field</param>
-        public KSPScreen(KSPManager mgr, string initName = "", string initPath = "") : base()
+        protected KSPScreen(KSPManager mgr, string initName = "", string initPath = "") : base()
         {
             manager = mgr;
 
@@ -116,9 +116,12 @@ namespace CKAN.ConsoleUI {
             return Directory.Exists(Path.Combine(directory, "GameData"));
         }
 
-        private const int labelWidth = 16;
-        private const int nameRow    = 3;
-        private const int pathRow    = 5;
+        private   const int labelWidth = 16;
+        private   const int nameRow    = 3;
+        /// <summary>
+        /// Y coordinate of path field
+        /// </summary>
+        protected const int pathRow    = 5;
     }
 
 }

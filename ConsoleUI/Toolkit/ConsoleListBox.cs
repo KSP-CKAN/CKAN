@@ -395,7 +395,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 }
             }
             int newSelRow = sortedFilteredData.IndexOf(oldSelect);
-            if (newSelRow > 0) {
+            if (newSelRow >= 0) {
                 selectedRow = newSelRow;
             }
         }

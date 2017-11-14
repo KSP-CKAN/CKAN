@@ -152,18 +152,6 @@ namespace CKAN.ConsoleUI {
             CenterHeader = () => "Mod Details";
         }
 
-        /// <summary>
-        /// Return the menu of resource URLs
-        /// </summary>
-        /// <returns>
-        /// Main menu object created in the constructor,
-        /// or null if the mod defines no URLs
-        /// </returns>
-        protected override ConsolePopupMenu GetMainMenu()
-        {
-            return mainMenu;
-        }
-
         private bool LaunchURL(Uri u)
         {
             // I'm getting error output on Linux, because this runs xdg-open which
@@ -484,7 +472,6 @@ namespace CKAN.ConsoleUI {
         private IRegistryQuerier registry;
         private ChangePlan       plan;
         private CkanModule       mod;
-        private ConsolePopupMenu mainMenu;
     }
 
     /// <summary>

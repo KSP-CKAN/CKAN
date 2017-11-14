@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -41,6 +42,26 @@ namespace CKAN
         {
             return String.Format("{0} ({1}, {2})", name, priority, uri);
         }
+    }
+
+    public struct RepositoryList
+    {
+        public Repository[] repositories;
+
+        public static RepositoryList DefaultRepositories()
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<RepositoryList>(
+                    new WebClient().DownloadString(Repository.default_repo_master_list)
+                );
+            }
+            catch
+            {
+                return default(RepositoryList);
+            }
+        }
+
     }
 
 }

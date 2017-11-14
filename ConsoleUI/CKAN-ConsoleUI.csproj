@@ -82,6 +82,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RepoAddScreen.cs" />
+    <Compile Include="RepoEditScreen.cs" />
+    <Compile Include="RepoScreen.cs" />
     <Compile Include="SplashScreen.cs" />
     <Compile Include="Toolkit\ConsoleButton.cs" />
     <Compile Include="Toolkit\ConsoleChoiceDialog.cs" />

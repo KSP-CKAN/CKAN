@@ -9,6 +9,7 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
+
     public class Repo : ISubCommand
     {
         public Repo() { }

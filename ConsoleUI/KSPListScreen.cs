@@ -95,7 +95,16 @@ namespace CKAN.ConsoleUI {
             });
             kspList.AddTip("E", "Edit");
             kspList.AddBinding(Keys.E, (object sender) => {
+
+                ConsoleMessageDialog d = new ConsoleMessageDialog(
+                    $"Loading instance {InstallName(manager, kspList.Selection)}...",
+                    new List<string>()
+                );
+                TryGetInstance(kspList.Selection, () => { d.Run(() => {}); });
+                // Still launch the screen even if the load fails,
+                // because you need to be able to fix the name/path.
                 LaunchSubScreen(new KSPEditScreen(manager, kspList.Selection));
+
                 return true;
             });
 
@@ -114,6 +123,7 @@ namespace CKAN.ConsoleUI {
 
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
             CenterHeader = () => "KSP Instances";
+            mainMenu     = kspList.SortMenu();
         }
 
         /// <summary>
@@ -190,17 +200,6 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        /// <summary>
-        /// Return the list box's sort menu as the main menu
-        /// </summary>
-        protected override ConsolePopupMenu GetMainMenu()
-        {
-            if (mainMenu == null) {
-                mainMenu = kspList.SortMenu();
-            }
-            return mainMenu;
-        }
-
         private string StatusSymbol(KSP k)
         {
             return InstallName(manager, k) == manager.AutoStartInstance
@@ -210,7 +209,6 @@ namespace CKAN.ConsoleUI {
 
         private KSPManager          manager;
         private ConsoleListBox<KSP> kspList;
-        private ConsolePopupMenu    mainMenu;
 
         private static readonly string defaultMark = Symbols.checkmark;
     }

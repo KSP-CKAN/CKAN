@@ -37,6 +37,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public int          Position  = 0;
 
+        private int leftPos = 0;
+
         /// <summary>
         /// Type for event to notify that the text has changed
         /// </summary>
@@ -69,6 +71,17 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override void Draw(bool focused)
         {
             int w = GetRight() - GetLeft() + 1;
+
+            if (Position > Value.Length) {
+                Position = Value.Length;
+            }
+            if (leftPos > Position) {
+                leftPos = Position;
+            }
+            if (leftPos < Position - w + 1) {
+                leftPos = Position - w + 1;
+            }
+
             Console.SetCursorPosition(GetLeft(), GetTop());
             Console.BackgroundColor = ConsoleTheme.Current.FieldBg;
             if (string.IsNullOrEmpty(Value)) {
@@ -80,7 +93,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 } else {
                     Console.ForegroundColor = ConsoleTheme.Current.FieldBlurredFg;
                 }
-                Console.Write(Value.PadRight(w));
+                Console.Write(FormatExactWidth(Value.Substring(leftPos), w));
             }
         }
 
@@ -130,6 +143,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                         ++Position;
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    Blur(false);
+                    break;
+                case ConsoleKey.DownArrow:
+                    Blur(true);
+                    break;
                 case ConsoleKey.Home:
                     Position = 0;
                     break;
@@ -158,7 +177,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public override void PlaceCursor()
         {
-            Console.SetCursorPosition(GetLeft() + Position, GetTop());
+            Console.SetCursorPosition(GetLeft() - leftPos + Position, GetTop());
         }
 
     }

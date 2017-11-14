@@ -233,6 +233,47 @@ namespace CKAN.ConsoleUI {
                 }
             ));
 
+            List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
+                new ConsoleMenuOption("Sort...",                    "",
+                    "Change the sorting of the list of mods",
+                    true, null, null, moduleList.SortMenu()),
+                null,
+                new ConsoleMenuOption("Refresh mod list", "F5, Ctrl+R",
+                    "Refresh the list of mods",
+                    true, UpdateRegistry),
+                new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
+                    "Mark all available updates for installation",
+                    true, UpgradeAll),
+                new ConsoleMenuOption("Audit recommendations",      "",
+                    "List mods suggested and recommended by installed mods",
+                    true, ViewSuggestions),
+                new ConsoleMenuOption("Scan KSP dir",               "",
+                    "Check for manually installed mods",
+                    true, ScanForMods),
+                new ConsoleMenuOption("Export installed...",        "",
+                    "Save your mod list",
+                    true, ExportInstalled),
+                null,
+                new ConsoleMenuOption("Select KSP install...",      "",
+                    "Switch to a different game instance",
+                    true, SelectInstall),
+                null,
+                new ConsoleMenuOption("Help",                  helpKey,
+                    "Tips & tricks",
+                    true, Help),
+                null,
+                new ConsoleMenuOption("Quit",                 "Ctrl+Q",
+                    "Exit to DOS",
+                    true, () => false)
+            };
+            if (debug) {
+                opts.Add(null);
+                opts.Add(new ConsoleMenuOption("DEBUG: Capture key...", "",
+                    "Print details of how your system reports a keystroke for debugging",
+                    true, CaptureKey));
+            }
+            mainMenu = new ConsolePopupMenu(opts);
+
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
             CenterHeader = () => $"KSP {manager.CurrentInstance.Version().ToString()} ({KSPListScreen.InstallName(manager, manager.CurrentInstance)})";
         }
@@ -242,56 +283,6 @@ namespace CKAN.ConsoleUI {
         private static readonly string helpKey = Platform.IsMac
             ? "F1"
             : "F1, Alt+H";
-
-        /// <summary>
-        /// Return the main menu
-        /// </summary>
-        protected override ConsolePopupMenu GetMainMenu()
-        {
-            if (mainMenu == null && moduleList != null) {
-                List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
-                    new ConsoleMenuOption("Sort...",                    "",
-                        "Change the sorting of the list of mods",
-                        true, null, null, moduleList.SortMenu()),
-                    null,
-                    new ConsoleMenuOption("Refresh mod list", "F5, Ctrl+R",
-                        "Refresh the list of mods",
-                        true, UpdateRegistry),
-                    new ConsoleMenuOption("Upgrade all",          "Ctrl+U",
-                        "Mark all available updates for installation",
-                        true, UpgradeAll),
-                    new ConsoleMenuOption("Audit recommendations",      "",
-                        "List mods suggested and recommended by installed mods",
-                        true, ViewSuggestions),
-                    new ConsoleMenuOption("Scan KSP dir",               "",
-                        "Check for manually installed mods",
-                        true, ScanForMods),
-                    new ConsoleMenuOption("Export installed...",        "",
-                        "Save your mod list",
-                        true, ExportInstalled),
-                    null,
-                    new ConsoleMenuOption("Select KSP install...",      "",
-                        "Switch to a different game instance",
-                        true, SelectInstall),
-                    null,
-                    new ConsoleMenuOption("Help",                  helpKey,
-                        "Tips & tricks",
-                        true, Help),
-                    null,
-                    new ConsoleMenuOption("Quit",                 "Ctrl+Q",
-                        "Exit to DOS",
-                        true, () => false)
-                };
-                if (debug) {
-                    opts.Add(null);
-                    opts.Add(new ConsoleMenuOption("DEBUG: Capture key...", "",
-                        "Print details of how your system reports a keystroke for debugging",
-                        true, CaptureKey));
-                }
-                mainMenu = new ConsolePopupMenu(opts);
-            }
-            return mainMenu;
-        }
 
         private bool CaptureKey()
         {
@@ -536,7 +527,6 @@ namespace CKAN.ConsoleUI {
 
         private ConsoleField               searchBox;
         private ConsoleListBox<CkanModule> moduleList;
-        private ConsolePopupMenu           mainMenu;
 
         private ChangePlan      plan   = new ChangePlan();
         private HashSet<string> recent = new HashSet<string>();
