@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using log4net;
 
 namespace CKAN
@@ -55,4 +54,3 @@ namespace CKAN
         }
     }
 }
-

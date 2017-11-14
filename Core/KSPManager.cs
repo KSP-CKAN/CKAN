@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CKAN;
 using log4net;
 
 namespace CKAN
@@ -36,7 +35,7 @@ namespace CKAN
 
         public SortedList<string, KSP> Instances
         {
-            get { return new SortedList<string, KSP>(instances); }            
+            get { return new SortedList<string, KSP>(instances); }
         }
 
 
@@ -50,17 +49,17 @@ namespace CKAN
 
         /// <summary>
         /// Returns the prefered KSP instance, or null if none can be found.
-        /// 
+        ///
         /// This works by checking to see if we're in a KSP dir first, then the
         /// registry for an autostart instance, then will try to auto-populate
         /// by scanning for the game.
-        /// 
+        ///
         /// This *will not* touch the registry if we find a portable install.
-        /// 
+        ///
         /// This *will* run KSP instance autodetection if the registry is empty.
-        /// 
+        ///
         /// This *will* set the current instance, or throw an exception if it's already set.
-        /// 
+        ///
         /// Returns null if we have multiple instances, but none of them are preferred.
         /// </summary>
         public KSP GetPreferredInstance()
@@ -116,7 +115,7 @@ namespace CKAN
         /// <summary>
         /// Find and register a default instance by running
         /// game autodetection code.
-        /// 
+        ///
         /// Returns the resulting KSP object if found.
         /// </summary>
         public KSP FindAndRegisterDefaultInstance()
@@ -134,12 +133,12 @@ namespace CKAN
             {
                 return null;
             }
-            catch (NotKSPDirKraken)//Todo check carefully if this is nessesary. 
+            catch (NotKSPDirKraken)//Todo check carefully if this is nessesary.
             {
                 return null;
             }
 
-            
+
         }
 
         /// <summary>
@@ -149,7 +148,7 @@ namespace CKAN
         public KSP AddInstance(string name, KSP ksp_instance)
         {
             instances.Add(name, ksp_instance);
-            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);                
+            Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
             return ksp_instance;
         }
 
@@ -209,7 +208,7 @@ namespace CKAN
         /// <summary>
         /// Renames an instance in the registry and saves.
         /// </summary>
-        /// 
+        ///
         // TODO: What should we do if our target name already exists?
         public void RenameInstance(string from, string to)
         {
@@ -294,13 +293,13 @@ namespace CKAN
                 }
                 else
                 {
-                    log.WarnFormat("{0} at {1} is not a vaild install", name, path);                    
+                    log.WarnFormat("{0} at {1} is not a vaild install", name, path);
                 }
 
                 //var ksp = new KSP(path, User);
                 //instances.Add(name, ksp);
 
-                
+
             }
 
             try

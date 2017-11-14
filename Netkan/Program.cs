@@ -9,7 +9,6 @@ using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
 using CommandLine;
 using log4net;
-using log4net.Config;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -100,7 +99,7 @@ namespace CKAN.NetKAN
             {
                 Debugger.Launch();
             }
-                
+
             Options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, Options);
 

@@ -1,5 +1,4 @@
 using CKAN.Versioning;
-using log4net;
 using Newtonsoft.Json;
 using System;
 using System.Text.RegularExpressions;

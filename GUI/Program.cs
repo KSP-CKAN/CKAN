@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -27,10 +26,10 @@ namespace CKAN
 
             if (args.Contains(URLHandlers.UrlRegistrationArgument))
             {
-                //Passing in null will cause a NullRefrenceException if it tries to show the dialog 
-                //asking for elevation permission, but we want that to happen. Doing that keeps us 
+                //Passing in null will cause a NullRefrenceException if it tries to show the dialog
+                //asking for elevation permission, but we want that to happen. Doing that keeps us
                 //from getting in to a infinite loop of trying to register.
-                URLHandlers.RegisterURLHandler(null, null); 
+                URLHandlers.RegisterURLHandler(null, null);
             }
             else
             {

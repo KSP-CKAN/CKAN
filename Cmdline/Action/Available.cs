@@ -1,11 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.IO;
-//using System.Linq;
-//using System.Text.RegularExpressions;
-//using CKAN.Exporters;
-//using CKAN.Types;
-//using log4net;
 
 namespace CKAN.CmdLine
 {
@@ -36,4 +29,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-
