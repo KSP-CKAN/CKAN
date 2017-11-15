@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Clean up registry lock file after parse failure (#2175 by: HebaruSan; reviewed: politas)
 - [Core] Purge 6 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: politas)
 - [Build] Remove unnecessary using directives (#2181 by: HebaruSan; reviewed: politas)
+- [Build] Cleanup project (#2182 by: Olympic1; reviewed: HebaruSan, politas, dbent)
 
 ## v1.22.6 (Guiana)
 
