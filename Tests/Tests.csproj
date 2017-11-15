@@ -65,40 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Data\CKAN-meta-badkan.zip" />
-    <None Include="Data\CKAN-meta-testkan.tar.gz" />
-    <None Include="Data\CKAN-meta-testkan.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-corrupt.zip" />
-    <None Include="Data\DogeCoinFlag-1.01.zip" />
-    <None Include="Data\DogeCoinFlag-extra-files.zip" />
-    <None Include="Data\DogeCoinFlag-multiple-vrefs.netkan" />
-    <None Include="Data\DogeCoinFlag-no-vrefs.netkan" />
-    <None Include="Data\DogeCoinFlag-single-vref.netkan" />
-    <None Include="Data\FileIdentifier\test_ascii.tmp" />
-    <None Include="Data\FileIdentifier\test_tar.tar" />
-    <None Include="Data\FileIdentifier\test_tar.tmp" />
-    <None Include="Data\FileIdentifier\test_targz.tar.gz" />
-    <None Include="Data\FileIdentifier\test_targz.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.tmp" />
-    <None Include="Data\FileIdentifier\test_zip.zip" />
-    <None Include="Data\Firespitter-6.3.5.ckan" />
-    <None Include="Data\gh221.zip" />
-    <None Include="Data\ksp-avc-one-line.version" />
-    <None Include="Data\ksp-avc.version" />
-    <None Include="Data\KSP\KSP-0.25\GameData\README.md" />
-    <None Include="Data\KS\CustomAsteroids.json" />
-    <None Include="Data\KS\README.md" />
-    <None Include="Data\lib\CkanTests.pm" />
-    <None Include="Data\ModuleManager-2.5.1.ckan" />
-    <None Include="Data\ModuleManager-2.5.1.zip" />
-    <None Include="Data\README.md" />
-    <None Include="Data\registry.json" />
-    <None Include="Data\test-sln.sh" />
-    <None Include="packages.config" />
-    <None Include="Data\CKAN-meta-badkan.tar.gz" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Core\Cache.cs" />
     <Compile Include="Core\FileIdentifier.cs" />
     <Compile Include="Core\KSP.cs" />
@@ -166,13 +132,6 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
-    <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
-    <None Include="Data\DogeCoinPlugin.zip" />
-    <None Include="Data\FileIdentifier\random.bin" />
-    <None Include="Data\FileIdentifier\test_gzip.gz" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Data\CKAN.sln" />
     <Content Include="Data\cmdline.t" />
     <Content Include="Data\FileIdentifier\test_ascii.txt" />
@@ -180,6 +139,38 @@
     <Content Include="Data\KSP\KSP-0.25\buildID.txt" />
     <Content Include="Data\KSP\KSP-0.25\readme.txt" />
     <Content Include="Data\KSP\missing-gamedata\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Data\CKAN-meta-badkan.zip" />
+    <None Include="Data\CKAN-meta-testkan.tar.gz" />
+    <None Include="Data\CKAN-meta-testkan.zip" />
+    <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
+    <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
+    <None Include="Data\DogeCoinPlugin.zip" />
+    <None Include="Data\FileIdentifier\random.bin" />
+    <None Include="Data\FileIdentifier\test_gzip.gz" />
+    <None Include="Data\FileIdentifier\test_tar.tar" />
+    <None Include="Data\FileIdentifier\test_tar.tmp" />
+    <None Include="Data\FileIdentifier\test_targz.tar.gz" />
+    <None Include="Data\FileIdentifier\test_targz.tmp" />
+    <None Include="Data\FileIdentifier\test_zip.tmp" />
+    <None Include="Data\FileIdentifier\test_zip.zip" />
+    <None Include="Data\Firespitter-6.3.5.ckan" />
+    <None Include="Data\gh221.zip" />
+    <None Include="Data\ksp-avc-one-line.version" />
+    <None Include="Data\ksp-avc.version" />
+    <None Include="Data\KSP\KSP-0.25\GameData\README.md" />
+    <None Include="Data\KS\CustomAsteroids.json" />
+    <None Include="Data\KS\README.md" />
+    <None Include="Data\lib\CkanTests.pm" />
+    <None Include="Data\ModuleManager-2.5.1.ckan" />
+    <None Include="Data\ModuleManager-2.5.1.zip" />
+    <None Include="Data\README.md" />
+    <None Include="Data\registry.json" />
+    <None Include="Data\test-sln.sh" />
+    <None Include="packages.config" />
+    <None Include="Data\CKAN-meta-badkan.tar.gz" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
