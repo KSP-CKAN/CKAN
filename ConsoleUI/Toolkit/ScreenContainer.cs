@@ -12,7 +12,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize the container
         /// </summary>
-        protected ScreenContainer() { }
+        protected ScreenContainer()
+        {
+            AddBinding(Keys.CtrlL, (object sender) => {
+                // Just redraw everything and keep running
+                DrawBackground();
+                return true;
+            });
+        }
 
         /// <summary>
         /// Draw the contained screen objects and manage their interaction

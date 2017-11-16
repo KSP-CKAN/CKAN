@@ -120,6 +120,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Ctrl+L for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlL = new ConsoleKeyInfo(
+            (System.Char)12, ConsoleKey.Clear, false, false, false
+        );
+
+        /// <summary>
         /// Representation of Ctrl+Q for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo CtrlQ = new ConsoleKeyInfo(
