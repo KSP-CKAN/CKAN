@@ -70,6 +70,9 @@ namespace CKAN.ConsoleUI {
 
                     } catch (CancelledActionKraken) {
                         // Don't need to tell the user they just cancelled out.
+                    } catch (FileNotFoundKraken ex) {
+                        // Possible file corruption
+                        RaiseError(ex.Message);
                     } catch (DirectoryNotFoundKraken ex) {
                         RaiseError(ex.Message);
                     } catch (FileExistsKraken ex) {

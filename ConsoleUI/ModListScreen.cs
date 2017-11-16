@@ -200,8 +200,8 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            moduleList.AddTip("F9", "Apply changes", plan.NonEmpty);
-            moduleList.AddBinding(Keys.F9, (object sender) => {
+            AddTip("F9", "Apply changes", plan.NonEmpty);
+            AddBinding(Keys.F9, (object sender) => {
                 ApplyChanges();
                 return true;
             });

@@ -33,6 +33,11 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             double percent = percentFunc == null ? 0 : percentFunc();
             int highlightWidth = (int)Math.Floor(w * percent);
+            if (highlightWidth < 0) {
+                highlightWidth = 0;
+            } else if (highlightWidth > w) {
+                highlightWidth = w;
+            }
 
             // Build one big string representing the whole contents of the bar
             string caption = PadCenter(captionFunc == null ? "" : captionFunc(), w);
@@ -40,9 +45,11 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.SetCursorPosition(l, t);
 
             // Draw the highlighted part
-            Console.BackgroundColor = ConsoleTheme.Current.ProgressBarHighlightBg;
-            Console.ForegroundColor = ConsoleTheme.Current.ProgressBarHighlightFg;
-            Console.Write(caption.Substring(0, highlightWidth));
+            if (highlightWidth > 0) {
+                Console.BackgroundColor = ConsoleTheme.Current.ProgressBarHighlightBg;
+                Console.ForegroundColor = ConsoleTheme.Current.ProgressBarHighlightFg;
+                Console.Write(caption.Substring(0, highlightWidth));
+            }
 
             // Draw the non highlighted part
             Console.BackgroundColor = ConsoleTheme.Current.ProgressBarBg;
