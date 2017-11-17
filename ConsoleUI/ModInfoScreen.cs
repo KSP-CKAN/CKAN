@@ -97,7 +97,7 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => false);
 
             AddTip("Ctrl+D", "Download",
-                () => !manager.CurrentInstance.Cache.IsMaybeCachedZip(mod.download)
+                () => !manager.CurrentInstance.Cache.IsCachedZip(mod.download)
             );
             AddBinding(Keys.CtrlD, (object sender) => {
                 Download();
