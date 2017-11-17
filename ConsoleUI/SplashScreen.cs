@@ -87,8 +87,11 @@ namespace CKAN.ConsoleUI {
         private void drawCentered(int y, string val)
         {
             int lp = (Console.WindowWidth - val.Length) / 2;
-            Console.SetCursorPosition(lp, y);
-            Console.Write(val);
+            try {
+                // This can throw if the screen is too small
+                Console.SetCursorPosition(lp, y);
+                Console.Write(val);
+            } catch { }
         }
 
         private KSPManager manager;
