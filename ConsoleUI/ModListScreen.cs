@@ -127,14 +127,6 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.CtrlU, (object sender) => UpgradeAll());
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
-            searchBox.AddBinding(Keys.DownArrow, (object sender) => {
-                SetFocus(moduleList);
-                return true;
-            });
-            searchBox.AddBinding(Keys.UpArrow, (object sender) => {
-                SetFocus(moduleList);
-                return true;
-            });
             searchBox.AddBinding(Keys.PageUp, (object sender) => {
                 SetFocus(moduleList);
                 return true;
