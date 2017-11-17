@@ -454,7 +454,12 @@ namespace CKAN.ConsoleUI {
             ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, ps);
             LaunchSubScreen(
                 ps,
-                () => dl.DownloadModules(inst.Cache, new List<CkanModule> {mod})
+                () => {
+                    dl.DownloadModules(inst.Cache, new List<CkanModule> {mod});
+                    if (!inst.Cache.IsCachedZip(mod.download)) {
+                        ps.RaiseError("Download failed, file is corrupted");
+                    }
+                }
             );
         }
 
