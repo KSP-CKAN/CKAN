@@ -383,13 +383,19 @@ namespace CKAN.ConsoleUI {
                     }
                 }
             });
-            if (recent.Count > 0 && RaiseYesNoDialog(
-                    $"{recent.Count} new mods available since last update. Show them?")) {
+            if (recent.Count > 0 && RaiseYesNoDialog(newModPrompt(recent.Count))) {
                 searchBox.Clear();
                 moduleList.FilterString = searchBox.Value = "~n";
             }
             RefreshList();
             return true;
+        }
+
+        private string newModPrompt(int howMany)
+        {
+            return howMany == 1
+                ? $"{howMany} new mod available since last update. Show it?"
+                : $"{howMany} new mods available since last update. Show them?";
         }
 
         private bool ScanForMods()
