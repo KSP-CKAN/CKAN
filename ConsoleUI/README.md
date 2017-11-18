@@ -2,10 +2,6 @@
 
 A cross-platform text UI inspired by Borland's Turbo Vision and IBM's Common User Access circa 1990.
 
-## Caution
-
-Not tested on MacOS X.
-
 ## Technical summary
 
 The core framework classes are in the `ConsoleUI\Toolkit` folder, while the application classes are in the `ConsoleUI` folder.

@@ -111,14 +111,33 @@ namespace CKAN.ConsoleUI {
             if (source != null) {
                 foreach (RelationshipDescriptor dependency in source) {
                     try {
-                        if (registry.LatestAvailable(dependency.name, manager.CurrentInstance.VersionCriteria()) != null
+                        if (registry.LatestAvailable(
+                                dependency.name,
+                                manager.CurrentInstance.VersionCriteria(),
+                                dependency
+                            ) != null
                                 && !registry.IsInstalled(dependency.name)
                                 && !alreadyInstalling.Contains(dependency.name)) {
 
                             AddDep(dependency.name, installByDefault, identifier);
                         }
+                    } catch (ModuleNotFoundKraken k) {
+                        // LatestAvailable throws if you recommend a "provides" name,
+                        // so ask the registry again for provides-based choices
+                        List<CkanModule> opts = registry.LatestAvailableWithProvides(
+                            dependency.name,
+                            manager.CurrentInstance.VersionCriteria(),
+                            dependency
+                        );
+                        foreach (CkanModule provider in opts) {
+                            if (!registry.IsInstalled(provider.identifier)
+                                    && !alreadyInstalling.Contains(provider.identifier)) {
+
+                                // Default to not installing because these probably conflict with each other
+                                AddDep(provider.identifier, false, identifier);
+                            }
+                        }
                     } catch (Kraken) {
-                        // LatestAvailable throws if you recommend a "provides" name
                         // GUI/MainInstall.cs::AddMod just ignores all exceptions,
                         // so that's baked into the infrastructure
                     }
