@@ -25,19 +25,19 @@ $(EXESRC):
 
 $(CONTROL): $(CONTROLIN) $(CHANGELOG)
 	mkdir -p $(shell dirname $@)
-	sed -e 's/@VERSION@/$(VERSION)/' $< > $@
+	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
 
 $(CHANGELOGZIP): $(CHANGELOG)
 	mkdir -p $(shell dirname $@)
-	gzip --best -n -c $< > $@
+	umask 0022 && gzip --best -n -c $< > $@
 
 $(DEBCHANGEZIP): $(DEBCHANGE)
 	mkdir -p $(shell dirname $@)
-	gzip --best -n -c $< > $@
+	umask 0022 && gzip --best -n -c $< > $@
 
 $(MANZIP): $(MAN)
 	mkdir -p $(shell dirname $@)
-	gzip --best -n -c $< > $@
+	umask 0022 && gzip --best -n -c $< > $@
 
 clean:
 	rm -rf $(DEB) $(EXEDEST) $(CONTROL) $(CHANGELOGZIP) $(DEBCHANGEZIP) $(MANZIP)
