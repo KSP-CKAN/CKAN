@@ -40,7 +40,6 @@ namespace CKAN.Versioning
             {
                 versionList.Add(version.ToString());
             }
-            var versionArray = versionList.ToArray() as Array;
             return "[Versions: " + String.Join( ", ", versionList) + "]";
         }
     }
