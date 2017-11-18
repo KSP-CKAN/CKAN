@@ -109,7 +109,7 @@ namespace CKAN
                     return module_version[version];
 
                 log.DebugFormat("No version of {0} is compatible with KSP {1}",
-                    module_version[available_versions[0]].identifier, ksp_version);
+                    module_version[available_versions[0]].identifier, ksp_version.ToString());
 
                 return null;
             }

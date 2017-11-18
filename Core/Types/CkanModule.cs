@@ -477,7 +477,7 @@ namespace CKAN
         /// </summary>
         public bool IsCompatibleKSP(KspVersionCriteria version)
         {
-            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
+            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version.ToString());
 
 
             return _comparator.Compatible(version, this);

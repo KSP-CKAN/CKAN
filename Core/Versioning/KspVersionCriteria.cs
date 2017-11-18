@@ -35,7 +35,13 @@ namespace CKAN.Versioning
 
         public override String ToString()
         {
-            return "[Versions: " + _versions.ToString() + "]";
+            List<String> versionList = new List<String>();
+            foreach (KspVersion version in _versions)
+            {
+                versionList.Add(version.ToString());
+            }
+            var versionArray = versionList.ToArray() as Array;
+            return "[Versions: " + String.Join( ", ", versionList) + "]";
         }
     }
 }
