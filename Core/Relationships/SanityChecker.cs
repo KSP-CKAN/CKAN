@@ -32,7 +32,16 @@ namespace CKAN
             {
                 foreach (CkanModule unhappy_mod in entry.Value)
                 {
-                    errors.Add(string.Format("{0} depends on {1} but it is not listed in the index, or not available for your version of KSP.", unhappy_mod.identifier, entry.Key));
+                    // This error can fire if a dependency
+                    // IS listed in the index AND IS available for our version,
+                    // but not installed.
+                    // This happens when `dlls` is Registry.installed_dlls.Keys,
+                    // as in Registry.GetSanityErrors.
+                    errors.Add(string.Format(
+                        "{0} has an unmet dependency: {1} is not installed",
+                        unhappy_mod.identifier,
+                        entry.Key
+                    ));
                 }
             }
 
