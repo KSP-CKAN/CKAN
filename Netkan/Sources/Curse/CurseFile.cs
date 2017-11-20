@@ -7,21 +7,13 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     public class CurseFile
     {
-        //Not currently writing anything to the log in this collection.
-        //private static readonly ILog log = LogManager.GetLogger(typeof (CurseFile));
-
-        internal CurseMod Mod;
-
         [JsonConverter(typeof(JsonConvertKSPVersion))]
         [JsonProperty] public KspVersion version;
-
-        //[JsonProperty] public string changelog;
-
-        //[JsonProperty] public Version friendly_version;
-
-        [JsonProperty] public string name;
+        [JsonProperty] public string name = "";
         [JsonProperty] public string type;
         [JsonProperty] public int id;
+        [JsonProperty] public DateTime uploaded_at;
+        [JsonProperty] public string url;
 
         private string _downloadUrl;
         private string _filename;
@@ -30,22 +22,24 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <summary>
         /// Returns the direct path to the file
         /// </summary>
-        /// <returns>The download url</returns>
-        public String GetDownloadUrl()
+        /// <returns>
+        /// The download URL
+        /// </returns>
+        public string GetDownloadUrl()
         {
-            if (_downloadUrl == null)
+            if (string.IsNullOrEmpty(_downloadUrl))
             {
-                _downloadUrl = CurseApi.ResolveRedirect(new Uri(Mod.GetPageUrl() + "/files/" + id + "/download")).ToString();
+                _downloadUrl = url + "/file";
             }
             return _downloadUrl;
         }
 
         /// <summary>
-        /// Sets the download url of the file
+        /// Sets the download URL of the file
         /// </summary>
-        public void SetDownloadUrl(String url)
+        public void SetDownloadUrl(string u)
         {
-            _downloadUrl = url;
+            _downloadUrl = u;
         }
 
         /// <summary>
@@ -65,7 +59,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_filename == null)
             {
-                Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
+                Match match = Regex.Match(url, "[^/]*\\.zip");
                 if (match.Groups.Count > 0) _filename = match.Groups[0].Value;
                 else _filename = GetCurseIdVersion();
             }
@@ -80,13 +74,11 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_fileVersion == null)
             {
-                // Matches the last group of numbers letters and dots before the .zip extension, staring at a number or a 'v' and a number
-                Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
-                if (match.Groups.Count > 1) _fileVersion = match.Groups[1].Value;
-
-                // The id is unique across all files, and is always incrementing.
-                // This format also assures, that any "real" version precedes them.
-                else _fileVersion = GetCurseIdVersion();
+                Match match = Regex.Match(name, "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
+                if (match.Groups.Count > 1)
+                    _fileVersion = match.Groups[1].Value;
+                else
+                    _fileVersion = GetCurseIdVersion();
             }
             return _fileVersion;
         }
@@ -98,17 +90,6 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             _fileVersion = version;
         }
-
-        //public string Download(string identifier, NetFileCache cache)
-        //{
-        //    log.DebugFormat("Downloading {0}", download_path);
-        //
-        //    string filename = ModuleInstaller.CachedOrDownload(identifier, friendly_version, download_path, cache);
-        //
-        //    log.Debug("Downloaded.");
-        //
-        //    return filename;
-        //}
 
         /// <summary>
         /// Curse has versions that don't play nicely with CKAN, for example "1.1-prerelease".
