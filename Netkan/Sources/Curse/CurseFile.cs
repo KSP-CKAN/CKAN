@@ -75,7 +75,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_fileVersion == null)
             {
-                Match match = Regex.Match(name, "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
+                Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
                 if (match.Groups.Count > 1)
                     _fileVersion = match.Groups[1].Value;
                 else

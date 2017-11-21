@@ -48,6 +48,7 @@ namespace Tests.NetKAN.Sources.Curse
             Assert.That(result.thumbnail, Is.Not.Null);
             Assert.That(result.license, Is.Not.Null);
             Assert.That(result.title, Is.Not.Null);
+            Assert.That(result.description, Is.Not.Null);
             Assert.That(result.files.Count, Is.GreaterThan(0));
             Assert.That(latestVersion.GetDownloadUrl(), Is.Not.Null);
             Assert.That(latestVersion.GetFileVersion(), Is.Not.Null);
