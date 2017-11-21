@@ -10,22 +10,25 @@ namespace CKAN.NetKAN.Sources.Curse
     {
         [JsonProperty] public string license;
         [JsonProperty] public string title;
-        //[JsonProperty] public string short_description;
-        [JsonProperty] public string[] authors;
-        [JsonProperty] public Dictionary<int, CurseFile> files;
-        //[JsonProperty] public string website;
-        //[JsonProperty] public string source_code;
-        //[JsonProperty] public int default_version_id;
+        [JsonProperty] public string description;
+        [JsonProperty] public List<CurseFile> files;
         [JsonProperty] public string thumbnail;
+        [JsonProperty] public int id;
+        [JsonProperty] public string game;
+        [JsonProperty] public List<CurseModMember> members;
 
-        public int ModId;
+        public string[] authors {
+            get {
+                return members.Select(m => m.username).ToArray();
+            }
+        }
 
         private string _pageUrl;
         private string _name;
 
         public CurseFile Latest()
         {
-            return files.Values.First();
+            return files.First();
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <returns>The home</returns>
         public string GetProjectUrl()
         {
-            return "http://kerbal.curseforge.com/projects/" + ModId;
+            return "https://kerbal.curseforge.com/projects/" + id;
         }
 
         /// <summary>
@@ -69,19 +72,25 @@ namespace CKAN.NetKAN.Sources.Curse
 
         public override string ToString()
         {
-            //return string.Format("{0}", name);
             return string.Format("{0}", title);
         }
 
-        public static CurseMod FromJson(int modId, string json)
+        public static CurseMod FromJson(string json)
         {
             CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
-            mod.ModId = modId;
-            foreach (CurseFile file in mod.files.Values)
+            foreach (CurseFile file in mod.files)
             {
-                file.Mod = mod;
+                file.ModPageUrl = mod.GetPageUrl();
             }
             return mod;
         }
+    }
+
+    internal class CurseModMember
+    {
+
+        [JsonProperty] public string title;
+        [JsonProperty] public string username;
+
     }
 }

@@ -43,13 +43,11 @@ namespace Tests.NetKAN.Transformers
             {
                 license = "CC-BY",
                 title = "Dogecoin Flag",
-                //short_description = "Such test. Very unit. Wow.",
-                authors = new string[] {"pjf"}
-                //versions = new SDVersion[1]
+                description = "Such test. Very unit. Wow.",
+                members = new List<CurseModMember>{ new CurseModMember { username = "pjf" } }
             };
 
-            cmod.files = new Dictionary<int, CurseFile>();
-            cmod.files[0] = new CurseFile();
+            cmod.files = new List<CurseFile>() { new CurseFile() };
             cmod.files[0].SetFileVersion("0.25");
             cmod.files[0].SetDownloadUrl("http://example.com/download.zip");
 

@@ -8,10 +8,9 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     internal sealed class CurseApi : ICurseApi
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (CurseApi));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CurseApi));
 
-        public static string CurseApiBase = "https://widget.mcf.li/project/";
-        public static string CurseApiEnd = ".json";
+        private static string CurseApiBase = "https://api.cfwidget.com/project/";
 
         private readonly IHttpService _http;
 
@@ -26,18 +25,15 @@ namespace CKAN.NetKAN.Sources.Curse
 
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
-
-            if (error.code != 0)
+            if (!string.IsNullOrWhiteSpace(error.error))
             {
-                var errorMessage = string.Format("Could not get the mod from Curse, reason: {0}.", error.message);
-                throw new Kraken(errorMessage);
-            }
-            else if (!error.game.Equals("Kerbal Space Program"))
-            {
-                throw new Kraken("Could not get the mod from Curse, reason: Specified id is not a KSP mod");
+                throw new Kraken(string.Format(
+                    "Could not get the mod from Curse, reason: {0}.",
+                    error.message
+                ));
             }
 
-            return CurseMod.FromJson(modId, json);
+            return CurseMod.FromJson(json);
         }
 
         public static Uri ResolveRedirect(Uri url)
@@ -52,7 +48,8 @@ namespace CKAN.NetKAN.Sources.Curse
             while (response.Headers["Location"] != null)
             {
                 redirects++;
-                if(redirects > 6) throw new Kraken("More than 6 redirects when resolving the following url: " + url);
+                if (redirects > 6)
+                    throw new Kraken("More than 6 redirects when resolving the following url: " + url);
                 redirUrl = new Uri(redirUrl, response.Headers["Location"]);
                 request = (HttpWebRequest) WebRequest.Create(redirUrl);
                 request.AllowAutoRedirect = false;
@@ -63,9 +60,9 @@ namespace CKAN.NetKAN.Sources.Curse
             return redirUrl;
         }
 
-        private string Call(int modid)
+        private string Call(int modId)
         {
-            var url = CurseApiBase + modid + CurseApiEnd;
+            var url = CurseApiBase + modId;
 
             Log.DebugFormat("Calling {0}", url);
 
