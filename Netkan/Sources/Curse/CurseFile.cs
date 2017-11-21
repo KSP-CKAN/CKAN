@@ -18,6 +18,7 @@ namespace CKAN.NetKAN.Sources.Curse
         private string _downloadUrl;
         private string _filename;
         private string _fileVersion;
+        public  string ModPageUrl = "";
 
         /// <summary>
         /// Returns the direct path to the file
@@ -29,7 +30,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (string.IsNullOrEmpty(_downloadUrl))
             {
-                _downloadUrl = url + "/file";
+                _downloadUrl = CurseApi.ResolveRedirect(new Uri(ModPageUrl + "/files/" + id + "/download")).ToString();
             }
             return _downloadUrl;
         }
@@ -59,7 +60,7 @@ namespace CKAN.NetKAN.Sources.Curse
         {
             if (_filename == null)
             {
-                Match match = Regex.Match(url, "[^/]*\\.zip");
+                Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
                 if (match.Groups.Count > 0) _filename = match.Groups[0].Value;
                 else _filename = GetCurseIdVersion();
             }

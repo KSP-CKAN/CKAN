@@ -78,7 +78,7 @@ namespace CKAN.NetKAN.Transformers
                 }
 
                 json.SafeAdd("name", curseMod.GetName());
-                //json.SafeAdd("abstract", cMod.short_description);
+                json.SafeAdd("abstract", curseMod.description);
 
                 if (useDownloadNameVersion)  json.SafeAdd("version", latestVersion.name);
                 else if (useFilenameVersion) json.SafeAdd("version", latestVersion.GetFilename());
@@ -194,8 +194,8 @@ namespace CKAN.NetKAN.Transformers
 
                 var resourcesJson = (JObject)json["resources"];
 
-                //resourcesJson.SafeAdd("homepage", Normalize(cMod.website));
-                //resourcesJson.SafeAdd("repository", Normalize(cMod.source_code));
+                //resourcesJson.SafeAdd("homepage", Normalize(curseMod.website));
+                //resourcesJson.SafeAdd("repository", Normalize(curseMod.source_code));
                 resourcesJson.SafeAdd("curse", curseMod.GetProjectUrl());
 
                 if (curseMod.thumbnail != null)

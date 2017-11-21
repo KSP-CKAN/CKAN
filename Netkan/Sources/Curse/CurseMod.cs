@@ -10,6 +10,7 @@ namespace CKAN.NetKAN.Sources.Curse
     {
         [JsonProperty] public string license;
         [JsonProperty] public string title;
+        [JsonProperty] public string description;
         [JsonProperty] public List<CurseFile> files;
         [JsonProperty] public string thumbnail;
         [JsonProperty] public int id;
@@ -36,7 +37,7 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <returns>The home</returns>
         public string GetProjectUrl()
         {
-            return "https://www.curseforge.com/project/" + id;
+            return "https://kerbal.curseforge.com/projects/" + id;
         }
 
         /// <summary>
@@ -77,6 +78,10 @@ namespace CKAN.NetKAN.Sources.Curse
         public static CurseMod FromJson(string json)
         {
             CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
+            foreach (CurseFile file in mod.files)
+            {
+                file.ModPageUrl = mod.GetPageUrl();
+            }
             return mod;
         }
     }

@@ -11,7 +11,6 @@ namespace CKAN.NetKAN.Sources.Curse
         private static readonly ILog Log = LogManager.GetLogger(typeof(CurseApi));
 
         private static string CurseApiBase = "https://api.cfwidget.com/project/";
-        private static string CurseApiEnd = "";
 
         private readonly IHttpService _http;
 
@@ -26,7 +25,7 @@ namespace CKAN.NetKAN.Sources.Curse
 
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
-            if (!string.IsNullOrEmpty(error.error))
+            if (!string.IsNullOrWhiteSpace(error.error))
             {
                 throw new Kraken(string.Format(
                     "Could not get the mod from Curse, reason: {0}.",
@@ -63,7 +62,7 @@ namespace CKAN.NetKAN.Sources.Curse
 
         private string Call(int modId)
         {
-            var url = CurseApiBase + modId + CurseApiEnd;
+            var url = CurseApiBase + modId;
 
             Log.DebugFormat("Calling {0}", url);
 

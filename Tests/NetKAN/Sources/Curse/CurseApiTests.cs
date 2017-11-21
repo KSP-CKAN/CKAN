@@ -43,8 +43,8 @@ namespace Tests.NetKAN.Sources.Curse
             // Assert
             var latestVersion = result.Latest();
 
-            Assert.That(result.members, Is.Not.Null);
             Assert.That(result.id, Is.EqualTo(220221));
+            Assert.That(result.members, Is.Not.Null);
             Assert.That(result.thumbnail, Is.Not.Null);
             Assert.That(result.license, Is.Not.Null);
             Assert.That(result.title, Is.Not.Null);
