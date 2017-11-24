@@ -50,6 +50,13 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
+        /// <summary>
+        /// Function to call to get the title of the popup.
+        /// If non-empty, the value will be drawn centered at the top,
+        /// otherwise the border will go all the way across.
+        /// </summary>
+        protected Func<string> CenterHeader = () => "";
+
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
@@ -66,17 +73,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Y coordinate of bottom edge of dialog
         /// </returns>
         protected int GetBottom() { return FmtUtils.ConvertCoord(bottom, Console.WindowHeight); }
-
-        private bool validX(int x)
-        {
-            x = FmtUtils.ConvertCoord(x, Console.WindowWidth);
-            return x >= 0 && x < Console.WindowWidth;
-        }
-        private bool validY(int y)
-        {
-            y = FmtUtils.ConvertCoord(y, Console.WindowHeight);
-            return y >= 0 && y < Console.WindowHeight;
-        }
 
         /// <summary>
         /// Set position of dialog
@@ -110,7 +106,15 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Console.SetCursorPosition(GetLeft(), y);
                 if (y == GetTop()) {
                     // Top row
-                    Console.Write(Symbols.upperLeftCornerDouble + fullHorizLineDouble + Symbols.upperRightCornerDouble);
+                    string curTitle = CenterHeader();
+                    if (string.IsNullOrEmpty(curTitle)) {
+                        Console.Write(Symbols.upperLeftCornerDouble + fullHorizLineDouble + Symbols.upperRightCornerDouble);
+                    } else {
+                        // Title centered
+                        Console.Write(Symbols.upperLeftCornerDouble
+                            + ScreenObject.PadCenter($" {curTitle} ", w - 2, Symbols.horizLineDouble)
+                            + Symbols.upperRightCornerDouble);
+                    }
                 } else if (y == GetBottom()) {
                     // Bottom row
                     Console.Write(Symbols.lowerLeftCornerDouble + fullHorizLineDouble + Symbols.lowerRightCornerDouble);
@@ -120,6 +124,17 @@ namespace CKAN.ConsoleUI.Toolkit {
                 }
             }
             DrawShadow(GetLeft(), GetTop(), GetRight(), GetBottom());
+        }
+
+        private bool validX(int x)
+        {
+            x = FmtUtils.ConvertCoord(x, Console.WindowWidth);
+            return x >= 0 && x < Console.WindowWidth;
+        }
+        private bool validY(int y)
+        {
+            y = FmtUtils.ConvertCoord(y, Console.WindowHeight);
+            return y >= 0 && y < Console.WindowHeight;
         }
 
         private int left, top, right, bottom;

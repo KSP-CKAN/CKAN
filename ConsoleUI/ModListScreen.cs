@@ -202,6 +202,7 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 1, -1, searchWidth,
                 () => $"{ModUtils.FmtSize(totalInstalledDownloadSize())} installed",
+                null,
                 () => ConsoleTheme.Current.DimLabelFg
             ));
 
@@ -213,6 +214,7 @@ namespace CKAN.ConsoleUI {
                         :  days == 1 ? $"Updated at least {days} day ago"
                         :              $"Updated at least {days} days ago";
                 },
+                null,
                 () => {
                     int daysSince = daysSinceUpdated(registryFilePath());
                     if (daysSince < daysTillStale) {
@@ -242,6 +244,9 @@ namespace CKAN.ConsoleUI {
                 new ConsoleMenuOption("Scan KSP dir",               "",
                     "Check for manually installed mods",
                     true, ScanForMods),
+                new ConsoleMenuOption("Import downloads...",        "",
+                    "Select manually downloaded mods to import into CKAN",
+                    true, ImportDownloads),
                 new ConsoleMenuOption("Export installed...",        "",
                     "Save your mod list",
                     true, ExportInstalled),
@@ -275,6 +280,13 @@ namespace CKAN.ConsoleUI {
         private static readonly string helpKey = Platform.IsMac
             ? "F1"
             : "F1, Alt+H";
+
+        private bool ImportDownloads()
+        {
+            DownloadImportDialog.ImportDownloads(manager.CurrentInstance, plan);
+            RefreshList();
+            return true;
+        }
 
         private bool CaptureKey()
         {

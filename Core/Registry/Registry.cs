@@ -960,5 +960,32 @@ namespace CKAN
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
+
+        /// <summary>
+        /// Get a dictionary of all mod versions indexed by their downloads' SHA-1 hash.
+        /// Useful for finding the mods for a group of files without repeatedly searching the entire registry.
+        /// </summary>
+        /// <returns>
+        /// dictionary[sha1] = {mod1, mod2, mod3};
+        /// </returns>
+        public Dictionary<string, List<CkanModule>> GetSha1Index()
+        {
+            var index = new Dictionary<string, List<CkanModule>>();
+            foreach (var kvp in available_modules) {
+                AvailableModule am = kvp.Value;
+                foreach (var kvp2 in am.module_version) {
+                    CkanModule mod = kvp2.Value;
+                    if (mod.download_hash != null) {
+                        if (index.ContainsKey(mod.download_hash.sha1)) {
+                            index[mod.download_hash.sha1].Add(mod);
+                        } else {
+                            index.Add(mod.download_hash.sha1, new List<CkanModule>() {mod});
+                        }
+                    }
+                }
+            }
+            return index;
+        }
+
     }
 }

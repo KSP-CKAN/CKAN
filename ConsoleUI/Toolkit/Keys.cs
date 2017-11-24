@@ -106,6 +106,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Ctrl+A for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlA = new ConsoleKeyInfo(
+            (System.Char)1, ConsoleKey.A, false, false, true
+        );
+
+        /// <summary>
         /// Representation of Ctrl+D for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo CtrlD = new ConsoleKeyInfo(

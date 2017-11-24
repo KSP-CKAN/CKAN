@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="ConsoleCKAN.cs" />
     <Compile Include="DependencyScreen.cs" />
+    <Compile Include="DownloadImportDialog.cs" />
     <Compile Include="InstallScreen.cs" />
     <Compile Include="KSPAddScreen.cs" />
     <Compile Include="KSPEditScreen.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="SplashScreen.cs" />
     <Compile Include="Toolkit\ConsoleButton.cs" />
     <Compile Include="Toolkit\ConsoleChoiceDialog.cs" />
+    <Compile Include="Toolkit\ConsoleFileMultiSelectDialog.cs" />
     <Compile Include="Toolkit\ConsoleDialog.cs" />
     <Compile Include="Toolkit\ConsoleField.cs" />
     <Compile Include="Toolkit\ConsoleFrame.cs" />

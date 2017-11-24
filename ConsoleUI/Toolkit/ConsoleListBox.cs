@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Generic;
 
@@ -277,7 +278,10 @@ namespace CKAN.ConsoleUI.Toolkit {
                                 ? startRow + i
                                 : startRow + sortedFilteredData.Count - i
                             ) % sortedFilteredData.Count;
-                            if (dfltRend(sortedFilteredData[candidateRow]).IndexOf($"{k.KeyChar}", StringComparison.CurrentCultureIgnoreCase) == 0) {
+                            if (nonAlphaNumPrefix.Replace(
+                                    dfltRend(sortedFilteredData[candidateRow]), ""
+                                ).IndexOf($"{k.KeyChar}", StringComparison.CurrentCultureIgnoreCase) == 0) {
+
                                 selectedRow = candidateRow;
                                 break;
                             }
@@ -427,6 +431,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private int selectedRow = 0;
 
         private const int scrollTop = 1;
+
+        private static readonly Regex nonAlphaNumPrefix = new Regex("^[^a-zA-Z0-9]*", RegexOptions.Compiled);
 
         private static readonly string sortUp      = "^";
         private static readonly string sortDown    = "v";

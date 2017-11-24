@@ -30,6 +30,7 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 1, 1, -1,
                 () => mod.name == mod.identifier ? mod.name : $"{mod.name} ({mod.identifier})",
+                null,
                 () => ConsoleTheme.Current.ActiveFrameFg
             ));
             AddObject(new ConsoleLabel(
@@ -46,6 +47,7 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 3, 4, 11,
                 () => "License:",
+                null,
                 () => ConsoleTheme.Current.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
@@ -56,6 +58,7 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 3, 5, 12,
                 () => "Download:",
+                null,
                 () => ConsoleTheme.Current.DimLabelFg
             ));
             AddObject(new ConsoleLabel(
@@ -193,6 +196,7 @@ namespace CKAN.ConsoleUI {
                     AddObject(new ConsoleLabel(
                         3, top + 1, 3 + lblW - 1,
                         () => $"Required ({numDeps}):",
+                        null,
                         () => ConsoleTheme.Current.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
@@ -215,6 +219,7 @@ namespace CKAN.ConsoleUI {
                     AddObject(new ConsoleLabel(
                         3, top + 1 + numDeps, 3 + lblW - 1,
                         () => $"Conflicts ({numConfs}):",
+                        null,
                         () => ConsoleTheme.Current.DimLabelFg
                     ));
                     ConsoleTextBox tb = new ConsoleTextBox(
@@ -381,16 +386,19 @@ namespace CKAN.ConsoleUI {
                     () => minMod == maxMod
                         ? $"{ModUtils.WithAndWithoutEpoch(minMod.ToString())}"
                         : $"{ModUtils.WithAndWithoutEpoch(minMod.ToString())} - {ModUtils.WithAndWithoutEpoch(maxMod.ToString())}",
+                    null,
                     color
                 ));
                 AddObject(new ConsoleLabel(
                     l + 2, t + 2, r - 2,
                     () => "Compatible with:",
+                    null,
                     () => ConsoleTheme.Current.DimLabelFg
                 ));
                 AddObject(new ConsoleLabel(
                     l + 4, t + 3, r - 2,
                     () => VersionSpan(minKsp, maxKsp),
+                    null,
                     color
                 ));
 
@@ -522,16 +530,16 @@ namespace CKAN.ConsoleUI {
             if (bytes < K) {
                 return $"{bytes} bytes";
             } else if (bytes < K * K) {
-                return $"{bytes / K:N1} KB";
+                return $"{bytes / K :N1} KB";
             } else if (bytes < K * K * K) {
-                return $"{bytes / K / K:N1} MB";
+                return $"{bytes / K / K :N1} MB";
             } else {
-                return $"{bytes / K / K / K:N1} GB";
+                return $"{bytes / K / K / K :N1} GB";
             }
         }
 
-        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$");
-        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$");
+        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
+        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 
 }

@@ -14,12 +14,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="t">Y coordinate of top edge</param>
         /// <param name="r">X coordinate of right edge</param>
         /// <param name="lf">Function returning the text to show in the label</param>
-        /// <param name="cf">Function returning the color to use for the label</param>
-        public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleColor> cf = null)
+        /// <param name="bgFunc">Function returning the background color for the label</param>
+        /// <param name="fgFunc">Function returning the foreground color for the label</param>
+        public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleColor> bgFunc = null, Func<ConsoleColor> fgFunc = null)
             : base(l, t, r, t)
         {
-            labelFunc = lf;
-            colorFunc = cf;
+            labelFunc  = lf;
+            getBgColor = bgFunc;
+            getFgColor = fgFunc;
         }
 
         /// <summary>
@@ -30,11 +32,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             int w = GetRight() - GetLeft() + 1;
             Console.SetCursorPosition(GetLeft(), GetTop());
-            Console.BackgroundColor = ConsoleTheme.Current.LabelBg;
-            if (colorFunc == null) {
+            if (getBgColor == null) {
+                Console.BackgroundColor = ConsoleTheme.Current.LabelBg;
+            } else {
+                Console.BackgroundColor = getBgColor();
+            }
+            if (getFgColor == null) {
                 Console.ForegroundColor = ConsoleTheme.Current.LabelFg;
             } else {
-                Console.ForegroundColor = colorFunc();
+                Console.ForegroundColor = getFgColor();
             }
             try {
                 Console.Write(FormatExactWidth(labelFunc(), w));
@@ -49,7 +55,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override bool Focusable() { return false; }
 
         private Func<string>       labelFunc;
-        private Func<ConsoleColor> colorFunc;
+        private Func<ConsoleColor> getBgColor;
+        private Func<ConsoleColor> getFgColor;
     }
 
 }

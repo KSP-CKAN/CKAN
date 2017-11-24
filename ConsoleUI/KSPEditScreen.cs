@@ -73,7 +73,6 @@ namespace CKAN.ConsoleUI {
                 });
                 repoList.AddTip("R", "Remove");
                 repoList.AddBinding(Keys.R, (object sender) => {
-                    // TODO: This should edit a temp list instead
                     int oldPrio = repoList.Selection.priority;
                     editList.Remove(repoList.Selection.name);
                     // Reshuffle the priorities to fill
@@ -106,7 +105,6 @@ namespace CKAN.ConsoleUI {
                 });
                 repoList.AddTip("+", "Down");
                 repoList.AddBinding(Keys.Plus, (object sender) => {
-                    // TODO: This should edit a temp list instead
                     Repository next = SortedDictFind(editList,
                         r => r.priority == repoList.Selection.priority + 1);
                     if (next != null) {

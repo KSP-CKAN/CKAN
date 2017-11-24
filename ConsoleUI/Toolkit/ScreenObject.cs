@@ -28,16 +28,17 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="s">String to center</param>
         /// <param name="w">Width of space to center in</param>
+        /// <param name="pad">Character to use for padding</param>
         /// <returns>
         /// {padding}s{padding}
         /// </returns>
-        public static string PadCenter(string s, int w)
+        public static string PadCenter(string s, int w, char pad = ' ')
         {
             if (s.Length > w) {
                 return s.Substring(0, w);
             } else {
                 int lp = (w - s.Length) / 2;
-                return FormatExactWidth(s, w - lp).PadLeft(w);
+                return FormatExactWidth(s, w - lp, pad).PadLeft(w, pad);
             }
         }
 
@@ -46,12 +47,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="val">String to process</param>
         /// <param name="w">Width to fit</param>
+        /// <param name="pad">Character to use for padding</param>
         /// <returns>
         /// val{padding} or substring of val
         /// </returns>
-        public static string FormatExactWidth(string val, int w)
+        public static string FormatExactWidth(string val, int w, char pad = ' ')
         {
-            return val.Trim().PadRight(w).Substring(0, w);
+            return val.PadRight(w, pad).Substring(0, w);
         }
 
         /// <summary>

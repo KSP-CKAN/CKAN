@@ -84,6 +84,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private void Draw(int right, int top)
         {
             if (options.Count > 0) {
+                right = FmtUtils.ConvertCoord(right, Console.WindowWidth);
+                top   = FmtUtils.ConvertCoord(top,   Console.WindowHeight);
                 Console.CursorVisible = false;
                 // Space, vertical line, space, options, space, vertical line, space
                 int w = longestLength + 6;
@@ -91,6 +93,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 int h = options.Count + 2;
 
                 Console.BackgroundColor = ConsoleTheme.Current.MenuBg;
+                Console.ForegroundColor = ConsoleTheme.Current.MenuFg;
                 string fullHorizLine = new string(Symbols.horizLine, longestLength + 2);
                 for (int index = -1, y = top; y < top + h; ++index, ++y) {
                     Console.SetCursorPosition(right - w + 1, y);

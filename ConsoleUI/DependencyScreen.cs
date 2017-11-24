@@ -121,7 +121,7 @@ namespace CKAN.ConsoleUI {
 
                             AddDep(dependency.name, installByDefault, identifier);
                         }
-                    } catch (ModuleNotFoundKraken k) {
+                    } catch (ModuleNotFoundKraken) {
                         // LatestAvailable throws if you recommend a "provides" name,
                         // so ask the registry again for provides-based choices
                         List<CkanModule> opts = registry.LatestAvailableWithProvides(
