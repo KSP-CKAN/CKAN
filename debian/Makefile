@@ -17,26 +17,26 @@ $(DEB): $(EXEDEST) $(CONTROL) $(CHANGELOGZIP) $(DEBCHANGEZIP) $(MANZIP)
 	fakeroot dpkg-deb --build fakeroot/ .
 
 $(EXEDEST): $(EXESRC)
-	mkdir -p $(shell dirname $@)
-	cp $< $@
+	umask 0022 && mkdir -p $(shell dirname $@)
+	umask 0022 && cp $< $@
 
 $(EXESRC):
 	cd .. && ./build
 
 $(CONTROL): $(CONTROLIN) $(CHANGELOG)
-	mkdir -p $(shell dirname $@)
+	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && sed -e 's/@VERSION@/$(VERSION)/' $< > $@
 
 $(CHANGELOGZIP): $(CHANGELOG)
-	mkdir -p $(shell dirname $@)
+	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && gzip --best -n -c $< > $@
 
 $(DEBCHANGEZIP): $(DEBCHANGE)
-	mkdir -p $(shell dirname $@)
+	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && gzip --best -n -c $< > $@
 
 $(MANZIP): $(MAN)
-	mkdir -p $(shell dirname $@)
+	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && gzip --best -n -c $< > $@
 
 clean:
