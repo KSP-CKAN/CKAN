@@ -378,29 +378,36 @@ namespace CKAN.ConsoleUI.Toolkit {
                     r => filterCheck(r, filterStr)
                 );
             }
-            // FUTURE: Semantic sort for versions rather than lexicographical
+            // Semantic sort for versions rather than lexicographical
             if (sortColIndex >= 0 && sortColIndex < columns.Count) {
-                Func<RowT, string> rend     = columns[sortColIndex].Renderer;
-                Func<RowT, string> dfltRend = columns[defaultSortColumn].Renderer;
-                if (sortDir == ListSortDirection.Ascending) {
-                    sortedFilteredData.Sort((RowT a, RowT b) => {
-                        return IntOr(
-                            () => rend(a).Trim().CompareTo(rend(b).Trim()),
-                            () => dfltRend(a).Trim().CompareTo(dfltRend(b).Trim())
-                        );
-                    });
-                } else {
-                    sortedFilteredData.Sort((RowT a, RowT b) => {
-                        return IntOr(
-                            () => rend(b).Trim().CompareTo(rend(a).Trim()),
-                            () => dfltRend(a).Trim().CompareTo(dfltRend(b).Trim())
-                        );
-                    });
-                }
+
+                Comparison<RowT> sortCol = getComparer(
+                    columns[sortColIndex],
+                    sortDir == ListSortDirection.Ascending
+                );
+                Comparison<RowT> dfltCol = getComparer(columns[defaultSortColumn], true);
+
+                sortedFilteredData.Sort((a, b) => IntOr(
+                    () => sortCol(a, b),
+                    () => dfltCol(a, b)
+                ));
             }
             int newSelRow = sortedFilteredData.IndexOf(oldSelect);
             if (newSelRow >= 0) {
                 selectedRow = newSelRow;
+            }
+        }
+
+        private Comparison<RowT> getComparer(ConsoleListBoxColumn<RowT> col, bool ascending)
+        {
+            if (ascending) {
+                return col.Comparer
+                    ?? ((a, b) => col.Renderer(a).Trim().CompareTo(col.Renderer(b).Trim()));
+
+            } else if (col.Comparer != null) {
+                return (a, b) => col.Comparer(b, a);
+            } else {
+                return (a, b) => col.Renderer(b).Trim().CompareTo(col.Renderer(a).Trim());
             }
         }
 
@@ -460,6 +467,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Function to translate a row's object into text to display
         /// </summary>
         public Func<RowT, string> Renderer;
+        /// <summary>
+        /// Function to compare two rows for sorting purposes.
+        /// If not defined, the string representation is used.
+        /// </summary>
+        public Comparison<RowT>   Comparer;
         /// <summary>
         /// Number of screen columns to use for this column
         /// </summary>

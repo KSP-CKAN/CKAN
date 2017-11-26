@@ -31,20 +31,21 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<KSP>>() {
                     new ConsoleListBoxColumn<KSP>() {
                         Header   = "Default",
-                        Renderer = StatusSymbol,
-                        Width    = 7
+                        Width    = 7,
+                        Renderer = StatusSymbol
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Name",
-                        Renderer = k => InstallName(manager, k),
-                        Width    = 20
+                        Width    = 20,
+                        Renderer = k => InstallName(manager, k)
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Version",
+                        Width    = 12,
                         Renderer = k => k.Version().ToString(),
-                        Width    = 12
+                        Comparer = (a, b) => a.Version().CompareTo(b.Version())
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Path",
-                        Renderer = k => k.GameDir(),
-                        Width    = 70
+                        Width    = 70,
+                        Renderer = k => k.GameDir()
                     }
                 },
                 1, 0, ListSortDirection.Descending

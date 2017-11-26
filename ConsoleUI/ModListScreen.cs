@@ -28,20 +28,22 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<CkanModule>>() {
                     new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "",
-                        Renderer = StatusSymbol,
-                        Width    = 1
+                        Width    = 1,
+                        Renderer = StatusSymbol
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Name",
-                        Renderer = m => m.name ?? "",
-                        Width    = 44
+                        Width    = 44,
+                        Renderer = m => m.name ?? ""
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Version",
+                        Width    = 10,
                         Renderer = m => ModUtils.StripEpoch(m.version?.ToString() ?? ""),
-                        Width    = 10
+                        Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Max KSP version",
+                        Width    = 17,
                         Renderer = m => registry.LatestCompatibleKSP(m.identifier)?.ToString() ?? "",
-                        Width    = 15
+                        Comparer = (a, b) => registry.LatestCompatibleKSP(a.identifier).CompareTo(registry.LatestCompatibleKSP(b.identifier))
                     }
                 },
                 1, 0, ListSortDirection.Descending,

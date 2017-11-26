@@ -63,11 +63,18 @@ namespace CKAN.ConsoleUI.Toolkit {
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Size",
                         Width    = 10,
-                        Renderer = (FileSystemInfo fi) => getLength(fi)
+                        Renderer = (FileSystemInfo fi) => getLength(fi),
+                        Comparer = (a, b) => {
+                            FileInfo fa = a as FileInfo, fb = b as FileInfo;
+                            return fa == null
+                                ? (fb == null ? 0 : -1)
+                                : (fb == null ? 1 : fa.Length.CompareTo(fb.Length));
+                        }
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Accessed",
                         Width    = 10,
-                        Renderer = (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd")
+                        Renderer = (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd"),
+                        Comparer = (a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime)
                     }
                 },
                 1, 1, ListSortDirection.Ascending
@@ -89,26 +96,8 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             AddTip("Enter", "Change directory", () => fileList.Selection != null &&  isDir(fileList.Selection));
             AddTip("Enter", "Select",           () => fileList.Selection != null && !isDir(fileList.Selection));
-            AddBinding(Keys.Enter, (object sender) => {
-                if (isDir(fileList.Selection)) {
-                    DirectoryInfo di = fileList.Selection as DirectoryInfo;
-                    if (di != null) {
-                        curDir = di;
-                        pathField.Value = curDir.FullName;
-                        fileList.SetData(getFileList());
-                    }
-                } else {
-                    FileInfo fi = fileList.Selection as FileInfo;
-                    if (fi != null) {
-                        if (chosenFiles.Contains(fi)) {
-                            chosenFiles.Remove(fi);
-                        } else {
-                            chosenFiles.Add(fi);
-                        }
-                    }
-                }
-                return true;
-            });
+            AddBinding(Keys.Enter, (object sender) => selectRow());
+            AddBinding(Keys.Space, (object sender) => selectRow());
 
             AddTip("Ctrl+A", "Select all");
             AddBinding(Keys.CtrlA, (object sender) => {
@@ -135,6 +124,28 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddBinding(Keys.F9, (object sender) => {
                 return false;
             });
+        }
+
+        private bool selectRow()
+        {
+            if (isDir(fileList.Selection)) {
+                DirectoryInfo di = fileList.Selection as DirectoryInfo;
+                if (di != null) {
+                    curDir = di;
+                    pathField.Value = curDir.FullName;
+                    fileList.SetData(getFileList());
+                }
+            } else {
+                FileInfo fi = fileList.Selection as FileInfo;
+                if (fi != null) {
+                    if (chosenFiles.Contains(fi)) {
+                        chosenFiles.Remove(fi);
+                    } else {
+                        chosenFiles.Add(fi);
+                    }
+                }
+            }
+            return true;
         }
 
         private void pathFieldChanged(ConsoleField sender, string newValue)

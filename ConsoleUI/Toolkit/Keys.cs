@@ -9,12 +9,20 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private const char LinuxEnter   = (System.Char)10;
         private const char WindowsEnter = (System.Char)13;
+
         /// <summary>
         /// Representation of enter key for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo Enter = new ConsoleKeyInfo(
             Platform.IsWindows ? WindowsEnter : LinuxEnter,
             ConsoleKey.Enter, false, false, false
+        );
+
+        /// <summary>
+        /// Representation of enter key for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo Space = new ConsoleKeyInfo(
+            ' ', ConsoleKey.Spacebar, false, false, false
         );
 
         /// <summary>

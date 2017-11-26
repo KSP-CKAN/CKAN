@@ -16,7 +16,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="hdr">Text for column header of list box</param>
         /// <param name="c">List of objects to put in the list box</param>
         /// <param name="renderer">Function to generate text for each option</param>
-        public ConsoleChoiceDialog(string m, string hdr, List<ChoiceT> c, Func<ChoiceT, string> renderer)
+        /// <param name="comparer">Optional function to sort the rows</param>
+        public ConsoleChoiceDialog(string m, string hdr, List<ChoiceT> c, Func<ChoiceT, string> renderer, Comparison<ChoiceT> comparer = null)
             : base()
         {
             int l = GetLeft(),
@@ -50,23 +51,26 @@ namespace CKAN.ConsoleUI.Toolkit {
                 new List<ConsoleListBoxColumn<ChoiceT>>() {
                     new ConsoleListBoxColumn<ChoiceT>() {
                         Header   = hdr,
+                        Width    = w - 6,
                         Renderer = renderer,
-                        Width    = w - 6
+                        Comparer = comparer
                     }
                 },
                 0, 0, ListSortDirection.Ascending
             );
+
+            choices.AddTip("Enter", "Accept");
             choices.AddBinding(Keys.Enter, (object sender) => {
                 return false;
             });
+
+            choices.AddTip("Esc", "Cancel");
             choices.AddBinding(Keys.Escape, (object sender) => {
                 cancelled = true;
                 return false;
             });
             AddObject(choices);
 
-            choices.AddTip("Esc", "Cancel");
-            choices.AddTip("Enter", "Accept");
         }
 
         /// <summary>
