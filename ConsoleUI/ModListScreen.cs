@@ -37,7 +37,7 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Version",
                         Width    = 10,
-                        Renderer = m => ModUtils.StripEpoch(m.version?.ToString() ?? ""),
+                        Renderer = m => Formatting.StripEpoch(m.version?.ToString() ?? ""),
                         Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Max KSP version",
@@ -203,7 +203,7 @@ namespace CKAN.ConsoleUI {
             // Show total download size of all installed mods
             AddObject(new ConsoleLabel(
                 1, -1, searchWidth,
-                () => $"{ModUtils.FmtSize(totalInstalledDownloadSize())} installed",
+                () => $"{Formatting.FmtSize(totalInstalledDownloadSize())} installed",
                 null,
                 () => ConsoleTheme.Current.DimLabelFg
             ));

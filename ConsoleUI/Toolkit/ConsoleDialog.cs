@@ -60,19 +60,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return FmtUtils.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return FmtUtils.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return FmtUtils.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
-        protected int GetBottom() { return FmtUtils.ConvertCoord(bottom, Console.WindowHeight); }
+        protected int GetBottom() { return Formatting.ConvertCoord(bottom, Console.WindowHeight); }
 
         /// <summary>
         /// Set position of dialog
@@ -128,91 +128,16 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private bool validX(int x)
         {
-            x = FmtUtils.ConvertCoord(x, Console.WindowWidth);
+            x = Formatting.ConvertCoord(x, Console.WindowWidth);
             return x >= 0 && x < Console.WindowWidth;
         }
         private bool validY(int y)
         {
-            y = FmtUtils.ConvertCoord(y, Console.WindowHeight);
+            y = Formatting.ConvertCoord(y, Console.WindowHeight);
             return y >= 0 && y < Console.WindowHeight;
         }
 
         private int left, top, right, bottom;
-    }
-
-    /// <summary>
-    /// Group of functions for handling screen formatting
-    /// </summary>
-    public static class FmtUtils {
-
-        /// <summary>
-        /// Turn an abstract coordinate into a real coordinate.
-        /// This just means that we use positive values to represent offsets from left/top,
-        /// and negative values to represent offsets from right/bottom.
-        /// </summary>
-        /// <param name="val">Coordinate value to convert</param>
-        /// <param name="max">Maximum value for the coordinate, used to translate negative values</param>
-        /// <returns>
-        /// Position represented
-        /// </returns>
-        public static int ConvertCoord(int val, int max)
-        {
-            if (val >= 0) {
-                return val;
-            } else {
-                return max + val - 1;
-            }
-        }
-
-        /// <summary>
-        /// Word wrap a long string into separate lines
-        /// </summary>
-        /// <param name="msg">Long message to wrap</param>
-        /// <param name="w">Allowed length of lines</param>
-        /// <returns>
-        /// List of strings, one per line
-        /// </returns>
-        public static List<string> WordWrap(string msg, int w)
-        {
-            List<string> messageLines = new List<string>();
-            if (!string.IsNullOrEmpty(msg)) {
-                // The string is allowed to contain line breaks.
-                string[] hardLines = msg.Split(new string[] {"\r\n", "\n"}, StringSplitOptions.None);
-                foreach (var line in hardLines) {
-                    if (string.IsNullOrEmpty(line)) {
-                        messageLines.Add("");
-                    } else {
-                        int used = 0;
-                        while (used < line.Length) {
-                            while (used < line.Length && line[used] == ' ') {
-                                // Skip spaces so lines start with non-spaces
-                                ++used;
-                            }
-                            if (used >= line.Length) {
-                                // Ran off the end of the string with spaces, we're done
-                                messageLines.Add("");
-                                break;
-                            }
-                            int lineLen;
-                            if (used + w >= line.Length) {
-                                // We're at the end of the line, use the whole thing
-                                lineLen = line.Length - used;
-                            } else {
-                                // Middle of the line, find a word wrappable chunk
-                                for (lineLen = w; lineLen >= 0 && line[used + lineLen] != ' '; --lineLen) { }
-                            }
-                            if (lineLen < 1) {
-                                // Word too long, truncate it
-                                lineLen = w;
-                            }
-                            messageLines.Add(line.Substring(used, lineLen));
-                            used += lineLen;
-                        }
-                    }
-                }
-            }
-            return messageLines;
-        }
     }
 
 }

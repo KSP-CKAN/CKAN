@@ -39,7 +39,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="line">String to add</param>
         public void AddLine(string line)
         {
-            lines.AddRange(FmtUtils.WordWrap(line, GetRight() - GetLeft() + 1));
+            lines.AddRange(Formatting.WordWrap(line, GetRight() - GetLeft() + 1));
         }
 
         /// <summary>

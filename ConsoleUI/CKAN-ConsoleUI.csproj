@@ -101,6 +101,7 @@
     <Compile Include="Toolkit\ConsoleScreen.cs" />
     <Compile Include="Toolkit\ConsoleTextBox.cs" />
     <Compile Include="Toolkit\ConsoleTheme.cs" />
+    <Compile Include="Toolkit\Formatting.cs" />
     <Compile Include="Toolkit\Keys.cs" />
     <Compile Include="Toolkit\ScreenContainer.cs" />
     <Compile Include="Toolkit\ScreenObject.cs" />

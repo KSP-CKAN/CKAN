@@ -25,7 +25,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             int w = r - l + 1;
 
             // Resize the window to fit the content
-            List<string> msgLines = FmtUtils.WordWrap(m, w - 4);
+            List<string> msgLines = Formatting.WordWrap(m, w - 4);
 
             int h = 2 + msgLines.Count + 1 + 1 + c.Count + 2;
             int t = (Console.WindowHeight - h) / 2;

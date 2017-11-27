@@ -63,7 +63,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 13, 5, midL - 2,
-                () => ModUtils.FmtSize(mod.download_size)
+                () => Formatting.FmtSize(mod.download_size)
             ));
             AddObject(new ConsoleLabel(
                 3, 6, midL - 2,
@@ -384,8 +384,8 @@ namespace CKAN.ConsoleUI {
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod
-                        ? $"{ModUtils.WithAndWithoutEpoch(minMod.ToString())}"
-                        : $"{ModUtils.WithAndWithoutEpoch(minMod.ToString())} - {ModUtils.WithAndWithoutEpoch(maxMod.ToString())}",
+                        ? $"{Formatting.WithAndWithoutEpoch(minMod.ToString())}"
+                        : $"{Formatting.WithAndWithoutEpoch(minMod.ToString())} - {Formatting.WithAndWithoutEpoch(maxMod.ToString())}",
                     null,
                     color
                 ));
@@ -485,61 +485,6 @@ namespace CKAN.ConsoleUI {
         private IRegistryQuerier registry;
         private ChangePlan       plan;
         private CkanModule       mod;
-    }
-
-    /// <summary>
-    /// Functions for formatting mod info
-    /// </summary>
-    public static class ModUtils {
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string StripEpoch(string version)
-        {
-            // If our version number starts with a string of digits, followed by
-            // a colon, and then has no more colons, we're probably safe to assume
-            // the first string of digits is an epoch
-            return epochMatch.IsMatch(version)
-                ? epochReplace.Replace(version, @"$2")
-                : version;
-        }
-
-        /// <summary>
-        /// As above, but includes the original in parentheses
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string WithAndWithoutEpoch(string version)
-        {
-            return epochMatch.IsMatch(version)
-                ? $"{epochReplace.Replace(version, @"$2")} ({version})"
-                : version;
-        }
-
-        /// <summary>
-        /// Format a byte count into readable file size
-        /// </summary>
-        /// <param name="bytes">Number of bytes in a file</param>
-        /// <returns>
-        /// ### bytes or ### KB or ### MB or ### GB
-        /// </returns>
-        public static string FmtSize(long bytes)
-        {
-            const double K = 1024;
-            if (bytes < K) {
-                return $"{bytes} bytes";
-            } else if (bytes < K * K) {
-                return $"{bytes / K :N1} KB";
-            } else if (bytes < K * K * K) {
-                return $"{bytes / K / K :N1} MB";
-            } else {
-                return $"{bytes / K / K / K :N1} GB";
-            }
-        }
-
-        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 
 }

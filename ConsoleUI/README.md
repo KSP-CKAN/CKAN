@@ -53,8 +53,7 @@ ConsoleTheme
 Helper classes:
 
 ```
-FmtUtils
-ModUtils
+Formatting
 ConsoleMenuOption
 ScreenTip
 ChangePlan

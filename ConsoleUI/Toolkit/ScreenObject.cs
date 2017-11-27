@@ -95,19 +95,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return FmtUtils.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return FmtUtils.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return FmtUtils.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
-        protected int GetBottom() { return FmtUtils.ConvertCoord(bottom, Console.WindowHeight); }
+        protected int GetBottom() { return Formatting.ConvertCoord(bottom, Console.WindowHeight); }
 
         /// <summary>
         /// Draw the UI element

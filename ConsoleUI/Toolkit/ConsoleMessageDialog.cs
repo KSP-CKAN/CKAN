@@ -29,7 +29,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 r = Console.WindowWidth - l;
             }
 
-            List<string> messageLines = FmtUtils.WordWrap(m, w - 4);
+            List<string> messageLines = Formatting.WordWrap(m, w - 4);
             int h = 2 + messageLines.Count + (b.Count > 0 ? 2 : 0) + 2;
 
             SetDimensions(

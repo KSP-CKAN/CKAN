@@ -84,8 +84,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private void Draw(int right, int top)
         {
             if (options.Count > 0) {
-                right = FmtUtils.ConvertCoord(right, Console.WindowWidth);
-                top   = FmtUtils.ConvertCoord(top,   Console.WindowHeight);
+                right = Formatting.ConvertCoord(right, Console.WindowWidth);
+                top   = Formatting.ConvertCoord(top,   Console.WindowHeight);
                 Console.CursorVisible = false;
                 // Space, vertical line, space, options, space, vertical line, space
                 int w = longestLength + 6;

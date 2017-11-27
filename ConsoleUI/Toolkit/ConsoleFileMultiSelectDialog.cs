@@ -24,6 +24,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             curDir       = new DirectoryInfo(startPath);
             filePattern  = filPat;
 
+            int w = (Console.WindowWidth > idealW + 2 * hPad)
+                ? idealW
+                : Console.WindowWidth - 2 * hPad;
+            int left  = (Console.WindowWidth - w) / 2;
+            int right = -left;
+
             SetDimensions(left, top, right, bottom);
 
             AddObject(new ConsoleLabel(
@@ -42,7 +48,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             AddObject(new ConsoleLabel(
                 left + 2, bottom - 1, right - 2,
-                () => $"{chosenFiles.Count} selected, {ModUtils.FmtSize(totalChosenSize())}",
+                () => $"{chosenFiles.Count} selected, {Formatting.FmtSize(totalChosenSize())}",
                 () => ConsoleTheme.Current.PopupBg,
                 () => ConsoleTheme.Current.PopupFg
             ));
@@ -59,10 +65,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Name",
                         Width    = 36,
-                        Renderer = getRowName
+                        Renderer = getRowName,
+                        Comparer = compareNames
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Size",
-                        Width    = 10,
+                        // Longest: "1023.1 KB"
+                        Width    = 9,
                         Renderer = (FileSystemInfo fi) => getLength(fi),
                         Comparer = (a, b) => {
                             FileInfo fa = a as FileInfo, fb = b as FileInfo;
@@ -219,13 +227,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         private string getLength(FileSystemInfo fi)
         {
             if (isDir(fi)) {
-                return "";
+                return dirSize;
             } else {
                 FileInfo file = fi as FileInfo;
                 if (file != null) {
-                    return ModUtils.FmtSize(file.Length);
+                    return Formatting.FmtSize(file.Length);
                 } else {
-                    return "";
+                    return dirSize;
                 }
             }
         }
@@ -254,12 +262,38 @@ namespace CKAN.ConsoleUI.Toolkit {
                 // Return /path/ or \path\ to show it's a dir
                 if (pathEquals(curDir.Parent, fi)) {
                     // Treat parent as a special case
-                    return $"{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}";
+                    return $"..{Path.DirectorySeparatorChar}";
                 } else {
-                    return $"{Path.DirectorySeparatorChar}{fi.Name}{Path.DirectorySeparatorChar}";
+                    return $"{fi.Name}{Path.DirectorySeparatorChar}";
                 }
             } else {
                 return fi.Name;
+            }
+        }
+
+        private int compareNames(FileSystemInfo a, FileSystemInfo b)
+        {
+            if (isDir(a)) {
+                if (isDir(b)) {
+                    if (pathEquals(curDir.Parent, a)) {
+                        // Sort .. to the top
+                        return -1;
+                    } else if (pathEquals(curDir.Parent, b)) {
+                        return 1;
+                    } else {
+                        // Both regular directories, just compare the names
+                        return a.Name.CompareTo(b.Name);
+                    }
+                } else {
+                    return -1;
+                }
+            } else {
+                if (isDir(b)) {
+                    return 1;
+                } else {
+                    // Both files, just compare the names
+                    return a.Name.CompareTo(b.Name);
+                }
             }
         }
 
@@ -272,13 +306,14 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private string filePattern;
 
-        private static readonly string chosen = Symbols.checkmark;
+        private static readonly string chosen  = Symbols.checkmark;
+        private const           string dirSize = "<DIR>";
 
-        private const int left   =  2;
-        private const int top    =  2;
-        private const int right  = -2;
-        private const int bottom = -2;
+        private const int idealW = 76;
         private const int labelW = 12;
+        private const int hPad   = 2;
+        private const int top    =  2;
+        private const int bottom = -2;
     }
 
 }
