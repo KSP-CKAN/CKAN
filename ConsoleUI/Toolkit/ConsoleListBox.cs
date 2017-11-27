@@ -184,12 +184,14 @@ namespace CKAN.ConsoleUI.Toolkit {
                     Console.BackgroundColor = ConsoleTheme.Current.ListBoxUnselectedBg;
                     Console.ForegroundColor = ConsoleTheme.Current.ListBoxUnselectedFg;
                 }
-                if (y == 0) {
-                    Console.Write("".PadRight(r - Console.CursorLeft + 1));
-                } else {
-                    // Make space for scrollbar for anti-flicker
-                    Console.Write("".PadRight(contentR - Console.CursorLeft + 1));
-                }
+                try {
+                    if (y == 0) {
+                        Console.Write("".PadRight(r - Console.CursorLeft + 1));
+                    } else {
+                        // Make space for scrollbar for anti-flicker
+                        Console.Write("".PadRight(contentR - Console.CursorLeft + 1));
+                    }
+                } catch { }
             }
 
             // Now draw the scrollbar

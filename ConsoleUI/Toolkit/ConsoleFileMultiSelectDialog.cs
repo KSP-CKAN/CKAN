@@ -58,7 +58,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Renderer = getRowSymbol
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Name",
-                        Width    = 50,
+                        Width    = 36,
                         Renderer = getRowName
                     }, new ConsoleListBoxColumn<FileSystemInfo>() {
                         Header   = "Size",
