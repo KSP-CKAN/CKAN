@@ -1,6 +1,6 @@
 .PHONY: clean test
 
-EXESRC=../_build/ckan.exe
+EXESRC=../_build/repack/Release/ckan.exe
 EXEDEST=fakeroot/usr/lib/ckan/ckan.exe
 CONTROLIN=control.in
 CONTROL=fakeroot/DEBIAN/control
@@ -21,7 +21,7 @@ $(EXEDEST): $(EXESRC)
 	umask 0022 && cp $< $@
 
 $(EXESRC):
-	cd .. && ./build
+	cd .. && ./build --configuration=Release
 
 $(CONTROL): $(CONTROLIN) $(CHANGELOG)
 	umask 0022 && mkdir -p $(shell dirname $@)
