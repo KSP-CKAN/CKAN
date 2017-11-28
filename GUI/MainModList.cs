@@ -645,14 +645,19 @@ namespace CKAN
                 }
             }
 
-            var installed =
-                registry.Installed()
-                    .Where(pair => pair.Value.CompareTo(new ProvidesVersion("")) != 0)
-                    .Select(pair => pair.Key);
+            // Only check mods that would exist after the changes are made.
+            IEnumerable<CkanModule> installed = registry.InstalledModules.Where(
+                im => !modules_to_remove.Contains(im.Module.identifier)
+            ).Select(im => im.Module);
 
-            //We wish to only check mods that would exist after the changes are made.
-            var mods_to_check = installed.Union(modules_to_install).Except(modules_to_remove);
-            var resolver = new RelationshipResolver(mods_to_check.ToList(), options, registry, ksp_version);
+            // Convert ONLY modules_to_install with CkanModule.FromIDandVersion,
+            // because it may not find already-installed modules.
+            IEnumerable<CkanModule> mods_to_check = installed.Union(
+                modules_to_install.Except(modules_to_remove).Select(
+                    name => CkanModule.FromIDandVersion(registry, name, ksp_version)
+                )
+            );
+            var resolver = new RelationshipResolver(mods_to_check, options, registry, ksp_version);
             return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
                 item => item.Value);
         }

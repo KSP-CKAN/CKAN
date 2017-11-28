@@ -20,7 +20,7 @@ namespace CKAN
         private volatile bool installCanceled;
 
         // this will be the final list of mods we want to install
-        private HashSet<string> toInstall = new HashSet<string>();
+        private HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
@@ -35,7 +35,7 @@ namespace CKAN
             ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
             // setup progress callback
 
-            toInstall = new HashSet<string>();
+            toInstall = new HashSet<CkanModule>();
             var toUninstall = new HashSet<string>();
             var toUpgrade = new HashSet<string>();
 
@@ -51,7 +51,7 @@ namespace CKAN
                         toUpgrade.Add(change.Mod.Identifier);
                         break;
                     case GUIModChangeType.Install:
-                        toInstall.Add(change.Mod.Identifier);
+                        toInstall.Add(change.Mod.ToModule());
                         break;
                 }
             }
@@ -183,9 +183,9 @@ namespace CKAN
                     // if the mod is available for the current KSP version _and_
                     // the mod is not installed _and_
                     // the mod is not already in the install list
-                    if (
-                        registry.LatestAvailable(mod.name, CurrentInstance.VersionCriteria()) != null &&
-                        !registry.IsInstalled(mod.name) && !toInstall.Contains(mod.name))
+                    if (registry.LatestAvailable(mod.name, CurrentInstance.VersionCriteria()) != null
+                        && !registry.IsInstalled(mod.name)
+                        && !toInstall.Any(m => m.identifier == mod.name))
                     {
                         // add it to the list of chooseAble mods we display to the user
                         if (!chooseAble.ContainsKey(mod.name))
@@ -211,7 +211,7 @@ namespace CKAN
             // recommended list, since they can't de-select it anyway.
             foreach (var item in toInstall)
             {
-                selectable.Remove(item);
+                selectable.Remove(item.identifier);
             }
 
             Dictionary<CkanModule, string> mods = GetShowableMods(selectable);
@@ -534,8 +534,7 @@ namespace CKAN
             {
                 if (item.Checked)
                 {
-                    var identifier = ((CkanModule) item.Tag).identifier;
-                    toInstall.Add(identifier);
+                    toInstall.Add((CkanModule) item.Tag);
                 }
             }
 

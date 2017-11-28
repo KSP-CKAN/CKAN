@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [NetKAN] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
 - [Build] Only check first three segments of version in ci (#2192 by: HebaruSan; reviewed: techman83)
 - [GUI] Initialize checkboxes to desired value at creation (#2184 by: HebaruSan; reviewed: mwerle, politas)
+- [GUI] Avoid crash with unavailable installed mod, improve error messages (#2188 by: HebaruSan; reviewed: politas)
 
 ## v1.22.6 (Guiana)
 

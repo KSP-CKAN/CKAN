@@ -250,7 +250,7 @@ namespace CKAN
             User.RaiseProgress("Done!\r\n", 100);
         }
 
-        public ModuleResolution ResolveModules(IEnumerable<string> modules, RelationshipResolverOptions options)
+        public ModuleResolution ResolveModules(IEnumerable<CkanModule> modules, RelationshipResolverOptions options)
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
             return new ModuleResolution(resolver.ModList(), m => ksp.Cache.IsCachedZip(m.download));
