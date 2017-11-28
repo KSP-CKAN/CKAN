@@ -137,12 +137,12 @@ namespace CKAN
             }
         }
 
-        public void UpdateModsList(Boolean repo_updated = false)
+        public void UpdateModsList(Boolean repo_updated = false, List<ModChange> mc = null)
         {
-            Util.Invoke(this, () => _UpdateModsList(repo_updated));
+            Util.Invoke(this, () => _UpdateModsList(repo_updated, mc ?? new List<ModChange>()));
         }
 
-        private void _UpdateModsList(bool repo_updated)
+        private void _UpdateModsList(bool repo_updated, List<ModChange> mc)
         {
             log.Debug("Updating the mod list");
 
@@ -182,7 +182,7 @@ namespace CKAN
 
             // Update our mod listing. If we're doing a repo update, then we don't refresh
             // all (in case the user has selected changes they wish to apply).
-            mainModList.ConstructModList(gui_mods.ToList(), refreshAll: !repo_updated, hideEpochs: configuration.HideEpochs);
+            mainModList.ConstructModList(gui_mods.ToList(), mc, !repo_updated, configuration.HideEpochs);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
@@ -495,7 +495,7 @@ namespace CKAN
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
         /// <param name="hideEpochs">If true, remove epochs from the displayed versions</param>
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, bool refreshAll = false, bool hideEpochs = false)
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, List<ModChange> mc = null, bool refreshAll = false, bool hideEpochs = false)
         {
 
             if (refreshAll || full_list_of_mod_rows == null)
@@ -520,21 +520,26 @@ namespace CKAN
                 full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
+                ModChange myChange = mc?.Find((ModChange ch) => ch.Mod.Identifier == mod.Identifier);
+
                 var selecting = mod.IsInstallable()
-                    ? (DataGridViewCell) new DataGridViewCheckBoxCell()
-                    : new DataGridViewTextBoxCell();
+                    ? (DataGridViewCell) new DataGridViewCheckBoxCell() {
+                        Value = myChange == null ? mod.IsInstalled
+                            : myChange.ChangeType == GUIModChangeType.Install ? true
+                            : myChange.ChangeType == GUIModChangeType.Remove  ? false
+                            : mod.IsInstalled
+                    } : new DataGridViewTextBoxCell() {
+                        Value    = mod.IsAutodetected ? "AD" : "-"
+                    };
 
-                selecting.Value = mod.IsInstallable()
-                    ? (object) mod.IsInstalled
-                    : (mod.IsAutodetected ? "AD" : "-");
-
-                var updating = mod.HasUpdate && !mod.IsAutodetected
-                    ? new DataGridViewCheckBoxCell()
-                    : (DataGridViewCell) new DataGridViewTextBoxCell();
-
-                updating.Value = !mod.IsInstallable() || !mod.HasUpdate
-                    ? "-"
-                    : (object) false;
+                var updating = mod.IsInstallable() && mod.HasUpdate
+                    ? (DataGridViewCell) new DataGridViewCheckBoxCell() {
+                        Value = myChange == null ? false
+                            : myChange.ChangeType == GUIModChangeType.Update ? true
+                            : false
+                    } : new DataGridViewTextBoxCell() {
+                        Value    = "-"
+                    };
 
                 var name = new DataGridViewTextBoxCell {Value = mod.Name};
                 var author = new DataGridViewTextBoxCell {Value = mod.Authors};
@@ -546,8 +551,8 @@ namespace CKAN
 
                 item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, desc);
 
-                selecting.ReadOnly = !mod.IsInstallable();
-                updating.ReadOnly = !mod.IsInstallable() || !mod.HasUpdate;
+                selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
+                updating.ReadOnly = updating is  DataGridViewTextBoxCell;
 
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }

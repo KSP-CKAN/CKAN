@@ -10,7 +10,7 @@ namespace CKAN
     using System.Windows.Forms;
 
     public static class Util
-    {                
+    {
         /// <summary>
         /// Invokes an action on the UI thread, or directly if we're
         /// on the UI thread.
@@ -114,18 +114,6 @@ namespace CKAN
                 // We tried all prefixes, and still no luck.
                 return false;
             }
-        }
-    }
-}
-
-namespace CKAN
-{    
-    public static class UtilWithoutWinForm
-    {
-        public static bool IsInstallable(this GUIMod mod)
-        {
-            if(mod==null) throw new ArgumentNullException();
-            return !(mod.IsAutodetected || mod.IsIncompatible) || (!mod.IsAutodetected && mod.IsInstalled);
         }
     }
 }

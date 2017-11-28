@@ -5,33 +5,29 @@ All notable changes to this project will be documented in this file.
 ## v1.24.0-PRE
 
 ## Features
-
 - [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
+- [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
 - [Spec] Add CC-BY-ND licence options (#2160 by: MoreRobustThanYou; reviewed: Olympic1, politas)
 - [GUI] Change icon on filter button to something filter-y (#2156 by: politas; reviewed: HebaruSan)
 - [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
+- [Build] Establish a .gitattributes file (#2169 by: Olympic1; reviewed: politas)
 
 ### Bugfixes
-
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 - [Build] Fix build errors for UpdateCol (#2153 by: politas; reviewed: Olympic1)
+- [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
 - [Auto-updater] Move AskForAutoUpdates dialog to center of screen (#2165 by: politas; reviewed: Olympic1)
 - [Core] Clean up registry lock file after parse failure (#2175 by: HebaruSan; reviewed: politas)
 - [Core] Purge 6 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: politas)
-
-### Internal
-
-- [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
-- [Build] Establish a .gitattributes file (#2169 by: Olympic1; reviewed: politas)
 - [Build] Remove unnecessary using directives (#2181 by: HebaruSan; reviewed: politas)
 - [Build] Cleanup project (#2182 by: Olympic1; reviewed: HebaruSan, politas, dbent)
-- [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
-- [NetKAN] Adapt CurseTransformer to new API (#2189 by: HebaruSan; reviewed: Olympic1)
+- [NetKAN] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
+- [Build] Only check first three segments of version in ci (#2192 by: HebaruSan; reviewed: techman83)
+- [GUI] Initialize checkboxes to desired value at creation (#2184 by: HebaruSan; reviewed: mwerle, politas)
 
 ## v1.22.6 (Guiana)
 
 ### Bugfixes
-
 - [GUI] Fix search box tab order (#2141 by: HebaruSan; reviewed: politas)
 - [Core] Check for stale lock files (#2139 by: HebaruSan; reviewed: politas)
 - [NetKAN] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)
