@@ -117,11 +117,11 @@ namespace CKAN.ConsoleUI {
         }
 
         private   const int labelWidth = 16;
-        private   const int nameRow    = 3;
+        private   const int nameRow    = 2;
         /// <summary>
         /// Y coordinate of path field
         /// </summary>
-        protected const int pathRow    = 5;
+        protected const int pathRow    = 4;
     }
 
 }

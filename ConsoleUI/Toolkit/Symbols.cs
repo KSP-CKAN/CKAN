@@ -93,6 +93,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Lower right corner double line drawing symbol
         /// </summary>
         public static readonly string lowerRightCornerDouble = cp437s(0xbc);
+        /// <summary>
+        /// Left tee double line drawing symbol (connects up, down, and right)
+        /// </summary>
+        public static readonly string leftTeeDouble          = cp437s(0xcc);
+        /// <summary>
+        /// Right tee double line drawing symbol (connects up, down, and left)
+        /// </summary>
+        public static readonly string rightTeeDouble         = cp437s(0xb9);
 
         /// <summary>
         /// Upper half block used for the small shadow under buttons

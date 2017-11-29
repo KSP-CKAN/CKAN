@@ -51,6 +51,7 @@ namespace CKAN.ConsoleUI {
                         // FUTURE: BackgroundWorker
 
                         ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, this);
+                        inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove);
                             plan.Remove.Clear();
@@ -65,8 +66,10 @@ namespace CKAN.ConsoleUI {
                             inst.InstallList(iList, resolvOpts, dl);
                             plan.Install.Clear();
                         }
-
                         trans.Complete();
+                        // Don't let the installer re-use old screen references
+                        inst.User = null;
+                        inst.onReportModInstalled = null;
 
                     } catch (CancelledActionKraken) {
                         // Don't need to tell the user they just cancelled out.
@@ -118,6 +121,11 @@ namespace CKAN.ConsoleUI {
                     }
                 } while (retry);
             }
+        }
+
+        private void OnModInstalled(CkanModule mod)
+        {
+            RaiseMessage($"Successfully installed {mod.name}");
         }
 
         // We need recommendations to have EVE-Config get installed by EVE

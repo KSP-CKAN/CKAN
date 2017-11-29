@@ -64,6 +64,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CompatibleVersionDialog.cs" />
     <Compile Include="ConsoleCKAN.cs" />
     <Compile Include="DependencyScreen.cs" />
     <Compile Include="DownloadImportDialog.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Toolkit\ConsoleDialog.cs" />
     <Compile Include="Toolkit\ConsoleField.cs" />
     <Compile Include="Toolkit\ConsoleFrame.cs" />
+    <Compile Include="Toolkit\ConsoleDoubleFrame.cs" />
     <Compile Include="Toolkit\ConsoleLabel.cs" />
     <Compile Include="Toolkit\ConsoleListBox.cs" />
     <Compile Include="Toolkit\ConsoleMessageDialog.cs" />

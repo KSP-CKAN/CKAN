@@ -32,6 +32,8 @@ namespace CKAN.ConsoleUI {
                 ModuleInstaller inst = ModuleInstaller.GetInstance(gameInst, ps);
                 ps.Run(() => ImportFiles(gameInst, files, ps, inst,
                     (string identifier) => cp.Install.Add(identifier)));
+                // Don't let the installer re-use old screen references
+                inst.User = null;
             }
         }
 

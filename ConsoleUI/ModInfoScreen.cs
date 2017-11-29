@@ -469,6 +469,8 @@ namespace CKAN.ConsoleUI {
                     }
                 }
             );
+            // Don't let the installer re-use old screen references
+            inst.User = null;
         }
 
         private static readonly Dictionary<string, string> hostDomains = new Dictionary<string, string>() {
