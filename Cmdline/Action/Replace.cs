@@ -34,7 +34,6 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            User.RaiseMessage("\r\nReplacing modules...\r\n");
             var registry = RegistryManager.Instance(ksp).registry;
             var to_replace = new List<ModuleReplacement>();
 
@@ -90,7 +89,7 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if replacement is available
-                                ModuleReplacement replacement = registry.GetReplacement(mod, ksp.VersionCriteria());
+                                ModuleReplacement replacement = registry.GetReplacement(modToReplace.identifier, ksp.VersionCriteria());
                                 if (replacement != null)
                                 {
                                     // Replaceable
@@ -99,8 +98,16 @@ namespace CKAN.CmdLine
                                         replacement.ToReplace.identifier, replacement.ToReplace.version);
                                     to_replace.Add(replacement);
                                 }
-                                log.InfoFormat("Attempt to replace {0} failed, replacement {1} is not compatible",
-                                    mod, modToReplace.replaced_by.name);
+                                if (modToReplace.replaced_by != null)
+                                {
+                                    log.InfoFormat("Attempt to replace {0} failed, replacement {1} is not compatible",
+                                        mod, modToReplace.replaced_by.name);
+                                }
+                                else
+                                {
+                                    log.InfoFormat("Mod {0} has no replacement defined for the current version {1}",
+                                        modToReplace.identifier, modToReplace.version);
+                                }
                             }
                             catch (ModuleNotFoundKraken)
                             {
@@ -115,9 +122,33 @@ namespace CKAN.CmdLine
                     }                                           
                 }
             }
-            // TODO: These instances all need to go.
-            ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
-            User.RaiseMessage("\r\nDone!\r\n");
+            if (to_replace.Count() != 0)
+            {
+                User.RaiseMessage("\r\nReplacing modules...\r\n");
+                foreach (ModuleReplacement r in to_replace)
+                {
+                    User.RaiseMessage("Replacement {0} {1} found for {2} {3}",
+                        r.ReplaceWith.identifier, r.ReplaceWith.version,
+                        r.ToReplace.identifier, r.ToReplace.version);
+                }
+
+                bool ok = User.RaiseYesNoDialog("\r\nContinue?");
+
+                if (!ok)
+                {
+                    User.RaiseMessage("Replacements canceled at user request.");
+                    return Exit.ERROR;
+                }
+
+                // TODO: These instances all need to go.
+                ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
+                User.RaiseMessage("\r\nDone!\r\n");
+            }
+            else
+            {
+                User.RaiseMessage("No replacements found.");
+                return Exit.OK;
+            }
 
             return Exit.OK;
         }

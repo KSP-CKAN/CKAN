@@ -205,8 +205,10 @@ namespace CKAN
             }
             if (installedVersion == null) return null;  // Mod is not installed, so we don't care about replacements
             //get the identifier from the replaced_by relationship, if it exists
-            RelationshipDescriptor replacedBy = installedVersion.replaced_by;
             if (installedVersion.replaced_by == null) return null; // No replaced_by relationship
+
+            RelationshipDescriptor replacedBy = installedVersion.replaced_by;
+
             // Now we need to see if there is a compatible version of the replacement
             try
             {
