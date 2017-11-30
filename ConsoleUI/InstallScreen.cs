@@ -128,7 +128,6 @@ namespace CKAN.ConsoleUI {
             RaiseMessage($"Successfully installed {mod.name}");
         }
 
-        // We need recommendations to have EVE-Config get installed by EVE
         private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {
             with_all_suggests              = false,
             with_suggests                  = false,

@@ -463,9 +463,13 @@ namespace CKAN.ConsoleUI {
             LaunchSubScreen(
                 ps,
                 () => {
-                    dl.DownloadModules(inst.Cache, new List<CkanModule> {mod});
-                    if (!inst.Cache.IsCachedZip(mod.download)) {
-                        ps.RaiseError("Download failed, file is corrupted");
+                    try {
+                        dl.DownloadModules(inst.Cache, new List<CkanModule> {mod});
+                        if (!inst.Cache.IsCachedZip(mod.download)) {
+                            ps.RaiseError("Download failed, file is corrupted");
+                        }
+                    } catch (Exception ex) {
+                        ps.RaiseError($"Download failed: {ex}");
                     }
                 }
             );

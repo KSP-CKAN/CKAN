@@ -33,23 +33,12 @@ namespace CKAN.ConsoleUI
         {
             Logging.Initialize();
 
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
-
             new ConsoleCKAN(debug);
 
-            return 0;
-        }
+            // Tell RegistryManager not to throw Dispose-related exceptions at exit
+            RegistryManager.DisposeAll();
 
-        /// <summary>
-        /// Handle unhandled exceptions
-        /// </summary>
-        /// <param name="sender">Source of the exceptions</param>
-        /// <param name="e">Exception exception</param>
-        public static void UnhandledExceptionEventHandler(Object sender, UnhandledExceptionEventArgs e)
-        {
-            // Provide a stack backtrace, so our users and non-debugging devs can
-            // see what's gone wrong.
-            log.ErrorFormat("Unhandled exception:\r\n{0} ", e.ExceptionObject.ToString());
+            return 0;
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUI));
