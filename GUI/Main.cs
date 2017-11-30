@@ -1225,6 +1225,42 @@ namespace CKAN
                 var guiMod = (GUIMod)ModList.Rows[rowIndex].Tag;
 
                 downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
+
+                if (guiMod.IsInstalled || guiMod.IsAutodetected)
+                {
+                    reinstallToolStripMenuItem.Enabled = true;
+                }
+                else
+                {
+                    reinstallToolStripMenuItem.Enabled = false;
+                }
+            }
+        }
+
+        private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var module = ModInfoTabControl.SelectedModule;
+            if (module == null || !module.IsCKAN) return;
+
+            YesNoDialog reinstallDialog = new YesNoDialog();
+            string confirmationText = $"Do you want to reinstall {module.Name}?";
+            if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
+                return;
+
+            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, currentUser);
+            var resolvedMod = installer.ResolveModules(toInstall, new RelationshipResolverOptions());
+
+            using (var transaction = CkanTransaction.CreateTransactionScope())
+            {
+                SetDescription($"Uninstalling {module.Name}");
+                if (!WasSuccessful(() => installer.UninstallList(module.Identifier)))
+                    return;
+
+                SetDescription($"Installing {module.Name}");
+                if (!WasSuccessful(() => installer.InstallList(resolvedMod, new RelationshipResolverOptions())))
+                    return;
+
+                transaction.Complete();
             }
         }
 

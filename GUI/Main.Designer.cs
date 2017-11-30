@@ -75,6 +75,7 @@
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfoTabControl = new CKAN.MainModInfo();
             this.StatusPanel = new System.Windows.Forms.Panel();
@@ -553,9 +554,17 @@
             // ModListContextMenuStrip
             // 
             this.ModListContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.reinstallToolStripMenuItem,
             this.downloadContentsToolStripMenuItem});
             this.ModListContextMenuStrip.Name = "ModListContextMenuStrip";
             this.ModListContextMenuStrip.Size = new System.Drawing.Size(180, 70);
+            // 
+            // reinstallToolStripMenuItem
+            // 
+            this.reinstallToolStripMenuItem.Name = "reinstallToolStripMenuItem";
+            this.reinstallToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.reinstallToolStripMenuItem.Text = "Reinstall";
+            this.reinstallToolStripMenuItem.Click += new System.EventHandler(this.reinstallToolStripMenuItem_Click);
             // 
             // downloadContentsToolStripMenuItem
             // 
@@ -1108,6 +1117,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private CKAN.MainModInfo ModInfoTabControl;
         private System.Windows.Forms.Panel StatusPanel;
