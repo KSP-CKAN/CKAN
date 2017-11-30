@@ -689,6 +689,10 @@ namespace CKAN
 
         private void ModList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
             if (e.RowIndex < 0)
             {
                 return;
