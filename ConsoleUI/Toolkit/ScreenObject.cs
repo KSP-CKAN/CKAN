@@ -91,6 +91,30 @@ namespace CKAN.ConsoleUI.Toolkit {
             Tips.Add(new ScreenTip(key, descrip, displayIf));
         }
 
+        /// <summary>
+        /// Draw a scrollbar for scrollable screen objects
+        /// </summary>
+        /// <param name="r">X coordinate of scrollbar</param>
+        /// <param name="t">Y coordinate of top of scrollbar</param>
+        /// <param name="b">Y coordinate of bottom of scrollbar</param>
+        /// <param name="dragRow">Y coordinate of the box indicating how scrolled the bar is</param>
+        protected void DrawScrollbar(int r, int t, int b, int dragRow)
+        {
+            Console.BackgroundColor = ConsoleTheme.Current.ScrollBarBg;
+            Console.ForegroundColor = ConsoleTheme.Current.ScrollBarFg;
+            for (int y = t; y <= b; ++y) {
+                Console.SetCursorPosition(r, y);
+                if (y <= t) {
+                    Console.Write(scrollUp);
+                } else if (y == b) {
+                    Console.Write(scrollDown);
+                } else if (y == dragRow) {
+                    Console.Write(scrollDrag);
+                } else {
+                    Console.Write(scrollBar);
+                }
+            }
+        }
 
         /// <returns>
         /// X coordinate of left edge of dialog
@@ -147,6 +171,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private int left, top, right, bottom;
+
+        private static readonly string scrollUp    = "^";
+        private static readonly string scrollDown  = "v";
+        private static readonly string scrollBar   = Symbols.hashBox;
+        private static readonly string scrollDrag  = "*";
     }
 
 }

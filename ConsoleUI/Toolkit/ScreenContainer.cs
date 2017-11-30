@@ -76,7 +76,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="key">User readable description of the key</param>
         /// <param name="descrip">Description of the action</param>
         /// <param name="displayIf">Function returning true to show the tip or false to hide it</param>
-        protected void AddTip(string key, string descrip, Func<bool> displayIf = null)
+        public void AddTip(string key, string descrip, Func<bool> displayIf = null)
         {
             if (displayIf == null) {
                 displayIf = () => true;

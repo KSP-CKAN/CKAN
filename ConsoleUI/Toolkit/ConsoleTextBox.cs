@@ -40,6 +40,53 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void AddLine(string line)
         {
             lines.AddRange(Formatting.WordWrap(line, GetRight() - GetLeft() + 1));
+            if (scrollToBottom) {
+                ScrollToBottom();
+            } else {
+                // No auto-scrolling
+            }
+        }
+
+        /// <summary>
+        /// Scroll the text box to the top
+        /// </summary>
+        public void ScrollToTop()
+        {
+            topLine = 0;
+        }
+
+        /// <summary>
+        /// Scroll the text box to the bottom
+        /// </summary>
+        public void ScrollToBottom()
+        {
+            int h   = GetBottom() - GetTop() + 1;
+            topLine = lines.Count - h;
+        }
+
+        /// <summary>
+        /// Scroll the text box up one page
+        /// </summary>
+        public void ScrollUp()
+        {
+            int h   =  GetBottom() - GetTop() + 1;
+            topLine -= h;
+            if (topLine < 0) {
+                topLine = 0;
+            }
+        }
+
+        /// <summary>
+        /// Scroll the text box down one page
+        /// </summary>
+        public void ScrollDown()
+        {
+            int h   =  GetBottom() - GetTop() + 1;
+            if (topLine +  h <= lines.Count - h) {
+                topLine += h;
+            } else {
+                ScrollToBottom();
+            }
         }
 
         /// <summary>
@@ -49,11 +96,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override void Draw(bool focused)
         {
             int l     = GetLeft();
-            int w     = GetRight() - l + 1;
             int h     = GetBottom() - GetTop() + 1;
-            int index = !scrollToBottom || lines.Count < h
-                ? 0
-                : lines.Count - h;
+            int index = lines.Count < h ? 0 : topLine;
+            // Chop one col off the right if we need a scrollbar
+            int w     = GetRight() - l + 1 + (lines.Count > h ? -1 : 0);
 
             if (getBgColor != null) {
                 Console.BackgroundColor = getBgColor();
@@ -84,7 +130,13 @@ namespace CKAN.ConsoleUI.Toolkit {
                 }
             }
 
-            // FUTURE: Scrollbar, if we need it to be interactive
+            // Scrollbar
+            if (lines.Count > h) {
+                DrawScrollbar(
+                    GetRight(), GetTop(), GetBottom(),
+                    GetTop() + 1 + (h - 3) * topLine / (lines.Count - h)
+                );
+            }
         }
 
         /// <summary>
@@ -93,6 +145,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override bool Focusable() { return false; }
 
         private bool         scrollToBottom;
+        private int          topLine;
         private TextAlign    align;
         private List<string> lines = new List<string>();
         private Func<ConsoleColor> getBgColor;

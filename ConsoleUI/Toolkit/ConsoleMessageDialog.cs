@@ -12,14 +12,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Initialize a dialog
         /// </summary>
         /// <param name="m">Message to show</param>
-        /// <param name="b">List of captions for buttons</param>
-        public ConsoleMessageDialog(string m, List<string> b)
+        /// <param name="btns">List of captions for buttons</param>
+        /// <param name="vertOffset">Pass non-zero to move popup vertically</param>
+        public ConsoleMessageDialog(string m, List<string> btns, int vertOffset = 0)
             : base()
         {
             int l    = GetLeft(),
                 r    = GetRight();
             int w    = Console.WindowWidth / 2;
-            int btnW = b.Count * buttonWidth + (b.Count - 1) * buttonPadding;
+            int btnW = btns.Count * buttonWidth + (btns.Count - 1) * buttonPadding;
             if (w < btnW + 4) {
                 // Widen the window to fit the buttons
                 // Buttons will NOT wrap - use ConsoleChoiceDialog
@@ -30,16 +31,29 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
 
             List<string> messageLines = Formatting.WordWrap(m, w - 4);
-            int h = 2 + messageLines.Count + (b.Count > 0 ? 2 : 0) + 2;
+            int h = 2 + messageLines.Count + (btns.Count > 0 ? 2 : 0) + 2;
 
-            SetDimensions(
-                l, (Console.WindowHeight - h) / 2,
-                r, (Console.WindowHeight - h) / 2 + h - 1
-            );
+            // Calculate vertical position including offset
+            int t, b;
+            if (vertOffset <= 0) {
+                t = (Console.WindowHeight - h) / 2 + vertOffset;
+                if (t < 1) {
+                    t = 2;
+                }
+                b = t + h - 1;
+            } else {
+                b = (Console.WindowHeight - h) / 2 + h - 1;
+                if (b >= Console.WindowHeight - 1) {
+                    b = Console.WindowHeight - 1;
+                }
+                t = b - h + 1;
+            }
+
+            SetDimensions(l, t, r, b);
             int btnRow = GetBottom() - 2;
 
             ConsoleTextBox tb = new ConsoleTextBox(
-                GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (b.Count > 0 ? 2 : 0),
+                GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (btns.Count > 0 ? 2 : 0),
                 false,
                 TextAlign.Center,
                 () => ConsoleTheme.Current.PopupBg,
@@ -49,8 +63,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             tb.AddLine(m);
 
             int btnLeft = (Console.WindowWidth - btnW) / 2;
-            for (int i = 0; i < b.Count; ++i) {
-                string cap = b[i];
+            for (int i = 0; i < btns.Count; ++i) {
+                string cap = btns[i];
                 int j = i;
                 AddObject(new ConsoleButton(btnLeft, btnRow, btnLeft + buttonWidth - 1, cap, () => {
                     selectedButton = j;

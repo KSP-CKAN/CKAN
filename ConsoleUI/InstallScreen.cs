@@ -31,6 +31,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="process">Framework parameter not used by this object</param>
         public override void Run(Action process = null)
         {
+            DrawBackground();
             using (TransactionScope trans = CkanTransaction.CreateTransactionScope()) {
                 bool retry = false;
                 do {
@@ -125,7 +126,7 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage($"Successfully installed {mod.name}");
+            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name}");
         }
 
         private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {

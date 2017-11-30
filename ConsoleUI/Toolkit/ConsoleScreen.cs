@@ -73,7 +73,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// True if the user selected Yes, and false if the user selected No.
         /// </returns>
-        public bool RaiseYesNoDialog(string question)
+        public virtual bool RaiseYesNoDialog(string question)
         {
             ConsoleMessageDialog d = new ConsoleMessageDialog(
                 string.Join("", messagePieces) + question,

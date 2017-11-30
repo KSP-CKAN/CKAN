@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -16,13 +18,20 @@ namespace CKAN.ConsoleUI {
         /// <param name="initMsg">Starting string to put in the progress bar</param>
         public ProgressScreen(string taskDescription, string initMsg = "")
         {
+            // A nice frame to take up some of the blank space at the top
+            AddObject(new ConsoleDoubleFrame(
+                1, 2, -1, -1, 8,
+                () => "Progress",
+                () => "Messages",
+                () => ConsoleTheme.Current.NormalFrameFg
+            ));
             progress = new ConsoleProgressBar(
-                1, 2, -1,
+                3, 5, -3,
                 () => topMessage,
                 () => percent
             );
             messages = new ConsoleTextBox(
-                1, 4, -1, -2
+                3, 10, -3, -3
             );
 
             AddObject(progress);
@@ -34,6 +43,61 @@ namespace CKAN.ConsoleUI {
         }
 
         // IUser stuff for managing the progress bar and message box
+
+        /// <summary>
+        /// Ask the user a yes/no question and capture the answer.
+        /// </summary>
+        /// <param name="question">Message to display to the user</param>
+        /// <returns>
+        /// True if the user selected Yes, and false if the user selected No.
+        /// </returns>
+        public override bool RaiseYesNoDialog(string question)
+        {
+            // Show the popup at the top of the screen
+            // to overwrite the progress bar instead of the messages
+            ConsoleMessageDialog d = new ConsoleMessageDialog(
+                // The installer's questions include embedded newlines for spacing in CmdLine
+                question.Trim(),
+                new List<string>() {"Yes", "No"},
+                -Console.WindowHeight / 2
+            );
+            d.AddBinding(Keys.Y, (object sender) => {
+                d.PressButton(0);
+                return false;
+            });
+            d.AddBinding(Keys.N, (object sender) => {
+                d.PressButton(1);
+                return false;
+            });
+
+            // Scroll messages
+            d.AddTip("Home / End / Page Up / Page Down", "Scroll messages");
+            d.AddBinding(Keys.Home,     (object sender) => {
+                messages.ScrollToTop();
+                messages.Draw(false);
+                return true;
+            });
+            d.AddBinding(Keys.End,      (object sender) => {
+                messages.ScrollToBottom();
+                messages.Draw(false);
+                return true;
+            });
+            d.AddBinding(Keys.PageUp,   (object sender) => {
+                messages.ScrollUp();
+                messages.Draw(false);
+                return true;
+            });
+            d.AddBinding(Keys.PageDown, (object sender) => {
+                messages.ScrollDown();
+                messages.Draw(false);
+                return true;
+            });
+
+            bool val = d.Run() == 0;
+            DrawBackground();
+            Draw();
+            return val;
+        }
 
         /// <summary>
         /// Redirect messages into the text box

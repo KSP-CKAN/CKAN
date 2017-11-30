@@ -82,6 +82,20 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of home for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo Home = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.Home, false, false, false
+        );
+
+        /// <summary>
+        /// Representation of end for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo End = new ConsoleKeyInfo(
+            (System.Char)0, ConsoleKey.End, false, false, false
+        );
+
+        /// <summary>
         /// Representation of page up for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo PageUp = new ConsoleKeyInfo(

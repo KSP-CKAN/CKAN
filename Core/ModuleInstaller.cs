@@ -898,7 +898,9 @@ namespace CKAN
                     catch (Exception ex)
                     {
                         // XXX: This is terrible, we're catching all exceptions.
-                        log.ErrorFormat("Failure in locating file {0} : {1}", path, ex.Message);
+                        // We don't consider this problem serious enough to abort and revert,
+                        // so treat it as a "--verbose" level log message.
+                        log.InfoFormat("Failure in locating file {0} : {1}", path, ex.Message);
                     }
                 }
 

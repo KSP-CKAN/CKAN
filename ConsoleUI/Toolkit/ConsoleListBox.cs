@@ -196,29 +196,12 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             // Now draw the scrollbar
             if (needScrollbar) {
-                DrawScrollbar(r, t, b);
-            }
-        }
-
-        private void DrawScrollbar(int r, int t, int b)
-        {
-            int h = b - t + 1;
-            Console.BackgroundColor = ConsoleTheme.Current.ScrollBarBg;
-            Console.ForegroundColor = ConsoleTheme.Current.ScrollBarFg;
-            int dragRow = sortedFilteredData.Count > 0
-                ? 1 + scrollTop + (h - 2 - scrollTop) * selectedRow / sortedFilteredData.Count
-                : -1;
-            for (int y = scrollTop; y < h; ++y) {
-                Console.SetCursorPosition(r, t + y);
-                if (y <= scrollTop) {
-                    Console.Write(scrollUp);
-                } else if (y == h - 1) {
-                    Console.Write(scrollDown);
-                } else if (y == dragRow) {
-                    Console.Write(scrollDrag);
-                } else {
-                    Console.Write(scrollBar);
-                }
+                DrawScrollbar(
+                    r, t + scrollTop, b,
+                    sortedFilteredData.Count > 0
+                        ? t + 1 + scrollTop + (h - 2 - scrollTop) * selectedRow / sortedFilteredData.Count
+                        : -1
+                );
             }
         }
 
@@ -445,10 +428,6 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private static readonly string sortUp      = "^";
         private static readonly string sortDown    = "v";
-        private static readonly string scrollUp    = "^";
-        private static readonly string scrollDown  = "v";
-        private static readonly string scrollBar   = Symbols.hashBox;
-        private static readonly string scrollDrag  = "*";
     }
 
     /// <summary>
