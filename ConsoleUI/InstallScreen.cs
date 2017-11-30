@@ -31,6 +31,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="process">Framework parameter not used by this object</param>
         public override void Run(Action process = null)
         {
+            HashSet<string> rejected = new HashSet<string>();
             DrawBackground();
             using (TransactionScope trans = CkanTransaction.CreateTransactionScope()) {
                 bool retry = false;
@@ -43,7 +44,8 @@ namespace CKAN.ConsoleUI {
                         // GUI prompts user to choose recs/sugs,
                         // CmdLine assumes recs and ignores sugs
                         if (plan.Install.Count > 0) {
-                            DependencyScreen ds = new DependencyScreen(manager, plan);
+                            // Track previously rejected optional dependencies and don't prompt for them again.
+                            DependencyScreen ds = new DependencyScreen(manager, plan, rejected);
                             if (ds.HaveOptions()) {
                                 LaunchSubScreen(ds);
                             }

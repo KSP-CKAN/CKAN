@@ -329,7 +329,7 @@ namespace CKAN.ConsoleUI {
                 }
             }
             try {
-                DependencyScreen ds = new DependencyScreen(manager, reinstall);
+                DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>());
                 if (ds.HaveOptions()) {
                     LaunchSubScreen(ds);
                     bool needRefresh = false;

@@ -15,11 +15,13 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="mgr">KSP manager containing instances</param>
         /// <param name="cp">Plan of mods to add and remove</param>
-        public DependencyScreen(KSPManager mgr, ChangePlan cp) : base()
+        /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
+        public DependencyScreen(KSPManager mgr, ChangePlan cp, HashSet<string> rej) : base()
         {
             manager  = mgr;
             plan     = cp;
             registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            rejected = rej;
 
             AddObject(new ConsoleLabel(
                 1, 2, -1,
@@ -71,6 +73,10 @@ namespace CKAN.ConsoleUI {
 
             AddTip("Esc", "Cancel");
             AddBinding(Keys.Escape, (object sender) => {
+                // Add everything to rejected
+                foreach (var kvp in dependencies) {
+                    rejected.Add(kvp.Key);
+                }
                 return false;
             });
 
@@ -78,6 +84,12 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.F9, (object sender) => {
                 foreach (string name in accepted) {
                     plan.Install.Add(name);
+                }
+                // Add the rest to rejected
+                foreach (var kvp in dependencies) {
+                    if (!accepted.Contains(kvp.Key)) {
+                        rejected.Add(kvp.Key);
+                    }
                 }
                 return false;
             });
@@ -110,36 +122,38 @@ namespace CKAN.ConsoleUI {
         {
             if (source != null) {
                 foreach (RelationshipDescriptor dependency in source) {
-                    try {
-                        if (registry.LatestAvailable(
+                    if (!rejected.Contains(dependency.name)) {
+                        try {
+                            if (registry.LatestAvailable(
+                                    dependency.name,
+                                    manager.CurrentInstance.VersionCriteria(),
+                                    dependency
+                                ) != null
+                                    && !registry.IsInstalled(dependency.name)
+                                    && !alreadyInstalling.Contains(dependency.name)) {
+
+                                AddDep(dependency.name, installByDefault, identifier);
+                            }
+                        } catch (ModuleNotFoundKraken) {
+                            // LatestAvailable throws if you recommend a "provides" name,
+                            // so ask the registry again for provides-based choices
+                            List<CkanModule> opts = registry.LatestAvailableWithProvides(
                                 dependency.name,
                                 manager.CurrentInstance.VersionCriteria(),
                                 dependency
-                            ) != null
-                                && !registry.IsInstalled(dependency.name)
-                                && !alreadyInstalling.Contains(dependency.name)) {
+                            );
+                            foreach (CkanModule provider in opts) {
+                                if (!registry.IsInstalled(provider.identifier)
+                                        && !alreadyInstalling.Contains(provider.identifier)) {
 
-                            AddDep(dependency.name, installByDefault, identifier);
-                        }
-                    } catch (ModuleNotFoundKraken) {
-                        // LatestAvailable throws if you recommend a "provides" name,
-                        // so ask the registry again for provides-based choices
-                        List<CkanModule> opts = registry.LatestAvailableWithProvides(
-                            dependency.name,
-                            manager.CurrentInstance.VersionCriteria(),
-                            dependency
-                        );
-                        foreach (CkanModule provider in opts) {
-                            if (!registry.IsInstalled(provider.identifier)
-                                    && !alreadyInstalling.Contains(provider.identifier)) {
-
-                                // Default to not installing because these probably conflict with each other
-                                AddDep(provider.identifier, false, identifier);
+                                    // Default to not installing because these probably conflict with each other
+                                    AddDep(provider.identifier, false, identifier);
+                                }
                             }
+                        } catch (Kraken) {
+                            // GUI/MainInstall.cs::AddMod just ignores all exceptions,
+                            // so that's baked into the infrastructure
                         }
-                    } catch (Kraken) {
-                        // GUI/MainInstall.cs::AddMod just ignores all exceptions,
-                        // so that's baked into the infrastructure
                     }
                 }
             }
@@ -172,6 +186,7 @@ namespace CKAN.ConsoleUI {
         }
 
         private HashSet<string> accepted = new HashSet<string>();
+        private HashSet<string> rejected;
 
         private IRegistryQuerier registry;
         private KSPManager       manager;
