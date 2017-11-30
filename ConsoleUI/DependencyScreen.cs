@@ -58,6 +58,22 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
+            dependencyList.AddTip("Ctrl+A", "Select all");
+            dependencyList.AddBinding(Keys.CtrlA, (object sender) => {
+                foreach (var kvp in dependencies) {
+                    if (!accepted.Contains(kvp.Key)) {
+                        ChangePlan.toggleContains(accepted, kvp.Key);
+                    }
+                }
+                return true;
+            });
+
+            dependencyList.AddTip("Ctrl+D", "Deselect all", () => accepted.Count > 0);
+            dependencyList.AddBinding(Keys.CtrlD, (object sender) => {
+                accepted.Clear();
+                return true;
+            });
+
             dependencyList.AddTip("Enter", "Details");
             dependencyList.AddBinding(Keys.Enter, (object sender) => {
                 if (dependencyList.Selection != null) {
