@@ -32,6 +32,7 @@ namespace CKAN.ConsoleUI {
                     new ModListScreen(manager, debug).Run();
                 }
 
+                new ExitScreen().Run();
             }
         }
 

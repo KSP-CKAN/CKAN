@@ -43,15 +43,15 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override void Save()
         {
-			if (name.Value != repository.name) {
-				// They changed the name, so we have to
-				// remove and re-add it.
-				editList.Remove(repository.name);
-				editList.Add(name.Value, new Repository(name.Value, url.Value));
-			} else {
-				// Only the URL changed, so we can just set it
-				repository.uri = new Uri(url.Value);
-			}
+            if (name.Value != repository.name) {
+                // They changed the name, so we have to
+                // remove and re-add it.
+                editList.Remove(repository.name);
+                editList.Add(name.Value, new Repository(name.Value, url.Value));
+            } else {
+                // Only the URL changed, so we can just set it
+                repository.uri = new Uri(url.Value);
+            }
         }
 
         private Repository repository;

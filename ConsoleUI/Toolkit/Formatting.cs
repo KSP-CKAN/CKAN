@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
-	/// <summary>
+    /// <summary>
     /// Group of functions for handling screen formatting
     /// </summary>
-	public static class Formatting {
+    public static class Formatting {
 
-		/// <summary>
+        /// <summary>
         /// Turn an abstract coordinate into a real coordinate.
         /// This just means that we use positive values to represent offsets from left/top,
         /// and negative values to represent offsets from right/bottom.
@@ -78,7 +78,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             return messageLines;
         }
 
-		/// <summary>
+        /// <summary>
         /// Format a byte count into readable file size
         /// </summary>
         /// <param name="bytes">Number of bytes in a file</param>
@@ -99,7 +99,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-		/// <summary>
+        /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         /// <param name="version">A version string that might contain an epoch</param>
@@ -127,6 +127,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
-	}
+    }
 
 }

@@ -88,6 +88,7 @@
     <Compile Include="RepoEditScreen.cs" />
     <Compile Include="RepoScreen.cs" />
     <Compile Include="SplashScreen.cs" />
+    <Compile Include="ExitScreen.cs" />
     <Compile Include="Toolkit\ConsoleButton.cs" />
     <Compile Include="Toolkit\ConsoleChoiceDialog.cs" />
     <Compile Include="Toolkit\ConsoleFileMultiSelectDialog.cs" />

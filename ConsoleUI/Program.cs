@@ -40,7 +40,5 @@ namespace CKAN.ConsoleUI
 
             return 0;
         }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUI));
     }
 }
