@@ -66,6 +66,18 @@ namespace CKAN
             }
         }
 
+        public BackgroundWorker CacheWorker
+        {
+            get
+            {
+                return m_CacheWorker;
+            }
+            set
+            {
+                m_CacheWorker = value;
+            }
+        }
+
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             Main.Instance.ResetFilterAndSelectModOnList(e.Node.Name);
