@@ -109,6 +109,7 @@ namespace CKAN.ConsoleUI {
                             (string s) => s
                         );
                         string chosen = ch.Run();
+                        DrawBackground();
                         if (!string.IsNullOrEmpty(chosen)) {
                             // Use chosen to continue installing
                             plan.Install.Add(chosen);
@@ -128,7 +129,7 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name}");
+            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name} {Formatting.StripEpoch(mod.version)}");
         }
 
         private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {

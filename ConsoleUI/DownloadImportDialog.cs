@@ -86,7 +86,7 @@ namespace CKAN.ConsoleUI {
                         if (inst.Cache.IsCachedZip(mod.download)) {
                             user.RaiseMessage("Already cached: {0}", f.Name);
                         } else {
-                            user.RaiseMessage($"Importing {mod.identifier} {mod.version}...");
+                            user.RaiseMessage($"Importing {mod.identifier} {Formatting.StripEpoch(mod.version)}...");
                             inst.Cache.Store(mod.download, f.FullName);
                         }
                     }
