@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Only check first three segments of version in ci (#2192, #2195 by: HebaruSan; reviewed: techman83, Olympic1)
 - [GUI] Initialize checkboxes to desired value at creation (#2184 by: HebaruSan; reviewed: mwerle, politas)
 - [GUI] Avoid crash with unavailable installed mod, improve error messages (#2188 by: HebaruSan; reviewed: politas)
+- [CLI] Fix cmdline help text problems (#2197 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

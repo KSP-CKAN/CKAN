@@ -1,6 +1,7 @@
 ﻿namespace CKAN.CmdLine
 {
-    public class Compare : ICommand
+    // Does not need an instance, so this is not an ICommand
+    public class Compare
     {
         private IUser user;
 
@@ -9,7 +10,7 @@
             this.user = user;
         }
 
-        public int RunCommand(CKAN.KSP ksp, object rawOptions)
+        public int RunCommand(object rawOptions)
         {
             var options = (CompareOptions)rawOptions;
 
