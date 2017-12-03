@@ -68,6 +68,7 @@ namespace CKAN.CmdLine
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(); });
+            RegistryManager.DisposeAll();
             return exitCode;
         }
 
