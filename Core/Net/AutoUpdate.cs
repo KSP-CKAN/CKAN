@@ -38,17 +38,21 @@ namespace CKAN
 
         private static bool CanWrite(string path)
         {
-            try {
+            try
+            {
                 // Try to open the file for writing.
                 // We won't actually write, but we expect the OS to stop us if we don't have permissions.
-                using (FileStream fs = new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite)) { }
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) { }
                 return true;
-            } catch {
+            }
+            catch
+            {
                 return false;
             }
         }
 
-        private static readonly string exePath = Assembly.GetEntryAssembly().Location;
+        // This is null when running tests, seemingly.
+        private static readonly string exePath = Assembly.GetEntryAssembly()?.Location ?? "";
 
         /// <summary>
         /// Report whether it's possible to run the auto-updater.
@@ -95,12 +99,12 @@ namespace CKAN
         /// itself, but as a fallback we'll use the whole body if not found.
         /// </summary>
         /// <returns>The release notes.</returns>
-        public string ExtractReleaseNotes(string releaseBody)
+        public static string ExtractReleaseNotes(string releaseBody)
         {
-            string divider = "\r\n---\r\n";
+            const string divider = "\r\n---\r\n";
             // Get at most two pieces, the first is the image, the second is the release notes
             string[] notesArray = releaseBody.Split(new string[] { divider }, 2, StringSplitOptions.None);
-            return notesArray.Length > 1 ? notesArray[1] : null;
+            return notesArray.Length > 1 ? notesArray[1] : notesArray[0];
         }
 
         /// <summary>
