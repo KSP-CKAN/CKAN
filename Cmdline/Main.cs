@@ -186,6 +186,10 @@ namespace CKAN.CmdLine
             {
                 return printMissingInstanceError(user);
             }
+            finally
+            {
+                RegistryManager.DisposeAll();
+            }
         }
 
         private static int printMissingInstanceError(IUser user)
