@@ -524,6 +524,25 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Get full JSON metadata string for a mod's available versions
+        /// </summary>
+        /// <param name="identifier">Name of the mod to look up</param>
+        /// <returns>
+        /// JSON formatted string for all the available versions of the mod
+        /// </returns>
+        public string GetAvailableMetadata(string identifier)
+        {
+            try
+            {
+                return available_modules[identifier].FullMetadata();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Return the latest game version compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>

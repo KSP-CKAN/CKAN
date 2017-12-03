@@ -13,13 +13,20 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="m">Message to show</param>
         /// <param name="btns">List of captions for buttons</param>
+        /// <param name="hdr">Function to generate the header</param>
+        /// <param name="ta">Alignment of the contents</param>
         /// <param name="vertOffset">Pass non-zero to move popup vertically</param>
-        public ConsoleMessageDialog(string m, List<string> btns, int vertOffset = 0)
+        public ConsoleMessageDialog(string m, List<string> btns, Func<string> hdr = null, TextAlign ta = TextAlign.Center, int vertOffset = 0)
             : base()
         {
-            int l    = GetLeft(),
-                r    = GetRight();
-            int w    = Console.WindowWidth / 2;
+            int maxLen = Formatting.MaxLineLength(m);
+            int w      = Math.Min(maxLen + 6, Console.WindowWidth - 4);
+            int l      = (Console.WindowWidth - w) / 2;
+            int r      = -l;
+            if (hdr != null) {
+                CenterHeader = hdr;
+            }
+
             int btnW = btns.Count * buttonWidth + (btns.Count - 1) * buttonPadding;
             if (w < btnW + 4) {
                 // Widen the window to fit the buttons
@@ -32,6 +39,9 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             List<string> messageLines = Formatting.WordWrap(m, w - 4);
             int h = 2 + messageLines.Count + (btns.Count > 0 ? 2 : 0) + 2;
+            if (h > Console.WindowHeight - 4) {
+                h = Console.WindowHeight - 4;
+            }
 
             // Calculate vertical position including offset
             int t, b;
@@ -55,12 +65,42 @@ namespace CKAN.ConsoleUI.Toolkit {
             ConsoleTextBox tb = new ConsoleTextBox(
                 GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (btns.Count > 0 ? 2 : 0),
                 false,
-                TextAlign.Center,
+                ta,
                 () => ConsoleTheme.Current.PopupBg,
                 () => ConsoleTheme.Current.PopupFg
             );
             AddObject(tb);
             tb.AddLine(m);
+
+            int boxH = GetBottom() - 2 - (btns.Count > 0 ? 2 : 0) - (GetTop() + 2) + 1;
+
+            if (messageLines.Count > boxH) {
+                // Scroll
+                AddBinding(Keys.Home,      (object sender) => {
+                    tb.ScrollToTop();
+                    return true;
+                });
+                AddBinding(Keys.End,       (object sender) => {
+                    tb.ScrollToBottom();
+                    return true;
+                });
+                AddBinding(Keys.PageUp,    (object sender) => {
+                    tb.ScrollUp();
+                    return true;
+                });
+                AddBinding(Keys.PageDown,  (object sender) => {
+                    tb.ScrollDown();
+                    return true;
+                });
+                AddBinding(Keys.UpArrow,   (object sender) => {
+                    tb.ScrollUp(1);
+                    return true;
+                });
+                AddBinding(Keys.DownArrow, (object sender) => {
+                    tb.ScrollDown(1);
+                    return true;
+                });
+            }
 
             int btnLeft = (Console.WindowWidth - btnW) / 2;
             for (int i = 0; i < btns.Count; ++i) {

@@ -16,8 +16,10 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">KSP manager containing instances</param>
         /// <param name="cp">Plan of mods to add and remove</param>
         /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
-        public DependencyScreen(KSPManager mgr, ChangePlan cp, HashSet<string> rej) : base()
+        /// <param name="dbg">True if debug options should be available, false otherwise</param>
+        public DependencyScreen(KSPManager mgr, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
         {
+            debug    = dbg;
             manager  = mgr;
             plan     = cp;
             registry = RegistryManager.Instance(manager.CurrentInstance).registry;
@@ -79,7 +81,8 @@ namespace CKAN.ConsoleUI {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(new ModInfoScreen(
                         manager, plan,
-                        registry.LatestAvailable(dependencyList.Selection.identifier, manager.CurrentInstance.VersionCriteria())
+                        registry.LatestAvailable(dependencyList.Selection.identifier, manager.CurrentInstance.VersionCriteria()),
+                        debug
                     ));
                 }
                 return true;
@@ -207,6 +210,7 @@ namespace CKAN.ConsoleUI {
         private IRegistryQuerier registry;
         private KSPManager       manager;
         private ChangePlan       plan;
+        private bool             debug;
 
         private Dictionary<string, Dependency> dependencies = new Dictionary<string, Dependency>();
         private ConsoleListBox<Dependency>     dependencyList;

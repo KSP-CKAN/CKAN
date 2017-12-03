@@ -156,7 +156,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddBinding(Keys.Enter, (object sender) => {
                 if (moduleList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(manager, plan, moduleList.Selection));
+                    LaunchSubScreen(new ModInfoScreen(manager, plan, moduleList.Selection, debug));
                 }
                 return true;
             });
@@ -329,7 +329,7 @@ namespace CKAN.ConsoleUI {
                 }
             }
             try {
-                DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>());
+                DependencyScreen ds = new DependencyScreen(manager, reinstall, new HashSet<string>(), debug);
                 if (ds.HaveOptions()) {
                     LaunchSubScreen(ds);
                     bool needRefresh = false;
@@ -484,7 +484,7 @@ namespace CKAN.ConsoleUI {
 
         private bool ApplyChanges()
         {
-            LaunchSubScreen(new InstallScreen(manager, plan));
+            LaunchSubScreen(new InstallScreen(manager, plan, debug));
             RefreshList();
             return true;
         }

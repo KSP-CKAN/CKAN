@@ -29,6 +29,25 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Calculate the longest line length in a string when split on newlines
+        /// </summary>
+        /// <param name="msg">String to analyze</param>
+        /// <returns>
+        /// Length of longest line
+        /// </returns>
+        public static int MaxLineLength(string msg)
+        {
+            int len = 0;
+            string[] hardLines = msg.Split(new string[] {"\r\n", "\n"}, StringSplitOptions.None);
+            foreach (string line in hardLines) {
+                if (len < line.Length) {
+                    len = line.Length;
+                }
+            }
+            return len;
+        }
+
+        /// <summary>
         /// Word wrap a long string into separate lines
         /// </summary>
         /// <param name="msg">Long message to wrap</param>
@@ -42,9 +61,11 @@ namespace CKAN.ConsoleUI.Toolkit {
             if (!string.IsNullOrEmpty(msg)) {
                 // The string is allowed to contain line breaks.
                 string[] hardLines = msg.Split(new string[] {"\r\n", "\n"}, StringSplitOptions.None);
-                foreach (var line in hardLines) {
+                foreach (string line in hardLines) {
                     if (string.IsNullOrEmpty(line)) {
                         messageLines.Add("");
+                    } else if (line.Length <= w) {
+                        messageLines.Add(line);
                     } else {
                         int used = 0;
                         while (used < line.Length) {

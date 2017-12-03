@@ -59,6 +59,8 @@ namespace CKAN.ConsoleUI {
                 // The installer's questions include embedded newlines for spacing in CmdLine
                 question.Trim(),
                 new List<string>() {"Yes", "No"},
+                null,
+                TextAlign.Center,
                 -Console.WindowHeight / 2
             );
             d.AddBinding(Keys.Y, (object sender) => {
@@ -71,24 +73,34 @@ namespace CKAN.ConsoleUI {
             });
 
             // Scroll messages
-            d.AddTip("Home / End / Page Up / Page Down", "Scroll messages");
-            d.AddBinding(Keys.Home,     (object sender) => {
+            d.AddTip("Cursor keys", "Scroll messages");
+            d.AddBinding(Keys.Home,      (object sender) => {
                 messages.ScrollToTop();
                 messages.Draw(false);
                 return true;
             });
-            d.AddBinding(Keys.End,      (object sender) => {
+            d.AddBinding(Keys.End,       (object sender) => {
                 messages.ScrollToBottom();
                 messages.Draw(false);
                 return true;
             });
-            d.AddBinding(Keys.PageUp,   (object sender) => {
+            d.AddBinding(Keys.PageUp,    (object sender) => {
                 messages.ScrollUp();
                 messages.Draw(false);
                 return true;
             });
-            d.AddBinding(Keys.PageDown, (object sender) => {
+            d.AddBinding(Keys.PageDown,  (object sender) => {
                 messages.ScrollDown();
+                messages.Draw(false);
+                return true;
+            });
+            d.AddBinding(Keys.UpArrow,   (object sender) => {
+                messages.ScrollUp(1);
+                messages.Draw(false);
+                return true;
+            });
+            d.AddBinding(Keys.DownArrow, (object sender) => {
+                messages.ScrollDown(1);
                 messages.Draw(false);
                 return true;
             });

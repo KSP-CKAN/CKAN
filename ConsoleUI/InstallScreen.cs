@@ -15,12 +15,14 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="mgr">KSP manager containing instances</param>
         /// <param name="cp">Plan of mods to install or remove</param>
-        public InstallScreen(KSPManager mgr, ChangePlan cp)
+        /// <param name="dbg">True if debug options should be available, false otherwise</param>
+        public InstallScreen(KSPManager mgr, ChangePlan cp, bool dbg)
             : base(
                 "Installing, Updating, and Removing Mods",
                 "Calculating..."
             )
         {
+            debug   = dbg;
             manager = mgr;
             plan    = cp;
         }
@@ -45,7 +47,7 @@ namespace CKAN.ConsoleUI {
                         // CmdLine assumes recs and ignores sugs
                         if (plan.Install.Count > 0) {
                             // Track previously rejected optional dependencies and don't prompt for them again.
-                            DependencyScreen ds = new DependencyScreen(manager, plan, rejected);
+                            DependencyScreen ds = new DependencyScreen(manager, plan, rejected, debug);
                             if (ds.HaveOptions()) {
                                 LaunchSubScreen(ds);
                             }
@@ -142,6 +144,7 @@ namespace CKAN.ConsoleUI {
 
         private KSPManager manager;
         private ChangePlan plan;
+        private bool       debug;
     }
 
 }

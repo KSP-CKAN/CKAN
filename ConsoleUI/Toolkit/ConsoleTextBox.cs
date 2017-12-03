@@ -67,10 +67,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Scroll the text box up one page
         /// </summary>
-        public void ScrollUp()
+        public void ScrollUp(int? howFar = null)
         {
-            int h   =  GetBottom() - GetTop() + 1;
-            topLine -= h;
+            topLine -= howFar ?? (GetBottom() - GetTop() + 1);
             if (topLine < 0) {
                 topLine = 0;
             }
@@ -79,11 +78,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Scroll the text box down one page
         /// </summary>
-        public void ScrollDown()
+        public void ScrollDown(int? howFar = null)
         {
-            int h   =  GetBottom() - GetTop() + 1;
-            if (topLine +  h <= lines.Count - h) {
-                topLine += h;
+            int h    = GetBottom() - GetTop() + 1;
+            int diff = howFar ?? h;
+            if (topLine +  diff <= lines.Count - h) {
+                topLine += diff;
             } else {
                 ScrollToBottom();
             }

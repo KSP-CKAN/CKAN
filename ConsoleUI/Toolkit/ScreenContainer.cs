@@ -67,7 +67,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="a">Action to bind to the key</param>
         public void AddBinding(ConsoleKeyInfo k, KeyAction a)
         {
-            bindings.Add(k, a);
+            if (bindings.ContainsKey(k)) {
+                bindings[k] = a;
+            } else {
+                bindings.Add(k, a);
+            }
         }
 
         /// <summary>

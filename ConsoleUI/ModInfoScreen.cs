@@ -18,8 +18,10 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">KSP manager containing game instances</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
         /// <param name="m">The module to display</param>
-        public ModInfoScreen(KSPManager mgr, ChangePlan cp, CkanModule m)
+        /// <param name="dbg">True if debug options should be available, false otherwise</param>
+        public ModInfoScreen(KSPManager mgr, ChangePlan cp, CkanModule m, bool dbg)
         {
+            debug    = dbg;
             mod      = m;
             manager  = mgr;
             plan     = cp;
@@ -145,6 +147,14 @@ namespace CKAN.ConsoleUI {
                         () => LaunchURL(mod.resources.curse)
                     ));
                 }
+                if (debug) {
+                    opts.Add(null);
+                    opts.Add(new ConsoleMenuOption(
+                        "DEBUG: View metadata", "", "Display the full registry data for this mod",
+                        true,
+                        ViewMetadata
+                    ));
+                }
 
                 if (opts.Count > 0) {
                     mainMenu = new ConsolePopupMenu(opts);
@@ -153,6 +163,19 @@ namespace CKAN.ConsoleUI {
 
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
             CenterHeader = () => "Mod Details";
+        }
+
+        private bool ViewMetadata()
+        {
+            ConsoleMessageDialog md = new ConsoleMessageDialog(
+                $"\"{mod.identifier}\": {registry.GetAvailableMetadata(mod.identifier)}",
+                new List<string> {"OK"},
+                () => $"{mod.name} Metadata",
+                TextAlign.Left
+            );
+            md.Run();
+            DrawBackground();
+            return true;
         }
 
         private bool LaunchURL(Uri u)
@@ -491,6 +514,7 @@ namespace CKAN.ConsoleUI {
         private IRegistryQuerier registry;
         private ChangePlan       plan;
         private CkanModule       mod;
+        private bool             debug;
     }
 
 }
