@@ -286,7 +286,7 @@ namespace CKAN
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
 
-            if (!configuration.CheckForUpdatesOnLaunchNoNag)
+            if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
             {
                 log.Debug("Asking user if they wish for autoupdates");
                 if (new AskUserForAutoUpdatesDialog().ShowDialog() == DialogResult.OK)
@@ -300,7 +300,7 @@ namespace CKAN
 
             bool autoUpdating = false;
 
-            if (configuration.CheckForUpdatesOnLaunch)
+            if (configuration.CheckForUpdatesOnLaunch && AutoUpdate.CanUpdate)
             {
                 try
                 {
