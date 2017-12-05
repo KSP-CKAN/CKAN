@@ -54,21 +54,19 @@ namespace CKAN
             });
             var module = await task.Task;
 
-            if (module == null)
+            if (module == null
+                    && last_mod_to_have_install_toggled.TryPeek(out mod))
             {
-                last_mod_to_have_install_toggled.TryPeek(out mod);
-                MarkModForInstall(mod.Identifier,uncheck:true);
+                MarkModForInstall(mod.Identifier, true);
             }
             Util.Invoke(this, () =>
             {
                 tabController.SetTabLock(false);
-
                 tabController.HideTab("ChooseProvidedModsTabPage");
-
                 tabController.ShowTab("ManageModsTabPage");
             });
 
-            if(module!=null)
+            if (module != null)
                 MarkModForInstall(module.identifier);
 
             last_mod_to_have_install_toggled.TryPop(out mod);
