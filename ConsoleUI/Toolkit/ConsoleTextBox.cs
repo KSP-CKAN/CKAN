@@ -140,6 +140,72 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Set up key bindings to scroll the box in a given screen container
+        /// </summary>
+        /// <param name="cont">Container within which to create the bindings</param>
+        /// <param name="drawMore">If true, force a redraw of the text box after scrolling, otherwise rely on the main event loop to do it</param>
+        public void AddScrollBindings(ScreenContainer cont, bool drawMore = false)
+        {
+            if (drawMore) {
+                cont.AddBinding(Keys.Home,      (object sender) => {
+                    ScrollToTop();
+                    Draw(false);
+                    return true;
+                });
+                cont.AddBinding(Keys.End,       (object sender) => {
+                    ScrollToBottom();
+                    Draw(false);
+                    return true;
+                });
+                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                    ScrollUp();
+                    Draw(false);
+                    return true;
+                });
+                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                    ScrollDown();
+                    Draw(false);
+                    return true;
+                });
+                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                    ScrollUp(1);
+                    Draw(false);
+                    return true;
+                });
+                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                    ScrollDown(1);
+                    Draw(false);
+                    return true;
+                });
+            } else {
+                cont.AddBinding(Keys.Home,      (object sender) => {
+                    ScrollToTop();
+                    return true;
+                });
+                cont.AddBinding(Keys.End,       (object sender) => {
+                    ScrollToBottom();
+                    return true;
+                });
+                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                    ScrollUp();
+                    return true;
+                });
+                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                    ScrollDown();
+                    return true;
+                });
+                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                    ScrollUp(1);
+                    return true;
+                });
+                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                    ScrollDown(1);
+                    return true;
+                });
+            }
+        }
+
+        /// <summary>
         /// Tell the container we can't receive focus
         /// </summary>
         public override bool Focusable() { return false; }

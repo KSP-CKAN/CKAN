@@ -74,36 +74,7 @@ namespace CKAN.ConsoleUI {
 
             // Scroll messages
             d.AddTip("Cursor keys", "Scroll messages");
-            d.AddBinding(Keys.Home,      (object sender) => {
-                messages.ScrollToTop();
-                messages.Draw(false);
-                return true;
-            });
-            d.AddBinding(Keys.End,       (object sender) => {
-                messages.ScrollToBottom();
-                messages.Draw(false);
-                return true;
-            });
-            d.AddBinding(Keys.PageUp,    (object sender) => {
-                messages.ScrollUp();
-                messages.Draw(false);
-                return true;
-            });
-            d.AddBinding(Keys.PageDown,  (object sender) => {
-                messages.ScrollDown();
-                messages.Draw(false);
-                return true;
-            });
-            d.AddBinding(Keys.UpArrow,   (object sender) => {
-                messages.ScrollUp(1);
-                messages.Draw(false);
-                return true;
-            });
-            d.AddBinding(Keys.DownArrow, (object sender) => {
-                messages.ScrollDown(1);
-                messages.Draw(false);
-                return true;
-            });
+            messages.AddScrollBindings(d, true);
 
             bool val = d.Run() == 0;
             DrawBackground();

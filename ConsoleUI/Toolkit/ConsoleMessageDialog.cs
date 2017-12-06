@@ -20,7 +20,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             : base()
         {
             int maxLen = Formatting.MaxLineLength(m);
-            int w      = Math.Min(maxLen + 6, Console.WindowWidth - 4);
+            int w      = Math.Max(minWidth, Math.Min(maxLen + 6, Console.WindowWidth - 4));
             int l      = (Console.WindowWidth - w) / 2;
             int r      = -l;
             if (hdr != null) {
@@ -76,30 +76,8 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             if (messageLines.Count > boxH) {
                 // Scroll
-                AddBinding(Keys.Home,      (object sender) => {
-                    tb.ScrollToTop();
-                    return true;
-                });
-                AddBinding(Keys.End,       (object sender) => {
-                    tb.ScrollToBottom();
-                    return true;
-                });
-                AddBinding(Keys.PageUp,    (object sender) => {
-                    tb.ScrollUp();
-                    return true;
-                });
-                AddBinding(Keys.PageDown,  (object sender) => {
-                    tb.ScrollDown();
-                    return true;
-                });
-                AddBinding(Keys.UpArrow,   (object sender) => {
-                    tb.ScrollUp(1);
-                    return true;
-                });
-                AddBinding(Keys.DownArrow, (object sender) => {
-                    tb.ScrollDown(1);
-                    return true;
-                });
+                AddTip("Cursor keys", "Scroll");
+                tb.AddScrollBindings(this);
             }
 
             int btnLeft = (Console.WindowWidth - btnW) / 2;
@@ -140,6 +118,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         private       int selectedButton = 0;
         private const int buttonWidth    = 10;
         private const int buttonPadding  = 3;
+        private const int minWidth       = 40;
     }
 
 }

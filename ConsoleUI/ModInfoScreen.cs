@@ -97,6 +97,7 @@ namespace CKAN.ConsoleUI {
                 tb.AddLine("\r\nNOTE: This mod is installed but no longer available.");
                 tb.AddLine("If you uninstall it, CKAN will not be able to re-install it.");
             }
+            tb.AddScrollBindings(this);
 
             AddTip("Esc", "Back");
             AddBinding(Keys.Escape, (object sender) => false);
