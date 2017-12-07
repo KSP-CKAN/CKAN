@@ -2,6 +2,7 @@
 
 EXESRC=../_build/repack/Release/ckan.exe
 EXEDEST=fakeroot/usr/lib/ckan/ckan.exe
+SCRIPT=fakeroot/usr/bin/ckan
 CONTROLIN=control.in
 CONTROL=fakeroot/DEBIAN/control
 CHANGELOG=../CHANGELOG.md
@@ -13,7 +14,7 @@ MANZIP=fakeroot/usr/share/man/man1/ckan.1.gz
 VERSION=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOG) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
 DEB=ckan_$(VERSION)_all.deb
 
-$(DEB): $(EXEDEST) $(CONTROL) $(CHANGELOGZIP) $(DEBCHANGEZIP) $(MANZIP)
+$(DEB): $(EXEDEST) $(SCRIPT) $(CONTROL) $(CHANGELOGZIP) $(DEBCHANGEZIP) $(MANZIP)
 	fakeroot dpkg-deb --build fakeroot/ .
 
 $(EXEDEST): $(EXESRC)
