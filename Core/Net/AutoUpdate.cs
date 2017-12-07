@@ -21,10 +21,8 @@ namespace CKAN
 
         private readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
-        private readonly Uri latestUpdaterReleaseApiUrl = new Uri(
-            "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
+        private readonly Uri lastestUpdaterUrl = new Uri("https://ckan-travis.s3.amazonaws.com/AutoUpdater.exe");
 
-        private Tuple<Uri, long> fetchedUpdaterUrl;
         private Tuple<Uri, long> fetchedCkanUrl;
 
         public Version LatestVersion { get; private set; }
@@ -59,7 +57,7 @@ namespace CKAN
         /// </summary>
         public bool IsFetched()
         {
-            return LatestVersion != null && fetchedUpdaterUrl != null &&
+            return LatestVersion != null &&
                 fetchedCkanUrl != null && ReleaseNotes != null;
         }
 
@@ -73,7 +71,6 @@ namespace CKAN
 
             try
             {
-                fetchedUpdaterUrl = RetrieveUrl(MakeRequest(latestUpdaterReleaseApiUrl));
                 fetchedCkanUrl = RetrieveUrl(response);
             }
             catch (Kraken)
@@ -126,7 +123,7 @@ namespace CKAN
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             Net.DownloadWithProgress(new[]{
-                new Net.DownloadTarget(fetchedUpdaterUrl.Item1, updaterFilename, fetchedUpdaterUrl.Item2),
+                new Net.DownloadTarget(lastestUpdaterUrl, updaterFilename),
                 new Net.DownloadTarget(fetchedCkanUrl.Item1, ckanFilename, fetchedCkanUrl.Item2),
             }, user);
 
@@ -151,7 +148,7 @@ namespace CKAN
         /// </summary>
         /// <returns>The URL to the downloadable asset.</returns>
         internal Tuple<Uri, long> RetrieveUrl(dynamic response)
-        { 
+        {
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
@@ -164,7 +161,7 @@ namespace CKAN
         /// <summary>
         /// Fetches the URL provided, and de-serialises the returned JSON
         /// data structure into a dynamic object.
-        /// 
+        ///
         /// May throw an exception (especially a WebExeption) on failure.
         /// </summary>
         /// <returns>A dynamic object representing the JSON we fetched.</returns>

@@ -16,10 +16,12 @@ var outDirectory = buildDirectory.Combine("out");
 var repackDirectory = buildDirectory.Combine("repack");
 var ckanFile = repackDirectory.Combine(configuration).CombineWithFilePath("ckan.exe");
 var netkanFile = repackDirectory.Combine(configuration).CombineWithFilePath("netkan.exe");
+var autoUpdateFile = repackDirectory.Combine(configuration).CombineWithFilePath("AutoUpdater.exe");
 
 Task("Default")
     .IsDependentOn("Ckan")
-    .IsDependentOn("Netkan");
+    .IsDependentOn("Netkan")
+    .IsDependentOn("AutoUpdater");
 
 
 Task("Debug")
@@ -33,6 +35,9 @@ Task("Ckan")
 
 Task("Netkan")
     .IsDependentOn("Repack-Netkan");
+
+Task("AutoUpdater")
+    .IsDependentOn("Repack-AutoUpdater");
 
 Task("Restore-Nuget")
     .Does(() =>
@@ -64,7 +69,7 @@ Task("Generate-GlobalAssemblyVersionInfo")
     var metaDirectory = buildDirectory.Combine("meta");
 
     CreateDirectory(metaDirectory);
-    
+
     CreateAssemblyInfo(metaDirectory.CombineWithFilePath("GlobalAssemblyVersionInfo.cs"), new AssemblyInfoSettings
     {
         Version = versionStr2,
@@ -108,6 +113,13 @@ Task("Repack-Netkan")
     );
 
     CopyFile(netkanFile, buildDirectory.CombineWithFilePath("netkan.exe"));
+});
+
+Task("Repack-AutoUpdater")
+    .IsDependentOn("Build-DotNet")
+    .Does(() =>
+{
+    CopyFile(outDirectory.Combine("AutoUpdater").Combine(configuration).Combine("bin").CombineWithFilePath("AutoUpdater.exe"), autoUpdateFile);
 });
 
 Task("Test")
