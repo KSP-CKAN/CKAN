@@ -65,7 +65,16 @@ namespace CKAN.CmdLine
                     }
 
                     // Parse the JSON file.
-                    options.modules.Add(LoadCkanFromFile(ksp, filename).identifier);
+                    try
+                    {
+                        options.modules.Add(LoadCkanFromFile(ksp, filename).identifier);
+                    }
+                    catch (Kraken kraken)
+                    {
+                        user.RaiseError(kraken.InnerException == null
+                            ? kraken.Message
+                            : $"{kraken.Message}: {kraken.InnerException.Message}");
+                    }
                 }
 
                 // At times RunCommand() calls itself recursively - in this case we do

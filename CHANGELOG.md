@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Avoid crash with unavailable installed mod, improve error messages (#2188 by: HebaruSan; reviewed: politas)
 - [CLI] Fix cmdline help text problems (#2197 by: HebaruSan; reviewed: politas)
 - [CLI] Dispose registry managers before exit to prevent exceptions (#2203 by: HebaruSan; reviewed: politas)
+- [GUI/CLI] Avoid NRE in install-from-ckan (#2205 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
