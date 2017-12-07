@@ -19,6 +19,15 @@ namespace CKAN
         List<CkanModule> Available(KspVersionCriteria ksp_version);
 
         /// <summary>
+        /// Get full JSON metadata string for a mod's available versions
+        /// </summary>
+        /// <param name="identifier">Name of the mod to look up</param>
+        /// <returns>
+        /// JSON formatted string for all the available versions of the mod
+        /// </returns>
+        string GetAvailableMetadata(string identifier);
+
+        /// <summary>
         ///     Returns the latest available version of a module that
         ///     satisifes the specified version.
         ///     Returns null if there's simply no compatible version for this system.

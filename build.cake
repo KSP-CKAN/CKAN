@@ -80,6 +80,7 @@ Task("Repack-Ckan")
     var cmdLineBinDirectory = outDirectory.Combine("CmdLine").Combine(configuration).Combine("bin");
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", cmdLineBinDirectory));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
+    assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
 
     ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CmdLine.exe"), assemblyPaths,
         new ILRepackSettings

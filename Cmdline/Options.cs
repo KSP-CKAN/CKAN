@@ -46,6 +46,9 @@ namespace CKAN.CmdLine
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
 
+        [VerbOption("consoleui", HelpText = "Start the CKAN console UI")]
+        public ConsoleUIOptions ConsoleUIOptions { get; set; }
+
         [VerbOption("search", HelpText = "Search for mods")]
         public SearchOptions SearchOptions { get; set; }
 
@@ -395,6 +398,8 @@ namespace CKAN.CmdLine
         [Option("show-console", HelpText = "Shows the console while running the GUI")]
         public bool ShowConsole { get; set; }
     }
+
+    internal class ConsoleUIOptions : CommonOptions { }
 
     internal class UpdateOptions : InstanceSpecificOptions
     {

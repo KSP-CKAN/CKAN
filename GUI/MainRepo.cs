@@ -5,11 +5,6 @@ using Newtonsoft.Json;
 
 namespace CKAN
 {
-    public struct RepositoryList
-    {
-        public Repository[] repositories;
-    }
-
 
     public partial class Main
     {

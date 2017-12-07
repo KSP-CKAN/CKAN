@@ -137,6 +137,9 @@ namespace CKAN.CmdLine
                     case "gui":
                         return Gui((GuiOptions)options, args);
 
+                    case "consoleui":
+                        return ConsoleUi(options, args);
+
                     case "version":
                         return Version(user);
 
@@ -207,6 +210,13 @@ namespace CKAN.CmdLine
             GUI.Main_(args, options.ShowConsole);
 
             return Exit.OK;
+        }
+
+        private static int ConsoleUi(CommonOptions opts, string[] args)
+        {
+            // Debug/verbose output just messes up the screen
+            LogManager.GetRepository().Threshold = Level.Warn;
+            return CKAN.ConsoleUI.ConsoleUI.Main_(args, opts.Debug);
         }
 
         private static int Version(IUser user)
