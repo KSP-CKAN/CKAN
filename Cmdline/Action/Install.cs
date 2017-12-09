@@ -67,7 +67,8 @@ namespace CKAN.CmdLine
                     // Parse the JSON file.
                     try
                     {
-                        options.modules.Add(LoadCkanFromFile(ksp, filename).identifier);
+                        CkanModule m = LoadCkanFromFile(ksp, filename);
+                        options.modules.Add($"{m.identifier}={m.version}");
                     }
                     catch (Kraken kraken)
                     {
