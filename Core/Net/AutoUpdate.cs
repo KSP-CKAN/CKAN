@@ -20,10 +20,16 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
+        /// <summary>
+        /// The list of releases containing ckan.exe and AutoUpdater.exe
+        /// </summary>
         private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
-        private static readonly Uri latestUpdaterReleaseApiUrl = new Uri(
-            "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
+        /// <summary>
+        /// Old release list that just contains the auto updater,
+        /// used as a fallback when missing from main release
+        /// </summary>
+        private static readonly Uri oldLatestUpdaterReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
 
         private Tuple<Uri, long> fetchedUpdaterUrl;
         private Tuple<Uri, long> fetchedCkanUrl;
@@ -80,8 +86,15 @@ namespace CKAN
 
             try
             {
-                fetchedUpdaterUrl = RetrieveUrl(MakeRequest(latestUpdaterReleaseApiUrl));
-                fetchedCkanUrl = RetrieveUrl(response);
+                fetchedCkanUrl = RetrieveUrl(response, 0);
+                // Check whether the release includes the auto updater
+                if (response.assets.Count >= 4) {
+                    // Last asset is AutoUpdater.exe
+                    fetchedUpdaterUrl = RetrieveUrl(response, 3);
+                } else {
+                    // Older releases don't include the auto updater
+                    fetchedUpdaterUrl = RetrieveUrl(MakeRequest(oldLatestUpdaterReleaseApiUrl), 0);
+                }
             }
             catch (Kraken)
             {
@@ -148,15 +161,19 @@ namespace CKAN
         /// from the provided github API response
         /// </summary>
         /// <returns>The URL to the downloadable asset.</returns>
-        internal Tuple<Uri, long> RetrieveUrl(dynamic response)
+        internal Tuple<Uri, long> RetrieveUrl(dynamic response, int whichOne)
         {
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
             }
-            var firstAsset = response.assets[0];
-            string url = firstAsset.browser_download_url.ToString();
-            return new Tuple<Uri, long>(new Uri(url), (long)firstAsset.size);
+            else if (whichOne >= response.assets.Count)
+            {
+                throw new Kraken($"Asset index {whichOne} does not exist.");
+            }
+            var asset = response.assets[whichOne];
+            string url = asset.browser_download_url.ToString();
+            return new Tuple<Uri, long>(new Uri(url), (long)asset.size);
         }
 
         /// <summary>
