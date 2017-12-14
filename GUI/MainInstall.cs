@@ -244,6 +244,13 @@ namespace CKAN
             {
                 action();
             }
+            catch (DependencyNotSatisfiedKraken ex)
+            {
+                GUI.user.RaiseMessage(
+                    "{0} requires {1} but it is not listed in the index, or not available for your version of KSP.",
+                    ex.parent, ex.module);
+                return false;
+            }
             catch (ModuleNotFoundKraken ex)
             {
                 GUI.user.RaiseMessage(

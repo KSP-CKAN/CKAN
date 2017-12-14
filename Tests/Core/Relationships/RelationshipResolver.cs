@@ -53,7 +53,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_a.identifier);
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
-            
+
             Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
                 list,
                 options,
@@ -473,7 +473,7 @@ namespace Tests.Core.Relationships
             list.Add(depender.identifier);
             registry.AddAvailable(depender);
 
-            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+            Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -495,10 +495,10 @@ namespace Tests.Core.Relationships
             {
                 new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
             });
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
 
-            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+            Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -517,10 +517,10 @@ namespace Tests.Core.Relationships
             {
                 new RelationshipDescriptor {name = dependant.identifier, min_version = new Version(dep_min)}
             });
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
 
-            Assert.Throws<ModuleNotFoundKraken>(() => new RelationshipResolver(
+            Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -599,7 +599,7 @@ namespace Tests.Core.Relationships
                 new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
             });
 
-            list.Add(depender.identifier);            
+            list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
 
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
@@ -608,7 +608,7 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-            
+
         }
 
         [Test]
@@ -721,16 +721,16 @@ namespace Tests.Core.Relationships
             var relationship_resolver = new RelationshipResolver(list, options, registry, null);
 
             var mod_not_in_resolver_list = generator.GeneratorRandomModule();
-            CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);            
+            CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);
             Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonFor(mod_not_in_resolver_list));
-            
+
         }
 
         [Test]
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
             var list = new List<string>();
-            var mod = generator.GeneratorRandomModule();                        
+            var mod = generator.GeneratorRandomModule();
             list.Add(mod.identifier);
             registry.AddAvailable(mod);
             AddToRegistry(mod);
@@ -748,7 +748,7 @@ namespace Tests.Core.Relationships
             var mod =
                 generator.GeneratorRandomModule(sugests:
                     new List<RelationshipDescriptor> {new RelationshipDescriptor {name = sugested.identifier}});
-            list.Add(mod.identifier);            
+            list.Add(mod.identifier);
             AddToRegistry(mod, sugested);
 
             options.with_all_suggests = true;
@@ -762,7 +762,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var list = new List<string>();            
+            var list = new List<string>();
             var sugested = generator.GeneratorRandomModule();
             var recommendedA = generator.GeneratorRandomModule();
             var recommendedB = generator.GeneratorRandomModule();
