@@ -279,6 +279,7 @@ namespace CKAN
         {
             log.Debug("Loading KSP instances from registry");
 
+            bool needSave = false;
             instances.Clear();
 
             foreach (Tuple<string, string> instance in Win32Registry.GetInstances())
@@ -293,13 +294,9 @@ namespace CKAN
                 }
                 else
                 {
-                    log.WarnFormat("{0} at {1} is not a vaild install", name, path);
+                    log.WarnFormat("{0} at {1} is not a valid install, removing", name, path);
+                    needSave = true;
                 }
-
-                //var ksp = new KSP(path, User);
-                //instances.Add(name, ksp);
-
-
             }
 
             try
@@ -310,6 +307,12 @@ namespace CKAN
             {
                 log.WarnFormat("Auto-start instance was invalid: {0}", e.Message);
                 AutoStartInstance = null;
+            }
+
+            if (needSave)
+            {
+                // Save the list without the invalid entries
+                Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
             }
         }
     }
