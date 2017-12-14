@@ -59,7 +59,7 @@ deploy:
       file:
         - _build/repack/$BUILD_CONFIGURATION/ckan.exe
         - _build/osx/CKAN.dmg
-        - debian/ckan_*.deb
+        - _build/deb/ckan_*.deb
       on:
         repo: KSP-CKAN/CKAN
         tags: true
