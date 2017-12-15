@@ -64,7 +64,7 @@ namespace CKAN
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version)
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
         {
             IsCKAN = mod is CkanModule;
             //Currently anything which could alter these causes a full reload of the modlist
@@ -73,7 +73,7 @@ namespace CKAN
             IsInstalled = registry.IsInstalled(mod.identifier, false);
             IsInstallChecked = IsInstalled;
             HasUpdate = registry.HasUpdate(mod.identifier, current_ksp_version);
-            IsIncompatible = !mod.IsCompatibleKSP(current_ksp_version);
+            IsIncompatible = incompatible || !mod.IsCompatibleKSP(current_ksp_version);
             IsAutodetected = registry.IsAutodetected(mod.identifier);
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
