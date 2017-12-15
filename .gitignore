@@ -42,9 +42,3 @@ bld/
 *.nuget.targets
 
 quotes.txt.dat
-
-# Debian package build
-*.deb
-*.gz
-debian/fakeroot/usr/lib/ckan/ckan.exe
-debian/fakeroot/DEBIAN/control
