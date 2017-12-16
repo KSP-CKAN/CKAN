@@ -418,43 +418,12 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available != null)
+                if (available != null
+                    && allDependenciesCompatible(available, ksp_version, modules_for_current_version))
                 {
-                    // we need to check that we can get everything we depend on
-                    bool failedDepedency = false;
-
-                    if (available.depends != null)
-                    {
-                        foreach (RelationshipDescriptor dependency in available.depends)
-                        {
-                            try
-                            {
-                                if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
-                                {
-                                    failedDepedency = true;
-                                    break;
-                                }
-                            }
-                            catch (KeyNotFoundException e)
-                            {
-                                log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
-                                throw e;
-                            }
-                            catch (ModuleNotFoundKraken)
-                            {
-                                failedDepedency = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!failedDepedency)
-                    {
-                        compatible.Add(available);
-                    }
+                    compatible.Add(available);
                 }
             }
-
             return compatible;
         }
 
@@ -463,8 +432,13 @@ namespace CKAN
         /// </summary>
         public List<CkanModule> Incompatible(KspVersionCriteria ksp_version)
         {
-            var candidates = new List<string>(available_modules.Keys);
+            var candidates   = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
+
+            CkanModule[] modules_for_current_version = available_modules.Values
+                .Select(pair => pair.Latest(ksp_version))
+                .Where(mod => mod != null)
+                .ToArray();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
@@ -474,7 +448,9 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available == null)
+                // If a mod is available, it might still have incompatible dependencies.
+                if (available == null
+                    || !allDependenciesCompatible(available, ksp_version, modules_for_current_version))
                 {
                     incompatible.Add(LatestAvailable(candidate, null));
                 }
@@ -483,6 +459,33 @@ namespace CKAN
             return incompatible;
         }
 
+        private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version, CkanModule[] modules_for_current_version)
+        {
+            // we need to check that we can get everything we depend on
+            if (mod.depends != null)
+            {
+                foreach (RelationshipDescriptor dependency in mod.depends)
+                {
+                    try
+                    {
+                        if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
+                        {
+                            return false;
+                        }
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                        throw e;
+                    }
+                    catch (ModuleNotFoundKraken)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.LatestAvailable" />

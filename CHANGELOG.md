@@ -26,7 +26,8 @@ All notable changes to this project will be documented in this file.
 - [CLI] Dispose registry managers before exit to prevent exceptions (#2203 by: HebaruSan; reviewed: politas)
 - [GUI/CLI] Avoid NRE in install-from-ckan (#2205 by: HebaruSan; reviewed: politas)
 - [GUI] Avoid NRE in TooManyModsProvide (#2209 by: HebaruSan; reviewed: politas)
-- [Core] Install version from file when installing from file (#2211 by: HebaruSan; reviewed: politas)
+- [Core] Install version from file when installing from file (#2211 by: HebaruSan; reviewed: politas, techman83)
+- [GUI] Show mods with incompatible dependencies (#2216 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
