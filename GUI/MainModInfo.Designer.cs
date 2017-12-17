@@ -2,12 +2,12 @@
 {
     partial class MainModInfo
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -52,7 +52,6 @@
             this.MetadataModuleKSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.MetadataModuleGitHubLinkLabel = new System.Windows.Forms.LinkLabel();
             this.RelationshipTabPage = new System.Windows.Forms.TabPage();
-            this.ModuleRelationshipType = new System.Windows.Forms.ComboBox();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.ContentTabPage = new System.Windows.Forms.TabPage();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
@@ -72,9 +71,9 @@
             this.ContentTabPage.SuspendLayout();
             this.AllModVersionsTabPage.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // ModInfoTabControl
-            // 
+            //
             this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
@@ -86,9 +85,9 @@
             this.ModInfoTabControl.Size = new System.Drawing.Size(362, 531);
             this.ModInfoTabControl.TabIndex = 1;
             this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoIndexChanged);
-            // 
+            //
             // MetadataTabPage
-            // 
+            //
             this.MetadataTabPage.Controls.Add(this.splitContainer2);
             this.MetadataTabPage.Location = new System.Drawing.Point(4, 25);
             this.MetadataTabPage.Name = "MetadataTabPage";
@@ -97,28 +96,28 @@
             this.MetadataTabPage.TabIndex = 0;
             this.MetadataTabPage.Text = "Metadata";
             this.MetadataTabPage.UseVisualStyleBackColor = true;
-            // 
+            //
             // splitContainer2
-            // 
+            //
             this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(3, 3);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
+            //
             // splitContainer2.Panel1
-            // 
+            //
             this.splitContainer2.Panel1.Controls.Add(this.MetaDataUpperLayoutPanel);
-            // 
+            //
             // splitContainer2.Panel2
-            // 
+            //
             this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
             this.splitContainer2.Size = new System.Drawing.Size(348, 496);
             this.splitContainer2.SplitterDistance = 235;
             this.splitContainer2.TabIndex = 0;
-            // 
+            //
             // MetaDataUpperLayoutPanel
-            // 
+            //
             this.MetaDataUpperLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.MetaDataUpperLayoutPanel.ColumnCount = 1;
             this.MetaDataUpperLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -132,9 +131,9 @@
             this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
             this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(346, 233);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
-            // 
+            //
             // MetadataModuleNameLabel
-            // 
+            //
             this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MetadataModuleNameLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -144,9 +143,9 @@
             this.MetadataModuleNameLabel.TabIndex = 0;
             this.MetadataModuleNameLabel.Text = "Mod Name";
             this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // MetadataModuleAbstractLabel
-            // 
+            //
             this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 49);
@@ -155,9 +154,9 @@
             this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(340, 181);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "";
-            // 
+            //
             // MetaDataLowerLayoutPanel
-            // 
+            //
             this.MetaDataLowerLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.MetaDataLowerLayoutPanel.ColumnCount = 2;
             this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.16279F));
@@ -193,9 +192,9 @@
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
             this.MetaDataLowerLayoutPanel.Size = new System.Drawing.Size(346, 255);
             this.MetaDataLowerLayoutPanel.TabIndex = 0;
-            // 
+            //
             // IdentifierLabel
-            // 
+            //
             this.IdentifierLabel.AutoSize = true;
             this.IdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -204,9 +203,9 @@
             this.IdentifierLabel.Size = new System.Drawing.Size(84, 20);
             this.IdentifierLabel.TabIndex = 28;
             this.IdentifierLabel.Text = "Identifier";
-            // 
+            //
             // MetadataIdentifierLabel
-            // 
+            //
             this.MetadataIdentifierLabel.AutoSize = true;
             this.MetadataIdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataIdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -215,9 +214,9 @@
             this.MetadataIdentifierLabel.Size = new System.Drawing.Size(250, 20);
             this.MetadataIdentifierLabel.TabIndex = 27;
             this.MetadataIdentifierLabel.Text = "-";
-            // 
+            //
             // KSPCompatibilityLabel
-            // 
+            //
             this.KSPCompatibilityLabel.AutoSize = true;
             this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.KSPCompatibilityLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -226,9 +225,9 @@
             this.KSPCompatibilityLabel.Size = new System.Drawing.Size(84, 30);
             this.KSPCompatibilityLabel.TabIndex = 13;
             this.KSPCompatibilityLabel.Text = "Max KSP ver.:";
-            // 
+            //
             // ReleaseLabel
-            // 
+            //
             this.ReleaseLabel.AutoSize = true;
             this.ReleaseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ReleaseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -237,9 +236,9 @@
             this.ReleaseLabel.Size = new System.Drawing.Size(84, 30);
             this.ReleaseLabel.TabIndex = 12;
             this.ReleaseLabel.Text = "Release status:";
-            // 
+            //
             // GitHubLabel
-            // 
+            //
             this.GitHubLabel.AutoSize = true;
             this.GitHubLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GitHubLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -248,9 +247,9 @@
             this.GitHubLabel.Size = new System.Drawing.Size(84, 30);
             this.GitHubLabel.TabIndex = 10;
             this.GitHubLabel.Text = "Source Code:";
-            // 
+            //
             // HomePageLabel
-            // 
+            //
             this.HomePageLabel.AutoSize = true;
             this.HomePageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HomePageLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -259,9 +258,9 @@
             this.HomePageLabel.Size = new System.Drawing.Size(84, 30);
             this.HomePageLabel.TabIndex = 7;
             this.HomePageLabel.Text = "Homepage:";
-            // 
+            //
             // AuthorLabel
-            // 
+            //
             this.AuthorLabel.AutoSize = true;
             this.AuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AuthorLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -270,9 +269,9 @@
             this.AuthorLabel.Size = new System.Drawing.Size(84, 30);
             this.AuthorLabel.TabIndex = 5;
             this.AuthorLabel.Text = "Author:";
-            // 
+            //
             // LicenseLabel
-            // 
+            //
             this.LicenseLabel.AutoSize = true;
             this.LicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LicenseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -281,9 +280,9 @@
             this.LicenseLabel.Size = new System.Drawing.Size(84, 30);
             this.LicenseLabel.TabIndex = 3;
             this.LicenseLabel.Text = "License:";
-            // 
+            //
             // MetadataModuleVersionLabel
-            // 
+            //
             this.MetadataModuleVersionLabel.AutoSize = true;
             this.MetadataModuleVersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleVersionLabel.Location = new System.Drawing.Point(93, 0);
@@ -291,9 +290,9 @@
             this.MetadataModuleVersionLabel.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleVersionLabel.TabIndex = 2;
             this.MetadataModuleVersionLabel.Text = "0.0.0";
-            // 
+            //
             // MetadataModuleLicenseLabel
-            // 
+            //
             this.MetadataModuleLicenseLabel.AutoSize = true;
             this.MetadataModuleLicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleLicenseLabel.Location = new System.Drawing.Point(93, 30);
@@ -301,9 +300,9 @@
             this.MetadataModuleLicenseLabel.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
-            // 
+            //
             // MetadataModuleAuthorLabel
-            // 
+            //
             this.MetadataModuleAuthorLabel.AutoSize = true;
             this.MetadataModuleAuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(93, 60);
@@ -311,9 +310,9 @@
             this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleAuthorLabel.TabIndex = 6;
             this.MetadataModuleAuthorLabel.Text = "Nobody";
-            // 
+            //
             // VersionLabel
-            // 
+            //
             this.VersionLabel.AutoSize = true;
             this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -322,9 +321,9 @@
             this.VersionLabel.Size = new System.Drawing.Size(84, 30);
             this.VersionLabel.TabIndex = 1;
             this.VersionLabel.Text = "Version:";
-            // 
+            //
             // MetadataModuleReleaseStatusLabel
-            // 
+            //
             this.MetadataModuleReleaseStatusLabel.AutoSize = true;
             this.MetadataModuleReleaseStatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleReleaseStatusLabel.Location = new System.Drawing.Point(93, 150);
@@ -332,9 +331,9 @@
             this.MetadataModuleReleaseStatusLabel.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleReleaseStatusLabel.TabIndex = 11;
             this.MetadataModuleReleaseStatusLabel.Text = "Stable";
-            // 
+            //
             // MetadataModuleHomePageLinkLabel
-            // 
+            //
             this.MetadataModuleHomePageLinkLabel.AutoEllipsis = true;
             this.MetadataModuleHomePageLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleHomePageLinkLabel.Location = new System.Drawing.Point(93, 90);
@@ -344,9 +343,9 @@
             this.MetadataModuleHomePageLinkLabel.TabStop = true;
             this.MetadataModuleHomePageLinkLabel.Text = "linkLabel1";
             this.MetadataModuleHomePageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
-            // 
+            //
             // MetadataModuleKSPCompatibilityLabel
-            // 
+            //
             this.MetadataModuleKSPCompatibilityLabel.AutoSize = true;
             this.MetadataModuleKSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleKSPCompatibilityLabel.Location = new System.Drawing.Point(93, 180);
@@ -354,9 +353,9 @@
             this.MetadataModuleKSPCompatibilityLabel.Size = new System.Drawing.Size(250, 30);
             this.MetadataModuleKSPCompatibilityLabel.TabIndex = 14;
             this.MetadataModuleKSPCompatibilityLabel.Text = "0.0.0";
-            // 
+            //
             // MetadataModuleGitHubLinkLabel
-            // 
+            //
             this.MetadataModuleGitHubLinkLabel.AutoEllipsis = true;
             this.MetadataModuleGitHubLinkLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleGitHubLinkLabel.Location = new System.Drawing.Point(93, 120);
@@ -366,10 +365,9 @@
             this.MetadataModuleGitHubLinkLabel.TabStop = true;
             this.MetadataModuleGitHubLinkLabel.Text = "linkLabel2";
             this.MetadataModuleGitHubLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked);
-            // 
+            //
             // RelationshipTabPage
-            // 
-            this.RelationshipTabPage.Controls.Add(this.ModuleRelationshipType);
+            //
             this.RelationshipTabPage.Controls.Add(this.DependsGraphTree);
             this.RelationshipTabPage.Location = new System.Drawing.Point(4, 25);
             this.RelationshipTabPage.Name = "RelationshipTabPage";
@@ -378,39 +376,33 @@
             this.RelationshipTabPage.TabIndex = 1;
             this.RelationshipTabPage.Text = "Relationships";
             this.RelationshipTabPage.UseVisualStyleBackColor = true;
-            // 
-            // ModuleRelationshipType
-            // 
-            this.ModuleRelationshipType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ModuleRelationshipType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ModuleRelationshipType.FormattingEnabled = true;
-            this.ModuleRelationshipType.Items.AddRange(new object[] {
-            "Depends",
-            "Recommends",
-            "Suggests",
-            "Supports",
-            "Conflicts"});
-            this.ModuleRelationshipType.Location = new System.Drawing.Point(6, 7);
-            this.ModuleRelationshipType.Name = "ModuleRelationshipType";
-            this.ModuleRelationshipType.Size = new System.Drawing.Size(185, 21);
-            this.ModuleRelationshipType.TabIndex = 1;
-            this.ModuleRelationshipType.SelectedIndexChanged += new System.EventHandler(this.ModuleRelationshipType_SelectedIndexChanged);
-            // 
+            //
             // DependsGraphTree
-            // 
-            this.DependsGraphTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.DependsGraphTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.DependsGraphTree.Location = new System.Drawing.Point(3, 34);
+            this.DependsGraphTree.Location = new System.Drawing.Point(3, 7);
             this.DependsGraphTree.Name = "DependsGraphTree";
-            this.DependsGraphTree.Size = new System.Drawing.Size(345, 462);
+            this.DependsGraphTree.Size = new System.Drawing.Size(345, 489);
             this.DependsGraphTree.TabIndex = 0;
             this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
-            // 
+            this.DependsGraphTree.ShowNodeToolTips = true;
+            this.DependsGraphTree.ImageList = new System.Windows.Forms.ImageList()
+            {
+                // ImageList's default makes icons look like garbage
+                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+            };
+            this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.Properties.Resources.ksp);
+            this.DependsGraphTree.ImageList.Images.Add("Depends", global::CKAN.Properties.Resources.star);
+            this.DependsGraphTree.ImageList.Images.Add("Recommends", global::CKAN.Properties.Resources.thumbup);
+            this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.Properties.Resources.info);
+            this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.Properties.Resources.smile);
+            this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.Properties.Resources.alert);
+            //
             // ContentTabPage
-            // 
+            //
             this.ContentTabPage.Controls.Add(this.ContentsPreviewTree);
             this.ContentTabPage.Controls.Add(this.ContentsDownloadButton);
             this.ContentTabPage.Controls.Add(this.NotCachedLabel);
@@ -421,11 +413,11 @@
             this.ContentTabPage.TabIndex = 2;
             this.ContentTabPage.Text = "Contents";
             this.ContentTabPage.UseVisualStyleBackColor = true;
-            // 
+            //
             // ContentsPreviewTree
-            // 
-            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ContentsPreviewTree.Enabled = false;
@@ -434,9 +426,9 @@
             this.ContentsPreviewTree.Size = new System.Drawing.Size(342, 434);
             this.ContentsPreviewTree.TabIndex = 2;
             this.ContentsPreviewTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.ContentsPreviewTree_NodeMouseDoubleClick);
-            // 
+            //
             // ContentsDownloadButton
-            // 
+            //
             this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
             this.ContentsDownloadButton.Name = "ContentsDownloadButton";
             this.ContentsDownloadButton.Size = new System.Drawing.Size(103, 23);
@@ -444,17 +436,17 @@
             this.ContentsDownloadButton.Text = "Download";
             this.ContentsDownloadButton.UseVisualStyleBackColor = true;
             this.ContentsDownloadButton.Click += new System.EventHandler(this.ContentsDownloadButton_Click);
-            // 
+            //
             // NotCachedLabel
-            // 
+            //
             this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
             this.NotCachedLabel.Name = "NotCachedLabel";
             this.NotCachedLabel.Size = new System.Drawing.Size(216, 30);
             this.NotCachedLabel.TabIndex = 0;
             this.NotCachedLabel.Text = "This mod is not in the cache, click \'Download\' to preview contents";
-            // 
+            //
             // AllModVersionsTabPage
-            // 
+            //
             this.AllModVersionsTabPage.Controls.Add(this.AllModVersions);
             this.AllModVersionsTabPage.Location = new System.Drawing.Point(4, 25);
             this.AllModVersionsTabPage.Margin = new System.Windows.Forms.Padding(2);
@@ -463,18 +455,18 @@
             this.AllModVersionsTabPage.TabIndex = 1;
             this.AllModVersionsTabPage.Text = "Versions";
             this.AllModVersionsTabPage.UseVisualStyleBackColor = true;
-            // 
+            //
             // AllModVersions
-            // 
+            //
             this.AllModVersions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AllModVersions.Location = new System.Drawing.Point(0, 0);
             this.AllModVersions.Margin = new System.Windows.Forms.Padding(2);
             this.AllModVersions.Name = "AllModVersions";
             this.AllModVersions.Size = new System.Drawing.Size(354, 502);
             this.AllModVersions.TabIndex = 0;
-            // 
+            //
             // MainModInfoTab
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ModInfoTabControl);
@@ -522,7 +514,6 @@
         private System.Windows.Forms.Label MetadataModuleKSPCompatibilityLabel;
         private System.Windows.Forms.LinkLabel MetadataModuleGitHubLinkLabel;
         private System.Windows.Forms.TabPage RelationshipTabPage;
-        private System.Windows.Forms.ComboBox ModuleRelationshipType;
         private System.Windows.Forms.TreeView DependsGraphTree;
         private System.Windows.Forms.TabPage ContentTabPage;
         private System.Windows.Forms.TreeView ContentsPreviewTree;
