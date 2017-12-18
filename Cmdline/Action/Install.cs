@@ -120,7 +120,14 @@ namespace CKAN.CmdLine
             }
             catch (ModuleNotFoundKraken ex)
             {
-                user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                if (ex.version == null)
+                {
+                    user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                }
+                else
+                {
+                    user.RaiseMessage("Module {0} {1} required but it is not listed in the index, or not available for your version of KSP.", ex.module, ex.version);
+                }
                 user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
                 user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
                 return Exit.ERROR;

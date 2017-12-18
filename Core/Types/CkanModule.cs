@@ -383,7 +383,8 @@ namespace CKAN
 
                 module = registry.GetModuleByVersion(ident, version);
 
-                if (module == null)
+                if (module == null
+                        || (ksp_version != null && !module.IsCompatibleKSP(ksp_version)))
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format("Module {0} version {1} not available", ident, version));
             }
