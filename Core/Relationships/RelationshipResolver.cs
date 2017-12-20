@@ -50,6 +50,15 @@ namespace CKAN
         /// </summary>
         public bool procede_with_inconsistencies = false;
 
+        /// <summary>
+        /// If true, then if a module has no versions that are compatible with
+        /// the current game version, then we will consider incompatible versions
+        /// of that module.
+        /// This replaces the former behavior of ignoring compatibility for
+        /// `install identifier=version` commands.
+        /// </summary>
+        public bool allow_incompatible = false;
+
         public object Clone()
         {
             return MemberwiseClone();
@@ -122,12 +131,33 @@ namespace CKAN
         /// <param name="kspversion"></param>
         public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, IRegistryQuerier registry,
             KspVersionCriteria kspversion) :
-                this(module_names.Select(name => CkanModule.FromIDandVersion(registry, name, kspversion)).ToList(),
+                this(module_names.Select(name => TranslateModule(name, options, registry, kspversion)).ToList(),
                     options,
                     registry,
                     kspversion)
         {
             // Does nothing, just calls the other overloaded constructor
+        }
+
+        private static CkanModule TranslateModule(string name, RelationshipResolverOptions options, IRegistryQuerier registry, KspVersionCriteria kspversion)
+        {
+            if (options.allow_incompatible)
+            {
+                try
+                {
+                    return CkanModule.FromIDandVersion(registry, name, kspversion);
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    // No versions found matching our game version, so
+                    // look for incompatible versions.
+                    return CkanModule.FromIDandVersion(registry, name, null);
+                }
+            }
+            else
+            {
+                return CkanModule.FromIDandVersion(registry, name, kspversion);
+            }
         }
 
         /// <summary>

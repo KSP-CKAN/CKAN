@@ -344,14 +344,17 @@ namespace CKAN.CmdLine
         [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files to process")]
         public string[] ckan_files { get; set; }
 
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
 
-        [Option("with-suggests", HelpText = "Install suggested modules")]
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
         public bool with_suggests { get; set; }
 
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
+
+        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
+        public bool allow_incompatible { get; set; }
 
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
@@ -362,16 +365,16 @@ namespace CKAN.CmdLine
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
 
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
 
-        [Option("with-suggests", HelpText = "Install suggested modules")]
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
         public bool with_suggests { get; set; }
 
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
 
-        [Option("all", HelpText = "Upgrade all available updated modules")]
+        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool upgrade_all { get; set; }
 
         [ValueList(typeof (List<string>))]
@@ -407,7 +410,7 @@ namespace CKAN.CmdLine
         [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
         public string repo { get; set; }
 
-        [Option("all", HelpText = "Upgrade all available updated modules")]
+        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool update_all { get; set; }
 
         [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
@@ -422,7 +425,7 @@ namespace CKAN.CmdLine
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
 
-        [Option("all", HelpText = "Remove all installed mods.")]
+        [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
         public bool rmall { get; set; }
     }
 
