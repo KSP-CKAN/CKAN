@@ -164,5 +164,25 @@ namespace CKAN
             return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false)
                 && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
         }
+
+        /// <summary>
+        /// Generate a string describing the range of game versions
+        /// compatible with the given module.
+        /// </summary>
+        /// <param name="identifier">Mod name to findDependencyShallow</param>
+        /// <returns>
+        /// String describing range of compatible game versions.
+        /// </returns>
+        public static string CompatibleGameVersions(this IRegistryQuerier querier, string identifier)
+        {
+            List<CkanModule> releases = querier.AllAvailable(identifier);
+            if (releases != null && releases.Count > 0) {
+                Version    minMod = null, maxMod = null;
+                KspVersion minKsp = null, maxKsp = null;
+                Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                return KspVersionRange.VersionSpan(minKsp, maxKsp);
+            }
+            return "";
+        }
     }
 }

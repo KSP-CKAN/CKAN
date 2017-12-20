@@ -556,13 +556,45 @@ namespace CKAN
                 : null;
         }
 
+        /// <summary>
+        /// Find the minimum and maximum mod versions and compatible game versions
+        /// for a list of modules (presumably different versions of the same mod).
+        /// </summary>
+        /// <param name="modVersions">The modules to inspect</param>
+        /// <param name="minMod">Return parameter for the lowest  mod  version</param>
+        /// <param name="maxMod">Return parameter for the highest mod  version</param>
+        /// <param name="minKsp">Return parameter for the lowest  game version</param>
+        /// <param name="maxKsp">Return parameter for the highest game version</param>
+        public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
+                out Version    minMod, out Version    maxMod,
+                out KspVersion minKsp, out KspVersion maxKsp)
+        {
+            minMod = maxMod = null;
+            minKsp = maxKsp = null;
+            foreach (CkanModule rel in modVersions) {
+                if (minMod == null || minMod > rel.version) {
+                    minMod = rel.version;
+                }
+                if (maxMod == null || maxMod < rel.version) {
+                    maxMod = rel.version;
+                }
+                KspVersion relMin = rel.EarliestCompatibleKSP();
+                KspVersion relMax = rel.LatestCompatibleKSP();
+                if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny)) {
+                    minKsp = relMin;
+                }
+                if (maxKsp == null || !maxKsp.IsAny && (maxKsp < relMax || relMax.IsAny)) {
+                    maxKsp = relMax;
+                }
+            }
+        }
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null)
         {
-            // This public interface calculates a cache of modules which
+            // Calculates a cache of modules which
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,

@@ -387,24 +387,7 @@ namespace CKAN.ConsoleUI {
 
                 Version    minMod = null, maxMod = null;
                 KspVersion minKsp = null, maxKsp = null;
-
-                foreach (CkanModule rel in releases) {
-                    if (minMod == null || minMod > rel.version) {
-                        minMod = rel.version;
-                    }
-                    if (maxMod == null || maxMod < rel.version) {
-                        maxMod = rel.version;
-                    }
-                    KspVersion relMin = rel.EarliestCompatibleKSP();
-                    KspVersion relMax = rel.LatestCompatibleKSP();
-                    if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny)) {
-                        minKsp = relMin;
-                    }
-                    if (maxKsp == null || !maxKsp.IsAny && (maxKsp < relMax || relMax.IsAny)) {
-                        maxKsp = relMax;
-                    }
-                }
-
+                Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod
@@ -421,25 +404,12 @@ namespace CKAN.ConsoleUI {
                 ));
                 AddObject(new ConsoleLabel(
                     l + 4, t + 3, r - 2,
-                    () => VersionSpan(minKsp, maxKsp),
+                    () => KspVersionRange.VersionSpan(minKsp, maxKsp),
                     null,
                     color
                 ));
 
             }
-        }
-
-        private static string SameVersionString(KspVersion v)
-        {
-            return v.IsAny ? "all versions" : v.ToString();
-        }
-
-        private static string VersionSpan(KspVersion minKsp, KspVersion maxKsp)
-        {
-            return minKsp == maxKsp ? $"KSP {SameVersionString(minKsp)}"
-                :  minKsp.IsAny     ? $"KSP {maxKsp} and earlier"
-                :  maxKsp.IsAny     ? $"KSP {minKsp} and later"
-                :                     $"KSP {minKsp} - {maxKsp}";
         }
 
         private string HostedOn()

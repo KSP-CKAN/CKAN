@@ -83,6 +83,29 @@ namespace CKAN.Versioning
 
             return sb.ToString();
         }
+
+        private static string SameVersionString(KspVersion v)
+        {
+            return v.IsAny ? "all versions" : v.ToString();
+        }
+
+        /// <summary>
+        /// Generate a string describing a range of KSP versions.
+        /// May be bounded or unbounded on either side.
+        /// </summary>
+        /// <param name="minKsp">Lowest version in the range</param>
+        /// <param name="maxKsp">Highest version in the range</param>
+        /// <returns>
+        /// Human readable string describing the versions.
+        /// </returns>
+        public static string VersionSpan(KspVersion minKsp, KspVersion maxKsp)
+        {
+            return minKsp == maxKsp ? $"KSP {SameVersionString(minKsp)}"
+                :  minKsp.IsAny     ? $"KSP {maxKsp} and earlier"
+                :  maxKsp.IsAny     ? $"KSP {minKsp} and later"
+                :                     $"KSP {minKsp} - {maxKsp}";
+        }
+
     }
 
     public sealed partial class KspVersionRange : IEquatable<KspVersionRange>
