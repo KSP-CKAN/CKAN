@@ -111,6 +111,13 @@ namespace CKAN.CmdLine
                 var installer = ModuleInstaller.GetInstance(ksp, user);
                 installer.InstallList(options.modules, install_ops);
             }
+            catch (DependencyNotSatisfiedKraken ex)
+            {
+                user.RaiseMessage("{0} requires {1} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module);
+                user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
+                user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
+                return Exit.ERROR;
+            }
             catch (ModuleNotFoundKraken ex)
             {
                 user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);

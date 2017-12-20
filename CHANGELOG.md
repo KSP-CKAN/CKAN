@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Install version from file when installing from file (#2211 by: HebaruSan; reviewed: politas, techman83)
 - [GUI] Show mods with incompatible dependencies (#2216 by: HebaruSan; reviewed: politas)
 - [GUI] Fix missing entries in dependency graphs (#2226 by: HebaruSan; reviewed: politas)
+- [Multiple] Add depending mod to missing dependency exception (#2215 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

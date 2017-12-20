@@ -334,8 +334,8 @@ namespace CKAN
                 {
                     if (!soft_resolve)
                     {
-                        log.ErrorFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", dep_name);
-                        throw new ModuleNotFoundKraken(dep_name);
+                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", dep_name);
+                        throw new DependencyNotSatisfiedKraken(reason.Parent, dep_name);
                     }
                     log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your version of KSP.", dep_name);
                     continue;

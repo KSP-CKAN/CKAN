@@ -120,8 +120,10 @@ namespace CKAN.ConsoleUI {
 
                     } catch (BadMetadataKraken ex) {
                         RaiseError($"Bad metadata detected for {ex.module}: {ex.Message}");
+                    } catch (DependencyNotSatisfiedKraken ex) {
+                        RaiseError($"{ex.parent} requires {ex.module}, but it is not listed in the index, or not available for your version of KSP.\r\n{ex.Message}");
                     } catch (ModuleNotFoundKraken ex) {
-                        RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of KSP. {ex.Message}");
+                        RaiseError($"Module {ex.module} required but it is not listed in the index, or not available for your version of KSP.\r\n{ex.Message}");
                     } catch (ModNotInstalledKraken ex) {
                         RaiseError($"{ex.mod} is not installed, can't remove");
                     }
