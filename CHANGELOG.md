@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Change icon on filter button to something filter-y (#2156 by: politas; reviewed: HebaruSan)
 - [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
 - [ConsoleUI] Create text UI inspired by Turbo Vision (#2177 by: HebaruSan; reviewed: dbent, Maxzhao, pjf, ProfFan, politas)
+- [Build] Create and release CKAN.app for Mac OS X (#2225 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

@@ -23,6 +23,11 @@ addons:
             - git
             - mono-devel
             - ca-certificates
+            # Stuff for building OSX DMGs
+            - make
+            - sed
+            - libplist-utils
+            - genisoimage
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
@@ -34,6 +39,9 @@ script:
     - ./build --configuration=$BUILD_CONFIGURATION
     - ./build test+only --configuration=$BUILD_CONFIGURATION --where="cat!=FlakyNetwork"
 
+before_deploy:
+    - ./build osx
+
 deploy:
     # Releases (which are tagged) go to github
     - provider: releases
@@ -42,6 +50,7 @@ deploy:
         secure: AjwbRLStNJZb9hAOLfRLK85KlFo2q2Dr1NKCoDS4elek1nqSiOjL1hH0kDgUMx/PJqQVnFU8tbJPL30t9Pj7jcJhp0LhbbPipQE3TCSpafTneSEbdz5HT+OdghWCZhUhfs07wGNTFUwcAO4WBZ7wv1AnfdfogHdA5RMdykiIl38=
       file:
         - _build/repack/$BUILD_CONFIGURATION/ckan.exe
+        - _build/osx/CKAN.dmg
       on:
         repo: KSP-CKAN/CKAN
         tags: true

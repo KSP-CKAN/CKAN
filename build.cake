@@ -34,6 +34,15 @@ Task("Ckan")
 Task("Netkan")
     .IsDependentOn("Repack-Netkan");
 
+Task("osx")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { WorkingDirectory = "macosx" }));
+
+Task("osx-clean")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "clean", WorkingDirectory = "macosx" }));
+
 Task("Restore-Nuget")
     .Does(() =>
 {
