@@ -52,9 +52,9 @@
             this.CacheGroupBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // NewRepoButton
-            // 
+            //
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NewRepoButton.Location = new System.Drawing.Point(6, 224);
             this.NewRepoButton.Name = "NewRepoButton";
@@ -63,9 +63,9 @@
             this.NewRepoButton.Text = "New";
             this.NewRepoButton.UseVisualStyleBackColor = true;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
-            // 
+            //
             // RepositoryGroupBox
-            // 
+            //
             this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
             this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
@@ -78,9 +78,9 @@
             this.RepositoryGroupBox.TabIndex = 12;
             this.RepositoryGroupBox.TabStop = false;
             this.RepositoryGroupBox.Text = "Metadata repositories";
-            // 
+            //
             // DownRepoButton
-            // 
+            //
             this.DownRepoButton.Enabled = false;
             this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
@@ -90,9 +90,9 @@
             this.DownRepoButton.Text = "Down";
             this.DownRepoButton.UseVisualStyleBackColor = true;
             this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
-            // 
+            //
             // UpRepoButton
-            // 
+            //
             this.UpRepoButton.Enabled = false;
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
@@ -102,9 +102,9 @@
             this.UpRepoButton.Text = "Up";
             this.UpRepoButton.UseVisualStyleBackColor = true;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
-            // 
+            //
             // DeleteRepoButton
-            // 
+            //
             this.DeleteRepoButton.Enabled = false;
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteRepoButton.Location = new System.Drawing.Point(414, 224);
@@ -114,18 +114,18 @@
             this.DeleteRepoButton.Text = "Delete";
             this.DeleteRepoButton.UseVisualStyleBackColor = true;
             this.DeleteRepoButton.Click += new System.EventHandler(this.DeleteRepoButton_Click);
-            // 
+            //
             // ReposListBox
-            // 
+            //
             this.ReposListBox.FormattingEnabled = true;
             this.ReposListBox.Location = new System.Drawing.Point(6, 19);
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(464, 199);
             this.ReposListBox.TabIndex = 9;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
-            // 
+            //
             // CacheGroupBox
-            // 
+            //
             this.CacheGroupBox.Controls.Add(this.ClearCKANCacheButton);
             this.CacheGroupBox.Controls.Add(this.CKANCacheLabel);
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -135,9 +135,9 @@
             this.CacheGroupBox.TabIndex = 10;
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "CKAN Cache";
-            // 
+            //
             // ClearCKANCacheButton
-            // 
+            //
             this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearCKANCacheButton.Location = new System.Drawing.Point(341, 16);
             this.ClearCKANCacheButton.Name = "ClearCKANCacheButton";
@@ -146,27 +146,30 @@
             this.ClearCKANCacheButton.Text = "Clear cache";
             this.ClearCKANCacheButton.UseVisualStyleBackColor = true;
             this.ClearCKANCacheButton.Click += new System.EventHandler(this.ClearCKANCacheButton_Click);
-            // 
+            //
             // CKANCacheLabel
-            // 
+            //
             this.CKANCacheLabel.AutoSize = true;
             this.CKANCacheLabel.Location = new System.Drawing.Point(3, 21);
             this.CKANCacheLabel.Name = "CKANCacheLabel";
             this.CKANCacheLabel.Size = new System.Drawing.Size(271, 13);
             this.CKANCacheLabel.TabIndex = 0;
             this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
-            // 
+            //
             // groupBox2
-            // 
+            //
             this.groupBox2.Controls.Add(this.HideEpochsCheckbox);
             this.groupBox2.Controls.Add(this.RefreshOnStartupCheckbox);
-            this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
-            this.groupBox2.Controls.Add(this.InstallUpdateButton);
-            this.groupBox2.Controls.Add(this.LatestVersionLabel);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.LocalVersionLabel);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
+            if (AutoUpdate.CanUpdate)
+            {
+                this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
+                this.groupBox2.Controls.Add(this.InstallUpdateButton);
+                this.groupBox2.Controls.Add(this.LatestVersionLabel);
+                this.groupBox2.Controls.Add(this.label4);
+                this.groupBox2.Controls.Add(this.LocalVersionLabel);
+                this.groupBox2.Controls.Add(this.label3);
+                this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
+            }
             this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox2.Location = new System.Drawing.Point(12, 334);
             this.groupBox2.Name = "groupBox2";
@@ -174,9 +177,9 @@
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "CKAN auto-update";
-            // 
+            //
             // HideEpochsCheckbox
-            // 
+            //
             this.HideEpochsCheckbox.AutoSize = true;
             this.HideEpochsCheckbox.Location = new System.Drawing.Point(275, 70);
             this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
@@ -185,9 +188,9 @@
             this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list\r\n(Requires Restart)";
             this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
             this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
-            // 
+            //
             // RefreshOnStartupCheckbox
-            // 
+            //
             this.RefreshOnStartupCheckbox.AutoSize = true;
             this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(275, 43);
             this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
@@ -196,9 +199,9 @@
             this.RefreshOnStartupCheckbox.Text = "Update repositories on launch";
             this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
             this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
-            // 
+            //
             // CheckUpdateOnLaunchCheckbox
-            // 
+            //
             this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
             this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(275, 16);
             this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
@@ -207,9 +210,9 @@
             this.CheckUpdateOnLaunchCheckbox.Text = "Check for CKAN updates on launch";
             this.CheckUpdateOnLaunchCheckbox.UseVisualStyleBackColor = true;
             this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
-            // 
+            //
             // InstallUpdateButton
-            // 
+            //
             this.InstallUpdateButton.Enabled = false;
             this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstallUpdateButton.Location = new System.Drawing.Point(116, 76);
@@ -219,45 +222,45 @@
             this.InstallUpdateButton.Text = "Install update";
             this.InstallUpdateButton.UseVisualStyleBackColor = true;
             this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
-            // 
+            //
             // LatestVersionLabel
-            // 
+            //
             this.LatestVersionLabel.AutoSize = true;
             this.LatestVersionLabel.Location = new System.Drawing.Point(86, 43);
             this.LatestVersionLabel.Name = "LatestVersionLabel";
             this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
             this.LatestVersionLabel.TabIndex = 4;
             this.LatestVersionLabel.Text = "???";
-            // 
+            //
             // label4
-            // 
+            //
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(7, 43);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(76, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Latest version:";
-            // 
+            //
             // LocalVersionLabel
-            // 
+            //
             this.LocalVersionLabel.AutoSize = true;
             this.LocalVersionLabel.Location = new System.Drawing.Point(86, 20);
             this.LocalVersionLabel.Name = "LocalVersionLabel";
             this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
             this.LocalVersionLabel.TabIndex = 2;
             this.LocalVersionLabel.Text = "v0.0.0";
-            // 
+            //
             // label3
-            // 
+            //
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(7, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(73, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Local version:";
-            // 
+            //
             // CheckForUpdatesButton
-            // 
+            //
             this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(6, 76);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
@@ -266,9 +269,9 @@
             this.CheckForUpdatesButton.Text = "Check for updates";
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
-            // 
+            //
             // SettingsDialog
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(495, 442);

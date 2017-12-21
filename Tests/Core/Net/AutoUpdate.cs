@@ -48,7 +48,7 @@ namespace Tests.Core.AutoUpdate
         {
             Assert.AreEqual(
                 expected,
-                CKAN.AutoUpdate.Instance.ExtractReleaseNotes(body),
+                CKAN.AutoUpdate.ExtractReleaseNotes(body),
                 comment
             );
         }

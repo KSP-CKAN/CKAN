@@ -1,0 +1,5 @@
+ckan (1.24.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- The CKAN Authors <debian@ksp-ckan.org>  Wed, 15 Nov 2017 18:22:00 +0600

@@ -1,0 +1,105 @@
+.nh
+.ad l
+.Dd November 15, 2017
+.Os
+.Dt CKAN 1
+.Sh NAME
+.Nm ckan
+.Nd Comprehensive Kerbal Archive Network
+.Sh SYNOPSIS
+.Nm
+{help | gui | consoleui | update | list | available | scan | repair | clean | version}
+.Nm
+install
+.Ar mod
+.Op Ar mod ...
+.Nm
+show
+.Ar mod
+.Op Ar mod ...
+.Nm
+remove
+.Ar mod
+.Op Ar mod ...
+.Nm
+upgrade
+.Ar mod
+.Op Ar mod ...
+.Nm
+search
+.Ar keyword
+.Op Ar keyword ...
+.Nm
+ksp
+.Op list | add | rename | forget | default
+.Nm
+repo
+.Op list | add | rename | forget
+.Sh DESCRIPTION
+.Nm
+is a package manager for Kerbal Space Program mods inspired by
+.Xr apt 1 .
+It manages files in the
+.Em GameData
+folder, handles compatibility with versions of the base game, and accounts for dependencies and conflicts between mods.
+.Sh COMMANDS
+.Bl -tag -width Ds
+.It help
+List available commands and documentation.
+.It gui
+Launch the GUI
+.It consoleui
+Launch the ConsoleUI
+.It update
+Update list of available mods
+.It list
+List installed mods
+.It available
+List available mods
+.It scan
+Scan for manually installed KSP mods
+.It repair
+Attempt various automatic repairs
+.It clean
+Clean away downloaded files from the cache
+.It version
+Show the version of the
+.Nm
+client being used
+.It install Ar mod Op Ar mod ...
+Install a mod
+.It upgrade Ar mod Op Ar mod ...
+Upgrade an installed mod
+.It show Ar mod
+show information about a mod
+.It ksp Op list | add | rename | forget | default
+Manage KSP installs
+.It repo Op list | add | rename | forget
+Manage CKAN repositories
+.El
+.Sh OPTIONS
+Options must be placed
+.Em after
+the command name and arguments.
+.Bl -tag -width Ds
+.It Fl -ksp Ar name
+Name of KSP instance to use
+.It Fl -kspdir Ar path
+Path to KSP instance to use
+.El
+.Sh CONCEPTS
+.Bl -tag -width Ds
+.It Repository
+A URL that returns a tar.gz file containing .ckan metadata files.
+.It NetKAN
+GitHub repository containing the list of mods that are crawled by the bot to check for new versions.
+.It CKAN-meta
+GitHub repository that contains an entry for each version of each indexed mod.
+.El
+.Sh SEE ALSO
+.Bl -tag -width Ds
+.It Forum thread:
+https://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan
+.It Main GitHub repository:
+https://github.com/KSP-CKAN/CKAN
+.El

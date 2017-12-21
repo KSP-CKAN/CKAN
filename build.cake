@@ -21,7 +21,6 @@ Task("Default")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
 
-
 Task("Debug")
     .IsDependentOn("Default");
 
@@ -42,6 +41,20 @@ Task("osx")
 Task("osx-clean")
     .Does(() => StartProcess("make",
         new ProcessSettings { Arguments = "clean", WorkingDirectory = "macosx" }));
+
+Task("deb")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { WorkingDirectory = "debian" }));
+
+Task("deb-test")
+    .IsDependentOn("deb")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "test", WorkingDirectory = "debian" }));
+
+Task("deb-clean")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
 
 Task("Restore-Nuget")
     .Does(() =>
@@ -73,7 +86,7 @@ Task("Generate-GlobalAssemblyVersionInfo")
     var metaDirectory = buildDirectory.Combine("meta");
 
     CreateDirectory(metaDirectory);
-    
+
     CreateAssemblyInfo(metaDirectory.CombineWithFilePath("GlobalAssemblyVersionInfo.cs"), new AssemblyInfoSettings
     {
         Version = versionStr2,

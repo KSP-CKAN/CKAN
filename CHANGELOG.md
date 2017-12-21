@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
 - [ConsoleUI] Create text UI inspired by Turbo Vision (#2177 by: HebaruSan; reviewed: dbent, Maxzhao, pjf, ProfFan, politas)
 - [Build] Create and release CKAN.app for Mac OS X (#2225 by: HebaruSan; reviewed: politas)
+- [Build] Debian package build system (#2187 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 
