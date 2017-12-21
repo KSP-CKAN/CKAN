@@ -65,6 +65,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     var installer = ModuleInstaller.GetInstance(ksp, user);
+                    Search.AdjustModulesCase(ksp, options.modules);
                     installer.UninstallList(options.modules);
                 }
                 catch (ModNotInstalledKraken kraken)
@@ -84,4 +85,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

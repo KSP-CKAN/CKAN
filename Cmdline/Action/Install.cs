@@ -82,6 +82,10 @@ namespace CKAN.CmdLine
                 // not want to be doing this again, so "consume" the option
                 options.ckan_files = null;
             }
+            else
+            {
+                Search.AdjustModulesCase(ksp, options.modules);
+            }
 
             if (options.modules.Count == 0)
             {

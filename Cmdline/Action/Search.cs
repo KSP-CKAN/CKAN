@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CKAN.CmdLine
 {
@@ -70,5 +71,52 @@ namespace CKAN.CmdLine
                 return module.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || module.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || modDesc.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1;
             }).ToList();
         }
+
+        /// <summary>
+        /// Find the proper capitalization of an identifier
+        /// </summary>
+        /// <param name="mods">List of valid mods from the registry</param>
+        /// <param name="module">Identifier to be treated as case insensitive</param>
+        /// <returns>
+        /// The mod's properly capitalized identifier, or the original string if it doesn't exist
+        /// </returns>
+        private static string CaseInsensitiveExactMatch(List<CkanModule> mods, string module)
+        {
+            // Look for a matching mod with a case insensitive search
+            CkanModule found = mods.FirstOrDefault(
+                (CkanModule m) => string.Equals(m.identifier, module, StringComparison.OrdinalIgnoreCase)
+            );
+            // If we don't find anything, use the original string so the main code can raise errors
+            return found?.identifier ?? module;
+        }
+
+        /// <summary>
+        /// Convert case insensitive mod names from the user to case sensitive identifiers
+        /// </summary>
+        /// <param name="ksp">Game instance forgetting the mods</param>
+        /// <param name="modules">List of strings to convert, format 'identifier' or 'identifier=version'</param>
+        public static void AdjustModulesCase(CKAN.KSP ksp, List<string> modules)
+        {
+            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
+            // Get the list of all compatible and incompatible mods
+            List<CkanModule> mods = registry.Available(ksp.VersionCriteria());
+            mods.AddRange(registry.Incompatible(ksp.VersionCriteria()));
+            for (int i = 0; i < modules.Count; ++i)
+            {
+                Match match = CkanModule.idAndVersionMatcher.Match(modules[i]);
+                if (match.Success)
+                {
+                    // Handle name=version format
+                    string ident   = match.Groups["mod"].Value;
+                    string version = match.Groups["version"].Value;
+                    modules[i] = $"{CaseInsensitiveExactMatch(mods, ident)}={version}";
+                }
+                else
+                {
+                    modules[i] = CaseInsensitiveExactMatch(mods, modules[i]);
+                }
+            }
+        }
+
     }
 }

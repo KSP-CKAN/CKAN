@@ -116,6 +116,7 @@ namespace CKAN.CmdLine
                 else
                 {
                     // TODO: These instances all need to go.
+                    Search.AdjustModulesCase(ksp, options.modules);
                     ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
                 }
             }

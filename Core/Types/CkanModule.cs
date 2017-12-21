@@ -374,7 +374,7 @@ namespace CKAN
         {
             CkanModule module;
 
-            Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+            Match match = idAndVersionMatcher.Match(mod);
 
             if (match.Success)
             {
@@ -399,6 +399,11 @@ namespace CKAN
             }
             return module;
         }
+
+        public static readonly Regex idAndVersionMatcher = new Regex(
+            @"^(?<mod>[^=]*)=(?<version>.*)$",
+            RegexOptions.Compiled
+        );
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
         public static CkanModule FromFile(string filename)
