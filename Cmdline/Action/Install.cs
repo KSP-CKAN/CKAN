@@ -94,9 +94,10 @@ namespace CKAN.CmdLine
             // Prepare options. Can these all be done in the new() somehow?
             var install_ops = new RelationshipResolverOptions
             {
-                with_all_suggests = options.with_all_suggests,
-                with_suggests = options.with_suggests,
-                with_recommends = !options.no_recommends
+                with_all_suggests  = options.with_all_suggests,
+                with_suggests      = options.with_suggests,
+                with_recommends    = !options.no_recommends,
+                allow_incompatible = options.allow_incompatible
             };
 
             if (user.Headless)
@@ -113,16 +114,32 @@ namespace CKAN.CmdLine
             }
             catch (DependencyNotSatisfiedKraken ex)
             {
-                user.RaiseMessage("{0} requires {1} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module);
+                if (ex.version == null)
+                {
+                    user.RaiseMessage("{0} requires {1} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module);
+                }
+                else
+                {
+                    user.RaiseMessage("{0} requires {1} {2} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module, ex.version);
+                }
                 user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
                 user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
+                user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
                 return Exit.ERROR;
             }
             catch (ModuleNotFoundKraken ex)
             {
-                user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                if (ex.version == null)
+                {
+                    user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                }
+                else
+                {
+                    user.RaiseMessage("Module {0} {1} required but it is not listed in the index, or not available for your version of KSP.", ex.module, ex.version);
+                }
                 user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
                 user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
+                user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
                 return Exit.ERROR;
             }
             catch (BadMetadataKraken ex)
