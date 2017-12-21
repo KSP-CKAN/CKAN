@@ -88,10 +88,17 @@ namespace CKAN
             {
                 fetchedCkanUrl = RetrieveUrl(response, 0);
                 // Check whether the release includes the auto updater
-                if (response.assets.Count >= 4) {
-                    // Last asset is AutoUpdater.exe
-                    fetchedUpdaterUrl = RetrieveUrl(response, 3);
-                } else {
+                foreach (var asset in response.assets)
+                {
+                    string url = asset.browser_download_url.ToString();
+                    if (url.EndsWith("AutoUpdater.exe"))
+                    {
+                        fetchedUpdaterUrl = new Tuple<Uri, long>(new Uri(url), (long)asset.size);
+                        break;
+                    }
+                }
+                if (fetchedUpdaterUrl == null)
+                {
                     // Older releases don't include the auto updater
                     fetchedUpdaterUrl = RetrieveUrl(MakeRequest(oldLatestUpdaterReleaseApiUrl), 0);
                 }
