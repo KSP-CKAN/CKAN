@@ -194,7 +194,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
                 (
-                    Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                     Repo.default_ckan_repo.ToString()
                 );
 
@@ -428,7 +428,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
 

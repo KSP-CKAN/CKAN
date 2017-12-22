@@ -295,24 +295,28 @@ namespace CKAN.CmdLine
                     return Exit.BADOPT;
                 }
 
-                if (KSP != null)
+                try
                 {
-                    // Set a KSP directory by its alias.
-
-                    try
+                    if (!string.IsNullOrEmpty(KSP))
                     {
+                        // Set a KSP directory by its alias.
                         manager.SetCurrentInstance(KSP);
                     }
-                    catch (InvalidKSPInstanceKraken)
+                    else if (!string.IsNullOrEmpty(KSPdir))
                     {
-                        user.RaiseMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'ksp list' to see known KSP installations", KSP);
-                        return Exit.BADOPT;
+                        // Set a KSP directory by its path
+                        manager.SetCurrentInstanceByPath(KSPdir);
                     }
                 }
-                else if (KSPdir != null)
+                catch (NotKSPDirKraken k)
                 {
-                    // Set a KSP directory by its path
-                    manager.SetCurrentInstanceByPath(KSPdir);
+                    user.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", k.path);
+                    return Exit.BADOPT;
+                }
+                catch (InvalidKSPInstanceKraken k)
+                {
+                    user.RaiseMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'ksp list' to see known KSP installations", k.instance);
+                    return Exit.BADOPT;
                 }
             }
             return exitCode;
