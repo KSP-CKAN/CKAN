@@ -60,6 +60,7 @@ deploy:
         - _build/repack/$BUILD_CONFIGURATION/ckan.exe
         - _build/osx/CKAN.dmg
         - _build/deb/ckan_*.deb
+        - _build/out/AutoUpdater/$BUILD_CONFIGURATION/bin/AutoUpdater.exe
       on:
         repo: KSP-CKAN/CKAN
         tags: true

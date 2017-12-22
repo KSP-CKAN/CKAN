@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Add depending mod to missing dependency exception (#2215 by: HebaruSan; reviewed: politas)
 - [CLI] Check game version compatibility when installing specific version (#2228 by: HebaruSan; reviewed: techman83, politas)
 - [CLI] Make Cmdline modules case insensitive (#2223 by: HebaruSan; reviewed: politas)
+- [Build] Provide fresh auto updater in releases (#2212 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
