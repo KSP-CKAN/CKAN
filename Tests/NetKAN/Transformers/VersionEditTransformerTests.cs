@@ -1,4 +1,4 @@
-﻿using CKAN;
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
 using Newtonsoft.Json.Linq;

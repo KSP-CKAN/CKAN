@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
