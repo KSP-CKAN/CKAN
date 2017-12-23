@@ -190,6 +190,13 @@ namespace CKAN.CmdLine
                 }
             }
             catch (NoGameInstanceKraken)
+            {
+                return printMissingInstanceError(user);
+            }
+            finally
+            {
+                RegistryManager.DisposeAll();
+            }
         }
 
         internal static CkanModule LoadCkanFromFile(CKAN.KSP current_instance, string ckan_file)
@@ -206,18 +213,6 @@ namespace CKAN.CmdLine
             registry_manager.registry.AddAvailable(module);
 
             return module;
-        }
-
-        private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
-        {
-            try
-            {
-                return printMissingInstanceError(user);
-            }
-            finally
-            {
-                RegistryManager.DisposeAll();
-            }
         }
 
         private static int printMissingInstanceError(IUser user)
