@@ -34,6 +34,15 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
+            // Prepare options. Can these all be done in the new() somehow?
+            var replace_ops = new RelationshipResolverOptions
+                {
+                    with_all_suggests  = options.with_all_suggests,
+                    with_suggests      = options.with_suggests,
+                    with_recommends    = !options.no_recommends,
+                    allow_incompatible = options.allow_incompatible
+                };
+            
             var registry = RegistryManager.Instance(ksp).registry;
             var to_replace = new List<ModuleReplacement>();
 
@@ -141,8 +150,15 @@ namespace CKAN.CmdLine
                 }
 
                 // TODO: These instances all need to go.
-                ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, new NetAsyncModulesDownloader(User));
+                try
+                {
+                    ModuleInstaller.GetInstance(ksp, User).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(User));
                 User.RaiseMessage("\r\nDone!\r\n");
+                }
+                catch (DependencyNotSatisfiedKraken ex)
+                {
+                    User.RaiseMessage("Dependencies not satisfied for replacement, {0} requires {1} {2} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module, ex.version);
+                }
             }
             else
             {

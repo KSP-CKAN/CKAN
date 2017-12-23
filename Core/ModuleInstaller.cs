@@ -1112,7 +1112,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Replace(IEnumerable<ModuleReplacement> replacements, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             log.Debug("Using Replace method");
             List<CkanModule> modsToInstall = new List<CkanModule>();
@@ -1183,12 +1183,21 @@ namespace CKAN
                     }
                 }
             }
+            var resolver = new RelationshipResolver(modsToInstall, options, registry_manager.registry, ksp.VersionCriteria());
+            try
+            {
+                var resolvedModsToInstall = resolver.ModList().ToList();
+                AddRemove(
+                    resolvedModsToInstall,
+                    modsToRemove,
+                    enforceConsistency
+                );
+            }
+            catch (DependencyNotSatisfiedKraken kraken)
+            {
+                throw kraken;
+            }
 
-            AddRemove(
-                modsToInstall,
-                modsToRemove,
-                enforceConsistency
-            );
         }
 
         #endregion

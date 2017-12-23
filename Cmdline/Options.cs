@@ -398,6 +398,9 @@ namespace CKAN.CmdLine
         [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
 
+        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
+        public bool allow_incompatible { get; set; }
+
         [Option("all", HelpText = "Replace all available replaced modules")]
         public bool replace_all { get; set; }
 
