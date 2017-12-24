@@ -190,12 +190,12 @@ namespace CKAN
             {
                 if (!ksp.Cache.IsCachedZip(module.download))
                 {
-                    User.RaiseMessage(" * {0} {1}", module.name, module.version);
+                    User.RaiseMessage(" * {0} {1} ({2})", module.name, module.version, module.download.Host);
                     downloads.Add(module);
                 }
                 else
                 {
-                    User.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
+                    User.RaiseMessage(" * {0} {1} (cached)", module.name, module.version);
                 }
             }
 
@@ -253,23 +253,6 @@ namespace CKAN
             }
 
             User.RaiseProgress("Done!\r\n", 100);
-        }
-
-        public ModuleResolution ResolveModules(IEnumerable<CkanModule> modules, RelationshipResolverOptions options)
-        {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
-            return new ModuleResolution(resolver.ModList(), m => ksp.Cache.IsCachedZip(m.download));
-        }
-
-        public void EnsureCache(List<CkanModule> modules, IDownloader downloader = null)
-        {
-            if (!modules.Any())
-            {
-                return;
-            }
-
-            downloader = downloader ?? new NetAsyncModulesDownloader(User);
-            downloader.DownloadModules(ksp.Cache, modules);
         }
 
         public void InstallList(ModuleResolution modules, RelationshipResolverOptions options)
@@ -1037,7 +1020,7 @@ namespace CKAN
         /// Will *re-install* with warning even if an upgrade is not available.
         /// Throws ModuleNotFoundKraken if module is not installed, or not available.
         /// </summary>
-        public void Upgrade(IEnumerable<string> identifiers, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             var options = new RelationshipResolverOptions();
 
@@ -1054,7 +1037,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules, NetAsyncModulesDownloader netAsyncDownloader, bool enforceConsistency = true)
+        public void Upgrade(IEnumerable<CkanModule> modules, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
             // Start by making sure we've downloaded everything.
             DownloadModules(modules, netAsyncDownloader);
@@ -1114,7 +1097,7 @@ namespace CKAN
         /// <summary>
         /// Makes sure all the specified mods are downloaded.
         /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods, NetAsyncModulesDownloader downloader)
+        private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
             List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
 

@@ -193,7 +193,7 @@ namespace CKAN
         internal dynamic MakeRequest(Uri url)
         {
             var web = new WebClient();
-            web.Headers.Add("user-agent", Net.UserAgentString);
+            web.Headers.Add("User-Agent", Net.UserAgentString);
 
             try
             {
