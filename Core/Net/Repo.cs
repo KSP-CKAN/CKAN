@@ -69,7 +69,7 @@ namespace CKAN
                     if (exception == null)
                     {
                         // Had exception, walked exception tree, reached leaf, got stuck.
-                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename); 
+                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename);
                     }
                     else
                     {
@@ -153,23 +153,21 @@ namespace CKAN
 
             switch (type)
             {
-            case FileType.TarGz:
-                UpdateRegistryFromTarGz (repo_file, registry);
-                break;
-            case FileType.Zip:
-                UpdateRegistryFromZip (repo_file, registry);
-                break;
-            default:
-                break;
+                case FileType.TarGz:
+                    UpdateRegistryFromTarGz(repo_file, registry);
+                    break;
+                case FileType.Zip:
+                    UpdateRegistryFromZip(repo_file, registry);
+                    break;
             }
 
             List<CkanModule> metadataChanges = new List<CkanModule>();
 
-            foreach (var installedModule in registry.InstalledModules)
+            foreach (InstalledModule installedModule in registry.InstalledModules)
             {
-                var identifier = installedModule.identifier;
+                string identifier = installedModule.identifier;
 
-                var installedVersion = registry.InstalledVersion(identifier);
+                Version installedVersion = registry.InstalledVersion(identifier);
                 if (!(registry.available_modules.ContainsKey(identifier)))
                 {
                     log.InfoFormat("UpdateRegistry, module {0}, version {1} not in repository ({2})", identifier, installedVersion, repo);
@@ -182,86 +180,11 @@ namespace CKAN
                 }
 
                 // if the mod is installed and the metadata is different we have to reinstall it
-                var metadata = registry.available_modules[identifier].module_version[installedVersion];
+                CkanModule metadata = registry.available_modules[identifier].module_version[installedVersion];
 
-                var oldMetadata = registry.InstalledModule(identifier).Module;
+                CkanModule oldMetadata = registry.InstalledModule(identifier).Module;
 
-                bool same = true;
-                if ((metadata.install == null) != (oldMetadata.install == null) ||
-                    (metadata.install != null && metadata.install.Length != oldMetadata.install.Length))
-                {
-                    same = false;
-                }
-                else
-                {
-                    if(metadata.install != null)
-                    for (int i = 0; i < metadata.install.Length; i++)
-                    {
-                        if (metadata.install[i].file != oldMetadata.install[i].file)
-                        {
-                            same = false;
-                            break;
-                        }
-
-                        if (metadata.install[i].install_to != oldMetadata.install[i].install_to)
-                        {
-                            same = false;
-                            break;
-                        }
-
-                        if (metadata.install[i].@as != oldMetadata.install[i].@as)
-                        {
-                            same = false;
-                            break;
-                        }
-
-                        if ((metadata.install[i].filter == null) != (oldMetadata.install[i].filter == null))
-                        {
-                            same = false;
-                            break;
-                        }
-
-
-                        if(metadata.install[i].filter != null)
-                        if (!metadata.install[i].filter.SequenceEqual(oldMetadata.install[i].filter))
-                        {
-                            same = false;
-                            break;
-                        }
-
-                        if ((metadata.install[i].filter_regexp == null) != (oldMetadata.install[i].filter_regexp == null))
-                        {
-                            same = false;
-                            break;
-                        }
-
-                        if(metadata.install[i].filter_regexp != null)
-                        if (!metadata.install[i].filter_regexp.SequenceEqual(oldMetadata.install[i].filter_regexp))
-                        {
-                            same = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (!RelationshipsAreEquivalent(metadata.conflicts, oldMetadata.conflicts))
-                    same = false;
-
-                if (!RelationshipsAreEquivalent(metadata.depends, oldMetadata.depends))
-                    same = false;
-
-                if (!RelationshipsAreEquivalent(metadata.recommends, oldMetadata.recommends))
-                    same = false;
-
-                if (metadata.provides != oldMetadata.provides)
-                {
-                    if (metadata.provides == null || oldMetadata.provides == null)
-                        same = false;
-                    else if (!metadata.provides.OrderBy(i => i).SequenceEqual(oldMetadata.provides.OrderBy(i => i)))
-                        same = false;
-                }
-
-                if (!same)
+                if (!MetadataEquals(metadata, oldMetadata))
                 {
                     metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
                 }
@@ -269,16 +192,16 @@ namespace CKAN
 
             if (metadataChanges.Any())
             {
-                var sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
 
-                for (var i = 0; i < metadataChanges.Count; i++)
+                for (int i = 0; i < metadataChanges.Count; i++)
                 {
-                    var module = metadataChanges[i];
+                    CkanModule module = metadataChanges[i];
 
                     sb.AppendLine(string.Format("- {0} {1}", module.identifier, module.version));
                 }
 
-                if(user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
+                if (user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
 
 {0}
 You should reinstall them in order to preserve consistency with the repository.
@@ -293,7 +216,7 @@ Do you wish to reinstall now?", sb)))
 
                     // Use the identifiers so we use the overload that actually resolves relationships
                     // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
-                    foreach (var changedIdentifier in metadataChanges.Select(i => i.identifier))
+                    foreach (string changedIdentifier in metadataChanges.Select(i => i.identifier))
                     {
                         try
                         {
@@ -324,16 +247,88 @@ Do you wish to reinstall now?", sb)))
             file_transaction.Delete(repo_file);
         }
 
+        private static bool MetadataEquals(CkanModule metadata, CkanModule oldMetadata)
+        {
+            if ((metadata.install == null) != (oldMetadata.install == null)
+                    || (metadata.install != null
+                        && metadata.install.Length != oldMetadata.install.Length))
+            {
+                return false;
+            }
+            else if (metadata.install != null)
+            {
+                for (int i = 0; i < metadata.install.Length; i++)
+                {
+                    if (!InstallStanzaEquals(metadata.install[i], oldMetadata.install[i]))
+                        return false;
+                }
+            }
+
+            if (!RelationshipsAreEquivalent(metadata.conflicts,  oldMetadata.conflicts))
+                return false;
+
+            if (!RelationshipsAreEquivalent(metadata.depends,    oldMetadata.depends))
+                return false;
+
+            if (!RelationshipsAreEquivalent(metadata.recommends, oldMetadata.recommends))
+                return false;
+
+            if (metadata.provides != oldMetadata.provides)
+            {
+                if (metadata.provides == null || oldMetadata.provides == null)
+                    return false;
+                else if (!metadata.provides.OrderBy(i => i).SequenceEqual(oldMetadata.provides.OrderBy(i => i)))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool InstallStanzaEquals(ModuleInstallDescriptor newInst, ModuleInstallDescriptor oldInst)
+        {
+            if (newInst.file != oldInst.file)
+                return false;
+            if (newInst.install_to != oldInst.install_to)
+                return false;
+            if (newInst.@as != oldInst.@as)
+                return false;
+            if ((newInst.filter == null) != (oldInst.filter == null))
+                return false;
+            if (newInst.filter != null
+                && !newInst.filter.SequenceEqual(oldInst.filter))
+                return false;
+            if ((newInst.filter_regexp == null) != (oldInst.filter_regexp == null))
+                return false;
+            if (newInst.filter_regexp != null
+                && !newInst.filter_regexp.SequenceEqual(oldInst.filter_regexp))
+                return false;
+            if (newInst.find_matches_files != oldInst.find_matches_files)
+                return false;
+            if ((newInst.include_only == null) != (oldInst.include_only == null))
+                return false;
+            if (newInst.include_only != null
+                && !newInst.include_only.SequenceEqual(oldInst.include_only))
+                return false;
+            if ((newInst.include_only_regexp == null) != (oldInst.include_only_regexp == null))
+                return false;
+            if (newInst.include_only_regexp != null
+                && !newInst.include_only_regexp.SequenceEqual(oldInst.include_only_regexp))
+                return false;
+            return true;
+        }
+
         private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor> a, List<RelationshipDescriptor> b)
         {
             if (a == b)
-                return true; // If they're the same exact object they must be equivalent
+                // If they're the same exact object they must be equivalent
+                return true;
 
             if (a == null || b == null)
-                return false; // If they're not the same exact object and either is nul then must not be equivalent
+                // If they're not the same exact object and either is null then must not be equivalent
+                return false;
 
             if (a.Count != b.Count)
-                return false; // If their counts different they must not be equivalent
+                // If their counts different they must not be equivalent
+                return false;
 
             // Sort the lists so we can compare each relationship
             var aSorted = a.OrderBy(i => i.name).ToList();
@@ -346,7 +341,8 @@ Do you wish to reinstall now?", sb)))
 
                 if (aRel.name != bRel.name)
                 {
-                    return false; // If corresponding relationships are the same they must not be equivalent
+                    // If corresponding relationships are the same they must not be equivalent
+                    return false;
                 }
 
                 // Calculate min/max for each based on explicit min/max or the bare version
@@ -363,7 +359,7 @@ Do you wish to reinstall now?", sb)))
                     {
                         if (aMinVersion.CompareTo(bMinVersion) != 0)
                         {
-                            // If they're not equal then the ymust not be equivalent
+                            // If they're not equal then they must not be equivalent
                             return false;
                         }
                     }
@@ -377,12 +373,11 @@ Do you wish to reinstall now?", sb)))
                 if (!ReferenceEquals(aMaxVersion, bMaxVersion))
                 {
                     // If they're not the same object they may not be equivalent
-
                     if (aMaxVersion != null && bMaxVersion != null)
                     {
                         if (aMaxVersion.CompareTo(bMaxVersion) != 0)
                         {
-                            // If they're not equal then the ymust not be equivalent
+                            // If they're not equal then they must not be equivalent
                             return false;
                         }
                     }
