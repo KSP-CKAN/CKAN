@@ -285,6 +285,7 @@ namespace CKAN
         {
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
+            splitContainer1.SplitterDistance = configuration.PanelPosition;
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
             {
@@ -405,10 +406,14 @@ namespace CKAN
                 return;
             }
 
+            // Copy window location to app settings
             configuration.WindowLoc = Location;
 
             // Copy window size to app settings
             configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
+
+            // Copy panel position to app settings
+            configuration.PanelPosition = splitContainer1.SplitterDistance;
 
             // Save the active filter
             configuration.ActiveFilter = (int)mainModList.ModFilter;
