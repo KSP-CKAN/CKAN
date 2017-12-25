@@ -48,6 +48,8 @@ namespace CKAN
 
         public int PanelPosition = 650;
 
+        public int ModInfoPosition = 235;
+
         public void Save()
         {
             SaveConfiguration(this, path);
