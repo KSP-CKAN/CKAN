@@ -61,6 +61,18 @@ namespace CKAN
             }
         }
 
+        public int ModMetaSplitPosition
+        {
+            get
+            {
+                return splitContainer2.SplitterDistance;
+            }
+            set
+            {
+                this.splitContainer2.SplitterDistance = value;
+            }
+        }
+
         private KSPManager manager
         {
             get
