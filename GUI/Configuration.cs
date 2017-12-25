@@ -46,7 +46,7 @@ namespace CKAN
 
         public Size WindowSize = new Size(1024, 500);
 
-        public int PanelPosition = new int(650);
+        public int PanelPosition = 650;
 
         public void Save()
         {
