@@ -896,7 +896,10 @@ namespace CKAN
                 }
                 catch (Kraken kraken)
                 {
-                    currentUser.RaiseError($"{kraken.Message}: {kraken.InnerException?.Message}");
+                    currentUser.RaiseError(kraken.InnerException == null
+                        ? kraken.Message
+                        : $"{kraken.Message}: {kraken.InnerException.Message}");
+
                     return;
                 }
                 catch (Exception ex)
