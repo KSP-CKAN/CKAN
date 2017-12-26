@@ -192,7 +192,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
 
@@ -403,7 +403,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
             (
-                Path.Combine(CurrentInstance.GameDir(), "CKAN/GUIConfig.xml"),
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                 Repo.default_ckan_repo.ToString()
             );
 
@@ -427,7 +427,7 @@ namespace CKAN
             SwitchEnabledState();
             ClearLog();
             tabController.RenameTab("WaitTabPage", "Updating CKAN");
-            SetDescription("Upgrading CKAN to {AutoUpdate.Instance.LatestVersion}");
+            SetDescription($"Upgrading CKAN to {AutoUpdate.Instance.LatestVersion}");
 
             log.Info("Start ckan update");
             BackgroundWorker updateWorker = new BackgroundWorker();
