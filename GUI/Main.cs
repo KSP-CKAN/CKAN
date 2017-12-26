@@ -1225,15 +1225,7 @@ namespace CKAN
                 var guiMod = (GUIMod)ModList.Rows[rowIndex].Tag;
 
                 downloadContentsToolStripMenuItem.Enabled = !guiMod.IsCached;
-
-                if (guiMod.IsInstalled || guiMod.IsAutodetected)
-                {
-                    reinstallToolStripMenuItem.Enabled = true;
-                }
-                else
-                {
-                    reinstallToolStripMenuItem.Enabled = false;
-                }
+                reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled;
             }
         }
 
