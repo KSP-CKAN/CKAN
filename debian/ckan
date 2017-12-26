@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -n "$*" ]
+then
+    # If command line arguments are given, use them
+    mono /usr/lib/ckan/ckan.exe "$@"
+else
+    # No command line arguments
+    if [ -n "$WAYLAND_DISPLAY" -o -n "$DISPLAY" ]
+    then
+        # Default to GUI if there's an X11 display or a Wayland display
+        mono /usr/lib/ckan/ckan.exe gui
+    else
+        # Run the retro text UI if graphics aren't available
+        mono /usr/lib/ckan/ckan.exe consoleui
+    fi
+fi

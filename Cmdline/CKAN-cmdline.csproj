@@ -88,6 +88,10 @@
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ConsoleUI\CKAN-ConsoleUI.csproj">
+      <Project>{DA5C7023-9A3B-4204-AE2F-BBA6C388B436}</Project>
+      <Name>CKAN-ConsoleUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="log4net.xml">

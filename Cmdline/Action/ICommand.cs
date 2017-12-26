@@ -5,4 +5,3 @@
         int RunCommand(CKAN.KSP ksp, object options);
     }
 }
-

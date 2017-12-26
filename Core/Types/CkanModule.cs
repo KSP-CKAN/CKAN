@@ -374,7 +374,7 @@ namespace CKAN
         {
             CkanModule module;
 
-            Match match = Regex.Match(mod, @"^(?<mod>[^=]*)=(?<version>.*)$");
+            Match match = idAndVersionMatcher.Match(mod);
 
             if (match.Success)
             {
@@ -383,7 +383,8 @@ namespace CKAN
 
                 module = registry.GetModuleByVersion(ident, version);
 
-                if (module == null)
+                if (module == null
+                        || (ksp_version != null && !module.IsCompatibleKSP(ksp_version)))
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format("Module {0} version {1} not available", ident, version));
             }
@@ -398,6 +399,11 @@ namespace CKAN
             }
             return module;
         }
+
+        public static readonly Regex idAndVersionMatcher = new Regex(
+            @"^(?<mod>[^=]*)=(?<version>.*)$",
+            RegexOptions.Compiled
+        );
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
         public static CkanModule FromFile(string filename)
@@ -497,6 +503,22 @@ namespace CKAN
                 return ksp_version;
             else
                 // No upper limit.
+                return KspVersion.Any;
+        }
+
+        /// <summary>
+        /// Returns machine readable object indicating the lowest compatible
+        /// version of KSP this module will run with.
+        /// </summary>
+        public KspVersion EarliestCompatibleKSP()
+        {
+            // Find the lowest compatible KSP version
+            if (ksp_version_min != null)
+                return ksp_version_min;
+            else if (ksp_version != null)
+                return ksp_version;
+            else
+                // No lower limit.
                 return KspVersion.Any;
         }
 

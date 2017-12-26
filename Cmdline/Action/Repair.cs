@@ -1,61 +1,85 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
     public class Repair : ISubCommand
     {
-        public CKAN.KSP CurrentInstance { get; set; }
-        public IUser User { get; set; }
-        public string option;
-        public object suboptions;
+        public Repair() { }
 
-        internal class RepairSubOptions : CommonOptions
+        internal class RepairSubOptions : VerbCommandOptions
         {
-            [VerbOption("registry", HelpText="Try to repair the CKAN registry")]
-            public CommonOptions Registry { get; set; }
-        }
+            [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
+            public InstanceSpecificOptions Registry { get; set; }
 
-        public Repair(CKAN.KSP current_instance,IUser user)
-        {
-            CurrentInstance = current_instance;
-            User = user;
+            [HelpVerbOption]
+            public string GetUsage(string verb)
+            {
+                HelpText ht = HelpText.AutoBuild(this, verb);
+                // Add a usage prefix line
+                ht.AddPreOptionsLine(" ");
+                if (string.IsNullOrEmpty(verb))
+                {
+                    ht.AddPreOptionsLine("ckan repair - Attempt various automatic repairs");
+                    ht.AddPreOptionsLine($"Usage: ckan repair <command> [options]");
+                }
+                else
+                {
+                    ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
+                    switch (verb)
+                    {
+                        // Commands with only --flag type options
+                        case "registry":
+                        default:
+                            ht.AddPreOptionsLine($"Usage: ckan repair {verb} [options]");
+                            break;
+                    }
+                }
+                return ht;
+            }
         }
 
         public int RunSubCommand(SubCommandOptions unparsed)
         {
-            string[] args = unparsed.options.ToArray();
-
-            if (args.Length == 0)
-            {
-                // There's got to be a better way of showing help...
-                args = new string[1];
-                args[0] = "help";
-            }
-
+            int exitCode = Exit.OK;
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepairSubOptions (), Parse);
-
-            switch (option)
+            Parser.Default.ParseArgumentsStrict(unparsed.options.ToArray(), new RepairSubOptions(), (string option, object suboptions) =>
             {
-                case "registry":
-                    return Registry();
-            }
+                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
+                if (!string.IsNullOrEmpty(option) && suboptions != null)
+                {
+                    CommonOptions options = (CommonOptions)suboptions;
+                    User = new ConsoleUser(options.Headless);
+                    KSPManager manager = new KSPManager(User);
+                    exitCode = options.Handle(manager, User);
+                    if (exitCode != Exit.OK)
+                        return;
 
-            throw new BadCommandKraken("Unknown command: repair " + option);
+                    switch (option)
+                    {
+                        case "registry":
+                            exitCode = Registry(MainClass.GetGameInstance(manager));
+                            break;
+
+                        default:
+                            User.RaiseMessage("Unknown command: repair {0}", option);
+                            exitCode = Exit.BADOPT;
+                            break;
+                    }
+                }
+            }, () => { exitCode = MainClass.AfterHelp(); });
+            RegistryManager.DisposeAll();
+            return exitCode;
         }
 
-        public void Parse(string option, object suboptions)
-        {
-            this.option = option;
-            this.suboptions = suboptions;
-        }
+        private IUser User { get; set; }
 
         /// <summary>
         /// Try to repair our registry.
         /// </summary>
-        private int Registry()
+        private int Registry(CKAN.KSP ksp)
         {
-            var manager = RegistryManager.Instance(CurrentInstance);
+            var manager = RegistryManager.Instance(ksp);
             manager.registry.Repair();
             manager.Save();
             User.RaiseMessage("Registry repairs attempted. Hope it helped.");
@@ -63,4 +87,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

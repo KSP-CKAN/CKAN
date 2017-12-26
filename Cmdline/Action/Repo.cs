@@ -4,95 +4,96 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using CommandLine;
+using CommandLine.Text;
 using log4net;
 
 namespace CKAN.CmdLine
 {
-    public struct RepositoryList
-    {
-        public Repository[] repositories;
-    }
 
     public class Repo : ISubCommand
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        public Repo() { }
 
-        public KSPManager Manager { get; set; }
-        public IUser User { get; set; }
-        public string option;
-        public object suboptions;
-
-
-        public Repo(KSPManager manager, IUser user)
+        internal class RepoSubOptions : VerbCommandOptions
         {
-            Manager = manager;
-            User = user;
-        }
+            [VerbOption("available", HelpText = "List (canonical) available repositories")]
+            public AvailableOptions AvailableOptions { get; set; }
 
-        internal class RepoSubOptions : CommonOptions
-        {
-            [VerbOption("available", HelpText="List (canonical) available repositories")]
-            public CommonOptions AvailableOptions { get; set; }
+            [VerbOption("list",      HelpText = "List repositories")]
+            public ListOptions ListOptions { get; set; }
 
-            [VerbOption("list", HelpText="List repositories")]
-            public CommonOptions ListOptions { get; set; }
-
-            [VerbOption("add", HelpText="Add a repository")]
+            [VerbOption("add",       HelpText = "Add a repository")]
             public AddOptions AddOptions { get; set; }
 
-            [VerbOption("forget", HelpText="Forget a repository")]
+            [VerbOption("forget",    HelpText = "Forget a repository")]
             public ForgetOptions ForgetOptions { get; set; }
 
-            [VerbOption("default", HelpText="Set the default repository")]
+            [VerbOption("default",   HelpText = "Set the default repository")]
             public DefaultOptions DefaultOptions { get; set; }
+
+            [HelpVerbOption]
+            public string GetUsage(string verb)
+            {
+                HelpText ht = HelpText.AutoBuild(this, verb);
+                // Add a usage prefix line
+                ht.AddPreOptionsLine(" ");
+                if (string.IsNullOrEmpty(verb))
+                {
+                    ht.AddPreOptionsLine("ckan repo - Manage CKAN repositories");
+                    ht.AddPreOptionsLine($"Usage: ckan repo <command> [options]");
+                }
+                else
+                {
+                    ht.AddPreOptionsLine("repo " + verb + " - " + GetDescription(verb));
+                    switch (verb)
+                    {
+                        // First the commands with two arguments
+                        case "add":
+                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name url");
+                            break;
+
+                        // Then the commands with one argument
+                        case "remove":
+                        case "forget":
+                        case "default":
+                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options] name");
+                            break;
+
+                        // Now the commands with only --flag type options
+                        case "available":
+                        case "list":
+                        default:
+                            ht.AddPreOptionsLine($"Usage: ckan repo {verb} [options]");
+                            break;
+                    }
+                }
+                return ht;
+            }
         }
 
-        internal class AvailableOptions : CommonOptions
+        internal class AvailableOptions : CommonOptions { }
+        internal class ListOptions      : InstanceSpecificOptions { }
+
+        internal class AddOptions : InstanceSpecificOptions
         {
+            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(1)] public string uri { get; set; }
         }
 
-        internal class ListOptions : CommonOptions
+        internal class DefaultOptions : InstanceSpecificOptions
         {
+            [ValueOption(0)] public string uri { get; set; }
         }
 
-        internal class AddOptions : CommonOptions
+        internal class ForgetOptions : InstanceSpecificOptions
         {
-            [ValueOption(0)]
-            public string name { get; set; }
-
-            [ValueOption(1)]
-            public string uri { get; set; }
-        }
-
-        internal class DefaultOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string uri { get; set; }
-        }
-
-        internal class ForgetOptions : CommonOptions
-        {
-            [ValueOption(0)]
-            public string name { get; set; }
-        }
-
-        internal void Parse(string option, object suboptions)
-        {
-            this.option = option;
-            this.suboptions = suboptions;
+            [ValueOption(0)] public string name { get; set; }
         }
 
         // This is required by ISubCommand
         public int RunSubCommand(SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
-
-            if (args.Length == 0)
-            {
-                // There's got to be a better way of showing help...
-                args = new string[1];
-                args[0] = "help";
-            }
 
             #region Aliases
 
@@ -107,35 +108,57 @@ namespace CKAN.CmdLine
             }
 
             #endregion
+
+            int exitCode = Exit.OK;
+
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions (), Parse);
-
-            // That line above will have set our 'option' and 'suboption' fields.
-
-            switch (option)
+            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions(), (string option, object suboptions) =>
             {
-                case "available":
-                    return AvailableRepositories();
+                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
+                if (!string.IsNullOrEmpty(option) && suboptions != null)
+                {
+                    CommonOptions options = (CommonOptions)suboptions;
+                    User = new ConsoleUser(options.Headless);
+                    Manager = new KSPManager(User);
+                    exitCode = options.Handle(Manager, User);
+                    if (exitCode != Exit.OK)
+                        return;
 
-                case "list":
-                    return ListRepositories();
+                    switch (option)
+                    {
+                        case "available":
+                            exitCode = AvailableRepositories();
+                            break;
 
-                case "add":
-                    return AddRepository((AddOptions)suboptions);
+                        case "list":
+                            exitCode = ListRepositories();
+                            break;
 
-                case "forget":
-                    return ForgetRepository((ForgetOptions)suboptions);
+                        case "add":
+                            exitCode = AddRepository((AddOptions)suboptions);
+                            break;
 
-                case "default":
-                    return DefaultRepository((DefaultOptions)suboptions);
+                        case "remove":
+                        case "forget":
+                            exitCode = ForgetRepository((ForgetOptions)suboptions);
+                            break;
 
-                default:
-                    User.RaiseMessage("Unknown command: repo {0}", option);
-                    return Exit.BADOPT;
-            }
+                        case "default":
+                            exitCode = DefaultRepository((DefaultOptions)suboptions);
+                            break;
+
+                        default:
+                            User.RaiseMessage("Unknown command: repo {0}", option);
+                            exitCode = Exit.BADOPT;
+                            break;
+                    }
+                }
+            }, () => { exitCode = MainClass.AfterHelp(); });
+            RegistryManager.DisposeAll();
+            return exitCode;
         }
 
-        public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
+        private static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
             WebClient client = new WebClient();
 
@@ -179,8 +202,8 @@ namespace CKAN.CmdLine
 
         private int ListRepositories()
         {
+            var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
             User.RaiseMessage("Listing all known repositories:");
-            var manager = RegistryManager.Instance(Manager.CurrentInstance);
             SortedDictionary<string, Repository> repositories = manager.registry.Repositories;
 
             int maxNameLen = 0;
@@ -199,7 +222,7 @@ namespace CKAN.CmdLine
 
         private int AddRepository(AddOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
+            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
 
             if (options.name == null)
             {
@@ -263,7 +286,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
+            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
             var registry = manager.registry;
             log.DebugFormat("About to forget repository '{0}'", options.name);
 
@@ -290,7 +313,7 @@ namespace CKAN.CmdLine
 
         private int DefaultRepository(DefaultOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(Manager.CurrentInstance);
+            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager));
 
             if (options.uri == null)
             {
@@ -313,5 +336,16 @@ namespace CKAN.CmdLine
 
             return Exit.OK;
         }
+
+        private KSPManager Manager { get; set; }
+        private IUser      User    { get; set; }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
     }
+
+    public struct RepositoryList
+    {
+        public Repository[] repositories;
+    }
+
 }

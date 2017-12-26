@@ -64,6 +64,31 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// Exception describing a missing dependency
+    /// </summary>
+    public class DependencyNotSatisfiedKraken : ModuleNotFoundKraken
+    {
+        /// <summary>
+        /// The mod with an unmet dependency
+        /// </summary>
+        public readonly CkanModule parent;
+
+        /// <summary>
+        /// Initialize the exceptions
+        /// </summary>
+        /// <param name="parentModule">The module with the unmet dependency</param>
+        /// <param name="module">The name of the missing dependency</param>
+        /// <param name="reason">Message parameter for base class</param>
+        /// <param name="innerException">Originating exception parameter for base class</param>
+        public DependencyNotSatisfiedKraken(CkanModule parentModule,
+            string module, string version = null, string reason = null, Exception innerException = null)
+            : base(module, version, reason, innerException)
+        {
+            parent = parentModule;
+        }
+    }
+
     public class NotKSPDirKraken : Kraken
     {
         public string path;
@@ -302,7 +327,7 @@ namespace CKAN
 
     public class RegistryInUseKraken : Kraken
     {
-        readonly string lockfilePath;
+        public readonly string lockfilePath;
 
         public RegistryInUseKraken(string path, string reason = null, Exception inner_exception = null)
             :base(reason, inner_exception)

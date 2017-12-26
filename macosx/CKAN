@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Check El Capitan's mono install location
+PATH="$PATH":/usr/local/bin
+export PATH
+
+MONO=$(which mono)
+
+if [ -z "$MONO" -o ! -x "$MONO" ]
+then
+	# We could not find mono. The wiki explains how to install.
+	open 'https://github.com/KSP-CKAN/CKAN/wiki/Installing-CKAN-on-OSX'
+else
+	# Mono found, so we can run CKAN.
+	# Fetch the path relative to the launch point where this shell script exists. (taken from Tasque & macpack)
+	APP_PATH=$(echo $0 | awk '{split($0,patharr,"/"); idx=1; while(patharr[idx+3] != "") { if (patharr[idx] != "/") {printf("%s/", patharr[idx]); idx++ }} }')
+	ASSEMBLY=ckan.exe
+	MONO_FRAMEWORK_PATH=/Library/Frameworks/Mono.framework/Versions/Current
+	export DYLD_FALLBACK_LIBRARY_PATH=$APP_PATH/Contents/MacOS:$MONO_FRAMEWORK_PATH/lib:/lib:/usr/lib
+
+	cd "$APP_PATH/Contents/MacOS"
+	exec -a "CKAN" "$MONO" --debug $ASSEMBLY $@
+fi

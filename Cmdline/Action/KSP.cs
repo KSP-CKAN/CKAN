@@ -1,87 +1,101 @@
 using System;
 using System.Linq;
 using CommandLine;
+using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
     public class KSP : ISubCommand
     {
-        public KSPManager Manager { get; set; }
-        public IUser User { get; set; }
-        public string option;
-        public object suboptions;
+        public KSP() { }
 
-        public KSP(KSPManager manager, IUser user)
+        internal class KSPSubOptions : VerbCommandOptions
         {
-            Manager = manager;
-            User = user;
-        }
-
-        internal class KSPSubOptions : CommonOptions
-        {
-            [VerbOption("list", HelpText="List KSP installs")]
+            [VerbOption("list",    HelpText = "List KSP installs")]
             public CommonOptions ListOptions { get; set; }
 
-            [VerbOption("add", HelpText="Add a KSP install")]
+            [VerbOption("add",     HelpText = "Add a KSP install")]
             public AddOptions AddOptions { get; set; }
 
-            [VerbOption("rename", HelpText="Rename a KSP install")]
+            [VerbOption("rename",  HelpText = "Rename a KSP install")]
             public RenameOptions RenameOptions { get; set; }
 
-            [VerbOption("forget", HelpText="Forget a KSP install")]
+            [VerbOption("forget",  HelpText = "Forget a KSP install")]
             public ForgetOptions ForgetOptions { get; set; }
 
-            [VerbOption("default", HelpText="Set the default KSP install")]
+            [VerbOption("default", HelpText = "Set the default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
+
+            [HelpVerbOption]
+            public string GetUsage(string verb)
+            {
+                HelpText ht = HelpText.AutoBuild(this, verb);
+                // Add a usage prefix line
+                ht.AddPreOptionsLine(" ");
+                if (string.IsNullOrEmpty(verb))
+                {
+                    ht.AddPreOptionsLine("ckan ksp - Manage KSP installs");
+                    ht.AddPreOptionsLine($"Usage: ckan ksp <command> [options]");
+                }
+                else
+                {
+                    ht.AddPreOptionsLine("ksp " + verb + " - " + GetDescription(verb));
+                    switch (verb)
+                    {
+                        // First the commands with two string arguments
+                        case "add":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name url");
+                            break;
+                        case "rename":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] oldname newname");
+                            break;
+
+                        // Now the commands with one string argument
+                        case "remove":
+                        case "forget":
+                        case "use":
+                        case "default":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name");
+                            break;
+
+                        // Now the commands with only --flag type options
+                        case "list":
+                        default:
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options]");
+                            break;
+
+                    }
+                }
+                return ht;
+            }
         }
 
         internal class AddOptions : CommonOptions
         {
-            [ValueOption(0)]
-            public string name { get; set; }
-
-            [ValueOption(1)]
-            public string path { get; set; }
+            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(1)] public string path { get; set; }
         }
 
         internal class RenameOptions : CommonOptions
         {
-            [ValueOption(0)]
-            public string old_name { get; set; }
-
-            [ValueOption(1)]
-            public string new_name { get; set; }
+            [ValueOption(0)] public string old_name { get; set; }
+            [ValueOption(1)] public string new_name { get; set; }
         }
 
         internal class ForgetOptions : CommonOptions
         {
-            [ValueOption(0)]
-            public string name { get; set; }
+            [ValueOption(0)] public string name { get; set; }
         }
 
         internal class DefaultOptions : CommonOptions
         {
-            [ValueOption(0)]
-            public string name { get; set; }
-        }
-
-        internal void Parse(string option, object suboptions)
-        {
-            this.option = option;
-            this.suboptions = suboptions;
+            [ValueOption(0)] public string name { get; set; }
         }
 
         // This is required by ISubCommand
         public int RunSubCommand(SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
-
-            if (args.Length == 0)
-            {
-                // There's got to be a better way of showing help...
-                args = new string[1];
-                args[0] = "help";
-            }
 
             #region Aliases
 
@@ -100,33 +114,56 @@ namespace CKAN.CmdLine
 
             #endregion
 
+            int exitCode = Exit.OK;
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions (), Parse);
-
-            // That line above will have set our 'option' and 'suboption' fields.
-
-            switch (option)
+            Parser.Default.ParseArgumentsStrict(args, new KSPSubOptions(), (string option, object suboptions) =>
             {
-                case "list":
-                    return ListInstalls();
+                // ParseArgumentsStrict calls us unconditionally, even with bad arguments
+                if (!string.IsNullOrEmpty(option) && suboptions != null)
+                {
+                    CommonOptions options = (CommonOptions)suboptions;
+                    User = new ConsoleUser(options.Headless);
+                    Manager = new KSPManager(User);
+                    exitCode = options.Handle(Manager, User);
+                    if (exitCode != Exit.OK)
+                        return;
 
-                case "add":
-                    return AddInstall((AddOptions)suboptions);
+                    switch (option)
+                    {
+                        case "list":
+                            exitCode = ListInstalls();
+                            break;
 
-                case "rename":
-                    return RenameInstall((RenameOptions)suboptions);
+                        case "add":
+                            exitCode = AddInstall((AddOptions)suboptions);
+                            break;
 
-                case "forget":
-                    return ForgetInstall((ForgetOptions)suboptions);
+                        case "rename":
+                            exitCode = RenameInstall((RenameOptions)suboptions);
+                            break;
 
-                case "default":
-                    return SetDefaultInstall((DefaultOptions)suboptions);
+                        case "forget":
+                            exitCode = ForgetInstall((ForgetOptions)suboptions);
+                            break;
 
-                default:
-                    User.RaiseMessage("Unknown command: ksp {0}", option);
-                    return Exit.BADOPT;
-            }
+                        case "use":
+                        case "default":
+                            exitCode = SetDefaultInstall((DefaultOptions)suboptions);
+                            break;
+
+                        default:
+                            User.RaiseMessage("Unknown command: ksp {0}", option);
+                            exitCode = Exit.BADOPT;
+                            break;
+                    }
+                }
+            }, () => { exitCode = MainClass.AfterHelp(); });
+            RegistryManager.DisposeAll();
+            return exitCode;
         }
+
+        private KSPManager Manager { get; set; }
+        private IUser      User    { get; set; }
 
         private int ListInstalls()
         {

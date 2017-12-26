@@ -105,6 +105,11 @@ namespace CKAN
             get { return source_module; }
         }
 
+        public DateTime InstallTime
+        {
+            get { return install_time; }
+        }
+
         #endregion
 
         #region Constructors

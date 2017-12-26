@@ -418,43 +418,12 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available != null)
+                if (available != null
+                    && allDependenciesCompatible(available, ksp_version, modules_for_current_version))
                 {
-                    // we need to check that we can get everything we depend on
-                    bool failedDepedency = false;
-
-                    if (available.depends != null)
-                    {
-                        foreach (RelationshipDescriptor dependency in available.depends)
-                        {
-                            try
-                            {
-                                if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
-                                {
-                                    failedDepedency = true;
-                                    break;
-                                }
-                            }
-                            catch (KeyNotFoundException e)
-                            {
-                                log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
-                                throw e;
-                            }
-                            catch (ModuleNotFoundKraken)
-                            {
-                                failedDepedency = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!failedDepedency)
-                    {
-                        compatible.Add(available);
-                    }
+                    compatible.Add(available);
                 }
             }
-
             return compatible;
         }
 
@@ -463,8 +432,13 @@ namespace CKAN
         /// </summary>
         public List<CkanModule> Incompatible(KspVersionCriteria ksp_version)
         {
-            var candidates = new List<string>(available_modules.Keys);
+            var candidates   = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
+
+            CkanModule[] modules_for_current_version = available_modules.Values
+                .Select(pair => pair.Latest(ksp_version))
+                .Where(mod => mod != null)
+                .ToArray();
 
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
@@ -474,7 +448,9 @@ namespace CKAN
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
-                if (available == null)
+                // If a mod is available, it might still have incompatible dependencies.
+                if (available == null
+                    || !allDependenciesCompatible(available, ksp_version, modules_for_current_version))
                 {
                     incompatible.Add(LatestAvailable(candidate, null));
                 }
@@ -483,6 +459,33 @@ namespace CKAN
             return incompatible;
         }
 
+        private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version, CkanModule[] modules_for_current_version)
+        {
+            // we need to check that we can get everything we depend on
+            if (mod.depends != null)
+            {
+                foreach (RelationshipDescriptor dependency in mod.depends)
+                {
+                    try
+                    {
+                        if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
+                        {
+                            return false;
+                        }
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                        throw e;
+                    }
+                    catch (ModuleNotFoundKraken)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.LatestAvailable" />
@@ -524,6 +527,25 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Get full JSON metadata string for a mod's available versions
+        /// </summary>
+        /// <param name="identifier">Name of the mod to look up</param>
+        /// <returns>
+        /// JSON formatted string for all the available versions of the mod
+        /// </returns>
+        public string GetAvailableMetadata(string identifier)
+        {
+            try
+            {
+                return available_modules[identifier].FullMetadata();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Return the latest game version compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
@@ -534,13 +556,45 @@ namespace CKAN
                 : null;
         }
 
+        /// <summary>
+        /// Find the minimum and maximum mod versions and compatible game versions
+        /// for a list of modules (presumably different versions of the same mod).
+        /// </summary>
+        /// <param name="modVersions">The modules to inspect</param>
+        /// <param name="minMod">Return parameter for the lowest  mod  version</param>
+        /// <param name="maxMod">Return parameter for the highest mod  version</param>
+        /// <param name="minKsp">Return parameter for the lowest  game version</param>
+        /// <param name="maxKsp">Return parameter for the highest game version</param>
+        public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
+                out Version    minMod, out Version    maxMod,
+                out KspVersion minKsp, out KspVersion maxKsp)
+        {
+            minMod = maxMod = null;
+            minKsp = maxKsp = null;
+            foreach (CkanModule rel in modVersions) {
+                if (minMod == null || minMod > rel.version) {
+                    minMod = rel.version;
+                }
+                if (maxMod == null || maxMod < rel.version) {
+                    maxMod = rel.version;
+                }
+                KspVersion relMin = rel.EarliestCompatibleKSP();
+                KspVersion relMax = rel.LatestCompatibleKSP();
+                if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny)) {
+                    minKsp = relMin;
+                }
+                if (maxKsp == null || !maxKsp.IsAny && (maxKsp < relMax || relMax.IsAny)) {
+                    maxKsp = relMax;
+                }
+            }
+        }
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string module, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null)
         {
-            // This public interface calculates a cache of modules which
+            // Calculates a cache of modules which
             // are compatible with the current version of KSP, and then
             // calls the private version below for heavy lifting.
             return LatestAvailableWithProvides(module, ksp_version,
@@ -960,5 +1014,32 @@ namespace CKAN
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
             return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
         }
+
+        /// <summary>
+        /// Get a dictionary of all mod versions indexed by their downloads' SHA-1 hash.
+        /// Useful for finding the mods for a group of files without repeatedly searching the entire registry.
+        /// </summary>
+        /// <returns>
+        /// dictionary[sha1] = {mod1, mod2, mod3};
+        /// </returns>
+        public Dictionary<string, List<CkanModule>> GetSha1Index()
+        {
+            var index = new Dictionary<string, List<CkanModule>>();
+            foreach (var kvp in available_modules) {
+                AvailableModule am = kvp.Value;
+                foreach (var kvp2 in am.module_version) {
+                    CkanModule mod = kvp2.Value;
+                    if (mod.download_hash != null) {
+                        if (index.ContainsKey(mod.download_hash.sha1)) {
+                            index[mod.download_hash.sha1].Add(mod);
+                        } else {
+                            index.Add(mod.download_hash.sha1, new List<CkanModule>() {mod});
+                        }
+                    }
+                }
+            }
+            return index;
+        }
+
     }
 }

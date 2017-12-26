@@ -29,11 +29,14 @@ namespace CKAN.CmdLine
                 // What? No files specified?
                 User.RaiseMessage("Usage: ckan upgrade Mod [Mod2, ...]");
                 User.RaiseMessage("  or   ckan upgrade --all");
-                User.RaiseMessage("  or   ckan upgrade ckan");
+                if (AutoUpdate.CanUpdate)
+                {
+                    User.RaiseMessage("  or   ckan upgrade ckan");
+                }
                 return Exit.BADOPT;
             }
 
-            if (!options.upgrade_all && options.modules[0] == "ckan")
+            if (!options.upgrade_all && options.modules[0] == "ckan" && AutoUpdate.CanUpdate)
             {
                 User.RaiseMessage("Querying the latest CKAN version");
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
@@ -116,6 +119,7 @@ namespace CKAN.CmdLine
                 else
                 {
                     // TODO: These instances all need to go.
+                    Search.AdjustModulesCase(ksp, options.modules);
                     ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
                 }
             }

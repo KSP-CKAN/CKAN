@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -160,6 +162,26 @@ namespace CKAN
         {
             // Some code may expect this to be sorted in descending order
             return new List<CkanModule>(module_version.Values.Reverse());
+        }
+
+        /// <summary>
+        /// Return the entire section of registry.json for this mod
+        /// </summary>
+        /// <returns>
+        /// Nicely formatted JSON string containing metadata for all of this mod's available versions
+        /// </returns>
+        public string FullMetadata()
+        {
+            StringWriter sw = new StringWriter(new StringBuilder());
+            using (JsonTextWriter writer = new JsonTextWriter(sw) {
+                    Formatting  = Formatting.Indented,
+                    Indentation = 4,
+                    IndentChar  = ' '
+                })
+            {
+                new JsonSerializer().Serialize(writer, this);
+            }
+            return sw.ToString();
         }
 
     }

@@ -5,30 +5,53 @@ All notable changes to this project will be documented in this file.
 ## v1.24.0-PRE
 
 ## Features
+
 - [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
-- [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
 - [Spec] Add CC-BY-ND licence options (#2160 by: MoreRobustThanYou; reviewed: Olympic1, politas)
 - [GUI] Change icon on filter button to something filter-y (#2156 by: politas; reviewed: HebaruSan)
 - [Core] Add include_only fields (#1577, #2170 by: Zane6888, Olympic1; reviewed: politas)
-- [Build] Establish a .gitattributes file (#2169 by: Olympic1; reviewed: politas)
+- [ConsoleUI] Create text UI inspired by Turbo Vision (#2177 by: HebaruSan; reviewed: dbent, Maxzhao, pjf, ProfFan, politas)
+- [Build] Create and release CKAN.app for Mac OS X (#2225 by: HebaruSan; reviewed: politas)
+- [Build] Debian package build system (#2187 by: HebaruSan; reviewed: politas)
+- [Core] Prompt to reinstall on change to include_only (No PR by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
+
 - [Build] Add skip_deploy to GitHub release deploy provider (#2151 by: dbent; reviewed: politas)
 - [Build] Fix build errors for UpdateCol (#2153 by: politas; reviewed: Olympic1)
-- [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
 - [Auto-updater] Move AskForAutoUpdates dialog to center of screen (#2165 by: politas; reviewed: Olympic1)
 - [Core] Clean up registry lock file after parse failure (#2175 by: HebaruSan; reviewed: politas)
 - [Core] Purge 6 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: politas)
-- [Build] Remove unnecessary using directives (#2181 by: HebaruSan; reviewed: politas)
-- [Build] Cleanup project (#2182 by: Olympic1; reviewed: HebaruSan, politas, dbent)
-- [NetKAN] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
-- [Build] Only check first three segments of version in ci (#2192 by: HebaruSan; reviewed: techman83)
+- [Build] Only check first three segments of version in ci (#2192, #2195 by: HebaruSan; reviewed: techman83, Olympic1)
 - [GUI] Initialize checkboxes to desired value at creation (#2184 by: HebaruSan; reviewed: mwerle, politas)
 - [GUI] Avoid crash with unavailable installed mod, improve error messages (#2188 by: HebaruSan; reviewed: politas)
+- [CLI] Fix cmdline help text problems (#2197 by: HebaruSan; reviewed: politas)
+- [CLI] Dispose registry managers before exit to prevent exceptions (#2203 by: HebaruSan; reviewed: politas)
+- [GUI/CLI] Avoid NRE in install-from-ckan (#2205 by: HebaruSan; reviewed: politas)
+- [GUI] Avoid NRE in TooManyModsProvide (#2209 by: HebaruSan; reviewed: politas)
+- [Core] Install version from file when installing from file (#2211 by: HebaruSan; reviewed: politas, techman83)
+- [GUI] Show mods with incompatible dependencies (#2216 by: HebaruSan; reviewed: politas)
+- [GUI] Fix missing entries in dependency graphs (#2226 by: HebaruSan; reviewed: politas)
+- [Multiple] Add depending mod to missing dependency exception (#2215 by: HebaruSan; reviewed: politas)
+- [CLI] Check game version compatibility when installing specific version (#2228 by: HebaruSan; reviewed: techman83, politas)
+- [CLI] Make Cmdline modules case insensitive (#2223 by: HebaruSan; reviewed: politas)
+- [Build] Provide fresh auto updater in releases (#2212 by: HebaruSan; reviewed: politas)
+- [CLI] Don't try to remove autodetected DLLs (#2232 by: HebaruSan; reviewed: politas)
+
+### Internal
+
+- [Build] Build Update (#2158 by: dbent; reviewed: Olympic1, politas)
+- [Build] Establish a .gitattributes file (#2169 by: Olympic1; reviewed: politas)
+- [Build] Remove unnecessary using directives (#2181 by: HebaruSan; reviewed: politas)
+- [Build] Cleanup project (#2182 by: Olympic1; reviewed: HebaruSan, politas, dbent)
+- [Core] Simplify IUser (#2163 by: HebaruSan; reviewed: politas)
+- [NetKAN] Adapt Curse API to new widget (#2189 by: HebaruSan; reviewed: Olympic1)
+- [Reporting] Improvement of issues template to help with bug reporting (#2201 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.22.6 (Guiana)
 
 ### Bugfixes
+
 - [GUI] Fix search box tab order (#2141 by: HebaruSan; reviewed: politas)
 - [Core] Check for stale lock files (#2139 by: HebaruSan; reviewed: politas)
 - [NetKAN] Improve error output (#2144 by: HebaruSan; reviewed: Olympic1)

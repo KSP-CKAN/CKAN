@@ -34,11 +34,10 @@ namespace CKAN.CmdLine
 
                 // Get the list of installed modules
                 IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-                var installed = new SortedDictionary<string, Version>(registry.Installed(false));
 
                 // Try every regex on every installed module:
                 // if it matches, select for removal
-                foreach (string mod in installed.Keys)
+                foreach (string mod in registry.InstalledModules.Select(mod => mod.identifier))
                 {
                     if (justins.Any(re => re.IsMatch(mod)))
                         selectedModules.Add(mod);
@@ -52,12 +51,11 @@ namespace CKAN.CmdLine
             if (options.rmall)
             {
                 log.Debug("Removing all mods");
-                // Get the list of installed modules
+                // Add the list of installed modules to the list that should be uninstalled
                 IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-                var installed = new SortedDictionary<string, Version>(registry.Installed(false));
-
-                // Add it to the list that should be uninstalled.
-                options.modules.AddRange(installed.Keys);
+                options.modules.AddRange(
+                    registry.InstalledModules.Select(mod => mod.identifier)
+                );
             }
 
             if (options.modules != null && options.modules.Count > 0)
@@ -65,6 +63,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     var installer = ModuleInstaller.GetInstance(ksp, user);
+                    Search.AdjustModulesCase(ksp, options.modules);
                     installer.UninstallList(options.modules);
                 }
                 catch (ModNotInstalledKraken kraken)
@@ -84,4 +83,3 @@ namespace CKAN.CmdLine
         }
     }
 }
-

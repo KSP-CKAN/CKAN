@@ -19,6 +19,15 @@ namespace CKAN
         List<CkanModule> Available(KspVersionCriteria ksp_version);
 
         /// <summary>
+        /// Get full JSON metadata string for a mod's available versions
+        /// </summary>
+        /// <param name="identifier">Name of the mod to look up</param>
+        /// <returns>
+        /// JSON formatted string for all the available versions of the mod
+        /// </returns>
+        string GetAvailableMetadata(string identifier);
+
+        /// <summary>
         ///     Returns the latest available version of a module that
         ///     satisifes the specified version.
         ///     Returns null if there's simply no compatible version for this system.
@@ -154,6 +163,26 @@ namespace CKAN
             if (newest_version == null) return false;
             return !new List<string>(querier.InstalledDlls).Contains(identifier) && querier.IsInstalled(identifier, false)
                 && newest_version.version.IsGreaterThan(querier.InstalledVersion(identifier));
+        }
+
+        /// <summary>
+        /// Generate a string describing the range of game versions
+        /// compatible with the given module.
+        /// </summary>
+        /// <param name="identifier">Mod name to findDependencyShallow</param>
+        /// <returns>
+        /// String describing range of compatible game versions.
+        /// </returns>
+        public static string CompatibleGameVersions(this IRegistryQuerier querier, string identifier)
+        {
+            List<CkanModule> releases = querier.AllAvailable(identifier);
+            if (releases != null && releases.Count > 0) {
+                Version    minMod = null, maxMod = null;
+                KspVersion minKsp = null, maxKsp = null;
+                Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
+                return KspVersionRange.VersionSpan(minKsp, maxKsp);
+            }
+            return "";
         }
     }
 }

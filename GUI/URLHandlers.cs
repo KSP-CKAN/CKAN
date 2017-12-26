@@ -180,6 +180,7 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
             data["Desktop Entry"].AddKey("Exec", "mono \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" gui %u");
             data["Desktop Entry"].AddKey("Icon", "ckan");
             data["Desktop Entry"].AddKey("StartupNotify", "true");
+            data["Desktop Entry"].AddKey("NoDisplay", "true");
             data["Desktop Entry"].AddKey("Terminal", "false");
             data["Desktop Entry"].AddKey("Categories", "Utility");
             data["Desktop Entry"].AddKey("MimeType", "x-scheme-handler/ckan");
@@ -193,5 +194,3 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
     }
 
 }
-
-

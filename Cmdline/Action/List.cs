@@ -23,7 +23,6 @@ namespace CKAN.CmdLine
 
             IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
 
-
             ExportFileType? exportFileType = null;
 
             if (!string.IsNullOrWhiteSpace(options.export))
@@ -121,18 +120,12 @@ namespace CKAN.CmdLine
 
             switch (export)
             {
-                case "text":
-                    return ExportFileType.PlainText;
-                case "markdown":
-                    return ExportFileType.Markdown;
-                case "bbcode":
-                    return ExportFileType.BbCode;
-                case "csv":
-                    return ExportFileType.Csv;
-                case "tsv":
-                    return ExportFileType.Tsv;
-                default:
-                    return null;
+                case "text":     return ExportFileType.PlainText;
+                case "markdown": return ExportFileType.Markdown;
+                case "bbcode":   return ExportFileType.BbCode;
+                case "csv":      return ExportFileType.Csv;
+                case "tsv":      return ExportFileType.Tsv;
+                default:         return null;
             }
         }
     }

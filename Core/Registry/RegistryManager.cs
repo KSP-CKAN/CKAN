@@ -244,6 +244,19 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Call Dispose on all the registry managers in the cache.
+        /// Useful for exiting without Dispose-related exceptions.
+        /// Note that this also REMOVES these entries from the cache.
+        /// </summary>
+        public static void DisposeAll()
+        {
+            foreach (RegistryManager rm in new List<RegistryManager>(registryCache.Values))
+            {
+                rm.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Returns the currently installed modules in json format suitable for outputting to a ckan file.
         /// Defaults to using depends and with version numbers.
         /// </summary>

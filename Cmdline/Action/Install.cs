@@ -65,12 +65,26 @@ namespace CKAN.CmdLine
                     }
 
                     // Parse the JSON file.
-                    options.modules.Add(LoadCkanFromFile(ksp, filename).identifier);
+                    try
+                    {
+                        CkanModule m = LoadCkanFromFile(ksp, filename);
+                        options.modules.Add($"{m.identifier}={m.version}");
+                    }
+                    catch (Kraken kraken)
+                    {
+                        user.RaiseError(kraken.InnerException == null
+                            ? kraken.Message
+                            : $"{kraken.Message}: {kraken.InnerException.Message}");
+                    }
                 }
 
                 // At times RunCommand() calls itself recursively - in this case we do
                 // not want to be doing this again, so "consume" the option
                 options.ckan_files = null;
+            }
+            else
+            {
+                Search.AdjustModulesCase(ksp, options.modules);
             }
 
             if (options.modules.Count == 0)
@@ -84,9 +98,10 @@ namespace CKAN.CmdLine
             // Prepare options. Can these all be done in the new() somehow?
             var install_ops = new RelationshipResolverOptions
             {
-                with_all_suggests = options.with_all_suggests,
-                with_suggests = options.with_suggests,
-                with_recommends = !options.no_recommends
+                with_all_suggests  = options.with_all_suggests,
+                with_suggests      = options.with_suggests,
+                with_recommends    = !options.no_recommends,
+                allow_incompatible = options.allow_incompatible
             };
 
             if (user.Headless)
@@ -101,11 +116,34 @@ namespace CKAN.CmdLine
                 var installer = ModuleInstaller.GetInstance(ksp, user);
                 installer.InstallList(options.modules, install_ops);
             }
-            catch (ModuleNotFoundKraken ex)
+            catch (DependencyNotSatisfiedKraken ex)
             {
-                user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                if (ex.version == null)
+                {
+                    user.RaiseMessage("{0} requires {1} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module);
+                }
+                else
+                {
+                    user.RaiseMessage("{0} requires {1} {2} but it is not listed in the index, or not available for your version of KSP.", ex.parent, ex.module, ex.version);
+                }
                 user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
                 user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
+                user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
+                return Exit.ERROR;
+            }
+            catch (ModuleNotFoundKraken ex)
+            {
+                if (ex.version == null)
+                {
+                    user.RaiseMessage("Module {0} required but it is not listed in the index, or not available for your version of KSP.", ex.module);
+                }
+                else
+                {
+                    user.RaiseMessage("Module {0} {1} required but it is not listed in the index, or not available for your version of KSP.", ex.module, ex.version);
+                }
+                user.RaiseMessage("If you're lucky, you can do a `ckan update` and try again.");
+                user.RaiseMessage("Try `ckan install --no-recommends` to skip installation of recommended modules.");
+                user.RaiseMessage("Or `ckan install --allow-incompatible` to ignore module compatibility.");
                 return Exit.ERROR;
             }
             catch (BadMetadataKraken ex)

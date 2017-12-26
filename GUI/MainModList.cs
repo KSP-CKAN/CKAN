@@ -151,7 +151,7 @@ namespace CKAN
             var gui_mods = new HashSet<GUIMod>(registry.Available(versionCriteria)
                 .Select(m => new GUIMod(m, registry, versionCriteria)));
             gui_mods.UnionWith(registry.Incompatible(versionCriteria)
-                .Select(m => new GUIMod(m, registry, versionCriteria)));
+                .Select(m => new GUIMod(m, registry, versionCriteria, true)));
             var installed = registry.InstalledModules
                 .Select(m => new GUIMod(m.Module, registry, versionCriteria));
 

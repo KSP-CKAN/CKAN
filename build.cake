@@ -21,7 +21,6 @@ Task("Default")
     .IsDependentOn("Ckan")
     .IsDependentOn("Netkan");
 
-
 Task("Debug")
     .IsDependentOn("Default");
 
@@ -33,6 +32,29 @@ Task("Ckan")
 
 Task("Netkan")
     .IsDependentOn("Repack-Netkan");
+
+Task("osx")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { WorkingDirectory = "macosx" }));
+
+Task("osx-clean")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "clean", WorkingDirectory = "macosx" }));
+
+Task("deb")
+    .IsDependentOn("Ckan")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { WorkingDirectory = "debian" }));
+
+Task("deb-test")
+    .IsDependentOn("deb")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "test", WorkingDirectory = "debian" }));
+
+Task("deb-clean")
+    .Does(() => StartProcess("make",
+        new ProcessSettings { Arguments = "clean", WorkingDirectory = "debian" }));
 
 Task("Restore-Nuget")
     .Does(() =>
@@ -64,7 +86,7 @@ Task("Generate-GlobalAssemblyVersionInfo")
     var metaDirectory = buildDirectory.Combine("meta");
 
     CreateDirectory(metaDirectory);
-    
+
     CreateAssemblyInfo(metaDirectory.CombineWithFilePath("GlobalAssemblyVersionInfo.cs"), new AssemblyInfoSettings
     {
         Version = versionStr2,
@@ -80,6 +102,7 @@ Task("Repack-Ckan")
     var cmdLineBinDirectory = outDirectory.Combine("CmdLine").Combine(configuration).Combine("bin");
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", cmdLineBinDirectory));
     assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
+    assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
 
     ILRepack(ckanFile, cmdLineBinDirectory.CombineWithFilePath("CmdLine.exe"), assemblyPaths,
         new ILRepackSettings

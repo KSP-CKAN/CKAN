@@ -23,6 +23,16 @@ addons:
             - git
             - mono-devel
             - ca-certificates
+            # Stuff for building OSX DMGs
+            - make
+            - sed
+            - libplist-utils
+            - genisoimage
+            # Stuff for building .deb files
+            - gzip
+            - fakeroot
+            - dpkg
+            - lintian
 
 # These commands simulate having a graphical display, which is needed
 # for our GUI tests.
@@ -34,18 +44,27 @@ script:
     - ./build --configuration=$BUILD_CONFIGURATION
     - ./build test+only --configuration=$BUILD_CONFIGURATION --where="cat!=FlakyNetwork"
 
+# We run ~10 builds, but only the one that deploys needs a .app bundle or .deb file
+before_deploy:
+    - ./build osx
+    - ./build deb
+
 deploy:
     # Releases (which are tagged) go to github
     - provider: releases
       skip_cleanup: true
       api_key:
         secure: AjwbRLStNJZb9hAOLfRLK85KlFo2q2Dr1NKCoDS4elek1nqSiOjL1hH0kDgUMx/PJqQVnFU8tbJPL30t9Pj7jcJhp0LhbbPipQE3TCSpafTneSEbdz5HT+OdghWCZhUhfs07wGNTFUwcAO4WBZ7wv1AnfdfogHdA5RMdykiIl38=
+      file_glob: true
       file:
         - _build/repack/$BUILD_CONFIGURATION/ckan.exe
+        - _build/osx/CKAN.dmg
+        - _build/deb/ckan_*.deb
+        - _build/out/AutoUpdater/$BUILD_CONFIGURATION/bin/AutoUpdater.exe
       on:
         repo: KSP-CKAN/CKAN
         tags: true
-        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\S+)/ and print $1') = $BUILD_RELEASE_MONO_VERSION
+        condition: $BUILD_CONFIGURATION = Release && $(mono --version | perl -ne'/version (\d+\.\d+\.\d+)/ and print $1') = $BUILD_RELEASE_MONO_VERSION
         # all_branches needed as a workaround for travis-ci#1675
         all_branches: true
 

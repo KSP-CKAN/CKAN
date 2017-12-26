@@ -1,5 +1,12 @@
+using System;
+using System.IO;
+using System.Reflection;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using log4net;
+using log4net.Core;
 using CommandLine;
+using CommandLine.Text;
 
 namespace CKAN.CmdLine
 {
@@ -26,19 +33,21 @@ namespace CKAN.CmdLine
                 },
                 delegate
                 {
-                    throw (new BadCommandKraken());
+                    throw new BadCommandKraken();
                 }
             );
         }
     }
 
     // Actions supported by our client go here.
-    // TODO: Figure out how to do per action help screens.
 
-    internal class Actions
+    internal class Actions : VerbCommandOptions
     {
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
         public GuiOptions GuiOptions { get; set; }
+
+        [VerbOption("consoleui", HelpText = "Start the CKAN console UI")]
+        public ConsoleUIOptions ConsoleUIOptions { get; set; }
 
         [VerbOption("search", HelpText = "Search for mods")]
         public SearchOptions SearchOptions { get; set; }
@@ -74,10 +83,10 @@ namespace CKAN.CmdLine
         public SubCommandOptions Repair { get; set; }
 
         [VerbOption("repo", HelpText = "Manage CKAN repositories")]
-        public SubCommandOptions KSP { get; set; }
+        public SubCommandOptions Repo { get; set; }
 
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
-        public SubCommandOptions Repo { get; set; }
+        public SubCommandOptions KSP { get; set; }
 
         [VerbOption("compat", HelpText = "Manage KSP version compatibility")]
         public SubCommandOptions Compat { get; set; }
@@ -87,6 +96,75 @@ namespace CKAN.CmdLine
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
         public VersionOptions Version { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            HelpText ht = HelpText.AutoBuild(this, verb);
+
+            // Add a usage prefix line
+            ht.AddPreOptionsLine(" ");
+            if (string.IsNullOrEmpty(verb))
+            {
+                ht.AddPreOptionsLine($"Usage: ckan <command> [options]");
+            }
+            else
+            {
+                ht.AddPreOptionsLine(verb + " - " + GetDescription(verb));
+                switch (verb)
+                {
+                    // First the commands that deal with mods
+                    case "add":
+                    case "install":
+                    case "remove":
+                    case "uninstall":
+                    case "upgrade":
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] modules");
+                        break;
+                    case "show":
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] module");
+                        break;
+
+                    // Now the commands with other string arguments
+                    case "search":
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] substring");
+                        break;
+                    case "compare":
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] version1 version2");
+                        break;
+
+                    // Now the commands with only --flag type options
+                    case "gui":
+                    case "available":
+                    case "list":
+                    case "update":
+                    case "scan":
+                    case "clean":
+                    case "version":
+                    default:
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options]");
+                        break;
+                }
+            }
+            return ht;
+        }
+
+    }
+
+    public abstract class VerbCommandOptions
+    {
+        protected string GetDescription(string verb)
+        {
+            var info = this.GetType().GetProperties();
+            foreach (var property in info)
+            {
+                BaseOptionAttribute attrib = (BaseOptionAttribute)Attribute.GetCustomAttribute(
+                    property, typeof(BaseOptionAttribute), false);
+                if (attrib != null && attrib.LongName == verb)
+                    return attrib.HelpText;
+            }
+            return "";
+        }
     }
 
     // Options common to all classes.
@@ -102,20 +180,143 @@ namespace CKAN.CmdLine
         [Option("debugger", DefaultValue = false, HelpText = "Launch debugger at start")]
         public bool Debugger { get; set; }
 
-        [Option("ksp", DefaultValue = null, HelpText = "KSP install to use")]
-        public string KSP { get; set; }
-
-        [Option("kspdir", DefaultValue = null, HelpText = "KSP dir to use")]
-        public string KSPdir { get; set; }
-
-        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
+        [Option("net-useragent", HelpText = "Set the default user-agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
 
-        [Option("headless", DefaultValue = null, HelpText = "Set to disable all prompts")]
+        [Option("headless", DefaultValue = false, HelpText = "Set to disable all prompts")]
         public bool Headless { get; set; }
 
-        [Option("asroot", DefaultValue = null, HelpText = "Allows CKAN to run as root on Linux-based systems")]
+        [Option("asroot", DefaultValue = false, HelpText = "Allows CKAN to run as root on Linux-based systems")]
         public bool AsRoot { get; set; }
+
+        [HelpVerbOption]
+        public string GetUsage(string verb)
+        {
+            return HelpText.AutoBuild(this, verb);
+        }
+
+        public virtual int Handle(KSPManager manager, IUser user)
+        {
+            CheckMonoVersion(user, 3, 1, 0);
+
+            // Processes in Docker containers normally run as root.
+            // If we are running in a Docker container, do not require --asroot.
+            // Docker creates a .dockerenv file in the root of each container.
+            if ((Platform.IsUnix || Platform.IsMac) && CmdLineUtil.GetUID() == 0 && !File.Exists("/.dockerenv"))
+            {
+                if (!AsRoot)
+                {
+                    user.RaiseError("You are trying to run CKAN as root.\r\nThis is a bad idea and there is absolutely no good reason to do it. Please run CKAN from a user account (or use --asroot if you are feeling brave).");
+                    return Exit.ERROR;
+                }
+                else
+                {
+                    user.RaiseMessage("Warning: Running CKAN as root!");
+                }
+            }
+
+            if (Debug)
+            {
+                LogManager.GetRepository().Threshold = Level.Debug;
+                log.Info("Debug logging enabled");
+            }
+            else if (Verbose)
+            {
+                LogManager.GetRepository().Threshold = Level.Info;
+                log.Info("Verbose logging enabled");
+            }
+
+            // Assign user-agent string if user has given us one
+            if (NetUserAgent != null)
+            {
+                Net.UserAgentString = NetUserAgent;
+            }
+
+            return Exit.OK;
+        }
+
+        private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)
+        {
+            try
+            {
+                Type type = Type.GetType("Mono.Runtime");
+                if (type == null) return;
+
+                MethodInfo display_name = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+                if (display_name != null)
+                {
+                    var version_string = (string) display_name.Invoke(null, null);
+                    var match = Regex.Match(version_string, @"^\D*(?<major>[\d]+)\.(?<minor>\d+)\.(?<revision>\d+).*$");
+
+                    if (match.Success)
+                    {
+                        int major = Int32.Parse(match.Groups["major"].Value);
+                        int minor = Int32.Parse(match.Groups["minor"].Value);
+                        int patch = Int32.Parse(match.Groups["revision"].Value);
+
+                        if (major < rec_major || (major == rec_major && minor < rec_minor))
+                        {
+                            user.RaiseMessage(
+                                "Warning. Detected mono runtime of {0} is less than the recommended version of {1}\r\n",
+                                String.Join(".", major, minor, patch),
+                                String.Join(".", rec_major, rec_minor, rec_patch)
+                                );
+                            user.RaiseMessage("Update recommend\r\n");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignored. This may be fragile and is just a warning method
+            }
+        }
+
+        protected static readonly ILog log = LogManager.GetLogger(typeof(CommonOptions));
+    }
+
+    public class InstanceSpecificOptions : CommonOptions
+    {
+        [Option("ksp", HelpText = "KSP install to use")]
+        public string KSP { get; set; }
+
+        [Option("kspdir", HelpText = "KSP dir to use")]
+        public string KSPdir { get; set; }
+
+        public override int Handle(KSPManager manager, IUser user)
+        {
+            int exitCode = base.Handle(manager, user);
+            if (exitCode == Exit.OK)
+            {
+                // User provided KSP instance
+                if (KSPdir != null && KSP != null)
+                {
+                    user.RaiseMessage("--ksp and --kspdir can't be specified at the same time");
+                    return Exit.BADOPT;
+                }
+
+                if (KSP != null)
+                {
+                    // Set a KSP directory by its alias.
+
+                    try
+                    {
+                        manager.SetCurrentInstance(KSP);
+                    }
+                    catch (InvalidKSPInstanceKraken)
+                    {
+                        user.RaiseMessage("Invalid KSP installation specified \"{0}\", use '--kspdir' to specify by path, or 'ksp list' to see known KSP installations", KSP);
+                        return Exit.BADOPT;
+                    }
+                }
+                else if (KSPdir != null)
+                {
+                    // Set a KSP directory by its path
+                    manager.SetCurrentInstanceByPath(KSPdir);
+                }
+            }
+            return exitCode;
+        }
     }
 
     /// <summary>
@@ -126,57 +327,63 @@ namespace CKAN.CmdLine
     {
         [ValueList(typeof(List<string>))]
         public List<string> options { get; set; }
+
+        public SubCommandOptions() { }
+
+        public SubCommandOptions(string[] args)
+        {
+            options = new System.Collections.Generic.List<string>(args).GetRange(1, args.Length - 1);
+        }
     }
 
     // Each action defines its own options that it supports.
     // Don't forget to cast to this type when you're processing them later on.
 
-    internal class InstallOptions : CommonOptions
+    internal class InstallOptions : InstanceSpecificOptions
     {
         [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files to process")]
         public string[] ckan_files { get; set; }
 
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
 
-        [Option("with-suggests", HelpText = "Install suggested modules")]
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
         public bool with_suggests { get; set; }
 
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
 
-        // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
+        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
+        public bool allow_incompatible { get; set; }
+
+        [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
     }
 
-    internal class UpgradeOptions : CommonOptions
+    internal class UpgradeOptions : InstanceSpecificOptions
     {
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
         public string ckan_file { get; set; }
 
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
 
-        [Option("with-suggests", HelpText = "Install suggested modules")]
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
         public bool with_suggests { get; set; }
 
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
         public bool with_all_suggests { get; set; }
 
-        [Option("all", HelpText = "Upgrade all available updated modules")]
+        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool upgrade_all { get; set; }
 
-        // TODO: How do we provide helptext on this?
         [ValueList(typeof (List<string>))]
         public List<string> modules { get; set; }
     }
 
-    internal class ScanOptions : CommonOptions
-    {
-    }
+    internal class ScanOptions : InstanceSpecificOptions { }
 
-    internal class ListOptions : CommonOptions
+    internal class ListOptions : InstanceSpecificOptions
     {
         [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
         public bool porcelain { get; set; }
@@ -185,38 +392,32 @@ namespace CKAN.CmdLine
         public string export { get; set; }
     }
 
-    internal class VersionOptions : CommonOptions
-    {
-    }
+    internal class VersionOptions   : CommonOptions { }
+    internal class CleanOptions     : InstanceSpecificOptions { }
+    internal class AvailableOptions : InstanceSpecificOptions { }
 
-    internal class CleanOptions : CommonOptions
-    {
-    }
-
-    internal class AvailableOptions : CommonOptions
-    {
-    }
-
-    internal class GuiOptions : CommonOptions
+    internal class GuiOptions : InstanceSpecificOptions
     {
         [Option("show-console", HelpText = "Shows the console while running the GUI")]
         public bool ShowConsole { get; set; }
     }
 
-    internal class UpdateOptions : CommonOptions
+    internal class ConsoleUIOptions : CommonOptions { }
+
+    internal class UpdateOptions : InstanceSpecificOptions
     {
         // This option is really meant for devs testing their CKAN-meta forks.
         [Option('r', "repo", HelpText = "CKAN repository to use (experimental!)")]
         public string repo { get; set; }
 
-        [Option("all", HelpText = "Upgrade all available updated modules")]
+        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
         public bool update_all { get; set; }
 
         [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
         public bool list_changes { get; set; }
     }
 
-    internal class RemoveOptions : CommonOptions
+    internal class RemoveOptions : InstanceSpecificOptions
     {
         [Option("re", HelpText = "Parse arguments as regular expressions")]
         public bool regex { get; set; }
@@ -224,32 +425,23 @@ namespace CKAN.CmdLine
         [ValueList(typeof(List<string>))]
         public List<string> modules { get; set; }
 
-        [Option("all", HelpText = "Remove all installed mods.")]
+        [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
         public bool rmall { get; set; }
     }
 
-    internal class ShowOptions : CommonOptions
+    internal class ShowOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)]
-        public string Modname { get; set; }
+        [ValueOption(0)] public string Modname { get; set; }
     }
 
-    internal class ClearCacheOptions : CommonOptions
+    internal class SearchOptions : InstanceSpecificOptions
     {
-    }
-
-    internal class SearchOptions : CommonOptions
-    {
-        [ValueOption(0)]
-        public string search_term { get; set; }
+        [ValueOption(0)] public string search_term { get; set; }
     }
 
     internal class CompareOptions : CommonOptions
     {
-        [ValueOption(0)]
-        public string Left { get; set; }
-
-        [ValueOption(1)]
-        public string Right { get; set; }
+        [ValueOption(0)] public string Left  { get; set; }
+        [ValueOption(1)] public string Right { get; set; }
     }
 }

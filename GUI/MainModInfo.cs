@@ -5,16 +5,17 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using CKAN.Versioning;
 
 namespace CKAN
 {
     public enum RelationshipType
     {
-        Depends = 0,
+        Depends    = 0,
         Recommends = 1,
-        Suggests = 2,
-        Supports = 3,
-        Conflicts = 4
+        Suggests   = 2,
+        Supports   = 3,
+        Conflicts  = 4
     }
 
     public partial class MainModInfo : UserControl
@@ -29,6 +30,8 @@ namespace CKAN
             m_CacheWorker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
             m_CacheWorker.RunWorkerCompleted += PostModCaching;
             m_CacheWorker.DoWork += CacheMod;
+
+            DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
         public GUIMod SelectedModule
@@ -144,105 +147,35 @@ namespace CKAN
             Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
         }
 
-        private HashSet<CkanModule> alreadyVisited = new HashSet<CkanModule>();
-
-        private TreeNode UpdateModDependencyGraphRecursively(TreeNode parentNode, CkanModule module, RelationshipType relationship, int depth, bool virtualProvides = false)
+        private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
         {
-            if (module == null
-                || (depth > 0 && dependencyGraphRootModule == module)
-                || (alreadyVisited.Contains(module)))
+            // Hourglass cursor
+            Cursor prevCur = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            DependsGraphTree.BeginUpdate();
+
+            TreeNode node = args.Node;
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            // Should already have children, since the user is expanding it
+            foreach (TreeNode child in node.Nodes)
             {
-                return null;
-            }
-
-            alreadyVisited.Add(module);
-
-            string nodeText = module.name;
-            if (virtualProvides)
-            {
-                nodeText = String.Format("provided by - {0}", module.name);
-            }
-
-            var node = parentNode == null ? new TreeNode(nodeText) : parentNode.Nodes.Add(nodeText);
-            node.Name = module.name;
-
-            IEnumerable<RelationshipDescriptor> relationships = null;
-            switch (relationship)
-            {
-                case RelationshipType.Depends:
-                    relationships = module.depends;
-                    break;
-                case RelationshipType.Recommends:
-                    relationships = module.recommends;
-                    break;
-                case RelationshipType.Suggests:
-                    relationships = module.suggests;
-                    break;
-                case RelationshipType.Supports:
-                    relationships = module.supports;
-                    break;
-                case RelationshipType.Conflicts:
-                    relationships = module.conflicts;
-                    break;
-            }
-
-            if (relationships == null)
-            {
-                return node;
-            }
-
-            foreach (RelationshipDescriptor dependency in relationships)
-            {
-                IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-
-                try
+                // If there are grandchildren, then this child has been loaded before
+                if (child.Nodes.Count == 0)
                 {
-                    try
-                    {
-                        var dependencyModule = registry.LatestAvailable
-                            (dependency.name, manager.CurrentInstance.VersionCriteria());
-                        UpdateModDependencyGraphRecursively(node, dependencyModule, relationship, depth + 1);
-                    }
-                    catch (ModuleNotFoundKraken)
-                    {
-                        List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides
-                            (dependency.name, manager.CurrentInstance.VersionCriteria());
-
-                        if (dependencyModules == null)
-                        {
-                            continue;
-                        }
-
-                        var newNode = node.Nodes.Add(dependency.name + " (virtual)");
-                        newNode.ForeColor = Color.Gray;
-
-                        foreach (var dep in dependencyModules)
-                        {
-                            UpdateModDependencyGraphRecursively(newNode, dep, relationship, depth + 1, true);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
+                    AddChildren(registry, child);
                 }
             }
 
-            if (virtualProvides)
-            {
-                node.Collapse(true);
-            }
-            else
-            {
-                node.ExpandAll();
-            }
+            DependsGraphTree.EndUpdate();
 
-            return node;
+            Cursor.Current = prevCur;
         }
 
         private void UpdateModDependencyGraph(CkanModule module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
-            //Can be costly. For now only update when visible.
+            // Can be costly. For now only update when visible.
             if (ModInfoTabControl.SelectedIndex != RelationshipTabPage.TabIndex)
             {
                 return;
@@ -250,26 +183,143 @@ namespace CKAN
             Util.Invoke(DependsGraphTree, _UpdateModDependencyGraph);
         }
 
-        private CkanModule dependencyGraphRootModule;
-
         private void _UpdateModDependencyGraph()
         {
-            var module = (CkanModule)ModInfoTabControl.Tag;
-            dependencyGraphRootModule = module;
+            CkanModule module = (CkanModule)ModInfoTabControl.Tag;
 
-
-            if (ModuleRelationshipType.SelectedIndex == -1)
-            {
-                ModuleRelationshipType.SelectedIndex = 0;
-            }
-
-            var relationshipType = (RelationshipType)ModuleRelationshipType.SelectedIndex;
-
-
-            alreadyVisited.Clear();
-
+            DependsGraphTree.BeginUpdate();
             DependsGraphTree.Nodes.Clear();
-            DependsGraphTree.Nodes.Add(UpdateModDependencyGraphRecursively(null, module, relationshipType, 0));
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+            TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
+            {
+                Name = module.identifier,
+                Tag  = module
+            };
+            DependsGraphTree.Nodes.Add(root);
+            AddChildren(registry, root);
+            root.Expand();
+            DependsGraphTree.EndUpdate();
+        }
+
+        private static readonly RelationshipType[] kindsOfRelationships = new RelationshipType[]
+        {
+            RelationshipType.Depends,
+            RelationshipType.Recommends,
+            RelationshipType.Suggests,
+            RelationshipType.Supports,
+            RelationshipType.Conflicts
+        };
+
+        private void AddChildren(IRegistryQuerier registry, TreeNode node)
+        {
+            // Load one layer of grandchildren on demand
+            CkanModule module = node.Tag as CkanModule;
+            // Tag is null for non-indexed nodes
+            if (module != null)
+            {
+                foreach (RelationshipType relationship in kindsOfRelationships)
+                {
+                    IEnumerable<RelationshipDescriptor> relationships = null;
+                    switch (relationship)
+                    {
+                        case RelationshipType.Depends:
+                            relationships = module.depends;
+                            break;
+                        case RelationshipType.Recommends:
+                            relationships = module.recommends;
+                            break;
+                        case RelationshipType.Suggests:
+                            relationships = module.suggests;
+                            break;
+                        case RelationshipType.Supports:
+                            relationships = module.supports;
+                            break;
+                        case RelationshipType.Conflicts:
+                            relationships = module.conflicts;
+                            break;
+                    }
+                    if (relationships != null)
+                    {
+                        foreach (RelationshipDescriptor dependency in relationships)
+                        {
+                            // Look for compatible mods
+                            TreeNode child = findDependencyShallow(
+                                    registry, dependency.name, relationship,
+                                    manager.CurrentInstance.VersionCriteria())
+                                // Then incompatible mods
+                                ?? findDependencyShallow(
+                                    registry, dependency.name, relationship, null)
+                                // Then give up and note the name without a module
+                                ?? nonindexedNode(dependency.name, relationship);
+                            node.Nodes.Add(child);
+                        }
+                    }
+                }
+            }
+        }
+
+        private TreeNode findDependencyShallow(IRegistryQuerier registry, string identifier, RelationshipType relationship, KspVersionCriteria crit)
+        {
+            try
+            {
+                CkanModule dependencyModule = registry.LatestAvailable(identifier, crit);
+                if (dependencyModule != null)
+                {
+                    return indexedNode(registry, dependencyModule, relationship, crit != null);
+                }
+            }
+            catch (ModuleNotFoundKraken)
+            {
+                // If we don't find a module by this name, look for other modules that provide it.
+                List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides(identifier, crit);
+                if (dependencyModules != null && dependencyModules.Count > 0)
+                {
+                    List<TreeNode> children = new List<TreeNode>();
+                    foreach (CkanModule dep in dependencyModules)
+                    {
+                        children.Add(indexedNode(registry, dep, relationship, crit != null));
+                    }
+                    return providesNode(identifier, relationship, children);
+                }
+            }
+            return null;
+        }
+
+        private TreeNode providesNode(string identifier, RelationshipType relationship, List<TreeNode> children)
+        {
+            int icon = (int)relationship + 1;
+            return new TreeNode(identifier + " (virtual)", icon, icon, children.ToArray())
+            {
+                Name        = identifier,
+                ToolTipText = relationship.ToString(),
+                ForeColor   = Color.Gray
+            };
+        }
+
+        private TreeNode indexedNode(IRegistryQuerier registry, CkanModule module, RelationshipType relationship, bool compatible)
+        {
+            int icon = (int)relationship + 1;
+            string suffix = compatible ? ""
+                : $" ({registry.CompatibleGameVersions(module.identifier)})";
+            return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
+            {
+                Name        = module.identifier,
+                ToolTipText = relationship.ToString(),
+                Tag         = module,
+                ForeColor   = compatible ? Color.Empty : Color.Red
+            };
+        }
+
+        private TreeNode nonindexedNode(string identifier, RelationshipType relationship)
+        {
+            // Completely nonexistent dependency, e.g. "AJE"
+            int icon = (int)relationship + 1;
+            return new TreeNode(identifier + " (not indexed)", icon, icon)
+            {
+                Name        = identifier,
+                ToolTipText = relationship.ToString(),
+                ForeColor   = Color.Red
+            };
         }
 
         // When switching tabs ensure that the resulting tab is updated.

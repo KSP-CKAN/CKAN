@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+﻿using System.IO;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
@@ -17,41 +18,53 @@ namespace CKAN
     public class AutoUpdate
     {
 
-        private readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
 
-        private readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
+        /// <summary>
+        /// The list of releases containing ckan.exe and AutoUpdater.exe
+        /// </summary>
+        private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
-        private readonly Uri latestUpdaterReleaseApiUrl = new Uri(
-            "https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
+        /// <summary>
+        /// Old release list that just contains the auto updater,
+        /// used as a fallback when missing from main release
+        /// </summary>
+        private static readonly Uri oldLatestUpdaterReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
 
         private Tuple<Uri, long> fetchedUpdaterUrl;
         private Tuple<Uri, long> fetchedCkanUrl;
 
         public Version LatestVersion { get; private set; }
-        public string ReleaseNotes { get; private set; }
+        public string  ReleaseNotes  { get; private set; }
 
-        private static AutoUpdate instance;
-
-        public static AutoUpdate Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new AutoUpdate();
-                }
-                return instance;
-            }
-            private set { }
-        }
+        public static readonly AutoUpdate Instance = new AutoUpdate();
 
         // This is private so we can enforce our class being a singleton.
         private AutoUpdate() { }
 
-        public static void ClearCache()
+        private static bool CanWrite(string path)
         {
-            instance = new AutoUpdate();
+            try
+            {
+                // Try to open the file for writing.
+                // We won't actually write, but we expect the OS to stop us if we don't have permissions.
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite)) { }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
+
+        // This is null when running tests, seemingly.
+        private static readonly string exePath = Assembly.GetEntryAssembly()?.Location ?? "";
+
+        /// <summary>
+        /// Report whether it's possible to run the auto-updater.
+        /// Checks whether we can overwrite the running ckan.exe.
+        /// </summary>
+        public static readonly bool CanUpdate = CanWrite(exePath);
 
         /// <summary>
         /// Our metadata is considered fetched if we have a latest version, release notes,
@@ -73,8 +86,22 @@ namespace CKAN
 
             try
             {
-                fetchedUpdaterUrl = RetrieveUrl(MakeRequest(latestUpdaterReleaseApiUrl));
-                fetchedCkanUrl = RetrieveUrl(response);
+                fetchedCkanUrl = RetrieveUrl(response, 0);
+                // Check whether the release includes the auto updater
+                foreach (var asset in response.assets)
+                {
+                    string url = asset.browser_download_url.ToString();
+                    if (url.EndsWith("AutoUpdater.exe"))
+                    {
+                        fetchedUpdaterUrl = new Tuple<Uri, long>(new Uri(url), (long)asset.size);
+                        break;
+                    }
+                }
+                if (fetchedUpdaterUrl == null)
+                {
+                    // Older releases don't include the auto updater
+                    fetchedUpdaterUrl = RetrieveUrl(MakeRequest(oldLatestUpdaterReleaseApiUrl), 0);
+                }
             }
             catch (Kraken)
             {
@@ -82,9 +109,7 @@ namespace CKAN
                 return;
             }
 
-            string body = response.body.ToString();
-
-            ReleaseNotes = ExtractReleaseNotes(body);
+            ReleaseNotes  = ExtractReleaseNotes(response.body.ToString());
             LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
@@ -94,18 +119,12 @@ namespace CKAN
         /// itself, but as a fallback we'll use the whole body if not found.
         /// </summary>
         /// <returns>The release notes.</returns>
-        public string ExtractReleaseNotes(string releaseBody)
+        public static string ExtractReleaseNotes(string releaseBody)
         {
-            string divider = "\r\n---\r\n";
-            string[] notesArray = releaseBody.Split(new string[] { divider }, StringSplitOptions.None);
-
-            if (notesArray.Length > 1)
-            {
-                // Return everything after the first divider, re-joining if necessary.
-                return string.Join(divider, notesArray.Skip(1));
-            }
-
-            return notesArray[0];
+            const string divider = "\r\n---\r\n";
+            // Get at most two pieces, the first is the image, the second is the release notes
+            string[] notesArray = releaseBody.Split(new string[] { divider }, 2, StringSplitOptions.None);
+            return notesArray.Length > 1 ? notesArray[1] : notesArray[0];
         }
 
         /// <summary>
@@ -132,12 +151,11 @@ namespace CKAN
 
             // run updater
             SetExecutable(updaterFilename);
-            var path = Assembly.GetEntryAssembly().Location;
             Process.Start(new ProcessStartInfo
             {
-                Verb = "runas",
-                FileName = updaterFilename,
-                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", pid, path, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
+                Verb      = "runas",
+                FileName  = updaterFilename,
+                Arguments = String.Format(@"{0} ""{1}"" ""{2}"" {3}", pid, exePath, ckanFilename, launchCKANAfterUpdate ? "launch" : "nolaunch"),
                 UseShellExecute = false
             });
 
@@ -150,21 +168,25 @@ namespace CKAN
         /// from the provided github API response
         /// </summary>
         /// <returns>The URL to the downloadable asset.</returns>
-        internal Tuple<Uri, long> RetrieveUrl(dynamic response)
-        { 
+        internal Tuple<Uri, long> RetrieveUrl(dynamic response, int whichOne)
+        {
             if (response.assets.Count == 0)
             {
                 throw new Kraken("The latest release isn't uploaded yet.");
             }
-            var firstAsset = response.assets[0];
-            string url = firstAsset.browser_download_url.ToString();
-            return new Tuple<Uri, long>(new Uri(url), (long)firstAsset.size);
+            else if (whichOne >= response.assets.Count)
+            {
+                throw new Kraken($"Asset index {whichOne} does not exist.");
+            }
+            var asset = response.assets[whichOne];
+            string url = asset.browser_download_url.ToString();
+            return new Tuple<Uri, long>(new Uri(url), (long)asset.size);
         }
 
         /// <summary>
         /// Fetches the URL provided, and de-serialises the returned JSON
         /// data structure into a dynamic object.
-        /// 
+        ///
         /// May throw an exception (especially a WebExeption) on failure.
         /// </summary>
         /// <returns>A dynamic object representing the JSON we fetched.</returns>
