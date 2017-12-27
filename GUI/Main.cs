@@ -54,12 +54,15 @@ namespace CKAN
 
         public volatile KSPManager manager;
 
-        public KSP CurrentInstance => manager.CurrentInstance;
+        public KSP CurrentInstance
+        {
+            get { return manager.CurrentInstance; }
+        }
 
         public KSPManager Manager
         {
-            get => manager;
-            set => manager = value;
+            get { return manager; }
+            set { manager = value; }
         }
 
         public MainModList mainModList { get; }
@@ -80,7 +83,7 @@ namespace CKAN
 
         private IEnumerable<ModChange> ChangeSet
         {
-            get => currentChangeSet;
+            get { return currentChangeSet; }
             set
             {
                 var orig = currentChangeSet;
@@ -92,7 +95,7 @@ namespace CKAN
 
         private Dictionary<GUIMod, string> Conflicts
         {
-            get => conflicts;
+            get { return conflicts; }
             set
             {
                 var orig = conflicts;
@@ -107,8 +110,9 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var module = (GUIMod)row.Tag;
+                string value;
 
-                if (Conflicts != null && Conflicts.TryGetValue(module, out string value))
+                if (Conflicts != null && Conflicts.TryGetValue(module, out value))
                 {
                     var conflict_text = value;
                     foreach (DataGridViewCell cell in row.Cells)
