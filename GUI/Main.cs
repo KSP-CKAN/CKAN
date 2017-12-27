@@ -285,6 +285,7 @@ namespace CKAN
         {
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
+            WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
             splitContainer1.SplitterDistance = configuration.PanelPosition;
             ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
 
@@ -410,13 +411,16 @@ namespace CKAN
             // Copy window location to app settings
             configuration.WindowLoc = Location;
 
-            // Copy window size to app settings
+            // Copy window size to app settings if not maximized
             configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
+
+            //copy window maximized state to app settings
+            configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized ? true : false;
 
             // Copy panel position to app settings
             configuration.PanelPosition = splitContainer1.SplitterDistance;
 
-            // Copy window location to app settings
+            // Copy metadata panel split height to app settings
             configuration.ModInfoPosition = ModInfoTabControl.ModMetaSplitPosition;
 
             // Save the active filter
