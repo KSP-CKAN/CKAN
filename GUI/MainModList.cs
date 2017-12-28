@@ -276,6 +276,10 @@ namespace CKAN
                 return;
             base.SetSelectedRowCore(rowIndex, selected);
         }
+
+        //ImageList for Update/Changes Column
+        public System.Windows.Forms.ImageList ModChangesImageList { get; set; }
+
     }
 
     public class MainModList
