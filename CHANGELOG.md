@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.24.0-PRE
 
-## Features
+### Features
 
 - [Core] Add spec/schema to implement mod tags (#2034 by: smattiso; reviewed: ayan4m1, dbent, politas)
 - [Spec] Add CC-BY-ND licence options (#2160 by: MoreRobustThanYou; reviewed: Olympic1, politas)
@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Create and release CKAN.app for Mac OS X (#2225 by: HebaruSan; reviewed: politas)
 - [Build] Debian package build system (#2187 by: HebaruSan; reviewed: politas)
 - [Core] Prompt to reinstall on change to include_only (No PR by: HebaruSan; reviewed: politas)
+- [GUI] Remember splitter positions and whether the window was maximized (#2234 by: politas; reviewed: HebaruSan)
 
 ### Bugfixes
 
