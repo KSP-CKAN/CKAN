@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Debian package build system (#2187 by: HebaruSan; reviewed: politas)
 - [Core] Prompt to reinstall on change to include_only (No PR by: HebaruSan; reviewed: politas)
 - [GUI] Remember splitter positions and whether the window was maximized (#2234 by: politas; reviewed: HebaruSan)
+- [GUI] Add right-click context menu (#2202 by: Olympic1; reviewed: HebaruSan, politas)
 
 ### Bugfixes
 
