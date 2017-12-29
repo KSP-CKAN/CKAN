@@ -55,7 +55,7 @@ namespace Tests.GUI
 
         [Test]
         [Category("Display")]
-        public async Task ComputeChangeSetFromModList_WithConflictingMods_ThrowsInconsistentKraken()
+        public async Task ComputeChangeSetFromModList_WithConflictingMods_ReturnsNull()
         {
             using (var tidy = new DisposableKSP())
             {
@@ -66,17 +66,16 @@ namespace Tests.GUI
                 registry.AddAvailable(TestData.kOS_014_module());
                 registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
 
-                var mainList = new MainModList(null, null, new GUIUser());
+                var mainList = new MainModList(null, null);
                 var mod = new GUIMod(module, registry, tidy.KSP.VersionCriteria());
                 var mod2 = new GUIMod(TestData.kOS_014_module(), registry, tidy.KSP.VersionCriteria());
                 var mods = new List<GUIMod>() { mod, mod2 };
                 mainList.ConstructModList(mods, null, true);
                 mainList.Modules = new ReadOnlyCollection<GUIMod>(mods);
                 mod2.IsInstallChecked = true;
-                var computeTask = mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
+                var result = await mainList.ComputeChangeSetFromModList(registry, mainList.ComputeUserChangeSet(), null,
                     tidy.KSP.VersionCriteria());
-
-                await UtilStatic.Throws<InconsistentKraken>(() => computeTask);
+                Assert.That(result, Is.Null);
             }
         }
 

@@ -86,8 +86,8 @@ namespace CKAN
     public class RelationshipResolver
     {
         // A list of all the mods we're going to install.
-        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
         private readonly Dictionary<string, CkanModule> modlist = new Dictionary<string, CkanModule>();
+        // The original list of mods selected by the user
         private readonly List<CkanModule> user_requested_mods = new List<CkanModule>();
 
         //TODO As the conflict detection gets more advanced there is a greater need to have messages in here
@@ -101,6 +101,8 @@ namespace CKAN
         private readonly KspVersionCriteria kspversion;
         private readonly RelationshipResolverOptions options;
         private readonly HashSet<CkanModule> installed_modules;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof (RelationshipResolver));
 
         /// <summary>
         /// Creates a new Relationship resolver.
@@ -193,6 +195,7 @@ namespace CKAN
         /// <param name="modules">Modules to attempt to install</param>
         public void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {
+            var inconsistencies = new List<string>();
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
             log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
@@ -216,15 +219,13 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module,
-                            listed_mod));
+                        inconsistencies.Add(string.Format("{0} conflicts with {1}, can't install both.", module, listed_mod));
                     }
-                }
-
+                }                    
                 user_requested_mods.Add(module);
                 Add(module, new SelectionReason.UserRequested());
             }
-
+            if (inconsistencies.Count() > 0) throw new InconsistentKraken(inconsistencies);
             // Now that we've already pre-populated the modlist, we can resolve
             // the rest of our dependencies.
 
