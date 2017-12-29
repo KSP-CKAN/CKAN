@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Properties;
 using CKAN.Types;
@@ -1151,21 +1152,34 @@ namespace CKAN
             if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
                 return;
 
-            // Make object describing the mod to reinstall
-            GUIMod toReinstall = new GUIMod(
-                module,
-                RegistryManager.Instance(CurrentInstance).registry,
-                CurrentInstance.VersionCriteria()
-            );
+            IRegistryQuerier   registry = RegistryManager.Instance(CurrentInstance).registry;
+            KspVersionCriteria versCrit = CurrentInstance.VersionCriteria();
 
+            // Build the list of changes, first the mod to remove:
+            List<ModChange> toReinstall = new List<ModChange>()
+            {
+                new ModChange(module, GUIModChangeType.Remove,  null)
+            };
+            // Then everything we need to re-install:
+            HashSet<string> goners = registry.FindReverseDependencies(
+                new List<string>() { module.Identifier }
+            );
+            foreach (string id in goners)
+            {
+                toReinstall.Add(new ModChange(
+                    new GUIMod(
+                        registry.LatestAvailable(id, versCrit, null),
+                        registry,
+                        versCrit
+                    ),
+                    GUIModChangeType.Install,
+                    null
+                ));
+            }
             // Hand off to centralized [un]installer code
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    new List<ModChange>()
-                    {
-                        new ModChange(toReinstall, GUIModChangeType.Remove,  null),
-                        new ModChange(toReinstall, GUIModChangeType.Install, null)
-                    },
+                    toReinstall,
                     RelationshipResolver.DefaultOpts()
                 )
             );

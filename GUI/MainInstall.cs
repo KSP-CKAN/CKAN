@@ -31,6 +31,8 @@ namespace CKAN
 
             IRegistryQuerier registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
             ModuleInstaller  installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+            // Avoid accumulating multiple event handlers
+            installer.onReportModInstalled -= OnModInstalled;
             installer.onReportModInstalled += OnModInstalled;
             // setup progress callback
 
