@@ -1151,21 +1151,24 @@ namespace CKAN
             if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
                 return;
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, currentUser);
-            var resolvedMod = installer.ResolveModules(toInstall, new RelationshipResolverOptions());
+            // Make object describing the mod to reinstall
+            GUIMod toReinstall = new GUIMod(
+                module,
+                RegistryManager.Instance(CurrentInstance).registry,
+                CurrentInstance.VersionCriteria()
+            );
 
-            using (var transaction = CkanTransaction.CreateTransactionScope())
-            {
-                SetDescription($"Uninstalling {module.Name}");
-                if (!WasSuccessful(() => installer.UninstallList(module.Identifier)))
-                    return;
-
-                SetDescription($"Installing {module.Name}");
-                if (!WasSuccessful(() => installer.InstallList(resolvedMod, new RelationshipResolverOptions())))
-                    return;
-
-                transaction.Complete();
-            }
+            // Hand off to centralized [un]installer code
+            installWorker.RunWorkerAsync(
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                    new List<ModChange>()
+                    {
+                        new ModChange(toReinstall, GUIModChangeType.Remove,  null),
+                        new ModChange(toReinstall, GUIModChangeType.Install, null)
+                    },
+                    RelationshipResolver.DefaultOpts()
+                )
+            );
         }
 
         private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)
