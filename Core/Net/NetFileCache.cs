@@ -47,7 +47,7 @@ namespace CKAN
 
             watcher.NotifyFilter =
                 NotifyFilters.LastWrite | NotifyFilters.LastAccess | NotifyFilters.DirectoryName | NotifyFilters.FileName;
-            
+
             // If we spot any changes, we fire our event handler.
             watcher.Changed += new FileSystemEventHandler(OnCacheChanged);
             watcher.Created += new FileSystemEventHandler(OnCacheChanged);
@@ -88,7 +88,7 @@ namespace CKAN
         /// </summary>
         public void OnCacheChanged()
         {
-            cachedFiles = null;   
+            cachedFiles = null;
         }
 
         public string GetCachePath()
@@ -124,7 +124,7 @@ namespace CKAN
         /// <summary>
         /// Returns true if a file matching the given URL is cached, but makes no
         /// attempts to check if it's even valid. This is very fast.
-        /// 
+        ///
         /// Use IsCachedZip() for a slower but more reliable method.
         /// </summary>
         public bool IsMaybeCachedZip(Uri url)
@@ -243,7 +243,7 @@ namespace CKAN
             string fullName = String.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
 
-            log.DebugFormat("Storing {0} in {1}", path, targetPath);
+            log.InfoFormat("Storing {0} in {1}", path, targetPath);
 
             if (move)
             {

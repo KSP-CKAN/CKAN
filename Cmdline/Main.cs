@@ -48,7 +48,7 @@ namespace CKAN.CmdLine
             }
 
             Logging.Initialize();
-            log.Debug("CKAN started");
+            log.Info("CKAN started.");
 
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
@@ -83,6 +83,10 @@ namespace CKAN.CmdLine
             {
                 return printMissingInstanceError(new ConsoleUser(false));
             }
+            finally
+            {
+                log.Info("CKAN exiting.");
+            }
 
             Options cmdline;
             try
@@ -93,17 +97,28 @@ namespace CKAN.CmdLine
             {
                 return AfterHelp();
             }
+            finally
+            {
+                log.Info("CKAN exiting.");
+            }
 
             // Process commandline options.
             CommonOptions options = (CommonOptions)cmdline.options;
             IUser user = new ConsoleUser(options.Headless);
             KSPManager manager = new KSPManager(user);
 
-            int exitCode = options.Handle(manager, user);
-            if (exitCode != Exit.OK)
-                return exitCode;
-            // Don't bother with instances or registries yet because some commands don't need them.
-            return RunSimpleAction(cmdline, options, args, user, manager);
+            try
+            {
+                int exitCode = options.Handle(manager, user);
+                if (exitCode != Exit.OK)
+                    return exitCode;
+                // Don't bother with instances or registries yet because some commands don't need them.
+                return RunSimpleAction(cmdline, options, args, user, manager);
+            }
+            finally
+            {
+                log.Info("CKAN exiting.");
+            }
         }
 
         public static int AfterHelp()

@@ -285,7 +285,7 @@ namespace CKAN
 
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
-            log.DebugFormat("Loaded CKAN registry at {0}", path);
+            log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
         private void LoadOrCreate()
@@ -311,7 +311,7 @@ namespace CKAN
         private void Create()
         {
             registry = Registry.Empty();
-            log.DebugFormat("Creating new CKAN registry at {0}", path);
+            log.InfoFormat("Creating new CKAN registry at {0}", path);
             Save();
         }
 
@@ -391,7 +391,7 @@ namespace CKAN
 
         public void Save(bool enforce_consistency = true, bool recommmends = false, bool with_versions = true)
         {
-            log.DebugFormat("Saving CKAN registry at {0}", path);
+            log.InfoFormat("Saving CKAN registry at {0}", path);
 
             if (enforce_consistency)
             {

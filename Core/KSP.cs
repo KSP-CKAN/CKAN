@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace CKAN
 {
-    
+
     /// <summary>
     ///     Everything for dealing with KSP itself.
     /// </summary>
@@ -55,7 +55,7 @@ namespace CKAN
             {
                 throw new NotKSPDirKraken(gameDir);
             }
-            
+
             this.gameDir = gameDir;
             Init();
             Cache = new NetFileCache(DownloadCacheDir());
@@ -66,7 +66,7 @@ namespace CKAN
         /// </summary>
         private void Init()
         {
-            log.DebugFormat("Initialising {0}", CkanDir());
+            log.InfoFormat("Initialising {0}", CkanDir());
 
             if (! Directory.Exists(CkanDir()))
             {
@@ -98,7 +98,7 @@ namespace CKAN
 
             LoadCompatibleVersions();
 
-            log.DebugFormat("Initialised {0}", CkanDir());
+            log.InfoFormat("Initialised {0}", CkanDir());
         }
 
         public void SetCompatibleVersions(List<KspVersion> compatibleVersions)
@@ -264,7 +264,7 @@ namespace CKAN
                 return readmeVersionProvider.TryGetVersion(directory, out version) ? version : null;
             }
         }
-        
+
         /// <summary>
         /// Rebuilds the "Ships" directory inside the current KSP instance
         /// </summary>
@@ -399,8 +399,8 @@ namespace CKAN
         {
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
-            
-            log.Debug("Cleaning cache directory");
+
+            log.Info("Cleaning cache directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
 
@@ -450,7 +450,7 @@ namespace CKAN
                 {
                     manager.registry.RegisterDll(this, dll);
                 }
-                    
+
                 tx.Complete();
             }
             manager.Save(enforce_consistency: false);
@@ -468,7 +468,7 @@ namespace CKAN
 
         /// <summary>
         /// Given a path relative to this KSP's GameDir, returns the
-        /// absolute path on the system. 
+        /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)
         {

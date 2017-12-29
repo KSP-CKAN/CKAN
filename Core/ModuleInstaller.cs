@@ -411,9 +411,10 @@ namespace CKAN
                 {
                     foreach (InstallableFile file in files)
                     {
-                        log.InfoFormat("Copying {0}", file.source.Name);
+                        log.DebugFormat("Copying {0}", file.source.Name);
                         CopyZipEntry(zipfile, file.source, file.destination, file.makedir);
                     }
+                    log.InfoFormat("Installed {0}", module);
                 }
                 catch (FileExistsKraken kraken)
                 {
@@ -889,7 +890,7 @@ namespace CKAN
                                 directoriesToDelete.Add(directoryName);
                             }
 
-                            log.InfoFormat("Removing {0}", file);
+                            log.DebugFormat("Removing {0}", file);
                             file_transaction.Delete(path);
 
 
@@ -932,7 +933,7 @@ namespace CKAN
                         // This works around GH #251.
                         // The filesystem boundry bug is described in https://transactionalfilemgr.codeplex.com/workitem/20
 
-                        log.InfoFormat("Removing {0}", directory);
+                        log.DebugFormat("Removing {0}", directory);
                         Directory.Delete(directory);
                     }
                     else
@@ -940,6 +941,7 @@ namespace CKAN
                         log.InfoFormat("Not removing directory {0}, it's not empty", directory);
                     }
                 }
+                log.InfoFormat("Removed {0}", modName);
                 transaction.Complete();
             }
         }
