@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -40,8 +41,8 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Version",
                         Width    = 12,
-                        Renderer = k => k.Version().ToString(),
-                        Comparer = (a, b) => a.Version().CompareTo(b.Version())
+                        Renderer = k => k.Version()?.ToString() ?? noVersion,
+                        Comparer = (a, b) => a.Version()?.CompareTo(b.Version() ?? KspVersion.Any) ?? 1
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Path",
                         Width    = 70,
@@ -115,7 +116,15 @@ namespace CKAN.ConsoleUI {
                 if (name == manager.AutoStartInstance) {
                     manager.ClearAutoStart();
                 } else {
-                    manager.SetAutoStart(name);
+                    try {
+                        manager.SetAutoStart(name);
+                    } catch (NotKSPDirKraken k) {
+                        ConsoleMessageDialog errd = new ConsoleMessageDialog(
+                            $"Error loading {k.path}:\n{k.Message}",
+                            new List<string>() {"OK"}
+                        );
+                        errd.Run();
+                    }
                 }
                 return true;
             });
@@ -184,6 +193,15 @@ namespace CKAN.ConsoleUI {
                         return false;
                     }
 
+                } catch (NotKSPDirKraken k) {
+
+                    ConsoleMessageDialog errd = new ConsoleMessageDialog(
+                        $"Error loading {ksp.GameDir()}:\n{k.Message}",
+                        new List<string>() {"OK"}
+                    );
+                    errd.Run();
+                    return false;
+
                 } catch (Exception e) {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
@@ -211,6 +229,7 @@ namespace CKAN.ConsoleUI {
         private KSPManager          manager;
         private ConsoleListBox<KSP> kspList;
 
+        private const string noVersion = "<NONE>";
         private static readonly string defaultMark = Symbols.checkmark;
     }
 

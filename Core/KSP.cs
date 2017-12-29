@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace CKAN
 {
-    
+
     /// <summary>
     ///     Everything for dealing with KSP itself.
     /// </summary>
@@ -47,28 +47,26 @@ namespace CKAN
         public KSP(string gameDir, IUser user)
         {
             User = user;
-
             // Make sure our path is absolute and has normalised slashes.
-            gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
-
-            if (! IsKspDir(gameDir))
+            this.gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
+            if (Valid)
             {
-                throw new NotKSPDirKraken(gameDir);
+                SetupCkanDirectories();
+                LoadCompatibleVersions();
+                Cache = new NetFileCache(DownloadCacheDir());
             }
-            
-            this.gameDir = gameDir;
-            Init();
-            Cache = new NetFileCache(DownloadCacheDir());
         }
+
+        public bool Valid { get { return IsKspDir(gameDir); } }
 
         /// <summary>
         ///     Create the CKAN directory and any supporting files.
         /// </summary>
-        private void Init()
+        private void SetupCkanDirectories()
         {
             log.DebugFormat("Initialising {0}", CkanDir());
 
-            if (! Directory.Exists(CkanDir()))
+            if (!Directory.Exists(CkanDir()))
             {
                 User.RaiseMessage("Setting up CKAN for the first time...");
                 User.RaiseMessage("Creating {0}", CkanDir());
@@ -78,7 +76,7 @@ namespace CKAN
                 ScanGameData();
             }
 
-            if (! Directory.Exists(DownloadCacheDir()))
+            if (!Directory.Exists(DownloadCacheDir()))
             {
                 User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
@@ -92,11 +90,10 @@ namespace CKAN
             if (Directory.Exists(TempDir()))
             {
                 var directory = new DirectoryInfo(TempDir());
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
+                foreach (FileInfo file in directory.GetFiles())
+                    file.Delete();
                 foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
             }
-
-            LoadCompatibleVersions();
 
             log.DebugFormat("Initialised {0}", CkanDir());
         }
@@ -232,7 +229,7 @@ namespace CKAN
         /// </summary>
         private static KspVersion DetectVersion(string directory)
         {
-            var version = DetectVersionInternal(directory);
+            KspVersion version = DetectVersionInternal(directory);
 
             if (version != null)
             {
@@ -241,8 +238,7 @@ namespace CKAN
             }
             else
             {
-                log.Error("Could not find KSP version");
-                throw new NotKSPDirKraken(directory, "Could not find KSP version in readme.txt");
+                return null;
             }
         }
 
@@ -264,7 +260,7 @@ namespace CKAN
                 return readmeVersionProvider.TryGetVersion(directory, out version) ? version : null;
             }
         }
-        
+
         /// <summary>
         /// Rebuilds the "Ships" directory inside the current KSP instance
         /// </summary>
@@ -297,6 +293,11 @@ namespace CKAN
 
         public string CkanDir()
         {
+            if (!Valid)
+            {
+                log.Error("Could not find KSP version");
+                throw new NotKSPDirKraken(gameDir, "Could not find KSP version in buildID.txt or readme.txt");
+            }
             return KSPPathUtils.NormalizePath(
                 Path.Combine(GameDir(), "CKAN")
             );
@@ -374,12 +375,11 @@ namespace CKAN
 
         public KspVersion Version()
         {
-            if (version != null)
+            if (version == null)
             {
-                return version;
+                version = DetectVersion(GameDir());
             }
-
-            return version = DetectVersion(GameDir());
+            return version;
         }
 
 
@@ -399,7 +399,7 @@ namespace CKAN
         {
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
-            
+
             log.Debug("Cleaning cache directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
@@ -450,7 +450,7 @@ namespace CKAN
                 {
                     manager.registry.RegisterDll(this, dll);
                 }
-                    
+
                 tx.Complete();
             }
             manager.Save(enforce_consistency: false);
@@ -468,7 +468,7 @@ namespace CKAN
 
         /// <summary>
         /// Given a path relative to this KSP's GameDir, returns the
-        /// absolute path on the system. 
+        /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)
         {
@@ -477,7 +477,7 @@ namespace CKAN
 
         public override string ToString()
         {
-            return "KSP Install:" + gameDir;
+            return "KSP Install: " + gameDir;
         }
 
         public override bool Equals(object obj)

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using CommandLine;
 using CommandLine.Text;
+using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {
@@ -178,12 +179,12 @@ namespace CKAN.CmdLine
 
             var output = Manager.Instances
                 .OrderByDescending(i => i.Value.GameDir() == preferredGameDir)
-                .ThenByDescending(i => i.Value.Version())
+                .ThenByDescending(i => i.Value.Version() ?? KspVersion.Any)
                 .ThenBy(i => i.Key)
                 .Select(i => new
                 {
                     Name = i.Key,
-                    Version = i.Value.Version().ToString(),
+                    Version = i.Value.Version()?.ToString() ?? "<NONE>",
                     Default = i.Value.GameDir() == preferredGameDir ? "Yes" : "No",
                     Path = i.Value.GameDir()
                 })
@@ -245,7 +246,8 @@ namespace CKAN.CmdLine
             try
             {
                 string path = options.path;
-                Manager.AddInstance(options.name, new CKAN.KSP(path, User));
+                CKAN.KSP ksp = new CKAN.KSP(path, User);
+                Manager.AddInstance(options.name, ksp);
                 User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
                 return Exit.OK;
             }
@@ -355,7 +357,15 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            Manager.SetAutoStart(name);
+            try
+            {
+                Manager.SetAutoStart(name);
+            }
+            catch (NotKSPDirKraken k)
+            {
+                User.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", k.path);
+                return Exit.BADOPT;
+            }
 
             User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", name);
             return Exit.OK;

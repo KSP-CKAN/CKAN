@@ -43,11 +43,11 @@
             this.SetAsDefaultCheckbox = new System.Windows.Forms.CheckBox();
             this.ForgetButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
+            //
             // KSPInstancesListView
-            // 
-            this.KSPInstancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.KSPInstancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.KSPInstancesListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.KSPInstancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -67,26 +67,25 @@
             this.KSPInstancesListView.View = System.Windows.Forms.View.Details;
             this.KSPInstancesListView.SelectedIndexChanged += new System.EventHandler(this.KSPInstancesListView_SelectedIndexChanged);
             this.KSPInstancesListView.DoubleClick += new System.EventHandler(this.KSPInstancesListView_DoubleClick);
-            // 
+            //
             // KSPInstallName
-            // 
+            //
             this.KSPInstallName.Text = "Name";
             this.KSPInstallName.Width = 161;
-            // 
+            //
             // KSPInstallVersion
-            // 
+            //
             this.KSPInstallVersion.Text = "Version";
-            this.KSPInstallVersion.Width = 54;
-            // 
+            this.KSPInstallVersion.Width = 100;
+            //
             // KSPInstallPath
-            // 
+            //
             this.KSPInstallPath.Text = "Path";
-            this.KSPInstallPath.Width = 232;
-            // 
+            this.KSPInstallPath.Width = 400;
+            //
             // SelectButton
-            // 
+            //
             this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.SelectButton.Enabled = false;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SelectButton.Location = new System.Drawing.Point(399, 320);
@@ -96,9 +95,9 @@
             this.SelectButton.Text = "Select";
             this.SelectButton.UseVisualStyleBackColor = true;
             this.SelectButton.Click += new System.EventHandler(this.SelectButton_Click);
-            // 
+            //
             // AddNewButton
-            // 
+            //
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNewButton.Location = new System.Drawing.Point(318, 320);
@@ -108,9 +107,9 @@
             this.AddNewButton.Text = "Add new";
             this.AddNewButton.UseVisualStyleBackColor = true;
             this.AddNewButton.Click += new System.EventHandler(this.AddNewButton_Click);
-            // 
+            //
             // RenameButton
-            // 
+            //
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RenameButton.Location = new System.Drawing.Point(237, 320);
@@ -120,9 +119,9 @@
             this.RenameButton.Text = "Rename";
             this.RenameButton.UseVisualStyleBackColor = true;
             this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
-            // 
+            //
             // SetAsDefaultCheckbox
-            // 
+            //
             this.SetAsDefaultCheckbox.AutoSize = true;
             this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
             this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
@@ -130,9 +129,9 @@
             this.SetAsDefaultCheckbox.TabIndex = 4;
             this.SetAsDefaultCheckbox.Text = "Set as default";
             this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
-            // 
+            //
             // ForgetButton
-            // 
+            //
             this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ForgetButton.Location = new System.Drawing.Point(156, 320);
@@ -142,9 +141,9 @@
             this.ForgetButton.Text = "Forget";
             this.ForgetButton.UseVisualStyleBackColor = true;
             this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
-            // 
+            //
             // ChooseKSPInstance
-            // 
+            //
             this.AcceptButton = this.SelectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

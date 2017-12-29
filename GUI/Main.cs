@@ -195,10 +195,10 @@ namespace CKAN
             }
 
             configuration = Configuration.LoadOrCreateConfiguration
-            (
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                Repo.default_ckan_repo.ToString()
-            );
+                (
+                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
+                    Repo.default_ckan_repo.ToString()
+                );
 
             // Check if there is any other instances already running.
             // This is not entirely necessary, but we can show a nicer error message this way.

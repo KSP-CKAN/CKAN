@@ -44,37 +44,46 @@ namespace CKAN
 
             foreach (var instance in _manager.Instances)
             {
-                var item = new ListViewItem { Text = instance.Key, Tag = instance.Key };
-
-                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.Version().ToString() });
-
-                item.SubItems.Add(new ListViewItem.ListViewSubItem { Text = instance.Value.GameDir() });
-
-                KSPInstancesListView.Items.Add(item);
+                KSPInstancesListView.Items.Add(
+                    new ListViewItem(new ListViewItem.ListViewSubItem[]
+                    {
+                        new ListViewItem.ListViewSubItem {
+                            Text = instance.Key
+                        },
+                        new ListViewItem.ListViewSubItem {
+                            Text = instance.Value.Version()?.ToString() ?? "<NONE>"
+                        },
+                        new ListViewItem.ListViewSubItem {
+                            Text = instance.Value.GameDir()
+                        }
+                    }, 0)
+                    {
+                        Tag = instance.Key
+                    });
             }
         }
 
         private void AddNewButton_Click(object sender, EventArgs e)
         {
-            if (_instanceDialog.ShowDialog() != DialogResult.OK) return;
-            if (!File.Exists(_instanceDialog.FileName)) return;
+            if (_instanceDialog.ShowDialog() != DialogResult.OK
+                    || !File.Exists(_instanceDialog.FileName))
+                return;
 
-            KSP instance;
             var path = Path.GetDirectoryName(_instanceDialog.FileName);
             try
             {
-                instance = new KSP(path, GUI.user);
+                KSP instance = new KSP(path, GUI.user);                
+                var instanceName = Path.GetFileName(path);
+                instanceName = _manager.GetNextValidInstanceName(instanceName);
+                _manager.AddInstance(instanceName, instance);
+                UpdateInstancesList();
             }
-            catch (NotKSPDirKraken)
+            catch (NotKSPDirKraken k)
             {
-                GUI.user.displayError("Directory {0} is not valid KSP directory.", new object[] { path });
+                GUI.user.displayError("Directory {0} is not valid KSP directory.",
+                    new object[] { k.path });
                 return;
             }
-
-            var instanceName = Path.GetFileName(path);
-            instanceName = _manager.GetNextValidInstanceName(instanceName);
-            _manager.AddInstance(instanceName, instance);
-            UpdateInstancesList();
         }
 
         private void SelectButton_Click(object sender, EventArgs e)
@@ -96,14 +105,22 @@ namespace CKAN
                 return;
             }
 
-            if (SetAsDefaultCheckbox.Checked)
+            try
             {
-                _manager.SetAutoStart(instName);
-            }
+                if (SetAsDefaultCheckbox.Checked)
+                {
+                    _manager.SetAutoStart(instName);
+                }
 
-            _manager.SetCurrentInstance(instName);
-            DialogResult = DialogResult.OK;
-            Close();
+                _manager.SetCurrentInstance(instName);
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (NotKSPDirKraken k)
+            {
+                GUI.user.displayError("Directory {0} is not valid KSP directory.",
+                    new object[] { k.path });
+            }
         }
 
         private void KSPInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,7 +130,10 @@ namespace CKAN
 
         private void KSPInstancesListView_DoubleClick(object sender, EventArgs r)
         {
-            if (HasSelections) UseSelectedInstance();
+            if (HasSelections)
+            {
+                UseSelectedInstance();
+            }
         }
 
         private void RenameButton_Click(object sender, EventArgs e)
@@ -122,7 +142,8 @@ namespace CKAN
 
             // show the dialog, and only continue if the user selected "OK"
             _renameInstanceDialog = new RenameInstanceDialog();
-            if (_renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK) return;
+            if (_renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK)
+                return;
 
             // proceed with instance rename
             _manager.RenameInstance(instance, _renameInstanceDialog.GetResult());

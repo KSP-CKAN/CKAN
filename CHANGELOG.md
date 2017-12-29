@@ -39,6 +39,8 @@ All notable changes to this project will be documented in this file.
 - [CLI] Make Cmdline modules case insensitive (#2223 by: HebaruSan; reviewed: politas)
 - [Build] Provide fresh auto updater in releases (#2212 by: HebaruSan; reviewed: politas)
 - [CLI] Don't try to remove autodetected DLLs (#2232 by: HebaruSan; reviewed: politas)
+- [Core] Use shared installer code in GUI (#2233 by: HebaruSan; reviewed: Olympic1)
+- [Multiple] Include invalid instances in KSPManager (#2230 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
