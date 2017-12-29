@@ -32,7 +32,7 @@ namespace CKAN
             try
             {
                 CkanModule module = CkanModule.FromJson(metadata);
-                log.InfoFormat("Found {0} version {1}", module.identifier, module.version);
+                log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
                 registry.AddAvailable(module);
             }
             catch (Exception exception)

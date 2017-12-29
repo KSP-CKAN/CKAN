@@ -284,7 +284,7 @@ namespace CKAN
 
         public void LoadInstancesFromRegistry()
         {
-            log.Debug("Loading KSP instances from registry");
+            log.Info("Loading KSP instances from registry");
 
             instances.Clear();
 

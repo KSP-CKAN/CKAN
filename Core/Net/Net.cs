@@ -49,7 +49,7 @@ namespace CKAN
             Log.DebugFormat("Downloading {0} to {1}", url, filename);
 
             var agent = MakeDefaultHttpClient();
-           
+
             try
             {
                 agent.DownloadFile(url, filename);
@@ -228,7 +228,7 @@ namespace CKAN
                 }
                 else
                 {
-                    Log.DebugFormat("{0} redirected to {1}", currentUri, location);
+                    Log.InfoFormat("{0} redirected to {1}", currentUri, location);
 
                     if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
                     {

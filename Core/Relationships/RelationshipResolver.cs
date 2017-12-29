@@ -230,7 +230,7 @@ namespace CKAN
 
             foreach (var module in user_requested_mods)
             {
-                log.InfoFormat("Resolving relationships for {0}", module.identifier);
+                log.DebugFormat("Resolving relationships for {0}", module.identifier);
                 Resolve(module, options);
             }
 
@@ -272,7 +272,7 @@ namespace CKAN
             var sub_options = (RelationshipResolverOptions) options.Clone();
             sub_options.with_suggests = false;
 
-            log.InfoFormat("Resolving dependencies for {0}", module.identifier);
+            log.DebugFormat("Resolving dependencies for {0}", module.identifier);
             ResolveStanza(module.depends, new SelectionReason.Depends(module), sub_options, false, old_stanza);
 
             if (options.with_recommends)

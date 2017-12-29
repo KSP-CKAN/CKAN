@@ -64,7 +64,7 @@ namespace CKAN
         /// </summary>
         private void SetupCkanDirectories()
         {
-            log.DebugFormat("Initialising {0}", CkanDir());
+            log.InfoFormat("Initialising {0}", CkanDir());
 
             if (!Directory.Exists(CkanDir()))
             {
@@ -94,8 +94,7 @@ namespace CKAN
                     file.Delete();
                 foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
             }
-
-            log.DebugFormat("Initialised {0}", CkanDir());
+            log.InfoFormat("Initialised {0}", CkanDir());
         }
 
         public void SetCompatibleVersions(List<KspVersion> compatibleVersions)
@@ -400,7 +399,7 @@ namespace CKAN
             // TODO: We really should be asking our Cache object to do the
             // cleaning, rather than doing it ourselves.
 
-            log.Debug("Cleaning cache directory");
+            log.Info("Cleaning cache directory");
 
             string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
 
