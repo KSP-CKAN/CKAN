@@ -6,6 +6,16 @@ Param (
     [Object[]]$RemainingArgs
 )
 
+# PSScriptRoot isn't set in PowerShell 2
+$minPSVer = [version]"3.0"
+if (($PSVersionTable.PSVersion -lt $minPSVer)) {
+    [Console]::ForegroundColor = 'red'
+    [Console]::Error.WriteLine("This script does not support PowerShell $($PSVersionTable.PSVersion).")
+    [Console]::Error.WriteLine("Please upgrade to PowerShell $minPSVer or later.")
+    [Console]::ResetColor()
+    exit
+}
+
 # Globals
 $NugetVersion       = "4.4.0"
 $UseExperimental    = $false

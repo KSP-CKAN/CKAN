@@ -41,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Don't try to remove autodetected DLLs (#2232 by: HebaruSan; reviewed: politas)
 - [Core] Use shared installer code in GUI (#2233 by: HebaruSan; reviewed: Olympic1)
 - [Multiple] Include invalid instances in KSPManager (#2230 by: HebaruSan; reviewed: politas)
+- [Build] Check version of PowerShell in build script (#2235 by: HebaruSan; reviewed: Olympic1)
 
 ### Internal
 
