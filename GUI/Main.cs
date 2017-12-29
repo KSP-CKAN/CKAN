@@ -573,20 +573,19 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
             }
-            catch (InconsistentKraken)
-            {
-                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
-                user_change_set = mainModList.ComputeUserChangeSet();
-                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
-                full_change_set = null;
-            }
             catch (TooManyModsProvideKraken)
             {
                 // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
                 // We can just rerun it as the ModInfoTabControl has been removed.
                 too_many_provides_thrown = true;
             }
-
+            // ComputeChangeSetFromModList returns null if an inconsistency was found, we need to highlight the inconsistencies.
+            if (full_change_set == null)
+            {
+                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                user_change_set = mainModList.ComputeUserChangeSet();
+                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
+            }
             if (too_many_provides_thrown)
             {
                 await UpdateChangeSetAndConflicts(registry);
