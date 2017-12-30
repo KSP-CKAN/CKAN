@@ -1143,7 +1143,7 @@ namespace CKAN
 
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var module = ModInfoTabControl.SelectedModule;
+            GUIMod module = ModInfoTabControl.SelectedModule;
             if (module == null || !module.IsCKAN)
                 return;
 
@@ -1158,7 +1158,7 @@ namespace CKAN
             // Build the list of changes, first the mod to remove:
             List<ModChange> toReinstall = new List<ModChange>()
             {
-                new ModChange(module, GUIModChangeType.Remove,  null)
+                new ModChange(module, GUIModChangeType.Remove, null)
             };
             // Then everything we need to re-install:
             HashSet<string> goners = registry.FindReverseDependencies(
@@ -1167,11 +1167,7 @@ namespace CKAN
             foreach (string id in goners)
             {
                 toReinstall.Add(new ModChange(
-                    new GUIMod(
-                        registry.LatestAvailable(id, versCrit, null),
-                        registry,
-                        versCrit
-                    ),
+                    mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod,
                     GUIModChangeType.Install,
                     null
                 ));
