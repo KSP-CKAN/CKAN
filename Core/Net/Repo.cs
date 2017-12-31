@@ -25,106 +25,47 @@ namespace CKAN
         // Forward to keep existing code compiling, will be removed soon.
         public static readonly Uri default_ckan_repo = CKAN.Repository.default_ckan_repo_uri;
 
-        internal static void ProcessRegistryMetadataFromJSON(string metadata, Registry registry, string filename)
-        {
-            log.DebugFormat("Converting metadata from JSON.");
-
-            try
-            {
-                CkanModule module = CkanModule.FromJson(metadata);
-                log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
-                registry.AddAvailable(module);
-            }
-            catch (Exception exception)
-            {
-                // Alas, we can get exceptions which *wrap* our exceptions,
-                // because json.net seems to enjoy wrapping rather than propagating.
-                // See KSP-CKAN/CKAN-meta#182 as to why we need to walk the whole
-                // exception stack.
-
-                bool handled = false;
-
-                while (exception != null)
-                {
-                    if (exception is UnsupportedKraken || exception is BadMetadataKraken)
-                    {
-                        // Either of these can be caused by data meant for future
-                        // clients, so they're not really warnings, they're just
-                        // informational.
-
-                        log.InfoFormat("Skipping {0} : {1}", filename, exception.Message);
-
-                        // I'd *love a way to "return" from the catch block.
-                        handled = true;
-                        break;
-                    }
-
-                    // Look further down the stack.
-                    exception = exception.InnerException;
-                }
-
-                // If we haven't handled our exception, then it really was exceptional.
-                if (handled == false)
-                {
-                    if (exception == null)
-                    {
-                        // Had exception, walked exception tree, reached leaf, got stuck.
-                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename);
-                    }
-                    else
-                    {
-                        // In case whatever's calling us is lazy in error reporting, we'll
-                        // report that we've got an issue here.
-                        log.ErrorFormat("Error processing {0} : {1}", filename, exception.Message);
-                    }
-
-                    throw;
-                }
-            }
-        }
-
         /// <summary>
-        ///     Download and update the local CKAN meta-info.
-        ///     Optionally takes a URL to the zipfile repo to download.
-        ///     Returns the number of unique modules updated.
+        /// Download and update the local CKAN meta-info.
+        /// Optionally takes a URL to the zipfile repo to download.
+        /// Returns the number of unique modules updated.
         /// </summary>
         public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, IUser user)
         {
-            // If we handle multiple repositories, we will call ClearRegistry() ourselves...
-            registry_manager.registry.ClearAvailable();
-            // TODO this should already give us a pre-sorted list
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+            List<CkanModule> allAvail = new List<CkanModule>();
             foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
                 log.InfoFormat("About to update {0}", repository.Value.name);
-                UpdateRegistry(repository.Value.uri, registry_manager.registry, ksp, user, false);
+                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user);
                 log.InfoFormat("Updated {0}", repository.Value.name);
+                // Merge all the lists
+                allAvail.AddRange(avail);
+            }
+            // Save allAvail to the registry if we found anything
+            if (allAvail.Count > 0)
+            {
+                registry_manager.registry.SetAllAvailable(allAvail);
+                // Save our changes.
+                registry_manager.Save(enforce_consistency: false);
             }
 
-            // Save our changes.
-            registry_manager.Save(enforce_consistency: false);
-
             ShowUserInconsistencies(registry_manager.registry, user);
+
+            List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
+            if (metadataChanges.Count > 0)
+            {
+                HandleModuleChanges(metadataChanges, user, ksp);
+            }
 
             // Return how many we got!
             return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
         }
 
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, string repo = null)
-        {
-            if (repo == null)
-            {
-                return Update(registry_manager, ksp, user, clear, (Uri)null);
-            }
-
-            return Update(registry_manager, ksp, user, clear, new Uri(repo));
-        }
-
         /// <summary>
-        /// Updates the supplied registry from the URL given.
-        /// This does not *save* the registry. For that, you probably want Repo.Update
+        /// Retrieve available modules from the URL given.
         /// </summary>
-        internal static void UpdateRegistry(Uri repo, Registry registry, KSP ksp, IUser user, Boolean clear = true)
+        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user)
         {
             // Use this opportunity to also update the build mappings... kind of hacky
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
@@ -139,30 +80,40 @@ namespace CKAN
             catch (System.Net.WebException)
             {
                 user.RaiseMessage("Connection to {0} could not be established.", repo);
-                return;
-            }
-
-            // Clear our list of known modules.
-            if (clear)
-            {
-                registry.ClearAvailable();
+                return null;
             }
 
             // Check the filetype.
             FileType type = FileIdentifier.IdentifyFile(repo_file);
 
+            List<CkanModule> newAvailable = null;
             switch (type)
             {
                 case FileType.TarGz:
-                    UpdateRegistryFromTarGz(repo_file, registry);
+                    newAvailable = UpdateRegistryFromTarGz(repo_file);
                     break;
                 case FileType.Zip:
-                    UpdateRegistryFromZip(repo_file, registry);
+                    newAvailable = UpdateRegistryFromZip(repo_file);
                     break;
             }
 
-            List<CkanModule> metadataChanges = new List<CkanModule>();
+            // Remove our downloaded meta-data now we've processed it.
+            // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
+            file_transaction.Delete(repo_file);
 
+            return newAvailable;
+        }
+
+        /// <summary>
+        /// Find installed modules that have different metadata in their equivalent available module
+        /// </summary>
+        /// <param name="registry">Registry to scan</param>
+        /// <returns>
+        /// List of CkanModules that are available and have changed metadata
+        /// </returns>
+        private static List<CkanModule> GetChangedInstalledModules(Registry registry)
+        {
+            List<CkanModule> metadataChanges = new List<CkanModule>();
             foreach (InstalledModule installedModule in registry.InstalledModules)
             {
                 string identifier = installedModule.identifier;
@@ -170,7 +121,7 @@ namespace CKAN
                 Version installedVersion = registry.InstalledVersion(identifier);
                 if (!(registry.available_modules.ContainsKey(identifier)))
                 {
-                    log.InfoFormat("UpdateRegistry, module {0}, version {1} not in repository ({2})", identifier, installedVersion, repo);
+                    log.InfoFormat("UpdateRegistry, module {0}, version {1} not in registry", identifier, installedVersion);
                     continue;
                 }
 
@@ -189,62 +140,63 @@ namespace CKAN
                     metadataChanges.Add(registry.available_modules[identifier].module_version[installedVersion]);
                 }
             }
+            return metadataChanges;
+        }
 
-            if (metadataChanges.Any())
+        /// <summary>
+        /// Resolve differences between installed and available metadata for given ModuleInstaller
+        /// </summary>
+        /// <param name="metadataChanges">List of modules that changed</param>
+        /// <param name="user">Object for user interaction callbacks</param>
+        /// <param name="ksp">Game instance</param>
+        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < metadataChanges.Count; i++)
             {
-                StringBuilder sb = new StringBuilder();
+                CkanModule module = metadataChanges[i];
+                sb.AppendLine(string.Format("- {0} {1}", module.identifier, module.version));
+            }
 
-                for (int i = 0; i < metadataChanges.Count; i++)
-                {
-                    CkanModule module = metadataChanges[i];
-
-                    sb.AppendLine(string.Format("- {0} {1}", module.identifier, module.version));
-                }
-
-                if (user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
+            if (user.RaiseYesNoDialog(string.Format(@"The following mods have had their metadata changed since last update:
 
 {0}
 You should reinstall them in order to preserve consistency with the repository.
 
 Do you wish to reinstall now?", sb)))
-                {
-                    ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
-                    // New upstream metadata may break the consistency of already installed modules
-                    // e.g. if user installs modules A and B and then later up A is made to conflict with B
-                    // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing
-                    // consistency. However, we will show the user any inconsistencies later on.
+            {
+                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
+                // New upstream metadata may break the consistency of already installed modules
+                // e.g. if user installs modules A and B and then later up A is made to conflict with B
+                // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing
+                // consistency. However, we will show the user any inconsistencies later on.
 
-                    // Use the identifiers so we use the overload that actually resolves relationships
-                    // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
-                    foreach (string changedIdentifier in metadataChanges.Select(i => i.identifier))
+                // Use the identifiers so we use the overload that actually resolves relationships
+                // Do each changed module one at a time so a failure of one doesn't cause all the others to fail
+                foreach (string changedIdentifier in metadataChanges.Select(i => i.identifier))
+                {
+                    try
                     {
-                        try
-                        {
-                            installer.Upgrade(
-                                new[] { changedIdentifier },
-                                new NetAsyncModulesDownloader(new NullUser()),
-                                enforceConsistency: false
-                            );
-                        }
-                        // Thrown when a dependency couldn't be satisfied
-                        catch(ModuleNotFoundKraken)
-                        {
-                            log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                            user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                        }
-                        // Thrown when a conflicts relationship is violated
-                        catch (InconsistentKraken)
-                        {
-                            log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                            user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
-                        }
+                        installer.Upgrade(
+                            new[] { changedIdentifier },
+                            new NetAsyncModulesDownloader(new NullUser()),
+                            enforceConsistency: false
+                        );
+                    }
+                    // Thrown when a dependency couldn't be satisfied
+                    catch (ModuleNotFoundKraken)
+                    {
+                        log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                    }
+                    // Thrown when a conflicts relationship is violated
+                    catch (InconsistentKraken)
+                    {
+                        log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
                     }
                 }
             }
-
-            // Remove our downloaded meta-data now we've processed it.
-            // Seems weird to do this as part of a transaction, but Net.Download uses them, so let's be consistent.
-            file_transaction.Delete(repo_file);
         }
 
         private static bool MetadataEquals(CkanModule metadata, CkanModule oldMetadata)
@@ -393,7 +345,28 @@ Do you wish to reinstall now?", sb)))
             return true;
         }
 
-        private static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Boolean clear = true, Uri repo = null)
+        /// <summary>
+        /// Set a registry's available modules to the list from just one repo
+        /// </summary>
+        /// <param name="registry_manager">Manager of the regisry of interest</param>
+        /// <param name="ksp">Game instance</param>
+        /// <param name="user">Object for user interaction callbacks</param>
+        /// <param name="repo">Repository to check</param>
+        /// <returns>
+        /// Number of modules found in repo
+        /// </returns>
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
+        {
+            if (repo == null)
+            {
+                return Update(registry_manager, ksp, user, (Uri)null);
+            }
+
+            return Update(registry_manager, ksp, user, new Uri(repo));
+        }
+
+        // Same as above, just with a Uri instead of string for the repo
+        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -401,10 +374,13 @@ Do you wish to reinstall now?", sb)))
                 repo = default_ckan_repo;
             }
 
-            UpdateRegistry(repo, registry_manager.registry, ksp, user, clear);
-
-            // Save our changes!
-            registry_manager.Save(enforce_consistency: false);
+            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user);
+            if (newAvail != null && newAvail.Count > 0)
+            {
+                registry_manager.registry.SetAllAvailable(newAvail);
+                // Save our changes!
+                registry_manager.Save(enforce_consistency: false);
+            }
 
             ShowUserInconsistencies(registry_manager.registry, user);
 
@@ -413,14 +389,13 @@ Do you wish to reinstall now?", sb)))
         }
 
         /// <summary>
-        /// Updates the supplied registry from the supplied zip file.
-        /// This will *clear* the registry of available modules first.
-        /// This does not *save* the registry. For that, you probably want Repo.Update
+        /// Returns available modules from the supplied tar.gz file.
         /// </summary>
-        internal static void UpdateRegistryFromTarGz(string path, Registry registry)
+        private static List<CkanModule> UpdateRegistryFromTarGz(string path)
         {
             log.DebugFormat("Starting registry update from tar.gz file: \"{0}\".", path);
 
+            List<CkanModule> modules = new List<CkanModule>();
             // Open the gzip'ed file.
             using (Stream inputStream = File.OpenRead(path))
             {
@@ -474,22 +449,26 @@ Do you wish to reinstall now?", sb)))
                             // Convert the buffer data to a string.
                             string metadata_json = Encoding.ASCII.GetString(buffer);
 
-                            ProcessRegistryMetadataFromJSON(metadata_json, registry, filename);
+                            CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                            if (module != null)
+                            {
+                                modules.Add(module);
+                            }
                         }
                     }
                 }
             }
+            return modules;
         }
 
         /// <summary>
-        /// Updates the supplied registry from the supplied zip file.
-        /// This will *clear* the registry of available modules first.
-        /// This does not *save* the registry. For that, you probably want Repo.Update
+        /// Returns available modules from the supplied zip file.
         /// </summary>
-        internal static void UpdateRegistryFromZip(string path, Registry registry)
+        private static List<CkanModule> UpdateRegistryFromZip(string path)
         {
             log.DebugFormat("Starting registry update from zip file: \"{0}\".", path);
 
+            List<CkanModule> modules = new List<CkanModule>();
             using (var zipfile = new ZipFile(path))
             {
                 // Walk the archive, looking for .ckan files.
@@ -516,13 +495,76 @@ Do you wish to reinstall now?", sb)))
                         stream.Close();
                     }
 
-                    ProcessRegistryMetadataFromJSON(metadata_json, registry, filename);
+                    CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
+                    if (module != null)
+                    {
+                        modules.Add(module);
+                    }
                 }
 
                 zipfile.Close();
             }
+            return modules;
         }
 
+        private static CkanModule ProcessRegistryMetadataFromJSON(string metadata, string filename)
+        {
+            log.DebugFormat("Converting metadata from JSON.");
+
+            try
+            {
+                CkanModule module = CkanModule.FromJson(metadata);
+                log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
+                return module;
+            }
+            catch (Exception exception)
+            {
+                // Alas, we can get exceptions which *wrap* our exceptions,
+                // because json.net seems to enjoy wrapping rather than propagating.
+                // See KSP-CKAN/CKAN-meta#182 as to why we need to walk the whole
+                // exception stack.
+
+                bool handled = false;
+
+                while (exception != null)
+                {
+                    if (exception is UnsupportedKraken || exception is BadMetadataKraken)
+                    {
+                        // Either of these can be caused by data meant for future
+                        // clients, so they're not really warnings, they're just
+                        // informational.
+
+                        log.InfoFormat("Skipping {0} : {1}", filename, exception.Message);
+
+                        // I'd *love a way to "return" from the catch block.
+                        handled = true;
+                        break;
+                    }
+
+                    // Look further down the stack.
+                    exception = exception.InnerException;
+                }
+
+                // If we haven't handled our exception, then it really was exceptional.
+                if (handled == false)
+                {
+                    if (exception == null)
+                    {
+                        // Had exception, walked exception tree, reached leaf, got stuck.
+                        log.ErrorFormat("Error processing {0} (exception tree leaf)", filename);
+                    }
+                    else
+                    {
+                        // In case whatever's calling us is lazy in error reporting, we'll
+                        // report that we've got an issue here.
+                        log.ErrorFormat("Error processing {0} : {1}", filename, exception.Message);
+                    }
+
+                    throw;
+                }
+                return null;
+            }
+        }
 
         private static void ShowUserInconsistencies(Registry registry, IUser user)
         {

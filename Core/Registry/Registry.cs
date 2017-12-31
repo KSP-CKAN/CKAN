@@ -347,13 +347,16 @@ namespace CKAN
 
         #endregion
 
-        /// <summary>
-        /// Clears all available modules from the registry.
-        /// </summary>
-        public void ClearAvailable()
+        public void SetAllAvailable(IEnumerable<CkanModule> newAvail)
         {
             SealionTransaction();
+            // Clear current modules
             available_modules = new Dictionary<string, AvailableModule>();
+            // Add the new modules
+            foreach (CkanModule module in newAvail)
+            {
+                AddAvailable(module);
+            }
         }
 
         /// <summary>
@@ -365,7 +368,7 @@ namespace CKAN
 
             var identifier = module.identifier;
             // If we've never seen this module before, create an entry for it.
-            if (! available_modules.ContainsKey(identifier))
+            if (!available_modules.ContainsKey(identifier))
             {
                 log.DebugFormat("Adding new available module {0}", identifier);
                 available_modules[identifier] = new AvailableModule(identifier);

@@ -14,6 +14,7 @@ namespace Tests.Core.Net
     public class NetAsyncModulesDownloader
     {
 
+        private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
         private CKAN.IDownloader async;
@@ -29,13 +30,12 @@ namespace Tests.Core.Net
 
             // Give us a registry to play with.
             ksp = new DisposableKSP();
-            registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-            registry.ClearAvailable();
+            manager = CKAN.RegistryManager.Instance(ksp.KSP);
+            registry = manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
-
             // Make sure we have a registry we can use.
-            CKAN.Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
+            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncModulesDownloader(new NullUser());
@@ -128,4 +128,3 @@ namespace Tests.Core.Net
 
     }
 }
-

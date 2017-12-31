@@ -13,6 +13,7 @@ namespace Tests.Core.Relationships
     [TestFixture]
     public class SanityChecker
     {
+        private CKAN.RegistryManager manager;
         private CKAN.Registry registry;
         private DisposableKSP ksp;
 
@@ -21,12 +22,11 @@ namespace Tests.Core.Relationships
         {
             ksp = new DisposableKSP();
 
-            registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-            registry.ClearAvailable();
+            manager = CKAN.RegistryManager.Instance(ksp.KSP);
+            registry = manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
-
-            Repo.UpdateRegistry(TestData.TestKANZip(), registry, ksp.KSP, new NullUser());
+            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
         }
 
         [Test]
@@ -191,4 +191,3 @@ namespace Tests.Core.Relationships
         }
     }
 }
-

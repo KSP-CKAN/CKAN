@@ -136,7 +136,7 @@ namespace CKAN.CmdLine
 
             var updated = repository == null
                 ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, user)
-                : CKAN.Repo.Update(registry_manager, ksp, user, true, repository);
+                : CKAN.Repo.Update(registry_manager, ksp, user, repository);
 
             user.RaiseMessage("Updated information on {0} available modules", updated);
         }
