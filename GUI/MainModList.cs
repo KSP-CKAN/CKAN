@@ -186,7 +186,7 @@ namespace CKAN
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
-            //TODO Consider using smart enum pattern so stuff like this is easier
+            //TODO Consider using smart enumeration pattern so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Compatible));
             FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
@@ -520,7 +520,7 @@ namespace CKAN
                 full_list_of_mod_rows.Remove(mod.Identifier);
                 var item = new DataGridViewRow {Tag = mod};
 
-                ModChange myChange = mc?.Find((ModChange ch) => ch.Mod.Identifier == mod.Identifier);
+                ModChange myChange = mc?.FindLast((ModChange ch) => ch.Mod.Identifier == mod.Identifier);
 
                 var selecting = mod.IsInstallable()
                     ? (DataGridViewCell) new DataGridViewCheckBoxCell() {

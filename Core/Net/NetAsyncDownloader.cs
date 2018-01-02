@@ -39,7 +39,7 @@ namespace CKAN
                 size = expectedSize;
                 lastProgressUpdateTime = DateTime.Now;
 
-                agent.Headers.Add("user-agent", Net.UserAgentString);
+                agent.Headers.Add("User-Agent", Net.UserAgentString);
             }
         }
 

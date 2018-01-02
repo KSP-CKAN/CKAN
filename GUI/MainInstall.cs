@@ -14,7 +14,6 @@ namespace CKAN
     {
         private BackgroundWorker installWorker;
 
-
         // used to signal the install worker that the user canceled the install process
         // this may happen on the recommended/suggested mods dialogs
         private volatile bool installCanceled;
@@ -28,16 +27,18 @@ namespace CKAN
 
             ClearLog();
 
-            var opts =
-                (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
+            var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
-            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+            IRegistryQuerier registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
+            ModuleInstaller  installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+            // Avoid accumulating multiple event handlers
+            installer.onReportModInstalled -= OnModInstalled;
+            installer.onReportModInstalled += OnModInstalled;
             // setup progress callback
 
-            toInstall = new HashSet<CkanModule>();
+            toInstall       = new HashSet<CkanModule>();
             var toUninstall = new HashSet<string>();
-            var toUpgrade = new HashSet<string>();
+            var toUpgrade   = new HashSet<string>();
 
             // First compose sets of what the user wants installed, upgraded, and removed.
             foreach (ModChange change in opts.Key)
@@ -59,14 +60,14 @@ namespace CKAN
             // Now work on satisifying dependencies.
 
             var recommended = new Dictionary<string, List<string>>();
-            var suggested = new Dictionary<string, List<string>>();
+            var suggested   = new Dictionary<string, List<string>>();
 
             foreach (var change in opts.Key)
             {
                 if (change.ChangeType == GUIModChangeType.Install)
                 {
                     AddMod(change.Mod.ToModule().recommends, recommended, change.Mod.Identifier, registry);
-                    AddMod(change.Mod.ToModule().suggests, suggested, change.Mod.Identifier, registry);
+                    AddMod(change.Mod.ToModule().suggests,   suggested,   change.Mod.Identifier, registry);
                 }
             }
 
@@ -89,86 +90,121 @@ namespace CKAN
             tabController.ShowTab("WaitTabPage");
             tabController.SetTabLock(true);
 
-
-            var downloader = new NetAsyncModulesDownloader(GUI.user);
+            IDownloader downloader = new NetAsyncModulesDownloader(GUI.user);
             cancelCallback = () =>
             {
                 downloader.CancelDownload();
                 installCanceled = true;
             };
 
-            GUI.user.RaiseMessage("About to install...\r\n");
-
-            // FIXME: here we should heat up the cache with any mods we're going to install, because
-            // when this transaction types out it messes up everything else.
-            var resolvedMods = installer.ResolveModules(toInstall, opts.Value);
-
-            foreach (var module in resolvedMods.CachedModules)
+            bool resolvedAllProvidedMods = false;
+            while (!resolvedAllProvidedMods)
             {
-                GUI.user.RaiseMessage(" * {0} {1}(cached)", module.name, module.version);
-            }
-
-            foreach (var module in resolvedMods.UncachedModules)
-            {
-                GUI.user.RaiseMessage(" * {0} {1}", module.name, module.version);
-            }
-
-            if (!GUI.user.RaiseYesNoDialog("\r\nContinue?"))
-            {
-                throw new CancelledActionKraken("User declined install list");
-            }
-
-            GUI.user.RaiseMessage(String.Empty); // Just to look tidy.
-
-            installer.EnsureCache(resolvedMods.UncachedModules);
-
-            //Transaction is needed here to revert changes when an installation is cancelled
-            //TODO: Cancellation should be handled in the ModuleInstaller
-            using (var transaction = CkanTransaction.CreateTransactionScope())
-            {
-
-                //Set the result to false/failed in case we return
-                e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
-                SetDescription("Uninstalling selected mods");
-                if (!WasSuccessful(() => installer.UninstallList(toUninstall)))
-                    return;
-                if (installCanceled) return;
-
-                SetDescription("Updating selected mods");
-                if (!WasSuccessful(() => installer.Upgrade(toUpgrade, downloader)))
-                    return;
-                if (installCanceled) return;
-
-                // TODO: We should be able to resolve all our provisioning conflicts
-                // before we start installing anything. CKAN.SanityChecker can be used to
-                // pre-check if our changes are going to be consistent.
-
-                bool resolvedAllProvidedMods = false;
-
-                while (!resolvedAllProvidedMods)
+                try
                 {
+                    e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                    if (!installCanceled && toUninstall.Count > 0)
+                    {
+                        installer.UninstallList(toUninstall);
+                    }
+                    if (!installCanceled && toUpgrade.Count > 0)
+                    {
+                        installer.Upgrade(toUpgrade, downloader);
+                    }
+                    if (!installCanceled && toInstall.Count > 0)
+                    {
+                        installer.InstallList(toInstall, opts.Value, downloader);
+                    }
+                    e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
                     if (installCanceled)
                     {
-                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
-                        return;
-                    }
-                    var ret = InstallList(resolvedMods, opts.Value);
-                    if (!ret)
-                    {
-                        // install failed for some reason, error message is already displayed to the user
-                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                         return;
                     }
                     resolvedAllProvidedMods = true;
                 }
-
-                if (!installCanceled)
+                catch (DependencyNotSatisfiedKraken ex)
                 {
-                    transaction.Complete();
+                    GUI.user.RaiseMessage(
+                        "{0} requires {1} but it is not listed in the index, or not available for your version of KSP.",
+                        ex.parent, ex.module);
+                    return;
+                }
+                catch (ModuleNotFoundKraken ex)
+                {
+                    GUI.user.RaiseMessage(
+                        "Module {0} required but it is not listed in the index, or not available for your version of KSP.",
+                        ex.module);
+                    return;
+                }
+                catch (BadMetadataKraken ex)
+                {
+                    GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
+                    return;
+                }
+                catch (FileExistsKraken ex)
+                {
+                    if (ex.owningModule != null)
+                    {
+                        GUI.user.RaiseMessage(
+                            "\r\nOh no! We tried to overwrite a file owned by another mod!\r\n" +
+                            "Please try a `ckan update` and try again.\r\n\r\n" +
+                            "If this problem re-occurs, then it maybe a packaging bug.\r\n" +
+                            "Please report it at:\r\n\r\n" +
+                            "https://github.com/KSP-CKAN/NetKAN/issues/new\r\n\r\n" +
+                            "Please including the following information in your report:\r\n\r\n" +
+                            "File           : {0}\r\n" +
+                            "Installing Mod : {1}\r\n" +
+                            "Owning Mod     : {2}\r\n" +
+                            "CKAN Version   : {3}\r\n",
+                            ex.filename, ex.installingModule, ex.owningModule,
+                            Meta.GetVersion()
+                        );
+                    }
+                    else
+                    {
+                        GUI.user.RaiseMessage(
+                            "\r\n\r\nOh no!\r\n\r\n" +
+                            "It looks like you're trying to install a mod which is already installed,\r\n" +
+                            "or which conflicts with another mod which is already installed.\r\n\r\n" +
+                            "As a safety feature, the CKAN will *never* overwrite or alter a file\r\n" +
+                            "that it did not install itself.\r\n\r\n" +
+                            "If you wish to install {0} via the CKAN,\r\n" +
+                            "then please manually uninstall the mod which owns:\r\n\r\n" +
+                            "{1}\r\n\r\n" + "and try again.\r\n",
+                            ex.installingModule, ex.filename
+                        );
+                    }
+
+                    GUI.user.RaiseMessage("Your GameData has been returned to its original state.\r\n");
+                    return;
+                }
+                catch (InconsistentKraken ex)
+                {
+                    // The prettiest Kraken formats itself for us.
+                    GUI.user.RaiseMessage(ex.InconsistenciesPretty);
+                    return;
+                }
+                catch (CancelledActionKraken)
+                {
+                    return;
+                }
+                catch (MissingCertificateKraken kraken)
+                {
+                    // Another very pretty kraken.
+                    GUI.user.RaiseMessage(kraken.ToString());
+                    return;
+                }
+                catch (DownloadErrorsKraken)
+                {
+                    // User notified in InstallList
+                    return;
+                }
+                catch (DirectoryNotFoundKraken kraken)
+                {
+                    GUI.user.RaiseMessage("\r\n{0}", kraken.Message);
+                    return;
                 }
             }
-
-            e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
         }
 
         private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble,
@@ -232,113 +268,6 @@ namespace CKAN
 
                 tabController.SetTabLock(false);
             }
-        }
-
-        /// <summary>
-        /// Helper function to wrap around calls to ModuleInstaller.
-        /// Handles some of the possible krakens and displays user friendly messages for them.
-        /// </summary>
-        private static bool WasSuccessful(Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (DependencyNotSatisfiedKraken ex)
-            {
-                GUI.user.RaiseMessage(
-                    "{0} requires {1} but it is not listed in the index, or not available for your version of KSP.",
-                    ex.parent, ex.module);
-                return false;
-            }
-            catch (ModuleNotFoundKraken ex)
-            {
-                GUI.user.RaiseMessage(
-                    "Module {0} required but it is not listed in the index, or not available for your version of KSP.",
-                    ex.module);
-                return false;
-            }
-            catch (BadMetadataKraken ex)
-            {
-                GUI.user.RaiseMessage("Bad metadata detected for module {0}: {1}", ex.module, ex.Message);
-                return false;
-            }
-            catch (FileExistsKraken ex)
-            {
-                if (ex.owningModule != null)
-                {
-                    GUI.user.RaiseMessage(
-                        "\r\nOh no! We tried to overwrite a file owned by another mod!\r\n" +
-                        "Please try a `ckan update` and try again.\r\n\r\n" +
-                        "If this problem re-occurs, then it maybe a packaging bug.\r\n" +
-                        "Please report it at:\r\n\r\n" +
-                        "https://github.com/KSP-CKAN/NetKAN/issues/new\r\n\r\n" +
-                        "Please including the following information in your report:\r\n\r\n" +
-                        "File           : {0}\r\n" +
-                        "Installing Mod : {1}\r\n" +
-                        "Owning Mod     : {2}\r\n" +
-                        "CKAN Version   : {3}\r\n",
-                        ex.filename, ex.installingModule, ex.owningModule,
-                        Meta.GetVersion()
-                        );
-                }
-                else
-                {
-                    GUI.user.RaiseMessage(
-                        "\r\n\r\nOh no!\r\n\r\n" +
-                        "It looks like you're trying to install a mod which is already installed,\r\n" +
-                        "or which conflicts with another mod which is already installed.\r\n\r\n" +
-                        "As a safety feature, the CKAN will *never* overwrite or alter a file\r\n" +
-                        "that it did not install itself.\r\n\r\n" +
-                        "If you wish to install {0} via the CKAN,\r\n" +
-                        "then please manually uninstall the mod which owns:\r\n\r\n" +
-                        "{1}\r\n\r\n" + "and try again.\r\n",
-                        ex.installingModule, ex.filename
-                        );
-                }
-
-                GUI.user.RaiseMessage("Your GameData has been returned to its original state.\r\n");
-                return false;
-            }
-            catch (InconsistentKraken ex)
-            {
-                // The prettiest Kraken formats itself for us.
-                GUI.user.RaiseMessage(ex.InconsistenciesPretty);
-                return false;
-            }
-            catch (CancelledActionKraken)
-            {
-                return false;
-            }
-            catch (MissingCertificateKraken kraken)
-            {
-                // Another very pretty kraken.
-                GUI.user.RaiseMessage(kraken.ToString());
-                return false;
-            }
-            catch (DownloadErrorsKraken)
-            {
-                // User notified in InstallList
-                return false;
-            }
-            catch (DirectoryNotFoundKraken kraken)
-            {
-                GUI.user.RaiseMessage("\r\n{0}", kraken.Message);
-                return false;
-            }
-            return true;
-        }
-        private bool InstallList(ModuleResolution modules, RelationshipResolverOptions options)
-        {
-            if (toInstall.Any())
-            {
-                // actual magic happens here, we run the installer with our mod list
-                var module_installer = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user);
-                module_installer.onReportModInstalled = OnModInstalled;
-                return WasSuccessful(() => module_installer.InstallList(modules, options));
-            }
-
-            return true;
         }
 
         private void OnModInstalled(CkanModule mod)

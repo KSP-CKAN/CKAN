@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CKAN.Versioning;
 using CKAN.Exporters;
 using CKAN.Properties;
 using CKAN.Types;
@@ -1142,7 +1143,7 @@ namespace CKAN
 
         private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var module = ModInfoTabControl.SelectedModule;
+            GUIMod module = ModInfoTabControl.SelectedModule;
             if (module == null || !module.IsCKAN)
                 return;
 
@@ -1151,21 +1152,33 @@ namespace CKAN
             if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
                 return;
 
-            ModuleInstaller installer = ModuleInstaller.GetInstance(CurrentInstance, currentUser);
-            var resolvedMod = installer.ResolveModules(toInstall, new RelationshipResolverOptions());
+            IRegistryQuerier   registry = RegistryManager.Instance(CurrentInstance).registry;
+            KspVersionCriteria versCrit = CurrentInstance.VersionCriteria();
 
-            using (var transaction = CkanTransaction.CreateTransactionScope())
+            // Build the list of changes, first the mod to remove:
+            List<ModChange> toReinstall = new List<ModChange>()
             {
-                SetDescription($"Uninstalling {module.Name}");
-                if (!WasSuccessful(() => installer.UninstallList(module.Identifier)))
-                    return;
-
-                SetDescription($"Installing {module.Name}");
-                if (!WasSuccessful(() => installer.InstallList(resolvedMod, new RelationshipResolverOptions())))
-                    return;
-
-                transaction.Complete();
+                new ModChange(module, GUIModChangeType.Remove, null)
+            };
+            // Then everything we need to re-install:
+            HashSet<string> goners = registry.FindReverseDependencies(
+                new List<string>() { module.Identifier }
+            );
+            foreach (string id in goners)
+            {
+                toReinstall.Add(new ModChange(
+                    mainModList.full_list_of_mod_rows[id]?.Tag as GUIMod,
+                    GUIModChangeType.Install,
+                    null
+                ));
             }
+            // Hand off to centralized [un]installer code
+            installWorker.RunWorkerAsync(
+                new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                    toReinstall,
+                    RelationshipResolver.DefaultOpts()
+                )
+            );
         }
 
         private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)

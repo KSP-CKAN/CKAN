@@ -25,7 +25,7 @@ namespace CKAN.NetKAN
         [Option("github-token", HelpText = "GitHub OAuth token for API access")]
         public string GitHubToken { get; set; }
 
-        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default user-agent string for HTTP requests")]
+        [Option("net-useragent", DefaultValue = null, HelpText = "Set the default User-Agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
 
         [Option("prerelease", HelpText = "Index GitHub prereleases")]

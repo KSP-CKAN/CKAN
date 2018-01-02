@@ -43,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Include invalid instances in KSPManager (#2230 by: HebaruSan; reviewed: politas)
 - [Build] Check version of PowerShell in build script (#2235 by: HebaruSan; reviewed: Olympic1)
 - [Multiple] Add and change logging to make INFO readable (#2236 by: HebaruSan; reviewed: politas)
+- [Multiple] Use shared installer code in GUI and fix reinstall problems (#2233 by: HebaruSan; reviewed: Olympic1, politas)
 
 ### Internal
 
