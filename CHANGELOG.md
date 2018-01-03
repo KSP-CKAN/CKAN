@@ -3,6 +3,8 @@
 All notable changes to this project will be documented in this file.
 ## v1.24.0-PRE2
 
+### Bugfixes
+- [GUI] Check provides for optional dependencies in GUI (#2240 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0-PRE1 (McCandless)
 

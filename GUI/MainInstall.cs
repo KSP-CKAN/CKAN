@@ -231,7 +231,29 @@ namespace CKAN
                         chooseAble[mod.name].Add(identifier);
                     }
                 }
-                // XXX - Don't ignore all krakens! Those things are important!
+                catch (ModuleNotFoundKraken)
+                {
+                    List<CkanModule> providers = registry.LatestAvailableWithProvides(
+                        mod.name,
+                        CurrentInstance.VersionCriteria(),
+                        mod
+                    );
+                    foreach (CkanModule provider in providers)
+                    {
+                        if (!registry.IsInstalled(provider.identifier)
+                            && !toInstall.Any(m => m.identifier == provider.identifier))
+                        {
+                            // We want to show this mod to the user. Add it.
+                            if (!chooseAble.ContainsKey(provider.identifier))
+                            {
+                                // Add a new entry if this provider isn't listed yet.
+                                chooseAble.Add(provider.identifier, new List<string>());
+                            }
+                            // Add the dependent mod to the list of reasons this dependency is shown.
+                            chooseAble[provider.identifier].Add(identifier);
+                        }
+                    }
+                }
                 catch (Kraken)
                 {
                 }
