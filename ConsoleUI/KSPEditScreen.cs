@@ -17,7 +17,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">KSP manager containing the instances</param>
         /// <param name="k">Instance to edit</param>
         public KSPEditScreen(KSPManager mgr, KSP k)
-            : base(mgr, KSPListScreen.InstallName(mgr, k), k.GameDir())
+            : base(mgr, k.Name, k.GameDir())
         {
             ksp = k;
             try {
@@ -158,7 +158,7 @@ namespace CKAN.ConsoleUI {
                 // Notify the user that the registry doesn't parse
                 AddObject(new ConsoleLabel(
                     1, repoFrameTop, -1,
-                    () => $"Failed to extract mod list sources from {KSPListScreen.InstallName(manager, ksp)}."
+                    () => $"Failed to extract mod list sources from {ksp.Name}."
                 ));
 
             }
@@ -180,7 +180,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override bool Valid()
         {
-            if (name.Value != KSPListScreen.InstallName(manager, ksp)
+            if (name.Value != ksp.Name
                     && !nameValid()) {
                 return false;
             }
@@ -207,15 +207,15 @@ namespace CKAN.ConsoleUI {
                 ksp.SetCompatibleVersions(compatEditList);
             }
 
-            string oldName = KSPListScreen.InstallName(manager, ksp);
+            string oldName = ksp.Name;
             if (path.Value != ksp.GameDir()) {
                 // If the path is changed, then we have to remove the old instance
                 // and replace it with a new one, whether or not the name is changed.
                 manager.RemoveInstance(oldName);
-                manager.AddInstance(name.Value, new KSP(path.Value, new NullUser()));
+                manager.AddInstance(new KSP(path.Value, name.Value, new NullUser()));
             } else if (name.Value != oldName) {
                 // If only the name changed, there's an API for that.
-                manager.RenameInstance(KSPListScreen.InstallName(manager, ksp), name.Value);
+                manager.RenameInstance(ksp.Name, name.Value);
             }
         }
 

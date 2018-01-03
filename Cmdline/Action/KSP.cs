@@ -246,8 +246,7 @@ namespace CKAN.CmdLine
             try
             {
                 string path = options.path;
-                CKAN.KSP ksp = new CKAN.KSP(path, User);
-                Manager.AddInstance(options.name, ksp);
+                Manager.AddInstance(new CKAN.KSP(path, options.name, User));
                 User.RaiseMessage("Added \"{0}\" with root \"{1}\" to known installs", options.name, options.path);
                 return Exit.OK;
             }

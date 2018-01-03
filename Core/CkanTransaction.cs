@@ -10,12 +10,14 @@ namespace CKAN
 
         public static TransactionScope CreateTransactionScope()
         {
-            var transactionOptions = new TransactionOptions
-            {
-                Timeout = TransactionManager.MaximumTimeout
-            };
-            return  new TransactionScope(TransactionScopeOption.Required, transactionOptions);
+            return new TransactionScope(TransactionScopeOption.Required, transOpts);
         }
+
+        private static TransactionOptions transOpts = new TransactionOptions()
+        {
+            IsolationLevel = IsolationLevel.ReadCommitted,
+            Timeout        = TransactionManager.MaximumTimeout
+        };
 
     }
 }

@@ -38,7 +38,7 @@ namespace Tests.Data
                 File.Copy(registryFile, registryPath, true);
             }
 
-            KSP = new KSP(_disposableDir, NullUser.User);
+            KSP = new KSP(_disposableDir, "disposable", NullUser.User);
             Logging.Initialize();
         }
 
@@ -74,4 +74,3 @@ namespace Tests.Data
         }
     }
 }
-

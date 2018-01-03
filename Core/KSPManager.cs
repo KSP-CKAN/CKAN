@@ -75,7 +75,7 @@ namespace CKAN
 
             if (path != null)
             {
-                return new KSP(path, User);
+                return new KSP(path, "portable", User);
             }
 
             // If we only know of a single instance, return that.
@@ -114,7 +114,7 @@ namespace CKAN
             try
             {
                 string gamedir = KSP.FindGameDir();
-                return AddInstance("auto", new KSP(gamedir, User));
+                return AddInstance(new KSP(gamedir, "auto", User));
             }
             catch (DirectoryNotFoundException)
             {
@@ -130,10 +130,11 @@ namespace CKAN
         /// Adds a KSP instance to registry.
         /// Returns the resulting KSP object.
         /// </summary>
-        public KSP AddInstance(string name, KSP ksp_instance)
+        public KSP AddInstance(KSP ksp_instance)
         {
             if (ksp_instance.Valid)
             {
+                string name = ksp_instance.Name;
                 instances.Add(name, ksp_instance);
                 Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
             }
@@ -203,16 +204,15 @@ namespace CKAN
         /// <summary>
         /// Renames an instance in the registry and saves.
         /// </summary>
-        ///
-        // TODO: What should we do if our target name already exists?
         public void RenameInstance(string from, string to)
         {
-            var ksp = instances[from];
+            // TODO: What should we do if our target name already exists?
+            KSP ksp = instances[from];
             instances.Remove(from);
+            ksp.Name = to;
             instances.Add(to, ksp);
             Win32Registry.SetRegistryToInstances(instances, AutoStartInstance);
         }
-
 
         /// <summary>
         /// Sets the current instance.
@@ -245,7 +245,7 @@ namespace CKAN
 
         public void SetCurrentInstanceByPath(string path)
         {
-            KSP ksp = new KSP(path, User);
+            KSP ksp = new KSP(path, "custom", User);
             if (ksp.Valid)
             {
                 CurrentInstance = ksp;
@@ -294,7 +294,7 @@ namespace CKAN
                 var path = instance.Item2;
                 log.DebugFormat("Loading {0} from {1}", name, path);
                 // Add unconditionally, sort out invalid instances downstream
-                instances.Add(name, new KSP(path, User));
+                instances.Add(name, new KSP(path, name, User));
             }
 
             try
@@ -307,6 +307,7 @@ namespace CKAN
                 AutoStartInstance = null;
             }
         }
+
     }
 
     public class KSPManagerKraken : Kraken

@@ -18,7 +18,7 @@ namespace Tests.Core
         {
             ksp_dir = TestData.NewTempDir();
             TestData.CopyDirectory(TestData.good_ksp_dir(), ksp_dir);
-            ksp = new CKAN.KSP(ksp_dir,NullUser.User);
+            ksp = new CKAN.KSP(ksp_dir, "test", NullUser.User);
         }
 
         [TearDown]
@@ -32,7 +32,7 @@ namespace Tests.Core
                 CKAN.RegistryManager.Instance(ksp).Dispose();
                 ksp.Dispose();
             }
-            
+
             Directory.Delete(ksp_dir, true);
         }
 

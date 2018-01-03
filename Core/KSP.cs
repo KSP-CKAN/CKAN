@@ -18,7 +18,7 @@ namespace CKAN
 {
 
     /// <summary>
-    ///     Everything for dealing with KSP itself.
+    /// Everything for dealing with KSP itself.
     /// </summary>
     public class KSP : IDisposable
     {
@@ -31,6 +31,8 @@ namespace CKAN
         private readonly string gameDir;
         private KspVersion version;
         private List<KspVersion> _compatibleVersions = new List<KspVersion>();
+
+        public string Name { get; internal set; }
         public KspVersion VersionOfKspWhenCompatibleVersionsWereStored { get; private set; }
         public bool CompatibleVersionsAreFromDifferentKsp { get { return _compatibleVersions.Count > 0 && VersionOfKspWhenCompatibleVersionsWereStored != Version(); } }
 
@@ -40,12 +42,13 @@ namespace CKAN
         #region Construction and Initialisation
 
         /// <summary>
-        /// Returns a KSP object, insisting that directory contains a valid KSP install.
-        /// Will initialise a CKAN instance in the KSP dir if it does not already exist.
-        /// Throws a NotKSPDirKraken if directory is not a KSP install.
+        /// Returns a KSP object.
+        /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
+        /// if the directory contains a valid KSP install.
         /// </summary>
-        public KSP(string gameDir, IUser user)
+        public KSP(string gameDir, string name, IUser user)
         {
+            Name = name;
             User = user;
             // Make sure our path is absolute and has normalised slashes.
             this.gameDir = KSPPathUtils.NormalizePath(Path.GetFullPath(gameDir));
@@ -60,7 +63,7 @@ namespace CKAN
         public bool Valid { get { return IsKspDir(gameDir); } }
 
         /// <summary>
-        ///     Create the CKAN directory and any supporting files.
+        /// Create the CKAN directory and any supporting files.
         /// </summary>
         private void SetupCkanDirectories()
         {
@@ -80,6 +83,11 @@ namespace CKAN
             {
                 User.RaiseMessage("Creating {0}", DownloadCacheDir());
                 Directory.CreateDirectory(DownloadCacheDir());
+            }
+            if (!Directory.Exists(InstallHistoryDir()))
+            {
+                User.RaiseMessage("Creating {0}", InstallHistoryDir());
+                Directory.CreateDirectory(InstallHistoryDir());
             }
 
             // Clear any temporary files we find. If the directory
@@ -177,8 +185,6 @@ namespace CKAN
 
             log.DebugFormat("Checking if KSP is in my exe dir: {0}", exe_dir);
 
-            // Checking for a GameData directory probably isn't the best way to
-            // detect KSP, but it works. More robust implementations welcome.
             if (IsKspDir(exe_dir))
             {
                 log.InfoFormat("KSP found at {0}", exe_dir);
@@ -215,6 +221,8 @@ namespace CKAN
         /// <summary>
         /// Checks if the specified directory looks like a KSP directory.
         /// Returns true if found, false if not.
+        /// Checking for a GameData directory probably isn't the best way to
+        /// detect KSP, but it works. More robust implementations welcome.
         /// </summary>
         internal static bool IsKspDir(string directory)
         {
@@ -306,6 +314,13 @@ namespace CKAN
         {
             return KSPPathUtils.NormalizePath(
                 Path.Combine(CkanDir(), "downloads")
+            );
+        }
+
+        public string InstallHistoryDir()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(CkanDir(), "history")
             );
         }
 

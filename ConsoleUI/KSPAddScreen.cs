@@ -28,7 +28,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override void Save()
         {
-            manager.AddInstance(name.Value, new KSP(path.Value, new NullUser()));
+            manager.AddInstance(new KSP(path.Value, name.Value, new NullUser()));
         }
     }
 

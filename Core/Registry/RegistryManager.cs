@@ -348,8 +348,7 @@ namespace CKAN
 
         private string SerializeCurrentInstall(bool recommmends = false, bool with_versions = true)
         {
-            // TODO how do we obtain the name of the current KSP instance?
-            string kspInstanceName = "default";
+            string kspInstanceName = ksp.Name;
             string name = "installed-" + kspInstanceName;
 
             var installed = new JObject();
@@ -389,7 +388,7 @@ namespace CKAN
             return sw + Environment.NewLine;
         }
 
-        public void Save(bool enforce_consistency = true, bool recommmends = false, bool with_versions = true)
+        public void Save(bool enforce_consistency = true)
         {
             log.InfoFormat("Saving CKAN registry at {0}", path);
 
@@ -414,10 +413,34 @@ namespace CKAN
 
             file_transaction.WriteAllText(path, Serialize());
 
-            // TODO how do we obtain the name of the current KSP instance?
-            string kspInstanceName = "default";
-            string installedModsPath = Path.Combine(directoryPath, "installed-" + kspInstanceName + ".ckan");
-            file_transaction.WriteAllText(installedModsPath, SerializeCurrentInstall(recommmends, with_versions));
+            ExportInstalled(
+                Path.Combine(directoryPath, $"installed-{ksp.Name}.ckan"),
+                false, true
+            );
+            if (!Directory.Exists(ksp.InstallHistoryDir()))
+            {
+                Directory.CreateDirectory(ksp.InstallHistoryDir());
+            }
+            ExportInstalled(
+                Path.Combine(
+                    ksp.InstallHistoryDir(),
+                    $"installed-{ksp.Name}-{DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.ckan"
+                ),
+                false, true
+            );
+        }
+
+        /// <summary>
+        /// Save a custom .ckan file that contains all the currently
+        /// installed mods as dependencies.
+        /// </summary>
+        /// <param name="path">Desired location of file</param>
+        /// <param name="recommends">True to save the mods as recommended, false for depends</param>
+        /// <param name="with_versions">True to include the mod versions in the file, false to omit them</param>
+        public void ExportInstalled(string path, bool recommends, bool with_versions)
+        {
+            string serialized = SerializeCurrentInstall(recommends, with_versions);
+            file_transaction.WriteAllText(path, serialized);
         }
     }
 }
