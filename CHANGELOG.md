@@ -1,8 +1,10 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+## v1.24.0-PRE2
 
-## v1.24.0-PRE
+
+## v1.24.0-PRE1 (McCandless)
 
 ### Features
 
