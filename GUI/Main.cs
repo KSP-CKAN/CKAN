@@ -341,9 +341,15 @@ namespace CKAN
 
             CurrentInstanceUpdated();
 
-            // If we're auto-updating then we shouldn't interfere progress tab
-            if (configuration.RefreshOnStartup && !autoUpdating)
+            // We would like to refresh if we're configured to refresh on startup,
+            // or if we have no currently available modules.
+            bool repoUpdateNeeded = configuration.RefreshOnStartup
+                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
+            // If we're auto-updating the client then we shouldn't interfere with the progress tab
+            if (!autoUpdating && repoUpdateNeeded)
+            {
                 UpdateRepo();
+            }
 
             Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}  --  {CurrentInstance.GameDir()}";
 
