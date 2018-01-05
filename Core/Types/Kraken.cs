@@ -196,6 +196,45 @@ namespace CKAN
     }
 
     /// <summary>
+    /// Thrown if we find ourselves with multiple modules installed which conflict with each other.
+    /// </summary>
+    public class ConflictsKraken : Kraken
+    {
+        public List<KeyValuePair<CkanModule, CkanModule>> Conflicts = new List<KeyValuePair<CkanModule, CkanModule>>();
+
+        public string ConflictsPretty
+        {
+            get
+            {
+                string message = "The following mod conflicts were found:\r\n";
+                foreach (KeyValuePair<CkanModule, CkanModule> conflict in Conflicts)
+                {
+                    message = string.Format("{0}\r\n * {1} conflicts with {2}, can't install both", 
+                        message, conflict.Key.name, conflict.Value.name);
+                }
+                return message;
+            }
+        }
+
+        public ConflictsKraken( List<KeyValuePair<CkanModule, CkanModule>> conflicts, Exception innerException = null)
+            : base(null, innerException)
+        {
+            this.Conflicts = conflicts;
+        }
+
+        public ConflictsKraken(KeyValuePair<CkanModule, CkanModule> conflict, Exception innerException = null)
+            : base(null, innerException)
+        {
+            this.Conflicts.Add(conflict);
+        }
+
+        public override string ToString()
+        {
+            return ConflictsPretty + StackTrace;
+        }
+    }
+
+    /// <summary>
     /// The terrible state when a file exists when we expect it not to be there.
     /// For example, when we install a mod, and it tries to overwrite a file from another mod.
     /// </summary>

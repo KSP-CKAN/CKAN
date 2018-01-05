@@ -195,7 +195,7 @@ namespace CKAN
         /// <param name="modules">Modules to attempt to install</param>
         public void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {
-            var inconsistencies = new List<string>();
+            var newConflicts = new List<KeyValuePair<CkanModule, CkanModule>>();
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
             log.DebugFormat("Processing relationships for {0} modules", ckan_modules.Count());
@@ -219,13 +219,13 @@ namespace CKAN
                     }
                     else
                     {
-                        inconsistencies.Add(string.Format("{0} conflicts with {1}, can't install both.", module, listed_mod));
+                        newConflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, listed_mod));
                     }
                 }                    
                 user_requested_mods.Add(module);
                 Add(module, new SelectionReason.UserRequested());
             }
-            if (inconsistencies.Count() > 0) throw new InconsistentKraken(inconsistencies);
+            if (newConflicts.Count() > 0) throw new ConflictsKraken(newConflicts);
             // Now that we've already pre-populated the modlist, we can resolve
             // the rest of our dependencies.
 
@@ -441,8 +441,7 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", conflicting_mod,
-                            candidate));
+                        throw new ConflictsKraken(new KeyValuePair<CkanModule, CkanModule>(candidate, conflicting_mod));
                     }
                 }
             }

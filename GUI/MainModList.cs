@@ -588,6 +588,11 @@ namespace CKAN
                     user.RaiseError(k.InconsistenciesPretty);
                     return null;
                 }
+                catch (ConflictsKraken k)
+                {
+                    user.RaiseError(k.ConflictsPretty);
+                    return null;
+                }
                 catch (ModuleNotFoundKraken k)
                 {
                     //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
