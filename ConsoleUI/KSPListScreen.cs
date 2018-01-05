@@ -37,7 +37,7 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Name",
                         Width    = 20,
-                        Renderer = k => InstallName(manager, k)
+                        Renderer = k => k.Name
                     }, new ConsoleListBoxColumn<KSP>() {
                         Header   = "Version",
                         Width    = 12,
@@ -65,13 +65,13 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Enter, (object sender) => {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
-                    $"Loading instance {InstallName(manager, kspList.Selection)}...",
+                    $"Loading instance {kspList.Selection.Name}...",
                     new List<string>()
                 );
 
                 if (TryGetInstance(kspList.Selection, () => { d.Run(() => {}); })) {
                     try {
-                        manager.SetCurrentInstance(InstallName(manager, kspList.Selection));
+                        manager.SetCurrentInstance(kspList.Selection.Name);
                     } catch (Exception ex) {
                         // This can throw if the previous current instance had an error,
                         // since it gets destructed when it's replaced.
@@ -91,7 +91,7 @@ namespace CKAN.ConsoleUI {
             });
             kspList.AddTip("R", "Remove");
             kspList.AddBinding(Keys.R, (object sender) => {
-                manager.RemoveInstance(InstallName(manager, kspList.Selection));
+                manager.RemoveInstance(kspList.Selection.Name);
                 kspList.SetData(manager.Instances.Values);
                 return true;
             });
@@ -99,7 +99,7 @@ namespace CKAN.ConsoleUI {
             kspList.AddBinding(Keys.E, (object sender) => {
 
                 ConsoleMessageDialog d = new ConsoleMessageDialog(
-                    $"Loading instance {InstallName(manager, kspList.Selection)}...",
+                    $"Loading instance {kspList.Selection.Name}...",
                     new List<string>()
                 );
                 TryGetInstance(kspList.Selection, () => { d.Run(() => {}); });
@@ -112,7 +112,7 @@ namespace CKAN.ConsoleUI {
 
             kspList.AddTip("D", "Default");
             kspList.AddBinding(Keys.D, (object sender) => {
-                string name = InstallName(manager, kspList.Selection);
+                string name = kspList.Selection.Name;
                 if (name == manager.AutoStartInstance) {
                     manager.ClearAutoStart();
                 } else {
@@ -134,25 +134,6 @@ namespace CKAN.ConsoleUI {
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
             CenterHeader = () => "KSP Instances";
             mainMenu     = kspList.SortMenu();
-        }
-
-        /// <summary>
-        /// Return the name of an instance of the game.
-        /// It's not in an object because it's the key of the main dictionary holding them.
-        /// </summary>
-        /// <param name="manager">KSP manager object containing the instances</param>
-        /// <param name="ksp">Game instance to look up</param>
-        /// <returns>
-        /// Name of the instance
-        /// </returns>
-        public static string InstallName(KSPManager manager, KSP ksp)
-        {
-            foreach (var kvp in manager.Instances) {
-                if (kvp.Value == ksp) {
-                    return kvp.Key;
-                }
-            }
-            return null;
         }
 
         /// <summary>
@@ -221,7 +202,7 @@ namespace CKAN.ConsoleUI {
 
         private string StatusSymbol(KSP k)
         {
-            return InstallName(manager, k) == manager.AutoStartInstance
+            return k.Name == manager.AutoStartInstance
                 ? defaultMark
                 : " ";
         }

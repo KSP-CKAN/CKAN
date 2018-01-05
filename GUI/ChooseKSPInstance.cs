@@ -72,10 +72,10 @@ namespace CKAN
             var path = Path.GetDirectoryName(_instanceDialog.FileName);
             try
             {
-                KSP instance = new KSP(path, GUI.user);                
                 var instanceName = Path.GetFileName(path);
+                KSP instance = new KSP(path, instanceName, GUI.user);
                 instanceName = _manager.GetNextValidInstanceName(instanceName);
-                _manager.AddInstance(instanceName, instance);
+                _manager.AddInstance(instance);
                 UpdateInstancesList();
             }
             catch (NotKSPDirKraken k)

@@ -101,8 +101,9 @@ namespace Tests.Core
             using (var tidy2 = new DisposableKSP())
             {
                 const string newInstance = "tidy2";
+                tidy2.KSP.Name = newInstance;
                 Assert.That(manager.HasInstance(newInstance), Is.False);
-                manager.AddInstance(newInstance, tidy2.KSP);
+                manager.AddInstance(tidy2.KSP);
                 Assert.That(manager.HasInstance(newInstance),Is.True);
             }
         }

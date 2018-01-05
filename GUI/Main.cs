@@ -998,10 +998,9 @@ namespace CKAN
                     }
 
                     // Save, just to be certain that the installed-*.ckan metapackage is generated.
-                    RegistryManager.Instance(CurrentInstance).Save(true, recommends, versions);
-
-                    // TODO: The core might eventually save as something other than 'installed-default.ckan'
-                    File.Copy(Path.Combine(CurrentInstance.CkanDir(), "installed-default.ckan"), dlg.FileName, true);
+                    RegistryManager mgr = RegistryManager.Instance(CurrentInstance);
+                    mgr.Save(true);
+                    mgr.ExportInstalled(dlg.FileName, recommends, versions);
                 }
                 else
                 {
@@ -1152,8 +1151,7 @@ namespace CKAN
             if (reinstallDialog.ShowYesNoDialog(confirmationText) == DialogResult.No)
                 return;
 
-            IRegistryQuerier   registry = RegistryManager.Instance(CurrentInstance).registry;
-            KspVersionCriteria versCrit = CurrentInstance.VersionCriteria();
+            IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
 
             // Build the list of changes, first the mod to remove:
             List<ModChange> toReinstall = new List<ModChange>()

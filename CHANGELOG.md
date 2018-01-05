@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 ## v1.24.0-PRE2
 
+### Features
+- [Multiple] Save timestamped .ckan files after we save the registry (#2239 by: HebaruSan; reviewed: politas)
+
 ### Bugfixes
 - [GUI] Check provides for optional dependencies in GUI (#2240 by: HebaruSan; reviewed: politas)
 

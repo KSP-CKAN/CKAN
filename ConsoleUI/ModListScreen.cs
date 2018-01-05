@@ -274,7 +274,7 @@ namespace CKAN.ConsoleUI {
             mainMenu = new ConsolePopupMenu(opts);
 
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => $"KSP {manager.CurrentInstance.Version().ToString()} ({KSPListScreen.InstallName(manager, manager.CurrentInstance)})";
+            CenterHeader = () => $"KSP {manager.CurrentInstance.Version().ToString()} ({manager.CurrentInstance.Name})";
         }
 
         // Alt+H doesn't work on Mac, but F1 does, and we need
@@ -466,8 +466,12 @@ namespace CKAN.ConsoleUI {
             try {
                 // Save the mod list as "depends" without the installed versions.
                 // Beacause that's supposed to work.
-                RegistryManager.Instance(manager.CurrentInstance).Save(true, false, false);
-                RaiseError($"Mod list exported to {Path.Combine(manager.CurrentInstance.CkanDir(), "installed-default.ckan")}");
+                RegistryManager.Instance(manager.CurrentInstance).Save(true);
+                string path = Path.Combine(
+                    manager.CurrentInstance.CkanDir(),
+                    $"installed-{manager.CurrentInstance.Name}.ckan"
+                );
+                RaiseError($"Mod list exported to {path}");
             } catch (Exception ex) {
                 RaiseError($"Export failed: {ex.Message}");
             }
