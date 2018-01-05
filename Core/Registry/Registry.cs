@@ -360,6 +360,17 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Check whether the available_modules list is empty
+        /// </summary>
+        /// <returns>
+        /// True if we have at least one available mod, false otherwise.
+        /// </returns>
+        public bool HasAnyAvailable()
+        {
+            return available_modules.Count > 0;
+        }
+
+        /// <summary>
         /// Mark a given module as available.
         /// </summary>
         public void AddAvailable(CkanModule module)
