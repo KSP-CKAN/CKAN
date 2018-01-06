@@ -133,7 +133,8 @@ namespace CKAN.NetKAN
             {
                 var ksp = kspManager.GetPreferredInstance();
                 Log.InfoFormat("Using CKAN cache at {0}", ksp.Cache.GetCachePath());
-                return ksp.Cache;
+                /// Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
+                return new NetFileCache(ksp.Cache.GetCachePath());
             }
             catch
             {

@@ -17,11 +17,11 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
-        private DisposableKSP _instance;
-        private CKAN.Registry _registry;
+        private DisposableKSP        _instance;
+        private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
-        private CKAN.CkanModule _testModule;
-        private string _gameDataDir;
+        private CKAN.CkanModule      _testModule;
+        private string               _gameDataDir;
 
         /// <summary>
         /// Prep environment by setting up a single mod in
@@ -32,14 +32,14 @@ namespace Tests.Core
         {
             _testModule = TestData.DogeCoinFlag_101_module();
 
-            _instance = new DisposableKSP();
-            _registry = CKAN.RegistryManager.Instance(_instance.KSP).registry;
+            _instance  = new DisposableKSP();
+            _registry  = CKAN.RegistryManager.Instance(_instance.KSP).registry;
             _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, NullUser.User);
 
             _gameDataDir = _instance.KSP.GameData();
             _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
-            _instance.KSP.Cache.Store(_testModule.download, testModFile);
+            _instance.KSP.Cache.Store(_testModule, testModFile);
             _installer.InstallList(
                 new List<string>() { _testModule.identifier },
                 new RelationshipResolverOptions()
@@ -116,7 +116,7 @@ namespace Tests.Core
             {
                 var size = _installer.AddParentDirectories(paths).Count;
                 // each directory adds two directories to the result
-                // two directorie sets { GAMEDATA and gamedata } = 4 objects in result array
+                // two directories each set { GAMEDATA and gamedata } = 4 objects in result array
                 if (size != 4)
                 {
                     throw new InvalidOperationException("Directories have case-sensitive differences");

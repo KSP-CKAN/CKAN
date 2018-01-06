@@ -11,7 +11,7 @@ namespace CKAN
         /// Even if modules share download URLs, they will only be downloaded once.
         /// Blocks until the downloads are complete, cancelled, or errored.
         /// </summary>
-        void DownloadModules(NetFileCache cache, IEnumerable<CkanModule> modules);
+        void DownloadModules(NetModuleCache cache, IEnumerable<CkanModule> modules);
 
         /// <summary>
         /// Cancel any running downloads.

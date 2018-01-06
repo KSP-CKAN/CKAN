@@ -13,13 +13,13 @@ namespace CKAN
     {
         public IUser User
         {
-            get { return downloader.User; }
+            get { return downloader.User;  }
             set { downloader.User = value; }
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
-        private List<CkanModule> modules;
+        private          List<CkanModule>   modules;
         private readonly NetAsyncDownloader downloader;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace CKAN
         /// </summary>
         public NetAsyncModulesDownloader(IUser user)
         {
-            modules = new List<CkanModule>();
+            modules    = new List<CkanModule>();
             downloader = new NetAsyncDownloader(user);
         }
 
@@ -35,10 +35,7 @@ namespace CKAN
         /// <summary>
         /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
         /// </summary>
-        public void DownloadModules(
-            NetFileCache cache,
-            IEnumerable<CkanModule> modules
-            )
+        public void DownloadModules(NetModuleCache cache, IEnumerable<CkanModule> modules)
         {
             // Walk through all our modules, but only keep the first of each
             // one that has a unique download path.
@@ -67,7 +64,7 @@ namespace CKAN
         /// Called by NetAsyncDownloader on completion.
         /// Called with all nulls on download cancellation.
         /// </summary>
-        private void ModuleDownloadsComplete(NetFileCache cache, Uri[] urls, string[] filenames, Exception[] errors)
+        private void ModuleDownloadsComplete(NetModuleCache cache, Uri[] urls, string[] filenames, Exception[] errors)
         {
             if (urls != null)
             {
@@ -98,7 +95,7 @@ namespace CKAN
 
                         try
                         {
-                            cache.Store(urls[i], filenames[i], modules[i].StandardName());
+                            cache.Store(modules[i], filenames[i], modules[i].StandardName());
                         }
                         catch (FileNotFoundException e)
                         {

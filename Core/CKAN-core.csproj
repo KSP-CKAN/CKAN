@@ -96,6 +96,7 @@
     <Compile Include="Net\NetAsyncDownloader.cs" />
     <Compile Include="Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Net\NetFileCache.cs" />
+    <Compile Include="Net\NetModuleCache.cs" />
     <Compile Include="Net\Repo.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

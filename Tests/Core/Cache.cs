@@ -11,14 +11,16 @@ namespace Tests.Core
     {
         private string cache_dir;
 
-        private NetFileCache cache;
+        private NetFileCache   cache;
+        private NetModuleCache module_cache;
 
         [SetUp]
         public void MakeCache()
         {
             cache_dir = TestData.NewTempDir();
             Directory.CreateDirectory(cache_dir);
-            cache = new NetFileCache(cache_dir);
+            cache        = new NetFileCache(cache_dir);
+            module_cache = new NetModuleCache(cache_dir);
         }
 
         [TearDown]
@@ -96,8 +98,40 @@ namespace Tests.Core
             }
             catch (DirectoryNotFoundKraken kraken)
             {
-                Assert.AreSame(dir,kraken.directory);
+                Assert.AreSame(dir, kraken.directory);
             }
+        }
+
+        [Test]
+        public void StoreInvalid()
+        {
+            // Try to store a nonexistent zip into a NetModuleCache
+            // and expect an FileNotFoundKraken
+            Assert.Throws<FileNotFoundKraken>(() =>
+                module_cache.Store(
+                    TestData.DogeCoinFlag_101_LZMA_module,
+                    "/DoesNotExist.zip"
+                )
+            );
+
+            // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
+            // and expect an InvalidModuleFileKraken
+            Assert.Throws<InvalidModuleFileKraken>(() =>
+                module_cache.Store(
+                    TestData.DogeCoinFlag_101_LZMA_module,
+                    TestData.DogeCoinFlagZipLZMA
+                )
+            );
+
+            // Try to store the normal DogeCoin zip into a NetModuleCache
+            // using the WRONG metadata (file size and hashes)
+            // and expect an InvalidModuleFileKraken
+            Assert.Throws<InvalidModuleFileKraken>(() =>
+                module_cache.Store(
+                    TestData.DogeCoinFlag_101_LZMA_module,
+                    TestData.DogeCoinFlagZip()
+                )
+            );
         }
 
         [Test]
@@ -146,4 +180,3 @@ namespace Tests.Core
         }
     }
 }
-

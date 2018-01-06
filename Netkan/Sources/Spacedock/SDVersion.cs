@@ -24,17 +24,6 @@ namespace CKAN.NetKAN.Sources.Spacedock
         public Version friendly_version;
         public int id;
 
-        public string Download(string identifier, NetFileCache cache)
-        {
-            log.DebugFormat("Downloading {0}", download_path);
-
-            string filename = ModuleInstaller.CachedOrDownload(identifier, friendly_version, download_path, cache);
-
-            log.Debug("Downloaded.");
-
-            return filename;
-        }
-
         /// <summary>
         /// SpaceDock always trims trailing zeros from a three-part version
         /// (eg: 1.0.0 -> 1.0). This means we could potentially think some mods

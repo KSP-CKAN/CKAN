@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Security.Cryptography;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -74,7 +73,7 @@ namespace CKAN.ConsoleUI {
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress($"Importing {f.Name}... ({percent}%)", percent);
                 // Calc SHA-1 sum
-                string sha1 = GetFileHashSha1(f.FullName);
+                string sha1 = NetModuleCache.GetFileHashSha1(f.FullName);
                 // Find SHA-1 sum in registry (potentially multiple)
                 if (index.ContainsKey(sha1)) {
                     deletable.Add(f);
@@ -83,11 +82,11 @@ namespace CKAN.ConsoleUI {
                         if (mod.IsCompatibleKSP(gameInst.VersionCriteria())) {
                             installable.Add(mod.identifier);
                         }
-                        if (inst.Cache.IsCachedZip(mod.download)) {
+                        if (inst.Cache.IsMaybeCachedZip(mod)) {
                             user.RaiseMessage("Already cached: {0}", f.Name);
                         } else {
                             user.RaiseMessage($"Importing {mod.identifier} {Formatting.StripEpoch(mod.version)}...");
-                            inst.Cache.Store(mod.download, f.FullName);
+                            inst.Cache.Store(mod, f.FullName);
                         }
                     }
                 } else {
@@ -106,16 +105,6 @@ namespace CKAN.ConsoleUI {
                 foreach (FileInfo f in deletable) {
                     f.Delete();
                 }
-            }
-        }
-
-        private static string GetFileHashSha1(string filePath)
-        {
-            using (FileStream     fs   = new FileStream(filePath, FileMode.Open))
-            using (BufferedStream bs   = new BufferedStream(fs))
-            using (SHA1Cng        sha1 = new SHA1Cng())
-            {
-                return BitConverter.ToString(sha1.ComputeHash(bs)).Replace("-", "");
             }
         }
 

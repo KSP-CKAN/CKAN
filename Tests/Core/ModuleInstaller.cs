@@ -418,11 +418,11 @@ namespace Tests.Core
                 Assert.IsFalse(File.Exists(mod_file_path));
 
                 // Copy the zip file to the cache directory.
-                Assert.IsFalse(ksp.KSP.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module().download));
+                Assert.IsFalse(ksp.KSP.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
 
-                string cache_path = ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+                string cache_path = ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
 
-                Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module().download));
+                Assert.IsTrue(ksp.KSP.Cache.IsCachedZip(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
 
                 // Mark it as available in the registry.
@@ -459,7 +459,7 @@ namespace Tests.Core
 
                 // Install the test mod.
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-                ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+                ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
                 registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
@@ -494,7 +494,7 @@ namespace Tests.Core
                 // Install the base test mod.
 
                 var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;
-                ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+                ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
                 registry.AddAvailable(TestData.DogeCoinFlag_101_module());
 
                 List<string> modules = new List<string> { TestData.DogeCoinFlag_101_module().identifier };
@@ -504,7 +504,7 @@ namespace Tests.Core
                 modules.Clear();
 
                 // Install the plugin test mod.
-                ksp.KSP.Cache.Store(TestData.DogeCoinPlugin_module().download, TestData.DogeCoinPluginZip());
+                ksp.KSP.Cache.Store(TestData.DogeCoinPlugin_module(), TestData.DogeCoinPluginZip());
                 registry.AddAvailable(TestData.DogeCoinPlugin_module());
 
                 modules.Add(TestData.DogeCoinPlugin_module().identifier);
@@ -541,7 +541,7 @@ namespace Tests.Core
                     using (DisposableKSP ksp = new DisposableKSP())
                     {
                         // Copy the zip file to the cache directory.
-                        ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+                        ksp.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
 
                         // Mark it as available in the registry.
                         var registry = CKAN.RegistryManager.Instance(ksp.KSP).registry;

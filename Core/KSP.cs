@@ -36,7 +36,7 @@ namespace CKAN
         public KspVersion VersionOfKspWhenCompatibleVersionsWereStored { get; private set; }
         public bool CompatibleVersionsAreFromDifferentKsp { get { return _compatibleVersions.Count > 0 && VersionOfKspWhenCompatibleVersionsWereStored != Version(); } }
 
-        public NetFileCache Cache { get; private set; }
+        public NetModuleCache Cache { get; private set; }
 
         #endregion
         #region Construction and Initialisation
@@ -56,7 +56,7 @@ namespace CKAN
             {
                 SetupCkanDirectories();
                 LoadCompatibleVersions();
-                Cache = new NetFileCache(DownloadCacheDir());
+                Cache = new NetModuleCache(DownloadCacheDir());
             }
         }
 

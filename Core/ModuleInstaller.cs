@@ -37,7 +37,7 @@ namespace CKAN
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
         // Our own cache is that of the KSP instance we're using.
-        public NetFileCache Cache
+        public NetModuleCache Cache
         {
             get
             {
@@ -84,22 +84,22 @@ namespace CKAN
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
-        public string Download(Uri url, string filename)
+        public string Download(CkanModule module, string filename)
         {
-            User.RaiseProgress(String.Format("Downloading \"{0}\"", url), 0);
-            return Download(url, filename, Cache);
+            User.RaiseProgress(String.Format("Downloading \"{0}\"", module.download), 0);
+            return Download(module, filename, Cache);
         }
 
         /// <summary>
         /// Downloads the given mod to the cache. Returns the filename it was saved to.
         /// </summary>
-        public static string Download(Uri url, string filename, NetFileCache cache)
+        public static string Download(CkanModule module, string filename, NetModuleCache cache)
         {
             log.Info("Downloading " + filename);
 
-            string tmp_file = Net.Download(url);
+            string tmp_file = Net.Download(module.download);
 
-            return cache.Store(url, tmp_file, filename, true);
+            return cache.Store(module, tmp_file, filename, true);
         }
 
         /// <summary>
@@ -111,19 +111,7 @@ namespace CKAN
         /// </summary>
         public string CachedOrDownload(CkanModule module, string filename = null)
         {
-            return CachedOrDownload(module.identifier, module.version, module.download, Cache, filename);
-        }
-
-        /// <summary>
-        /// Returns the path to a cached copy of a module if it exists, or downloads
-        /// and returns the downloaded copy otherwise.
-        ///
-        /// If no filename is provided, the module's standard name will be used.
-        /// Chcecks the CKAN cache first.
-        /// </summary>
-        public string CachedOrDownload(string identifier, Version version, Uri url, string filename = null)
-        {
-            return CachedOrDownload(identifier, version, url, Cache, filename);
+            return CachedOrDownload(module, Cache, filename);
         }
 
         /// <summary>
@@ -133,32 +121,27 @@ namespace CKAN
         /// If no filename is provided, the module's standard name will be used.
         /// Chcecks provided cache first.
         /// </summary>
-        public static string CachedOrDownload(string identifier, Version version, Uri url, NetFileCache cache, string filename = null)
+        public static string CachedOrDownload(CkanModule module, NetModuleCache cache, string filename = null)
         {
             if (filename == null)
             {
-                filename = CkanModule.StandardName(identifier, version);
+                filename = CkanModule.StandardName(module.identifier, module.version);
             }
 
-            string full_path = cache.GetCachedZip(url);
+            string full_path = cache.GetCachedZip(module);
             if (full_path == null)
             {
-                return Download(url, filename, cache);
+                return Download(module, filename, cache);
             }
 
             log.DebugFormat("Using {0} (cached)", filename);
             return full_path;
         }
 
-        public void InstallList(
-            List<string> modules,
-            RelationshipResolverOptions options,
-            IDownloader downloader = null
-        )
+        public void InstallList(List<string> modules, RelationshipResolverOptions options, IDownloader downloader = null)
         {
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
-            var modsToInstall = resolver.ModList().ToList();
-            InstallList(modsToInstall, options, downloader);
+            InstallList(resolver.ModList().ToList(), options, downloader);
         }
 
         /// <summary>
@@ -169,14 +152,9 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        //
-        // TODO: Break this up into smaller pieces! It's huge!
-        public void InstallList(
-            ICollection<CkanModule> modules,
-            RelationshipResolverOptions options,
-            IDownloader downloader = null
-        )
+        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, IDownloader downloader = null)
         {
+            // TODO: Break this up into smaller pieces! It's huge!
             var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule>();
@@ -188,7 +166,7 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                if (!ksp.Cache.IsCachedZip(module.download))
+                if (!ksp.Cache.IsCachedZip(module))
                 {
                     User.RaiseMessage(" * {0} {1} ({2})", module.name, module.version, module.download.Host);
                     downloads.Add(module);
@@ -287,7 +265,7 @@ namespace CKAN
         // TODO: Return files relative to GameRoot
         public IEnumerable<string> GetModuleContentsList(CkanModule module)
         {
-            string filename = ksp.Cache.GetCachedZip(module.download);
+            string filename = ksp.Cache.GetCachedZip(module);
 
             if (filename == null)
             {
@@ -327,7 +305,7 @@ namespace CKAN
             }
 
             // Find our in the cache if we don't already have it.
-            filename = filename ?? Cache.GetCachedZip(module.download, true);
+            filename = filename ?? Cache.GetCachedZip(module);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
@@ -1099,7 +1077,7 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
-            List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module.download)).ToList();
+            List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module)).ToList();
 
             if (downloads.Count > 0)
             {

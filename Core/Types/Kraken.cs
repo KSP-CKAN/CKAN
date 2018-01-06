@@ -340,4 +340,39 @@ namespace CKAN
             return String.Format("CKAN is already running for this instance!\n\nIf you're certain this is not the case, then delete:\n\"{0}\"\n", lockfilePath);
         }
     }
+
+    /// <summary>
+    /// Exception thrown when a downloaded file isn't valid for a module.
+    /// Happens if:
+    ///   1. Size doesn't match download_size
+    ///   2. Not a valid ZIP file
+    ///   3. SHA1 doesn't match download_hash.sha1
+    ///   4. SHA256 doesn't match download_hash.sha256
+    /// </summary>
+    public class InvalidModuleFileKraken : Kraken
+    {
+        /// <summary>
+        /// The module that doesn't match the file
+        /// </summary>
+        public readonly CkanModule module;
+
+        /// <summary>
+        /// Path to the file that doesn't match the module
+        /// </summary>
+        public readonly string     path;
+
+        /// <summary>
+        /// Release the kraken
+        /// </summary>
+        /// <param name="module">Module to check against path</param>
+        /// <param name="Path">Path to the file to check against module</param>
+        /// <param name="reason">Human-readable description of the problem</param>
+        public InvalidModuleFileKraken(CkanModule module, string path, string reason = null)
+            : base(reason)
+        {
+            this.module = module;
+            this.path   = path;
+        }
+    }
+
 }
