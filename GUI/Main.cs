@@ -701,46 +701,44 @@ namespace CKAN
 
         private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (mainModList.ModFilter == GUIModFilter.Incompatible)
-                return;
-
-            var row_index = e.RowIndex;
-            var column_index = e.ColumnIndex;
+            int row_index    = e.RowIndex;
+            int column_index = e.ColumnIndex;
 
             if (row_index < 0 || column_index < 0)
                 return;
 
-            var registry_manager = RegistryManager.Instance(CurrentInstance);
+            DataGridView     grid     = sender as DataGridView;
+            DataGridViewRow  row      = grid?.Rows[row_index];
+            DataGridViewCell gridCell = row?.Cells[column_index];
 
-            var grid = sender as DataGridView;
-
-            var row = grid.Rows[row_index];
-            var grid_view_cell = row.Cells[column_index];
-
-            if (grid_view_cell is DataGridViewLinkCell)
+            if (gridCell is DataGridViewLinkCell)
             {
-                var cell = grid_view_cell as DataGridViewLinkCell;
-                Process.Start(cell.Value.ToString());
+                // Launch URLs if found in grid
+                DataGridViewLinkCell cell = gridCell as DataGridViewLinkCell;
+                string cmd = cell?.Value.ToString();
+                if (!string.IsNullOrEmpty(cmd))
+                    Process.Start(cmd);
             }
             else if (column_index < 2)
             {
-                var gui_mod = (GUIMod)row.Tag;
-                switch (column_index)
+                GUIMod gui_mod = row?.Tag as GUIMod;
+                if (gui_mod != null)
                 {
-                    case 0:
-                        gui_mod.SetInstallChecked(row);
-                        if (gui_mod.IsInstallChecked)
-                            last_mod_to_have_install_toggled.Push(gui_mod);
-
-                        break;
-
-                    case 1:
-                        gui_mod.SetUpgradeChecked(row);
-                        break;
+                    switch (column_index)
+                    {
+                        case 0:
+                            gui_mod.SetInstallChecked(row);
+                            if (gui_mod.IsInstallChecked)
+                                last_mod_to_have_install_toggled.Push(gui_mod);
+                            break;
+                        case 1:
+                            gui_mod.SetUpgradeChecked(row);
+                            break;
+                    }
+                    await UpdateChangeSetAndConflicts(
+                        RegistryManager.Instance(CurrentInstance).registry
+                    );
                 }
-
-                var registry = registry_manager.registry;
-                await UpdateChangeSetAndConflicts(registry);
             }
         }
 
