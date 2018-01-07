@@ -563,39 +563,41 @@ namespace CKAN
 
         private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
         {
-            IEnumerable<ModChange> full_change_set = null;
-            Dictionary<GUIMod, string> new_conflicts = null;
+            IEnumerable<ModChange> fullChangeSet = null;
+            Dictionary<GUIMod, string> newConflicts = null;
 
-            bool too_many_provides_thrown = false;
-            var user_change_set = mainModList.ComputeUserChangeSet();
+            bool tooManyProvidesWasThrown = false;
+            Cursor.Current = Cursors.WaitCursor;
+            var userChangeSet = mainModList.ComputeUserChangeSet();
             try
             {
-                var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
-                full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
+                var moduleInstaller = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                fullChangeSet = await mainModList.ComputeChangeSetFromModList(registry, userChangeSet, moduleInstaller, CurrentInstance.VersionCriteria());
             }
             catch (TooManyModsProvideKraken)
             {
                 // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
                 // We can just rerun it as the ModInfoTabControl has been removed.
-                too_many_provides_thrown = true;
+                tooManyProvidesWasThrown = true;
             }
             // ComputeChangeSetFromModList returns null if an inconsistency was found, we need to highlight the inconsistencies.
-            if (full_change_set == null)
+            if (fullChangeSet == null)
             {
                 // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
-                user_change_set = mainModList.ComputeUserChangeSet();
-                new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
+                userChangeSet = mainModList.ComputeUserChangeSet();
+                newConflicts = MainModList.ComputeConflictsFromModList(registry, userChangeSet, CurrentInstance.VersionCriteria());
             }
-            if (too_many_provides_thrown)
+            if (tooManyProvidesWasThrown)
             {
                 await UpdateChangeSetAndConflicts(registry);
-                new_conflicts = Conflicts;
-                full_change_set = ChangeSet;
+                newConflicts = Conflicts;
+                fullChangeSet = ChangeSet;
             }
 
-            last_mod_to_have_install_toggled.Clear();
-            Conflicts = new_conflicts;
-            ChangeSet = full_change_set;
+            lastModToHaveInstallToggled.Clear();
+            Conflicts = newConflicts;
+            ChangeSet = fullChangeSet;
+            Cursor.Current = Cursors.Default;
         }
 
         private void FilterCompatibleButton_Click(object sender, EventArgs e)

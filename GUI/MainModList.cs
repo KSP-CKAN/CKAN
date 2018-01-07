@@ -459,7 +459,7 @@ namespace CKAN
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
             IUser user = null)
         {
-            this.too_many_provides = too_many_provides;
+            this.tooManyProvides = too_many_provides;
             this.user = user ?? new NullUser();
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
             ModFiltersUpdated += onModFiltersUpdated ?? (source => { });
@@ -524,7 +524,7 @@ namespace CKAN
         private string _modDescriptionFilter = String.Empty;
         private IUser user;
 
-        private readonly HandleTooManyProvides too_many_provides;
+        private readonly HandleTooManyProvides tooManyProvides;
 
         /// <summary>
         /// This function returns a changeset based on the selections of the user.
@@ -585,23 +585,32 @@ namespace CKAN
                 }
                 catch (InconsistentKraken k)
                 {
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
                     user.RaiseError(k.InconsistenciesPretty);
+                    Cursor.Current = oldCursor;
                     return null;
                 }
                 catch (ConflictsKraken k)
                 {
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
                     user.RaiseError(k.ConflictsPretty);
+                    Cursor.Current = oldCursor;
                     return null;
                 }
                 catch (ModuleNotFoundKraken k)
                 {
                     //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
                     user.RaiseError("Module {0} has not been found. This may be because it is not compatible " +
                                     "with the currently installed version of KSP", k.module);
+                    Cursor.Current = oldCursor;
                     return null;
                 }
                 //Shouldn't get here unless there is a kraken.
-                var mod = await too_many_provides(kraken);
+                var mod = await tooManyProvides(kraken);
                 if (mod != null)
                 {
                     modules_to_install.Add(mod);
