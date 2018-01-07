@@ -106,7 +106,7 @@ namespace CKAN
                 }
 
                 // tell the cache object to nuke itself
-                Main.Instance.CurrentInstance.Cache.OnCacheChanged();
+                Main.Instance.CurrentInstance.Cache.Clear();
 
                 // forcibly tell all mod rows to re-check cache state
                 foreach (DataGridViewRow row in Main.Instance.ModList.Rows)

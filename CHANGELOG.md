@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Check provides for optional dependencies in GUI (#2240 by: HebaruSan; reviewed: politas)
 - [GUI] Update registry at start of GUI if available_modules is empty (#2241 by: HebaruSan; reviewed: politas)
 - [GUI] Allow uninstallation of mods while Incompatible filter is selected (#2242 by: HebaruSan; reviewed: politas)
+- [Core] Validate downloaded files against metadata before adding to cache (#2243 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0-PRE1 (McCandless)
 

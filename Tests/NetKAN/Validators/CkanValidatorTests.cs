@@ -52,7 +52,7 @@ namespace Tests.NetKAN.Validators
         [TestCase("identifier")]
         [TestCase("version")]
         [TestCase("download")]
-        public void DoesThrowWhenMissingProeprty(string propertyName)
+        public void DoesThrowWhenMissingProperty(string propertyName)
         {
             // Arrange
             var mHttp = new Mock<IHttpService>();

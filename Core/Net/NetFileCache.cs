@@ -182,36 +182,73 @@ namespace CKAN
         /// when working with zip files. Returns null if not available, or
         /// validation failed.
         ///
-        /// Test data toggles if low level crc checks should be done. This can
-        /// take time on order of seconds for larger zip files.
+        /// Low level CRC (cyclic redundancy check) checks will be done.
+        /// This can take time on order of seconds for larger zip files.
         /// </summary>
-        public string GetCachedZip(Uri url, bool test_data = false)
+        public string GetCachedZip(Uri url)
         {
             string filename = GetCachedFilename(url);
-
-            if (filename == null)
+            if (string.IsNullOrEmpty(filename))
             {
                 return null;
             }
-
-            try
+            else
             {
-                using (ZipFile zip = new ZipFile (filename))
+                string invalidReason;
+                if (ZipValid(filename, out invalidReason))
                 {
-                    // Perform CRC check.
-                    if (zip.TestArchive(test_data))
-                    {
-                        return filename;
-                    }
+                    return filename;
+                }
+                else
+                {
+                    // Purge invalid cache entries
+                    File.Delete(filename);
+                    return null;
                 }
             }
-            catch (ZipException)
-            {
-                // We ignore these; it just means the file is borked,
-                // same as failing validation.
-            }
+        }
 
-            return null;
+        /// <summary>
+        /// Check whether a ZIP file is validation
+        /// </summary>
+        /// <param name="filename">path to zip file to check</param>
+        /// <param name="invalidReason">Description of problem with the file</param>
+        /// <returns>
+        /// True if valid, false otherwise. See invalidReason param for explanation.
+        /// </returns>
+        public static bool ZipValid(string filename, out string invalidReason)
+        {
+            try
+            {
+                if (filename != null)
+                {
+                    using (ZipFile zip = new ZipFile(filename))
+                    {
+                        // Perform CRC check.
+                        if (zip.TestArchive(true))
+                        {
+                            invalidReason = "";
+                            return true;
+                        }
+                        else
+                        {
+                            invalidReason = "ZipFile.TestArchive(true) returned false";
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    invalidReason = "Null file name";
+                    return false;
+                }
+            }
+            catch (ZipException ze)
+            {
+                // Save the errors someplace useful
+                invalidReason = ze.Message;
+                return false;
+            }
         }
 
         /// <summary>

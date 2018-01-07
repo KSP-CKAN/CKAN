@@ -193,7 +193,7 @@ namespace CKAN
                 return;
             }
 
-            IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(Mod.download);
+            IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(Mod);
         }
 
         public CkanModule ToCkanModule()

@@ -18,7 +18,7 @@ namespace Tests.Core.Net
         private CKAN.Registry registry;
         private DisposableKSP ksp;
         private CKAN.IDownloader async;
-        private NetFileCache cache;
+        private NetModuleCache cache;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
@@ -69,7 +69,7 @@ namespace Tests.Core.Net
             modules.Add(kOS);
 
             // Make sure we don't alread have kOS somehow.
-            Assert.IsFalse(cache.IsCached(kOS.download));
+            Assert.IsFalse(cache.IsCached(kOS));
 
             //
             log.InfoFormat("Downloading kOS from {0}",kOS.download);
@@ -81,7 +81,7 @@ namespace Tests.Core.Net
             );
 
             // Assert that we have it, and it passes zip validation.
-            Assert.IsTrue(cache.IsCachedZip(kOS.download));
+            Assert.IsTrue(cache.IsCachedZip(kOS));
         }
 
         [Test]
@@ -98,13 +98,13 @@ namespace Tests.Core.Net
             modules.Add(kOS);
             modules.Add(quick_revert);
 
-            Assert.IsFalse(cache.IsCachedZip(kOS.download));
-            Assert.IsFalse(cache.IsCachedZip(quick_revert.download));
+            Assert.IsFalse(cache.IsCachedZip(kOS));
+            Assert.IsFalse(cache.IsCachedZip(quick_revert));
 
             async.DownloadModules(cache, modules);
 
-            Assert.IsTrue(cache.IsCachedZip(kOS.download));
-            Assert.IsTrue(cache.IsCachedZip(quick_revert.download));
+            Assert.IsTrue(cache.IsCachedZip(kOS));
+            Assert.IsTrue(cache.IsCachedZip(quick_revert));
         }
 
         [Test]
@@ -119,11 +119,11 @@ namespace Tests.Core.Net
 
             modules.Add(rAndS);
 
-            Assert.IsFalse(cache.IsCachedZip(rAndS.download), "Module not yet downloaded");
+            Assert.IsFalse(cache.IsCachedZip(rAndS), "Module not yet downloaded");
 
             async.DownloadModules(cache, modules);
 
-            Assert.IsTrue(cache.IsCachedZip(rAndS.download),"Module download successful");
+            Assert.IsTrue(cache.IsCachedZip(rAndS),"Module download successful");
         }
 
     }

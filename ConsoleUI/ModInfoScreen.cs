@@ -103,7 +103,7 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => false);
 
             AddTip("Ctrl+D", "Download",
-                () => !manager.CurrentInstance.Cache.IsCachedZip(mod.download)
+                () => !manager.CurrentInstance.Cache.IsMaybeCachedZip(mod)
             );
             AddBinding(Keys.CtrlD, (object sender) => {
                 Download();
@@ -459,7 +459,7 @@ namespace CKAN.ConsoleUI {
                 () => {
                     try {
                         dl.DownloadModules(inst.Cache, new List<CkanModule> {mod});
-                        if (!inst.Cache.IsCachedZip(mod.download)) {
+                        if (!inst.Cache.IsMaybeCachedZip(mod)) {
                             ps.RaiseError("Download failed, file is corrupted");
                         }
                     } catch (Exception ex) {

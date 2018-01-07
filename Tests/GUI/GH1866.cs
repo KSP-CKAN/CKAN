@@ -28,24 +28,26 @@ namespace Tests.GUI
         /*
          * an exception would be thrown at the bottom of this
          */
-        /*var main = new Main(null, new GUIUser(), false);
-        main.Manager = _manager;
-        // first sort by name
-        main.configuration.SortByColumnIndex = 2;
-        // now sort by version
-        main.configuration.SortByColumnIndex = 6;
-        main.MarkModForInstall("kOS");
+        /*
+            var main = new Main(null, new GUIUser(), false);
+            main.Manager = _manager;
+            // first sort by name
+            main.configuration.SortByColumnIndex = 2;
+            // now sort by version
+            main.configuration.SortByColumnIndex = 6;
+            main.MarkModForInstall("kOS");
 
-        // make sure we have one requested change
-        var changeList = main.mainModList.ComputeUserChangeSet()
-            .Select((change) => change.Mod.ToCkanModule()).ToList();
+            // make sure we have one requested change
+            var changeList = main.mainModList.ComputeUserChangeSet()
+                .Select((change) => change.Mod.ToCkanModule()).ToList();
 
-        // do the install
-        ModuleInstaller.GetInstance(_instance.KSP, main.currentUser).InstallList(
-            changeList,
-            new RelationshipResolverOptions(),
-            new NetAsyncModulesDownloader(main.currentUser)
-        );*/
+            // do the install
+            ModuleInstaller.GetInstance(_instance.KSP, main.currentUser).InstallList(
+                changeList,
+                new RelationshipResolverOptions(),
+                new NetAsyncModulesDownloader(main.currentUser)
+            );
+        */
 
         [OneTimeSetUp]
         public void Up()
@@ -58,7 +60,7 @@ namespace Tests.GUI
             _anyVersionModule = TestData.DogeCoinFlag_101_module();
 
             // install it and set it as pre-installed
-            _instance.KSP.Cache.Store(TestData.DogeCoinFlag_101_module().download, TestData.DogeCoinFlagZip());
+            _instance.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
             _registry.RegisterModule(_anyVersionModule, new string[] { }, _instance.KSP);
             _registry.AddAvailable(_anyVersionModule);
 
