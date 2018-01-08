@@ -22,7 +22,7 @@ namespace CKAN
 
         public void AddStatusMessage(string text, params object[] args)
         {
-            Util.Invoke(StatusLabel, () => StatusLabel.Text = String.Format(text, args));
+            Util.Invoke(statusStrip1, () => StatusLabel.Text = String.Format(text, args));
             AddLogMessage(String.Format(text, args));
         }
 
