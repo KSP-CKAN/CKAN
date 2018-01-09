@@ -78,8 +78,8 @@
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfoTabControl = new CKAN.MainModInfo();
-            this.StatusPanel = new System.Windows.Forms.Panel();
-            this.StatusLabel = new System.Windows.Forms.Label();
+            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.StatusProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.MainTabControl = new CKAN.MainTabControl();
             this.ManageModsTabPage = new System.Windows.Forms.TabPage();
             this.FilterByAuthorTextBox = new CKAN.HintTextBox();
@@ -124,7 +124,7 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.ModListContextMenuStrip.SuspendLayout();
-            this.StatusPanel.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.ManageModsTabPage.SuspendLayout();
             this.ChangesetTabPage.SuspendLayout();
@@ -263,16 +263,19 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            //
             // statusStrip1
-            // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Location = new System.Drawing.Point(0, 1016);
+            //
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1016);
             this.statusStrip1.Size = new System.Drawing.Size(1544, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
             this.statusStrip1.TabIndex = 1;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.StatusLabel, this.StatusProgress
+            });
+            //
             // menuStrip2
             // 
             this.menuStrip2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -581,27 +584,24 @@
             this.ModInfoTabControl.Name = "ModInfoTabControl";
             this.ModInfoTabControl.Size = new System.Drawing.Size(360, 836);
             this.ModInfoTabControl.TabIndex = 0;
-            // 
-            // StatusPanel
-            // 
-            this.StatusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.StatusPanel.Controls.Add(this.StatusLabel);
-            this.StatusPanel.Location = new System.Drawing.Point(0, 1074);
-            this.StatusPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.StatusPanel.Name = "StatusPanel";
-            this.StatusPanel.Size = new System.Drawing.Size(1196, 29);
-            this.StatusPanel.TabIndex = 8;
-            // 
+            //
             // StatusLabel
-            // 
-            this.StatusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StatusLabel.Location = new System.Drawing.Point(0, 0);
-            this.StatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            //
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
-            this.StatusLabel.TabIndex = 0;
+            this.StatusLabel.Spring = true;
+            this.StatusLabel.Text = "";
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
+            //
+            // StatusProgress
+            //
+            this.StatusProgress.Name = "StatusProgress";
+            this.StatusProgress.Enabled = true;
+            this.StatusProgress.Visible = false;
+            this.StatusProgress.Minimum = 0;
+            this.StatusProgress.Maximum = 100;
+            this.StatusProgress.Size = new System.Drawing.Size(300, 20);
+            this.StatusProgress.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             // MainTabControl
             // 
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
@@ -1034,7 +1034,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1544, 1038);
             this.Controls.Add(this.MainTabControl);
-            this.Controls.Add(this.StatusPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1054,7 +1053,8 @@
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ModListContextMenuStrip.ResumeLayout(false);
-            this.StatusPanel.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.MainTabControl.ResumeLayout(false);
             this.ManageModsTabPage.ResumeLayout(false);
             this.ManageModsTabPage.PerformLayout();
@@ -1120,8 +1120,8 @@
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private CKAN.MainModInfo ModInfoTabControl;
-        private System.Windows.Forms.Panel StatusPanel;
-        private System.Windows.Forms.Label StatusLabel;
+        private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
+        private System.Windows.Forms.ToolStripProgressBar StatusProgress;
         private CKAN.MainTabControl MainTabControl;
         private System.Windows.Forms.TabPage ManageModsTabPage;
         private CKAN.HintTextBox FilterByAuthorTextBox;

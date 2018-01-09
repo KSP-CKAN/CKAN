@@ -22,6 +22,9 @@ namespace CKAN
             DialogProgressBar.Maximum = 100;
             DialogProgressBar.Style = ProgressBarStyle.Marquee;
             MessageTextBox.Text = "Please wait";
+            StatusProgress.Value = 0;
+            StatusProgress.Style = ProgressBarStyle.Marquee;
+            StatusProgress.Visible = true;
         }
 
         public void HideWaitDialog(bool success)
@@ -29,6 +32,8 @@ namespace CKAN
             MessageTextBox.Text = "All done!";
             DialogProgressBar.Value = 100;
             DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            StatusProgress.Value = 100;
+            StatusProgress.Style = ProgressBarStyle.Continuous;
             RecreateDialogs();
 
             tabController.SetActiveTab("ManageModsTabPage");
@@ -36,6 +41,9 @@ namespace CKAN
             CancelCurrentActionButton.Enabled = false;
             DialogProgressBar.Value = 0;
             DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            StatusProgress.Value = 0;
+            StatusProgress.Style = ProgressBarStyle.Continuous;
+            StatusProgress.Visible = false;
         }
 
         public void SetProgress(int progress)
@@ -49,13 +57,22 @@ namespace CKAN
                 progress = 100;
             }
 
-            Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = progress);
-            Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                DialogProgressBar.Value = progress;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+                StatusProgress.Value = progress;
+                StatusProgress.Style = ProgressBarStyle.Continuous;
+            });
         }
 
         public void ResetProgress()
         {
-            Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Marquee);
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                DialogProgressBar.Style = ProgressBarStyle.Marquee;
+                StatusProgress.Style    = ProgressBarStyle.Marquee;
+            });
         }
 
         public void SetDescription(string message)

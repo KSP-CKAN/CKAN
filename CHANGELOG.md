@@ -1,12 +1,16 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
 ## v1.24.0-PRE2
 
 ### Features
+
 - [Multiple] Save timestamped .ckan files after we save the registry (#2239 by: HebaruSan; reviewed: politas)
+- [GUI] Add status and progress bar at the bottom of the window (#2245 by: HebaruSan; reviewed: Olympic1)
 
 ### Bugfixes
+
 - [GUI] Check provides for optional dependencies in GUI (#2240 by: HebaruSan; reviewed: politas)
 - [GUI] Update registry at start of GUI if available_modules is empty (#2241 by: HebaruSan; reviewed: politas)
 - [GUI] Allow uninstallation of mods while Incompatible filter is selected (#2242 by: HebaruSan; reviewed: politas)
