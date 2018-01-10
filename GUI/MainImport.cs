@@ -29,8 +29,7 @@ namespace CKAN
                 Multiselect      = true
             };
             if (dlg.ShowDialog() == DialogResult.OK
-                    && dlg.FileNames.Length > 0)
-            {
+                    && dlg.FileNames.Length > 0) {
 
                 // Set up GUI to respond to IUser calls...
                 GUIUser.DisplayYesNo old_YesNoDialog = currentUser.displayYesNo;
