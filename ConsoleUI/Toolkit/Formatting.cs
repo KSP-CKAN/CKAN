@@ -120,42 +120,6 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        /// <param name="version">A version that might contain an epoch</param>
-        public static string StripEpoch(Version version)
-        {
-            return StripEpoch(version.ToString());
-        }
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string StripEpoch(string version)
-        {
-            // If our version number starts with a string of digits, followed by
-            // a colon, and then has no more colons, we're probably safe to assume
-            // the first string of digits is an epoch
-            return epochMatch.IsMatch(version)
-                ? epochReplace.Replace(version, @"$2")
-                : version;
-        }
-
-        /// <summary>
-        /// As above, but includes the original in parentheses
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string WithAndWithoutEpoch(string version)
-        {
-            return epochMatch.IsMatch(version)
-                ? $"{epochReplace.Replace(version, @"$2")} ({version})"
-                : version;
-        }
-
-        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 
 }

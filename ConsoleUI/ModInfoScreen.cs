@@ -391,8 +391,8 @@ namespace CKAN.ConsoleUI {
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod
-                        ? $"{Formatting.WithAndWithoutEpoch(minMod.ToString())}"
-                        : $"{Formatting.WithAndWithoutEpoch(minMod.ToString())} - {Formatting.WithAndWithoutEpoch(maxMod.ToString())}",
+                        ? $"{ModuleInstaller.WithAndWithoutEpoch(minMod.ToString())}"
+                        : $"{ModuleInstaller.WithAndWithoutEpoch(minMod.ToString())} - {ModuleInstaller.WithAndWithoutEpoch(maxMod.ToString())}",
                     null,
                     color
                 ));

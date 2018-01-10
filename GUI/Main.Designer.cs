@@ -36,6 +36,7 @@
             this.openKspDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,7 +153,10 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectKSPInstallMenuItem,
             this.openKspDirectoryToolStripMenuItem,
+            new System.Windows.Forms.ToolStripSeparator(),
             this.installFromckanToolStripMenuItem,
+            this.importDownloadsToolStripMenuItem,
+            new System.Windows.Forms.ToolStripSeparator(),
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator1,
             this.ExitToolButton});
@@ -188,6 +192,14 @@
             this.exportModListToolStripMenuItem.Text = "&Export installed mods...";
             this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
             // 
+            //
+            // importDownloadsToolStripMenuItem
+            //
+            this.importDownloadsToolStripMenuItem.Name = "importDownloadsToolStripMenuItem";
+            this.importDownloadsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.importDownloadsToolStripMenuItem.Text = "&Import downloaded mods...";
+            this.importDownloadsToolStripMenuItem.Click += new System.EventHandler(this.importDownloadsToolStripMenuItem_Click);
+            //
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -1078,6 +1090,7 @@
         private System.Windows.Forms.ToolStripMenuItem openKspDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importDownloadsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ExitToolButton;
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;

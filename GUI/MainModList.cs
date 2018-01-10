@@ -543,8 +543,8 @@ namespace CKAN
 
                 var name = new DataGridViewTextBoxCell {Value = mod.Name};
                 var author = new DataGridViewTextBoxCell {Value = mod.Authors};
-                var installVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? StripEpoch(mod.InstalledVersion) : mod.InstalledVersion };
-                var latestVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? StripEpoch(mod.LatestVersion) : mod.LatestVersion };
+                var installVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? ModuleInstaller.StripEpoch(mod.InstalledVersion) : mod.InstalledVersion };
+                var latestVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? ModuleInstaller.StripEpoch(mod.LatestVersion) : mod.LatestVersion };
                 var desc = new DataGridViewTextBoxCell {Value = mod.Abstract};
                 var compat = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
                 var size = new DataGridViewTextBoxCell {Value = mod.DownloadSize};
@@ -557,17 +557,6 @@ namespace CKAN
                 full_list_of_mod_rows.Add(mod.Identifier, item);
             }
             return full_list_of_mod_rows.Values;
-        }
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        public string StripEpoch(string version)
-        {
-            // If our version number starts with a string of digits, followed by
-            // a colon, and then has no more colons, we're probably safe to assume
-            // the first string of digits is an epoch
-            return Regex.IsMatch(version, @"^[0-9][0-9]*:[^:]+$") ? Regex.Replace(version, @"^([^:]+):([^:]+)$", @"$2") : version;
         }
 
         private bool IsNameInNameFilter(GUIMod mod)
