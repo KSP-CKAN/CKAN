@@ -1100,40 +1100,53 @@ namespace CKAN
             // Get the mapping of known hashes to modules
             Dictionary<string, List<CkanModule>> index = registry.GetSha1Index();
             int i = 0;
-            foreach (FileInfo f in files) {
+            foreach (FileInfo f in files)
+            {
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress($"Importing {f.Name}... ({percent}%)", percent);
                 // Calc SHA-1 sum
                 string sha1 = NetModuleCache.GetFileHashSha1(f.FullName);
                 // Find SHA-1 sum in registry (potentially multiple)
-                if (index.ContainsKey(sha1)) {
+                if (index.ContainsKey(sha1))
+                {
                     deletable.Add(f);
                     List<CkanModule> matches = index[sha1];
-                    foreach (CkanModule mod in matches) {
-                        if (mod.IsCompatibleKSP(ksp.VersionCriteria())) {
+                    foreach (CkanModule mod in matches)
+                    {
+                        if (mod.IsCompatibleKSP(ksp.VersionCriteria()))
+                        {
                             installable.Add(mod.identifier);
                         }
-                        if (Cache.IsMaybeCachedZip(mod)) {
+                        if (Cache.IsMaybeCachedZip(mod))
+                        {
                             user.RaiseMessage("Already cached: {0}", f.Name);
-                        } else {
+                        }
+                        else
+                        {
                             user.RaiseMessage($"Importing {mod.identifier} {StripEpoch(mod.version)}...");
                             Cache.Store(mod, f.FullName);
                         }
                     }
-                } else {
+                }
+                else
+                {
                     user.RaiseMessage("Not found in index: {0}", f.Name);
                 }
                 ++i;
             }
-            if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods?")) {
+            if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods?"))
+            {
                 // Install the imported mods
-                foreach (string identifier in installable) {
+                foreach (string identifier in installable)
+                {
                     installMod(identifier);
                 }
             }
-            if (user.RaiseYesNoDialog($"Import complete. Delete {deletable.Count} old files?")) {
+            if (user.RaiseYesNoDialog($"Import complete. Delete {deletable.Count} old files?"))
+            {
                 // Delete old files
-                foreach (FileInfo f in deletable) {
+                foreach (FileInfo f in deletable)
+                {
                     f.Delete();
                 }
             }

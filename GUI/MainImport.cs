@@ -29,7 +29,8 @@ namespace CKAN
                 Multiselect      = true
             };
             if (dlg.ShowDialog() == DialogResult.OK
-                    && dlg.FileNames.Length > 0) {
+                    && dlg.FileNames.Length > 0)
+            {
 
                 // Set up GUI to respond to IUser calls...
                 GUIUser.DisplayYesNo old_YesNoDialog = currentUser.displayYesNo;
@@ -66,15 +67,18 @@ namespace CKAN
             return files;
         }
 
-        private static readonly string[] downloadPaths = new string[] {
+        private static readonly string[] downloadPaths = new string[]
+        {
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
             Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         };
 
         private static string FindDownloadsPath(KSP gameInst)
         {
-            foreach (string p in downloadPaths) {
-                if (!string.IsNullOrEmpty(p) && Directory.Exists(p)) {
+            foreach (string p in downloadPaths)
+            {
+                if (!string.IsNullOrEmpty(p) && Directory.Exists(p))
+                {
                     return p;
                 }
             }
