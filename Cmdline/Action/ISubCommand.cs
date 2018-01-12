@@ -2,7 +2,6 @@
 {
     internal interface ISubCommand
     {
-        int RunSubCommand(SubCommandOptions options);
+        int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions options);
     }
 }
-

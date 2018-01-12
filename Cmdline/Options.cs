@@ -15,7 +15,7 @@ namespace CKAN.CmdLine
 
     public class Options
     {
-        public string action { get; set; }
+        public string action  { get; set; }
         public object options { get; set; }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace CKAN.CmdLine
             (
                 args, new Actions(), (verb, suboptions) =>
                 {
-                    action = verb;
+                    action  = verb;
                     options = suboptions;
                 },
                 delegate
@@ -48,6 +48,9 @@ namespace CKAN.CmdLine
 
         [VerbOption("consoleui", HelpText = "Start the CKAN console UI")]
         public ConsoleUIOptions ConsoleUIOptions { get; set; }
+
+        [VerbOption("prompt", HelpText = "Run CKAN prompt for executing multiple commands in a row")]
+        public CommonOptions PromptOptions { get; set; }
 
         [VerbOption("search", HelpText = "Search for mods")]
         public SearchOptions SearchOptions { get; set; }
@@ -100,7 +103,7 @@ namespace CKAN.CmdLine
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
 
-        [VerbOption("version", HelpText = "Show the version of the CKAN client being used.")]
+        [VerbOption("version", HelpText = "Show the version of the CKAN client being used")]
         public VersionOptions Version { get; set; }
 
         [HelpVerbOption]
@@ -242,6 +245,24 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
+        }
+
+        /// <summary>
+        /// Combine two options objects.
+        /// This is mainly to ensure that --headless carries through for prompt.
+        /// </summary>
+        /// <param name="otherOpts">Options object to merge into this one</param>
+        public void Merge(CommonOptions otherOpts)
+        {
+            if (otherOpts != null)
+            {
+                Verbose      = Verbose      || otherOpts.Verbose;
+                Debug        = Debug        || otherOpts.Debug;
+                Debugger     = Debugger     || otherOpts.Debugger;
+                NetUserAgent = NetUserAgent ?? otherOpts.NetUserAgent;
+                Headless     = Headless     || otherOpts.Headless;
+                AsRoot       = AsRoot       || otherOpts.AsRoot;
+            }
         }
 
         private static void CheckMonoVersion(IUser user, int rec_major, int rec_minor, int rec_patch)

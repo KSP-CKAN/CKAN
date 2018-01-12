@@ -56,7 +56,7 @@
     <Compile Include="Action\AuthToken.cs" />
     <Compile Include="Action\Available.cs" />
     <Compile Include="Action\Compare.cs" />
-    <Compile Include="Action\CompatSubCommand.cs" />
+    <Compile Include="Action\Compat.cs" />
     <Compile Include="Action\ICommand.cs" />
     <Compile Include="Action\Import.cs" />
     <Compile Include="Action\Install.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="Action\KSP.cs" />
     <Compile Include="Action\List.cs" />
     <Compile Include="Action\Remove.cs" />
+    <Compile Include="Action\Prompt.cs" />
     <Compile Include="Action\Repair.cs" />
     <Compile Include="Action\Repo.cs" />
     <Compile Include="Action\Search.cs" />

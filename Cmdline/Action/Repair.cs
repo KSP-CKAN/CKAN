@@ -39,7 +39,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        public int RunSubCommand(SubCommandOptions unparsed)
+        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
@@ -49,8 +49,12 @@ namespace CKAN.CmdLine
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
                 {
                     CommonOptions options = (CommonOptions)suboptions;
+                    options.Merge(opts);
                     User = new ConsoleUser(options.Headless);
-                    KSPManager manager = new KSPManager(User);
+                    if (manager == null)
+                    {
+                        manager = new KSPManager(User);
+                    }
                     exitCode = options.Handle(manager, User);
                     if (exitCode != Exit.OK)
                         return;
@@ -68,7 +72,6 @@ namespace CKAN.CmdLine
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(); });
-            RegistryManager.DisposeAll();
             return exitCode;
         }
 
@@ -79,7 +82,7 @@ namespace CKAN.CmdLine
         /// </summary>
         private int Registry(CKAN.KSP ksp)
         {
-            var manager = RegistryManager.Instance(ksp);
+            RegistryManager manager = RegistryManager.Instance(ksp);
             manager.registry.Repair();
             manager.Save();
             User.RaiseMessage("Registry repairs attempted. Hope it helped.");

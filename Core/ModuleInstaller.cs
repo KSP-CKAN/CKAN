@@ -213,7 +213,7 @@ namespace CKAN
 
                 registry_manager.Save(!options.without_enforce_consistency);
 
-                User.RaiseProgress("Commiting filesystem changes", 80);
+                User.RaiseProgress("Committing filesystem changes", 80);
 
                 transaction.Complete();
 
@@ -250,7 +250,7 @@ namespace CKAN
 
                 registry_manager.Save(!options.without_enforce_consistency);
 
-                User.RaiseProgress("Commiting filesystem changes", 80);
+                User.RaiseProgress("Committing filesystem changes", 80);
 
                 transaction.Complete();
             }
