@@ -167,28 +167,26 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
                 return;
             }
 
-            if (File.Exists(handlerPath))
+            if (!File.Exists(handlerPath))
             {
-                File.Delete(handlerPath);
+                File.WriteAllText(handlerPath, "");
+                data = parser.ReadFile(handlerPath);
+                data.Sections.AddSection("Desktop Entry");
+                data["Desktop Entry"].AddKey("Version", "1.0");
+                data["Desktop Entry"].AddKey("Type", "Application");
+                data["Desktop Entry"].AddKey("Exec", "mono \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" gui %u");
+                data["Desktop Entry"].AddKey("Icon", "ckan");
+                data["Desktop Entry"].AddKey("StartupNotify", "true");
+                data["Desktop Entry"].AddKey("NoDisplay", "true");
+                data["Desktop Entry"].AddKey("Terminal", "false");
+                data["Desktop Entry"].AddKey("Categories", "Utility");
+                data["Desktop Entry"].AddKey("MimeType", "x-scheme-handler/ckan");
+                data["Desktop Entry"].AddKey("Name", "CKAN Launcher");
+                data["Desktop Entry"].AddKey("Comment", "Launch CKAN");
+
+                parser.WriteFile(handlerPath, data);
+                AutoUpdate.SetExecutable(handlerPath);
             }
-
-            File.WriteAllText(handlerPath, "");
-            data = parser.ReadFile(handlerPath);
-            data.Sections.AddSection("Desktop Entry");
-            data["Desktop Entry"].AddKey("Version", "1.0");
-            data["Desktop Entry"].AddKey("Type", "Application");
-            data["Desktop Entry"].AddKey("Exec", "mono \"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\" gui %u");
-            data["Desktop Entry"].AddKey("Icon", "ckan");
-            data["Desktop Entry"].AddKey("StartupNotify", "true");
-            data["Desktop Entry"].AddKey("NoDisplay", "true");
-            data["Desktop Entry"].AddKey("Terminal", "false");
-            data["Desktop Entry"].AddKey("Categories", "Utility");
-            data["Desktop Entry"].AddKey("MimeType", "x-scheme-handler/ckan");
-            data["Desktop Entry"].AddKey("Name", "CKAN Launcher");
-            data["Desktop Entry"].AddKey("Comment", "Launch CKAN");
-
-            parser.WriteFile(handlerPath, data);
-            AutoUpdate.SetExecutable(handlerPath);
         }
 
     }
