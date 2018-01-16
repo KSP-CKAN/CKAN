@@ -231,9 +231,15 @@ namespace CKAN.CmdLine
         {
             if (Regex.IsMatch(format, "download", RegexOptions.IgnoreCase))
             {
-                Console.Write(
+                // In headless mode, only print a new message if the percent has changed,
+                // to reduce clutter in Jenkins for large downloads
+                if (!m_Headless || percent != previousPercent)
+                {
                     // The \r at the front here causes download messages to *overwrite* each other.
-                    "\r{0} - {1}%           ", format, percent);
+                    Console.Write(
+                        "\r{0} - {1}%           ", format, percent);
+                    previousPercent = percent;
+                }
             }
             else
             {
@@ -244,5 +250,6 @@ namespace CKAN.CmdLine
             }
         }
 
+        private int previousPercent = -1;
     }
 }
