@@ -903,7 +903,7 @@ namespace CKAN
             Enabled = true;
         }
 
-        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
 
@@ -939,26 +939,55 @@ namespace CKAN
                 // Sneakily add our version in...
                 registry_manager.registry.AddAvailable(module);
 
-                var changeset = new List<ModChange>
-                {
-                    new ModChange(
-                        new GUIMod(module, registry_manager.registry, CurrentInstance.VersionCriteria()),
-                        GUIModChangeType.Install, null)
-                };
-
                 menuStrip1.Enabled = false;
 
                 RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
                 install_ops.with_recommends = false;
 
-                installWorker.RunWorkerAsync(
-                    new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                        changeset, install_ops));
-
-                changeSet = null;
-
-                UpdateChangesDialog(null, installWorker);
-                ShowWaitDialog();
+                try
+                {
+                    // Resolve the provides relationships in the dependencies
+                    List<ModChange> fullChangeSet = new List<ModChange>(
+                        await mainModList.ComputeChangeSetFromModList(
+                            registry_manager.registry,
+                            new HashSet<ModChange>()
+                            {
+                                new ModChange(
+                                    new GUIMod(
+                                        module,
+                                        registry_manager.registry,
+                                        CurrentInstance.VersionCriteria()
+                                    ),
+                                    GUIModChangeType.Install,
+                                    null
+                                )
+                            },
+                            ModuleInstaller.GetInstance(CurrentInstance, GUI.user),
+                            CurrentInstance.VersionCriteria()
+                        )
+                    );
+                    if (fullChangeSet != null && fullChangeSet.Count > 0)
+                    {
+                        installWorker.RunWorkerAsync(
+                            new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                                fullChangeSet,
+                                install_ops
+                            )
+                        );
+                        UpdateChangesDialog(null, installWorker);
+                        ShowWaitDialog();
+                    }
+                }
+                catch
+                {
+                    // If we failed, do the clean-up normally done by PostInstallMods.
+                    HideWaitDialog(false);
+                    menuStrip1.Enabled = true;
+                }
+                finally
+                {
+                    changeSet = null;
+                }
             }
         }
 
