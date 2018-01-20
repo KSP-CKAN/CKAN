@@ -1,4 +1,4 @@
-﻿using CKAN;
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
@@ -52,7 +52,7 @@ namespace Tests.NetKAN.Validators
         [TestCase("identifier")]
         [TestCase("version")]
         [TestCase("download")]
-        public void DoesThrowWhenMissingProperty(string propertyName)
+        public void DoesThrowWhenMissingProeprty(string propertyName)
         {
             // Arrange
             var mHttp = new Mock<IHttpService>();
