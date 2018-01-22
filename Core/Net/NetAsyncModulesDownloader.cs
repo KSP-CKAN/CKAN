@@ -21,6 +21,7 @@ namespace CKAN
 
         private          List<CkanModule>   modules;
         private readonly NetAsyncDownloader downloader;
+        private const    string             defaultMimeType = "application/octet-stream";
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
@@ -50,13 +51,20 @@ namespace CKAN
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
 
-            // retrieve the expected download size for each mod
-            List<KeyValuePair<Uri, long>> downloads_with_size = unique_downloads
-                .Select(item => new KeyValuePair<Uri, long>(item.Key, item.Value.download_size))
-                .ToList();
-
-            // Start the download!
-            downloader.DownloadAndWait(downloads_with_size);
+            // Start the downloads!
+            downloader.DownloadAndWait(
+                unique_downloads.Select(item => new Net.DownloadTarget(
+                    item.Key,
+                    // Use a temp file name
+                    null,
+                    item.Value.download_size,
+                    // Send the MIME type to use for the Accept header
+                    // The GitHub API requires this to include application/octet-stream
+                    string.IsNullOrEmpty(item.Value.download_content_type)
+                        ? defaultMimeType
+                        : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
+                )).ToList()
+            );
         }
 
         /// <summary>

@@ -31,15 +31,31 @@ namespace CKAN
             public Exception error;
             public int lastProgressUpdateSize;
 
-            public NetAsyncDownloaderDownloadPart(Uri url, long expectedSize, string path = null)
+            public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target, string path = null)
             {
-                this.url = url;
+                this.url  = target.url;
                 this.path = path ?? Path.GetTempFileName();
-                bytesLeft = expectedSize;
-                size = expectedSize;
+                size = bytesLeft = target.size;
                 lastProgressUpdateTime = DateTime.Now;
 
                 agent.Headers.Add("User-Agent", Net.UserAgentString);
+
+                // Tell the server what kind of files we want
+                if (!string.IsNullOrEmpty(target.mimeType))
+                {
+                    log.InfoFormat("Setting MIME type {0}", target.mimeType);
+                    agent.Headers.Add("Accept", target.mimeType);
+                }
+
+                // Check whether to use an auth token for this host
+                string token;
+                if (Win32Registry.TryGetAuthToken(this.url.Host, out token)
+                        && !string.IsNullOrEmpty(token))
+                {
+                    log.InfoFormat("Using auth token for {0}", this.url.Host);
+                    // Send our auth token to the GitHub API (or whoever else needs one)
+                    agent.Headers.Add("Authentication", $"token {token}");
+                }
             }
         }
 
@@ -73,14 +89,14 @@ namespace CKAN
 
         /// <summary>
         /// Downloads our files, returning an array of filenames that we're writing to.
-        /// The sole argument is a collection of KeyValuePair(s) containing the download URL and the expected download size
+        /// The sole argument is a collection of DownloadTargets.
         /// The .onCompleted delegate will be called on completion.
         /// </summary>
-        private void Download(ICollection<KeyValuePair<Uri, long>> urls)
+        private void Download(ICollection<Net.DownloadTarget> targets)
         {
-            foreach (var download in urls.Select(url => new NetAsyncDownloaderDownloadPart(url.Key, url.Value)))
+            foreach (Net.DownloadTarget target in targets)
             {
-                downloads.Add(download);
+                downloads.Add(new NetAsyncDownloaderDownloadPart(target));
             }
 
             // adding chicken bits
@@ -239,7 +255,7 @@ namespace CKAN
             }
         }
 
-        public void DownloadAndWait(ICollection<KeyValuePair<Uri, long>> urls)
+        public void DownloadAndWait(ICollection<Net.DownloadTarget> urls)
         {
             // Start the download!
             Download(urls);

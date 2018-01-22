@@ -17,6 +17,7 @@ namespace CKAN
 
     public class Net
     {
+        // The user agent that we report to web sites
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
         private static readonly ILog Log = LogManager.GetLogger(typeof (Net));
@@ -112,20 +113,19 @@ namespace CKAN
 
         public class DownloadTarget
         {
-            public Uri uri { get; private set; }
+            public Uri    url      { get; private set; }
             public string filename { get; private set; }
-            public long size { get; private set; }
+            public long   size     { get; private set; }
+            public string mimeType { get; private set; }
 
-            public DownloadTarget(Uri uri, string filename = null, long size = 0)
+            public DownloadTarget(Uri url, string filename = null, long size = 0, string mimeType = "")
             {
-                if (filename == null)
-                {
-                    filename = FileTransaction.GetTempFileName();
-                }
-
-                this.uri = uri;
-                this.filename = filename;
-                this.size = size;
+                this.url      = url;
+                this.filename = string.IsNullOrEmpty(filename)
+                    ? FileTransaction.GetTempFileName()
+                    : filename;
+                this.size     = size;
+                this.mimeType = mimeType;
             }
         }
 
@@ -150,10 +150,10 @@ namespace CKAN
                     if (filenames == null || urls == null) return;
                     for (var i = 0; i < Math.Min(urls.Length, filenames.Length); i++)
                     {
-                        File.Move(filenames[i], downloadTargets.First(p => p.uri == urls[i]).filename);
+                        File.Move(filenames[i], downloadTargets.First(p => p.url == urls[i]).filename);
                     }
                 }
-            }.DownloadAndWait(downloadTargets.ToDictionary(p => p.uri, p => p.size));
+            }.DownloadAndWait(downloadTargets);
         }
 
         public static string DownloadText(Uri url)
