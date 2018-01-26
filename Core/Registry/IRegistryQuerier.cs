@@ -116,7 +116,7 @@ namespace CKAN
     /// Helpers for <see cref="IRegistryQuerier"/>
     /// </summary>
     public static class IRegistryQuerierHelpers
-{
+    {
         /// <summary>
         /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, Version)"/>
         /// </summary>

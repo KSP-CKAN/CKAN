@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Win32;
 
 namespace CKAN
 {
     public interface IWin32Registry
     {
-
         string AutoStartInstance { get; set; }
         void SetRegistryToInstances(SortedList<string, KSP> instances, string autoStartInstance);
         IEnumerable<Tuple<string, string>> GetInstances();
@@ -16,11 +16,15 @@ namespace CKAN
 
     public class Win32Registry : IWin32Registry
     {
-        private static readonly string CKAN_KEY = @"HKEY_CURRENT_USER\Software\CKAN";
+        private const           string CKAN_KEY           = @"HKEY_CURRENT_USER\Software\CKAN";
+        private static readonly string CKAN_KEY_NO_PREFIX = StripPrefixKey(CKAN_KEY);
+
+        private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
+        private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
         public Win32Registry()
         {
-            ConstructKey();
+            ConstructKey(CKAN_KEY_NO_PREFIX);
         }
         private int InstanceCount
         {
@@ -43,11 +47,11 @@ namespace CKAN
         {
             SetAutoStartInstance(autoStartInstance ?? string.Empty);
             SetNumberOfInstances(instances.Count);
-            
+
             foreach (var instance in instances.Select((instance,i)=>
                 new {number=i,name=instance.Key,path=instance.Value}))
-            {                
-                SetInstanceKeysTo(instance.number, instance.name, instance.path);                
+            {
+                SetInstanceKeysTo(instance.number, instance.name, instance.path);
             }
         }
 
@@ -66,12 +70,67 @@ namespace CKAN
             SetRegistryValue(@"KSPBuilds", buildMap);
         }
 
-        private void ConstructKey()
+        /// <summary>
+        /// Look for an auth token in the registry.
+        /// </summary>
+        /// <param name="host">Host for which to find a token</param>
+        /// <param name="token">Value of the token returned in parameter</param>
+        /// <returns>
+        /// True if found, false otherwise
+        /// </returns>
+        public static bool TryGetAuthToken(string host, out string token)
         {
-            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\CKAN");
+            try
+            {
+                token = Microsoft.Win32.Registry.GetValue(authTokenKey, host, null) as string;
+                return !string.IsNullOrEmpty(token);
+            }
+            catch
+            {
+                // If GetValue threw SecurityException, IOException, or ArgumentException,
+                // just report failure.
+                token = "";
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the hosts that have auth tokens stored in the registry
+        /// </summary>
+        /// <returns>
+        /// Strings that are values of the auth token registry key
+        /// </returns>
+        public static IEnumerable<string> GetAuthTokenHosts()
+        {
+            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
+            return key?.GetValueNames();
+        }
+
+        /// <summary>
+        /// Set an auth token in the registry
+        /// </summary>
+        /// <param name="host">Host for which to set the token</param>
+        /// <param name="token">Token to set</param>
+        public static void SetAuthToken(string host, string token)
+        {
+            ConstructKey(authTokenKeyNoPrefix);
+            Microsoft.Win32.Registry.SetValue(authTokenKey, host, token);
+        }
+
+        private static string StripPrefixKey(string keyname)
+        {
+            int firstBackslash = keyname.IndexOf(@"\");
+            return firstBackslash < 0
+                ? keyname
+                : keyname.Substring(1 + firstBackslash);
+        }
+
+        private static void ConstructKey(string whichKey)
+        {
+            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(whichKey);
             if (key == null)
             {
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\CKAN");
+                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(whichKey);
             }
         }
 
@@ -86,10 +145,10 @@ namespace CKAN
         }
 
         private void SetInstanceKeysTo(int instanceIndex, string name, KSP ksp)
-        {            
+        {
             SetRegistryValue(@"KSPInstanceName_" + instanceIndex, name);
             SetRegistryValue(@"KSPInstancePath_" + instanceIndex, ksp.GameDir());
-        }        
+        }
 
         private static void SetRegistryValue<T>(string key, T value)
         {

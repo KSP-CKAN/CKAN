@@ -144,10 +144,14 @@ namespace CKAN
             // download updater app and new ckan.exe
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            Net.DownloadWithProgress(new[]{
-                new Net.DownloadTarget(fetchedUpdaterUrl.Item1, updaterFilename, fetchedUpdaterUrl.Item2),
-                new Net.DownloadTarget(fetchedCkanUrl.Item1, ckanFilename, fetchedCkanUrl.Item2),
-            }, user);
+            Net.DownloadWithProgress(
+                new[]
+                {
+                    new Net.DownloadTarget(fetchedUpdaterUrl.Item1, updaterFilename, fetchedUpdaterUrl.Item2),
+                    new Net.DownloadTarget(fetchedCkanUrl.Item1,    ckanFilename,    fetchedCkanUrl.Item2),
+                },
+                user
+            );
 
             // run updater
             SetExecutable(updaterFilename);

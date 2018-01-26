@@ -427,9 +427,9 @@ namespace CKAN
             Main.Instance.ResetProgress();
             Main.Instance.ClearLog();
 
-            NetAsyncModulesDownloader dowloader = new NetAsyncModulesDownloader(Main.Instance.currentUser);
+            NetAsyncModulesDownloader downloader = new NetAsyncModulesDownloader(Main.Instance.currentUser);
 
-            dowloader.DownloadModules(Main.Instance.CurrentInstance.Cache, new List<CkanModule> { (CkanModule)e.Argument });
+            downloader.DownloadModules(Main.Instance.CurrentInstance.Cache, new List<CkanModule> { (CkanModule)e.Argument });
             e.Result = e.Argument;
         }
 

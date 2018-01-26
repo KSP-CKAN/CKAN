@@ -75,10 +75,7 @@ namespace Tests.Core.Net
             log.InfoFormat("Downloading kOS from {0}",kOS.download);
 
             // Download our module.
-            async.DownloadModules(
-                ksp.KSP.Cache,
-                modules
-            );
+            async.DownloadModules(ksp.KSP.Cache, modules);
 
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(cache.IsCachedZip(kOS));

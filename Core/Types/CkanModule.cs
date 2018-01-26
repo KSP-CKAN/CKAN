@@ -175,6 +175,9 @@ namespace CKAN
         [JsonProperty("download_hash", NullValueHandling = NullValueHandling.Ignore)]
         public DownloadHashesDescriptor download_hash;
 
+        [JsonProperty("download_content_type", NullValueHandling = NullValueHandling.Ignore)]
+        public string download_content_type;
+
         [JsonProperty("identifier", Required = Required.Always)]
         public string identifier;
 

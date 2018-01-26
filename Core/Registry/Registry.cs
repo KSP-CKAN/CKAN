@@ -242,7 +242,7 @@ namespace CKAN
                 new Dictionary<string, AvailableModule>(),
                 new Dictionary<string, string>(),
                 new SortedDictionary<string, Repository>()
-                );
+            );
         }
 
         #endregion
