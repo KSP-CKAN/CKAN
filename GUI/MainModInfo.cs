@@ -184,6 +184,22 @@ namespace CKAN
             Cursor.Current = prevCur;
         }
 
+        private bool ImMyOwnGrandpa(TreeNode node)
+        {
+            CkanModule module = node.Tag as CkanModule;
+            if (module != null)
+            {
+                for (TreeNode other = node.Parent; other != null; other = other.Parent)
+                {
+                    if (module == other.Tag)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private void UpdateModDependencyGraph(CkanModule module)
         {
             ModInfoTabControl.Tag = module ?? ModInfoTabControl.Tag;
@@ -224,6 +240,10 @@ namespace CKAN
 
         private void AddChildren(IRegistryQuerier registry, TreeNode node)
         {
+            // Skip children of nodes from circular dependencies
+            if (ImMyOwnGrandpa(node))
+                return;
+
             // Load one layer of grandchildren on demand
             CkanModule module = node.Tag as CkanModule;
             // Tag is null for non-indexed nodes
