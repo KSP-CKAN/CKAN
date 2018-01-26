@@ -142,7 +142,7 @@ namespace CKAN
             }
 
             // If no exceptions, then everything is fine
-            return cache.Store(module.download, path, description, move);
+            return cache.Store(module.download, path, description ?? module.StandardName(), move);
         }
 
         private NetFileCache cache;

@@ -67,6 +67,9 @@ namespace CKAN.CmdLine
         [VerbOption("remove", HelpText = "Remove an installed mod")]
         public RemoveOptions Remove { get; set; }
 
+        [VerbOption("import", HelpText = "Import manually downloaded mods")]
+        public ImportOptions Import { get; set; }
+
         [VerbOption("scan", HelpText = "Scan for manually installed KSP mods")]
         public ScanOptions Scan { get; set; }
 
@@ -131,6 +134,9 @@ namespace CKAN.CmdLine
                         break;
                     case "compare":
                         ht.AddPreOptionsLine($"Usage: ckan {verb} [options] version1 version2");
+                        break;
+                    case "import":
+                        ht.AddPreOptionsLine($"Usage: ckan {verb} [options] paths");
                         break;
 
                     // Now the commands with only --flag type options
@@ -431,6 +437,12 @@ namespace CKAN.CmdLine
 
         [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
         public bool rmall { get; set; }
+    }
+
+    internal class ImportOptions : InstanceSpecificOptions
+    {
+        [ValueList(typeof(List<string>))]
+        public List<string> paths { get; set; }
     }
 
     internal class ShowOptions : InstanceSpecificOptions
