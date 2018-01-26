@@ -37,7 +37,7 @@ namespace CKAN.ConsoleUI {
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Version",
                         Width    = 10,
-                        Renderer = m => Formatting.StripEpoch(m.version?.ToString() ?? ""),
+                        Renderer = m => ModuleInstaller.StripEpoch(m.version?.ToString() ?? ""),
                         Comparer = (a, b) => a.version.CompareTo(b.version)
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = "Max KSP version",

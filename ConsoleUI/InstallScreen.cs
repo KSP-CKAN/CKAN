@@ -133,7 +133,7 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name} {Formatting.StripEpoch(mod.version)}");
+            RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name} {ModuleInstaller.StripEpoch(mod.version)}");
         }
 
         private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {

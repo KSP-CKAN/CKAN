@@ -1084,5 +1084,96 @@ namespace CKAN
                 downloader.DownloadModules(ksp.Cache, downloads);
             }
         }
+
+        /// <summary>
+        /// Import a list of files into the download cache, with progress bar and
+        /// interactive prompts for installation and deletion.
+        /// </summary>
+        /// <param name="files">Set of files to import</param>
+        /// <param name="user">Object for user interaction</param>
+        /// <param name="installMod">Function to call to mark a mod for installation</param>
+        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<string> installMod)
+        {
+            Registry         registry    = registry_manager.registry;
+            HashSet<string>  installable = new HashSet<string>();
+            List<FileInfo>   deletable   = new List<FileInfo>();
+            // Get the mapping of known hashes to modules
+            Dictionary<string, List<CkanModule>> index = registry.GetSha1Index();
+            int i = 0;
+            foreach (FileInfo f in files) {
+                int percent = i * 100 / files.Count;
+                user.RaiseProgress($"Importing {f.Name}... ({percent}%)", percent);
+                // Calc SHA-1 sum
+                string sha1 = NetModuleCache.GetFileHashSha1(f.FullName);
+                // Find SHA-1 sum in registry (potentially multiple)
+                if (index.ContainsKey(sha1)) {
+                    deletable.Add(f);
+                    List<CkanModule> matches = index[sha1];
+                    foreach (CkanModule mod in matches) {
+                        if (mod.IsCompatibleKSP(ksp.VersionCriteria())) {
+                            installable.Add(mod.identifier);
+                        }
+                        if (Cache.IsMaybeCachedZip(mod)) {
+                            user.RaiseMessage("Already cached: {0}", f.Name);
+                        } else {
+                            user.RaiseMessage($"Importing {mod.identifier} {StripEpoch(mod.version)}...");
+                            Cache.Store(mod, f.FullName);
+                        }
+                    }
+                } else {
+                    user.RaiseMessage("Not found in index: {0}", f.Name);
+                }
+                ++i;
+            }
+            if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods?")) {
+                // Install the imported mods
+                foreach (string identifier in installable) {
+                    installMod(identifier);
+                }
+            }
+            if (user.RaiseYesNoDialog($"Import complete. Delete {deletable.Count} old files?")) {
+                // Delete old files
+                foreach (FileInfo f in deletable) {
+                    f.Delete();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary>
+        /// <param name="version">A version that might contain an epoch</param>
+        public static string StripEpoch(Version version)
+        {
+            return StripEpoch(version.ToString());
+        }
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary>
+        /// <param name="version">A version string that might contain an epoch</param>
+        public static string StripEpoch(string version)
+        {
+            // If our version number starts with a string of digits, followed by
+            // a colon, and then has no more colons, we're probably safe to assume
+            // the first string of digits is an epoch
+            return epochMatch.IsMatch(version)
+                ? epochReplace.Replace(version, @"$2")
+                : version;
+        }
+
+        /// <summary>
+        /// As above, but includes the original in parentheses
+        /// </summary>
+        /// <param name="version">A version string that might contain an epoch</param>
+        public static string WithAndWithoutEpoch(string version)
+        {
+            return epochMatch.IsMatch(version)
+                ? $"{epochReplace.Replace(version, @"$2")} ({version})"
+                : version;
+        }
+
+        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
+        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 }
