@@ -63,20 +63,19 @@ namespace CKAN.CmdLine
                 switch (args[0])
                 {
                     case "repair":
-                        var repair = new Repair();
-                        return repair.RunSubCommand(new SubCommandOptions(args));
+                        return (new Repair()).RunSubCommand(new SubCommandOptions(args));
 
                     case "ksp":
-                        var ksp = new KSP();
-                        return ksp.RunSubCommand(new SubCommandOptions(args));
+                        return (new KSP()).RunSubCommand(new SubCommandOptions(args));
 
                     case "compat":
-                        var compat = new CompatSubCommand();
-                        return compat.RunSubCommand(new SubCommandOptions(args));
+                        return (new CompatSubCommand()).RunSubCommand(new SubCommandOptions(args));
 
                     case "repo":
-                        var repo = new Repo();
-                        return repo.RunSubCommand(new SubCommandOptions(args));
+                        return (new Repo()).RunSubCommand(new SubCommandOptions(args));
+
+                    case "authtoken":
+                        return (new AuthToken()).RunSubCommand(new SubCommandOptions(args));
                 }
             }
             catch (NoGameInstanceKraken)

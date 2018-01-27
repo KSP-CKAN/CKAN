@@ -64,6 +64,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AuthTokenAddDialog.cs" />
+    <Compile Include="AuthTokenListScreen.cs" />
     <Compile Include="CompatibleVersionDialog.cs" />
     <Compile Include="ConsoleCKAN.cs" />
     <Compile Include="DependencyScreen.cs" />
