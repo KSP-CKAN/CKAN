@@ -34,7 +34,8 @@ namespace CKAN.CmdLine
         {
             try
             {
-                HashSet<FileInfo> toImport = GetFiles((ImportOptions)options);
+                ImportOptions opts = options as ImportOptions;
+                HashSet<FileInfo> toImport = GetFiles(opts);
                 if (toImport.Count < 1)
                 {
                     user.RaiseMessage("Usage: ckan import path [path2, ...]");
@@ -45,7 +46,7 @@ namespace CKAN.CmdLine
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     List<string>    toInstall = new List<string>();
                     ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, user);
-                    inst.ImportFiles(toImport, user, id => toInstall.Add(id));
+                    inst.ImportFiles(toImport, user, id => toInstall.Add(id), !opts.Headless);
                     if (toInstall.Count > 0)
                     {
                         inst.InstallList(
