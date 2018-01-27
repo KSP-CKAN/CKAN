@@ -1134,7 +1134,7 @@ namespace CKAN
                 }
                 ++i;
             }
-            if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods?"))
+            if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods in game instance {ksp.Name} ({ksp.GameDir()})?"))
             {
                 // Install the imported mods
                 foreach (string identifier in installable)
