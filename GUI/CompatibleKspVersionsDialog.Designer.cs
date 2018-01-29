@@ -71,7 +71,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(401, 32);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Warning! There is no way to check if mod is trully compatible with versions selec" +
+            this.label3.Text = "Warning! There is no way to check if mod is truly compatible with versions selec" +
     "ted here! Please act carefully.";
             // 
             // gameVersionLabel
