@@ -189,6 +189,9 @@ namespace CKAN.CmdLine
                         Scan(GetGameInstance(manager), user, cmdline.action);
                         return (new Upgrade(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
+                    case "import":
+                        return (new Import(user)).RunCommand(GetGameInstance(manager), options);
+
                     case "clean":
                         return Clean(GetGameInstance(manager));
 

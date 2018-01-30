@@ -57,6 +57,7 @@
     <Compile Include="Action\Compare.cs" />
     <Compile Include="Action\CompatSubCommand.cs" />
     <Compile Include="Action\ICommand.cs" />
+    <Compile Include="Action\Import.cs" />
     <Compile Include="Action\Install.cs" />
     <Compile Include="Action\ISubCommand.cs" />
     <Compile Include="Action\KSP.cs" />

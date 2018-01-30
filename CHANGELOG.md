@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add status and progress bar at the bottom of the window (#2245 by: HebaruSan; reviewed: Olympic1)
 - [GUI] Add import downloads menu item to GUI (#2246 by: HebaruSan; reviewed: politas)
 - [Core] Accept header and infrastructure for auth tokens (#2263 by: HebaruSan; reviewed: dbent)
+- [CLI] Add Cmdline import command (#2264 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 
