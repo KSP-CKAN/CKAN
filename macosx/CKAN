@@ -19,5 +19,5 @@ else
 	export DYLD_FALLBACK_LIBRARY_PATH=$APP_PATH/Contents/MacOS:$MONO_FRAMEWORK_PATH/lib:/lib:/usr/lib
 
 	cd "$APP_PATH/Contents/MacOS"
-	exec -a "CKAN" "$MONO" --debug $ASSEMBLY $@
+	exec -a "CKAN" "$MONO" --arch=32 $ASSEMBLY $@
 fi
