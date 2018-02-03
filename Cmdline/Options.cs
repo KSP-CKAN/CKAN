@@ -91,6 +91,9 @@ namespace CKAN.CmdLine
         [VerbOption("ksp", HelpText = "Manage KSP installs")]
         public SubCommandOptions KSP { get; set; }
 
+        [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
+        public AuthTokenSubOptions AuthToken { get; set; }
+
         [VerbOption("compat", HelpText = "Manage KSP version compatibility")]
         public SubCommandOptions Compat { get; set; }
 

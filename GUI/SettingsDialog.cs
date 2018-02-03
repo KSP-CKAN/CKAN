@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Drawing;
 using log4net;
 
 namespace CKAN
@@ -29,6 +30,7 @@ namespace CKAN
         public void UpdateDialog()
         {
             RefreshReposListBox();
+            RefreshAuthTokensListBox();
 
             LocalVersionLabel.Text = Meta.GetVersion();
 
@@ -223,6 +225,149 @@ namespace CKAN
             _sortedRepos.RemoveAt(ReposListBox.SelectedIndex);
             _sortedRepos.Insert(ReposListBox.SelectedIndex + 1, item);
             RefreshReposListBox();
+        }
+
+        private void RefreshAuthTokensListBox()
+        {
+            AuthTokensListBox.Items.Clear();
+            foreach (string host in Win32Registry.GetAuthTokenHosts())
+            {
+                string token;
+                if (Win32Registry.TryGetAuthToken(host, out token))
+                {
+                    AuthTokensListBox.Items.Add(string.Format("{0} | {1}", host, token));
+                }
+            }
+        }
+
+        private void AuthTokensListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DeleteAuthTokenButton.Enabled = AuthTokensListBox.SelectedItem != null;
+        }
+
+        private void NewAuthTokenButton_Click(object sender, EventArgs e)
+        {
+            // Inspired by https://stackoverflow.com/a/17546909/2422988
+            Form newAuthTokenPopup = new Form()
+            {
+                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                StartPosition   = FormStartPosition.CenterParent,
+                ClientSize      = new Size(300, 100),
+                Text            = "Add Authentication Token"
+            };
+            Label hostLabel = new Label()
+            {
+                AutoSize = true,
+                Location = new Point(3, 6),
+                Size     = new Size(271, 13),
+                Text     = "Host:"
+            };
+            TextBox hostTextBox = new TextBox()
+            {
+                Location = new Point(45, 6),
+                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 40 - 10, 23),
+                Text     = ""
+            };
+            Label tokenLabel = new Label()
+            {
+                AutoSize = true,
+                Location = new Point(3, 35),
+                Size     = new Size(271, 13),
+                Text     = "Token:"
+            };
+            TextBox tokenTextBox = new TextBox()
+            {
+                Location = new Point(45, 35),
+                Size     = new Size(newAuthTokenPopup.ClientSize.Width - 40 - 10, 23),
+                Text     = ""
+            };
+            Button acceptButton = new Button()
+            {
+                DialogResult = DialogResult.OK,
+                Name         = "okButton",
+                Size         = new Size(75, 23),
+                Text         = "&Accept",
+                Location     = new Point((newAuthTokenPopup.ClientSize.Width - 80 - 80) / 2, 64)
+            };
+            acceptButton.Click += (origin, evt) =>
+            {
+                newAuthTokenPopup.DialogResult = validNewAuthToken(hostTextBox.Text, tokenTextBox.Text)
+                    ? DialogResult.OK
+                    : DialogResult.None;
+            };
+            Button cancelButton = new Button()
+            {
+                DialogResult = DialogResult.Cancel,
+                Name         = "cancelButton",
+                Size         = new Size(75, 23),
+                Text         = "&Cancel",
+                Location     = new Point(acceptButton.Location.X + acceptButton.Size.Width + 5, 64)
+            };
+
+            newAuthTokenPopup.Controls.Add(hostLabel);
+            newAuthTokenPopup.Controls.Add(hostTextBox);
+            newAuthTokenPopup.Controls.Add(tokenLabel);
+            newAuthTokenPopup.Controls.Add(tokenTextBox);
+            newAuthTokenPopup.Controls.Add(acceptButton);
+            newAuthTokenPopup.Controls.Add(cancelButton);
+            newAuthTokenPopup.AcceptButton = acceptButton;
+            newAuthTokenPopup.CancelButton = cancelButton;
+
+            switch (newAuthTokenPopup.ShowDialog(this))
+            {
+                case DialogResult.Abort:
+                case DialogResult.Cancel:
+                case DialogResult.Ignore:
+                case DialogResult.No:
+                    // User cancelled out, so do nothing
+                    break;
+
+                case DialogResult.OK:
+                case DialogResult.Yes:
+                    Win32Registry.SetAuthToken(hostTextBox.Text, tokenTextBox.Text);
+                    RefreshAuthTokensListBox();
+                    break;
+            }
+        }
+
+        private static bool validNewAuthToken(string host, string token)
+        {
+            if (host.Length <= 0)
+            {
+                GUI.user.RaiseError("Host field is required.");
+                return false;
+            }
+            if (token.Length <= 0)
+            {
+                GUI.user.RaiseError("Token field is required.");
+                return false;
+            }
+            if (Uri.CheckHostName(host) == UriHostNameType.Unknown)
+            {
+                GUI.user.RaiseError("{0} is not a valid host name.", host);
+                return false;
+            }
+            string oldToken;
+            if (Win32Registry.TryGetAuthToken(host, out oldToken))
+            {
+                GUI.user.RaiseError("{0} already has an authentication token.", host);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void DeleteAuthTokenButton_Click(object sender, EventArgs e)
+        {
+            if (AuthTokensListBox.SelectedItem != null)
+            {
+                string item = AuthTokensListBox.SelectedItem as string;
+                string host = item?.Split('|')[0].Trim();
+
+                Win32Registry.SetAuthToken(host, null);
+                RefreshAuthTokensListBox();
+                DeleteRepoButton.Enabled = false;
+            }
         }
 
         private void CheckForUpdatesButton_Click(object sender, EventArgs e)

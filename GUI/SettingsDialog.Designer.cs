@@ -35,30 +35,35 @@
             this.UpRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.ReposListBox = new System.Windows.Forms.ListBox();
+            this.AuthTokensGroupBox = new System.Windows.Forms.GroupBox();
+            this.AuthTokensListBox = new System.Windows.Forms.ListBox();
+            this.NewAuthTokenButton = new System.Windows.Forms.Button();
+            this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
             this.LatestVersionLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.LatestVersionLabelLabel = new System.Windows.Forms.Label();
             this.LocalVersionLabel = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.LocalVersionLabelLabel = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox.SuspendLayout();
+            this.AuthTokensGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.AutoUpdateGroupBox.SuspendLayout();
             this.SuspendLayout();
             //
             // NewRepoButton
             //
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NewRepoButton.Location = new System.Drawing.Point(6, 224);
+            this.NewRepoButton.Location = new System.Drawing.Point(6, 94);
             this.NewRepoButton.Name = "NewRepoButton";
-            this.NewRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.NewRepoButton.Size = new System.Drawing.Size(56, 23);
             this.NewRepoButton.TabIndex = 6;
             this.NewRepoButton.Text = "New";
             this.NewRepoButton.UseVisualStyleBackColor = true;
@@ -74,18 +79,18 @@
             this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
-            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 261);
+            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 127);
             this.RepositoryGroupBox.TabIndex = 12;
             this.RepositoryGroupBox.TabStop = false;
-            this.RepositoryGroupBox.Text = "Metadata repositories";
+            this.RepositoryGroupBox.Text = "Metadata Repositories";
             //
             // DownRepoButton
             //
             this.DownRepoButton.Enabled = false;
             this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownRepoButton.Location = new System.Drawing.Point(130, 224);
+            this.DownRepoButton.Location = new System.Drawing.Point(130, 94);
             this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.DownRepoButton.Size = new System.Drawing.Size(56, 23);
             this.DownRepoButton.TabIndex = 11;
             this.DownRepoButton.Text = "Down";
             this.DownRepoButton.UseVisualStyleBackColor = true;
@@ -95,9 +100,9 @@
             //
             this.UpRepoButton.Enabled = false;
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UpRepoButton.Location = new System.Drawing.Point(68, 224);
+            this.UpRepoButton.Location = new System.Drawing.Point(68, 94);
             this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.UpRepoButton.Size = new System.Drawing.Size(56, 23);
             this.UpRepoButton.TabIndex = 10;
             this.UpRepoButton.Text = "Up";
             this.UpRepoButton.UseVisualStyleBackColor = true;
@@ -107,9 +112,9 @@
             //
             this.DeleteRepoButton.Enabled = false;
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteRepoButton.Location = new System.Drawing.Point(414, 224);
+            this.DeleteRepoButton.Location = new System.Drawing.Point(414, 94);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
-            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 26);
+            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 23);
             this.DeleteRepoButton.TabIndex = 9;
             this.DeleteRepoButton.Text = "Delete";
             this.DeleteRepoButton.UseVisualStyleBackColor = true;
@@ -120,9 +125,54 @@
             this.ReposListBox.FormattingEnabled = true;
             this.ReposListBox.Location = new System.Drawing.Point(6, 19);
             this.ReposListBox.Name = "ReposListBox";
-            this.ReposListBox.Size = new System.Drawing.Size(464, 199);
+            this.ReposListBox.Size = new System.Drawing.Size(464, 72);
             this.ReposListBox.TabIndex = 9;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
+            //
+            // AuthTokensGroupBox
+            //
+            this.AuthTokensGroupBox.Controls.Add(this.AuthTokensListBox);
+            this.AuthTokensGroupBox.Controls.Add(this.NewAuthTokenButton);
+            this.AuthTokensGroupBox.Controls.Add(this.DeleteAuthTokenButton);
+            this.AuthTokensGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AuthTokensGroupBox.Location = new System.Drawing.Point(12, 145);
+            this.AuthTokensGroupBox.Name = "AuthTokensGroupBox";
+            this.AuthTokensGroupBox.Size = new System.Drawing.Size(476, 127);
+            this.AuthTokensGroupBox.TabIndex = 13;
+            this.AuthTokensGroupBox.TabStop = false;
+            this.AuthTokensGroupBox.Text = "Authentication Tokens";
+            //
+            // AuthTokensListBox
+            //
+            this.AuthTokensListBox.FormattingEnabled = true;
+            this.AuthTokensListBox.Location = new System.Drawing.Point(6, 19);
+            this.AuthTokensListBox.Name = "AuthTokensListBox";
+            this.AuthTokensListBox.Size = new System.Drawing.Size(464, 72);
+            this.AuthTokensListBox.TabIndex = 14;
+            this.AuthTokensListBox.SelectedIndexChanged += new System.EventHandler(this.AuthTokensListBox_SelectedIndexChanged);
+            //
+            // NewAuthTokenButton
+            //
+            this.NewAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.NewAuthTokenButton.Location = new System.Drawing.Point(6, 94);
+            this.NewAuthTokenButton.Name = "NewAuthTokenButton";
+            this.NewAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.NewAuthTokenButton.TabIndex = 15;
+            this.NewAuthTokenButton.Text = "New";
+            this.NewAuthTokenButton.UseVisualStyleBackColor = true;
+            this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
+            //
+            // DeleteAuthTokenButton
+            //
+            this.DeleteAuthTokenButton.Enabled = false;
+            this.DeleteAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(414, 94);
+            this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
+            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.DeleteAuthTokenButton.TabIndex = 16;
+            this.DeleteAuthTokenButton.Text = "Delete";
+            this.DeleteAuthTokenButton.UseVisualStyleBackColor = true;
+            this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
             //
             // CacheGroupBox
             //
@@ -134,7 +184,7 @@
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
             this.CacheGroupBox.TabIndex = 10;
             this.CacheGroupBox.TabStop = false;
-            this.CacheGroupBox.Text = "CKAN Cache";
+            this.CacheGroupBox.Text = "Cache";
             //
             // ClearCKANCacheButton
             //
@@ -156,27 +206,27 @@
             this.CKANCacheLabel.TabIndex = 0;
             this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
             //
-            // groupBox2
+            // AutoUpdateGroupBox
             //
-            this.groupBox2.Controls.Add(this.HideEpochsCheckbox);
-            this.groupBox2.Controls.Add(this.RefreshOnStartupCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.HideEpochsCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
             if (AutoUpdate.CanUpdate)
             {
-                this.groupBox2.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
-                this.groupBox2.Controls.Add(this.InstallUpdateButton);
-                this.groupBox2.Controls.Add(this.LatestVersionLabel);
-                this.groupBox2.Controls.Add(this.label4);
-                this.groupBox2.Controls.Add(this.LocalVersionLabel);
-                this.groupBox2.Controls.Add(this.label3);
-                this.groupBox2.Controls.Add(this.CheckForUpdatesButton);
+                this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
+                this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
+                this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
+                this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabelLabel);
+                this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
+                this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
+                this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             }
-            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox2.Location = new System.Drawing.Point(12, 334);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(476, 105);
-            this.groupBox2.TabIndex = 11;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "CKAN auto-update";
+            this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 334);
+            this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
+            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(476, 105);
+            this.AutoUpdateGroupBox.TabIndex = 11;
+            this.AutoUpdateGroupBox.TabStop = false;
+            this.AutoUpdateGroupBox.Text = "Auto-Updates";
             //
             // HideEpochsCheckbox
             //
@@ -232,14 +282,14 @@
             this.LatestVersionLabel.TabIndex = 4;
             this.LatestVersionLabel.Text = "???";
             //
-            // label4
+            // LatestVersionLabelLabel
             //
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 43);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Latest version:";
+            this.LatestVersionLabelLabel.AutoSize = true;
+            this.LatestVersionLabelLabel.Location = new System.Drawing.Point(7, 43);
+            this.LatestVersionLabelLabel.Name = "LatestVersionLabelLabel";
+            this.LatestVersionLabelLabel.Size = new System.Drawing.Size(76, 13);
+            this.LatestVersionLabelLabel.TabIndex = 3;
+            this.LatestVersionLabelLabel.Text = "Latest version:";
             //
             // LocalVersionLabel
             //
@@ -250,14 +300,14 @@
             this.LocalVersionLabel.TabIndex = 2;
             this.LocalVersionLabel.Text = "v0.0.0";
             //
-            // label3
+            // LocalVersionLabelLabel
             //
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 20);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Local version:";
+            this.LocalVersionLabelLabel.AutoSize = true;
+            this.LocalVersionLabelLabel.Location = new System.Drawing.Point(7, 20);
+            this.LocalVersionLabelLabel.Name = "LocalVersionLabelLabel";
+            this.LocalVersionLabelLabel.Size = new System.Drawing.Size(73, 13);
+            this.LocalVersionLabelLabel.TabIndex = 1;
+            this.LocalVersionLabelLabel.Text = "Local version:";
             //
             // CheckForUpdatesButton
             //
@@ -275,19 +325,21 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(495, 442);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.AutoUpdateGroupBox);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
+            this.Controls.Add(this.AuthTokensGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsDialog";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
             this.RepositoryGroupBox.ResumeLayout(false);
+            this.AuthTokensGroupBox.ResumeLayout(false);
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.AutoUpdateGroupBox.ResumeLayout(false);
+            this.AutoUpdateGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -303,11 +355,15 @@
         private System.Windows.Forms.ListBox ReposListBox;
         private System.Windows.Forms.Button UpRepoButton;
         private System.Windows.Forms.Button DownRepoButton;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox AuthTokensGroupBox;
+        private System.Windows.Forms.ListBox AuthTokensListBox;
+        private System.Windows.Forms.Button NewAuthTokenButton;
+        private System.Windows.Forms.Button DeleteAuthTokenButton;
+        private System.Windows.Forms.GroupBox AutoUpdateGroupBox;
         private System.Windows.Forms.Label LatestVersionLabel;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label LatestVersionLabelLabel;
         private System.Windows.Forms.Label LocalVersionLabel;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label LocalVersionLabelLabel;
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
         private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;

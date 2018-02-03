@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add import downloads menu item to GUI (#2246 by: HebaruSan; reviewed: politas)
 - [Core] Accept header and infrastructure for auth tokens (#2263 by: HebaruSan; reviewed: dbent)
 - [CLI] Add Cmdline import command (#2264 by: HebaruSan; reviewed: politas)
+- [Multiple] User interfaces for auth tokens (#2266 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 
@@ -21,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix missing filename in install -c log message (No PR, by: HebaruSan)
 - [GUI] Leave out children already shown in ancestor node (#2258 by: HebaruSan; reviewed: politas)
 - [GUI] Resolve provides for install-from-ckan-file (#2259 by: HebaruSan; reviewed: politas)
+- [Build] Use arch=32 for OSX (#2270 by: HebaruSan; reviewed: techman83)
 
 ## v1.24.0-PRE1 (McCandless)
 

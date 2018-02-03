@@ -54,7 +54,7 @@ namespace CKAN
                 {
                     log.InfoFormat("Using auth token for {0}", this.url.Host);
                     // Send our auth token to the GitHub API (or whoever else needs one)
-                    agent.Headers.Add("Authentication", $"token {token}");
+                    agent.Headers.Add("Authorization", $"token {token}");
                 }
             }
         }
