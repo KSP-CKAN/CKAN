@@ -32,7 +32,7 @@ namespace CKAN
 
             IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
                                                 && change.ChangeType != GUIModChangeType.Update);
-            
+
             // Now make our list more human-friendly (dependencies for a mod are listed directly
             // after it.)
             CreateSortedModList(leftOver);
@@ -74,7 +74,7 @@ namespace CKAN
         /// It arranges the changeset in a human-friendly order
         /// The requested mod is listed first, it's dependencies right after it
         /// So we get for example "ModuleRCSFX" directly after "USI Exploration Pack"
-        /// 
+        ///
         /// It is very likely that this is forward-compatible with new ChangeTypes's,
         /// like a a "reconfigure" changetype, but only the future will tell
         /// </summary>
@@ -116,13 +116,12 @@ namespace CKAN
             //Using the changeset passed in can cause issues with versions.
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
             // TODO Work out why this is.
-            var user_change_set = mainModList.ComputeUserChangeSet().ToList();
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    user_change_set, install_ops));
-            changeSet = null;
-
-            UpdateChangesDialog(null, installWorker);
+                    mainModList.ComputeUserChangeSet().ToList(),
+                    install_ops
+                )
+            );
             ShowWaitDialog();
         }
 

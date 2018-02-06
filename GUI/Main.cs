@@ -974,7 +974,6 @@ namespace CKAN
                                 install_ops
                             )
                         );
-                        UpdateChangesDialog(null, installWorker);
                         ShowWaitDialog();
                     }
                 }

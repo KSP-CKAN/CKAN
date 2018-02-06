@@ -301,12 +301,13 @@ namespace CKAN
         {
             KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
 
-            UpdateModsList(false, result.Value);
-
             tabController.SetTabLock(false);
 
             if (result.Key)
             {
+                // Rebuilds the list of GUIMods
+                UpdateModsList(false, result.Value);
+
                 if (modChangedCallback != null)
                 {
                     foreach (var mod in result.Value)
@@ -320,13 +321,15 @@ namespace CKAN
                 HideWaitDialog(true);
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                UpdateChangesDialog(null, installWorker);
             }
             else
             {
-                // there was an error
-                // rollback user's choices but stay on the log dialog
+                // There was an error
+                // Stay on the log dialog and re-apply the user's change set to allow retry
                 AddStatusMessage("Error!");
                 SetDescription("An error occurred, check the log for information");
+                UpdateChangesDialog(result.Value, installWorker);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
             }

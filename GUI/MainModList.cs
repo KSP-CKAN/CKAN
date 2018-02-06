@@ -653,13 +653,13 @@ namespace CKAN
 
         public HashSet<ModChange> ComputeUserChangeSet()
         {
-            var changes = Modules.Where(mod => mod.IsInstallable()).Select(mod => mod.GetRequestedChange());
-            var changeset = new HashSet<ModChange>(
-                changes.Where(change => change.HasValue).
+            return new HashSet<ModChange>(Modules.
+                Where(mod => mod.IsInstallable()).
+                Select(mod => mod.GetRequestedChange()).
+                Where(change => change.HasValue).
                 Select(change => change.Value).
                 Select(change => new ModChange(change.Key, change.Value, null))
-                );
-            return changeset;
+            );
         }
     }
 }
