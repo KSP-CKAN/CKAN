@@ -322,6 +322,7 @@ namespace CKAN
                 HideWaitDialog(true);
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                RetryCurrentActionButton.Visible = false;
                 UpdateChangesDialog(null, installWorker);
             }
             else
@@ -331,6 +332,7 @@ namespace CKAN
                 AddStatusMessage("Error!");
                 SetDescription("An error occurred, check the log for information");
                 UpdateChangesDialog(result.Value, installWorker);
+                RetryCurrentActionButton.Visible = true;
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
             }

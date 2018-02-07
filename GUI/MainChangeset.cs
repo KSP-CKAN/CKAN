@@ -110,6 +110,7 @@ namespace CKAN
                 return;
 
             menuStrip1.Enabled = false;
+            RetryCurrentActionButton.Visible = false;
 
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
             install_ops.with_recommends = false;
