@@ -249,6 +249,11 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("One or more files failed to download, stopped.");
                 return Exit.ERROR;
             }
+            catch (ModuleDownloadErrorsKraken kraken)
+            {
+                user.RaiseMessage(kraken.ToString());
+                return Exit.ERROR;
+            }
             catch (DirectoryNotFoundKraken kraken)
             {
                 user.RaiseMessage("\r\n{0}", kraken.Message);

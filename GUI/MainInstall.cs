@@ -194,9 +194,10 @@ namespace CKAN
                     GUI.user.RaiseMessage(kraken.ToString());
                     return;
                 }
-                catch (DownloadErrorsKraken)
+                catch (ModuleDownloadErrorsKraken kraken)
                 {
-                    // User notified in InstallList
+                    GUI.user.RaiseMessage(kraken.ToString());
+                    GUI.user.RaiseError(kraken.ToString());
                     return;
                 }
                 catch (DirectoryNotFoundKraken kraken)

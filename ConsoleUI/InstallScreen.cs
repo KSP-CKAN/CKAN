@@ -94,6 +94,8 @@ namespace CKAN.ConsoleUI {
                         RaiseError("Game files reverted.");
                     } catch (DownloadErrorsKraken ex) {
                         RaiseError(ex.ToString());
+                    } catch (ModuleDownloadErrorsKraken ex) {
+                        RaiseError(ex.ToString());
                     } catch (MissingCertificateKraken ex) {
                         RaiseError(ex.ToString());
                     } catch (InconsistentKraken ex) {

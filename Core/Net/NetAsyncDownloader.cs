@@ -294,20 +294,23 @@ namespace CKAN
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
-            var exceptions = downloads
-                .Select(x => x.error)
-                .Where(ex => ex != null)
-                .ToList();
-
-            // Let's check if any of these are certificate errors. If so,
-            // we'll report that instead, as this is common (and user-fixable)
-            // under Linux.
-            if (exceptions.Any(ex => ex is WebException &&
-                Regex.IsMatch(ex.Message, "authentication or decryption has failed")))
+            List<KeyValuePair<int, Exception>> exceptions = new List<KeyValuePair<int, Exception>>();
+            for (int i = 0; i < downloads.Count; ++i)
             {
-                throw new MissingCertificateKraken();
+                if (downloads[i].error != null)
+                {
+                    // Check if it's a certificate error. If so, report that instead,
+                    // as this is common (and user-fixable) under Linux.
+                    if (downloads[i].error is WebException
+                        && certificatePattern.IsMatch(downloads[i].error.Message))
+                    {
+                        throw new MissingCertificateKraken();
+                    }
+                    // Otherwise just note the error and which download it came from,
+                    // then throw them all at once later.
+                    exceptions.Add(new KeyValuePair<int, Exception>(i, downloads[i].error));
+                }
             }
-
             if (exceptions.Count > 0)
             {
                 throw new DownloadErrorsKraken(exceptions);
@@ -315,6 +318,11 @@ namespace CKAN
 
             // Yay! Everything worked!
         }
+
+        private static readonly Regex certificatePattern = new Regex(
+            @"authentication or decryption has failed",
+            RegexOptions.Compiled
+        );
 
         /// <summary>
         /// <see cref="IDownloader.CancelDownload()"/>
@@ -409,32 +417,36 @@ namespace CKAN
             {
                 log.InfoFormat("Finished downloading {0}", downloads[index].url);
             }
-            completed_downloads++;
 
             // If there was an error, remember it, but we won't raise it until
             // all downloads are finished or cancelled.
             downloads[index].error = error;
 
-            if (completed_downloads == downloads.Count)
+            if (++completed_downloads == downloads.Count)
             {
-                log.Info("All files finished downloading");
-
-                // If we have a callback, then signal that we're done.
-
-                var fileUrls = new Uri[downloads.Count];
-                var filePaths = new string[downloads.Count];
-                var errors = new Exception[downloads.Count];
-
-                for (int i = 0; i < downloads.Count; i++)
-                {
-                    fileUrls[i] = downloads[i].url;
-                    filePaths[i] = downloads[i].path;
-                    errors[i] = downloads[i].error;
-                }
-
-                log.Debug("Signalling completion via callback");
-                triggerCompleted(fileUrls, filePaths, errors);
+                FinalizeDownloads();
             }
         }
+
+        private void FinalizeDownloads()
+        {
+            log.Info("All files finished downloading");
+
+            Uri[]       fileUrls  = new Uri[downloads.Count];
+            string[]    filePaths = new string[downloads.Count];
+            Exception[] errors    = new Exception[downloads.Count];
+
+            for (int i = 0; i < downloads.Count; ++i)
+            {
+                fileUrls[i]  = downloads[i].url;
+                filePaths[i] = downloads[i].path;
+                errors[i]    = downloads[i].error;
+            }
+
+            // If we have a callback, then signal that we're done.
+            log.Debug("Signalling completion via callback");
+            triggerCompleted(fileUrls, filePaths, errors);
+        }
+
     }
 }
