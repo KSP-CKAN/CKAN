@@ -554,7 +554,7 @@
             // 
             // SizeCol
             // 
-            this.SizeCol.HeaderText = "Download (KB)";
+            this.SizeCol.HeaderText = "Download";
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;

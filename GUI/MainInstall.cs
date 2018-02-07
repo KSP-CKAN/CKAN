@@ -477,8 +477,14 @@ namespace CKAN
             foreach (var pair in mods)
             {
                 CkanModule module = pair.Key;
-                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key.name};
-
+                ListViewItem item = new ListViewItem()
+                {
+                    Tag = module,
+                    Checked = !suggested,
+                    Text = CurrentInstance.Cache.IsCachedZip(pair.Key)
+                        ? $"{pair.Key.name} {pair.Key.version} (cached)"
+                        : $"{pair.Key.name} {pair.Key.version} ({pair.Key.download.Host ?? ""}, {CkanModule.FmtSize(pair.Key.download_size)})"
+                };
 
                 ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem() { Text = pair.Value };
 

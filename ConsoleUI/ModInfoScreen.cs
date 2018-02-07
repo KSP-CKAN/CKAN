@@ -65,7 +65,7 @@ namespace CKAN.ConsoleUI {
             ));
             AddObject(new ConsoleLabel(
                 13, 5, midL - 2,
-                () => Formatting.FmtSize(mod.download_size)
+                () => CkanModule.FmtSize(mod.download_size)
             ));
             AddObject(new ConsoleLabel(
                 3, 6, midL - 2,

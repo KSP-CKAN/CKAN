@@ -203,7 +203,7 @@ namespace CKAN.ConsoleUI {
             // Show total download size of all installed mods
             AddObject(new ConsoleLabel(
                 1, -1, searchWidth,
-                () => $"{Formatting.FmtSize(totalInstalledDownloadSize())} installed",
+                () => $"{CkanModule.FmtSize(totalInstalledDownloadSize())} installed",
                 null,
                 () => ConsoleTheme.Current.DimLabelFg
             ));

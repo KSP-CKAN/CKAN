@@ -168,7 +168,12 @@ namespace CKAN
             {
                 if (!ksp.Cache.IsCachedZip(module))
                 {
-                    User.RaiseMessage(" * {0} {1} ({2})", module.name, module.version, module.download.Host);
+                    User.RaiseMessage(" * {0} {1} ({2}, {3})",
+                        module.name,
+                        module.version,
+                        module.download.Host,
+                        CkanModule.FmtSize(module.download_size)
+                    );
                     downloads.Add(module);
                 }
                 else

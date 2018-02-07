@@ -78,9 +78,9 @@ namespace CKAN
 
             CKANCacheLabel.Text = String.Format
             (
-                "There are currently {0} cached files using {1} MB in total",
+                "There are currently {0} cached files using {1} in total",
                 m_cacheFileCount,
-                m_cacheSize / 1024 / 1024
+                CkanModule.FmtSize(m_cacheSize)
             );
         }
 
@@ -89,9 +89,9 @@ namespace CKAN
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
             (
-                "Do you really want to delete {0} cached files, freeing {1} MB?",
+                "Do you really want to delete {0} cached files, freeing {1}?",
                 m_cacheFileCount,
-                m_cacheSize / 1024 / 1024
+                CkanModule.FmtSize(m_cacheSize)
             );
 
             if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)

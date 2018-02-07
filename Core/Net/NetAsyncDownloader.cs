@@ -395,9 +395,9 @@ namespace CKAN
             {
                 // Math.Ceiling was added to avoid showing 0 MiB left when finishing
                 User.RaiseProgress(
-                    String.Format("{0} kbps - downloading - {1:f0} MB left",
-                        totalBytesPerSecond/1024,
-                        Math.Ceiling((double)totalBytesLeft/1024/1024)),
+                    String.Format("{0}/sec - downloading - {1} left",
+                        CkanModule.FmtSize(totalBytesPerSecond),
+                        CkanModule.FmtSize(totalBytesLeft)),
                     totalPercentage);
             }
         }

@@ -46,7 +46,12 @@ namespace CKAN
                     continue;
                 }
 
-                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Mod.Name, change.Mod.Version)};
+                ListViewItem item = new ListViewItem()
+                {
+                    Text = CurrentInstance.Cache.IsCachedZip(change.Mod.ToModule())
+                        ? $"{change.Mod.Name} {change.Mod.Version} (cached)"
+                        : $"{change.Mod.Name} {change.Mod.Version} ({change.Mod.ToModule()?.download.Host ?? ""}, {change.Mod.DownloadSize})"
+                };
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
 

@@ -173,12 +173,9 @@ namespace CKAN
 
             Identifier = mod.identifier;
 
-            if (mod.download_size == 0)
-                DownloadSize = "N/A";
-            else if (mod.download_size / 1024.0 < 1)
-                DownloadSize = "1<KB";
-            else
-                DownloadSize = mod.download_size / 1024+"";
+            DownloadSize = (mod.download_size == 0)
+                ? "N/A"
+                : CkanModule.FmtSize(mod.download_size);
 
             Abbrevation = new string(mod.name.Split(' ').
                 Where(s => s.Length > 0).Select(s => s[0]).ToArray());
