@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -192,6 +193,28 @@ namespace CKAN
                 {
                     // Another very pretty kraken.
                     GUI.user.RaiseMessage(kraken.ToString());
+                    return;
+                }
+                catch (DownloadThrottledKraken kraken)
+                {
+                    string msg = kraken.ToString();
+                    GUI.user.RaiseMessage(msg);
+                    if (YesNoDialog($"{msg}\r\n\r\nOpen settings now?"))
+                    {
+                        // Launch the URL describing this host's throttling practices, if any
+                        if (kraken.infoUrl != null)
+                        {
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                UseShellExecute = true,
+                                FileName        = kraken.infoUrl.ToString()
+                            });
+                        }
+                        // Now pretend they clicked the menu option for the settings
+                        Enabled = false;
+                        settingsDialog.ShowDialog();
+                        Enabled = true;
+                    }
                     return;
                 }
                 catch (ModuleDownloadErrorsKraken kraken)

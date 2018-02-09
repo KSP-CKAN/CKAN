@@ -96,6 +96,13 @@ namespace CKAN.ConsoleUI {
                         RaiseError(ex.ToString());
                     } catch (ModuleDownloadErrorsKraken ex) {
                         RaiseError(ex.ToString());
+                    } catch (DownloadThrottledKraken ex) {
+                        if (RaiseYesNoDialog($"{ex.ToString()}\n\nEdit authentication tokens now?")) {
+                            if (ex.infoUrl != null) {
+                                ModInfoScreen.LaunchURL(ex.infoUrl);
+                            }
+                            LaunchSubScreen(new AuthTokenScreen());
+                        }
                     } catch (MissingCertificateKraken ex) {
                         RaiseError(ex.ToString());
                     } catch (InconsistentKraken ex) {

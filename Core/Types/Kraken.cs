@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
@@ -377,6 +378,23 @@ namespace CKAN
                 "\tmozroots --import --ask-remove\r\n" +
                 "on the command-line to update your certificate store, and try again.\r\n\r\n"
             ;
+        }
+    }
+
+    public class DownloadThrottledKraken : Kraken
+    {
+        public readonly Uri throttledUrl;
+        public readonly Uri infoUrl;
+
+        public DownloadThrottledKraken(Uri url, Uri info) : base()
+        {
+            throttledUrl = url;
+            infoUrl      = info;
+        }
+
+        public override string ToString()
+        {
+            return $"Download from {throttledUrl.Host} was throttled.\r\nConsider adding an authentication token to increase the throtting limit.";
         }
     }
 

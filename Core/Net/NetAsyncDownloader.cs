@@ -301,10 +301,24 @@ namespace CKAN
                 {
                     // Check if it's a certificate error. If so, report that instead,
                     // as this is common (and user-fixable) under Linux.
-                    if (downloads[i].error is WebException
-                        && certificatePattern.IsMatch(downloads[i].error.Message))
+                    if (downloads[i].error is WebException)
                     {
-                        throw new MissingCertificateKraken();
+                        WebException wex = downloads[i].error as WebException;
+                        if (certificatePattern.IsMatch(wex.Message))
+                        {
+                            throw new MissingCertificateKraken();
+                        }
+                        else switch ((wex.Response as HttpWebResponse)?.StatusCode)
+                        {
+                            // Handle HTTP 403 used for throttling
+                            case HttpStatusCode.Forbidden:
+                                Uri infoUrl;
+                                if (Net.ThrottledHosts.TryGetValue(downloads[i].url.Host, out infoUrl))
+                                {
+                                    throw new DownloadThrottledKraken(downloads[i].url, infoUrl);
+                                }
+                                break;
+                        }
                     }
                     // Otherwise just note the error and which download it came from,
                     // then throw them all at once later.
