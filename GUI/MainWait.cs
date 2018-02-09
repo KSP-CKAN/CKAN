@@ -100,9 +100,9 @@ namespace CKAN
             if (cancelCallback != null)
             {
                 cancelCallback();
-                CancelCurrentActionButton.Enabled = false;
-                HideWaitDialog(true);
             }
+            CancelCurrentActionButton.Enabled = false;
+            HideWaitDialog(true);
         }
 
     }

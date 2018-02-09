@@ -68,8 +68,8 @@ namespace CKAN
         {
             try
             {
-                KSP current_instance1 = CurrentInstance;
-                Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), current_instance1, GUI.user);
+                AddStatusMessage("Updating repositories...");
+                e.Result = Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), CurrentInstance, GUI.user);
             }
             catch (UriFormatException ex)
             {
@@ -89,11 +89,17 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateModsList(repo_updated: true);
-
-            HideWaitDialog(true);
-            AddStatusMessage("Repository successfully updated");
-            ShowRefreshQuestion();
+            if ((e.Result as int? ?? 0) > 0)
+            {
+                UpdateModsList(repo_updated: true);
+                AddStatusMessage("Repositories successfully updated.");
+                ShowRefreshQuestion();
+                HideWaitDialog(true);
+            }
+            else
+            {
+                AddStatusMessage("Repository update failed!");
+            }
 
             Util.Invoke(this, SwitchEnabledState);
             Util.Invoke(this, RecreateDialogs);
