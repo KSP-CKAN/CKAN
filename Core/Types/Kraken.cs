@@ -316,12 +316,16 @@ namespace CKAN
 
         public override string ToString()
         {
-            return
-                "\r\nOh no! Our download failed with a certificate error!\r\n\r\n" +
-                "If you're on Linux, try running:\r\n" +
-                "\tmozroots --import --ask-remove\r\n" +
-                "on the command-line to update your certificate store, and try again.\r\n\r\n"
-            ;
+            if (Platform.IsUnix)
+            {
+                return "Oh no! Our download failed with a certificate error!\r\n\r\n"
+                    + "Consult this page for help:\r\n"
+                    + "\thttps://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors";
+            }
+            else
+            {
+                return "Oh no! Our download failed with a certificate error!";
+            }
         }
     }
 
