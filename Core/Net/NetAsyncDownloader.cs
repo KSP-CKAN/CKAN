@@ -22,18 +22,22 @@ namespace CKAN
         private class NetAsyncDownloaderDownloadPart
         {
             public Uri url;
+            public Uri fallbackUrl;
             public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
             public long bytesLeft;
             public long size;
             public int bytesPerSecond;
+            public bool triedFallback;
             public Exception error;
             public int lastProgressUpdateSize;
 
             public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target, string path = null)
             {
                 this.url  = target.url;
+                this.fallbackUrl = target.fallbackUrl;
+                this.triedFallback = false;
                 this.path = path ?? Path.GetTempFileName();
                 size = bytesLeft = target.size;
                 lastProgressUpdateTime = DateTime.Now;
@@ -426,15 +430,28 @@ namespace CKAN
             if (error != null)
             {
                 log.InfoFormat("Error downloading {0}: {1}", downloads[index].url, error);
+
+                // Check whether we were already downloading the fallback url
+                if (!downloads[index].triedFallback && downloads[index].fallbackUrl != null)
+                {
+                    log.InfoFormat("Trying fallback URL: {0}", downloads[index].fallbackUrl);
+                    // Try the fallbackUrl
+                    downloads[index].triedFallback = true;
+                    downloads[index].agent.DownloadFileAsync(downloads[index].fallbackUrl, downloads[index].path);
+                    // Short circuit the completion process so the fallback can run
+                    return;
+                }
+                else
+                {
+                    // If there was an error, remember it, but we won't raise it until
+                    // all downloads are finished or cancelled.
+                    downloads[index].error = error;
+                }
             }
             else
             {
                 log.InfoFormat("Finished downloading {0}", downloads[index].url);
             }
-
-            // If there was an error, remember it, but we won't raise it until
-            // all downloads are finished or cancelled.
-            downloads[index].error = error;
 
             if (++completed_downloads == downloads.Count)
             {

@@ -624,6 +624,22 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Return an archive.org URL for this download, or null if it's not there.
+        /// The filenames look a lot like the filenames in Net.Cache, but don't be fooled!
+        /// Here it's the first 8 characters of the SHA1 of the DOWNLOADED FILE, not the URL!
+        /// </summary>
+        public Uri InternetArchiveDownload
+        {
+            get
+            {
+                return license.All(l => l.Redistributable)
+                    ? new Uri(
+                        $"https://archive.org/download/{identifier}-{version}/{download_hash.sha1.Substring(0, 8)}-{identifier}-{version}.zip")
+                    : null;
+            }
+        }
+
+        /// <summary>
         /// Format a byte count into readable file size
         /// </summary>
         /// <param name="bytes">Number of bytes in a file</param>

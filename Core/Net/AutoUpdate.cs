@@ -152,8 +152,8 @@ namespace CKAN
             Net.DownloadWithProgress(
                 new[]
                 {
-                    new Net.DownloadTarget(fetchedUpdaterUrl.Item1, updaterFilename, fetchedUpdaterUrl.Item2),
-                    new Net.DownloadTarget(fetchedCkanUrl.Item1,    ckanFilename,    fetchedCkanUrl.Item2),
+                    new Net.DownloadTarget(fetchedUpdaterUrl.Item1, null, updaterFilename, fetchedUpdaterUrl.Item2),
+                    new Net.DownloadTarget(fetchedCkanUrl.Item1,    null, ckanFilename,    fetchedCkanUrl.Item2),
                 },
                 user
             );
