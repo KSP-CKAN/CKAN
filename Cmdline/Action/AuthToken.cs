@@ -23,7 +23,7 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(SubCommandOptions unparsed)
+        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             string[] args     = unparsed.options.ToArray();
             int      exitCode = Exit.OK;
@@ -33,8 +33,12 @@ namespace CKAN.CmdLine
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
                 {
                     CommonOptions options = (CommonOptions)suboptions;
+                    options.Merge(opts);
                     user                  = new ConsoleUser(options.Headless);
-                    manager               = new KSPManager(user);
+                    if (manager == null)
+                    {
+                        manager           = new KSPManager(user);
+                    }
                     exitCode              = options.Handle(manager, user);
                     if (exitCode == Exit.OK)
                     {
@@ -115,7 +119,6 @@ namespace CKAN.CmdLine
         private const string tokenHeader = "Token";
 
         private IUser      user;
-        private KSPManager manager;
         private static readonly ILog log = LogManager.GetLogger(typeof(AuthToken));
     }
 

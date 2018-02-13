@@ -91,7 +91,7 @@ namespace CKAN.CmdLine
         }
 
         // This is required by ISubCommand
-        public int RunSubCommand(SubCommandOptions unparsed)
+        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -118,8 +118,9 @@ namespace CKAN.CmdLine
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
                 {
                     CommonOptions options = (CommonOptions)suboptions;
-                    User = new ConsoleUser(options.Headless);
-                    Manager = new KSPManager(User);
+                    options.Merge(opts);
+                    User     = new ConsoleUser(options.Headless);
+                    Manager  = manager ?? new KSPManager(User);
                     exitCode = options.Handle(Manager, User);
                     if (exitCode != Exit.OK)
                         return;
@@ -154,7 +155,6 @@ namespace CKAN.CmdLine
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(); });
-            RegistryManager.DisposeAll();
             return exitCode;
         }
 

@@ -56,6 +56,18 @@ namespace CKAN.CmdLine
                 return Gui(new GuiOptions(), args);
             }
 
+            try
+            {
+                return Execute(null, null, args);
+            }
+            finally
+            {
+                RegistryManager.DisposeAll();
+            }
+        }
+
+        public static int Execute(KSPManager manager, CommonOptions opts, string[] args)
+        {
             // We shouldn't instantiate Options if it's a subcommand.
             // It breaks command-specific help, for starters.
             try
@@ -63,19 +75,19 @@ namespace CKAN.CmdLine
                 switch (args[0])
                 {
                     case "repair":
-                        return (new Repair()).RunSubCommand(new SubCommandOptions(args));
+                        return (new Repair()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
                     case "ksp":
-                        return (new KSP()).RunSubCommand(new SubCommandOptions(args));
+                        return (new KSP()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
                     case "compat":
-                        return (new CompatSubCommand()).RunSubCommand(new SubCommandOptions(args));
+                        return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
                     case "repo":
-                        return (new Repo()).RunSubCommand(new SubCommandOptions(args));
+                        return (new Repo()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
                     case "authtoken":
-                        return (new AuthToken()).RunSubCommand(new SubCommandOptions(args));
+                        return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
                 }
             }
             catch (NoGameInstanceKraken)
@@ -103,8 +115,16 @@ namespace CKAN.CmdLine
 
             // Process commandline options.
             CommonOptions options = (CommonOptions)cmdline.options;
+            options.Merge(opts);
             IUser user = new ConsoleUser(options.Headless);
-            KSPManager manager = new KSPManager(user);
+            if (manager == null)
+            {
+                manager = new KSPManager(user);
+            }
+            else
+            {
+                manager.User = user;
+            }
 
             try
             {
@@ -154,28 +174,31 @@ namespace CKAN.CmdLine
                     case "consoleui":
                         return ConsoleUi(options, args);
 
+                    case "prompt":
+                        return new Prompt().RunCommand(manager, cmdline.options);
+
                     case "version":
                         return Version(user);
 
                     case "update":
-                        return (new Update(user)).RunCommand(GetGameInstance(manager), (UpdateOptions)cmdline.options);
+                        return (new Update(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "available":
-                        return (new Available(user)).RunCommand(GetGameInstance(manager), (AvailableOptions)cmdline.options);
+                        return (new Available(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "add":
                     case "install":
                         Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Install(user)).RunCommand(GetGameInstance(manager), (InstallOptions)cmdline.options);
+                        return (new Install(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "scan":
                         return Scan(GetGameInstance(manager), user);
 
                     case "list":
-                        return (new List(user)).RunCommand(GetGameInstance(manager), (ListOptions)cmdline.options);
+                        return (new List(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "show":
-                        return (new Show(user)).RunCommand(GetGameInstance(manager), (ShowOptions)cmdline.options);
+                        return (new Show(user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "search":
                         return (new Search(user)).RunCommand(GetGameInstance(manager), options);
@@ -205,10 +228,6 @@ namespace CKAN.CmdLine
             catch (NoGameInstanceKraken)
             {
                 return printMissingInstanceError(user);
-            }
-            finally
-            {
-                RegistryManager.DisposeAll();
             }
         }
 

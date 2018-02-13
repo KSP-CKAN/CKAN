@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Accept header and infrastructure for auth tokens (#2263 by: HebaruSan; reviewed: dbent)
 - [CLI] Add Cmdline import command (#2264 by: HebaruSan; reviewed: politas)
 - [Multiple] User interfaces for auth tokens (#2266 by: HebaruSan; reviewed: politas)
+- [CLI] Add a read-execute-print-loop prompt for Cmdline (#2273 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

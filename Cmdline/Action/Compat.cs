@@ -5,9 +5,9 @@ using CommandLine.Text;
 
 namespace CKAN.CmdLine.Action
 {
-    public class CompatSubCommand : ISubCommand
+    public class Compat : ISubCommand
     {
-        public CompatSubCommand() { }
+        public Compat() { }
 
         public class CompatOptions : VerbCommandOptions
         {
@@ -65,7 +65,7 @@ namespace CKAN.CmdLine.Action
             [ValueOption(0)] public string Version { get; set; }
         }
 
-        public int RunSubCommand(SubCommandOptions options)
+        public int RunSubCommand(KSPManager manager, CommonOptions opts, SubCommandOptions options)
         {
             var exitCode = Exit.OK;
 
@@ -75,9 +75,10 @@ namespace CKAN.CmdLine.Action
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
                 {
                     CommonOptions comOpts = (CommonOptions)suboptions;
-                    _user = new ConsoleUser(comOpts.Headless);
-                    _kspManager = new KSPManager(_user);
-                    exitCode = comOpts.Handle(_kspManager, _user);
+                    comOpts.Merge(opts);
+                    _user       = new ConsoleUser(comOpts.Headless);
+                    _kspManager = manager ?? new KSPManager(_user);
+                    exitCode    = comOpts.Handle(_kspManager, _user);
                     if (exitCode != Exit.OK)
                         return;
 
@@ -88,7 +89,7 @@ namespace CKAN.CmdLine.Action
                                 var ksp = MainClass.GetGameInstance(_kspManager);
 
                                 const string versionHeader = "Version";
-                                const string actualHeader = "Actual";
+                                const string actualHeader  = "Actual";
 
                                 var output = ksp
                                     .GetCompatibleVersions()
@@ -196,7 +197,6 @@ namespace CKAN.CmdLine.Action
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(); });
-            RegistryManager.DisposeAll();
             return exitCode;
         }
 
