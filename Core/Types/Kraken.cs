@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Text;
 using System.Collections.Generic;
 
 namespace CKAN
@@ -218,18 +220,72 @@ namespace CKAN
     /// </summary>
     public class DownloadErrorsKraken : Kraken
     {
-        public List<Exception> exceptions;
+        public readonly List<KeyValuePair<int, Exception>> exceptions
+            = new List<KeyValuePair<int, Exception>>();
 
-        public DownloadErrorsKraken(IEnumerable<Exception> errors, string reason = null, Exception innerException = null)
-            : base(reason, innerException)
+        public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors) : base()
         {
-            exceptions = new List<Exception>(errors);
+            exceptions = new List<KeyValuePair<int, Exception>>(errors);
         }
 
         public override string ToString()
         {
             return "Uh oh, the following things went wrong when downloading...\r\n\r\n" + String.Join("\r\n", exceptions);
         }
+
+    }
+
+    /// <summary>
+    /// A download errors exception that knows about modules,
+    /// to make the error message nicer.
+    /// </summary>
+    public class ModuleDownloadErrorsKraken : Kraken
+    {
+        /// <summary>
+        /// Initialize the exception.
+        /// </summary>
+        /// <param name="modules">List of modules that we tried to download</param>
+        /// <param name="kraken">Download errors from URL-level downloader</param>
+        public ModuleDownloadErrorsKraken(IList<CkanModule> modules, DownloadErrorsKraken kraken)
+            : base()
+        {
+            foreach (var kvp in kraken.exceptions)
+            {
+                exceptions.Add(new KeyValuePair<CkanModule, Exception>(
+                    modules[kvp.Key], kvp.Value
+                ));
+            }
+        }
+
+        /// <summary>
+        /// Generate a user friendly description of this error.
+        /// </summary>
+        /// <returns>
+        /// One or more downloads were unsuccessful:
+        ///
+        /// Error downloading Astrogator v0.7.8: The remote server returned an error: (404) Not Found.
+        /// Etc.
+        /// </returns>
+        public override string ToString()
+        {
+            if (builder == null)
+            {
+                builder = new StringBuilder();
+                builder.AppendLine("One or more downloads were unsuccessful:");
+                builder.AppendLine("");
+                foreach (KeyValuePair<CkanModule, Exception> kvp in exceptions)
+                {
+                    builder.AppendLine(
+                        $"Error downloading {kvp.Key.ToString()}: {kvp.Value.Message}"
+                    );
+                }
+            }
+            return builder.ToString();
+        }
+
+        private readonly List<KeyValuePair<CkanModule, Exception>> exceptions
+            = new List<KeyValuePair<CkanModule, Exception>>();
+        private StringBuilder builder = null;
     }
 
     /// <summary>
@@ -322,6 +378,23 @@ namespace CKAN
                 "\tmozroots --import --ask-remove\r\n" +
                 "on the command-line to update your certificate store, and try again.\r\n\r\n"
             ;
+        }
+    }
+
+    public class DownloadThrottledKraken : Kraken
+    {
+        public readonly Uri throttledUrl;
+        public readonly Uri infoUrl;
+
+        public DownloadThrottledKraken(Uri url, Uri info) : base()
+        {
+            throttledUrl = url;
+            infoUrl      = info;
+        }
+
+        public override string ToString()
+        {
+            return $"Download from {throttledUrl.Host} was throttled.\r\nConsider adding an authentication token to increase the throtting limit.";
         }
     }
 

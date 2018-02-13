@@ -98,6 +98,7 @@
             this.Reason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.WaitTabPage = new System.Windows.Forms.TabPage();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
+            this.RetryCurrentActionButton = new System.Windows.Forms.Button();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
             this.MessageTextBox = new System.Windows.Forms.TextBox();
@@ -553,7 +554,7 @@
             // 
             // SizeCol
             // 
-            this.SizeCol.HeaderText = "Download (KB)";
+            this.SizeCol.HeaderText = "Download";
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -769,26 +770,27 @@
             this.ChangesListView.TabIndex = 4;
             this.ChangesListView.UseCompatibleStateImageBehavior = false;
             this.ChangesListView.View = System.Windows.Forms.View.Details;
-            // 
+            //
             // Mod
-            // 
+            //
             this.Mod.Text = "Mod";
             this.Mod.Width = 332;
-            // 
+            //
             // ChangeType
-            // 
+            //
             this.ChangeType.Text = "Change";
             this.ChangeType.Width = 111;
-            // 
+            //
             // Reason
-            // 
+            //
             this.Reason.Text = "Reason for action";
             this.Reason.Width = 606;
-            // 
+            //
             // WaitTabPage
-            // 
+            //
             this.WaitTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.WaitTabPage.Controls.Add(this.CancelCurrentActionButton);
+            this.WaitTabPage.Controls.Add(this.RetryCurrentActionButton);
             this.WaitTabPage.Controls.Add(this.LogTextBox);
             this.WaitTabPage.Controls.Add(this.DialogProgressBar);
             this.WaitTabPage.Controls.Add(this.MessageTextBox);
@@ -812,11 +814,25 @@
             this.CancelCurrentActionButton.Text = "Cancel";
             this.CancelCurrentActionButton.UseVisualStyleBackColor = true;
             this.CancelCurrentActionButton.Click += new System.EventHandler(this.CancelCurrentActionButton_Click);
-            // 
+            //
+            // RetryCurrentActionButton
+            //
+            this.RetryCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RetryCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RetryCurrentActionButton.Location = new System.Drawing.Point(1290, 951);
+            this.RetryCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
+            this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
+            this.RetryCurrentActionButton.TabIndex = 8;
+            this.RetryCurrentActionButton.Text = "Retry";
+            this.RetryCurrentActionButton.UseVisualStyleBackColor = true;
+            this.RetryCurrentActionButton.Visible = false;
+            this.RetryCurrentActionButton.Click += new System.EventHandler(this.RetryCurrentActionButton_Click);
+            //
             // LogTextBox
-            // 
-            this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LogTextBox.Location = new System.Drawing.Point(14, 89);
@@ -1152,6 +1168,7 @@
         private System.Windows.Forms.ColumnHeader Reason;
         private System.Windows.Forms.TabPage WaitTabPage;
         private System.Windows.Forms.Button CancelCurrentActionButton;
+        private System.Windows.Forms.Button RetryCurrentActionButton;
         private System.Windows.Forms.TextBox LogTextBox;
         private System.Windows.Forms.ProgressBar DialogProgressBar;
         private System.Windows.Forms.TextBox MessageTextBox;

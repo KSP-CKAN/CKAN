@@ -51,20 +51,28 @@ namespace CKAN
                 (_uris, paths, errors) =>
                     ModuleDownloadsComplete(cache, _uris, paths, errors);
 
-            // Start the downloads!
-            downloader.DownloadAndWait(
-                unique_downloads.Select(item => new Net.DownloadTarget(
-                    item.Key,
-                    // Use a temp file name
-                    null,
-                    item.Value.download_size,
-                    // Send the MIME type to use for the Accept header
-                    // The GitHub API requires this to include application/octet-stream
-                    string.IsNullOrEmpty(item.Value.download_content_type)
-                        ? defaultMimeType
-                        : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
-                )).ToList()
-            );
+            try
+            {
+                // Start the downloads!
+                downloader.DownloadAndWait(
+                    unique_downloads.Select(item => new Net.DownloadTarget(
+                        item.Key,
+                        // Use a temp file name
+                        null,
+                        item.Value.download_size,
+                        // Send the MIME type to use for the Accept header
+                        // The GitHub API requires this to include application/octet-stream
+                        string.IsNullOrEmpty(item.Value.download_content_type)
+                            ? defaultMimeType
+                            : $"{item.Value.download_content_type};q=1.0,{defaultMimeType};q=0.9"
+                    )).ToList()
+                );
+            }
+            catch (DownloadErrorsKraken kraken)
+            {
+                // Associate the errors with the affected modules
+                throw new ModuleDownloadErrorsKraken(this.modules, kraken);
+            }
         }
 
         /// <summary>
@@ -74,33 +82,13 @@ namespace CKAN
         /// </summary>
         private void ModuleDownloadsComplete(NetModuleCache cache, Uri[] urls, string[] filenames, Exception[] errors)
         {
-            if (urls != null)
+            if (filenames != null)
             {
-                // spawn up to 3 dialogs
-                int errorDialogsLeft = 3;
-
                 for (int i = 0; i < errors.Length; i++)
                 {
-                    if (errors[i] != null)
+                    if (errors[i] == null)
                     {
-                        if (errorDialogsLeft > 0)
-                        {
-                            User.RaiseError("Failed to download \"{0}\" - error: {1}", urls[i], errors[i].Message);
-                            errorDialogsLeft--;
-                        }
-                    }
-                    else
-                    {
-                        // Even if some of our downloads failed, we want to cache the
-                        // ones which succeeded.
-
-                        // This doesn't work :(
-                        // for some reason the tmp files get deleted before we get here and we get a nasty exception
-                        // not only that but then we try _to install_ the rest of the mods and then CKAN crashes
-                        // and the user's registry gets corrupted forever
-                        // commenting out until this is resolved
-                        // ~ nlight
-
+                        // Cache the downloads that succeeded.
                         try
                         {
                             cache.Store(modules[i], filenames[i], modules[i].StandardName());
@@ -111,14 +99,10 @@ namespace CKAN
                         }
                     }
                 }
-            }
 
-            if (filenames != null)
-            {
                 // Finally, remove all our temp files.
                 // We probably *could* have used Store's integrated move function above, but if we managed
                 // to somehow get two URLs the same in our download set, that could cause right troubles!
-
                 foreach (string tmpfile in filenames)
                 {
                     log.DebugFormat("Cleaning up {0}", tmpfile);

@@ -22,8 +22,12 @@ namespace CKAN
 
         public void AddStatusMessage(string text, params object[] args)
         {
-            Util.Invoke(statusStrip1, () => StatusLabel.Text = String.Format(text, args));
-            AddLogMessage(String.Format(text, args));
+            string msg = String.Format(text, args);
+            // No newlines in status bar
+            Util.Invoke(statusStrip1, () =>
+                StatusLabel.Text = msg.Replace("\r\n", " ").Replace("\n", " ")
+            );
+            AddLogMessage(msg);
         }
 
         public void ErrorDialog(string text, params object[] args)

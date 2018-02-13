@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -194,9 +195,32 @@ namespace CKAN
                     GUI.user.RaiseMessage(kraken.ToString());
                     return;
                 }
-                catch (DownloadErrorsKraken)
+                catch (DownloadThrottledKraken kraken)
                 {
-                    // User notified in InstallList
+                    string msg = kraken.ToString();
+                    GUI.user.RaiseMessage(msg);
+                    if (YesNoDialog($"{msg}\r\n\r\nOpen settings now?"))
+                    {
+                        // Launch the URL describing this host's throttling practices, if any
+                        if (kraken.infoUrl != null)
+                        {
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                UseShellExecute = true,
+                                FileName        = kraken.infoUrl.ToString()
+                            });
+                        }
+                        // Now pretend they clicked the menu option for the settings
+                        Enabled = false;
+                        settingsDialog.ShowDialog();
+                        Enabled = true;
+                    }
+                    return;
+                }
+                catch (ModuleDownloadErrorsKraken kraken)
+                {
+                    GUI.user.RaiseMessage(kraken.ToString());
+                    GUI.user.RaiseError(kraken.ToString());
                     return;
                 }
                 catch (DirectoryNotFoundKraken kraken)
@@ -301,12 +325,13 @@ namespace CKAN
         {
             KeyValuePair<bool, ModChanges> result = (KeyValuePair<bool, ModChanges>) e.Result;
 
-            UpdateModsList(false, result.Value);
-
             tabController.SetTabLock(false);
 
             if (result.Key)
             {
+                // Rebuilds the list of GUIMods
+                UpdateModsList(false, result.Value);
+
                 if (modChangedCallback != null)
                 {
                     foreach (var mod in result.Value)
@@ -320,13 +345,17 @@ namespace CKAN
                 HideWaitDialog(true);
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                RetryCurrentActionButton.Visible = false;
+                UpdateChangesDialog(null, installWorker);
             }
             else
             {
-                // there was an error
-                // rollback user's choices but stay on the log dialog
+                // There was an error
+                // Stay on the log dialog and re-apply the user's change set to allow retry
                 AddStatusMessage("Error!");
                 SetDescription("An error occurred, check the log for information");
+                UpdateChangesDialog(result.Value, installWorker);
+                RetryCurrentActionButton.Visible = true;
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
                 Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
             }
@@ -471,8 +500,14 @@ namespace CKAN
             foreach (var pair in mods)
             {
                 CkanModule module = pair.Key;
-                ListViewItem item = new ListViewItem {Tag = module, Checked = !suggested, Text = pair.Key.name};
-
+                ListViewItem item = new ListViewItem()
+                {
+                    Tag = module,
+                    Checked = !suggested,
+                    Text = CurrentInstance.Cache.IsCachedZip(pair.Key)
+                        ? $"{pair.Key.name} {pair.Key.version} (cached)"
+                        : $"{pair.Key.name} {pair.Key.version} ({pair.Key.download.Host ?? ""}, {CkanModule.FmtSize(pair.Key.download_size)})"
+                };
 
                 ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem() { Text = pair.Value };
 

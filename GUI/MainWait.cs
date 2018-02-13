@@ -90,14 +90,19 @@ namespace CKAN
             Util.Invoke(LogTextBox, () => LogTextBox.AppendText(message + "\r\n"));
         }
 
+        private void RetryCurrentActionButton_Click(object sender, EventArgs e)
+        {
+            tabController.ShowTab("ChangesetTabPage", 1);
+        }
+
         private void CancelCurrentActionButton_Click(object sender, EventArgs e)
         {
             if (cancelCallback != null)
             {
                 cancelCallback();
-                CancelCurrentActionButton.Enabled = false;
-                HideWaitDialog(true);
             }
+            CancelCurrentActionButton.Enabled = false;
+            HideWaitDialog(true);
         }
 
     }

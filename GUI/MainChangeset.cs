@@ -32,7 +32,7 @@ namespace CKAN
 
             IEnumerable<ModChange> leftOver = changeset.Where(change => change.ChangeType != GUIModChangeType.Remove
                                                 && change.ChangeType != GUIModChangeType.Update);
-            
+
             // Now make our list more human-friendly (dependencies for a mod are listed directly
             // after it.)
             CreateSortedModList(leftOver);
@@ -46,7 +46,12 @@ namespace CKAN
                     continue;
                 }
 
-                var item = new ListViewItem {Text = String.Format("{0} {1}", change.Mod.Name, change.Mod.Version)};
+                ListViewItem item = new ListViewItem()
+                {
+                    Text = CurrentInstance.Cache.IsCachedZip(change.Mod.ToModule())
+                        ? $"{change.Mod.Name} {change.Mod.Version} (cached)"
+                        : $"{change.Mod.Name} {change.Mod.Version} ({change.Mod.ToModule()?.download.Host ?? ""}, {change.Mod.DownloadSize})"
+                };
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};
 
@@ -74,7 +79,7 @@ namespace CKAN
         /// It arranges the changeset in a human-friendly order
         /// The requested mod is listed first, it's dependencies right after it
         /// So we get for example "ModuleRCSFX" directly after "USI Exploration Pack"
-        /// 
+        ///
         /// It is very likely that this is forward-compatible with new ChangeTypes's,
         /// like a a "reconfigure" changetype, but only the future will tell
         /// </summary>
@@ -110,19 +115,19 @@ namespace CKAN
                 return;
 
             menuStrip1.Enabled = false;
+            RetryCurrentActionButton.Visible = false;
 
             RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
             install_ops.with_recommends = false;
             //Using the changeset passed in can cause issues with versions.
             // An example is Mechjeb for FAR at 25/06/2015 with a 1.0.2 install.
             // TODO Work out why this is.
-            var user_change_set = mainModList.ComputeUserChangeSet().ToList();
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                    user_change_set, install_ops));
-            changeSet = null;
-
-            UpdateChangesDialog(null, installWorker);
+                    mainModList.ComputeUserChangeSet().ToList(),
+                    install_ops
+                )
+            );
             ShowWaitDialog();
         }
 

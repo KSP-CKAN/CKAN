@@ -38,9 +38,18 @@ namespace CKAN
             {
                 log.InfoFormat("About to update {0}", repository.Value.name);
                 List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user);
-                log.InfoFormat("Updated {0}", repository.Value.name);
-                // Merge all the lists
-                allAvail.AddRange(avail);
+                if (avail == null)
+                {
+                    // Report failure if any repo fails, rather than losing half the list.
+                    // UpdateRegistry will have alerted the user to specific errors already.
+                    return 0;
+                }
+                else
+                {
+                    log.InfoFormat("Updated {0}", repository.Value.name);
+                    // Merge all the lists
+                    allAvail.AddRange(avail);
+                }
             }
             // Save allAvail to the registry if we found anything
             if (allAvail.Count > 0)
@@ -48,18 +57,23 @@ namespace CKAN
                 registry_manager.registry.SetAllAvailable(allAvail);
                 // Save our changes.
                 registry_manager.Save(enforce_consistency: false);
+
+                ShowUserInconsistencies(registry_manager.registry, user);
+
+                List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
+                if (metadataChanges.Count > 0)
+                {
+                    HandleModuleChanges(metadataChanges, user, ksp);
+                }
+
+                // Return how many we got!
+                return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
             }
-
-            ShowUserInconsistencies(registry_manager.registry, user);
-
-            List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
-            if (metadataChanges.Count > 0)
+            else
             {
-                HandleModuleChanges(metadataChanges, user, ksp);
+                // Return failure
+                return 0;
             }
-
-            // Return how many we got!
-            return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
         }
 
         /// <summary>

@@ -99,27 +99,6 @@ namespace CKAN.ConsoleUI.Toolkit {
             return messageLines;
         }
 
-        /// <summary>
-        /// Format a byte count into readable file size
-        /// </summary>
-        /// <param name="bytes">Number of bytes in a file</param>
-        /// <returns>
-        /// ### bytes or ### KB or ### MB or ### GB
-        /// </returns>
-        public static string FmtSize(long bytes)
-        {
-            const double K = 1024;
-            if (bytes < K) {
-                return $"{bytes} B";
-            } else if (bytes < K * K) {
-                return $"{bytes / K :N1} KB";
-            } else if (bytes < K * K * K) {
-                return $"{bytes / K / K :N1} MB";
-            } else {
-                return $"{bytes / K / K / K :N1} GB";
-            }
-        }
-
     }
 
 }

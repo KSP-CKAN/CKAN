@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Leave out children already shown in ancestor node (#2258 by: HebaruSan; reviewed: politas)
 - [GUI] Resolve provides for install-from-ckan-file (#2259 by: HebaruSan; reviewed: politas)
 - [Build] Use arch=32 for OSX (#2270 by: HebaruSan; reviewed: techman83)
+- [Multiple] Retry of failed downloads (#2277 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0-PRE1 (McCandless)
 

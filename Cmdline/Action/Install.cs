@@ -244,9 +244,20 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(kraken.ToString());
                 return Exit.ERROR;
             }
+            catch (DownloadThrottledKraken kraken)
+            {
+                user.RaiseMessage(kraken.ToString());
+                user.RaiseMessage($"Try the authtoken command. See {kraken.infoUrl} for details.");
+                return Exit.ERROR;
+            }
             catch (DownloadErrorsKraken)
             {
                 user.RaiseMessage("One or more files failed to download, stopped.");
+                return Exit.ERROR;
+            }
+            catch (ModuleDownloadErrorsKraken kraken)
+            {
+                user.RaiseMessage(kraken.ToString());
                 return Exit.ERROR;
             }
             catch (DirectoryNotFoundKraken kraken)

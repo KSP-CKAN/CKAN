@@ -23,6 +23,14 @@ namespace CKAN
         private static readonly ILog Log = LogManager.GetLogger(typeof (Net));
         private static readonly TxFileManager FileTransaction = new TxFileManager();
 
+        public static readonly Dictionary<string, Uri> ThrottledHosts = new Dictionary<string, Uri>()
+        {
+            {
+                "api.github.com",
+                new Uri("https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-GitHub-API-authtoken")
+            }
+        };
+
         /// <summary>
         ///     Downloads the specified url, and stores it in the filename given.
         ///     If no filename is supplied, a temporary file will be generated.
