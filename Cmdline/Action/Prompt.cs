@@ -21,7 +21,7 @@ namespace CKAN.CmdLine
                 {
                     Console.Write(
                         manager.CurrentInstance != null
-                            ? $"CKAN {Meta.GetVersion()}: KSP {manager.CurrentInstance.Version().ToString()} ({manager.CurrentInstance.Name})> "
+                            ? $"CKAN {Meta.GetVersion()}: KSP {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})> "
                             : $"CKAN {Meta.GetVersion()}> "
                     );
                 }

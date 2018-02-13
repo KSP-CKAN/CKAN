@@ -277,7 +277,7 @@ namespace CKAN.ConsoleUI {
             mainMenu = new ConsolePopupMenu(opts);
 
             LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => $"KSP {manager.CurrentInstance.Version().ToString()} ({manager.CurrentInstance.Name})";
+            CenterHeader = () => $"KSP {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})";
         }
 
         // Alt+H doesn't work on Mac, but F1 does, and we need

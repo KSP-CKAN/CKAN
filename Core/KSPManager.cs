@@ -79,7 +79,7 @@ namespace CKAN
             }
 
             // If we only know of a single instance, return that.
-            if (instances.Count == 1)
+            if (instances.Count == 1 && instances.First().Value.Valid)
             {
                 return instances.First().Value;
             }
