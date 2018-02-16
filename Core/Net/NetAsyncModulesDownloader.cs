@@ -57,6 +57,7 @@ namespace CKAN
                 downloader.DownloadAndWait(
                     unique_downloads.Select(item => new Net.DownloadTarget(
                         item.Key,
+                        item.Value.InternetArchiveDownload,
                         // Use a temp file name
                         null,
                         item.Value.download_size,

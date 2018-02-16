@@ -121,19 +121,21 @@ namespace CKAN
 
         public class DownloadTarget
         {
-            public Uri    url      { get; private set; }
-            public string filename { get; private set; }
-            public long   size     { get; private set; }
-            public string mimeType { get; private set; }
+            public Uri    url         { get; private set; }
+            public Uri    fallbackUrl { get; private set; }
+            public string filename    { get; private set; }
+            public long   size        { get; private set; }
+            public string mimeType    { get; private set; }
 
-            public DownloadTarget(Uri url, string filename = null, long size = 0, string mimeType = "")
+            public DownloadTarget(Uri url, Uri fallback = null, string filename = null, long size = 0, string mimeType = "")
             {
-                this.url      = url;
-                this.filename = string.IsNullOrEmpty(filename)
+                this.url         = url;
+                this.fallbackUrl = fallback;
+                this.filename    = string.IsNullOrEmpty(filename)
                     ? FileTransaction.GetTempFileName()
                     : filename;
-                this.size     = size;
-                this.mimeType = mimeType;
+                this.size        = size;
+                this.mimeType    = mimeType;
             }
         }
 
@@ -144,7 +146,7 @@ namespace CKAN
 
         public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
         {
-            var targets = new[] {new DownloadTarget(url, filename)};
+            var targets = new[] {new DownloadTarget(url, null, filename)};
             DownloadWithProgress(targets, user);
             return targets.First().filename;
         }

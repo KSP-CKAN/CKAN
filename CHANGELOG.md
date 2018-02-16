@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Add Cmdline import command (#2264 by: HebaruSan; reviewed: politas)
 - [Multiple] User interfaces for auth tokens (#2266 by: HebaruSan; reviewed: politas)
 - [CLI] Add a read-execute-print-loop prompt for Cmdline (#2273 by: HebaruSan; reviewed: politas)
+- [Core] Fallback to archive.org URLs for failed downloads of FOSS packages (#2284: HebaruSan; reviewed: techman83, politas)
 
 ### Bugfixes
 
