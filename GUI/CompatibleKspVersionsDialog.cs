@@ -19,15 +19,15 @@ namespace CKAN
 
             List<KspVersion> compatibleVersions = ksp.GetCompatibleVersions();
 
-            GameVersionLabel.Text = ksp.Version().ToString();
+            GameVersionLabel.Text  = ksp.Version()?.ToString() ?? "<NONE>";
             GameLocationLabel.Text = ksp.GameDir();
             List<KspVersion> knownVersions = new List<KspVersion>(ServiceLocator.Container.Resolve<IKspBuildMap>().KnownVersions);
             List<KspVersion> majorVersionsList = CreateMajorVersionsList(knownVersions);
             List<KspVersion> compatibleVersionsLeftOthers = new List<KspVersion>(compatibleVersions);
             compatibleVersionsLeftOthers.RemoveAll((el)=>knownVersions.Contains(el) || majorVersionsList.Contains(el));
 
-            SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);            
-            SortAndAddVersionsToList(majorVersionsList, compatibleVersions);            
+            SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);
+            SortAndAddVersionsToList(majorVersionsList, compatibleVersions);
             SortAndAddVersionsToList(knownVersions, compatibleVersions);
         }
 
@@ -37,7 +37,7 @@ namespace CKAN
             {
                 MessageBox.Show("KSP has been updated since you last reviewed your compatible KSP versions. Please make sure that settings are correct.");
                 CancelChooseCompatibleVersionsButton.Visible = false;
-                GameVersionLabel.Text = _ksp.Version().ToString() + " (previous game version: " + _ksp.VersionOfKspWhenCompatibleVersionsWereStored + ")";
+                GameVersionLabel.Text =  $"{_ksp.Version()} (previous game version: {_ksp.VersionOfKspWhenCompatibleVersionsWereStored})";
                 GameVersionLabel.ForeColor = System.Drawing.Color.Red;
             }
         }

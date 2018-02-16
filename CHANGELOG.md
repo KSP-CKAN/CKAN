@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Retry of failed downloads (#2277 by: HebaruSan; reviewed: politas)
 - [CLI] Print fewer download updates in headless mode (#2256 by: HebaruSan; reviewed: politas)
 - [Core] Point to wiki page about certs on cert errors (#2279 by: HebaruSan; reviewed: politas)
+- [Multiple] Handle invalid installs better (#2283 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0-PRE1 (McCandless)
 

@@ -168,24 +168,15 @@ namespace CKAN.CmdLine
 
         private int ListInstalls()
         {
-            string preferredGameDir = null;
-
-            var preferredInstance = Manager.GetPreferredInstance();
-
-            if (preferredInstance != null)
-            {
-                preferredGameDir = preferredInstance.GameDir();
-            }
-
             var output = Manager.Instances
-                .OrderByDescending(i => i.Value.GameDir() == preferredGameDir)
+                .OrderByDescending(i => i.Value.Name == Manager.AutoStartInstance)
                 .ThenByDescending(i => i.Value.Version() ?? KspVersion.Any)
                 .ThenBy(i => i.Key)
                 .Select(i => new
                 {
                     Name = i.Key,
                     Version = i.Value.Version()?.ToString() ?? "<NONE>",
-                    Default = i.Value.GameDir() == preferredGameDir ? "Yes" : "No",
+                    Default = i.Value.Name == Manager.AutoStartInstance ? "Yes" : "No",
                     Path = i.Value.GameDir()
                 })
                 .ToList();
