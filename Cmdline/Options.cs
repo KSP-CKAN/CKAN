@@ -428,7 +428,12 @@ namespace CKAN.CmdLine
 
     internal class VersionOptions   : CommonOptions { }
     internal class CleanOptions     : InstanceSpecificOptions { }
-    internal class AvailableOptions : InstanceSpecificOptions { }
+
+    internal class AvailableOptions : InstanceSpecificOptions
+    {
+        [Option("detail", HelpText = "Show short description of each module")]
+        public bool detail { get; set; }
+    }
 
     internal class GuiOptions : InstanceSpecificOptions
     {

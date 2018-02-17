@@ -13,16 +13,26 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            IRegistryQuerier registry = RegistryManager.Instance(ksp).registry;
-
+            AvailableOptions opts      = (AvailableOptions)raw_options;
+            IRegistryQuerier registry  = RegistryManager.Instance(ksp).registry;
             List<CkanModule> available = registry.Available(ksp.VersionCriteria());
 
             user.RaiseMessage("Mods available for KSP {0}", ksp.Version());
             user.RaiseMessage("");
 
-            foreach (CkanModule module in available)
+            if (opts.detail)
             {
-                user.RaiseMessage("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
+                foreach (CkanModule module in available)
+                {
+                    user.RaiseMessage("* {0} ({1}) - {2} - {3}", module.identifier, module.version, module.name, module.@abstract);
+                }
+            }
+            else
+            {
+                foreach (CkanModule module in available)
+                {
+                    user.RaiseMessage("* {0} ({1}) - {2}", module.identifier, module.version, module.name);
+                }
             }
 
             return Exit.OK;
