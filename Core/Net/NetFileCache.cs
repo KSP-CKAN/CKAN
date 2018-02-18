@@ -209,9 +209,9 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Check whether a ZIP file is validation
+        /// Check whether a ZIP file is valid
         /// </summary>
-        /// <param name="filename">path to zip file to check</param>
+        /// <param name="filename">Path to zip file to check</param>
         /// <param name="invalidReason">Description of problem with the file</param>
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
@@ -224,15 +224,27 @@ namespace CKAN
                 {
                     using (ZipFile zip = new ZipFile(filename))
                     {
-                        // Perform CRC check.
-                        if (zip.TestArchive(true))
+                        string zipErr = null;
+                        // Perform CRC and other checks
+                        if (zip.TestArchive(true, TestStrategy.FindFirstError,
+                            (TestStatus st, string msg) =>
+                            {
+                                // This delegate is called as TestArchive proceeds through its
+                                // steps, both routine and abnormal.
+                                // The second parameter is non-null if an error occurred.
+                                if (st != null && !st.EntryValid && !string.IsNullOrEmpty(msg))
+                                {
+                                    // Capture the error string so we can return it
+                                    zipErr = $"Error in step {st.Operation} for {st.Entry?.Name}: {msg}";
+                                }
+                            }))
                         {
                             invalidReason = "";
                             return true;
                         }
                         else
                         {
-                            invalidReason = "ZipFile.TestArchive(true) returned false";
+                            invalidReason = zipErr ?? "ZipFile.TestArchive(true) returned false";
                             return false;
                         }
                     }
