@@ -41,6 +41,11 @@ namespace CKAN.NetKAN.Services
                         break;
                     case FileType.Zip:
                         extension = "zip";
+                        string invalidReason;
+                        if (!NetFileCache.ZipValid(downloadedFile, out invalidReason))
+                        {
+                            throw new Kraken($"{downloadedFile} is not a valid ZIP file: {invalidReason}");
+                        }
                         break;
                     default:
                         extension = "ckan-package";
