@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.24.0-PRE2
+## v1.24.0
 
 ### Features
 
@@ -32,6 +32,9 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Handle invalid installs better (#2283 by: HebaruSan; reviewed: politas)
 - [Core] Capture error details from SharpZipLib for invalid ZIPs (#2287 by: HebaruSan; reviewed: politas)
 - [Netkan] Check zip validity in netkan (#2288 by: HebaruSan; reviewed: politas)
+- [Core] Replace colons with hyphens in archive URLs (#2290 by: HebaruSan; reviewed: techman83)
+- [Core] Force-allow TLS 1.2 on .NET 4.5 (#2297 by: HebaruSan; reviewed: politas)
+
 
 ## v1.24.0-PRE1 (McCandless)
 

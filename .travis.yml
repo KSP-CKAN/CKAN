@@ -10,12 +10,10 @@ env:
         - BUILD_CONFIGURATION=Release
 
 mono:
+    - 5.8.0
     - 5.4.0
     - 5.2.0
     - 5.0.1
-    - 4.8.1
-    - 4.6.2
-    - 4.4.2
 
 addons:
     apt:
