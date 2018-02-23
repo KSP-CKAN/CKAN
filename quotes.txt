@@ -70,3 +70,8 @@ It is truly amazing how many extensions to BDArmory are only compatible with a
 KSP version that BDArmory is not compatible with.
 
     -- politas, NetKAN#4169
+%
+<HebaruSan> It's crazy that an app has to specify which version of TLS to use to get an HTTPS URL
+<HebaruSan> I mean, how the heck do we know? You're WebClient, you figure it out!!
+
+    -- regarding CKAN#2297

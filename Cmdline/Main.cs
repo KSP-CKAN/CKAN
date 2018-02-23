@@ -4,6 +4,7 @@
 // License: CC-BY 4.0, LGPL, or MIT (your choice)
 
 using System;
+using System.Net;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -49,6 +50,10 @@ namespace CKAN.CmdLine
 
             Logging.Initialize();
             log.Info("CKAN started.");
+
+            // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
+            // This is on by default in .NET 4.6, but not in 4.5.
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
