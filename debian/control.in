@@ -3,7 +3,7 @@ Version: @VERSION@
 Architecture: all
 Section: utils
 Priority: optional
-Depends: mono-runtime (>=4.0), ca-certificates-mono, libmono-microsoft-csharp4.0-cil, liblog4net1.2-cil, libnewtonsoft-json5.0-cil
+Depends: mono-runtime (>=5.0), ca-certificates-mono, libmono-microsoft-csharp4.0-cil, liblog4net1.2-cil, libnewtonsoft-json5.0-cil
 Maintainer: The CKAN authors <debian@ksp-ckan.org>
 Description: KSP-CKAN official client.
  Official client for the Comprehensive Kerbal Archive Network (CKAN).
