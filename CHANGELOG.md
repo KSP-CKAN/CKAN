@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Fix crash when trying to view empty auth token list (#2301 by: HebaruSan; reviewed: politas)
 - [GUI] Handle mod not found in versions tab (#2303 by: HebaruSan; reviewed: politas)
+- [GUI] Better resizing for Select KSP Install window (#2306 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0 (Bruce)
 

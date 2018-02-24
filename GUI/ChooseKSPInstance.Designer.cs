@@ -122,6 +122,7 @@
             //
             // SetAsDefaultCheckbox
             //
+            this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.SetAsDefaultCheckbox.AutoSize = true;
             this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
             this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
@@ -148,6 +149,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 355);
+            this.MinimumSize = new System.Drawing.Size(450, 200);
             this.Controls.Add(this.ForgetButton);
             this.Controls.Add(this.SetAsDefaultCheckbox);
             this.Controls.Add(this.RenameButton);
