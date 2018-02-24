@@ -103,7 +103,7 @@ namespace CKAN
         public static IEnumerable<string> GetAuthTokenHosts()
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
-            return key?.GetValueNames();
+            return key?.GetValueNames() ?? new string[0];
         }
 
         /// <summary>

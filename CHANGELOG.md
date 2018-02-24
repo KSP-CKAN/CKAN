@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.24.1
+
+### Bugfixes
+
+- [Multiple] Fix crash when trying to view empty auth token list (#2301 by: HebaruSan; reviewed: politas)
+
+
 ## v1.24.0
 
 ### Features
