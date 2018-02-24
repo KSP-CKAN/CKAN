@@ -24,10 +24,9 @@ namespace CKAN
             {
                 return Sort(rows, CheckboxSorter);
             }
-            // XXX: Same for Integer columns
             else if (this.configuration.SortByColumnIndex == 7)
             {
-                return Sort(rows, IntegerSorter);
+                return Sort(rows, DownloadSizeSorter);
             }
             return Sort(rows, DefaultSorter);
         }
@@ -78,22 +77,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Transforms a DataGridViewRow into an integer suitable for sorting.
-        /// Uses this.m_Configuration.SortByColumnIndex to determine which
-        /// field to sort on.
+        /// Transforms a DataGridViewRow into a long representing the download size,
+        /// suitable for sorting.
         /// </summary>
-        private int IntegerSorter(DataGridViewRow row)
+        private long DownloadSizeSorter(DataGridViewRow row)
         {
-            var cell = row.Cells[this.configuration.SortByColumnIndex];
-
-            if (cell.Value.ToString() == "N/A")
-                return -1;
-            else if (cell.Value.ToString() == "1<KB")
-                return 0;
-
-            int result = -2;
-            int.TryParse(cell.Value as string, out result);
-            return result;
+            return (row.Tag as GUIMod)?.ToCkanModule()?.download_size ?? 0;
         }
 
         private void _UpdateFilters()
