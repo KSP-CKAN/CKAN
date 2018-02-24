@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -13,22 +14,34 @@ namespace CKAN
             InitializeComponent();
         }
 
-        public GUIMod SelectedModule {
+        public GUIMod SelectedModule
+        {
             set
             {
-                this.VersionsListView.Items.Clear();
+                VersionsListView.Items.Clear();
 
                 KSP currentInstance = Main.Instance.Manager.CurrentInstance;
-                var registry = RegistryManager.Instance(currentInstance).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(currentInstance).registry;
 
-                List<CkanModule> allAvailableVersions = registry.AllAvailable(value.Identifier).OrderByDescending((m)=>m.version).ToList();
+                List<CkanModule> allAvailableVersions;
+                try
+                {
+                    allAvailableVersions = registry.AllAvailable(value.Identifier)
+                        .OrderByDescending(m => m.version)
+                        .ToList();
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    // No versions to be shown, abort and hope an auto refresh happens
+                    return;
+                }
 
-                var kspVersionCriteria = currentInstance.VersionCriteria();
+                KspVersionCriteria kspVersionCriteria = currentInstance.VersionCriteria();
                 Version installedVersion = registry.InstalledVersion(value.Identifier);
 
                 bool latestCompatibleVersionAlreadyFound = false;
-                this.VersionsListView.Items.AddRange(allAvailableVersions.Select((module)=> {
-
+                VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>
+                {
                     ListViewItem toRet = new ListViewItem();
                     if (module.IsCompatibleKSP(kspVersionCriteria))
                     {

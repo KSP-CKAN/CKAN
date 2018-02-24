@@ -7,9 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Multiple] Fix crash when trying to view empty auth token list (#2301 by: HebaruSan; reviewed: politas)
+- [GUI] Handle mod not found in versions tab (#2303 by: HebaruSan; reviewed: politas)
 
-
-## v1.24.0
+## v1.24.0 (Bruce)
 
 ### Features
 
