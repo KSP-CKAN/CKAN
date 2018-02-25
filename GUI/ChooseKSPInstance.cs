@@ -73,8 +73,8 @@ namespace CKAN
             try
             {
                 var instanceName = Path.GetFileName(path);
-                KSP instance = new KSP(path, instanceName, GUI.user);
                 instanceName = _manager.GetNextValidInstanceName(instanceName);
+                KSP instance = new KSP(path, instanceName, GUI.user);
                 _manager.AddInstance(instance);
                 UpdateInstancesList();
             }
