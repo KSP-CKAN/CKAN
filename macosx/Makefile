@@ -31,11 +31,11 @@ $(EXESRC):
 
 $(SCRIPTDEST): $(SCRIPTSRC)
 	mkdir -p $(shell dirname $@)
-	cp -l $< $@
+	cp -l -f $< $@
 
 $(ICNSDEST): $(ICNSSRC)
 	mkdir -p $(shell dirname $@)
-	cp -l $< $@
+	cp -l -f $< $@
 
 $(PLISTDEST): $(PLISTSRC)
 	mkdir -p $(shell dirname $@)
