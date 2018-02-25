@@ -633,7 +633,8 @@ namespace CKAN
             get
             {
                 string verStr = version.ToString().Replace(':', '-');
-                return license.All(l => l.Redistributable)
+                // Some alternate registry repositories don't set download_hash
+                return (download_hash?.sha1 != null && license.All(l => l.Redistributable))
                     ? new Uri(
                         $"https://archive.org/download/{identifier}-{verStr}/{download_hash.sha1.Substring(0, 8)}-{identifier}-{verStr}.zip")
                     : null;

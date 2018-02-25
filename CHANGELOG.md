@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Handle mod not found in versions tab (#2303 by: HebaruSan; reviewed: politas)
 - [GUI] Better resizing for Select KSP Install window (#2306 by: HebaruSan; reviewed: politas)
 - [GUI] Fix GUI sort by size (#2311 by: HebaruSan; reviewed: politas)
+- [Core] Don't crash if download_hash isn't set (#2313 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0 (Bruce)
 
