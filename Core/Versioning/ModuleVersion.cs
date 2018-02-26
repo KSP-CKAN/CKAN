@@ -73,18 +73,81 @@ namespace CKAN.Versioning
         {
             return _string;
         }
+    }
 
+    public partial class ModuleVersion : IEquatable<ModuleVersion>
+    {
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
 
-            return obj is ModuleVersion other && IsEqualTo(other);
+            return obj is ModuleVersion version && Equals(version);
+        }
+
+        public bool Equals(ModuleVersion other)
+        {
+            return CompareTo(other) == 0;
         }
 
         public override int GetHashCode()
         {
-            return _version.GetHashCode();
+            unchecked
+            {
+                return (_epoch * 397) ^ _version.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is equal to the second.
+        /// </summary>
+        /// <param name="left">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="right">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <returns>
+        /// <list type="bullet">
+        /// <item>
+        /// <term><c>true</c></term>
+        /// <description>
+        /// When <paramref name="left"/> is equal to <paramref name="right"/>.
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <term><c>false</c></term>
+        /// <description>
+        /// When <paramref name="left"/> is not equal to <paramref name="right"/>.
+        /// </description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        public static bool operator ==(ModuleVersion left, ModuleVersion right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is not equal to the second.
+        /// </summary>
+        /// <param name="left">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="right">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <returns>
+        /// <list type="bullet">
+        /// <item>
+        /// <term><c>true</c></term>
+        /// <description>
+        /// When <paramref name="left"/> is not equal to <paramref name="right"/>.
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <term><c>false</c></term>
+        /// <description>
+        /// When <paramref name="left"/> is equal to <paramref name="right"/>.
+        /// </description>
+        /// </item>
+        /// </list>
+        /// </returns>
+        public static bool operator !=(ModuleVersion left, ModuleVersion right)
+        {
+            return !Equals(left, right);
         }
     }
 
