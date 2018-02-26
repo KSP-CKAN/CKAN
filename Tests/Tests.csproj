@@ -87,7 +87,7 @@
     <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
     <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />
-    <Compile Include="Core\Types\Version.cs" />
+    <Compile Include="Core\Versioning\Version.cs" />
     <Compile Include="Core\Versioning\KspVersionBoundTests.cs" />
     <Compile Include="Core\Versioning\KspVersionJsonConverterTests.cs" />
     <Compile Include="Core\Versioning\KspVersionRangeTests.cs" />

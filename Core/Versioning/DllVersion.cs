@@ -1,4 +1,4 @@
-namespace CKAN
+namespace CKAN.Versioning
 {
     /// <summary>
     /// This class represents a DllVersion. They don't have real version numbers or anything

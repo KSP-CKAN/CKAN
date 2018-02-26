@@ -1,4 +1,4 @@
-namespace CKAN
+namespace CKAN.Versioning
 {
     /// <summary>
     /// Represents a virtual version that was provided by another package.

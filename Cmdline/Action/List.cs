@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CKAN.Exporters;
 using CKAN.Types;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN.CmdLine

@@ -3,10 +3,9 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
-using CKAN.Types;
-using System.Linq;
 
 namespace CKAN
 {

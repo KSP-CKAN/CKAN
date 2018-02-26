@@ -1,6 +1,5 @@
-﻿using CKAN;
+﻿using CKAN.Versioning;
 using NUnit.Framework;
-using Tests.Data;
 
 namespace Tests.Core.Types
 {
@@ -8,7 +7,7 @@ namespace Tests.Core.Types
     public class RelationshipDescriptor
     {
 
-        CKAN.Version autodetected = new CKAN.DllVersion();
+        CKAN.Version autodetected = new DllVersion();
 
         [Test]
         [TestCase("0.23","0.23", true)]

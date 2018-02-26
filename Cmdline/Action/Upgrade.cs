@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN.CmdLine

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
 using Version = CKAN.Version;

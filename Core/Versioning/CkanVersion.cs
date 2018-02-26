@@ -1,4 +1,4 @@
-namespace CKAN.Types
+namespace CKAN.Versioning
 {
     /// <summary>
     /// Represents the version of a CKAN client.
