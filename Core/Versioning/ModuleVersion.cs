@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace CKAN
 {
     /// <summary>
-    /// Represents the version number of a package.
+    /// Represents the version number of a module.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -23,12 +23,12 @@ namespace CKAN
     /// </remarks>
     [Serializable]
     [JsonConverter(typeof(JsonSimpleStringConverter))]
-    public partial class Version : IComparable<Version>
+    public partial class ModuleVersion : IComparable<ModuleVersion>
     {
         private static readonly Regex Pattern =
             new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
-        private readonly Dictionary<Tuple<Version, Version>, int> _cache =
-            new Dictionary<Tuple<Version, Version>, int>();
+        private readonly Dictionary<Tuple<ModuleVersion, ModuleVersion>, int> _cache =
+            new Dictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
         private readonly string _originalString;
         public const string AutodetectedDllString = "autodetected dll";
 
@@ -36,10 +36,10 @@ namespace CKAN
         public string VersionPart { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Version"/> class using the specified string.
+        /// Initializes a new instance of the <see cref="ModuleVersion"/> class using the specified string.
         /// </summary>
         /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
-        public Version(string version)
+        public ModuleVersion(string version)
         {
             _originalString = version;
 
@@ -55,11 +55,11 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Converts the value of the current <see cref="Version"/> object to its equivalent <see cref="String"/>
-        /// representation.
+        /// Converts the value of the current <see cref="ModuleVersion"/> object to its equivalent
+        /// <see cref="String"/> representation.
         /// </summary>
         /// <returns>
-        /// The <see cref="String"/> representation of the current <see cref="Version"/> object.
+        /// The <see cref="String"/> representation of the current <see cref="ModuleVersion"/> object.
         /// </returns>
         /// /// <remarks>
         /// The return value should not be considered safe for use in file paths.
@@ -70,47 +70,51 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Converts the specified string to a new instance of the <see cref="Version"/> class.
+        /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.
         /// </summary>
         /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
         /// <returns>
-        /// A new <see cref="Version"/> instance representing the specified <see cref="String"/>.
+        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="String"/>.
         /// </returns>
-        public static explicit operator Version(string version)
+        public static explicit operator ModuleVersion(string version)
         {
-            return new Version(version);
+            return new ModuleVersion(version);
         }
 
         /// <summary>
-        /// Compares the current <see cref="Version"/> object to a specified <see cref="Version"/> object and returns
-        /// an indication of their relative values.
+        /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
+        /// and returns an indication of their relative values.
         /// </summary>
         /// <param name="other">
-        /// A <see cref="Version"/> object to compare to the current <see cref="Version"/> object, or <c>null</c>.
+        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
+        /// <c>null</c>.
         /// </param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
         /// <term>A negative value</term>
         /// <description>
-        /// When the current <see cref="Version"/> object is less than the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is less than the specified <see cref="ModuleVersion"/>
+        /// object.
         /// </description>
         /// </item>
         /// <item>
         /// <term>Zero</term>
         /// <description>
-        /// When the current <see cref="Version"/> object is equal to the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is equal to the specified <see cref="ModuleVersion"/>
+        /// object.
         /// </description>
         /// </item>
         /// <item>
         /// <term>A positive value</term>
         /// <description>
-        /// When the current <see cref="Version"/> object is greater than the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is greater than the specified
+        /// <see cref="ModuleVersion"/> object.
         /// </description>
         /// </item>
         /// </list>
         /// </returns>
-        public int CompareTo(Version other)
+        public int CompareTo(ModuleVersion other)
         {
             if (other.EpochPart == EpochPart && other.VersionPart.Equals(VersionPart))
                 return 0;
@@ -121,7 +125,7 @@ namespace CKAN
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
-            var tuple = new Tuple<Version, Version>(this, other);
+            var tuple = new Tuple<ModuleVersion, ModuleVersion>(this, other);
             if (_cache.TryGetValue(tuple, out var ret))
                 return ret;
 
@@ -176,101 +180,109 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Compares the current <see cref="Version"/> object to a specified <see cref="Version"/> object and returns
-        /// if it is equal to the other object.
+        /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
+        /// and returns if it is equal to the other object.
         /// </summary>
         /// <param name="other">
-        /// A <see cref="Version"/> object to compare to the current <see cref="Version"/> object, or <c>null</c>.
+        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
+        /// <c>null</c>.
         /// </param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
         /// <term><c>true</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is equal to the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is equal to the specified <see cref="ModuleVersion"/>
+        /// object.
         /// </description>
         /// </item>
         /// <item>
         /// <term><c>false</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is not equal to the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is not equal to the specified
+        /// <see cref="ModuleVersion"/> object.
         /// </description>
         /// </item>
         /// </list>
         /// </returns>
-        public bool IsEqualTo(Version other)
+        public bool IsEqualTo(ModuleVersion other)
         {
             return CompareTo(other) == 0;
         }
 
         /// <summary>
-        /// Compares the current <see cref="Version"/> object to a specified <see cref="Version"/> object and returns
-        /// if it is less than the other object.
+        /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
+        /// and returns if it is less than the other object.
         /// </summary>
         /// <param name="other">
-        /// A <see cref="Version"/> object to compare to the current <see cref="Version"/> object, or <c>null</c>.
+        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
+        /// <c>null</c>.
         /// </param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
         /// <term><c>true</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is less than the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is less than the specified <see cref="ModuleVersion"/>
+        /// object.
         /// </description>
         /// </item>
         /// <item>
         /// <term><c>false</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is not less than the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is not less than the specified
+        /// <see cref="ModuleVersion"/> object.
         /// </description>
         /// </item>
         /// </list>
         /// </returns>
-        public bool IsLessThan(Version other)
+        public bool IsLessThan(ModuleVersion other)
         {
             return CompareTo(other) < 0;
         }
 
         /// <summary>
-        /// Compares the current <see cref="Version"/> object to a specified <see cref="Version"/> object and returns
-        /// if it is greater than the other object.
+        /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
+        /// and returns if it is greater than the other object.
         /// </summary>
         /// <param name="other">
-        /// A <see cref="Version"/> object to compare to the current <see cref="Version"/> object, or <c>null</c>.
+        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
+        /// <c>null</c>.
         /// </param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
         /// <term><c>true</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is greater than the specified <see cref="Version"/> object.
+        /// When the current <see cref="ModuleVersion"/> object is greater than the specified
+        /// <see cref="ModuleVersion"/> object.
         /// </description>
         /// </item>
         /// <item>
         /// <term><c>false</c></term>
         /// <description>
-        /// When the current <see cref="Version"/> object is not greater than the specified <see cref="Version"/>
-        /// object.
+        /// When the current <see cref="ModuleVersion"/> object is not greater than the specified
+        /// <see cref="ModuleVersion"/> object.
         /// </description>
         /// </item>
         /// </list>
         /// </returns>
-        public bool IsGreaterThan(Version other)
+        public bool IsGreaterThan(ModuleVersion other)
         {
             return CompareTo(other) > 0;
         }
 
         /// <summary>
-        /// Returns the larger of two <see cref="Version"/> objects.
+        /// Returns the larger of two <see cref="ModuleVersion"/> objects.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is larger.</returns>
         /// <remarks>
         /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
         /// particular instance will be returned.
         /// </remarks>
-        public static Version Max(Version ver1, Version ver2)
+        public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
         {
             if (ver1 == null)
                 throw new ArgumentNullException(nameof(ver1));
@@ -282,16 +294,16 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns the smaller of two <see cref="Version"/> objects.
+        /// Returns the smaller of two <see cref="ModuleVersion"/> objects.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is smaller.</returns>
         /// <remarks>
         /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
         /// particular instance will be returned.
         /// </remarks>
-        public static Version Min(Version ver1, Version ver2)
+        public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
         {
             if (ver1 == null)
                 throw new ArgumentNullException(nameof(ver1));
@@ -415,7 +427,7 @@ namespace CKAN
             if (ReferenceEquals(this, obj))
                 return true;
 
-            return obj is Version other && IsEqualTo(other);
+            return obj is ModuleVersion other && IsEqualTo(other);
         }
 
         public override int GetHashCode()
@@ -424,10 +436,10 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Compares two <see cref="Version"/> objects to determine if the first is less than the second.
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than the second.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
@@ -444,16 +456,17 @@ namespace CKAN
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator <(Version ver1, Version ver2)
+        public static bool operator <(ModuleVersion ver1, ModuleVersion ver2)
         {
             return ver1.CompareTo(ver2) < 0;
         }
 
         /// <summary>
-        /// Compares two <see cref="Version"/> objects to determine if the first is less than or equal to the second.
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than or equal to the
+        /// second.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
@@ -470,16 +483,16 @@ namespace CKAN
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator <=(Version ver1, Version ver2)
+        public static bool operator <=(ModuleVersion ver1, ModuleVersion ver2)
         {
             return ver1.CompareTo(ver2) <= 0;
         }
 
         /// <summary>
-        /// Compares two <see cref="Version"/> objects to determine if the first is greater than the second.
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is greater than the second.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
@@ -496,16 +509,17 @@ namespace CKAN
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator >(Version ver1, Version ver2)
+        public static bool operator >(ModuleVersion ver1, ModuleVersion ver2)
         {
             return ver1.CompareTo(ver2) > 0;
         }
 
         /// <summary>
-        /// Compares two <see cref="Version"/> objects to determine if the first is less than or equal to the second.
+        /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than or equal to the
+        /// second.
         /// </summary>
-        /// <param name="ver1">The first of two <see cref="Version"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="Version"/> objects to compare.</param>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
         /// <returns>
         /// <list type="bullet">
         /// <item>
@@ -522,13 +536,13 @@ namespace CKAN
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator >=(Version ver1, Version ver2)
+        public static bool operator >=(ModuleVersion ver1, ModuleVersion ver2)
         {
             return ver1.CompareTo(ver2) >= 0;
         }
     }
 
-    public partial class Version
+    public partial class ModuleVersion
     {
         private struct Comparison
         {

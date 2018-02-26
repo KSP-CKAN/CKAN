@@ -19,7 +19,7 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var avcVersion = new AvcVersion
             {
-                version = new Version("1.0.0"),
+                version = new ModuleVersion("1.0.0"),
                 ksp_version = KspVersion.Parse("1.0.4")
             };
 
@@ -214,7 +214,7 @@ namespace Tests.NetKAN.Transformers
         public void DoesNotOverrideExistingVersionInfo()
         {
             // Arrange
-            var avcVersion = new AvcVersion { version = new Version("1.2.3") };
+            var avcVersion = new AvcVersion { version = new ModuleVersion("1.2.3") };
 
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();

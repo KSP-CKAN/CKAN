@@ -3,9 +3,9 @@ namespace CKAN.Versioning
     /// <summary>
     /// This class represents a DllVersion. They don't have real version numbers or anything
     /// </summary>
-    public sealed class DllVersion : Version
+    public sealed class DllModuleVersion : ModuleVersion
     {
-        public DllVersion() : base("0") { }
+        public DllModuleVersion() : base("0") { }
 
         public override string ToString()
         {

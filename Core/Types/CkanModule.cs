@@ -14,13 +14,13 @@ namespace CKAN
     public class RelationshipDescriptor
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version max_version;
+        public ModuleVersion max_version;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version min_version;
+        public ModuleVersion min_version;
         //Why is the identifier called name?
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version version;
+        public ModuleVersion version;
 
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
@@ -30,10 +30,10 @@ namespace CKAN
         /// </summary>
         /// <param name="other_version"></param>
         /// <returns>True if other_version is within the bounds</returns>
-        public bool version_within_bounds(Version other_version)
+        public bool version_within_bounds(ModuleVersion other_version)
         {
             // DLL versions (aka autodetected mods) satisfy *all* relationships
-            if (other_version is DllVersion)
+            if (other_version is DllModuleVersion)
                 return true;
 
             if (version == null)
@@ -216,7 +216,7 @@ namespace CKAN
         public List<RelationshipDescriptor> suggests;
 
         [JsonProperty("version", Required = Required.Always)]
-        public Version version;
+        public ModuleVersion version;
 
         [JsonProperty("supports", NullValueHandling = NullValueHandling.Ignore)]
         public List<RelationshipDescriptor> supports;
@@ -229,7 +229,7 @@ namespace CKAN
 
         [JsonIgnore]
         [JsonProperty("specVersion", Required = Required.Default)]
-        private Version specVersion;
+        private ModuleVersion specVersion;
         // We integrated the Module and CkanModule into one class
         // Since spec_version was only required for CkanModule before
         // this change, we now need to make sure the user is converted
@@ -237,18 +237,18 @@ namespace CKAN
         // We should return this to a simple Required.Always field some time in the future
         // ~ Postremus, 03.09.2015
         [JsonProperty("spec_version")]
-        public Version spec_version
+        public ModuleVersion spec_version
         {
             get
             {
                 if (specVersion == null)
-                    specVersion = new Version("1");
+                    specVersion = new ModuleVersion("1");
                 return specVersion;
             }
             set
             {
                 if (value == null)
-                    specVersion = new Version("1");
+                    specVersion = new ModuleVersion("1");
                 else
                     specVersion = value;
             }
@@ -573,10 +573,10 @@ namespace CKAN
         /// <summary>
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
-        internal static bool IsSpecSupported(Version spec_vesion)
+        internal static bool IsSpecSupported(ModuleVersion spec_vesion)
         {
             // This could be a read-only state variable; do we have those in C#?
-            Version release = new Version(Meta.GetVersion(VersionFormat.Short));
+            ModuleVersion release = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
 
             return release == null || release.IsGreaterThan(spec_vesion);
         }
@@ -598,7 +598,7 @@ namespace CKAN
             return StandardName(identifier, version);
         }
 
-        public static string StandardName(string identifier, Version version)
+        public static string StandardName(string identifier, ModuleVersion version)
         {
             // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
             // slashes, and heaven knows what use mod authors try to smoosh into them.

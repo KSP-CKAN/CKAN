@@ -136,7 +136,7 @@ namespace CKAN.NetKAN.Transformers
                 }
 
                 // If the constraints don't apply, then do nothing.
-                if (!ConstraintsApply(constraints, new Version(metadata["version"].ToString())))
+                if (!ConstraintsApply(constraints, new ModuleVersion(metadata["version"].ToString())))
                     return;
 
                 // All the constraints pass; let's replace the metadata we have with what's
@@ -169,7 +169,7 @@ namespace CKAN.NetKAN.Transformers
         /// Walks through a list of constraints, and returns true if they're all satisifed
         /// for the mod version we're examining.
         /// </summary>
-        private static bool ConstraintsApply(IEnumerable<string> constraints, Version version)
+        private static bool ConstraintsApply(IEnumerable<string> constraints, ModuleVersion version)
         {
             foreach (var constraint in constraints)
             {
@@ -183,7 +183,7 @@ namespace CKAN.NetKAN.Transformers
                         string.Format("Unable to parse x_netkan_override - {0}", constraint));
 
                 var op = match.Groups["op"].Value;
-                var desiredVersion = new Version(match.Groups["version"].Value);
+                var desiredVersion = new ModuleVersion(match.Groups["version"].Value);
 
                 // This contstraint failed. This stanza is not for us.
                 if (!ConstraintPasses(op, version, desiredVersion))
@@ -198,7 +198,7 @@ namespace CKAN.NetKAN.Transformers
         /// Returns whether the given constraint matches the desired version
         /// for the mod we're processing.
         /// </summary>
-        private static bool ConstraintPasses(string op, Version version, Version desiredVersion)
+        private static bool ConstraintPasses(string op, ModuleVersion version, ModuleVersion desiredVersion)
         {
             switch (op)
             {

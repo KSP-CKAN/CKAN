@@ -4,9 +4,9 @@ namespace CKAN.NetKAN.Extensions
 {
     internal static class VersionExtensions
     {
-        public static JToken ToSpecVersionJson(this Version specVersion)
+        public static JToken ToSpecVersionJson(this ModuleVersion specVersion)
         {
-            if (specVersion.IsEqualTo(new Version("v1.0")))
+            if (specVersion.IsEqualTo(new ModuleVersion("v1.0")))
             {
                 return 1;
             }

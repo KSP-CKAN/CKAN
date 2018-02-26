@@ -300,7 +300,7 @@ namespace CKAN
         {
             CheckMetapackageInstallationKraken(module);
 
-            Version version = registry_manager.registry.InstalledVersion(module.identifier);
+            ModuleVersion version = registry_manager.registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
             if (version != null)
@@ -1162,7 +1162,7 @@ namespace CKAN
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         /// <param name="version">A version that might contain an epoch</param>
-        public static string StripEpoch(Version version)
+        public static string StripEpoch(ModuleVersion version)
         {
             return StripEpoch(version.ToString());
         }

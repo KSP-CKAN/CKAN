@@ -16,8 +16,8 @@ namespace CKAN.NetKAN.Model
         public string Identifier { get { return (string)_json["identifier"]; } }
         public RemoteRef Kref { get; private set; }
         public RemoteRef Vref { get; private set; }
-        public Version SpecVersion { get; private set; }
-        public Version Version { get; private set; }
+        public ModuleVersion SpecVersion { get; private set; }
+        public ModuleVersion Version { get; private set; }
         public Uri Download { get; private set; }
 
         public Metadata(JObject json)
@@ -58,11 +58,11 @@ namespace CKAN.NetKAN.Model
             {
                 if (specVersionToken.Type == JTokenType.Integer && (int)specVersionToken == 1)
                 {
-                    SpecVersion = new Version("v1.0");
+                    SpecVersion = new ModuleVersion("v1.0");
                 }
                 else if (specVersionToken.Type == JTokenType.String)
                 {
-                    SpecVersion = new Version((string)specVersionToken);
+                    SpecVersion = new ModuleVersion((string)specVersionToken);
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace CKAN.NetKAN.Model
             JToken versionToken;
             if (json.TryGetValue(VersionPropertyName, out versionToken))
             {
-                Version = new Version((string)versionToken);
+                Version = new ModuleVersion((string)versionToken);
             }
 
             JToken downloadToken;

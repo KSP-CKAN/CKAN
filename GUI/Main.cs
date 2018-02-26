@@ -302,7 +302,7 @@ namespace CKAN
                     log.Info("Making auto-update call");
                     AutoUpdate.Instance.FetchLatestReleaseInfo();
                     var latest_version = AutoUpdate.Instance.LatestVersion;
-                    var current_version = new Version(Meta.GetVersion());
+                    var current_version = new ModuleVersion(Meta.GetVersion());
 
                     if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
                     {

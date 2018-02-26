@@ -80,7 +80,7 @@ namespace CKAN
         /// Attempts to find a module with the given identifier and version.
         /// </summary>
         /// <returns>The module if it exists, null otherwise.</returns>
-        CkanModule GetModuleByVersion(string identifier, Version version);
+        CkanModule GetModuleByVersion(string identifier, ModuleVersion version);
 
         /// <summary>
         ///     Returns a simple array of all incompatible modules for
@@ -94,7 +94,7 @@ namespace CKAN
         /// This includes DLLs, which will have a version type of `DllVersion`.
         /// This includes Provides if set, which will have a version of `ProvidesVersion`.
         /// </summary>
-        Dictionary<string, Version> Installed(bool include_provides = true);
+        Dictionary<string, ModuleVersion> Installed(bool include_provides = true);
 
         /// <summary>
         /// Returns the InstalledModule, or null if it is not installed.
@@ -109,7 +109,7 @@ namespace CKAN
         /// </summary>
         /// <param name="with_provides">If set to false will not check for provided versions.</param>
         /// <returns>The version of the mod or null if not found</returns>
-        Version InstalledVersion(string identifier, bool with_provides = true);
+        ModuleVersion InstalledVersion(string identifier, bool with_provides = true);
     }
 
     /// <summary>
@@ -118,11 +118,11 @@ namespace CKAN
     public static class IRegistryQuerierHelpers
     {
         /// <summary>
-        /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, Version)"/>
+        /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, ModuleVersion)"/>
         /// </summary>
         public static CkanModule GetModuleByVersion(this IRegistryQuerier querier, string ident, string version)
         {
-            return querier.GetModuleByVersion(ident, new Version(version));
+            return querier.GetModuleByVersion(ident, new ModuleVersion(version));
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace CKAN
         /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
         public static bool IsAutodetected(this IRegistryQuerier querier, string identifier)
         {
-            return querier.IsInstalled(identifier) && querier.InstalledVersion(identifier) is DllVersion;
+            return querier.IsInstalled(identifier) && querier.InstalledVersion(identifier) is DllModuleVersion;
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace CKAN
         {
             List<CkanModule> releases = querier.AllAvailable(identifier);
             if (releases != null && releases.Count > 0) {
-                Version    minMod = null, maxMod = null;
+                ModuleVersion    minMod = null, maxMod = null;
                 KspVersion minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 return KspVersionRange.VersionSpan(minKsp, maxKsp);

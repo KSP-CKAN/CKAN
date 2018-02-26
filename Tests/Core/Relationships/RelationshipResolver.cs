@@ -8,7 +8,6 @@ using System.IO;
 using CKAN.Versioning;
 using Tests.Core.Types;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
-using Version = CKAN.Version;
 
 namespace Tests.Core.Relationships
 {
@@ -99,10 +98,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMin_Throws(string ver, string conf_min)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new Version(conf_min)}
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
             });
 
             list.Add(mod_a.identifier);
@@ -123,10 +122,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMax_Throws(string ver, string conf_max)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, max_version=new Version(conf_max)}
+                new RelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -148,10 +147,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMinMax_Throws(string ver, string conf_min, string conf_max)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new Version(conf_min), max_version=new Version(conf_max)}
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -172,10 +171,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithNonConflictingModulesVersion_DoesNotThrows(string ver, string conf)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, version=new Version(conf)}
+                new RelationshipDescriptor {name=mod_a.identifier, version=new ModuleVersion(conf)}
             });
 
             list.Add(mod_a.identifier);
@@ -195,10 +194,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMin_DoesNotThrows(string ver, string conf_min)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new Version(conf_min)}
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
             });
 
             list.Add(mod_a.identifier);
@@ -218,10 +217,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMax_DoesNotThrows(string ver, string conf_max)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, max_version=new Version(conf_max)}
+                new RelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -242,10 +241,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithConflictingModulesVersionMinMax_DoesNotThrows(string ver, string conf_min, string conf_max)
         {
             var list = new List<string>();
-            var mod_a = generator.GeneratorRandomModule(version: new Version(ver));
+            var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new Version(conf_min), max_version=new Version(conf_max)}
+                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -490,10 +489,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithMissingDependantsVersion_Throws(string ver, string dep)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
+                new RelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
@@ -512,10 +511,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithMissingDependantsVersionMin_Throws(string ver, string dep_min)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new Version(dep_min)}
+                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
@@ -540,10 +539,10 @@ namespace Tests.Core.Relationships
         public void Constructor_WithMissingDependantsVersionMax_Throws(string ver, string dep_max)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, max_version = new Version(dep_max)}
+                new RelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             list.Add(dependant.identifier);
@@ -564,13 +563,13 @@ namespace Tests.Core.Relationships
         public void Constructor_WithMissingDependantsVersionMinMax_Throws(string ver, string dep_min, string dep_max)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new RelationshipDescriptor {
                     name = dependant.identifier,
-                    min_version = new Version(dep_min),
-                    max_version = new Version(dep_max)}
+                    min_version = new ModuleVersion(dep_min),
+                    max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             list.Add(dependant.identifier);
@@ -591,12 +590,12 @@ namespace Tests.Core.Relationships
         public void Constructor_WithDependantVersion_ChooseCorrectly(string ver, string dep, string other)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, version = new Version(dep)}
+                new RelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
             });
 
             list.Add(depender.identifier);
@@ -619,12 +618,12 @@ namespace Tests.Core.Relationships
         public void Constructor_WithDependantVersionMin_ChooseCorrectly(string ver, string dep_min, string other)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new Version(dep_min)}
+                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
@@ -646,12 +645,12 @@ namespace Tests.Core.Relationships
         public void Constructor_WithDependantVersionMax_ChooseCorrectly(string ver, string dep_max, string other)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, max_version = new Version(dep_max)}
+                new RelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
@@ -673,12 +672,12 @@ namespace Tests.Core.Relationships
         public void Constructor_WithDependantVersionMinMax_ChooseCorrectly(string ver, string dep_min, string dep_max, string other)
         {
             var list = new List<string>();
-            var dependant = generator.GeneratorRandomModule(version: new Version(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new Version(other));
+            var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new Version(dep_min), max_version = new Version(dep_max)}
+                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min), max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);

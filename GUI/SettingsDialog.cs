@@ -376,7 +376,7 @@ namespace CKAN
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-                if (latestVersion.IsGreaterThan(new Version(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
+                if (latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
                 }

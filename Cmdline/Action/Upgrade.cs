@@ -42,7 +42,7 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Querying the latest CKAN version");
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-                var currentVersion = new Version(Meta.GetVersion(VersionFormat.Short));
+                var currentVersion = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
@@ -72,14 +72,14 @@ namespace CKAN.CmdLine
                 if (options.upgrade_all)
                 {
                     var registry = RegistryManager.Instance(ksp).registry;
-                    var installed = new Dictionary<string, Version>(registry.Installed());
+                    var installed = new Dictionary<string, ModuleVersion>(registry.Installed());
                     var to_upgrade = new List<CkanModule>();
 
-                    foreach (KeyValuePair<string, Version> mod in installed)
+                    foreach (KeyValuePair<string, ModuleVersion> mod in installed)
                     {
-                        Version current_version = mod.Value;
+                        ModuleVersion current_version = mod.Value;
 
-                        if ((current_version is ProvidesVersion) || (current_version is DllVersion))
+                        if ((current_version is ProvidesModuleVersion) || (current_version is DllModuleVersion))
                         {
                             continue;
                         }

@@ -583,7 +583,7 @@ namespace CKAN.Versioning
 
         /// <summary>
         /// Determines whether the first specified <see cref="KspVersion"/> object is greater than the second
-        /// specified <see cref="Version"/> object.
+        /// specified <see cref="ModuleVersion"/> object.
         /// </summary>
         /// <param name="left">The first <see cref="KspVersion"/> object.</param>
         /// <param name="right">The second <see cref="KspVersion"/> object.</param>

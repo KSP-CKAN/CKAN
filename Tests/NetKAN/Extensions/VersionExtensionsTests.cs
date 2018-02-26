@@ -11,7 +11,7 @@ namespace Tests.NetKAN.Extensions
         public void ToSpecVersionJsonReturnsIntegerForVersion1()
         {
             // Arrange
-            var version = new Version("v1.0");
+            var version = new ModuleVersion("v1.0");
 
             // Act
             var result = version.ToSpecVersionJson();
@@ -26,7 +26,7 @@ namespace Tests.NetKAN.Extensions
         public void ToSpecVersionJsonReturnsStringForHigherVersions()
         {
             // Arrange
-            var version = new Version("v1.2");
+            var version = new ModuleVersion("v1.2");
 
             // Act
             var result = version.ToSpecVersionJson();

@@ -1,11 +1,11 @@
 ﻿using System;
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Version = CKAN.Version;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -30,7 +30,7 @@ namespace Tests.NetKAN.Transformers
             mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>()))
                 .Returns(new GithubRelease(
                     "ExampleProject",
-                    new Version("1.0"),
+                    new ModuleVersion("1.0"),
                     new Uri("http://github.example/download")
                 ));
 

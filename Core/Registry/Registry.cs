@@ -396,7 +396,7 @@ namespace CKAN
         /// Remove the given module from the registry of available modules.
         /// Does *nothing* if the module was not present to begin with.
         /// </summary>
-        public void RemoveAvailable(string identifier, Version version)
+        public void RemoveAvailable(string identifier, ModuleVersion version)
         {
             AvailableModule availableModule;
             if (available_modules.TryGetValue(identifier, out availableModule))
@@ -580,7 +580,7 @@ namespace CKAN
         /// <param name="minKsp">Return parameter for the lowest  game version</param>
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
-                out Version    minMod, out Version    maxMod,
+                out ModuleVersion    minMod, out ModuleVersion    maxMod,
                 out KspVersion minKsp, out KspVersion maxKsp)
         {
             minMod = maxMod = null;
@@ -671,7 +671,7 @@ namespace CKAN
         /// or null if it does not exist.
         /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
         /// </summary>
-        public CkanModule GetModuleByVersion(string ident, Version version)
+        public CkanModule GetModuleByVersion(string ident, ModuleVersion version)
         {
             log.DebugFormat("Trying to find {0} version {1}", ident, version);
 
@@ -841,14 +841,14 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.Installed" />
         /// </summary>
-        public Dictionary<string, Version> Installed(bool withProvides = true)
+        public Dictionary<string, ModuleVersion> Installed(bool withProvides = true)
         {
-            var installed = new Dictionary<string, Version>();
+            var installed = new Dictionary<string, ModuleVersion>();
 
             // Index our DLLs, as much as we dislike them.
             foreach (var dllinfo in installed_dlls)
             {
-                installed[dllinfo.Key] = new DllVersion();
+                installed[dllinfo.Key] = new DllModuleVersion();
             }
 
             // Index our provides list, so users can see virtual packages
@@ -890,9 +890,9 @@ namespace CKAN
 
         // TODO: In the future it would be nice to cache this list, and mark it for rebuild
         // if our installed modules change.
-        internal Dictionary<string, ProvidesVersion> Provided()
+        internal Dictionary<string, ProvidesModuleVersion> Provided()
         {
-            var installed = new Dictionary<string, ProvidesVersion>();
+            var installed = new Dictionary<string, ProvidesModuleVersion>();
 
             foreach (var modinfo in installed_modules)
             {
@@ -906,7 +906,7 @@ namespace CKAN
 
                 foreach (string provided in module.provides)
                 {
-                    installed[provided] = new ProvidesVersion(module.identifier);
+                    installed[provided] = new ProvidesModuleVersion(module.identifier);
                 }
             }
 
@@ -916,7 +916,7 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
-        public Version InstalledVersion(string modIdentifier, bool with_provides=true)
+        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
         {
             InstalledModule installedModule;
 
@@ -929,7 +929,7 @@ namespace CKAN
             // If it's in our autodetected registry, return that.
             if (installed_dlls.ContainsKey(modIdentifier))
             {
-                return new DllVersion();
+                return new DllModuleVersion();
             }
 
             // Finally we have our provided checks. We'll skip these if
@@ -938,7 +938,7 @@ namespace CKAN
 
             var provided = Provided();
 
-            ProvidesVersion version;
+            ProvidesModuleVersion version;
             return provided.TryGetValue(modIdentifier, out version) ? version : null;
         }
 

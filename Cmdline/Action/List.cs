@@ -46,20 +46,20 @@ namespace CKAN.CmdLine
 
             if (exportFileType == null)
             {
-                var installed = new SortedDictionary<string, Version>(registry.Installed());
+                var installed = new SortedDictionary<string, ModuleVersion>(registry.Installed());
 
-                foreach (KeyValuePair<string, Version> mod in installed)
+                foreach (KeyValuePair<string, ModuleVersion> mod in installed)
                 {
-                    Version current_version = mod.Value;
+                    ModuleVersion current_version = mod.Value;
 
                     string bullet = "*";
 
-                    if (current_version is ProvidesVersion)
+                    if (current_version is ProvidesModuleVersion)
                     {
                         // Skip virtuals for now.
                         continue;
                     }
-                    else if (current_version is DllVersion)
+                    else if (current_version is DllModuleVersion)
                     {
                         // Autodetected dll
                         bullet = "-";

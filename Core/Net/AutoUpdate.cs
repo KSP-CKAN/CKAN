@@ -1,5 +1,5 @@
-using System;
-﻿using System.IO;
+﻿using System;
+ using System.IO;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
@@ -33,7 +33,7 @@ namespace CKAN
         private Tuple<Uri, long> fetchedUpdaterUrl;
         private Tuple<Uri, long> fetchedCkanUrl;
 
-        public Version LatestVersion { get; private set; }
+        public ModuleVersion LatestVersion { get; private set; }
         public string  ReleaseNotes  { get; private set; }
 
         public static readonly AutoUpdate Instance = new AutoUpdate();
@@ -109,12 +109,12 @@ namespace CKAN
             }
             catch (Kraken)
             {
-                LatestVersion = new Version(Meta.GetVersion());
+                LatestVersion = new ModuleVersion(Meta.GetVersion());
                 return;
             }
 
             ReleaseNotes  = ExtractReleaseNotes(response.body.ToString());
-            LatestVersion = new CkanVersion(response.tag_name.ToString(), response.name.ToString());
+            LatestVersion = new CkanModuleVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
         /// <summary>

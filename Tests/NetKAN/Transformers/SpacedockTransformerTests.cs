@@ -51,7 +51,7 @@ namespace Tests.NetKAN.Transformers
 
             sdmod.versions[0] = new SDVersion
             {
-                friendly_version = new CKAN.Version("0.25"),
+                friendly_version = new CKAN.ModuleVersion("0.25"),
                 download_path = new Uri("http://example.com/")
             };
 
