@@ -906,7 +906,7 @@ namespace CKAN
 
                 foreach (string provided in module.provides)
                 {
-                    installed[provided] = new ProvidesModuleVersion(module.identifier);
+                    installed[provided] = new ProvidesModuleVersion(module.identifier, module.version.ToString());
                 }
             }
 

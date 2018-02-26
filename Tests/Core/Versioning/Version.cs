@@ -99,7 +99,7 @@ namespace Tests.Core.Versioning
         [Test]
         public void ProvidesVersion()
         {
-            var v1 = new ProvidesModuleVersion("SomeModule");
+            var v1 = new ProvidesModuleVersion("SomeModule", "1.0");
             Assert.AreEqual("provided by SomeModule", v1.ToString());
         }
 

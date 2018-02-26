@@ -1,19 +1,21 @@
 namespace CKAN.Versioning
 {
     /// <summary>
-    /// Represents a virtual version that was provided by another package.
+    /// Represents a virtual version that was provided by another module.
     /// </summary>
     public sealed class ProvidesModuleVersion : ModuleVersion
     {
-        private readonly string _providedBy;
+        private readonly string _string;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProvidesModuleVersion"/> class with the specified module name.
+        /// Initializes a new instance of the <see cref="ProvidesModuleVersion"/> class with the specified module
+        /// identifier.
         /// </summary>
-        /// <param name="providedBy">The name of the providing package.</param>
-        public ProvidesModuleVersion(string providedBy) : base("0")
+        /// <param name="identifier">The identifier of the providing module.</param>
+        /// <param name="version">The version of the providing module.</param>
+        public ProvidesModuleVersion(string identifier, string version) : base(version)
         {
-            _providedBy = providedBy;
+            _string = $"provided by {identifier}-{version}";
         }
 
         /// <summary>
@@ -28,7 +30,7 @@ namespace CKAN.Versioning
         /// </remarks>
         public override string ToString()
         {
-            return $"provided by {_providedBy}";
+            return _string;
         }
     }
 }
