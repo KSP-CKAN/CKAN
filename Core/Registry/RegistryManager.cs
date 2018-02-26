@@ -455,7 +455,7 @@ namespace CKAN
             registry.ClearDlc();
             foreach (var i in dictionary)
             {
-                dictionary.Add(i.Key, i.Value);
+                registry.RegisterDlc(i.Key, i.Value);
             }
         }
     }
