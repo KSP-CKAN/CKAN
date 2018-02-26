@@ -111,8 +111,8 @@
     <Compile Include="Relationships\SanityChecker.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Types\CkanModule.cs" />
-    <Compile Include="Versioning\CkanVersion.cs" />
-    <Compile Include="Versioning\DllVersion.cs" />
+    <Compile Include="Versioning\CkanModuleVersion.cs" />
+    <Compile Include="Versioning\DllModuleVersion.cs" />
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="Types\FileType.cs" />
     <Compile Include="Types\GameComparator\BaseGameComparator.cs" />
@@ -124,10 +124,10 @@
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
     <Compile Include="Types\ModuleResolution.cs" />
-    <Compile Include="Versioning\ProvidesVersion.cs" />
+    <Compile Include="Versioning\ProvidesModuleVersion.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
     <Compile Include="Types\Repository.cs" />
-    <Compile Include="Versioning\Version.cs" />
+    <Compile Include="Versioning\ModuleVersion.cs" />
     <Compile Include="User.cs" />
     <Compile Include="VersionFormat.cs" />
     <Compile Include="Versioning\KspVersion.cs" />

@@ -27,13 +27,15 @@ namespace CKAN.Versioning
     {
         private static readonly Regex Pattern =
             new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
+
         private readonly Dictionary<Tuple<ModuleVersion, ModuleVersion>, int> _cache =
             new Dictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
+
         private readonly string _originalString;
         public const string AutodetectedDllString = "autodetected dll";
 
-        public int EpochPart { get; }
-        public string VersionPart { get; }
+        private readonly int _epoch;
+        private readonly string _version;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleVersion"/> class using the specified string.
@@ -48,10 +50,10 @@ namespace CKAN.Versioning
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0)
             {
-                EpochPart = Convert.ToInt32( match.Groups["epoch"].Value );
+                _epoch = Convert.ToInt32( match.Groups["epoch"].Value );
             }
 
-            VersionPart = match.Groups["version"].Value;
+            _version = match.Groups["version"].Value;
         }
 
         /// <summary>
@@ -116,12 +118,12 @@ namespace CKAN.Versioning
         /// </returns>
         public int CompareTo(ModuleVersion other)
         {
-            if (other.EpochPart == EpochPart && other.VersionPart.Equals(VersionPart))
+            if (other._epoch == _epoch && other._version.Equals(_version))
                 return 0;
 
             // Compare epochs first.
-            if (EpochPart != other.EpochPart)
-                return EpochPart > other.EpochPart ? 1 : -1;
+            if (_epoch != other._epoch)
+                return _epoch > other._epoch ? 1 : -1;
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
@@ -130,8 +132,8 @@ namespace CKAN.Versioning
                 return ret;
 
             Comparison comp;
-            comp.FirstRemainder = VersionPart;
-            comp.SecondRemainder = other.VersionPart;
+            comp.FirstRemainder = _version;
+            comp.SecondRemainder = other._version;
 
             // Process our strings while there are characters remaining
             while (comp.FirstRemainder.Length > 0 && comp.SecondRemainder.Length > 0)
@@ -432,7 +434,7 @@ namespace CKAN.Versioning
 
         public override int GetHashCode()
         {
-            return VersionPart.GetHashCode();
+            return _version.GetHashCode();
         }
 
         /// <summary>
