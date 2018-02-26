@@ -33,7 +33,7 @@ namespace CKAN
         public bool version_within_bounds(ModuleVersion other_version)
         {
             // DLL versions (aka autodetected mods) satisfy *all* relationships
-            if (other_version is DllModuleVersion)
+            if (other_version is UnmanagedModuleVersion)
                 return true;
 
             if (version == null)

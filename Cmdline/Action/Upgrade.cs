@@ -79,7 +79,7 @@ namespace CKAN.CmdLine
                     {
                         ModuleVersion current_version = mod.Value;
 
-                        if ((current_version is ProvidesModuleVersion) || (current_version is DllModuleVersion))
+                        if ((current_version is ProvidesModuleVersion) || (current_version is UnmanagedModuleVersion))
                         {
                             continue;
                         }

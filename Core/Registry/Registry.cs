@@ -848,7 +848,8 @@ namespace CKAN
             // Index our DLLs, as much as we dislike them.
             foreach (var dllinfo in installed_dlls)
             {
-                installed[dllinfo.Key] = new DllModuleVersion();
+                // HACK: Hardcoding a value of "0" for autodetected DLLs preserves previous behavior.
+                installed[dllinfo.Key] = new UnmanagedModuleVersion("0");
             }
 
             // Index our provides list, so users can see virtual packages
@@ -929,7 +930,8 @@ namespace CKAN
             // If it's in our autodetected registry, return that.
             if (installed_dlls.ContainsKey(modIdentifier))
             {
-                return new DllModuleVersion();
+                // HACK: Hardcoding a value of "0" for autodetected DLLs preserves previous behavior.
+                return new UnmanagedModuleVersion("0");
             }
 
             // Finally we have our provided checks. We'll skip these if

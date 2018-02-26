@@ -112,7 +112,7 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Types\CkanModule.cs" />
     <Compile Include="Versioning\CkanModuleVersion.cs" />
-    <Compile Include="Versioning\DllModuleVersion.cs" />
+    <Compile Include="Versioning\UnmanagedModuleVersion.cs" />
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="Types\FileType.cs" />
     <Compile Include="Types\GameComparator\BaseGameComparator.cs" />

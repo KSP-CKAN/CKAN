@@ -142,7 +142,7 @@ namespace CKAN
         /// <returns><c>true</c>, if autodetected<c>false</c> otherwise.</returns>
         public static bool IsAutodetected(this IRegistryQuerier querier, string identifier)
         {
-            return querier.IsInstalled(identifier) && querier.InstalledVersion(identifier) is DllModuleVersion;
+            return querier.IsInstalled(identifier) && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
         }
 
         /// <summary>

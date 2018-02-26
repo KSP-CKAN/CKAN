@@ -92,7 +92,7 @@ namespace Tests.Core.Versioning
         [Test]
         public void DllVersion()
         {
-            var v1 = new DllModuleVersion();
+            var v1 = new UnmanagedModuleVersion("0");
             Assert.AreEqual("autodetected dll", v1.ToString());
         }
 

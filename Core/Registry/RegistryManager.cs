@@ -363,7 +363,7 @@ namespace CKAN
 
             var mods = new JArray();
             foreach (var mod in registry.Installed()
-                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is DllModuleVersion)))
+                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is UnmanagedModuleVersion)))
             {
                 var module = new JObject();
                 module["name"] = mod.Key;

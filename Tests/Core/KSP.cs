@@ -79,7 +79,7 @@ namespace Tests.Core
             Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
             ModuleVersion version = registry.InstalledVersion("Example");
-            Assert.IsInstanceOf<DllModuleVersion>(version, "DLL detected as a DLL, not full mod");
+            Assert.IsInstanceOf<UnmanagedModuleVersion>(version, "DLL detected as a DLL, not full mod");
 
             // Now let's do the same with different case.
 

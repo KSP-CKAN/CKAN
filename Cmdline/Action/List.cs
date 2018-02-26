@@ -59,7 +59,7 @@ namespace CKAN.CmdLine
                         // Skip virtuals for now.
                         continue;
                     }
-                    else if (current_version is DllModuleVersion)
+                    else if (current_version is UnmanagedModuleVersion)
                     {
                         // Autodetected dll
                         bullet = "-";
