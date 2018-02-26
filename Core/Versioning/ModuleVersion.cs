@@ -88,8 +88,7 @@ namespace CKAN.Versioning
         /// and returns an indication of their relative values.
         /// </summary>
         /// <param name="other">
-        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
-        /// <c>null</c>.
+        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object.
         /// </param>
         /// <returns>
         /// <list type="bullet">
@@ -118,6 +117,9 @@ namespace CKAN.Versioning
         /// </returns>
         public int CompareTo(ModuleVersion other)
         {
+            if (other is null)
+                throw new ArgumentNullException(nameof(other));
+
             if (other._epoch == _epoch && other._version.Equals(_version))
                 return 0;
 
