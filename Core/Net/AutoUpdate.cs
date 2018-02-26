@@ -115,7 +115,7 @@ namespace CKAN
             }
 
             ReleaseNotes  = ExtractReleaseNotes(response.body.ToString());
-            LatestVersion = new CKANVersion(response.tag_name.ToString(), response.name.ToString());
+            LatestVersion = new CkanVersion(response.tag_name.ToString(), response.name.ToString());
         }
 
         /// <summary>

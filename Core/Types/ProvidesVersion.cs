@@ -1,20 +1,34 @@
 namespace CKAN
 {
     /// <summary>
-    /// This class represents a virtual version that was provided by
-    /// another module.
+    /// Represents a virtual version that was provided by another package.
     /// </summary>
-    public class ProvidesVersion : Version {
-        internal readonly string provided_by;
+    public sealed class ProvidesVersion : Version
+    {
+        private readonly string _providedBy;
 
-        public ProvidesVersion(string provided_by) :base("0")
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProvidesVersion"/> class with the specified package name.
+        /// </summary>
+        /// <param name="providedBy">The name of the providing package.</param>
+        public ProvidesVersion(string providedBy) : base("0")
         {
-            this.provided_by = provided_by;
+            _providedBy = providedBy;
         }
 
-        override public string ToString()
+        /// <summary>
+        /// Converts the value of the current <see cref="ProvidesVersion"/> object to a <see cref="string"/>
+        /// representation.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/> representation of the current <see cref="ProvidesVersion"/> object.>
+        /// </returns>
+        /// <remarks>
+        /// The returned value is not a real version string and is for display purposes only.
+        /// </remarks>
+        public override string ToString()
         {
-            return string.Format("provided by {0}", provided_by);
+            return $"provided by {_providedBy}";
         }
     }
 }

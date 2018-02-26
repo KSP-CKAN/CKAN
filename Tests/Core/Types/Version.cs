@@ -113,6 +113,15 @@ namespace Tests.Core.Types
         }
 
         [Test]
+        public void DifferentEpochs()
+        {
+            var v1 = new CKAN.Version("1:1");
+            var v2 = new CKAN.Version("2:1");
+
+            Assert.That(!v1.IsEqualTo(v2));
+        }
+
+        [Test]
         public void StringComparison()
         {
             var str = CKAN.Version.StringComp("", "");
