@@ -25,6 +25,8 @@ namespace CKAN
     [JsonConverter(typeof(JsonSimpleStringConverter))]
     public partial class Version : IComparable<Version>
     {
+        private static readonly Regex Pattern =
+            new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
         private readonly Dictionary<Tuple<Version, Version>, int> _cache =
             new Dictionary<Tuple<Version, Version>, int>();
         private readonly string _originalString;
@@ -41,10 +43,7 @@ namespace CKAN
         {
             _originalString = version;
 
-            var match = Regex.Match(
-                version,
-                @"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$"
-            );
+            var match = Pattern.Match(version);
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0)
