@@ -93,14 +93,14 @@ namespace Tests.Core.Versioning
         public void DllVersion()
         {
             var v1 = new UnmanagedModuleVersion("0");
-            Assert.AreEqual("autodetected dll", v1.ToString());
+            Assert.That(v1.ToString().Contains("unmanaged"));
         }
 
         [Test]
         public void ProvidesVersion()
         {
             var v1 = new ProvidesModuleVersion("SomeModule", "1.0");
-            Assert.AreEqual("provided by SomeModule", v1.ToString());
+            Assert.That(v1.ToString().Contains("provided"));
         }
 
         [Test]
