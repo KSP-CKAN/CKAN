@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
@@ -28,8 +28,8 @@ namespace CKAN.Versioning
         private static readonly Regex Pattern =
             new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
 
-        private readonly Dictionary<Tuple<ModuleVersion, ModuleVersion>, int> _cache =
-            new Dictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
+        private static readonly ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int> ComparisonCache =
+            new ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
 
         private readonly string _originalString;
         public const string AutodetectedDllString = "autodetected dll";
@@ -128,7 +128,7 @@ namespace CKAN.Versioning
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
             var tuple = new Tuple<ModuleVersion, ModuleVersion>(this, other);
-            if (_cache.TryGetValue(tuple, out var ret))
+            if (ComparisonCache.TryGetValue(tuple, out var ret))
                 return ret;
 
             Comparison comp;
@@ -144,7 +144,7 @@ namespace CKAN.Versioning
                 // If we've found a difference, return it.
                 if (comp.CompareTo != 0)
                 {
-                    _cache.Add(tuple, comp.CompareTo);
+                    ComparisonCache.TryAdd(tuple, comp.CompareTo);
                     return comp.CompareTo;
                 }
 
@@ -157,7 +157,7 @@ namespace CKAN.Versioning
                 // Again, return difference if found.
                 if (comp.CompareTo != 0)
                 {
-                    _cache.Add(tuple, comp.CompareTo);
+                    ComparisonCache.TryAdd(tuple, comp.CompareTo);
                     return comp.CompareTo;
                 }
             }
@@ -168,16 +168,16 @@ namespace CKAN.Versioning
             {
                 if (comp.SecondRemainder.Length == 0)
                 {
-                    _cache.Add(tuple, 0);
+                    ComparisonCache.TryAdd(tuple, 0);
                     return 0;
                 }
 
                 // They *can't* be equal, because we would have detected that in our first test.
                 // So, whichever version is empty first is the smallest. (1.2 < 1.2.3)
-                _cache.Add(tuple, -1);
+                ComparisonCache.TryAdd(tuple, -1);
                 return -1;
             }
-            _cache.Add(tuple, 1);
+            ComparisonCache.TryAdd(tuple, 1);
             return 1;
         }
 
