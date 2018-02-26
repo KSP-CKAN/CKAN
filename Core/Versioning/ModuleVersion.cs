@@ -28,8 +28,8 @@ namespace CKAN.Versioning
         private static readonly Regex Pattern =
             new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
 
-        private static readonly ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int> ComparisonCache =
-            new ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
+        private static readonly ConcurrentDictionary<Tuple<string, string>, int> ComparisonCache =
+            new ConcurrentDictionary<Tuple<string, string>, int>();
     }
     
     public partial class ModuleVersion
@@ -87,6 +87,9 @@ namespace CKAN.Versioning
 
         public bool Equals(ModuleVersion other)
         {
+            if (ReferenceEquals(this, other))
+                return true;
+
             return CompareTo(other) == 0;
         }
 
@@ -307,7 +310,7 @@ namespace CKAN.Versioning
 
             // Epochs are the same. Do the dance described in
             // https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version-ordering
-            var tuple = new Tuple<ModuleVersion, ModuleVersion>(this, other);
+            var tuple = new Tuple<string, string>(_string, other._string);
             if (ComparisonCache.TryGetValue(tuple, out var ret))
                 return ret;
 
