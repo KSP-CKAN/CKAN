@@ -37,6 +37,15 @@ namespace CKAN
         [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
         [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
+        /// <summary>
+        /// A map between module identifiers and versions for official DLC that are installed.
+        /// </summary>
+        /// <remarks>
+        /// This shouldn't have a <see cref="JsonPropertyAttribute"/> as detection at runtime should be fast.
+        /// </remarks>
+        private readonly Dictionary<string, UnmanagedModuleVersion> _installedDlcModules =
+            new Dictionary<string, UnmanagedModuleVersion>();
+
         [JsonIgnore] private string transaction_backup;
 
         /// <summary>
@@ -838,6 +847,16 @@ namespace CKAN
             installed_dlls = new Dictionary<string, string>();
         }
 
+        public void RegisterDlc(string identifier, UnmanagedModuleVersion version)
+        {
+            _installedDlcModules[identifier] = version;
+        }
+
+        public void ClearDlc()
+        {
+            _installedDlcModules.Clear();
+        }
+
         /// <summary>
         /// <see cref = "IRegistryQuerier.Installed" />
         /// </summary>
@@ -865,6 +884,12 @@ namespace CKAN
             foreach (var modinfo in installed_modules)
             {
                 installed[modinfo.Key] = modinfo.Value.Module.version;
+            }
+
+            // Index our detected DLC (which overwrites everything)
+            foreach (var i in _installedDlcModules)
+            {
+                installed[i.Key] = i.Value;
             }
 
             return installed;
@@ -920,6 +945,12 @@ namespace CKAN
         public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
         {
             InstalledModule installedModule;
+
+            // If it's in our DLC registry, return that
+            if (_installedDlcModules.ContainsKey(modIdentifier))
+            {
+                return _installedDlcModules[modIdentifier];
+            }
 
             // If it's genuinely installed, return the details we have.
             if (installed_modules.TryGetValue(modIdentifier, out installedModule))
@@ -979,20 +1010,25 @@ namespace CKAN
         public void CheckSanity()
         {
             IEnumerable<CkanModule> installed = from pair in installed_modules select pair.Value.Module;
-            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
+            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys, _installedDlcModules);
         }
 
         public List<string> GetSanityErrors()
         {
             var installed = from pair in installed_modules select pair.Value.Module;
-            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys).ToList();
+            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys, _installedDlcModules).ToList();
         }
 
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-        internal static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<CkanModule> orig_installed, IEnumerable<string> dlls)
+        internal static HashSet<string> FindReverseDependencies(
+            IEnumerable<string> modules_to_remove,
+            IEnumerable<CkanModule> orig_installed,
+            IEnumerable<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
         {
             while (true)
             {
@@ -1004,7 +1040,7 @@ namespace CKAN
 
                 // Find what would break with this configuration.
                 // The Values.SelectMany() flattens our list of broken mods.
-                var broken = new HashSet<string>(SanityChecker.FindUnmetDependencies(hypothetical, dlls)
+                var broken = new HashSet<string>(SanityChecker.FindUnmetDependencies(hypothetical, dlls, dlc)
                     .Values.SelectMany(x => x).Select(x => x.identifier));
 
                 // If nothing else would break, it's just the list of modules we're removing.
@@ -1028,7 +1064,7 @@ namespace CKAN
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
+            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
         }
 
         /// <summary>

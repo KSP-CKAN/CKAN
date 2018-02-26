@@ -286,6 +286,7 @@ namespace CKAN
 
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
+            ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
@@ -442,6 +443,20 @@ namespace CKAN
         {
             string serialized = SerializeCurrentInstall(recommends, with_versions);
             file_transaction.WriteAllText(path, serialized);
+        }
+
+        public void ScanDlc()
+        {
+            var dictionary = new Dictionary<string, UnmanagedModuleVersion>();
+
+            // TODO: Detect actual DLC
+            dictionary.Add("Example-DLC", new UnmanagedModuleVersion("1.0.0"));
+
+            registry.ClearDlc();
+            foreach (var i in dictionary)
+            {
+                dictionary.Add(i.Key, i.Value);
+            }
         }
     }
 }

@@ -465,6 +465,8 @@ namespace CKAN
                     manager.registry.RegisterDll(this, dll);
                 }
 
+                manager.ScanDlc();
+
                 tx.Complete();
             }
             manager.Save(enforce_consistency: false);
