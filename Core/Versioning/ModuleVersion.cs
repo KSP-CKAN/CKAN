@@ -23,19 +23,20 @@ namespace CKAN.Versioning
     /// </remarks>
     [Serializable]
     [JsonConverter(typeof(JsonSimpleStringConverter))]
-    public partial class ModuleVersion : IComparable<ModuleVersion>
+    public partial class ModuleVersion
     {
         private static readonly Regex Pattern =
             new Regex(@"^(?:(?<epoch>[0-9]+):)?(?<version>.*)$", RegexOptions.Compiled);
 
         private static readonly ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int> ComparisonCache =
             new ConcurrentDictionary<Tuple<ModuleVersion, ModuleVersion>, int>();
-
-        private readonly string _originalString;
-        public const string AutodetectedDllString = "autodetected dll";
-
+    }
+    
+    public partial class ModuleVersion
+    {
         private readonly int _epoch;
         private readonly string _version;
+        private readonly string _string;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleVersion"/> class using the specified string.
@@ -43,9 +44,10 @@ namespace CKAN.Versioning
         /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
         public ModuleVersion(string version)
         {
-            _originalString = version;
-
             var match = Pattern.Match(version);
+
+            if (!match.Success)
+                throw new FormatException("Input string was not in a correct format.");
 
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0)
@@ -54,6 +56,7 @@ namespace CKAN.Versioning
             }
 
             _version = match.Groups["version"].Value;
+            _string = version;
         }
 
         /// <summary>
@@ -68,21 +71,25 @@ namespace CKAN.Versioning
         /// </remarks>
         public override string ToString()
         {
-            return _originalString;
+            return _string;
         }
 
-        /// <summary>
-        /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.
-        /// </summary>
-        /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
-        /// <returns>
-        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="String"/>.
-        /// </returns>
-        public static explicit operator ModuleVersion(string version)
+        public override bool Equals(object obj)
         {
-            return new ModuleVersion(version);
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            return obj is ModuleVersion other && IsEqualTo(other);
         }
 
+        public override int GetHashCode()
+        {
+            return _version.GetHashCode();
+        }
+    }
+
+    public partial class ModuleVersion : IComparable<ModuleVersion>
+    {
         /// <summary>
         /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
         /// and returns an indication of their relative values.
@@ -117,6 +124,114 @@ namespace CKAN.Versioning
         /// </returns>
         public int CompareTo(ModuleVersion other)
         {
+            Comparison stringComp(string v1, string v2)
+            {
+                var comparison = new Comparison { FirstRemainder = "", SecondRemainder = "" };
+
+                // Our starting assumptions are that both versions are completely
+                // strings, with no remainder. We'll then check if they're not.
+
+                var str1 = v1;
+                var str2 = v2;
+
+                // Start by walking along our version string until we find a number,
+                // thereby finding the starting string in both cases. If we fall off
+                // the end, then our assumptions made above hold.
+
+                for (var i = 0; i < v1.Length; i++)
+                {
+                    if (char.IsNumber(v1[i]))
+                    {
+                        comparison.FirstRemainder = v1.Substring(i);
+                        str1 = v1.Substring(0, i);
+                        break;
+                    }
+                }
+
+                for (var i = 0; i < v2.Length; i++)
+                {
+                    if (char.IsNumber(v2[i]))
+                    {
+                        comparison.SecondRemainder = v2.Substring(i);
+                        str2 = v2.Substring(0, i);
+                        break;
+                    }
+                }
+
+                // Then compare the two strings, and return our comparison state.
+                // Override sorting of '.' to higher than other characters.
+                if (str1.Length > 0 && str2.Length > 0)
+                {
+                    if (str1[0] != '.' && str2[0] == '.')
+                    {
+                        comparison.CompareTo = -1;
+                    }
+                    else if (str1[0] == '.' && str2[0] != '.')
+                    {
+                        comparison.CompareTo = 1;
+                    }
+                    else if (str1[0] == '.' && str2[0] == '.')
+                    {
+                        if (str1.Length == 1 && str2.Length > 1)
+                        {
+                            comparison.CompareTo = 1;
+                        }
+                        else if (str1.Length > 1 && str2.Length == 1)
+                        {
+                            comparison.CompareTo = -1;
+                        }
+                    }
+                    else
+                    {
+                        comparison.CompareTo = string.CompareOrdinal(str1, str2);
+                    }
+                }
+                else
+                {
+                    comparison.CompareTo = string.CompareOrdinal(str1, str2);
+                }
+                return comparison;
+            }
+
+            Comparison numComp(string v1, string v2)
+            {
+                var comparison = new Comparison { FirstRemainder = "", SecondRemainder = "" };
+
+                var minimumLength1 = 0;
+                for (var i = 0; i < v1.Length; i++)
+                {
+                    if (!char.IsNumber(v1[i]))
+                    {
+                        comparison.FirstRemainder = v1.Substring(i);
+                        break;
+                    }
+
+                    minimumLength1++;
+                }
+
+                var minimumLength2 = 0;
+                for (var i = 0; i < v2.Length; i++)
+                {
+                    if (!char.IsNumber(v2[i]))
+                    {
+                        comparison.SecondRemainder = v2.Substring(i);
+                        break;
+                    }
+
+                    minimumLength2++;
+                }
+
+
+                if (!int.TryParse(v1.Substring(0, minimumLength1), out var integer1))
+                    integer1 = 0;
+
+                if (!int.TryParse(v2.Substring(0, minimumLength2), out var integer2))
+                    integer2 = 0;
+
+                comparison.CompareTo = integer1.CompareTo(integer2);
+                return comparison;
+            }
+
             if (other is null)
                 throw new ArgumentNullException(nameof(other));
 
@@ -141,7 +256,7 @@ namespace CKAN.Versioning
             while (comp.FirstRemainder.Length > 0 && comp.SecondRemainder.Length > 0)
             {
                 // Start by comparing the string parts.
-                comp = StringComp(comp.FirstRemainder, comp.SecondRemainder);
+                comp = stringComp(comp.FirstRemainder, comp.SecondRemainder);
 
                 // If we've found a difference, return it.
                 if (comp.CompareTo != 0)
@@ -154,7 +269,7 @@ namespace CKAN.Versioning
                 // It's okay not to check if our strings are exhausted, because
                 // if they are the exhausted parts will return zero.
 
-                comp = NumComp (comp.FirstRemainder, comp.SecondRemainder);
+                comp = numComp(comp.FirstRemainder, comp.SecondRemainder);
 
                 // Again, return difference if found.
                 if (comp.CompareTo != 0)
@@ -277,169 +392,6 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
-        /// Returns the larger of two <see cref="ModuleVersion"/> objects.
-        /// </summary>
-        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is larger.</returns>
-        /// <remarks>
-        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
-        /// particular instance will be returned.
-        /// </remarks>
-        public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            if (ver1 == null)
-                throw new ArgumentNullException(nameof(ver1));
-
-            if (ver2 == null)
-                throw new ArgumentNullException(nameof(ver2));
-
-            return ver1.IsGreaterThan(ver2) ? ver1 : ver2;
-        }
-
-        /// <summary>
-        /// Returns the smaller of two <see cref="ModuleVersion"/> objects.
-        /// </summary>
-        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is smaller.</returns>
-        /// <remarks>
-        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
-        /// particular instance will be returned.
-        /// </remarks>
-        public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            if (ver1 == null)
-                throw new ArgumentNullException(nameof(ver1));
-
-            if (ver2 == null)
-                throw new ArgumentNullException(nameof(ver2));
-
-            return ver1.IsLessThan(ver2) ? ver1 : ver2;
-        }
-
-        private static Comparison StringComp(string v1, string v2)
-        {
-            var comp = new Comparison {FirstRemainder = "", SecondRemainder = ""};
-
-            // Our starting assumptions are that both versions are completely
-            // strings, with no remainder. We'll then check if they're not.
-
-            var str1 = v1;
-            var str2 = v2;
-
-            // Start by walking along our version string until we find a number,
-            // thereby finding the starting string in both cases. If we fall off
-            // the end, then our assumptions made above hold.
-
-            for (var i = 0; i < v1.Length; i++)
-            {
-                if (char.IsNumber(v1[i]))
-                {
-                    comp.FirstRemainder = v1.Substring(i);
-                    str1 = v1.Substring(0, i);
-                    break;
-                }
-            }
-
-            for (var i = 0; i < v2.Length; i++)
-            {
-                if (char.IsNumber(v2[i]))
-                {
-                    comp.SecondRemainder = v2.Substring(i);
-                    str2 = v2.Substring(0, i);
-                    break;
-                }
-            }
-
-            // Then compare the two strings, and return our comparison state.
-            // Override sorting of '.' to higher than other characters.
-            if (str1.Length > 0 && str2.Length > 0)
-            {
-                if (str1[0] != '.' && str2[0] == '.')
-                {
-                    comp.CompareTo = -1;
-                }
-                else if (str1[0] == '.' && str2[0] != '.')
-                {
-                    comp.CompareTo = 1;
-                }
-                else if (str1[0] == '.' && str2[0] == '.')
-                {
-                    if (str1.Length == 1 && str2.Length > 1)
-                    {
-                        comp.CompareTo = 1;
-                    }
-                    else if (str1.Length > 1 && str2.Length == 1)
-                    {
-                        comp.CompareTo = -1;
-                    }
-                }
-                else
-                {
-                    comp.CompareTo = string.CompareOrdinal(str1, str2);
-                }
-            }
-            else
-            {
-                comp.CompareTo = string.CompareOrdinal(str1, str2);
-            }
-            return comp;
-        }
-
-        private static Comparison NumComp(string v1, string v2)
-        {
-            var comp = new Comparison {FirstRemainder = "", SecondRemainder = ""};
-
-            var minimumLength1 = 0;
-            for (var i = 0; i < v1.Length; i++)
-            {
-                if (!char.IsNumber(v1[i]))
-                {
-                    comp.FirstRemainder = v1.Substring(i);
-                    break;
-                }
-
-                minimumLength1++;
-            }
-            
-            var minimumLength2 = 0;
-            for (var i = 0; i < v2.Length; i++)
-            {
-                if (!char.IsNumber(v2[i]))
-                {
-                    comp.SecondRemainder = v2.Substring(i);
-                    break;
-                }
-
-                minimumLength2++;
-            }
-
-
-            if (!int.TryParse(v1.Substring(0, minimumLength1), out var integer1))
-                integer1 = 0;
-
-            if (!int.TryParse(v2.Substring(0, minimumLength2), out var integer2))
-                integer2 = 0;
-
-            comp.CompareTo = integer1.CompareTo(integer2);
-            return comp;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            return obj is ModuleVersion other && IsEqualTo(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return _version.GetHashCode();
-        }
-
-        /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than the second.
         /// </summary>
         /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
@@ -543,6 +495,63 @@ namespace CKAN.Versioning
         public static bool operator >=(ModuleVersion ver1, ModuleVersion ver2)
         {
             return ver1.CompareTo(ver2) >= 0;
+        }
+    }
+
+    public partial class ModuleVersion
+    {
+        /// <summary>
+        /// Returns the larger of two <see cref="ModuleVersion"/> objects.
+        /// </summary>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is larger.</returns>
+        /// <remarks>
+        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
+        /// particular instance will be returned.
+        /// </remarks>
+        public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
+        {
+            if (ver1 == null)
+                throw new ArgumentNullException(nameof(ver1));
+
+            if (ver2 == null)
+                throw new ArgumentNullException(nameof(ver2));
+
+            return ver1.IsGreaterThan(ver2) ? ver1 : ver2;
+        }
+
+        /// <summary>
+        /// Returns the smaller of two <see cref="ModuleVersion"/> objects.
+        /// </summary>
+        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
+        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is smaller.</returns>
+        /// <remarks>
+        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
+        /// particular instance will be returned.
+        /// </remarks>
+        public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
+        {
+            if (ver1 == null)
+                throw new ArgumentNullException(nameof(ver1));
+
+            if (ver2 == null)
+                throw new ArgumentNullException(nameof(ver2));
+
+            return ver1.IsLessThan(ver2) ? ver1 : ver2;
+        }
+
+        /// <summary>
+        /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.
+        /// </summary>
+        /// <param name="version">A <see cref="String"/> in the appropriate format.</param>
+        /// <returns>
+        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="String"/>.
+        /// </returns>
+        public static explicit operator ModuleVersion(string version)
+        {
+            return new ModuleVersion(version);
         }
     }
 

@@ -5,6 +5,8 @@ namespace CKAN.Versioning
     /// </summary>
     public sealed class DllModuleVersion : ModuleVersion
     {
+        private const string AutodetectedDllString = "autodetected dll";
+
         public DllModuleVersion() : base("0") { }
 
         public override string ToString()
