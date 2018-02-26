@@ -447,13 +447,22 @@ namespace CKAN
 
         public void ScanDlc()
         {
-            var dictionary = new Dictionary<string, UnmanagedModuleVersion>();
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            // TODO: Detect actual DLC
-            dictionary.Add("Example-DLC", new UnmanagedModuleVersion("1.0.0"));
+            var dlcDirectory = Path.Combine(ksp.GameDir(), "DLCTest");
+            if (Directory.Exists(dlcDirectory))
+            {
+                foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
+                {
+                    var id = Path.GetFileNameWithoutExtension(f);
+                    var ver = File.ReadAllText(f).Trim();
+
+                    dlc[id] = new UnmanagedModuleVersion(ver);
+                }
+            }
 
             registry.ClearDlc();
-            foreach (var i in dictionary)
+            foreach (var i in dlc)
             {
                 registry.RegisterDlc(i.Key, i.Value);
             }
