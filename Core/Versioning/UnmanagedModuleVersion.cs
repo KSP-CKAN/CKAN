@@ -7,9 +7,10 @@ namespace CKAN.Versioning
     {
         private readonly string _string;
 
-        public UnmanagedModuleVersion(string version) : base(version)
+        // HACK: Hardcoding a value of "0" for autodetected DLLs preserves previous behavior.
+        public UnmanagedModuleVersion(string version) : base(version ?? "0")
         {
-            _string = $"{version} (unmanaged)";
+            _string = version is null ? "(unmanaged)" : $"{version} (unmanaged)";
         }
 
         public override string ToString()
