@@ -22,6 +22,15 @@ namespace CKAN
     /// </summary>
     public class KSP : IDisposable
     {
+        /// <summary>
+        /// List of DLLs that should never be added to the autodetect list.
+        /// </summary>
+        private static readonly HashSet<string> DllIgnoreList = new HashSet<string>
+        {
+            "GameData/Squad/Plugins/KSPSteamCtrlr.dll",
+            "GameData/Squad/Plugins/Steamworks.NET.dll"
+        };
+
         public IUser User { get; set; }
 
         #region Fields and Properties
@@ -462,7 +471,10 @@ namespace CKAN
 
                 foreach (string dll in files.Select(KSPPathUtils.NormalizePath))
                 {
-                    manager.registry.RegisterDll(this, dll);
+                    var relativePath = ToRelativeGameDir(dll);
+
+                    if (!DllIgnoreList.Contains(relativePath))
+                        manager.registry.RegisterDll(this, dll);
                 }
 
                 manager.ScanDlc();
