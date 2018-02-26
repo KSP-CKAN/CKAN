@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN

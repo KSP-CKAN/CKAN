@@ -1,4 +1,5 @@
 using System;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Github
 {

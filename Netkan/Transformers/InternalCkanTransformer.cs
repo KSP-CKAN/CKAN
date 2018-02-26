@@ -2,6 +2,7 @@
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN.NetKAN.Transformers

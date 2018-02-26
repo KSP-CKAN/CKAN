@@ -3,6 +3,7 @@ using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
+using CKAN.Versioning;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;

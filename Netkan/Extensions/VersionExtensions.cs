@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CKAN.Versioning;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Extensions
 {

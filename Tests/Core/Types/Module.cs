@@ -88,9 +88,9 @@ namespace Tests.Core.Types
             // The *old* CKAN spec had a version number of "1".
             // It should be accepted by any client with an old version number,
             // as well as any with a new version number.
-            var old_spec = new CKAN.ModuleVersion("1");
-            var old_dev = new CKAN.ModuleVersion("v0.23");
-            var new_dev = new CKAN.ModuleVersion("v1.2.3");
+            var old_spec = new ModuleVersion("1");
+            var old_dev = new ModuleVersion("v0.23");
+            var new_dev = new ModuleVersion("v1.2.3");
 
             Assert.IsTrue(old_dev.IsGreaterThan(old_spec));
             Assert.IsTrue(new_dev.IsGreaterThan(old_spec));
@@ -98,8 +98,8 @@ namespace Tests.Core.Types
             // The new spec requires a minimum number (v1.2, v1.4)
             // Make sure our assumptions here hold, too.
 
-            var readable_spec = new CKAN.ModuleVersion("v1.2");
-            var unreadable_spec = new CKAN.ModuleVersion("v1.4");
+            var readable_spec = new ModuleVersion("v1.2");
+            var unreadable_spec = new ModuleVersion("v1.4");
 
             Assert.IsTrue(new_dev.IsGreaterThan(readable_spec));
             Assert.IsFalse(new_dev.IsGreaterThan(unreadable_spec));
@@ -109,12 +109,12 @@ namespace Tests.Core.Types
         public void IsSpecSupported()
         {
             // We should always support old versions, and the classic '1' version.
-            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.ModuleVersion("1")));
-            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.ModuleVersion("v0.02")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("1")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("v0.02")));
 
             // We shouldn't support this far-in-the-future version.
             // NB: V2K bug!!!
-            Assert.IsFalse(CkanModule.IsSpecSupported(new CKAN.ModuleVersion("v2000.99.99")));
+            Assert.IsFalse(CkanModule.IsSpecSupported(new ModuleVersion("v2000.99.99")));
         }
 
         [Test]
@@ -123,8 +123,8 @@ namespace Tests.Core.Types
             // We should support both two and three number dotted specs, on both
             // tagged and dev releases.
 
-            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.ModuleVersion("v1.1")));
-            Assert.IsTrue(CkanModule.IsSpecSupported(new CKAN.ModuleVersion("v1.0.2")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("v1.1")));
+            Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("v1.0.2")));
         }
 
         [Test]

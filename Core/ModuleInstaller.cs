@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.Types;
+using CKAN.Versioning;
 
 namespace CKAN
 {

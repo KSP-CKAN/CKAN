@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Autofac;
 using ChinhDo.Transactions;
 using CKAN.GameVersionProviders;
+using CKAN.Versioning;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;

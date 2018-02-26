@@ -1,4 +1,6 @@
-﻿namespace CKAN.CmdLine
+﻿using CKAN.Versioning;
+
+namespace CKAN.CmdLine
 {
     // Does not need an instance, so this is not an ICommand
     public class Compare

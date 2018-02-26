@@ -1,5 +1,6 @@
 ﻿using CKAN;
 using CKAN.NetKAN.Extensions;
+using CKAN.Versioning;
 using NUnit.Framework;
 
 namespace Tests.NetKAN.Extensions
