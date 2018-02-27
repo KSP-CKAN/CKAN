@@ -449,12 +449,12 @@ namespace CKAN
         {
             var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            var dlcDirectory = Path.Combine(ksp.GameDir(), "DLCTest");
+            var dlcDirectory = Path.Combine(ksp.CkanDir(), "dlc");
             if (Directory.Exists(dlcDirectory))
             {
                 foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
                 {
-                    var id = Path.GetFileNameWithoutExtension(f);
+                    var id = $"{Path.GetFileNameWithoutExtension(f)}-DLC";
                     var ver = File.ReadAllText(f).Trim();
 
                     dlc[id] = new UnmanagedModuleVersion(ver);
