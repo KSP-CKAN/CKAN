@@ -361,9 +361,9 @@ namespace CKAN
                     }
 
                     throw new InconsistentKraken(
-                        $"{dep_name} requires a version {descriptor.RequiredVersion}. " +
+                        $"{dep_name} version {descriptor.RequiredVersion} is required. " +
                         $"However an incompatible version, {installedVersion}, " +
-                        "is already installed"
+                        "is already installed."
                     );
                 }
 
