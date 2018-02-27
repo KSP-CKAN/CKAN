@@ -117,13 +117,13 @@ namespace CKAN
             // If we're here, then we have a relationship to satisfy, so things get more complex.
             if (ksp_version == null)
             {
-                var version = available_versions.LastOrDefault(relationship.version_within_bounds);
+                var version = available_versions.LastOrDefault(relationship.WithinBounds);
                 return version == null ? null : module_version[version];
             }
             else
             {
                 var version = available_versions.LastOrDefault(v =>
-                    relationship.version_within_bounds(v) &&
+                    relationship.WithinBounds(v) &&
                     module_version[v].IsCompatibleKSP(ksp_version));
                 return version == null ? null : module_version[version];
             }

@@ -28,27 +28,31 @@ namespace CKAN
         /// Else it uses the {min,max}_version fields treating nulls as unbounded.
         /// Note: Uses inclusive inequalities.
         /// </summary>
-        /// <param name="other_version"></param>
+        /// <param name="other"></param>
         /// <returns>True if other_version is within the bounds</returns>
-        public bool version_within_bounds(ModuleVersion other_version)
+        public bool WithinBounds(ModuleVersion other)
         {
-            // DLL versions (aka autodetected mods) satisfy *all* relationships
-            if (other_version is UnmanagedModuleVersion)
+            // UnmanagedModuleVersions with unknown versions always satisfy the bound
+            if (other is UnmanagedModuleVersion unmanagedModuleVersion && unmanagedModuleVersion.IsUnknownVersion)
                 return true;
 
             if (version == null)
             {
                 if (max_version == null && min_version == null)
                     return true;
-                bool min_sat = min_version == null || min_version <= other_version;
-                bool max_sat = max_version == null || max_version >= other_version;
-                if (min_sat && max_sat) return true;
+
+                var minSat = min_version == null || min_version <= other;
+                var maxSat = max_version == null || max_version >= other;
+
+                if (minSat && maxSat)
+                    return true;
             }
             else
             {
-                if (version.Equals(other_version))
+                if (version.Equals(other))
                     return true;
             }
+
             return false;
         }
 
@@ -462,7 +466,7 @@ namespace CKAN
             return
                 mod1.conflicts.Any(
                     conflict =>
-                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
+                        mod2.ProvidesList.Contains(conflict.name) && conflict.WithinBounds(mod2.version));
         }
 
         /// <summary>

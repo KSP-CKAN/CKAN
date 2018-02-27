@@ -17,7 +17,7 @@ namespace Tests.Core.Types
         public void VersionWithinBounds_ExactFalse(string version, string other_version, bool expected)
         {
             var rd = new CKAN.RelationshipDescriptor { version = new ModuleVersion(version) };
-            Assert.AreEqual(expected, rd.version_within_bounds(new ModuleVersion(other_version)));
+            Assert.AreEqual(expected, rd.WithinBounds(new ModuleVersion(other_version)));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Tests.Core.Types
                 max_version = new ModuleVersion(max)
             };
 
-            Assert.AreEqual(expected, rd.version_within_bounds(new ModuleVersion(compare_to)));
+            Assert.AreEqual(expected, rd.WithinBounds(new ModuleVersion(compare_to)));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace Tests.Core.Types
         {
             var rd = new CKAN.RelationshipDescriptor { version = new ModuleVersion(version) };
 
-            Assert.True(rd.version_within_bounds(autodetected));
+            Assert.True(rd.WithinBounds(autodetected));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Tests.Core.Types
                 max_version = new ModuleVersion(max)
             };
             
-            Assert.True(rd.version_within_bounds(autodetected));
+            Assert.True(rd.WithinBounds(autodetected));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Tests.Core.Types
         {
             var rd = new CKAN.RelationshipDescriptor();
 
-            Assert.True(rd.version_within_bounds(new ModuleVersion(version)));
+            Assert.True(rd.WithinBounds(new ModuleVersion(version)));
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace Tests.Core.Types
         {
             var rd = new CKAN.RelationshipDescriptor();
 
-            Assert.True(rd.version_within_bounds(null));        }
+            Assert.True(rd.WithinBounds(null));        }
     }
 }
 

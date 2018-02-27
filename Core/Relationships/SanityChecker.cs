@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CKAN.Versioning;
@@ -31,8 +32,6 @@ namespace CKAN
                 return errors;
             }
 
-            Dictionary<string, List<string>> providers = ModulesToProvides(modules, dlls, dlc);
-
             foreach (KeyValuePair<string,List<CkanModule>> entry in FindUnmetDependencies(modules, dlls, dlc))
             {
                 foreach (CkanModule unhappy_mod in entry.Value)
@@ -57,6 +56,9 @@ namespace CKAN
             // TODO: This doesn't examine versions. We should!
             // TODO: It would be great to factor this into its own function, too.
 
+            var provided = ModulesToProvided(modules, dlls, dlc);
+            var providedByProvideeIdentifier = provided.ToLookup(i => i.ProvideeIdentifier);
+
             foreach (CkanModule mod in modules)
             {
                 // If our mod doesn't conflict with anything, skip it.
@@ -68,17 +70,17 @@ namespace CKAN
                 foreach (var conflict in mod.conflicts)
                 {
                     // If nothing conflicts with us, skip.
-                    if (! providers.ContainsKey(conflict.name))
+                    if (!providedByProvideeIdentifier.Contains(conflict.name))
                     {
                         continue;
                     }
 
                     // If something does conflict with us, and it's not ourselves, that's a fail.
-                    foreach (string provider in providers[conflict.name])
+                    foreach (var p in providedByProvideeIdentifier[conflict.name])
                     {
-                        if (provider != mod.identifier)
+                        if (p.ProvideeIdentifier != mod.identifier)
                         {
-                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, provider));
+                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, p));
                         }
                     }
                 }
@@ -119,22 +121,13 @@ namespace CKAN
             return ConsistencyErrors(modules, dlls, dlc).Count == 0;
         }
 
-        /// <summary>
-        /// Maps a list of modules and dlls to a dictionary of what's provided, and a list of
-        /// identifiers that supply each.
-        /// </summary>
-        // 
-        // Eg: {
-        //          LifeSupport => [ "TACLS", "Snacks" ]
-        //          DogeCoinFlag => [ "DogeCoinFlag" ]
-        // }
-        public static Dictionary<string, List<string>> ModulesToProvides(
+        private static List<ProvidesInfo> ModulesToProvided(
             IEnumerable<CkanModule> modules,
             IEnumerable<string> dlls = null,
             IDictionary<string, UnmanagedModuleVersion> dlc = null
         )
         {
-            var providers = new Dictionary<string, List<string>>();
+            var provided = new List<ProvidesInfo>();
 
             if (dlls == null)
                 dlls = new List<string>();
@@ -142,40 +135,28 @@ namespace CKAN
             if (dlc == null)
                 dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            foreach (CkanModule mod in modules)
+            foreach (var m in modules)
             {
-                foreach (string provides in mod.ProvidesList)
+                foreach (var p in m.ProvidesList)
                 {
-                    log.DebugFormat("{0} provides {1}", mod, provides);
-                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<string>();
-                    providers[provides].Add(mod.identifier);
+                    log.DebugFormat("{0} provides {1}", m, p);
+                    provided.Add(new ProvidesInfo(m.identifier, m.version, p, null));
                 }
             }
 
             // Add in our DLLs as things we know exist.
-            foreach (string dll in dlls)
+            foreach (var d in dlls)
             {
-                if (! providers.ContainsKey(dll))
-                {
-                    providers[dll] = new List<string>();
-                }
-                providers[dll].Add(dll);
+                provided.Add(new ProvidesInfo(d, null, d, null));
             }
 
             // Add in our DLC as things we know exist.
-            foreach (var i in dlc)
+            foreach (var d in dlc)
             {
-                var identifier = i.Key;
-
-                if (!providers.ContainsKey(identifier))
-                {
-                    providers[identifier] = new List<string>();
-                }
-
-                providers[identifier].Add(identifier);
+                provided.Add(new ProvidesInfo(d.Key, d.Value, d.Key, d.Value));
             }
 
-            return providers;
+            return provided;
         }
 
         /// <summary>
@@ -188,47 +169,70 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc = null
         )
         {
-            return FindUnmetDependencies(modules, ModulesToProvides(modules, dlls, dlc));
-        }
-
-        /// <summary>
-        /// Given a list of modules, and a dictionary of providers, returns a dictionary of depdendencies which have not been met.
-        /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, Dictionary<string,List<string>> provided)
-        {
-            return FindUnmetDependencies(modules, new HashSet<string> (provided.Keys));
+            return FindUnmetDependencies(modules, ModulesToProvided(modules, dlls, dlc));
         }
 
         /// <summary>
         /// Given a list of modules, and a set of providers, returns a dictionary of dependencies which have not been met.
         /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, HashSet<string> provided)
+        private static Dictionary<string,List<CkanModule>> FindUnmetDependencies(
+            IEnumerable<CkanModule> modules,
+            List<ProvidesInfo> provided
+        )
         {
-            var unmet = new Dictionary<string,List<CkanModule>> ();
+            var providedByProvideeIdentifier = provided.ToLookup(i => i.ProvideeIdentifier);
 
-            // TODO: This doesn't examine versions, it should!
+            var unmet = new Dictionary<string,List<CkanModule>>();
 
-            foreach (CkanModule mod in modules)
+            foreach (var mod in modules)
             {
-                // If this module has no dependencies, we're done.
-                if (mod.depends == null)
-                {
+                // If this module has no dependencies then we're done.
+                if (mod.depends is null)
                     continue;
-                }
 
-                // If it does have dependencies, but we can't find anything that provides them,
-                // add them to our unmet list.
-                foreach (RelationshipDescriptor dep in mod.depends.Where(dep => ! provided.Contains(dep.name)))
+                // If it does then iterate through the module's dependencies.
+                foreach (var d in mod.depends)
                 {
-                    if (!unmet.ContainsKey(dep.name))
-                    {
-                        unmet[dep.name] = new List<CkanModule>();
-                    }
-                    unmet[dep.name].Add(mod); // mod needs dep.name, but doesn't have it.
+                    // If the dependency is provided and either has no version or its version is in bounds then it's
+                    // okay.
+                    var dependencyMet = providedByProvideeIdentifier.Contains(d.name) &&
+                                        providedByProvideeIdentifier[d.name]
+                                            .Any(i => i.ProvideeVersion is null || d.WithinBounds(i.ProvideeVersion));
+
+                    if (dependencyMet)
+                            continue;
+
+                    // Ensure the list exists.
+                    if (!unmet.ContainsKey(d.name))
+                        unmet[d.name] = new List<CkanModule>();
+
+                    // Add the dependency to the list of unmet dependencies.
+                    unmet[d.name].Add(mod);
                 }
             }
 
             return unmet;
+        }
+
+        private sealed class ProvidesInfo
+        {
+            public string ProviderIdentifier { get; }
+            public ModuleVersion ProviderVersion { get; }
+            public string ProvideeIdentifier { get; }
+            public ModuleVersion ProvideeVersion { get; }
+
+            public ProvidesInfo(
+                string providerIdentifier,
+                ModuleVersion providerVersion,
+                string provideeIdentifier,
+                ModuleVersion provideeVersion
+            )
+            {
+                ProviderIdentifier = providerIdentifier;
+                ProviderVersion = providerVersion;
+                ProvideeIdentifier = provideeIdentifier;
+                ProvideeVersion = provideeVersion;
+            }
         }
     }
 }

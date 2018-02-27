@@ -93,24 +93,6 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void ModulesToProvides()
-        {
-            var mods = new List<CkanModule>
-            {
-                registry.LatestAvailable("CustomBiomes",null),
-                registry.LatestAvailable("CustomBiomesKerbal",null),
-                registry.LatestAvailable("DogeCoinFlag",null)
-            };
-
-            var provides = CKAN.SanityChecker.ModulesToProvides(mods);
-            Assert.Contains("CustomBiomes", provides.Keys);
-            Assert.Contains("CustomBiomesData", provides.Keys);
-            Assert.Contains("CustomBiomesKerbal", provides.Keys);
-            Assert.Contains("DogeCoinFlag", provides.Keys);
-            Assert.AreEqual(4, provides.Keys.Count);
-        }
-
-        [Test]
         public void FindUnmetDependencies()
         {
             var mods = new List<CkanModule>();

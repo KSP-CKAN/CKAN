@@ -323,7 +323,7 @@ namespace CKAN
                 if (modlist.ContainsKey(dep_name))
                 {
                     var module = modlist[dep_name];
-                    if (descriptor.version_within_bounds(module.version))
+                    if (descriptor.WithinBounds(module.version))
                         continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
@@ -340,7 +340,7 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
+                    if(descriptor.WithinBounds(registry.InstalledVersion(dep_name)))
                         continue;
                     var module = registry.InstalledModule(dep_name).Module;
 
@@ -359,7 +359,7 @@ namespace CKAN
 
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
-                    .Where(mod=>descriptor1.version_within_bounds(mod.version) && MightBeInstallable(mod)).ToList();
+                    .Where(mod=>descriptor1.WithinBounds(mod.version) && MightBeInstallable(mod)).ToList();
 
                 if (candidates.Count == 0)
                 {
