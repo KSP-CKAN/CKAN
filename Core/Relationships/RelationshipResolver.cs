@@ -241,7 +241,8 @@ namespace CKAN
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
                     final_modules,
-                    registry.InstalledDlls
+                    registry.InstalledDlls,
+                    registry.InstalledDlc
                     );
             }
         }

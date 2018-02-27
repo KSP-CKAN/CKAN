@@ -75,6 +75,11 @@ namespace CKAN
             get { return installed_dlls.Keys; }
         }
 
+        [JsonIgnore] public IDictionary<string, UnmanagedModuleVersion> InstalledDlc
+        {
+            get { return _installedDlcModules; }
+        }
+
         #region Registry Upgrades
 
         [OnDeserialized]
