@@ -7,7 +7,7 @@ namespace Tests.Core.Types
     public class RelationshipDescriptor
     {
 
-        ModuleVersion autodetected = new UnmanagedModuleVersion("0");
+        ModuleVersion autodetected = new UnmanagedModuleVersion(null);
 
         [Test]
         [TestCase("0.23","0.23", true)]
