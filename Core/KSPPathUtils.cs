@@ -144,7 +144,7 @@ namespace CKAN
                     // Found Steam library
                     if (line.Contains("BaseInstallFolder"))
                     {
-                        
+
                         // This assumes config file is valid, we just skip it if it looks funny.
                         string[] split_line = line.Split('"');
 
@@ -189,7 +189,7 @@ namespace CKAN
 
         /// <summary>
         /// Gets the leading path elements. Ex: /a/b/c returns /a/b
-        /// 
+        ///
         /// Returns empty string if there is no leading path. (Eg: "Example.dll" -> "");
         /// </summary>
         /// <returns>The leading path elements.</returns>
@@ -242,10 +242,13 @@ namespace CKAN
                     )
                 );
             }
-        
+
             // The +1 here is because root will never have
-            // a trailing slash.
-            return path.Remove(0, root.Length + 1);
+            // a trailing slash. However, if the strings are
+            // the same, it causes an exception.
+            return path.Length > root.Length
+                ? path.Remove(0, root.Length + 1)
+                : "";
         }
 
         /// <summary>
