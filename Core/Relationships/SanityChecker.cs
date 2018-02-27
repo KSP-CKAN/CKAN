@@ -78,9 +78,9 @@ namespace CKAN
                     // If something does conflict with us, and it's not ourselves, that's a fail.
                     foreach (var p in providedByProvideeIdentifier[conflict.name])
                     {
-                        if (p.ProvideeIdentifier != mod.identifier)
+                        if (p.ProviderIdentifier != mod.identifier)
                         {
-                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, p));
+                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, p.ProviderIdentifier));
                         }
                     }
                 }
