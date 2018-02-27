@@ -340,21 +340,31 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    if(descriptor.WithinBounds(registry.InstalledVersion(dep_name)))
+                    var installedVersion = registry.InstalledVersion(dep_name);
+
+                    if (descriptor.WithinBounds(installedVersion))
                         continue;
-                    var module = registry.InstalledModule(dep_name).Module;
 
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        // If the installed version is an UnmanagedModuleVersion (DLL or DLC) we can't do this since
+                        // they don't have real Modules.
+                        if (!(installedVersion is UnmanagedModuleVersion))
+                        {
+                            var module = registry.InstalledModule(dep_name).Module;
+                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        }
+
                         continue;
                     }
+
                     throw new InconsistentKraken(
-                        string.Format(
-                            "{0} requires a version {1}. However an incompatible version, {2}, is already installed",
-                            dep_name, descriptor.RequiredVersion, registry.InstalledVersion(dep_name)));
+                        $"{dep_name} requires a version {descriptor.RequiredVersion}. " +
+                        $"However an incompatible version, {installedVersion}, " +
+                        "is already installed"
+                    );
                 }
 
                 var descriptor1 = descriptor;
