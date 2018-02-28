@@ -56,6 +56,7 @@ foreach my $repo (("CKAN", "NetKAN")) {
         my $last_comment = $comments[$num_comments - 1];
         if ($last_comment->{user}{login} eq $author) {
             say "Skipped (author comment) : $title";
+            next;
         }
 
         my $last_update = str2time($candidate->{updated_at});
