@@ -5,20 +5,22 @@ namespace CKAN.NetKAN.Model
 {
     internal sealed class Metadata
     {
-        private const string KrefPropertyName = "$kref";
-        private const string VrefPropertyName = "$vref";
+        private const string KrefPropertyName        = "$kref";
+        private const string VrefPropertyName        = "$vref";
         private const string SpecVersionPropertyName = "spec_version";
-        private const string VersionPropertyName = "version";
-        private const string DownloadPropertyName = "download";
+        private const string VersionPropertyName     = "version";
+        private const string DownloadPropertyName    = "download";
+        public  const string UpdatedPropertyName     = "x_netkan_asset_updated";
 
         private readonly JObject _json;
 
-        public string Identifier { get { return (string)_json["identifier"]; } }
-        public RemoteRef Kref { get; private set; }
-        public RemoteRef Vref { get; private set; }
-        public Version SpecVersion { get; private set; }
-        public Version Version { get; private set; }
-        public Uri Download { get; private set; }
+        public string    Identifier      { get { return (string)_json["identifier"]; } }
+        public RemoteRef Kref            { get; private set; }
+        public RemoteRef Vref            { get; private set; }
+        public Version   SpecVersion     { get; private set; }
+        public Version   Version         { get; private set; }
+        public Uri       Download        { get; private set; }
+        public DateTime? RemoteTimestamp { get; private set; }
 
         public Metadata(JObject json)
         {
@@ -87,6 +89,14 @@ namespace CKAN.NetKAN.Model
             if (json.TryGetValue(DownloadPropertyName, out downloadToken))
             {
                 Download = new Uri((string)downloadToken);
+            }
+
+            JToken   updatedToken;
+            DateTime t;
+            if (json.TryGetValue(UpdatedPropertyName, out updatedToken)
+                && DateTime.TryParse(updatedToken.ToString(), out t))
+            {
+                RemoteTimestamp = t;
             }
         }
 
