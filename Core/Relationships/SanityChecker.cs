@@ -9,7 +9,6 @@ namespace CKAN
     /// </summary>
     public static class SanityChecker
     {
-
         private static readonly ILog log = LogManager.GetLogger(typeof(SanityChecker));
 
         /// <summary>
@@ -26,57 +25,17 @@ namespace CKAN
                 return errors;
             }
 
-            Dictionary<string, List<string>> providers = ModulesToProvides(modules, dlls);
-
-            foreach (KeyValuePair<string,List<CkanModule>> entry in FindUnmetDependencies(modules, dlls))
+            foreach (var kvp in FindUnsatisfiedDepends(modules.ToList(), dlls?.ToHashSet()))
             {
-                foreach (CkanModule unhappy_mod in entry.Value)
-                {
-                    // This error can fire if a dependency
-                    // IS listed in the index AND IS available for our version,
-                    // but not installed.
-                    // This happens when `dlls` is Registry.installed_dlls.Keys,
-                    // as in Registry.GetSanityErrors.
-                    errors.Add(string.Format(
-                        "{0} has an unmet dependency: {1} is not installed",
-                        unhappy_mod.identifier,
-                        entry.Key
-                    ));
-                }
+                errors.Add($"{kvp.Key} has an unsatisfied dependency: {kvp.Value} is not installed");
             }
 
             // Conflicts are more difficult. Mods are allowed to conflict with themselves.
             // So we walk all our mod conflicts, find what (if anything) provide those
             // conflicts, and return false if it's not the module we're examining.
-
-            // TODO: This doesn't examine versions. We should!
-            // TODO: It would be great to factor this into its own function, too.
-
-            foreach (CkanModule mod in modules)
+            foreach (var kvp in FindConflicting(modules.ToList(), dlls?.ToHashSet()))
             {
-                // If our mod doesn't conflict with anything, skip it.
-                if (mod.conflicts == null)
-                {
-                    continue;
-                }
-
-                foreach (var conflict in mod.conflicts)
-                {
-                    // If nothing conflicts with us, skip.
-                    if (! providers.ContainsKey(conflict.name))
-                    {
-                        continue;
-                    }
-
-                    // If something does conflict with us, and it's not ourselves, that's a fail.
-                    foreach (string provider in providers[conflict.name])
-                    {
-                        if (provider != mod.identifier)
-                        {
-                            errors.Add(string.Format("{0} conflicts with {1}.", mod.identifier, provider));
-                        }
-                    }
-                }
+                errors.Add($"{kvp.Key} conflicts with {kvp.Value}");
             }
 
             // Return whatever we've found, which could be empty.
@@ -97,7 +56,7 @@ namespace CKAN
                 throw new InconsistentKraken(errors);
             }
         }
-    
+
         /// <summary>
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
         /// </summary>
@@ -107,93 +66,64 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Maps a list of modules and dlls to a dictionary of what's provided, and a list of
-        /// identifiers that supply each.
+        /// Find unsatisfied dependencies among the given modules and DLLs.
         /// </summary>
-        // 
-        // Eg: {
-        //          LifeSupport => [ "TACLS", "Snacks" ]
-        //          DogeCoinFlag => [ "DogeCoinFlag" ]
-        // }
-        public static Dictionary<string, List<string>> ModulesToProvides(IEnumerable<CkanModule> modules, IEnumerable<string> dlls = null)
+        /// <param name="modules">List of modules to check</param>
+        /// <param name="dlls">List of DLLs that can also count toward relationships</param>
+        /// <returns>
+        /// List of dependencies that aren't satisfied represented as pairs.
+        /// Each Key is the depending module, and each Value is the relationship.
+        /// </returns>
+        public static List<KeyValuePair<CkanModule, RelationshipDescriptor>>
+            FindUnsatisfiedDepends(IEnumerable<CkanModule> modules, HashSet<string> dlls)
         {
-            var providers = new Dictionary<string, List<string>>();
-
-            if (dlls == null)
+            var unsat = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
+            if (modules != null)
             {
-                dlls = new List<string>();
-            }
-
-            foreach (CkanModule mod in modules)
-            {
-                foreach (string provides in mod.ProvidesList)
+                foreach (CkanModule m in modules.Where(m => m.depends != null))
                 {
-                    log.DebugFormat("{0} provides {1}", mod, provides);
-                    providers[provides] = providers.ContainsKey(provides) ? providers[provides] : new List<string>();
-                    providers[provides].Add(mod.identifier);
-                }
-            }
-
-            // Add in our DLLs as things we know exist.
-            foreach (string dll in dlls)
-            {
-                if (! providers.ContainsKey(dll))
-                {
-                    providers[dll] = new List<string>();
-                }
-                providers[dll].Add(dll);
-            }
-
-            return providers;
-        }
-
-        /// <summary>
-        /// Given a list of modules and optional dlls, returns a dictionary of dependencies which are still not met.
-        /// The dictionary keys are the un-met depdendencies, the values are the modules requesting them.
-        /// </summary>
-        public static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, IEnumerable<string> dlls = null)
-        {
-            return FindUnmetDependencies(modules, ModulesToProvides(modules, dlls));
-        }
-
-        /// <summary>
-        /// Given a list of modules, and a dictionary of providers, returns a dictionary of depdendencies which have not been met.
-        /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, Dictionary<string,List<string>> provided)
-        {
-            return FindUnmetDependencies(modules, new HashSet<string> (provided.Keys));
-        }
-
-        /// <summary>
-        /// Given a list of modules, and a set of providers, returns a dictionary of dependencies which have not been met.
-        /// </summary>
-        internal static Dictionary<string,List<CkanModule>> FindUnmetDependencies(IEnumerable<CkanModule> modules, HashSet<string> provided)
-        {
-            var unmet = new Dictionary<string,List<CkanModule>> ();
-
-            // TODO: This doesn't examine versions, it should!
-
-            foreach (CkanModule mod in modules)
-            {
-                // If this module has no dependencies, we're done.
-                if (mod.depends == null)
-                {
-                    continue;
-                }
-
-                // If it does have dependencies, but we can't find anything that provides them,
-                // add them to our unmet list.
-                foreach (RelationshipDescriptor dep in mod.depends.Where(dep => ! provided.Contains(dep.name)))
-                {
-                    if (!unmet.ContainsKey(dep.name))
+                    foreach (RelationshipDescriptor dep in m.depends)
                     {
-                        unmet[dep.name] = new List<CkanModule>();
+                        if (!dep.MatchesAny(modules, dlls))
+                        {
+                            unsat.Add(new KeyValuePair<CkanModule, RelationshipDescriptor>(m, dep));
+                        }
                     }
-                    unmet[dep.name].Add(mod); // mod needs dep.name, but doesn't have it.
                 }
             }
-
-            return unmet;
+            return unsat;
         }
+
+        /// <summary>
+        /// Find conflicts among the given modules and DLLs.
+        /// </summary>
+        /// <param name="modules">List of modules to check</param>
+        /// <param name="dlls">List of DLLs that can also count toward relationships</param>
+        /// <returns>
+        /// List of conflicts represented as pairs.
+        /// Each Key is the depending module, and each Value is the relationship.
+        /// </returns>
+        public static List<KeyValuePair<CkanModule, RelationshipDescriptor>>
+            FindConflicting(IEnumerable<CkanModule> modules, HashSet<string> dlls)
+        {
+            var confl = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
+            if (modules != null)
+            {
+                foreach (CkanModule m in modules.Where(m => m.conflicts != null))
+                {
+                    // Remove self from the list, so we're only comparing to OTHER modules
+                    var others = modules.Where(other => other != m);
+                    foreach (RelationshipDescriptor dep in m.conflicts)
+                    {
+                        if (dep.MatchesAny(others, dlls))
+                        {
+                            confl.Add(new KeyValuePair<CkanModule, RelationshipDescriptor>(m, dep));
+                        }
+                    }
+                }
+            }
+            return confl;
+        }
+
     }
 }

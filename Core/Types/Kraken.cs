@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
@@ -154,7 +155,7 @@ namespace CKAN
         internal static string FormatMessage(string requested, List<CkanModule> modules)
         {
             string oops = string.Format("Too many mods provide {0}:\r\n", requested);
-            return oops + String.Join("\r\n* ", modules);
+            return oops + String.Join("\r\n", modules.Select(m => $"* {m}"));
         }
     }
 
@@ -170,8 +171,7 @@ namespace CKAN
         {
             get
             {
-                const string message = "The following inconsistencies were found:\r\n";
-                return message + String.Join("\r\n * ", inconsistencies);
+                return header + String.Join("\r\n", inconsistencies.Select(msg => $"* {msg}"));
             }
         }
 
@@ -189,8 +189,10 @@ namespace CKAN
 
         public override string ToString()
         {
-            return InconsistenciesPretty + StackTrace;
+            return InconsistenciesPretty + "\r\n\r\n" + StackTrace;
         }
+
+        private const string header = "The following inconsistencies were found:\r\n";
     }
 
     /// <summary>
