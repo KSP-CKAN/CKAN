@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't crash if download_hash isn't set (#2313 by: HebaruSan; reviewed: politas)
 - [GUI] Fix GUI instance name checking (#2316 by: HebaruSan; reviewed: politas)
 - [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
+- [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0 (Bruce)
 

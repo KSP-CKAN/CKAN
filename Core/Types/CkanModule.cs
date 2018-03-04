@@ -53,6 +53,44 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Check whether any of the modules in a given list match this descriptor.
+        /// NOTE: Only proper modules can be checked for versions!
+        ///       DLLs match all versions, as do "provides" clauses.
+        /// </summary>
+        /// <param name="modules">Sequence of modules to consider</param>
+        /// <param name="dlls">Sequence of DLLs to consider</param>
+        /// <returns>
+        /// true if any of the modules match this descriptor, false otherwise.
+        /// </returns>
+        public bool MatchesAny(IEnumerable<CkanModule> modules, HashSet<string> dlls)
+        {
+            // DLLs are considered to match any version
+            if (dlls != null && dlls.Contains(name))
+            {
+                return true;
+            }
+            if (modules != null)
+            {
+                // See if anyone else "provides" the target name
+                // Note that versions can't be checked for "provides" clauses
+                if (modules.Any(m =>
+                    m.identifier != name && m.provides != null && m.provides.Contains(name)))
+                {
+                    return true;
+                }
+                // See if the real thing is there
+                foreach (CkanModule m in modules.Where(m => m.identifier == name))
+                {
+                    if (version_within_bounds(m.version))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// A user friendly message for what versions satisfies this descriptor.
         /// </summary>
         [JsonIgnore]
@@ -66,6 +104,27 @@ namespace CKAN
                     min_version != null ? min_version.ToString() : "any version",
                     max_version != null ? max_version.ToString() : "any version");
             }
+        }
+
+        /// <summary>
+        /// Generate a user readable description of the relationship
+        /// </summary>
+        /// <returns>
+        /// Depending on the version properties, one of:
+        /// name
+        /// name version
+        /// name min_version -- max_version
+        /// name min_version or later
+        /// name max_version or earlier
+        /// </returns>
+        public override string ToString()
+        {
+            return
+                  version     != null                        ? $"{name} {version}"
+                : min_version != null && max_version != null ? $"{name} {min_version} -- {max_version}"
+                : min_version != null                        ? $"{name} {min_version} or later"
+                : max_version != null                        ? $"{name} {max_version} or earlier"
+                : name;
         }
 
     }

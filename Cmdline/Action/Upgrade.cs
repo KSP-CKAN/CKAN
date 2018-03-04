@@ -128,6 +128,11 @@ namespace CKAN.CmdLine
                 User.RaiseMessage("Module {0} not found", kraken.module);
                 return Exit.ERROR;
             }
+            catch (InconsistentKraken kraken)
+            {
+                User.RaiseMessage(kraken.ToString());
+                return Exit.ERROR;
+            }
             User.RaiseMessage("\r\nDone!\r\n");
 
             return Exit.OK;
