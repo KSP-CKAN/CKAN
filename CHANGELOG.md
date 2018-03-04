@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Improve CKAN.app launch script (#2329 by: HebaruSan; reviewed: politas)
-
+- [Build] Fix building on macOS (#2341 by: phardy; reviewed: HebaruSan, politas)
 
 ## v1.24.0 (Bruce)
 
