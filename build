@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-set -x
 
 arg0=""
 remainingArgs=""
