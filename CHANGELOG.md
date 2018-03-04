@@ -15,6 +15,11 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
 - [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
 
+### Internal
+
+- [Build] Improve CKAN.app launch script (#2329 by: HebaruSan; reviewed: politas)
+
+
 ## v1.24.0 (Bruce)
 
 ### Features
