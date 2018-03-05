@@ -17,7 +17,7 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var mod = CkanModule.FromJson(metadata.Json().ToString());
-            var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
+            var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
 
             // Make sure this would actually generate an install.
 

@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix GUI instance name checking (#2316 by: HebaruSan; reviewed: politas)
 - [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
 - [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
+- [Netkan] Invalidate stale cached files from GitHub in Netkan (#2337 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

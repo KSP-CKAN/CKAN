@@ -44,12 +44,18 @@ namespace CKAN.NetKAN.Sources.Github
                     var version = new Version((string)release["tag_name"]);
                     var author = (string)release["author"]["login"];
 
-                    Uri download = null;
+                    Uri       download = null;
+                    DateTime? updated  = null;
+                    DateTime  parsed;
 
                     if (reference.UseSourceArchive)
                     {
                         Log.Debug("Using GitHub source archive");
                         download = new Uri((string)release["zipball_url"]);
+                        if (DateTime.TryParse(release["published_at"].ToString(), out parsed))
+                        {
+                            updated = parsed;
+                        }
                     }
                     else
                     {
@@ -59,13 +65,17 @@ namespace CKAN.NetKAN.Sources.Github
                         {
                             Log.DebugFormat("Using GitHub asset: {0}", asset["name"]);
                             download = new Uri((string)asset["browser_download_url"]);
+                            if (DateTime.TryParse(asset["updated_at"].ToString(), out parsed))
+                            {
+                                updated = parsed;
+                            }
                             break;
                         }
                     }
 
                     if (download != null)
                     {
-                        return new GithubRelease(author, version, download);
+                        return new GithubRelease(author, version, download, updated);
                     }
                 }
             }
