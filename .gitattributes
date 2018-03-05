@@ -21,8 +21,8 @@
 *.py            text
 
 # Visual studio
-*.cs            diff=csharp
-*.in            diff=csharp
+*.cs            text diff=csharp
+*.in            text diff=csharp
 *.csproj        text eol=crlf
 *.sln           text eol=crlf
 *.config        text
