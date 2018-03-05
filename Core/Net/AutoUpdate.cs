@@ -99,7 +99,6 @@ namespace CKAN
                     else if (url.EndsWith("AutoUpdater.exe"))
                     {
                         fetchedUpdaterUrl = new Tuple<Uri, long>(new Uri(url), (long)asset.size);
-                        break;
                     }
                 }
                 if (fetchedUpdaterUrl == null)

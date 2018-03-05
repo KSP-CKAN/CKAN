@@ -29,14 +29,18 @@ namespace Tests.Core.AutoUpdate
         [Category("FlakyNetwork")]
         public void FetchLatestReleaseInfo()
         {
+            // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
+            // This is on by default in .NET 4.6, but not in 4.5.
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
             var updater = CKAN.AutoUpdate.Instance;
 
             // Is is a *really* basic test to just make sure we get release info
             // if we ask for it.
             updater.FetchLatestReleaseInfo();
-            Assert.IsTrue(updater.IsFetched());
             Assert.IsNotNull(updater.ReleaseNotes);
             Assert.IsNotNull(updater.LatestVersion);
+            Assert.IsTrue(updater.IsFetched());
         }
 
         [Test]
@@ -54,6 +58,10 @@ namespace Tests.Core.AutoUpdate
 
         private void Fetch(Uri url, int whichOne)
         {
+            // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
+            // This is on by default in .NET 4.6, but not in 4.5.
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
             CKAN.AutoUpdate.Instance.RetrieveUrl(CKAN.AutoUpdate.Instance.MakeRequest(url), whichOne);
         }
     }
