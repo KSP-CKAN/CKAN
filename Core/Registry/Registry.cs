@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -1042,9 +1043,8 @@ namespace CKAN
                 log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
 
                 // Find what would break with this configuration.
-                // The Values.SelectMany() flattens our list of broken mods.
-                var broken = new HashSet<string>(SanityChecker.FindUnmetDependencies(hypothetical, dlls, dlc)
-                    .Values.SelectMany(x => x).Select(x => x.identifier));
+                var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet(), dlc)
+                    .Select(x => x.Key.identifier).ToHashSet();
 
                 // If nothing else would break, it's just the list of modules we're removing.
                 HashSet<string> to_remove = new HashSet<string>(modules_to_remove);

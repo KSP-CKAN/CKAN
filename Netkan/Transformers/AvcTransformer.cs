@@ -53,7 +53,7 @@ namespace CKAN.NetKAN.Transformers
                     json.Remove("version");
                 }
 
-                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
+                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
                 var avc = _moduleService.GetInternalAvc(mod, file, metadata.Vref.Id);
 
                 if (avc != null)

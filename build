@@ -28,7 +28,7 @@ toolsDir="$buildDir/tools"
 packagesDir="$buildDir/lib/nuget"
 nugetExe="$toolsDir/NuGet/$nugetVersion/nuget.exe"
 packagesConfigFile="$rootDir/packages.config"
-cakeVersion="$(sed -nE "s|\s*<package\s+id=\"Cake\"\s+version=\"(.+)\"\s*/>\s*|\1|p" $packagesConfigFile)"
+cakeVersion="$(sed -nE "/id=\"Cake\"/s/.*version=\"(.+)\".*/\1/p" $packagesConfigFile)"
 cakeExe="$packagesDir/Cake.$cakeVersion/Cake.exe"
 
 nugetDir="$(dirname $nugetExe)"

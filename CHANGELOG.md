@@ -12,6 +12,15 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix GUI sort by size (#2311 by: HebaruSan; reviewed: politas)
 - [Core] Don't crash if download_hash isn't set (#2313 by: HebaruSan; reviewed: politas)
 - [GUI] Fix GUI instance name checking (#2316 by: HebaruSan; reviewed: politas)
+- [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
+- [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
+- [Netkan] Invalidate stale cached files from GitHub in Netkan (#2337 by: HebaruSan; reviewed: politas)
+
+### Internal
+
+- [Build] Improve CKAN.app launch script (#2329 by: HebaruSan; reviewed: politas)
+- [Build] Fix building on macOS (#2341 by: phardy; reviewed: HebaruSan, politas)
+- [Build] Fix autoupdater tests on TLS-fragile platforms (#2344 by: HebaruSan; reviewed: politas)
 
 ## v1.24.0 (Bruce)
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CKAN;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
@@ -75,17 +76,17 @@ namespace Tests.Core.Relationships
 
             // This would actually be a terrible thing for users to have, but it tests the
             // relationship we want.
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal", null));
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes DLL, with config added");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS",null));
+            mods.Add(registry.LatestAvailable("CustomBiomesRSS", null));
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes with conflicting data");
         }
 
         [Test]
         public void ConflictWithDll()
         {
-            var mods = new List<CkanModule> { registry.LatestAvailable("SRL",null) };
+            var mods = new List<CkanModule> { registry.LatestAvailable("SRL", null) };
             var dlls = new List<string> { "QuickRevert" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
@@ -93,25 +94,35 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void FindUnmetDependencies()
+        public void FindUnsatisfiedDepends()
         {
             var mods = new List<CkanModule>();
-            var dlls = Enumerable.Empty<string>();
-            Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "Empty list");
+            var dlls = Enumerable.Empty<string>().ToHashSet();
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
-            mods.Add(registry.LatestAvailable("DogeCoinFlag",null));
-            Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "DogeCoinFlag");
+            Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");
 
-            mods.Add(registry.LatestAvailable("CustomBiomes",null));
-            Assert.Contains("CustomBiomesData", CKAN.SanityChecker.FindUnmetDependencies(mods, dlls).Keys, "Missing CustomBiomesData");
+            mods.Add(registry.LatestAvailable("DogeCoinFlag", null));
+            Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "DogeCoinFlag");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
-            Assert.IsEmpty(CKAN.SanityChecker.FindUnmetDependencies(mods, dlls), "CBD+CBK");
+            mods.Add(registry.LatestAvailable("CustomBiomes", null));
+            Assert.Contains(
+                "CustomBiomesData",
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.name).ToList(),
+                "Missing CustomBiomesData"
+            );
+
+            mods.Add(registry.LatestAvailable("CustomBiomesKerbal", null));
+            Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "CBD+CBK");
 
             mods.RemoveAll(x => x.identifier == "CustomBiomes");
             Assert.AreEqual(2, mods.Count, "Checking removed CustomBiomes");
 
-            Assert.Contains("CustomBiomes", CKAN.SanityChecker.FindUnmetDependencies(mods, dlls).Keys, "Missing CustomBiomes");
+            Assert.Contains(
+                "CustomBiomes",
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.name).ToList(),
+                "Missing CustomBiomes"
+            );
         }
 
         [Test]

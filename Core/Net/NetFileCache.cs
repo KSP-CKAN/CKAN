@@ -135,7 +135,9 @@ namespace CKAN
         /// <summary>>
         /// Returns the filename of an already cached url or null otherwise
         /// </summary>
-        public string GetCachedFilename(Uri url)
+        /// <param name="url">The URL to check for in the cache</param>
+        /// <param name="remoteTimestamp">Timestamp of the remote file, if known; cached files older than this will be considered invalid</param>
+        public string GetCachedFilename(Uri url, DateTime? remoteTimestamp = null)
         {
             log.DebugFormat("Checking cache for {0}", url);
 
@@ -169,7 +171,19 @@ namespace CKAN
                 string filename = Path.GetFileName(file);
                 if (filename.StartsWith(hash))
                 {
-                    return file;
+                    // Check local vs remote timestamps; if local is older, then it's invalid.
+                    // null means we don't know the remote timestamp (so file is OK)
+                    if (remoteTimestamp == null
+                        || remoteTimestamp < File.GetLastWriteTime(file).ToUniversalTime())
+                    {
+                        // File not too old, use it
+                        return file;
+                    }
+                    else
+                    {
+                        // Local file too old, delete it
+                        File.Delete(file);
+                    }
                 }
             }
 

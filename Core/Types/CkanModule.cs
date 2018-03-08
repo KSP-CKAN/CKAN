@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Autofac;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -57,6 +58,64 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Check whether any of the modules in a given list match this descriptor.
+        /// NOTE: Only proper modules and DLC can be checked for versions!
+        ///       DLLs match all versions, as do "provides" clauses.
+        /// </summary>
+        /// <param name="modules">Sequence of modules to consider</param>
+        /// <param name="dlls">Sequence of DLLs to consider</param>
+        /// <param name="dlc">DLC to consider</param>
+        /// <returns>
+        /// true if any of the modules match this descriptor, false otherwise.
+        /// </returns>
+        public bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
+        {
+            modules = modules?.AsCollection();
+
+            // DLLs are considered to match any version
+            if (dlls != null && dlls.Contains(name))
+            {
+                return true;
+            }
+
+            if (modules != null)
+            {
+                // See if anyone else "provides" the target name
+                // Note that versions can't be checked for "provides" clauses
+                if (modules.Any(m => m.identifier != name && m.provides != null && m.provides.Contains(name)))
+                {
+                    return true;
+                }
+
+                // See if the real thing is there
+                foreach (var m in modules.Where(m => m.identifier == name))
+                {
+                    if (WithinBounds(m.version))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            if (dlc != null)
+            {
+                foreach (var d in dlc.Where(i => i.Key == name))
+                {
+                    if (WithinBounds(d.Value))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// A user friendly message for what versions satisfies this descriptor.
         /// </summary>
         [JsonIgnore]
@@ -70,6 +129,27 @@ namespace CKAN
                     min_version != null ? min_version.ToString() : "any version",
                     max_version != null ? max_version.ToString() : "any version");
             }
+        }
+
+        /// <summary>
+        /// Generate a user readable description of the relationship
+        /// </summary>
+        /// <returns>
+        /// Depending on the version properties, one of:
+        /// name
+        /// name version
+        /// name min_version -- max_version
+        /// name min_version or later
+        /// name max_version or earlier
+        /// </returns>
+        public override string ToString()
+        {
+            return
+                  version     != null                        ? $"{name} {version}"
+                : min_version != null && max_version != null ? $"{name} {min_version} -- {max_version}"
+                : min_version != null                        ? $"{name} {min_version} or later"
+                : max_version != null                        ? $"{name} {max_version} or earlier"
+                : name;
         }
 
     }

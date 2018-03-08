@@ -32,7 +32,8 @@ namespace Tests.NetKAN.Transformers
                 .Returns(new GithubRelease(
                     "ExampleProject",
                     new ModuleVersion("1.0"),
-                    new Uri("http://github.example/download")
+                    new Uri("http://github.example/download"),
+                    null
                 ));
 
             var sut = new GithubTransformer(mApi.Object, matchPreleases: false);

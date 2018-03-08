@@ -18,48 +18,61 @@ use Date::Parse qw(str2time);
 my $token = $ARGV[0] or die "Usage: $0 [token]\n";
 
 my $github = Net::GitHub->new(
-    RaiseError => 1,
+    RaiseError   => 1,
     access_token => $token,
 );
 
-my $date_cutoff = time() - 7 * 86400;   # 7 days ago
+# 7 days ago
+my $date_cutoff = time() - 7 * 86400;
 
-$github->set_default_user_repo("KSP-CKAN","CKAN");
+foreach my $repo (("CKAN", "NetKAN")) {
+    $github->set_default_user_repo("KSP-CKAN", $repo);
 
-my $issues = $github->issue;
+    my $issues = $github->issue;
 
-# Get all our candidate issues
+    # Get all our candidate issues
 
-my @candidates = $issues->repos_issues({
-    state => 'open',
-    labels => 'support',
-    assignee => "none",
-});
+    my @candidates = $issues->repos_issues({
+        state    => 'open',
+        labels   => 'support',
+        assignee => "none",
+    });
 
-# Walk through each one, and see if we can close it
+    # Walk through each one, and see if we can close it
 
-foreach my $candidate (@candidates) {
-    my $id    = $candidate->{number};
-    my $title = "$candidate->{title} (#$id)";
+    foreach my $candidate (@candidates) {
+        my $id     = $candidate->{number};
+        my $title  = "$candidate->{title} (#$id)";
+        my $author = $candidate->{user}{login};
 
-    if ($candidate->{comments} == 0) {
-        say "Skipped (no comments)    : $title";
-        next;
+        my $num_comments = +$candidate->{comments};
+        if ($num_comments == 0) {
+            say "Skipped (no comments)    : $title";
+            next;
+        }
+
+        # Skip if last comment is by OP
+        my @comments     = $issues->comments($id);
+        my $last_comment = $comments[$num_comments - 1];
+        if ($last_comment->{user}{login} eq $author) {
+            say "Skipped (author comment) : $title";
+            next;
+        }
+
+        my $last_update = str2time($candidate->{updated_at});
+
+        if ($last_update > $date_cutoff) {
+            say "Skipped (recent update)  : $title";
+            next;
+        }
+
+        # Yay! Something we can close!
+        say "Closing $title";
+
+        close_ticket($issues, $id);
     }
 
-    my $last_update = str2time($candidate->{updated_at});
-
-    if ($last_update > $date_cutoff) {
-        say "Skipped (recent update ) : $title";
-        next;
-    }
-
-    # Yay! Something we can close!
-    say "Closing $title";
-
-    close_ticket($issues,$id);
 }
-
 say "Done!";
 
 sub close_ticket {

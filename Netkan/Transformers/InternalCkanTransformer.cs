@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 var json = metadata.Json();
 
-                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
+                string file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
 
                 var internalJson = _moduleService.GetInternalCkan(file);
 

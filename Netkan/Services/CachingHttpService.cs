@@ -11,9 +11,9 @@ namespace CKAN.NetKAN.Services
             _cache = cache;
         }
 
-        public string DownloadPackage(Uri url, string identifier)
+        public string DownloadPackage(Uri url, string identifier, DateTime? updated)
         {
-            var cachedFile = _cache.GetCachedFilename(url);
+            var cachedFile = _cache.GetCachedFilename(url, updated);
 
             if (!string.IsNullOrWhiteSpace(cachedFile))
             {

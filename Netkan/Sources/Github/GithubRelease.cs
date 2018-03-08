@@ -5,15 +5,17 @@ namespace CKAN.NetKAN.Sources.Github
 {
     public sealed class GithubRelease
     {
-        public string Author { get; private set; }
-        public ModuleVersion Version { get; private set; }
-        public Uri Download { get; private set; }
+        public string           Author       { get; }
+        public ModuleVersion    Version      { get; }
+        public Uri              Download     { get; }
+        public DateTime?        AssetUpdated { get; }
 
-        public GithubRelease(string author, ModuleVersion version, Uri download)
+        public GithubRelease(string author, ModuleVersion version, Uri download, DateTime? updated)
         {
-            Author = author;
-            Version = version;
-            Download = download;
+            Author       = author;
+            Version      = version;
+            Download     = download;
+            AssetUpdated = updated;
         }
     }
 }

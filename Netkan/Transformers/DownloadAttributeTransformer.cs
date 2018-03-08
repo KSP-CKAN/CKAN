@@ -34,7 +34,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing Download attribute transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                var file = _http.DownloadPackage(metadata.Download, metadata.Identifier);
+                string file = _http.DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
 
                 if (file != null)
                 {
