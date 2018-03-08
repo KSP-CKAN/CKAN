@@ -128,7 +128,6 @@ namespace CKAN
                     install_ops
                 )
             );
-            ShowWaitDialog();
         }
 
     }
