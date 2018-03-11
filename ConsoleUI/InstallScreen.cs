@@ -67,7 +67,7 @@ namespace CKAN.ConsoleUI {
                             plan.Upgrade.Clear();
                         }
                         if (plan.Install.Count > 0) {
-                            List<string> iList = new List<string>(plan.Install);
+                            List<CkanModule> iList = new List<CkanModule>(plan.Install);
                             inst.InstallList(iList, resolvOpts, dl);
                             plan.Install.Clear();
                         }
@@ -109,19 +109,15 @@ namespace CKAN.ConsoleUI {
                         RaiseError(ex.InconsistenciesPretty);
                     } catch (TooManyModsProvideKraken ex) {
 
-                        List<string> opts = new List<string>();
-                        foreach (CkanModule opt in ex.modules) {
-                            opts.Add(opt.identifier);
-                        }
-                        ConsoleChoiceDialog<string> ch = new ConsoleChoiceDialog<string>(
+                        ConsoleChoiceDialog<CkanModule> ch = new ConsoleChoiceDialog<CkanModule>(
                             $"Module {ex.requested} is provided by multiple modules. Which would you like to install?",
                             "Name",
-                            opts,
-                            (string s) => s
+                            ex.modules,
+                            (CkanModule mod) => mod.ToString()
                         );
-                        string chosen = ch.Run();
+                        CkanModule chosen = ch.Run();
                         DrawBackground();
-                        if (!string.IsNullOrEmpty(chosen)) {
+                        if (chosen != null) {
                             // Use chosen to continue installing
                             plan.Install.Add(chosen);
                             retry = true;

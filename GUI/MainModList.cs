@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using CKAN.Versioning;
+using log4net;
 
 namespace CKAN
 {
@@ -235,6 +237,188 @@ namespace CKAN
                 }
             }
         }
+
+        private void ModList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var module = GetSelectedModule();
+
+            AddStatusMessage(string.Empty);
+
+            ModInfoTabControl.SelectedModule = module;
+            if (module == null)
+                return;
+
+            NavSelectMod(module);
+        }
+
+        /// <summary>
+        /// Programmatic implementation of row sorting by columns.
+        /// </summary>
+        private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var new_sort_column = ModList.Columns[e.ColumnIndex];
+            var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
+
+            // Reverse the sort order if the current sorting column is clicked again.
+            configuration.SortDescending = new_sort_column == current_sort_column && !configuration.SortDescending;
+
+            // Reset the glyph.
+            current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
+            configuration.SortByColumnIndex = new_sort_column.Index;
+            UpdateFilters(this);
+        }
+
+        /// <summary>
+        /// Called on key down when the mod list is focused.
+        /// Makes the Home/End keys go to the top/bottom of the list respectively.
+        /// </summary>
+        private void ModList_KeyDown(object sender, KeyEventArgs e)
+        {
+            DataGridViewCell cell = null;
+            switch (e.KeyCode)
+            {
+                case Keys.Home:
+                    // First row.
+                    cell = ModList.Rows[0].Cells[2];
+                    break;
+
+                case Keys.End:
+                    // Last row.
+                    cell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
+                    break;
+            }
+
+            if (cell != null)
+            {
+                e.Handled = true;
+
+                // Selects the top/bottom row and scrolls the list to it.
+                ModList.CurrentCell = cell;
+            }
+        }
+
+        /// <summary>
+        /// Called on key press when the mod is focused. Scrolls to the first mod with name
+        /// beginning with the key pressed. If more than one unique keys are pressed in under
+        /// a second, it searches for the combination of the keys pressed. If the same key is
+        /// being pressed repeatedly, it cycles through mods names beginning with that key.
+        /// If space is pressed, the checkbox at the current row is toggled.
+        /// </summary>
+        private void ModList_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            var current_row = ModList.CurrentRow;
+            var key = e.KeyChar.ToString();
+
+            // Check the key. If it is space and the current row is selected, mark the current mod as selected.
+            if (key == " ")
+            {
+                if (current_row != null && current_row.Selected)
+                {
+                    var gui_mod = (GUIMod)current_row.Tag;
+                    if (gui_mod.IsInstallable())
+                        MarkModForInstall(gui_mod.Identifier, gui_mod.IsInstallChecked);
+                }
+
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // Don't try to search for newlines.
+                return;
+            }
+
+            // Determine time passed since last key press.
+            TimeSpan interval = DateTime.Now - lastSearchTime;
+            if (interval.TotalSeconds < 1)
+            {
+                // Last keypress was < 1 sec ago, so combine the last and current keys.
+                key = lastSearchKey + key;
+            }
+
+            // Remember the current time and key.
+            lastSearchTime = DateTime.Now;
+            lastSearchKey = key;
+
+            if (key.Distinct().Count() == 1)
+            {
+                // Treat repeating and single keypresses the same.
+                key = key.Substring(0, 1);
+            }
+
+            FocusMod(key, false);
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// I'm pretty sure this is what gets called when the user clicks on a ticky in the mod list.
+        /// </summary>
+        private void ModList_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void ModList_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            if (e.RowIndex < 0)
+                return;
+
+            DataGridViewRow row = ModList.Rows[e.RowIndex];
+            if (!(row.Cells[0] is DataGridViewCheckBoxCell))
+                return;
+
+            // Need to change the state here, because the user hasn't clicked on a checkbox.
+            row.Cells[0].Value = !(bool)row.Cells[0].Value;
+            ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private async void ModList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            int row_index    = e.RowIndex;
+            int column_index = e.ColumnIndex;
+
+            if (row_index < 0 || column_index < 0)
+                return;
+
+            DataGridView     grid     = sender as DataGridView;
+            DataGridViewRow  row      = grid?.Rows[row_index];
+            DataGridViewCell gridCell = row?.Cells[column_index];
+
+            if (gridCell is DataGridViewLinkCell)
+            {
+                // Launch URLs if found in grid
+                DataGridViewLinkCell cell = gridCell as DataGridViewLinkCell;
+                string cmd = cell?.Value.ToString();
+                if (!string.IsNullOrEmpty(cmd))
+                    Process.Start(cmd);
+            }
+            else if (column_index < 2)
+            {
+                GUIMod gui_mod = row?.Tag as GUIMod;
+                if (gui_mod != null)
+                {
+                    switch (column_index)
+                    {
+                        case 0:
+                            gui_mod.SetInstallChecked(row);
+                            if (gui_mod.IsInstallChecked)
+                                last_mod_to_have_install_toggled.Push(gui_mod);
+                            break;
+                        case 1:
+                            gui_mod.SetUpgradeChecked(row);
+                            break;
+                    }
+                    await UpdateChangeSetAndConflicts(
+                        RegistryManager.Instance(CurrentInstance).registry
+                    );
+                }
+            }
+        }
+
     }
 
     /// <summary>

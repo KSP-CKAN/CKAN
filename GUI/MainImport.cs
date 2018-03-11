@@ -44,7 +44,7 @@ namespace CKAN
                     ModuleInstaller.GetInstance(CurrentInstance, currentUser).ImportFiles(
                         GetFiles(dlg.FileNames),
                         currentUser,
-                        (string id) => MarkModForInstall(id, false)
+                        (CkanModule mod) => MarkModForInstall(mod.identifier, false)
                     );
                 }
                 finally

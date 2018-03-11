@@ -60,8 +60,8 @@ namespace CKAN
 
             // Now work on satisifying dependencies.
 
-            var recommended = new Dictionary<string, List<string>>();
-            var suggested   = new Dictionary<string, List<string>>();
+            var recommended = new Dictionary<CkanModule, List<string>>();
+            var suggested   = new Dictionary<CkanModule, List<string>>();
 
             foreach (var change in opts.Key)
             {
@@ -231,69 +231,56 @@ namespace CKAN
             }
         }
 
-        private void AddMod(IEnumerable<RelationshipDescriptor> relations, Dictionary<string, List<string>> chooseAble,
-            string identifier, IRegistryQuerier registry)
+        private void AddMod(
+            IEnumerable<RelationshipDescriptor>  relations,
+            Dictionary<CkanModule, List<string>> chooseAble,
+            string                               identifier,
+            IRegistryQuerier                     registry)
         {
             if (relations == null)
                 return;
-            foreach (RelationshipDescriptor mod in relations)
+            foreach (RelationshipDescriptor rel in relations)
             {
-                try
+                List<CkanModule> providers = registry.LatestAvailableWithProvides(
+                    rel.name,
+                    CurrentInstance.VersionCriteria(),
+                    rel
+                );
+                foreach (CkanModule provider in providers)
                 {
-                    // if the mod is available for the current KSP version _and_
-                    // the mod is not installed _and_
-                    // the mod is not already in the install list
-                    if (registry.LatestAvailable(mod.name, CurrentInstance.VersionCriteria()) != null
-                        && !registry.IsInstalled(mod.name)
-                        && !toInstall.Any(m => m.identifier == mod.name))
+                    if (!registry.IsInstalled(provider.identifier)
+                        && !toInstall.Any(m => m.identifier == provider.identifier))
                     {
-                        // add it to the list of chooseAble mods we display to the user
-                        if (!chooseAble.ContainsKey(mod.name))
+                        // We want to show this mod to the user. Add it.
+                        List<string> dependers;
+                        if (chooseAble.TryGetValue(provider, out dependers))
                         {
-                            chooseAble.Add(mod.name, new List<string>());
-                        }
-                        chooseAble[mod.name].Add(identifier);
-                    }
-                }
-                catch (ModuleNotFoundKraken)
-                {
-                    List<CkanModule> providers = registry.LatestAvailableWithProvides(
-                        mod.name,
-                        CurrentInstance.VersionCriteria(),
-                        mod
-                    );
-                    foreach (CkanModule provider in providers)
-                    {
-                        if (!registry.IsInstalled(provider.identifier)
-                            && !toInstall.Any(m => m.identifier == provider.identifier))
-                        {
-                            // We want to show this mod to the user. Add it.
-                            if (!chooseAble.ContainsKey(provider.identifier))
-                            {
-                                // Add a new entry if this provider isn't listed yet.
-                                chooseAble.Add(provider.identifier, new List<string>());
-                            }
                             // Add the dependent mod to the list of reasons this dependency is shown.
-                            chooseAble[provider.identifier].Add(identifier);
+                            dependers.Add(identifier);
+                        }
+                        else
+                        {
+                            // Add a new entry if this provider isn't listed yet.
+                            chooseAble.Add(provider, new List<string>() { identifier });
                         }
                     }
-                }
-                catch (Kraken)
-                {
                 }
             }
         }
 
-        private void ShowSelection(Dictionary<string, List<string>> selectable, bool suggest = false)
+        private void ShowSelection(Dictionary<CkanModule, List<string>> selectable, bool suggest = false)
         {
             if (installCanceled)
                 return;
 
             // If we're going to install something anyway, then don't list it in the
             // recommended list, since they can't de-select it anyway.
-            foreach (var item in toInstall)
+            foreach (var kvp in selectable)
             {
-                selectable.Remove(item.identifier);
+                if (toInstall.Any(m => m.identifier == kvp.Key.identifier))
+                {
+                    selectable.Remove(kvp.Key);
+                }
             }
 
             Dictionary<CkanModule, string> mods = GetShowableMods(selectable);
@@ -432,45 +419,37 @@ namespace CKAN
         /// </summary>
         /// <param name="mods"></param>
         /// <returns></returns>
-        private Dictionary<CkanModule, string> GetShowableMods(Dictionary<string, List<string>> mods)
+        private Dictionary<CkanModule, string> GetShowableMods(Dictionary<CkanModule, List<string>> mods)
         {
             Dictionary<CkanModule, string> modules = new Dictionary<CkanModule, string>();
 
             var opts = new RelationshipResolverOptions
             {
-                with_all_suggests = false,
-                with_recommends = false,
-                with_suggests = false,
-                without_enforce_consistency = false,
+                with_all_suggests              = false,
+                with_recommends                = false,
+                with_suggests                  = false,
+                without_enforce_consistency    = false,
                 without_toomanyprovides_kraken = true
             };
 
             foreach (var pair in mods)
             {
-                CkanModule module;
-
                 try
                 {
-                    var resolver = new RelationshipResolver(new List<string> { pair.Key }, opts,
-                        RegistryManager.Instance(manager.CurrentInstance).registry, CurrentInstance.VersionCriteria());
-                    if (!resolver.ModList().Any())
+                    RelationshipResolver resolver = new RelationshipResolver(
+                        new List<CkanModule> { pair.Key },
+                        opts,
+                        RegistryManager.Instance(manager.CurrentInstance).registry,
+                        CurrentInstance.VersionCriteria()
+                    );
+
+                    if (resolver.ModList().Any())
                     {
-                        continue;
+                        // Resolver was able to find a way to install, so show it to the user
+                        modules.Add(pair.Key, String.Join(",", pair.Value.ToArray()));
                     }
-
-                    module = RegistryManager.Instance(manager.CurrentInstance)
-                        .registry.LatestAvailable(pair.Key, CurrentInstance.VersionCriteria());
                 }
-                catch
-                {
-                    continue;
-                }
-
-                if (module == null)
-                {
-                    continue;
-                }
-                modules.Add(module, String.Join(",", pair.Value.ToArray()));
+                catch { }
             }
             return modules;
         }
@@ -504,7 +483,7 @@ namespace CKAN
                 {
                     Tag = module,
                     Checked = !suggested,
-                    Text = CurrentInstance.Cache.IsCachedZip(pair.Key)
+                    Text = CurrentInstance.Cache.IsMaybeCachedZip(pair.Key)
                         ? $"{pair.Key.name} {pair.Key.version} (cached)"
                         : $"{pair.Key.name} {pair.Key.version} ({pair.Key.download.Host ?? ""}, {CkanModule.FmtSize(pair.Key.download_size)})"
                 };

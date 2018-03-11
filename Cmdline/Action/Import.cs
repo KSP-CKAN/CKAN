@@ -46,7 +46,7 @@ namespace CKAN.CmdLine
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     List<string>    toInstall = new List<string>();
                     ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, user);
-                    inst.ImportFiles(toImport, user, id => toInstall.Add(id), !opts.Headless);
+                    inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), !opts.Headless);
                     if (toInstall.Count > 0)
                     {
                         inst.InstallList(

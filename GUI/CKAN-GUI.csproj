@@ -113,6 +113,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUIMod.cs" />
+    <Compile Include="GUIUser.cs" />
     <Compile Include="HintTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

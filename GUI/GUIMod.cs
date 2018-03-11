@@ -242,17 +242,18 @@ namespace CKAN
             if (install_cell != null)
             {
                 bool changeTo = set_value_to ?? (bool)install_cell.Value;
-                //Need to do this check here to prevent an infinite loop
-                //which is at least happening on Linux
-                //TODO: Eliminate the cause
-                if (changeTo != IsInstallChecked)
+                if (IsInstallChecked != changeTo)
                 {
                     IsInstallChecked = changeTo;
+                }
+                // Setting this property causes ModList_CellValueChanged to be called,
+                // which calls SetInstallChecked again. Treat it conservatively.
+                if ((bool)install_cell.Value != IsInstallChecked)
+                {
                     install_cell.Value = IsInstallChecked;
                 }
             }
         }
-
 
         private bool Equals(GUIMod other)
         {

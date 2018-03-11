@@ -174,10 +174,10 @@ namespace CKAN.ConsoleUI {
             moduleList.AddBinding(Keys.Plus, (object sender) => {
                 if (moduleList.Selection != null) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
-                        plan.ToggleInstall(moduleList.Selection.identifier);
+                        plan.ToggleInstall(moduleList.Selection);
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
                             && registry.HasUpdate(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria())) {
-                        plan.ToggleUpgrade(moduleList.Selection.identifier);
+                        plan.ToggleUpgrade(moduleList.Selection);
                     }
                 }
                 return true;
@@ -189,7 +189,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddBinding(Keys.Minus, (object sender) => {
                 if (moduleList.Selection != null && registry.IsInstalled(moduleList.Selection.identifier, false)) {
-                    plan.ToggleRemove(moduleList.Selection.identifier);
+                    plan.ToggleRemove(moduleList.Selection);
                 }
                 return true;
             });
@@ -325,7 +325,7 @@ namespace CKAN.ConsoleUI {
                 // Only check mods that are still available
                 try {
                     if (registry.LatestAvailable(im.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
-                        reinstall.Install.Add(im.identifier);
+                        reinstall.Install.Add(im.Module);
                     }
                 } catch {
                     // The registry object badly needs an IsAvailable check
@@ -337,8 +337,8 @@ namespace CKAN.ConsoleUI {
                     LaunchSubScreen(ds);
                     bool needRefresh = false;
                     // Copy the right ones into our real plan
-                    foreach (string mod in reinstall.Install) {
-                        if (!registry.IsInstalled(mod, false)) {
+                    foreach (CkanModule mod in reinstall.Install) {
+                        if (!registry.IsInstalled(mod.identifier, false)) {
                             plan.Install.Add(mod);
                             needRefresh = true;
                         }
@@ -582,34 +582,34 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Add or remove a mod from the remove list
         /// </summary>
-        /// <param name="identifier">The mod to add or remove</param>
-        public void ToggleRemove(string identifier)
+        /// <param name="mod">The mod to add or remove</param>
+        public void ToggleRemove(CkanModule mod)
         {
-            Install.Remove(identifier);
-            Upgrade.Remove(identifier);
-            toggleContains(Remove, identifier);
+            Install.Remove(mod);
+            Upgrade.Remove(mod.identifier);
+            toggleContains(Remove, mod.identifier);
         }
 
         /// <summary>
         /// Add or remove a mod from the install list
         /// </summary>
-        /// <param name="identifier">The mod to add or remove</param>
-        public void ToggleInstall(string identifier)
+        /// <param name="mod">The mod to add or remove</param>
+        public void ToggleInstall(CkanModule mod)
         {
-            Upgrade.Remove(identifier);
-            Remove.Remove(identifier);
-            toggleContains(Install, identifier);
+            Upgrade.Remove(mod.identifier);
+            Remove.Remove(mod.identifier);
+            toggleContains(Install, mod);
         }
 
         /// <summary>
         /// Add or remove a mod from the upgrade list
         /// </summary>
-        /// <param name="identifier">The mod to add or remove</param>
-        public void ToggleUpgrade(string identifier)
+        /// <param name="mod">The mod to add or remove</param>
+        public void ToggleUpgrade(CkanModule mod)
         {
-            Install.Remove(identifier);
-            Remove.Remove(identifier);
-            toggleContains(Upgrade, identifier);
+            Install.Remove(mod);
+            Remove.Remove(mod.identifier);
+            toggleContains(Upgrade, mod.identifier);
         }
 
         /// <summary>
@@ -659,11 +659,14 @@ namespace CKAN.ConsoleUI {
                     return InstallStatus.Installed;
                 }
             } else {
-                if (Install.Contains(identifier)) {
-                    return InstallStatus.Installing;
-                } else {
-                    return InstallStatus.NotInstalled;
+                foreach (CkanModule m in Install)
+                {
+                    if (m.identifier == identifier)
+                    {
+                        return InstallStatus.Installing;
+                    }
                 }
+                return InstallStatus.NotInstalled;
             }
         }
 
@@ -702,9 +705,25 @@ namespace CKAN.ConsoleUI {
         }
 
         /// <summary>
+        /// Add or remove a value from a HashSet
+        /// </summary>
+        /// <param name="list">HashSet to manipulate</param>
+        /// <param name="mod">The value</param>
+        public static void toggleContains(HashSet<CkanModule> list, CkanModule mod)
+        {
+            if (list != null && mod != null) {
+                if (list.Contains(mod)) {
+                    list.Remove(mod);
+                } else {
+                    list.Add(mod);
+                }
+            }
+        }
+
+        /// <summary>
         /// Mods we're planning to install
         /// </summary>
-        public readonly HashSet<string> Install = new HashSet<string>();
+        public readonly HashSet<CkanModule> Install = new HashSet<CkanModule>();
 
         /// <summary>
         /// Mods we're planning to upgrade

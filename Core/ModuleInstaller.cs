@@ -166,7 +166,7 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                if (!ksp.Cache.IsCachedZip(module))
+                if (!ksp.Cache.IsMaybeCachedZip(module))
                 {
                     User.RaiseMessage(" * {0} {1} ({2}, {3})",
                         module.name,
@@ -1098,11 +1098,11 @@ namespace CKAN
         /// <param name="user">Object for user interaction</param>
         /// <param name="installMod">Function to call to mark a mod for installation</param>
         /// <param name="allowDelete">True to ask user whether to delete imported files, false to leave the files as is</param>
-        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<string> installMod, bool allowDelete = true)
+        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<CkanModule> installMod, bool allowDelete = true)
         {
-            Registry         registry    = registry_manager.registry;
-            HashSet<string>  installable = new HashSet<string>();
-            List<FileInfo>   deletable   = new List<FileInfo>();
+            Registry            registry    = registry_manager.registry;
+            HashSet<CkanModule> installable = new HashSet<CkanModule>();
+            List<FileInfo>      deletable   = new List<FileInfo>();
             // Get the mapping of known hashes to modules
             Dictionary<string, List<CkanModule>> index = registry.GetSha1Index();
             int i = 0;
@@ -1121,7 +1121,7 @@ namespace CKAN
                     {
                         if (mod.IsCompatibleKSP(ksp.VersionCriteria()))
                         {
-                            installable.Add(mod.identifier);
+                            installable.Add(mod);
                         }
                         if (Cache.IsMaybeCachedZip(mod))
                         {
@@ -1143,9 +1143,9 @@ namespace CKAN
             if (installable.Count > 0 && user.RaiseYesNoDialog($"Install {installable.Count} compatible imported mods in game instance {ksp.Name} ({ksp.GameDir()})?"))
             {
                 // Install the imported mods
-                foreach (string identifier in installable)
+                foreach (CkanModule mod in installable)
                 {
-                    installMod(identifier);
+                    installMod(mod);
                 }
             }
             if (allowDelete && deletable.Count > 0 && user.RaiseYesNoDialog($"Import complete. Delete {deletable.Count} old files?"))
