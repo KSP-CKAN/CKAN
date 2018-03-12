@@ -20,22 +20,22 @@ VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/
 
 $(DMG): $(EXEDEST) $(SCRIPTDEST) $(ICNSDEST) $(PLISTDEST)
 	mkdir -p $(OUTDIR)
-	genisoimage -V $(NAME) -D -R -apple -no-pad -o $@ $(DMGROOT)
+	xorrisofs -V $(NAME) -D -R -no-pad -o $@ $(DMGROOT)
 
 $(EXEDEST): $(EXESRC)
 	mkdir -p $(shell dirname $@)
-	cp -l $< $@
+	ln $< $@
 
 $(EXESRC):
 	cd .. && ./build --configuration=Release
 
 $(SCRIPTDEST): $(SCRIPTSRC)
 	mkdir -p $(shell dirname $@)
-	cp -l -f $< $@
+	ln -f $< $@
 
 $(ICNSDEST): $(ICNSSRC)
 	mkdir -p $(shell dirname $@)
-	cp -l -f $< $@
+	ln -f $< $@
 
 $(PLISTDEST): $(PLISTSRC)
 	mkdir -p $(shell dirname $@)
