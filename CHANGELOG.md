@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
 - [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
 - [Netkan] Invalidate stale cached files from GitHub in Netkan (#2337 by: HebaruSan; reviewed: politas)
+- [Build] Allow building CKAN.app on macOS (#2356 by: phardy; reviewed: HebaruSan)
 
 ### Internal
 
