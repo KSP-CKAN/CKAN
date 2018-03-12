@@ -25,7 +25,7 @@ addons:
             - make
             - sed
             - libplist-utils
-            - genisoimage
+            - xorriso
             # Stuff for building .deb files
             - gzip
             - fakeroot
