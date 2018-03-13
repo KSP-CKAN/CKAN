@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ChinhDo.Transactions;
+using CKAN.DLC;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -447,6 +448,24 @@ namespace CKAN
 
         public void ScanDlc()
         {
+            var testDlc = TestDlcScan();
+            var wellKnownDlc = WellKnownDlcScan();
+
+            registry.ClearDlc();
+
+            foreach (var i in testDlc)
+            {
+                registry.RegisterDlc(i.Key, i.Value);
+            }
+
+            foreach (var i in wellKnownDlc)
+            {
+                registry.RegisterDlc(i.Key, i.Value);
+            }
+        }
+
+        private Dictionary<string, UnmanagedModuleVersion> TestDlcScan()
+        {
             var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
             var dlcDirectory = Path.Combine(ksp.CkanDir(), "dlc");
@@ -461,11 +480,24 @@ namespace CKAN
                 }
             }
 
-            registry.ClearDlc();
-            foreach (var i in dlc)
+            return dlc;
+        }
+
+        private Dictionary<string, UnmanagedModuleVersion> WellKnownDlcScan()
+        {
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
+
+            var detectors = new IDlcDetector[] { new MakingHistoryDlcDetector() };
+
+            foreach (var d in detectors)
             {
-                registry.RegisterDlc(i.Key, i.Value);
+                if (d.IsInstalled(ksp, out var identifier, out var version))
+                {
+                    dlc[identifier] = version ?? new UnmanagedModuleVersion(null);
+                }
             }
+
+            return dlc;
         }
     }
 }
