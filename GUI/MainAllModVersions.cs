@@ -14,6 +14,27 @@ namespace CKAN
             InitializeComponent();
         }
 
+        /// <summary>
+        /// React to double click of a version by prompting to install
+        /// </summary>
+        /// <param name="sender">The version list view</param>
+        /// <param name="e">The mouse click event</param>
+        public void VersionsListView_DoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewHitTestInfo info   = ((ListView)sender).HitTest(e.X, e.Y);
+            ListViewItem        item   = info.Item;
+            CkanModule          module = item.Tag as CkanModule;
+
+            if (module.IsCompatibleKSP(Main.Instance.Manager.CurrentInstance.VersionCriteria())
+                && Main.Instance.YesNoDialog($"Install {module}?"))
+            {
+                Main.Instance.InstallModuleDriver(
+                    RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry,
+                    module
+                );
+            }
+        }
+
         public GUIMod SelectedModule
         {
             set
@@ -42,7 +63,15 @@ namespace CKAN
                 bool latestCompatibleVersionAlreadyFound = false;
                 VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>
                 {
-                    ListViewItem toRet = new ListViewItem();
+                    ListViewItem toRet = new ListViewItem(new string[]
+                        {
+                            module.version.ToString(),
+                            module.HighestCompatibleKSP()
+                        })
+                    {
+                        Tag  = module
+                    };
+
                     if (module.IsCompatibleKSP(kspVersionCriteria))
                     {
                         if (!latestCompatibleVersionAlreadyFound)
@@ -61,11 +90,7 @@ namespace CKAN
                     {
                         toRet.Font = new Font(toRet.Font, FontStyle.Bold);
                     }
-
-                    toRet.Text = module.version.ToString();
-                    toRet.SubItems.Add(module.HighestCompatibleKSP());
                     return toRet;
-
                 }).ToArray());
             }
         }

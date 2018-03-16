@@ -941,51 +941,7 @@ namespace CKAN
 
                 menuStrip1.Enabled = false;
 
-                RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
-                install_ops.with_recommends = false;
-
-                try
-                {
-                    // Resolve the provides relationships in the dependencies
-                    List<ModChange> fullChangeSet = new List<ModChange>(
-                        await mainModList.ComputeChangeSetFromModList(
-                            registry_manager.registry,
-                            new HashSet<ModChange>()
-                            {
-                                new ModChange(
-                                    new GUIMod(
-                                        module,
-                                        registry_manager.registry,
-                                        CurrentInstance.VersionCriteria()
-                                    ),
-                                    GUIModChangeType.Install,
-                                    null
-                                )
-                            },
-                            ModuleInstaller.GetInstance(CurrentInstance, GUI.user),
-                            CurrentInstance.VersionCriteria()
-                        )
-                    );
-                    if (fullChangeSet != null && fullChangeSet.Count > 0)
-                    {
-                        installWorker.RunWorkerAsync(
-                            new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
-                                fullChangeSet,
-                                install_ops
-                            )
-                        );
-                    }
-                }
-                catch
-                {
-                    // If we failed, do the clean-up normally done by PostInstallMods.
-                    HideWaitDialog(false);
-                    menuStrip1.Enabled = true;
-                }
-                finally
-                {
-                    changeSet = null;
-                }
+                InstallModuleDriver(registry_manager.registry, module);
             }
         }
 
