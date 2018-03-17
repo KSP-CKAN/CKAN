@@ -24,6 +24,7 @@ namespace CKAN
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
+            ShowWaitDialog();
             installCanceled = false;
 
             ClearLog();
