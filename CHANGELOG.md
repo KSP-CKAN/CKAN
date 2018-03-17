@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Improve CKAN.app launch script (#2329 by: HebaruSan; reviewed: politas)
 - [Build] Fix building on macOS (#2341 by: phardy; reviewed: HebaruSan, politas)
 - [Build] Fix autoupdater tests on TLS-fragile platforms (#2344 by: HebaruSan; reviewed: politas)
+- [Build] Remove extra copies of various files (#2363 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.24.0 (Bruce)
 
