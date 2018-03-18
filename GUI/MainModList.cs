@@ -351,6 +351,45 @@ namespace CKAN
             e.Handled = true;
         }
 
+        private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
+        {
+            IEnumerable<ModChange> fullChangeSet = null;
+            Dictionary<GUIMod, string> newConflicts = null;
+
+            bool tooManyProvidesWasThrown = false;
+            Cursor.Current = Cursors.WaitCursor;
+            var userChangeSet = mainModList.ComputeUserChangeSet();
+            try
+            {
+                var moduleInstaller = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                fullChangeSet = await mainModList.ComputeChangeSetFromModList(registry, userChangeSet, moduleInstaller, CurrentInstance.VersionCriteria());
+            }
+            catch (TooManyModsProvideKraken)
+            {
+                // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
+                // We can just rerun it as the ModInfoTabControl has been removed.
+                tooManyProvidesWasThrown = true;
+            }
+            // ComputeChangeSetFromModList returns null if an inconsistency was found, we need to highlight the inconsistencies.
+            if (fullChangeSet == null)
+            {
+                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                userChangeSet = mainModList.ComputeUserChangeSet();
+                newConflicts = MainModList.ComputeConflictsFromModList(registry, userChangeSet, CurrentInstance.VersionCriteria());
+            }
+            if (tooManyProvidesWasThrown)
+            {
+                await UpdateChangeSetAndConflicts(registry);
+                newConflicts = Conflicts;
+                fullChangeSet = ChangeSet;
+            }
+
+            lastModToHaveInstallToggled.Clear();
+            Conflicts = newConflicts;
+            ChangeSet = fullChangeSet;
+            Cursor.Current = Cursors.Default;
+        }
+
         /// <summary>
         /// I'm pretty sure this is what gets called when the user clicks on a ticky in the mod list.
         /// </summary>
@@ -406,7 +445,7 @@ namespace CKAN
                         case 0:
                             gui_mod.SetInstallChecked(row);
                             if (gui_mod.IsInstallChecked)
-                                last_mod_to_have_install_toggled.Push(gui_mod);
+                                lastModToHaveInstallToggled.Push(gui_mod);
                             break;
                         case 1:
                             gui_mod.SetUpgradeChecked(row);
