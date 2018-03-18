@@ -98,6 +98,7 @@ namespace CKAN
         /// </summary>
         private void Download(ICollection<Net.DownloadTarget> targets)
         {
+            downloads.Clear();
             foreach (Net.DownloadTarget target in targets)
             {
                 downloads.Add(new NetAsyncDownloaderDownloadPart(target));
@@ -261,6 +262,10 @@ namespace CKAN
 
         public void DownloadAndWait(ICollection<Net.DownloadTarget> urls)
         {
+            completed_downloads = 0;
+            // Make sure we are ready to start a fresh batch
+            complete_or_canceled.Reset();
+
             // Start the download!
             Download(urls);
 
@@ -453,7 +458,7 @@ namespace CKAN
                 log.InfoFormat("Finished downloading {0}", downloads[index].url);
             }
 
-            if (++completed_downloads == downloads.Count)
+            if (++completed_downloads >= downloads.Count)
             {
                 FinalizeDownloads();
             }
