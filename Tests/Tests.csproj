@@ -138,6 +138,7 @@
     <None Include="Data\CKAN-meta-testkan.zip" />
     <None Include="Data\DogeCoinFlag-1.01-avc.zip" />
     <None Include="Data\DogeCoinFlag-1.01-corrupt.zip" />
+    <None Include="Data\DogeCoinFlag-1.01-LZMA.zip" />
     <None Include="Data\DogeCoinFlag-1.01-no-dir-entries.zip" />
     <None Include="Data\DogeCoinFlag-1.01.zip" />
     <None Include="Data\DogeCoinFlag-extra-files.zip" />
@@ -162,6 +163,8 @@
     <None Include="Data\KS\CustomAsteroids.json" />
     <None Include="Data\KS\README.md" />
     <None Include="Data\lib\CkanTests.pm" />
+    <None Include="Data\MissionTest-1.0.ckan" />
+    <None Include="Data\MissionTest-1.0.zip" />
     <None Include="Data\ModuleManager-2.5.1.ckan" />
     <None Include="Data\ModuleManager-2.5.1.zip" />
     <None Include="Data\README.md" />
