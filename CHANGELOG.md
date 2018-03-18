@@ -17,6 +17,8 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Invalidate stale cached files from GitHub in Netkan (#2337 by: HebaruSan; reviewed: politas)
 - [Build] Allow building CKAN.app on macOS (#2356 by: phardy; reviewed: HebaruSan)
 - [GUI] Always switch to progress tab when starting a [re/un]install (#2351 by: HebaruSan; reviewed: Olympic1)
+- [Core] Support CC-BY-ND licences in code (#2369 by: HebaruSan; no review)
+- [GUI] Improve response to checkbox changes (#2354 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

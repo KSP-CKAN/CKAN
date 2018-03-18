@@ -46,11 +46,12 @@ namespace CKAN
                     continue;
                 }
 
+                CkanModule m = change.Mod.ToModule();
                 ListViewItem item = new ListViewItem()
                 {
-                    Text = CurrentInstance.Cache.IsCachedZip(change.Mod.ToModule())
-                        ? $"{change.Mod.Name} {change.Mod.Version} (cached)"
-                        : $"{change.Mod.Name} {change.Mod.Version} ({change.Mod.ToModule()?.download.Host ?? ""}, {change.Mod.DownloadSize})"
+                    Text = CurrentInstance.Cache.IsMaybeCachedZip(m)
+                        ? $"{m.name} {m.version} (cached)"
+                        : $"{m.name} {m.version} ({m.download.Host ?? ""}, {CkanModule.FmtSize(m.download_size)})"
                 };
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};

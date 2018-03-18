@@ -39,12 +39,12 @@ namespace CKAN.ConsoleUI {
                     new ConsoleListBoxColumn<Dependency>() {
                         Header   = "Install",
                         Width    = 7,
-                        Renderer = (Dependency d) => StatusSymbol(d.identifier),
+                        Renderer = (Dependency d) => StatusSymbol(d.module)
                     },
                     new ConsoleListBoxColumn<Dependency>() {
                         Header   = "Name",
-                        Width    = 24,
-                        Renderer = (Dependency d) => d.identifier,
+                        Width    = 36,
+                        Renderer = (Dependency d) => d.module.ToString()
                     },
                     new ConsoleListBoxColumn<Dependency>() {
                         Header   = "Sources",
@@ -56,7 +56,7 @@ namespace CKAN.ConsoleUI {
             );
             dependencyList.AddTip("+", "Toggle");
             dependencyList.AddBinding(Keys.Plus, (object sender) => {
-                ChangePlan.toggleContains(accepted, dependencyList.Selection.identifier);
+                ChangePlan.toggleContains(accepted, dependencyList.Selection.module);
                 return true;
             });
 
@@ -81,7 +81,7 @@ namespace CKAN.ConsoleUI {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(new ModInfoScreen(
                         manager, plan,
-                        registry.LatestAvailable(dependencyList.Selection.identifier, manager.CurrentInstance.VersionCriteria()),
+                        dependencyList.Selection.module,
                         debug
                     ));
                 }
@@ -94,20 +94,20 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => {
                 // Add everything to rejected
                 foreach (var kvp in dependencies) {
-                    rejected.Add(kvp.Key);
+                    rejected.Add(kvp.Key.identifier);
                 }
                 return false;
             });
 
             AddTip("F9", "Accept");
             AddBinding(Keys.F9, (object sender) => {
-                foreach (string name in accepted) {
-                    plan.Install.Add(name);
+                foreach (CkanModule mod in accepted) {
+                    plan.Install.Add(mod);
                 }
                 // Add the rest to rejected
                 foreach (var kvp in dependencies) {
                     if (!accepted.Contains(kvp.Key)) {
-                        rejected.Add(kvp.Key);
+                        rejected.Add(kvp.Key.identifier);
                     }
                 }
                 return false;
@@ -126,85 +126,64 @@ namespace CKAN.ConsoleUI {
             return dependencies.Count > 0;
         }
 
-        private void generateList(HashSet<string> inst)
+        private void generateList(HashSet<CkanModule> inst)
         {
-            foreach (string mod in inst) {
-                CkanModule m = registry.LatestAvailable(mod, manager.CurrentInstance.VersionCriteria());
-                if (m != null) {
-                    AddDependencies(inst, mod, m.recommends, true);
-                    AddDependencies(inst, mod, m.suggests,   false);
-                }
+            foreach (CkanModule mod in inst) {
+                AddDependencies(inst, mod, mod.recommends, true);
+                AddDependencies(inst, mod, mod.suggests,   false);
             }
         }
 
-        private void AddDependencies(HashSet<string> alreadyInstalling, string identifier, List<RelationshipDescriptor> source, bool installByDefault)
+        private void AddDependencies(HashSet<CkanModule> alreadyInstalling, CkanModule dependent, List<RelationshipDescriptor> source, bool installByDefault)
         {
             if (source != null) {
                 foreach (RelationshipDescriptor dependency in source) {
                     if (!rejected.Contains(dependency.name)) {
-                        try {
-                            if (registry.LatestAvailable(
-                                    dependency.name,
-                                    manager.CurrentInstance.VersionCriteria(),
-                                    dependency
-                                ) != null
-                                    && !registry.IsInstalled(dependency.name)
-                                    && !alreadyInstalling.Contains(dependency.name)) {
+                        List<CkanModule> opts = registry.LatestAvailableWithProvides(
+                            dependency.name,
+                            manager.CurrentInstance.VersionCriteria(),
+                            dependency
+                        );
+                        foreach (CkanModule provider in opts) {
+                            if (!registry.IsInstalled(provider.identifier)
+                                    && !alreadyInstalling.Contains(provider)) {
 
-                                AddDep(dependency.name, installByDefault, identifier);
+                                // Only default to installing if there's only one
+                                AddDep(provider, installByDefault && opts.Count == 1, dependent);
                             }
-                        } catch (ModuleNotFoundKraken) {
-                            // LatestAvailable throws if you recommend a "provides" name,
-                            // so ask the registry again for provides-based choices
-                            List<CkanModule> opts = registry.LatestAvailableWithProvides(
-                                dependency.name,
-                                manager.CurrentInstance.VersionCriteria(),
-                                dependency
-                            );
-                            foreach (CkanModule provider in opts) {
-                                if (!registry.IsInstalled(provider.identifier)
-                                        && !alreadyInstalling.Contains(provider.identifier)) {
-
-                                    // Default to not installing because these probably conflict with each other
-                                    AddDep(provider.identifier, false, identifier);
-                                }
-                            }
-                        } catch (Kraken) {
-                            // GUI/MainInstall.cs::AddMod just ignores all exceptions,
-                            // so that's baked into the infrastructure
                         }
                     }
                 }
             }
         }
 
-        private void AddDep(string identifier, bool defaultInstall, string dependent)
+        private void AddDep(CkanModule mod, bool defaultInstall, CkanModule dependent)
         {
-            if (dependencies.ContainsKey(identifier)) {
-                dependencies[identifier].defaultInstall |= defaultInstall;
-                dependencies[identifier].dependents.Add(dependent);
+            if (dependencies.ContainsKey(mod)) {
+                dependencies[mod].defaultInstall |= defaultInstall;
+                dependencies[mod].dependents.Add(dependent);
             } else {
-                dependencies.Add(identifier, new Dependency() {
-                    identifier     = identifier,
+                dependencies.Add(mod, new Dependency() {
+                    module         = mod,
                     defaultInstall = defaultInstall,
-                    dependents     = new List<string>() {dependent}
+                    dependents     = new List<CkanModule>() { dependent }
                 });
             }
             if (defaultInstall) {
-                accepted.Add(identifier);
+                accepted.Add(mod);
             }
         }
 
-        private string StatusSymbol(string identifier)
+        private string StatusSymbol(CkanModule mod)
         {
-            if (accepted.Contains(identifier)) {
+            if (accepted.Contains(mod)) {
                 return installing;
             } else {
                 return notinstalled;
             }
         }
 
-        private HashSet<string> accepted = new HashSet<string>();
+        private HashSet<CkanModule> accepted = new HashSet<CkanModule>();
         private HashSet<string> rejected;
 
         private IRegistryQuerier registry;
@@ -212,8 +191,8 @@ namespace CKAN.ConsoleUI {
         private ChangePlan       plan;
         private bool             debug;
 
-        private Dictionary<string, Dependency> dependencies = new Dictionary<string, Dependency>();
-        private ConsoleListBox<Dependency>     dependencyList;
+        private Dictionary<CkanModule, Dependency> dependencies = new Dictionary<CkanModule, Dependency>();
+        private ConsoleListBox<Dependency>         dependencyList;
 
         private static readonly string notinstalled = " ";
         private static readonly string installing   = "+";
@@ -227,17 +206,17 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Identifier of mod
         /// </summary>
-        public string       identifier;
+        public CkanModule       module;
 
         /// <summary>
         /// True if we default to installing, false otherwise
         /// </summary>
-        public bool         defaultInstall;
+        public bool             defaultInstall;
 
         /// <summary>
         /// List of mods that recommended or suggested this mod
         /// </summary>
-        public List<string> dependents = new List<string>();
+        public List<CkanModule> dependents = new List<CkanModule>();
     }
 
 }

@@ -37,6 +37,12 @@ namespace CKAN
         [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
         [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
+        // Index of which mods provide what, format:
+        //   providers[provided] = { provider1, provider2, ... }
+        // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
+        [JsonIgnore] private Dictionary<string, HashSet<AvailableModule>> providers
+            = new Dictionary<string, HashSet<AvailableModule>>();
+
         [JsonIgnore] private string transaction_backup;
 
         /// <summary>
@@ -72,8 +78,7 @@ namespace CKAN
         private void DeSerialisationFixes(StreamingContext context)
         {
             // Our context is our KSP install.
-            KSP ksp = (KSP) context.Context;
-
+            KSP ksp = (KSP)context.Context;
 
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
@@ -90,7 +95,7 @@ namespace CKAN
             {
                 log.Warn("Older registry format detected, normalising paths...");
 
-                var normalised_installed_files = new Dictionary<string,string>();
+                var normalised_installed_files = new Dictionary<string, string>();
 
                 foreach (KeyValuePair<string,string> tuple in installed_files)
                 {
@@ -177,6 +182,7 @@ namespace CKAN
             }
 
             registry_version = LATEST_REGISTRY_VERSION;
+            BuildProvidesIndex();
         }
 
         /// <summary>
@@ -210,20 +216,20 @@ namespace CKAN
         #region Constructors
 
         public Registry(
-            Dictionary<string, InstalledModule> installed_modules,
-            Dictionary<string, string> installed_dlls,
-            Dictionary<string, AvailableModule> available_modules,
-            Dictionary<string, string> installed_files,
-            SortedDictionary<string, Repository> repositories
-            )
+            Dictionary<string, InstalledModule>  installed_modules,
+            Dictionary<string, string>           installed_dlls,
+            Dictionary<string, AvailableModule>  available_modules,
+            Dictionary<string, string>           installed_files,
+            SortedDictionary<string, Repository> repositories)
         {
             // Is there a better way of writing constructors than this? Srsly?
             this.installed_modules = installed_modules;
-            this.installed_dlls = installed_dlls;
+            this.installed_dlls    = installed_dlls;
             this.available_modules = available_modules;
-            this.installed_files = installed_files;
-            this.repositories = repositories;
-            registry_version = LATEST_REGISTRY_VERSION;
+            this.installed_files   = installed_files;
+            this.repositories      = repositories;
+            registry_version       = LATEST_REGISTRY_VERSION;
+            BuildProvidesIndex();
         }
 
         // If deserialsing, we don't want everything put back directly,
@@ -352,6 +358,7 @@ namespace CKAN
             SealionTransaction();
             // Clear current modules
             available_modules = new Dictionary<string, AvailableModule>();
+            providers.Clear();
             // Add the new modules
             foreach (CkanModule module in newAvail)
             {
@@ -390,6 +397,7 @@ namespace CKAN
 
             log.DebugFormat("Available: {0} version {1}", identifier, module.version);
             available_modules[identifier].Add(module);
+            BuildProvidesIndexFor(available_modules[identifier]);
         }
 
         /// <summary>
@@ -425,15 +433,13 @@ namespace CKAN
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
-            //Cache
-            CkanModule[] modules_for_current_version = available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray();
             // Now find what we can give our user.
             foreach (string candidate in candidates)
             {
                 CkanModule available = LatestAvailable(candidate, ksp_version);
 
                 if (available != null
-                    && allDependenciesCompatible(available, ksp_version, modules_for_current_version))
+                    && allDependenciesCompatible(available, ksp_version))
                 {
                     compatible.Add(available);
                 }
@@ -449,11 +455,6 @@ namespace CKAN
             var candidates   = new List<string>(available_modules.Keys);
             var incompatible = new List<CkanModule>();
 
-            CkanModule[] modules_for_current_version = available_modules.Values
-                .Select(pair => pair.Latest(ksp_version))
-                .Where(mod => mod != null)
-                .ToArray();
-
             // It's nice to see things in alphabetical order, so sort our keys first.
             candidates.Sort();
 
@@ -464,7 +465,7 @@ namespace CKAN
 
                 // If a mod is available, it might still have incompatible dependencies.
                 if (available == null
-                    || !allDependenciesCompatible(available, ksp_version, modules_for_current_version))
+                    || !allDependenciesCompatible(available, ksp_version))
                 {
                     incompatible.Add(LatestAvailable(candidate, null));
                 }
@@ -473,7 +474,7 @@ namespace CKAN
             return incompatible;
         }
 
-        private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version, CkanModule[] modules_for_current_version)
+        private bool allDependenciesCompatible(CkanModule mod, KspVersionCriteria ksp_version)
         {
             // we need to check that we can get everything we depend on
             if (mod.depends != null)
@@ -482,7 +483,7 @@ namespace CKAN
                 {
                     try
                     {
-                        if (!LatestAvailableWithProvides(dependency.name, ksp_version, modules_for_current_version).Any())
+                        if (!LatestAvailableWithProvides(dependency.name, ksp_version).Any())
                         {
                             return false;
                         }
@@ -518,7 +519,7 @@ namespace CKAN
 
             try
             {
-                return available_modules[module].Latest(ksp_version,relationship_descriptor);
+                return available_modules[module].Latest(ksp_version, relationship_descriptor);
             }
             catch (KeyNotFoundException)
             {
@@ -604,66 +605,56 @@ namespace CKAN
         }
 
         /// <summary>
-        /// <see cref = "IRegistryQuerier.LatestAvailableWithProvides" />
+        /// Generate the providers index so we can find providing modules quicker
         /// </summary>
-        public List<CkanModule> LatestAvailableWithProvides(string module, KspVersionCriteria ksp_version, RelationshipDescriptor relationship_descriptor = null)
+        private void BuildProvidesIndex()
         {
-            // Calculates a cache of modules which
-            // are compatible with the current version of KSP, and then
-            // calls the private version below for heavy lifting.
-            return LatestAvailableWithProvides(module, ksp_version,
-                available_modules.Values.Select(pair => pair.Latest(ksp_version)).Where(mod => mod != null).ToArray(),
-                relationship_descriptor);
+            providers.Clear();
+            foreach (AvailableModule am in available_modules.Values)
+            {
+                BuildProvidesIndexFor(am);
+            }
         }
 
         /// <summary>
-        /// Returns the latest version of a module that can be installed for
-        /// the given KSP version. This is a *private* method that assumes
-        /// the `available_for_current_version` list has been correctly
-        /// calculated. Not for direct public consumption. ;)
+        /// Ensure one AvailableModule is present in the right spots in the providers index
         /// </summary>
-        private List<CkanModule> LatestAvailableWithProvides(string module, KspVersionCriteria ksp_version,
-            IEnumerable<CkanModule> available_for_current_version, RelationshipDescriptor relationship_descriptor=null)
+        private void BuildProvidesIndexFor(AvailableModule am)
         {
-            log.DebugFormat("Finding latest available with provides for {0}", module);
-
-            // TODO: Check user's stability tolerance (stable, unstable, testing, etc)
-
-            var modules = new List<CkanModule>();
-
-            try
+            foreach (CkanModule m in am.AllAvailable())
             {
-                // If we can find the module requested for our KSP, use that.
-                CkanModule mod = LatestAvailable(module, ksp_version, relationship_descriptor);
-                if (mod != null)
+                foreach (string provided in m.ProvidesList)
                 {
-                    modules.Add(mod);
+                    HashSet<AvailableModule> provs = null;
+                    if (providers.TryGetValue(provided, out provs))
+                        provs.Add(am);
+                    else
+                        providers.Add(provided, new HashSet<AvailableModule>() { am });
                 }
             }
-            catch (ModuleNotFoundKraken)
+        }
+
+        /// <summary>
+        /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
+        /// </summary>
+        public List<CkanModule> LatestAvailableWithProvides(
+            string                 module,
+            KspVersionCriteria     ksp_version,
+            RelationshipDescriptor relationship_descriptor = null)
+        {
+            HashSet<AvailableModule> provs;
+            if (providers.TryGetValue(module, out provs))
             {
-                // It's cool if we can't find it, though.
+                // For each AvailableModule, we want the latest one matching our constraints
+                return provs.Select(am => am.Latest(ksp_version, relationship_descriptor))
+                    .Where(m => m?.ProvidesList?.Contains(module) ?? false)
+                    .ToList();
             }
-
-            // Walk through all our available modules, and see if anything
-            // provides what we need.
-
-            // Get our candidate module. We can assume this is non-null, as
-            // if it *is* null then available_for_current_version is corrupted,
-            // and something is terribly wrong.
-            foreach (CkanModule candidate in available_for_current_version)
+            else
             {
-                // Find everything this module provides (for our version of KSP)
-                List<string> provides = candidate.provides;
-
-                // If the module has provides, and any of them are what we're looking
-                // for, the add it to our list.
-                if (provides != null && provides.Any(provided => provided == module))
-                {
-                    modules.Add(candidate);
-                }
+                // Nothing provides this, return empty list
+                return new List<CkanModule>();
             }
-            return modules;
         }
 
         /// <summary>
@@ -948,7 +939,9 @@ namespace CKAN
         public CkanModule GetInstalledVersion(string mod_identifer)
         {
             InstalledModule installedModule;
-            return installed_modules.TryGetValue(mod_identifer, out installedModule) ? installedModule.Module : null;
+            return installed_modules.TryGetValue(mod_identifer, out installedModule)
+                ? installedModule.Module
+                : null;
         }
 
         /// <summary>
