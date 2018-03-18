@@ -342,10 +342,7 @@ namespace CKAN
             }
 
             // Fire our callback that we've installed a module, if we have one.
-            if (onReportModInstalled != null)
-            {
-                onReportModInstalled(module);
-            }
+            onReportModInstalled?.Invoke(module);
 
         }
 
@@ -409,7 +406,7 @@ namespace CKAN
                     || path == ksp.Scenarios() || path == ksp.GameData()
                     || path == ksp.GameDir() || path == ksp.CkanDir()
                     || path == ksp.ShipsThumbs() || path == ksp.ShipsThumbsVAB()
-                    || path == ksp.ShipsThumbsSPH();
+                    || path == ksp.ShipsThumbsSPH() || path == ksp.Missions();
         }
 
         /// <summary>
@@ -461,22 +458,22 @@ namespace CKAN
                 switch (stanza.install_to)
                 {
                     case "Ships":
-                        installDir = ksp == null ? null : ksp.Ships();
+                        installDir = ksp?.Ships();
                         break;
                     case "Ships/VAB":
-                        installDir = ksp == null ? null : ksp.ShipsVab();
+                        installDir = ksp?.ShipsVab();
                         break;
                     case "Ships/SPH":
-                        installDir = ksp == null ? null : ksp.ShipsSph();
+                        installDir = ksp?.ShipsSph();
                         break;
                     case "Ships/@thumbs":
-                        installDir = ksp == null ? null : ksp.ShipsThumbs();
+                        installDir = ksp?.ShipsThumbs();
                         break;
                     case "Ships/@thumbs/VAB":
-                        installDir = ksp == null ? null : ksp.ShipsThumbsVAB();
+                        installDir = ksp?.ShipsThumbsVAB();
                         break;
                     case "Ships/@thumbs/SPH":
-                        installDir = ksp == null ? null : ksp.ShipsThumbsSPH();
+                        installDir = ksp?.ShipsThumbsSPH();
                         break;
                     default:
                         throw new BadInstallLocationKraken("Unknown install_to " + stanza.install_to);
@@ -487,17 +484,22 @@ namespace CKAN
                 switch (stanza.install_to)
                 {
                     case "Tutorial":
-                        installDir = ksp == null ? null : ksp.Tutorial();
+                        installDir = ksp?.Tutorial();
                         makeDirs = true;
                         break;
 
                     case "Scenarios":
-                        installDir = ksp == null ? null : ksp.Scenarios();
+                        installDir = ksp?.Scenarios();
+                        makeDirs = true;
+                        break;
+
+                    case "Missions":
+                        installDir = ksp?.Missions();
                         makeDirs = true;
                         break;
 
                     case "GameRoot":
-                        installDir = ksp == null ? null : ksp.GameDir();
+                        installDir = ksp?.GameDir();
                         makeDirs = false;
                         break;
 

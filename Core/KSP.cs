@@ -333,6 +333,13 @@ namespace CKAN
             );
         }
 
+        public string Missions()
+        {
+            return KSPPathUtils.NormalizePath(
+                Path.Combine(GameDir(), "Missions")
+            );
+        }
+
         public string Ships()
         {
             return KSPPathUtils.NormalizePath(
