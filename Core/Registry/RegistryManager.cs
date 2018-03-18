@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ChinhDo.Transactions;
+using CKAN.DLC;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -285,6 +287,7 @@ namespace CKAN
 
             string json = File.ReadAllText(path);
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
+            ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
@@ -362,7 +365,7 @@ namespace CKAN
 
             var mods = new JArray();
             foreach (var mod in registry.Installed()
-                .Where(mod => !(mod.Value is ProvidesVersion || mod.Value is DllVersion)))
+                .Where(mod => !(mod.Value is ProvidesModuleVersion || mod.Value is UnmanagedModuleVersion)))
             {
                 var module = new JObject();
                 module["name"] = mod.Key;
@@ -441,6 +444,60 @@ namespace CKAN
         {
             string serialized = SerializeCurrentInstall(recommends, with_versions);
             file_transaction.WriteAllText(path, serialized);
+        }
+
+        public void ScanDlc()
+        {
+            var testDlc = TestDlcScan();
+            var wellKnownDlc = WellKnownDlcScan();
+
+            registry.ClearDlc();
+
+            foreach (var i in testDlc)
+            {
+                registry.RegisterDlc(i.Key, i.Value);
+            }
+
+            foreach (var i in wellKnownDlc)
+            {
+                registry.RegisterDlc(i.Key, i.Value);
+            }
+        }
+
+        private Dictionary<string, UnmanagedModuleVersion> TestDlcScan()
+        {
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
+
+            var dlcDirectory = Path.Combine(ksp.CkanDir(), "dlc");
+            if (Directory.Exists(dlcDirectory))
+            {
+                foreach (var f in Directory.EnumerateFiles(dlcDirectory, "*.dlc", SearchOption.TopDirectoryOnly))
+                {
+                    var id = $"{Path.GetFileNameWithoutExtension(f)}-DLC";
+                    var ver = File.ReadAllText(f).Trim();
+
+                    dlc[id] = new UnmanagedModuleVersion(ver);
+                }
+            }
+
+            return dlc;
+        }
+
+        private Dictionary<string, UnmanagedModuleVersion> WellKnownDlcScan()
+        {
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
+
+            var detectors = new IDlcDetector[] { new MakingHistoryDlcDetector() };
+
+            foreach (var d in detectors)
+            {
+                if (d.IsInstalled(ksp, out var identifier, out var version))
+                {
+                    dlc[identifier] = version ?? new UnmanagedModuleVersion(null);
+                }
+            }
+
+            return dlc;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -41,7 +42,7 @@ namespace CKAN.NetKAN.Sources.Github
                 // First, check for prerelease status...
                 if (reference.UsePrerelease == (bool)release["prerelease"])
                 {
-                    var version = new Version((string)release["tag_name"]);
+                    var version = new ModuleVersion((string)release["tag_name"]);
                     var author = (string)release["author"]["login"];
 
                     Uri       download = null;

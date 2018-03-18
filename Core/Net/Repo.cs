@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Autofac;
 using ChinhDo.Transactions;
 using CKAN.GameVersionProviders;
+using CKAN.Versioning;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
@@ -132,7 +133,7 @@ namespace CKAN
             {
                 string identifier = installedModule.identifier;
 
-                Version installedVersion = registry.InstalledVersion(identifier);
+                ModuleVersion installedVersion = registry.InstalledVersion(identifier);
                 if (!(registry.available_modules.ContainsKey(identifier)))
                 {
                     log.InfoFormat("UpdateRegistry, module {0}, version {1} not in registry", identifier, installedVersion);

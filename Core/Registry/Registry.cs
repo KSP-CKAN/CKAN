@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -43,6 +44,15 @@ namespace CKAN
         [JsonIgnore] private Dictionary<string, HashSet<AvailableModule>> providers
             = new Dictionary<string, HashSet<AvailableModule>>();
 
+        /// <summary>
+        /// A map between module identifiers and versions for official DLC that are installed.
+        /// </summary>
+        /// <remarks>
+        /// This shouldn't have a <see cref="JsonPropertyAttribute"/> as detection at runtime should be fast.
+        /// </remarks>
+        private readonly Dictionary<string, UnmanagedModuleVersion> _installedDlcModules =
+            new Dictionary<string, UnmanagedModuleVersion>();
+
         [JsonIgnore] private string transaction_backup;
 
         /// <summary>
@@ -70,6 +80,11 @@ namespace CKAN
         [JsonIgnore] public IEnumerable<string> InstalledDlls
         {
             get { return installed_dlls.Keys; }
+        }
+
+        [JsonIgnore] public IDictionary<string, UnmanagedModuleVersion> InstalledDlc
+        {
+            get { return _installedDlcModules; }
         }
 
         #region Registry Upgrades
@@ -404,7 +419,7 @@ namespace CKAN
         /// Remove the given module from the registry of available modules.
         /// Does *nothing* if the module was not present to begin with.
         /// </summary>
-        public void RemoveAvailable(string identifier, Version version)
+        public void RemoveAvailable(string identifier, ModuleVersion version)
         {
             AvailableModule availableModule;
             if (available_modules.TryGetValue(identifier, out availableModule))
@@ -581,7 +596,7 @@ namespace CKAN
         /// <param name="minKsp">Return parameter for the lowest  game version</param>
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
-                out Version    minMod, out Version    maxMod,
+                out ModuleVersion    minMod, out ModuleVersion    maxMod,
                 out KspVersion minKsp, out KspVersion maxKsp)
         {
             minMod = maxMod = null;
@@ -662,7 +677,7 @@ namespace CKAN
         /// or null if it does not exist.
         /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
         /// </summary>
-        public CkanModule GetModuleByVersion(string ident, Version version)
+        public CkanModule GetModuleByVersion(string ident, ModuleVersion version)
         {
             log.DebugFormat("Trying to find {0} version {1}", ident, version);
 
@@ -829,17 +844,27 @@ namespace CKAN
             installed_dlls = new Dictionary<string, string>();
         }
 
+        public void RegisterDlc(string identifier, UnmanagedModuleVersion version)
+        {
+            _installedDlcModules[identifier] = version;
+        }
+
+        public void ClearDlc()
+        {
+            _installedDlcModules.Clear();
+        }
+
         /// <summary>
         /// <see cref = "IRegistryQuerier.Installed" />
         /// </summary>
-        public Dictionary<string, Version> Installed(bool withProvides = true)
+        public Dictionary<string, ModuleVersion> Installed(bool withProvides = true)
         {
-            var installed = new Dictionary<string, Version>();
+            var installed = new Dictionary<string, ModuleVersion>();
 
             // Index our DLLs, as much as we dislike them.
             foreach (var dllinfo in installed_dlls)
             {
-                installed[dllinfo.Key] = new DllVersion();
+                installed[dllinfo.Key] = new UnmanagedModuleVersion(null);
             }
 
             // Index our provides list, so users can see virtual packages
@@ -855,6 +880,12 @@ namespace CKAN
             foreach (var modinfo in installed_modules)
             {
                 installed[modinfo.Key] = modinfo.Value.Module.version;
+            }
+
+            // Index our detected DLC (which overwrites everything)
+            foreach (var i in _installedDlcModules)
+            {
+                installed[i.Key] = i.Value;
             }
 
             return installed;
@@ -881,9 +912,9 @@ namespace CKAN
 
         // TODO: In the future it would be nice to cache this list, and mark it for rebuild
         // if our installed modules change.
-        internal Dictionary<string, ProvidesVersion> Provided()
+        internal Dictionary<string, ProvidesModuleVersion> Provided()
         {
-            var installed = new Dictionary<string, ProvidesVersion>();
+            var installed = new Dictionary<string, ProvidesModuleVersion>();
 
             foreach (var modinfo in installed_modules)
             {
@@ -897,7 +928,7 @@ namespace CKAN
 
                 foreach (string provided in module.provides)
                 {
-                    installed[provided] = new ProvidesVersion(module.identifier);
+                    installed[provided] = new ProvidesModuleVersion(module.identifier, module.version.ToString());
                 }
             }
 
@@ -907,9 +938,15 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
-        public Version InstalledVersion(string modIdentifier, bool with_provides=true)
+        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
         {
             InstalledModule installedModule;
+
+            // If it's in our DLC registry, return that
+            if (_installedDlcModules.ContainsKey(modIdentifier))
+            {
+                return _installedDlcModules[modIdentifier];
+            }
 
             // If it's genuinely installed, return the details we have.
             if (installed_modules.TryGetValue(modIdentifier, out installedModule))
@@ -920,7 +957,7 @@ namespace CKAN
             // If it's in our autodetected registry, return that.
             if (installed_dlls.ContainsKey(modIdentifier))
             {
-                return new DllVersion();
+                return new UnmanagedModuleVersion(null);
             }
 
             // Finally we have our provided checks. We'll skip these if
@@ -929,7 +966,7 @@ namespace CKAN
 
             var provided = Provided();
 
-            ProvidesVersion version;
+            ProvidesModuleVersion version;
             return provided.TryGetValue(modIdentifier, out version) ? version : null;
         }
 
@@ -970,20 +1007,25 @@ namespace CKAN
         public void CheckSanity()
         {
             IEnumerable<CkanModule> installed = from pair in installed_modules select pair.Value.Module;
-            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys);
+            SanityChecker.EnforceConsistency(installed, installed_dlls.Keys, _installedDlcModules);
         }
 
         public List<string> GetSanityErrors()
         {
             var installed = from pair in installed_modules select pair.Value.Module;
-            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys).ToList();
+            return SanityChecker.ConsistencyErrors(installed, installed_dlls.Keys, _installedDlcModules).ToList();
         }
 
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// Acts recursively.
         /// </summary>
-        internal static HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove, IEnumerable<CkanModule> orig_installed, IEnumerable<string> dlls)
+        internal static HashSet<string> FindReverseDependencies(
+            IEnumerable<string> modules_to_remove,
+            IEnumerable<CkanModule> orig_installed,
+            IEnumerable<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
         {
             while (true)
             {
@@ -994,7 +1036,7 @@ namespace CKAN
                 log.DebugFormat("Started with {0}, removing {1}, and keeping {2}; our dlls are {3}", string.Join(", ", orig_installed), string.Join(", ", modules_to_remove), string.Join(", ", hypothetical), string.Join(", ", dlls));
 
                 // Find what would break with this configuration.
-                var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet())
+                var broken = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls.ToHashSet(), dlc)
                     .Select(x => x.Key.identifier).ToHashSet();
 
                 // If nothing else would break, it's just the list of modules we're removing.
@@ -1018,7 +1060,7 @@ namespace CKAN
         public HashSet<string> FindReverseDependencies(IEnumerable<string> modules_to_remove)
         {
             var installed = new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module));
-            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys));
+            return FindReverseDependencies(modules_to_remove, installed, new HashSet<string>(installed_dlls.Keys), _installedDlcModules);
         }
 
         /// <summary>

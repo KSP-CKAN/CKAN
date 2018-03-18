@@ -1,4 +1,6 @@
-﻿namespace CKAN.CmdLine
+﻿using CKAN.Versioning;
+
+namespace CKAN.CmdLine
 {
     // Does not need an instance, so this is not an ICommand
     public class Compare
@@ -16,8 +18,8 @@
 
             if (options.Left != null && options.Right != null)
             {
-                var leftVersion = new Version(options.Left);
-                var rightVersion = new Version(options.Right);
+                var leftVersion = new ModuleVersion(options.Left);
+                var rightVersion = new ModuleVersion(options.Right);
 
                 int compareResult = leftVersion.CompareTo(rightVersion);
                 if (compareResult == 0)

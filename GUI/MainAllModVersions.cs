@@ -37,7 +37,7 @@ namespace CKAN
                 }
 
                 KspVersionCriteria kspVersionCriteria = currentInstance.VersionCriteria();
-                Version installedVersion = registry.InstalledVersion(value.Identifier);
+                ModuleVersion installedVersion = registry.InstalledVersion(value.Identifier);
 
                 bool latestCompatibleVersionAlreadyFound = false;
                 VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>

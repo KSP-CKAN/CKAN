@@ -46,8 +46,8 @@ namespace CKAN
         // The map of versions -> modules, that's what we're about!
         // First element is the oldest version, last is the newest.
         [JsonProperty]
-        internal SortedDictionary<Version, CkanModule> module_version =
-            new SortedDictionary<Version, CkanModule>();
+        internal SortedDictionary<ModuleVersion, CkanModule> module_version =
+            new SortedDictionary<ModuleVersion, CkanModule>();
 
         /// <summary>
         /// Record the given module version as being available.
@@ -65,7 +65,7 @@ namespace CKAN
         /// <summary>
         /// Remove the given version from our list of available.
         /// </summary>
-        public void Remove(Version version)
+        public void Remove(ModuleVersion version)
         {
             module_version.Remove(version);
         }
@@ -78,7 +78,7 @@ namespace CKAN
         /// <returns></returns>
         public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
         {
-            var available_versions = new List<Version>(module_version.Keys);
+            var available_versions = new List<ModuleVersion>(module_version.Keys);
             CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
             log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
@@ -117,13 +117,13 @@ namespace CKAN
             // If we're here, then we have a relationship to satisfy, so things get more complex.
             if (ksp_version == null)
             {
-                var version = available_versions.LastOrDefault(relationship.version_within_bounds);
+                var version = available_versions.LastOrDefault(relationship.WithinBounds);
                 return version == null ? null : module_version[version];
             }
             else
             {
                 var version = available_versions.LastOrDefault(v =>
-                    relationship.version_within_bounds(v) &&
+                    relationship.WithinBounds(v) &&
                     module_version[v].IsCompatibleKSP(ksp_version));
                 return version == null ? null : module_version[version];
             }
@@ -151,7 +151,7 @@ namespace CKAN
         /// <summary>
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
-        public CkanModule ByVersion(Version v)
+        public CkanModule ByVersion(ModuleVersion v)
         {
             CkanModule module;
             module_version.TryGetValue(v, out module);

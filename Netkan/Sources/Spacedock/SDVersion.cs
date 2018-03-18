@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
         [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
         public Uri download_path;
 
-        public Version friendly_version;
+        public ModuleVersion friendly_version;
         public int id;
 
         /// <summary>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Core;
 using Tests.Data;
-using Version = CKAN.Version;
 
 namespace Tests.GUI
 {
@@ -31,8 +31,8 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             {
                 var generatror = new RandomModuleGenerator(new Random(0451));
-                var old_version = generatror.GeneratorRandomModule(version: new Version("0.24"), ksp_version: tidy.KSP.Version());
-                var new_version = generatror.GeneratorRandomModule(version: new Version("0.25"), ksp_version: tidy.KSP.Version(),
+                var old_version = generatror.GeneratorRandomModule(version: new ModuleVersion("0.24"), ksp_version: tidy.KSP.Version());
+                var new_version = generatror.GeneratorRandomModule(version: new ModuleVersion("0.25"), ksp_version: tidy.KSP.Version(),
                     identifier:old_version.identifier);
                 var registry = Registry.Empty();
                 registry.RegisterModule(old_version, Enumerable.Empty<string>(), null);

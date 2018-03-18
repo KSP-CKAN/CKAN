@@ -392,7 +392,7 @@ namespace CKAN.ConsoleUI {
 
             if (releases != null && releases.Count > 0) {
 
-                Version    minMod = null, maxMod = null;
+                ModuleVersion    minMod = null, maxMod = null;
                 KspVersion minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(

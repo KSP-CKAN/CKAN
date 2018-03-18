@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using CKAN;
+using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
-using Version = CKAN.Version;
 
 namespace Tests.Core
 {
@@ -78,8 +78,8 @@ namespace Tests.Core
 
             Assert.IsTrue(registry.IsInstalled("Example"), "Example installed");
 
-            Version version = registry.InstalledVersion("Example");
-            Assert.IsInstanceOf<DllVersion>(version, "DLL detected as a DLL, not full mod");
+            ModuleVersion version = registry.InstalledVersion("Example");
+            Assert.IsInstanceOf<UnmanagedModuleVersion>(version, "DLL detected as a DLL, not full mod");
 
             // Now let's do the same with different case.
 

@@ -241,7 +241,8 @@ namespace CKAN
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
                     final_modules,
-                    registry.InstalledDlls
+                    registry.InstalledDlls,
+                    registry.InstalledDlc
                     );
             }
         }
@@ -322,7 +323,7 @@ namespace CKAN
                 if (modlist.ContainsKey(dep_name))
                 {
                     var module = modlist[dep_name];
-                    if (descriptor.version_within_bounds(module.version))
+                    if (descriptor.WithinBounds(module.version))
                         continue;
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
@@ -339,26 +340,36 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    if(descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
+                    var installedVersion = registry.InstalledVersion(dep_name);
+
+                    if (descriptor.WithinBounds(installedVersion))
                         continue;
-                    var module = registry.InstalledModule(dep_name).Module;
 
                     //TODO Ideally we could check here if it can be replaced by the version we want.
                     if (options.procede_with_inconsistencies)
                     {
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
-                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        // If the installed version is an UnmanagedModuleVersion (DLL or DLC) we can't do this since
+                        // they don't have real Modules.
+                        if (!(installedVersion is UnmanagedModuleVersion))
+                        {
+                            var module = registry.InstalledModule(dep_name).Module;
+                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
+                        }
+
                         continue;
                     }
+
                     throw new InconsistentKraken(
-                        string.Format(
-                            "{0} requires a version {1}. However an incompatible version, {2}, is already installed",
-                            dep_name, descriptor.RequiredVersion, registry.InstalledVersion(dep_name)));
+                        $"{dep_name} version {descriptor.RequiredVersion} is required. " +
+                        $"However an incompatible version, {installedVersion}, " +
+                        "is already installed."
+                    );
                 }
 
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
-                    .Where(mod=>descriptor1.version_within_bounds(mod.version) && MightBeInstallable(mod)).ToList();
+                    .Where(mod=>descriptor1.WithinBounds(mod.version) && MightBeInstallable(mod)).ToList();
 
                 if (candidates.Count == 0)
                 {

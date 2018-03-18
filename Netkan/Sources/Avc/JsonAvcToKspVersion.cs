@@ -164,7 +164,7 @@ namespace CKAN.NetKAN.Sources.Avc
 
             var version = string.Join(".", components);
             Log.DebugFormat("  extracted version: {0}", version);
-            var result = new Version(version);
+            var result = new ModuleVersion(version);
             Log.DebugFormat("  generated result: {0}", result);
             return result;
         }

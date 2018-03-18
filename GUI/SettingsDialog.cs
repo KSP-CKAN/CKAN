@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN
@@ -376,7 +377,7 @@ namespace CKAN
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
                 var latestVersion = AutoUpdate.Instance.LatestVersion;
-                if (latestVersion.IsGreaterThan(new Version(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
+                if (latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
                 }

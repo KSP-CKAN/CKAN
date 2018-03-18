@@ -2,6 +2,7 @@
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -44,7 +45,7 @@ namespace CKAN.NetKAN.Transformers
 
                 if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
                 {
-                    json["spec_version"] = Version.Max(metadata.SpecVersion, targetMetadata.SpecVersion)
+                    json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, targetMetadata.SpecVersion)
                         .ToSpecVersionJson();
 
                     if (targetJson["$kref"] != null)

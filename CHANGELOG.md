@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.24.1
 
+### Features
+
+- [Core] Detect DLC and allow as a dependency (#2326 by: dbent; reviewed: politas)
+
 ### Bugfixes
 
 - [Multiple] Fix crash when trying to view empty auth token list (#2301 by: HebaruSan; reviewed: politas)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Autofac;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
@@ -14,13 +15,13 @@ namespace CKAN
     public class RelationshipDescriptor
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version max_version;
+        public ModuleVersion max_version;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version min_version;
+        public ModuleVersion min_version;
         //Why is the identifier called name?
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Version version;
+        public ModuleVersion version;
 
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
@@ -28,65 +29,89 @@ namespace CKAN
         /// Else it uses the {min,max}_version fields treating nulls as unbounded.
         /// Note: Uses inclusive inequalities.
         /// </summary>
-        /// <param name="other_version"></param>
+        /// <param name="other"></param>
         /// <returns>True if other_version is within the bounds</returns>
-        public bool version_within_bounds(Version other_version)
+        public bool WithinBounds(ModuleVersion other)
         {
-            // DLL versions (aka autodetected mods) satisfy *all* relationships
-            if (other_version is DllVersion)
+            // UnmanagedModuleVersions with unknown versions always satisfy the bound
+            if (other is UnmanagedModuleVersion unmanagedModuleVersion && unmanagedModuleVersion.IsUnknownVersion)
                 return true;
 
             if (version == null)
             {
                 if (max_version == null && min_version == null)
                     return true;
-                bool min_sat = min_version == null || min_version <= other_version;
-                bool max_sat = max_version == null || max_version >= other_version;
-                if (min_sat && max_sat) return true;
+
+                var minSat = min_version == null || min_version <= other;
+                var maxSat = max_version == null || max_version >= other;
+
+                if (minSat && maxSat)
+                    return true;
             }
             else
             {
-                if (version.Equals(other_version))
+                if (version.Equals(other))
                     return true;
             }
+
             return false;
         }
 
         /// <summary>
         /// Check whether any of the modules in a given list match this descriptor.
-        /// NOTE: Only proper modules can be checked for versions!
+        /// NOTE: Only proper modules and DLC can be checked for versions!
         ///       DLLs match all versions, as do "provides" clauses.
         /// </summary>
         /// <param name="modules">Sequence of modules to consider</param>
         /// <param name="dlls">Sequence of DLLs to consider</param>
+        /// <param name="dlc">DLC to consider</param>
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
-        public bool MatchesAny(IEnumerable<CkanModule> modules, HashSet<string> dlls)
+        public bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
         {
+            modules = modules?.AsCollection();
+
             // DLLs are considered to match any version
             if (dlls != null && dlls.Contains(name))
             {
                 return true;
             }
+
             if (modules != null)
             {
                 // See if anyone else "provides" the target name
                 // Note that versions can't be checked for "provides" clauses
-                if (modules.Any(m =>
-                    m.identifier != name && m.provides != null && m.provides.Contains(name)))
+                if (modules.Any(m => m.identifier != name && m.provides != null && m.provides.Contains(name)))
                 {
                     return true;
                 }
+
                 // See if the real thing is there
-                foreach (CkanModule m in modules.Where(m => m.identifier == name))
+                foreach (var m in modules.Where(m => m.identifier == name))
                 {
-                    if (version_within_bounds(m.version))
+                    if (WithinBounds(m.version))
                     {
                         return true;
                     }
                 }
             }
+
+            if (dlc != null)
+            {
+                foreach (var d in dlc.Where(i => i.Key == name))
+                {
+                    if (WithinBounds(d.Value))
+                    {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
 
@@ -275,7 +300,7 @@ namespace CKAN
         public List<RelationshipDescriptor> suggests;
 
         [JsonProperty("version", Required = Required.Always)]
-        public Version version;
+        public ModuleVersion version;
 
         [JsonProperty("supports", NullValueHandling = NullValueHandling.Ignore)]
         public List<RelationshipDescriptor> supports;
@@ -288,7 +313,7 @@ namespace CKAN
 
         [JsonIgnore]
         [JsonProperty("specVersion", Required = Required.Default)]
-        private Version specVersion;
+        private ModuleVersion specVersion;
         // We integrated the Module and CkanModule into one class
         // Since spec_version was only required for CkanModule before
         // this change, we now need to make sure the user is converted
@@ -296,18 +321,18 @@ namespace CKAN
         // We should return this to a simple Required.Always field some time in the future
         // ~ Postremus, 03.09.2015
         [JsonProperty("spec_version")]
-        public Version spec_version
+        public ModuleVersion spec_version
         {
             get
             {
                 if (specVersion == null)
-                    specVersion = new Version("1");
+                    specVersion = new ModuleVersion("1");
                 return specVersion;
             }
             set
             {
                 if (value == null)
-                    specVersion = new Version("1");
+                    specVersion = new ModuleVersion("1");
                 else
                     specVersion = value;
             }
@@ -521,7 +546,7 @@ namespace CKAN
             return
                 mod1.conflicts.Any(
                     conflict =>
-                        mod2.ProvidesList.Contains(conflict.name) && conflict.version_within_bounds(mod2.version));
+                        mod2.ProvidesList.Contains(conflict.name) && conflict.WithinBounds(mod2.version));
         }
 
         /// <summary>
@@ -632,10 +657,10 @@ namespace CKAN
         /// <summary>
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
-        internal static bool IsSpecSupported(Version spec_vesion)
+        internal static bool IsSpecSupported(ModuleVersion spec_vesion)
         {
             // This could be a read-only state variable; do we have those in C#?
-            Version release = new Version(Meta.GetVersion(VersionFormat.Short));
+            ModuleVersion release = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
 
             return release == null || release.IsGreaterThan(spec_vesion);
         }
@@ -657,7 +682,7 @@ namespace CKAN
             return StandardName(identifier, version);
         }
 
-        public static string StandardName(string identifier, Version version)
+        public static string StandardName(string identifier, ModuleVersion version)
         {
             // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
             // slashes, and heaven knows what use mod authors try to smoosh into them.

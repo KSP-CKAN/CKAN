@@ -78,7 +78,7 @@ namespace CKAN
             Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
             var installed_version = registry.InstalledVersion(mod.identifier);
-            Version latest_version = null;
+            ModuleVersion latest_version = null;
             var ksp_version = mod.ksp_version;
 
             try

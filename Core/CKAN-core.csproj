@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.6.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
@@ -69,13 +71,15 @@
     <Compile Include="Converters\JsonOldResourceUrlConverter.cs" />
     <Compile Include="Converters\JsonSimpleStringConverter.cs" />
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
+    <Compile Include="DLC\IDlcDetector.cs" />
+    <Compile Include="DLC\MakingHistoryDlcDetector.cs" />
     <Compile Include="Exporters\BbCodeExporter.cs" />
     <Compile Include="Exporters\DelimeterSeperatedValueExporter.cs" />
     <Compile Include="Exporters\Exporter.cs" />
     <Compile Include="Exporters\IExporter.cs" />
     <Compile Include="Exporters\MarkdownExporter.cs" />
     <Compile Include="Exporters\PlainTextExporter.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="FileIdentifier.cs" />
     <Compile Include="GameVersionProviders\IGameVersionProvider.cs" />
     <Compile Include="GameVersionProviders\IKspBuildMap.cs" />
@@ -109,7 +113,8 @@
     <Compile Include="Relationships\SanityChecker.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Types\CkanModule.cs" />
-    <Compile Include="Types\CKANVersion.cs" />
+    <Compile Include="Versioning\CkanModuleVersion.cs" />
+    <Compile Include="Versioning\UnmanagedModuleVersion.cs" />
     <Compile Include="Types\ExportFileType.cs" />
     <Compile Include="Types\FileType.cs" />
     <Compile Include="Types\GameComparator\BaseGameComparator.cs" />
@@ -121,9 +126,10 @@
     <Compile Include="Types\License.cs" />
     <Compile Include="Types\ModuleInstallDescriptor.cs" />
     <Compile Include="Types\ModuleResolution.cs" />
+    <Compile Include="Versioning\ProvidesModuleVersion.cs" />
     <Compile Include="Types\ReleaseStatus.cs" />
     <Compile Include="Types\Repository.cs" />
-    <Compile Include="Types\Version.cs" />
+    <Compile Include="Versioning\ModuleVersion.cs" />
     <Compile Include="User.cs" />
     <Compile Include="VersionFormat.cs" />
     <Compile Include="Versioning\KspVersion.cs" />
