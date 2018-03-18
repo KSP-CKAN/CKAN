@@ -13,37 +13,52 @@ namespace CKAN
 
         public void ShowWaitDialog(bool cancelable = true)
         {
-            tabController.ShowTab("WaitTabPage", 2);
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                tabController.ShowTab("WaitTabPage", 2);
 
-            CancelCurrentActionButton.Enabled = cancelable;
+                CancelCurrentActionButton.Enabled = cancelable;
 
-            DialogProgressBar.Value = 0;
-            DialogProgressBar.Minimum = 0;
-            DialogProgressBar.Maximum = 100;
-            DialogProgressBar.Style = ProgressBarStyle.Marquee;
-            MessageTextBox.Text = "Please wait";
-            StatusProgress.Value = 0;
-            StatusProgress.Style = ProgressBarStyle.Marquee;
-            StatusProgress.Visible = true;
+                DialogProgressBar.Value = 0;
+                DialogProgressBar.Minimum = 0;
+                DialogProgressBar.Maximum = 100;
+                DialogProgressBar.Style = ProgressBarStyle.Marquee;
+                MessageTextBox.Text = "Please wait";
+            });
+            Util.Invoke(statusStrip1, () =>
+            {
+                StatusProgress.Value = 0;
+                StatusProgress.Style = ProgressBarStyle.Marquee;
+                StatusProgress.Visible = true;
+            });
         }
 
         public void HideWaitDialog(bool success)
         {
-            MessageTextBox.Text = "All done!";
-            DialogProgressBar.Value = 100;
-            DialogProgressBar.Style = ProgressBarStyle.Continuous;
-            StatusProgress.Value = 100;
-            StatusProgress.Style = ProgressBarStyle.Continuous;
-            RecreateDialogs();
+            Util.Invoke(statusStrip1, () =>
+            {
+                StatusProgress.Value = 100;
+                StatusProgress.Style = ProgressBarStyle.Continuous;
+            });
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                MessageTextBox.Text = "All done!";
+                DialogProgressBar.Value = 100;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+                RecreateDialogs();
 
-            tabController.SetActiveTab("ManageModsTabPage");
+                tabController.SetActiveTab("ManageModsTabPage");
 
-            CancelCurrentActionButton.Enabled = false;
-            DialogProgressBar.Value = 0;
-            DialogProgressBar.Style = ProgressBarStyle.Continuous;
-            StatusProgress.Value = 0;
-            StatusProgress.Style = ProgressBarStyle.Continuous;
-            StatusProgress.Visible = false;
+                CancelCurrentActionButton.Enabled = false;
+                DialogProgressBar.Value = 0;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            });
+            Util.Invoke(statusStrip1, () =>
+            {
+                StatusProgress.Value = 0;
+                StatusProgress.Style = ProgressBarStyle.Continuous;
+                StatusProgress.Visible = false;
+            });
         }
 
         public void SetProgress(int progress)
@@ -61,6 +76,9 @@ namespace CKAN
             {
                 DialogProgressBar.Value = progress;
                 DialogProgressBar.Style = ProgressBarStyle.Continuous;
+            });
+            Util.Invoke(statusStrip1, () =>
+            {
                 StatusProgress.Value = progress;
                 StatusProgress.Style = ProgressBarStyle.Continuous;
             });
@@ -71,6 +89,9 @@ namespace CKAN
             Util.Invoke(DialogProgressBar, () =>
             {
                 DialogProgressBar.Style = ProgressBarStyle.Marquee;
+            });
+            Util.Invoke(statusStrip1, () =>
+            {
                 StatusProgress.Style    = ProgressBarStyle.Marquee;
             });
         }
@@ -92,7 +113,10 @@ namespace CKAN
 
         private void RetryCurrentActionButton_Click(object sender, EventArgs e)
         {
-            tabController.ShowTab("ChangesetTabPage", 1);
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                tabController.ShowTab("ChangesetTabPage", 1);
+            });
         }
 
         private void CancelCurrentActionButton_Click(object sender, EventArgs e)
@@ -101,7 +125,10 @@ namespace CKAN
             {
                 cancelCallback();
             }
-            CancelCurrentActionButton.Enabled = false;
+            Util.Invoke(DialogProgressBar, () =>
+            {
+                CancelCurrentActionButton.Enabled = false;
+            });
             HideWaitDialog(true);
         }
 
