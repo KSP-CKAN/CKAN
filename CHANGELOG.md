@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Core] Detect DLC and allow as a dependency (#2326 by: dbent; reviewed: politas)
+- [GUI] Install old mod versions by version list double-click (#2364 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

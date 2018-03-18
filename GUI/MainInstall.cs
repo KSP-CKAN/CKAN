@@ -22,6 +22,60 @@ namespace CKAN
         // this will be the final list of mods we want to install
         private HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
 
+        /// <summary>
+        /// Initiate the GUI installer flow for one specific module
+        /// </summary>
+        /// <param name="registry">Reference to the registry</param>
+        /// <param name="module">Module to install</param>
+        public async void InstallModuleDriver(IRegistryQuerier registry, CkanModule module)
+        {
+            RelationshipResolverOptions install_ops = RelationshipResolver.DefaultOpts();
+            install_ops.with_recommends = false;
+
+            try
+            {
+                // Resolve the provides relationships in the dependencies
+                List<ModChange> fullChangeSet = new List<ModChange>(
+                    await mainModList.ComputeChangeSetFromModList(
+                        registry,
+                        new HashSet<ModChange>()
+                        {
+                            new ModChange(
+                                new GUIMod(
+                                    module,
+                                    registry,
+                                    CurrentInstance.VersionCriteria()
+                                ),
+                                GUIModChangeType.Install,
+                                null
+                            )
+                        },
+                        ModuleInstaller.GetInstance(CurrentInstance, GUI.user),
+                        CurrentInstance.VersionCriteria()
+                    )
+                );
+                if (fullChangeSet != null && fullChangeSet.Count > 0)
+                {
+                    installWorker.RunWorkerAsync(
+                        new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
+                            fullChangeSet,
+                            install_ops
+                        )
+                    );
+                }
+            }
+            catch
+            {
+                // If we failed, do the clean-up normally done by PostInstallMods.
+                HideWaitDialog(false);
+                menuStrip1.Enabled = true;
+            }
+            finally
+            {
+                changeSet = null;
+            }
+        }
+
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
             ShowWaitDialog();

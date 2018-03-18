@@ -80,9 +80,10 @@
             this.VersionsListView.TabIndex = 1;
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
-            // 
+            this.VersionsListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.VersionsListView_DoubleClick);
+            //
             // label2
-            // 
+            //
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Green;
             this.label2.ForeColor = System.Drawing.Color.White;
