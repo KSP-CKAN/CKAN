@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Improve response to checkbox changes (#2354 by: HebaruSan; reviewed: politas)
 - [Core] Allow downloader to be used multiple times (#2365 by: HebaruSan; reviewed: politas)
 - [GUI] Clean up URL Handler registration (#2366 by: HebaruSan; reviewed: politas)
+- [Multiple] Deal with threading and download errors (#2374 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

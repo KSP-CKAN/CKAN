@@ -94,6 +94,10 @@ namespace CKAN
                         {
                             cache.Store(modules[i], filenames[i], modules[i].StandardName());
                         }
+                        catch (InvalidModuleFileKraken kraken)
+                        {
+                            User.RaiseError(kraken.ToString());
+                        }
                         catch (FileNotFoundException e)
                         {
                             log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
