@@ -22,6 +22,9 @@ namespace Tests.Core
         private string mm_zip;
         private CkanModule mm_mod;
 
+        private string mission_zip;
+        private CkanModule mission_mod;
+
         [SetUp]
         public void Setup()
         {
@@ -34,6 +37,9 @@ namespace Tests.Core
 
             mm_zip = TestData.ModuleManagerZip();
             mm_mod = TestData.ModuleManagerModule();
+
+            mission_zip = TestData.MissionZip();
+            mission_mod = TestData.MissionModule();
         }
 
         [Test]
@@ -179,6 +185,32 @@ namespace Tests.Core
                     x => Regex.IsMatch(x, @"ModuleManager\.2\.5\.1\.dll$"));
 
                 Assert.IsNotNull(file, "ModuleManager install");
+            }
+        }
+
+        [Test]
+        public void MissionInstall()
+        {
+            using (var tidy = new DisposableKSP())
+            {
+                List<InstallableFile> contents = CKAN.ModuleInstaller.FindInstallableFiles(mission_mod, mission_zip, tidy.KSP);
+
+                string failBanner = contents.Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "Missions/AwesomeMission/Banners/Fail/default\\.png$"));
+                string menuBanner = contents.Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "Missions/AwesomeMission/Banners/Menu/default\\.png$"));
+                string successBanner = contents.Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "Missions/AwesomeMission/Banners/Success/default\\.png$"));
+                string metaFile = contents.Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "Missions/AwesomeMission/persistent\\.loadmeta$"));
+                string missionFile = contents.Select(x => x.destination).FirstOrDefault(
+                    x => Regex.IsMatch(x, "Missions/AwesomeMission/persistent\\.mission$"));
+
+                Assert.IsNotNull(failBanner, "There is no fail banner in MissionInstall");
+                Assert.IsNotNull(menuBanner, "There is no menu banner in MissionInstall");
+                Assert.IsNotNull(successBanner, "There is no success banner in MissionInstall");
+                Assert.IsNotNull(metaFile, "There is no .loadmeta file in MissionInstall");
+                Assert.IsNotNull(missionFile, "There is no .mission file in MissionInstall");
             }
         }
 

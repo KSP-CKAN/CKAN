@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.24.1
+## v1.25.0-PRE1
 
 ### Features
 
 - [Core] Detect DLC and allow as a dependency (#2326 by: dbent; reviewed: politas)
 - [GUI] Install old mod versions by version list double-click (#2364 by: HebaruSan; reviewed: politas)
+- [Core] Allow installations to the Missions folder (#2371 by: Olympic1; reviewed: politas)
 
 ### Bugfixes
 

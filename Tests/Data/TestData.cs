@@ -545,6 +545,16 @@ namespace Tests.Data
             return DataDir("ModuleManager-2.5.1.zip");
         }
 
+        public static CkanModule MissionModule()
+        {
+            return CkanModule.FromFile(DataDir("MissionTest-1.0.ckan"));
+        }
+
+        public static string MissionZip()
+        {
+            return DataDir("MissionTest-1.0.zip");
+        }
+
         /// <summary>
         /// A path to our test registry.json file. Please copy before using.
         /// </summary>

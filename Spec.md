@@ -283,7 +283,7 @@ three source directives:
 In addition a destination directive *must* be provided:
 
 - `install_to`: The target location where the matched file or directory should be installed.
-  -  Valid values for this entry are `GameData`, `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Tutorial`, `Scenarios` (**v1.14**)
+  -  Valid values for this entry are `GameData`, `Missions`(**v1.25**), `Ships`, `Ships/SPH`(**v1.12**), `Ships/VAB`(**v1.12**), `Ships/@thumbs/VAB`(**v1.16**), `Ships/@thumbs/SPH`(**v1.16**), `Tutorial`, `Scenarios` (**v1.14**)
   and `GameRoot` (which should be used sparingly, if at all).
   -  A path to a given subfolder location can be specified *only* under `GameData` (**v1.2**);
   for example: `GameData/MyMod/Plugins`. The client *must* check this path and abort the install
