@@ -63,10 +63,13 @@ namespace CKAN
                 bool latestCompatibleVersionAlreadyFound = false;
                 VersionsListView.Items.AddRange(allAvailableVersions.Select(module =>
                 {
+                    ModuleVersion minMod = null, maxMod = null;
+                    KspVersion    minKsp = null, maxKsp = null;
+                    Registry.GetMinMaxVersions(new List<CkanModule>() {module}, out minMod, out maxMod, out minKsp, out maxKsp);
                     ListViewItem toRet = new ListViewItem(new string[]
                         {
                             module.version.ToString(),
-                            module.HighestCompatibleKSP()
+                            KspVersionRange.VersionSpan(minKsp, maxKsp).ToString()
                         })
                     {
                         Tag  = module

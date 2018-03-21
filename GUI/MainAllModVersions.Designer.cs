@@ -60,7 +60,7 @@
             // 
             // CompatibleKSPVersion
             // 
-            this.CompatibleKSPVersion.Text = "Compatible KSP Version";
+            this.CompatibleKSPVersion.Text = "Compatible KSP Versions";
             this.CompatibleKSPVersion.Width = 248;
             // 
             // VersionsListView
