@@ -421,11 +421,18 @@ namespace CKAN
 
             foreach (CkanModule module in tooManyProvides.modules)
             {
-                ListViewItem item = new ListViewItem {Tag = module, Checked = false, Text = module.name};
-
-
-                ListViewItem.ListViewSubItem description =
-                    new ListViewItem.ListViewSubItem {Text = module.@abstract};
+                ListViewItem item = new ListViewItem()
+                {
+                    Tag = module,
+                    Checked = false,
+                    Text = CurrentInstance.Cache.IsMaybeCachedZip(module)
+                        ? $"{module.name} {module.version} (cached)"
+                        : $"{module.name} {module.version} ({module.download.Host ?? ""}, {CkanModule.FmtSize(module.download_size)})"
+                };
+                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem()
+                {
+                    Text = module.@abstract
+                };
 
                 item.SubItems.Add(description);
                 ChooseProvidedModsListView.Items.Add(item);
