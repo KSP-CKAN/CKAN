@@ -123,7 +123,9 @@ namespace CKAN
         {
             for (int i = 0; i < downloads.Count; i++)
             {
-                User.RaiseMessage("Downloading \"{0}\"", downloads[i].url);
+                // Encode spaces to avoid confusing URL parsers
+                User.RaiseMessage("Downloading \"{0}\"",
+                    downloads[i].url.ToString().Replace(" ", "%20"));
 
                 // We need a new variable for our closure/lambda, hence index = i.
                 int index = i;
@@ -160,7 +162,9 @@ namespace CKAN
             for (int i = 0; i < downloads.Count; i++)
             {
                 log.DebugFormat("Downloading {0}", downloads[i].url);
-                User.RaiseMessage("Downloading \"{0}\" (libcurl)", downloads[i].url);
+                // Encode spaces to avoid confusing URL parsers
+                User.RaiseMessage("Downloading \"{0}\" (libcurl)",
+                    downloads[i].url.ToString().Replace(" ", "%20"));
 
                 // Open our file, and make an easy object...
                 FileStream stream = File.OpenWrite(downloads[i].path);
