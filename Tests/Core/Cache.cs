@@ -126,7 +126,6 @@ namespace Tests.Core
         private const uint S_IRUSR = 0000400;
         private const uint S_IWUSR = 0000200;
         private const uint S_IXUSR = 0000100;
-        private const uint S_IRWXU = 0000700;
 
         [Test]
         public void MoveCacheFailsForNoAccess()
@@ -160,7 +159,7 @@ namespace Tests.Core
             Assert.IsFalse(cache.MoveDefaultCache(cache_dir_moved), "The cache shouldn't be moved if we don't have read permission.");
 
             // Enable all permissions
-            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IRWXU), 0);
+            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IRUSR | S_IWUSR | S_IXUSR), 0);
 
             // Move the cache
             Assert.IsTrue(cache.MoveDefaultCache(cache_dir_moved), "The cache should be moved if we have full permission.");
