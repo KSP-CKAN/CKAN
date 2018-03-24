@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="Action\AuthToken.cs" />
     <Compile Include="Action\Available.cs" />
+    <Compile Include="Action\Cache.cs" />
     <Compile Include="Action\Compare.cs" />
     <Compile Include="Action\Compat.cs" />
     <Compile Include="Action\ICommand.cs" />

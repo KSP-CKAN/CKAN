@@ -93,6 +93,9 @@ namespace CKAN.CmdLine
 
                     case "authtoken":
                         return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+
+                    case "cache":
+                        return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
                 }
             }
             catch (NoGameInstanceKraken)

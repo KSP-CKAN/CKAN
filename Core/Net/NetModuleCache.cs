@@ -37,6 +37,14 @@ namespace CKAN
         {
             return cache.GetCachePath();
         }
+        public string GetCachePathFromRegistry()
+        {
+            return cache.GetCachePathFromRegistry();
+        }
+        public string GetSystemDefaultCachePath()
+        {
+            return cache.GetSystemDefaultCachePath();
+        }
         public bool IsCached(CkanModule m)
         {
             return cache.IsCached(m.download);
@@ -60,6 +68,10 @@ namespace CKAN
         public string GetCachedZip(CkanModule m)
         {
             return cache.GetCachedZip(m.download);
+        }
+        public bool MoveDefaultCache(string path, bool move = false)
+        {
+            return cache.MoveDefaultCache(path, move);
         }
 
         /// <summary>

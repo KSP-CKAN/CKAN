@@ -40,8 +40,10 @@
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
-            this.ClearCKANCacheButton = new System.Windows.Forms.Button();
-            this.CKANCacheLabel = new System.Windows.Forms.Label();
+            this.CachePathLabel = new System.Windows.Forms.Label();
+            this.SetCacheButton = new System.Windows.Forms.Button();
+            this.CacheLabel = new System.Windows.Forms.Label();
+            this.ClearCacheButton = new System.Windows.Forms.Button();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
@@ -176,35 +178,57 @@
             //
             // CacheGroupBox
             //
-            this.CacheGroupBox.Controls.Add(this.ClearCKANCacheButton);
-            this.CacheGroupBox.Controls.Add(this.CKANCacheLabel);
+            this.CacheGroupBox.Controls.Add(this.CachePathLabel);
+            this.CacheGroupBox.Controls.Add(this.SetCacheButton);
+            this.CacheGroupBox.Controls.Add(this.CacheLabel);
+            this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(12, 279);
             this.CacheGroupBox.Name = "CacheGroupBox";
-            this.CacheGroupBox.Size = new System.Drawing.Size(476, 49);
+            this.CacheGroupBox.Size = new System.Drawing.Size(476, 82);
             this.CacheGroupBox.TabIndex = 10;
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "Cache";
             //
-            // ClearCKANCacheButton
+            // CachePathLabel
             //
-            this.ClearCKANCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearCKANCacheButton.Location = new System.Drawing.Point(341, 16);
-            this.ClearCKANCacheButton.Name = "ClearCKANCacheButton";
-            this.ClearCKANCacheButton.Size = new System.Drawing.Size(129, 23);
-            this.ClearCKANCacheButton.TabIndex = 1;
-            this.ClearCKANCacheButton.Text = "Clear cache";
-            this.ClearCKANCacheButton.UseVisualStyleBackColor = true;
-            this.ClearCKANCacheButton.Click += new System.EventHandler(this.ClearCKANCacheButton_Click);
+            this.CachePathLabel.AutoSize = true;
+            this.CachePathLabel.Location = new System.Drawing.Point(12, 25);
+            this.CachePathLabel.Name = "CachePathLabel";
+            this.CachePathLabel.Size = new System.Drawing.Size(75, 13);
+            this.CachePathLabel.TabIndex = 11;
+            this.CachePathLabel.Text = "Cache path: P";
             //
-            // CKANCacheLabel
+            // SetCacheButton
             //
-            this.CKANCacheLabel.AutoSize = true;
-            this.CKANCacheLabel.Location = new System.Drawing.Point(3, 21);
-            this.CKANCacheLabel.Name = "CKANCacheLabel";
-            this.CKANCacheLabel.Size = new System.Drawing.Size(271, 13);
-            this.CKANCacheLabel.TabIndex = 0;
-            this.CKANCacheLabel.Text = "There are currently N files in the cache, taking up M MB";
+            this.SetCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SetCacheButton.Location = new System.Drawing.Point(352, 18);
+            this.SetCacheButton.Name = "SetCacheButton";
+            this.SetCacheButton.Size = new System.Drawing.Size(112, 23);
+            this.SetCacheButton.TabIndex = 12;
+            this.SetCacheButton.Text = "Set cache";
+            this.SetCacheButton.UseVisualStyleBackColor = true;
+            this.SetCacheButton.Click += new System.EventHandler(this.SetCacheButton_Click);
+            //
+            // CacheLabel
+            //
+            this.CacheLabel.AutoSize = true;
+            this.CacheLabel.Location = new System.Drawing.Point(12, 54);
+            this.CacheLabel.Name = "CacheLabel";
+            this.CacheLabel.Size = new System.Drawing.Size(271, 13);
+            this.CacheLabel.TabIndex = 13;
+            this.CacheLabel.Text = "There are currently N files in the cache, taking up M MB";
+            //
+            // ClearCacheButton
+            //
+            this.ClearCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ClearCacheButton.Location = new System.Drawing.Point(352, 47);
+            this.ClearCacheButton.Name = "ClearCacheButton";
+            this.ClearCacheButton.Size = new System.Drawing.Size(112, 23);
+            this.ClearCacheButton.TabIndex = 14;
+            this.ClearCacheButton.Text = "Clear cache";
+            this.ClearCacheButton.UseVisualStyleBackColor = true;
+            this.ClearCacheButton.Click += new System.EventHandler(this.ClearCacheButton_Click);
             //
             // AutoUpdateGroupBox
             //
@@ -221,7 +245,7 @@
                 this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             }
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 334);
+            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 369);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
             this.AutoUpdateGroupBox.Size = new System.Drawing.Size(476, 105);
             this.AutoUpdateGroupBox.TabIndex = 11;
@@ -324,7 +348,7 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 442);
+            this.ClientSize = new System.Drawing.Size(500, 486);
             this.Controls.Add(this.AutoUpdateGroupBox);
             this.Controls.Add(this.CacheGroupBox);
             this.Controls.Add(this.RepositoryGroupBox);
@@ -349,8 +373,10 @@
         private System.Windows.Forms.Button NewRepoButton;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
         private System.Windows.Forms.GroupBox CacheGroupBox;
-        private System.Windows.Forms.Label CKANCacheLabel;
-        private System.Windows.Forms.Button ClearCKANCacheButton;
+        private System.Windows.Forms.Label CachePathLabel;
+        private System.Windows.Forms.Button SetCacheButton;
+        private System.Windows.Forms.Label CacheLabel;
+        private System.Windows.Forms.Button ClearCacheButton;
         private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.ListBox ReposListBox;
         private System.Windows.Forms.Button UpRepoButton;

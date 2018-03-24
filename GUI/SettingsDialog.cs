@@ -77,7 +77,13 @@ namespace CKAN
                 m_cacheSize += file.Length;
             }
 
-            CKANCacheLabel.Text = String.Format
+            CachePathLabel.Text = String.Format
+            (
+                "The current path of the cache: {0}",
+                cachePath
+            );
+
+            CacheLabel.Text = String.Format
             (
                 "There are currently {0} cached files using {1} in total",
                 m_cacheFileCount,
@@ -85,7 +91,31 @@ namespace CKAN
             );
         }
 
-        private void ClearCKANCacheButton_Click(object sender, EventArgs e)
+        private void SetCacheButton_Click(object sender, EventArgs e)
+        {
+            // Get registry
+            var registry = RegistryManager.Instance(Main.Instance.CurrentInstance).registry;
+
+            // Show dialog
+            var dialog = new SetCachePathDialog();
+            if (dialog.ShowSetCachePathDialog(registry.DownloadCacheDir) != DialogResult.OK)
+                return;
+
+            // Save to registry
+            registry.DownloadCacheDir = dialog.GetPath();
+
+            // Also save to config
+            Main.Instance.configuration.CachePath = dialog.GetPath();
+            Main.Instance.configuration.Save();
+
+            // Move old cache to new one
+            Main.Instance.CurrentInstance.Cache.MoveDefaultCache(dialog.GetPath(), true);
+
+            // Refresh info
+            UpdateCacheInfo();
+        }
+
+        private void ClearCacheButton_Click(object sender, EventArgs e)
         {
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
@@ -105,6 +135,7 @@ namespace CKAN
                     }
                     catch (Exception)
                     {
+                        // Ignored
                     }
                 }
 

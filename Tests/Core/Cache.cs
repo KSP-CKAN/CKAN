@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using CKAN;
 using NUnit.Framework;
 using Tests.Data;
@@ -10,8 +11,9 @@ namespace Tests.Core
     public class Cache
     {
         private string cache_dir;
+        private string cache_dir_moved;
 
-        private NetFileCache   cache;
+        private NetFileCache cache;
         private NetModuleCache module_cache;
 
         [SetUp]
@@ -19,7 +21,11 @@ namespace Tests.Core
         {
             cache_dir = TestData.NewTempDir();
             Directory.CreateDirectory(cache_dir);
-            cache        = new NetFileCache(cache_dir);
+
+            cache_dir_moved = TestData.NewTempDir();
+            Directory.CreateDirectory(cache_dir_moved);
+
+            cache = new NetFileCache(cache_dir);
             module_cache = new NetModuleCache(cache_dir);
         }
 
@@ -27,6 +33,7 @@ namespace Tests.Core
         public void RemoveCache()
         {
             Directory.Delete(cache_dir, true);
+            Directory.Delete(cache_dir_moved, true);
         }
 
         [Test]
@@ -85,6 +92,101 @@ namespace Tests.Core
             cache.Remove(url);
 
             Assert.IsFalse(cache.IsCached(url));
+        }
+
+        [Test]
+        public void MoveCacheFailsForNull()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url));
+            cache.Store(url, file);
+
+            Assert.IsFalse(cache.MoveDefaultCache(null));
+        }
+
+        [Test]
+        public void MoveCacheFailsForEmptyOrWhitespace()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url));
+            cache.Store(url, file);
+
+            Assert.IsFalse(cache.MoveDefaultCache(string.Empty));
+            Assert.IsFalse(cache.MoveDefaultCache(""));
+            Assert.IsFalse(cache.MoveDefaultCache(" "));
+        }
+
+        [DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+        private static extern int Sys_chmod(string path, uint mode);
+
+        private const uint S_IRUSR = 0000400;
+        private const uint S_IWUSR = 0000200;
+        private const uint S_IXUSR = 0000100;
+        private const uint S_IRWXU = 0000700;
+
+        [Test]
+        public void MoveCacheFailsForNoAccess()
+        {
+            // The following will only work on POSIX systems
+            if (Platform.IsWindows)
+                return;
+
+            Uri url = new Uri("http://example.com/");
+            string file = TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url), "The example file shouldn't be stored.");
+            cache.Store(url, file);
+
+            // Change the permissions (Disable read/write)
+            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IXUSR), 0);
+
+            // Move the cache
+            Assert.IsFalse(cache.MoveDefaultCache(cache_dir_moved), "The cache shouldn't be moved if we don't have read/write permission.");
+
+            // Change the permissions (Enable read)
+            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IRUSR), 0);
+
+            // Move the cache
+            Assert.IsFalse(cache.MoveDefaultCache(cache_dir_moved), "The cache shouldn't be moved if we don't have write permission.");
+
+            // Change the permissions (Enable write)
+            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IWUSR), 0);
+
+            // Move the cache
+            Assert.IsFalse(cache.MoveDefaultCache(cache_dir_moved), "The cache shouldn't be moved if we don't have read permission.");
+
+            // Enable all permissions
+            Assert.AreEqual(Sys_chmod(cache_dir_moved, S_IRWXU), 0);
+
+            // Move the cache
+            Assert.IsTrue(cache.MoveDefaultCache(cache_dir_moved), "The cache should be moved if we have full permission.");
+        }
+
+        [Test]
+        public void MoveCache()
+        {
+            Uri url = new Uri("http://example.com/");
+            string file = TestData.DogeCoinFlagZip();
+
+            Assert.IsFalse(cache.IsCached(url));
+
+            // Cache the file
+            string path = cache.Store(url, file);
+
+            // Check that file exists in the old cache dir
+            Assert.IsTrue(File.Exists(path));
+
+            // Move the cache
+            Assert.IsTrue(cache.MoveDefaultCache(cache_dir_moved));
+
+            // Make sure we still have the file cached
+            string newPath = cache.GetCachedFilename(url);
+            Assert.IsTrue(File.Exists(newPath));
+            Assert.IsFalse(File.Exists(path));
         }
 
         [Test]
