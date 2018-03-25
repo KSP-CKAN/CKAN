@@ -17,7 +17,7 @@ worried it will go stale?"
 %
 Jenkins is refusing to work a simple fix and keeps reporting the
 build as broken. 3 different people are trying to figure out why
-NetKAN reports an error and calls a forth one to come check it out.
+NetKAN reports an error and calls a fourth one to come check it out.
 
 "licence" is misspelled
 
