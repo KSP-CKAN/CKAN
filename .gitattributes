@@ -40,8 +40,8 @@
 # Build files
 *.cake          text
 *.ps1           text
-build           text
-Dockerfile      text
+build           text eol=lf
+Dockerfile      text eol=lf
 
 # Other
 *.ackrc         text

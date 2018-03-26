@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Clean up URL Handler registration (#2366 by: HebaruSan; reviewed: politas)
 - [Multiple] Deal with threading and download errors (#2374 by: HebaruSan; reviewed: politas)
 - [GUI] More verbose and accurate version displays (#2382 by: HebaruSan; reviewed: politas)
+- [Core] Encode spaces in URL output (#2386 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
