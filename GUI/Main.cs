@@ -477,6 +477,15 @@ namespace CKAN
                 }
             }
 
+            
+            var new_sort_column = ModList.Columns[1];
+            var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
+
+            // Reset the glyph.
+            current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
+            configuration.SortByColumnIndex = new_sort_column.Index;
+            UpdateFilters(this);
+
             ModList.Refresh();
         }
 
