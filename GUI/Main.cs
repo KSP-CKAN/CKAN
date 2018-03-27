@@ -477,16 +477,20 @@ namespace CKAN
                 }
             }
 
-            
+            // set new sort column
             var new_sort_column = ModList.Columns[1];
             var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
-
+            
             // Reset the glyph.
             current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
             configuration.SortByColumnIndex = new_sort_column.Index;
             UpdateFilters(this);
 
             ModList.Refresh();
+
+            // Selects the top/bottom row and scrolls the list to it.
+            DataGridViewCell cell = ModList.Rows[0].Cells[2];
+            ModList.CurrentCell = cell;
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
