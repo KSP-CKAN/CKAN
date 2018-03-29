@@ -233,6 +233,13 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
                 return Exit.ERROR;
             }
+            catch (ConflictsKraken ex)
+            {
+                // The prettiest Kraken formats itself for us.
+                user.RaiseMessage(ex.ConflictsPretty);
+                user.RaiseMessage("Install canceled. Your files have been returned to their initial state.");
+                return Exit.ERROR;
+            }
             catch (CancelledActionKraken)
             {
                 user.RaiseMessage("Installation canceled at user request.");

@@ -351,6 +351,45 @@ namespace CKAN
             e.Handled = true;
         }
 
+        private async Task UpdateChangeSetAndConflicts(IRegistryQuerier registry)
+        {
+            IEnumerable<ModChange> fullChangeSet = null;
+            Dictionary<GUIMod, string> newConflicts = null;
+
+            bool tooManyProvidesWasThrown = false;
+            Cursor.Current = Cursors.WaitCursor;
+            var userChangeSet = mainModList.ComputeUserChangeSet();
+            try
+            {
+                var moduleInstaller = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+                fullChangeSet = await mainModList.ComputeChangeSetFromModList(registry, userChangeSet, moduleInstaller, CurrentInstance.VersionCriteria());
+            }
+            catch (TooManyModsProvideKraken)
+            {
+                // Can be thrown by ComputeChangeSetFromModList if the user cancels out of it.
+                // We can just rerun it as the ModInfoTabControl has been removed.
+                tooManyProvidesWasThrown = true;
+            }
+            // ComputeChangeSetFromModList returns null if an inconsistency was found, we need to highlight the inconsistencies.
+            if (fullChangeSet == null)
+            {
+                // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                userChangeSet = mainModList.ComputeUserChangeSet();
+                newConflicts = MainModList.ComputeConflictsFromModList(registry, userChangeSet, CurrentInstance.VersionCriteria());
+            }
+            if (tooManyProvidesWasThrown)
+            {
+                await UpdateChangeSetAndConflicts(registry);
+                newConflicts = Conflicts;
+                fullChangeSet = ChangeSet;
+            }
+
+            lastModToHaveInstallToggled.Clear();
+            Conflicts = newConflicts;
+            ChangeSet = fullChangeSet;
+            Cursor.Current = Cursors.Default;
+        }
+
         /// <summary>
         /// I'm pretty sure this is what gets called when the user clicks on a ticky in the mod list.
         /// </summary>
@@ -406,7 +445,7 @@ namespace CKAN
                         case 0:
                             gui_mod.SetInstallChecked(row);
                             if (gui_mod.IsInstallChecked)
-                                last_mod_to_have_install_toggled.Push(gui_mod);
+                                lastModToHaveInstallToggled.Push(gui_mod);
                             break;
                         case 1:
                             gui_mod.SetUpgradeChecked(row);
@@ -459,7 +498,7 @@ namespace CKAN
         public MainModList(ModFiltersUpdatedEvent onModFiltersUpdated, HandleTooManyProvides too_many_provides,
             IUser user = null)
         {
-            this.too_many_provides = too_many_provides;
+            this.tooManyProvides = too_many_provides;
             this.user = user ?? new NullUser();
             Modules = new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
             ModFiltersUpdated += onModFiltersUpdated ?? (source => { });
@@ -524,7 +563,7 @@ namespace CKAN
         private string _modDescriptionFilter = String.Empty;
         private IUser user;
 
-        private readonly HandleTooManyProvides too_many_provides;
+        private readonly HandleTooManyProvides tooManyProvides;
 
         /// <summary>
         /// This function returns a changeset based on the selections of the user.
@@ -568,30 +607,49 @@ namespace CKAN
             var installed_modules =
                 registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
 
-            bool handled_all_too_many_provides = false;
-            while (!handled_all_too_many_provides)
+            bool handledAllTooManyProvides = false;
+            while (!handledAllTooManyProvides)
             {
                 //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
                 TooManyModsProvideKraken kraken;
                 try
                 {
                     new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
-                    handled_all_too_many_provides = true;
+                    handledAllTooManyProvides = true;
                     continue;
                 }
                 catch (TooManyModsProvideKraken k)
                 {
                     kraken = k;
                 }
+                catch (InconsistentKraken k)
+                {
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
+                    user.RaiseError(k.InconsistenciesPretty);
+                    Cursor.Current = oldCursor;
+                    return null;
+                }
+                catch (ConflictsKraken k)
+                {
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
+                    user.RaiseError(k.ConflictsPretty);
+                    Cursor.Current = oldCursor;
+                    return null;
+                }
                 catch (ModuleNotFoundKraken k)
                 {
                     //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
+                    Cursor oldCursor = Cursor.Current;
+                    Cursor.Current = Cursors.Default;
                     user.RaiseError("Module {0} has not been found. This may be because it is not compatible " +
                                     "with the currently installed version of KSP", k.module);
+                    Cursor.Current = oldCursor;
                     return null;
                 }
                 //Shouldn't get here unless there is a kraken.
-                var mod = await too_many_provides(kraken);
+                var mod = await tooManyProvides(kraken);
                 if (mod != null)
                 {
                     modules_to_install.Add(mod);

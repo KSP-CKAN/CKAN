@@ -240,6 +240,12 @@ namespace CKAN
                     GUI.user.RaiseMessage(ex.InconsistenciesPretty);
                     return;
                 }
+                catch (ConflictsKraken ex)
+                {
+                    // The prettiest Kraken formats itself for us.
+                    GUI.user.RaiseMessage(ex.ConflictsPretty);
+                    return;
+                }
                 catch (CancelledActionKraken)
                 {
                     return;

@@ -298,6 +298,23 @@ namespace CKAN.CmdLine
 
                 return Exit.ERROR;
             }
+            catch (ConflictsKraken kraken)
+            {
+
+                if (next_command == null)
+                {
+                    user.RaiseError(kraken.ConflictsPretty);
+                    user.RaiseError("The repo has not been saved.");
+                }
+                else
+                {
+                    user.RaiseMessage("Preliminary scanning shows that the install is in a inconsistent state.");
+                    user.RaiseMessage("Use ckan.exe scan for more details");
+                    user.RaiseMessage("Proceeding with {0} in case it fixes it.\r\n", next_command);
+                }
+
+                return Exit.ERROR;
+            }
         }
 
         private static int Clean(CKAN.KSP current_instance)

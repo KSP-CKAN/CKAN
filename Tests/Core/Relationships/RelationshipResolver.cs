@@ -53,7 +53,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -84,7 +84,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -108,7 +108,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -132,7 +132,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -157,7 +157,7 @@ namespace Tests.Core.Relationships
             list.Add(mod_b.identifier);
             AddToRegistry(mod_a, mod_b);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,
@@ -382,7 +382,7 @@ namespace Tests.Core.Relationships
             list.Add(conflicts_with_dependant.identifier);
             AddToRegistry(depender, dependant, conflicts_with_dependant);
 
-            Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
+            Assert.Throws<ConflictsKraken>(() => new RelationshipResolver(
                 list,
                 options,
                 registry,

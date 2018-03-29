@@ -210,6 +210,12 @@ Do you wish to reinstall now?", sb)))
                         log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
                         user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
                     }
+                    // Thrown when a conflicts relationship is violated
+                    catch (ConflictsKraken)
+                    {
+                        log.WarnFormat("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                        user.RaiseMessage("Skipping installation of {0} due to relationship error.", changedIdentifier);
+                    }
                 }
             }
         }
