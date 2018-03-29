@@ -12,6 +12,8 @@ namespace CKAN
         IEnumerable<Tuple<string, string>> GetInstances();
         string GetKSPBuilds();
         void SetKSPBuilds(string buildMap);
+        string GetCachePath();
+        void SetCachePath(string cachePath);
     }
 
     public class Win32Registry : IWin32Registry
@@ -68,6 +70,16 @@ namespace CKAN
         public void SetKSPBuilds(string buildMap)
         {
             SetRegistryValue(@"KSPBuilds", buildMap);
+        }
+
+        public string GetCachePath()
+        {
+            return GetRegistryValue("GlobalCache", null as string);
+        }
+
+        public void SetCachePath(string cachePath)
+        {
+            SetRegistryValue(@"GlobalCache", cachePath);
         }
 
         /// <summary>

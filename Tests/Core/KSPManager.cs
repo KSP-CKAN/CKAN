@@ -178,11 +178,12 @@ namespace Tests.Core
 
         public List<Tuple<string, string>> Instances { get; set; }
         public string BuildMap { get; set; }
+        public string CachePath { get; set; }
 
         public int InstanceCount
         {
             get { return Instances.Count; }
-            }
+        }
 
         // In the Win32Registry it is not possible to get null in autostart.
         private string _AutoStartInstance;
@@ -220,6 +221,16 @@ namespace Tests.Core
         public void SetKSPBuilds(string buildMap)
         {
             BuildMap = buildMap;
+        }
+
+        public string GetCachePath()
+        {
+            return CachePath;
+        }
+
+        public void SetCachePath(string cachePath)
+        {
+            CachePath = cachePath;
         }
     }
 }

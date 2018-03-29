@@ -150,6 +150,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainImport.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainInstall.cs">
       <SubType>Form</SubType>
@@ -210,6 +211,12 @@
     </Compile>
     <Compile Include="RenameInstanceDialog.Designer.cs">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetCachePathDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetCachePathDialog.Designer.cs">
+      <DependentUpon>SetCachePathDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>
@@ -275,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RenameInstanceDialog.resx">
       <DependentUpon>RenameInstanceDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetCachePathDialog.resx">
+      <DependentUpon>SetCachePathDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>

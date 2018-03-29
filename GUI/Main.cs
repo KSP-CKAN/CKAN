@@ -293,6 +293,29 @@ namespace CKAN
                 configuration.Save();
             }
 
+            if (!configuration.CachePathNoNag)
+            {
+                log.Debug("Asking user if they wish to set a cache path");
+                var dialog = new SetCachePathDialog();
+                dialog.PathLabel.Text = "Do you wish to set a global cache path for CKAN? (This can be changed later from Settings)";
+
+                var registry = RegistryManager.Instance(CurrentInstance).registry;
+                if (dialog.ShowSetCachePathDialog(registry.DownloadCacheDir) == DialogResult.OK)
+                {
+                    // Save to registry
+                    registry.DownloadCacheDir = dialog.GetPath();
+
+                    // Also save in config
+                    Instance.configuration.CachePath = dialog.GetPath();
+                    configuration.Save();
+
+                    CurrentInstance.Cache.MoveDefaultCache(dialog.GetPath(), true);
+                }
+
+                configuration.CachePathNoNag = true;
+                configuration.Save();
+            }
+
             bool autoUpdating = false;
 
             if (configuration.CheckForUpdatesOnLaunch && AutoUpdate.CanUpdate)
