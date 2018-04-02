@@ -19,6 +19,8 @@ namespace CKAN
         public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
         public bool RefreshOnStartupNoNag = false;
 
+        public bool AutoSortByUpdate = true;
+
         public int ActiveFilter = 0;
 
         // Sort by the mod name (index = 2) column by default
