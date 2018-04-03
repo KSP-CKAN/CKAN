@@ -211,8 +211,8 @@
             // 
             // AutoUpdateGroupBox
             // 
-            this.AutoUpdateGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.AutoUpdateGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
+            this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             if (AutoUpdate.CanUpdate)
             {
                 this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
@@ -223,7 +223,6 @@
                 this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
                 this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             }
-            this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 334);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
             this.AutoUpdateGroupBox.Size = new System.Drawing.Size(476, 105);
@@ -234,11 +233,11 @@
             // HideEpochsCheckbox
             // 
             this.HideEpochsCheckbox.AutoSize = true;
-            this.HideEpochsCheckbox.Location = new System.Drawing.Point(275, 70);
+            this.HideEpochsCheckbox.Location = new System.Drawing.Point(6, 42);
             this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
-            this.HideEpochsCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
             this.HideEpochsCheckbox.TabIndex = 8;
-            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list\r\n(Requires Restart)";
+            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list (Requires Restart)";
             this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
             this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
             // 
@@ -325,10 +324,11 @@
             // 
             // MoreSettingsGroupBox
             // 
+            this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 446);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
-            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 62);
+            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 65);
             this.MoreSettingsGroupBox.TabIndex = 14;
             this.MoreSettingsGroupBox.TabStop = false;
             this.MoreSettingsGroupBox.Text = "More Settings";
@@ -336,7 +336,7 @@
             // AutoSortUpdateCheckBox
             // 
             this.AutoSortUpdateCheckBox.AutoSize = true;
-            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(7, 29);
+            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(6, 19);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
             this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(393, 17);
             this.AutoSortUpdateCheckBox.TabIndex = 0;
@@ -348,7 +348,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 520);
+            this.ClientSize = new System.Drawing.Size(495, 519);
             this.Controls.Add(this.MoreSettingsGroupBox);
             this.Controls.Add(this.AutoUpdateGroupBox);
             this.Controls.Add(this.CacheGroupBox);
