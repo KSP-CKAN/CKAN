@@ -399,8 +399,16 @@ namespace CKAN
 
         private void InstallUpdateButton_Click(object sender, EventArgs e)
         {
-            Hide();
-            Main.Instance.UpdateCKAN();
+            if (AutoUpdate.CanUpdate)
+            {
+                Hide();
+                Main.Instance.UpdateCKAN();
+            }
+            else
+            {
+                GUI.user.RaiseError("Can't autoupdate. Please check https://github.com/KSP-CKAN/CKAN/ for help!");
+            }
+            
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
