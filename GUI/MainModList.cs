@@ -428,16 +428,24 @@ namespace CKAN
     {
         protected override void OnPaint(PaintEventArgs e)
         {
-            //Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
-            if (Platform.IsMono && !Platform.IsMonoFour)
+            try
             {
-                var first_row_index = typeof (MainModListGUI).BaseType
-                    .GetField("first_row_index", BindingFlags.NonPublic | BindingFlags.Instance);
-                var value = (int) first_row_index.GetValue(this);
-                if (value < 0 || value >= Rows.Count)
+                // Hacky workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=24372
+                if (Platform.IsMono && !Platform.IsMonoFourOrLater)
                 {
-                    first_row_index.SetValue(this, 0);
+                    var first_row_index = typeof (MainModListGUI).BaseType
+                        .GetField("first_row_index", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var value = (int) first_row_index.GetValue(this);
+                    if (value < 0 || value >= Rows.Count)
+                    {
+                        first_row_index.SetValue(this, 0);
+                    }
                 }
+            }
+            catch
+            {
+                // Never throw exceptions in OnPaint, or WinForms might decide to replace our control with a big red X
+                // https://blogs.msdn.microsoft.com/shawnhar/2010/11/22/winforms-and-the-big-red-x-of-doom/
             }
             base.OnPaint(e);
         }

@@ -40,12 +40,13 @@ namespace CKAN
         {
             this.ksp = ksp;
 
-            this.path = Path.Combine(path, "registry.json");
+            this.path    = Path.Combine(path, "registry.json");
             lockfilePath = Path.Combine(path, "registry.locked");
 
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())
             {
+                log.DebugFormat("Unable to acquire registry lock: {0}", lockfilePath);
                 throw new RegistryInUseKraken(lockfilePath);
             }
 
@@ -101,6 +102,7 @@ namespace CKAN
             var directory = ksp.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
+                log.DebugFormat("Registry not in cache at {0}", directory);
                 return;
             }
 
@@ -137,8 +139,10 @@ namespace CKAN
         /// </summary>
         private void CheckStaleLock()
         {
+            log.DebugFormat("Checking for stale lock file at {0}", lockfilePath);
             if (File.Exists(lockfilePath))
             {
+                log.DebugFormat("Lock file found at {0}", lockfilePath);
                 string contents;
                 try
                 {
@@ -147,8 +151,10 @@ namespace CKAN
                 catch
                 {
                     // If we can't read the file, we can't check whether it's stale.
+                    log.DebugFormat("Lock file unreadable at {0}", lockfilePath);
                     return;
                 }
+                log.DebugFormat("Lock file contents: {0}", contents);
                 Int32 pid;
                 if (Int32.TryParse(contents, out pid))
                 {
@@ -156,6 +162,7 @@ namespace CKAN
                     try
                     {
                         // Try to find the corresponding process.
+                        log.DebugFormat("Looking for process with ID: {0}", pid);
                         Process.GetProcessById(pid);
                         // If no exception is thrown, then a process with this id
                         // is running, and it's not safe to delete the lock file.
@@ -167,6 +174,7 @@ namespace CKAN
                         // so the lock file is stale and we can delete it.
                         try
                         {
+                            log.DebugFormat("Deleting stale lock file at {0}", lockfilePath);
                             File.Delete(lockfilePath);
                         }
                         catch
@@ -189,6 +197,8 @@ namespace CKAN
             {
                 CheckStaleLock();
 
+                log.DebugFormat("Trying to create lock file: {0}", lockfilePath);
+
                 lockfileStream = new FileStream(lockfilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
                 // Write the current process ID to the file.
@@ -196,9 +206,11 @@ namespace CKAN
                 lockfileWriter.Write(Process.GetCurrentProcess().Id);
                 lockfileWriter.Flush();
                 // The lock file is now locked and open.
+                log.DebugFormat("Lock file created: {0}", lockfilePath);
             }
             catch (IOException)
             {
+                log.DebugFormat("Failed to create lock file: {0}", lockfilePath);
                 return false;
             }
 
@@ -214,6 +226,7 @@ namespace CKAN
             // it finds the stream is already disposed.
             if (lockfileWriter != null)
             {
+                log.DebugFormat("Disposing of lock file writer at {0}", lockfilePath);
                 lockfileWriter.Dispose();
                 lockfileWriter = null;
             }
@@ -222,10 +235,10 @@ namespace CKAN
             // but we're extra tidy just in case.
             if (lockfileStream != null)
             {
+                log.DebugFormat("Disposing of lock file stream at {0}", lockfilePath);
                 lockfileStream.Dispose();
                 lockfileStream = null;
             }
-
 
         }
 
@@ -283,10 +296,11 @@ namespace CKAN
                     )
             };
 
-
-
+            log.DebugFormat("Trying to load registry from {0}", path);
             string json = File.ReadAllText(path);
+            log.Debug("Registry JSON loaded; parsing...");
             registry = JsonConvert.DeserializeObject<Registry>(json, settings);
+            log.Debug("Registry loaded and parsed");
             ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
@@ -307,14 +321,19 @@ namespace CKAN
                 Create();
                 Load();
             }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("Uncaught exception loading registry: {0}", ex.ToString());
+                throw;
+            }
 
             AscertainDefaultRepo();
         }
 
         private void Create()
         {
-            registry = Registry.Empty();
             log.InfoFormat("Creating new CKAN registry at {0}", path);
+            registry = Registry.Empty();
             Save();
         }
 
