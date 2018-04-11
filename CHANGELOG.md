@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Detect DLC and allow as a dependency (#2326 by: dbent; reviewed: politas)
 - [GUI] Install old mod versions by version list double-click (#2364 by: HebaruSan; reviewed: politas)
 - [Core] Allow installations to the Missions folder (#2371 by: Olympic1; reviewed: politas)
+- [GUI] Sort by "update"-column on clicking "add available updates"-button (#2392 by: DasSkellet; reviewed: politas)
 
 ### Bugfixes
 
