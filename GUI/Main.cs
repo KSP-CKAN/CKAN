@@ -198,7 +198,7 @@ namespace CKAN
             configuration = Configuration.LoadOrCreateConfiguration
                 (
                     Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                    Repo.default_ckan_repo.ToString()
+                    CKAN.Repository.default_ckan_repo_uri.ToString()
                 );
 
             // Check if there is any other instances already running.
@@ -428,7 +428,7 @@ namespace CKAN
             configuration = Configuration.LoadOrCreateConfiguration
             (
                 Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                Repo.default_ckan_repo.ToString()
+                CKAN.Repository.default_ckan_repo_uri.ToString()
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
@@ -742,7 +742,7 @@ namespace CKAN
             Enabled = true;
         }
 
-        private async void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
+        private void installFromckanToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog { Filter = Resources.CKANFileFilter };
 

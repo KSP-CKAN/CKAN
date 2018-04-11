@@ -23,9 +23,6 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
         private static TxFileManager file_transaction = new TxFileManager();
 
-        // Forward to keep existing code compiling, will be removed soon.
-        public static readonly Uri default_ckan_repo = CKAN.Repository.default_ckan_repo_uri;
-
         /// <summary>
         /// Download and update the local CKAN meta-info.
         /// Optionally takes a URL to the zipfile repo to download.
@@ -92,9 +89,9 @@ namespace CKAN
             {
                 repo_file = Net.Download(repo);
             }
-            catch (System.Net.WebException)
+            catch (System.Net.WebException ex)
             {
-                user.RaiseMessage("Connection to {0} could not be established.", repo);
+                user.RaiseMessage("Failed to download {0}: {1}", repo, ex.ToString());
                 return null;
             }
 
@@ -386,7 +383,7 @@ Do you wish to reinstall now?", sb)))
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
             {
-                repo = default_ckan_repo;
+                repo = CKAN.Repository.default_ckan_repo_uri;
             }
 
             List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user);

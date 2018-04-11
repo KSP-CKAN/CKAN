@@ -20,7 +20,8 @@ namespace CKAN
         {
             IsMac = IsRunningOnMac();
             IsMono = IsOnMono();
-            IsMonoFour = IsOnMonoFour();//Depends on IsMono
+            // Depends on IsMono
+            IsMonoFourOrLater = IsOnMonoFourOrLater();
         }
 
         // From https://github.com/mono/monodevelop/blob/master/main/src/core/Mono.Texteditor/Mono.TextEditor/Platform.cs
@@ -93,17 +94,35 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Are we running on a mono with major version 4?
+        /// Are we running on a Mono with major version 4 or later?
         /// </summary>
-        public static bool IsMonoFour { get; private set; }
+        public static bool IsMonoFourOrLater { get; private set; }
 
-        private static bool IsOnMonoFour()
+        private static bool IsOnMonoFourOrLater()
         {
-            if (!IsMono) return false;
+            if (!IsMono)
+                return false;
+
+            // Get Mono's display name and parse the version
             Type type = Type.GetType("Mono.Runtime");
             string display_name =
                 (string) type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
-            return Regex.IsMatch(display_name, "^\\s*4\\.\\d+\\.\\d+\\s*\\(");
+
+            var match = versionMatcher.Match(display_name);
+            if (match.Success)
+            {
+                int majorVersion = Int32.Parse(match.Groups["majorVersion"].Value);
+                return majorVersion >= 4;
+            }
+            else
+            {
+                return false;
+            }
         }
+
+        private static readonly Regex versionMatcher = new Regex(
+            "^\\s*(?<majorVersion>\\d+)\\.\\d+\\.\\d+\\s*\\(",
+            RegexOptions.Compiled
+        );
     }
 }
