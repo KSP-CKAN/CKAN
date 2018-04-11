@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] More verbose and accurate version displays (#2382 by: HebaruSan; reviewed: politas)
 - [Core] Encode spaces in URL output (#2386 by: HebaruSan; reviewed: politas)
 - [Multiple] Clean-up and debuggability (#2399 by: HebaruSan; reviewed: politas)
+- [Netkan] Don't double encode GitHub download URLs (#2402 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
