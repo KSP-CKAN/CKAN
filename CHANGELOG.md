@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Encode spaces in URL output (#2386 by: HebaruSan; reviewed: politas)
 - [Multiple] Clean-up and debuggability (#2399 by: HebaruSan; reviewed: politas)
 - [Netkan] Don't double encode GitHub download URLs (#2402 by: HebaruSan; reviewed: politas)
+- [Netkan] Option to override SpaceDock version with AVC version (#2406 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
