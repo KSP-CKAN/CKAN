@@ -43,7 +43,6 @@
             this.ClearCKANCacheButton = new System.Windows.Forms.Button();
             this.CKANCacheLabel = new System.Windows.Forms.Label();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
-            this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.InstallUpdateButton = new System.Windows.Forms.Button();
@@ -52,6 +51,7 @@
             this.LocalVersionLabel = new System.Windows.Forms.Label();
             this.LocalVersionLabelLabel = new System.Windows.Forms.Label();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
+            this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.MoreSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.RepositoryGroupBox.SuspendLayout();
@@ -212,34 +212,20 @@
             // AutoUpdateGroupBox
             // 
             this.AutoUpdateGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
+            this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabelLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            if (AutoUpdate.CanUpdate)
-            {
-                this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
-                this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
-                this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
-                this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabelLabel);
-                this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
-                this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
-                this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
-            }
             this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 334);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
             this.AutoUpdateGroupBox.Size = new System.Drawing.Size(476, 105);
             this.AutoUpdateGroupBox.TabIndex = 11;
             this.AutoUpdateGroupBox.TabStop = false;
             this.AutoUpdateGroupBox.Text = "Auto-Updates";
-            // 
-            // HideEpochsCheckbox
-            // 
-            this.HideEpochsCheckbox.AutoSize = true;
-            this.HideEpochsCheckbox.Location = new System.Drawing.Point(6, 42);
-            this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
-            this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
-            this.HideEpochsCheckbox.TabIndex = 8;
-            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list (Requires Restart)";
-            this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
-            this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
             // 
             // RefreshOnStartupCheckbox
             // 
@@ -321,6 +307,17 @@
             this.CheckForUpdatesButton.Text = "Check for updates";
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
+            // 
+            // HideEpochsCheckbox
+            // 
+            this.HideEpochsCheckbox.AutoSize = true;
+            this.HideEpochsCheckbox.Location = new System.Drawing.Point(6, 42);
+            this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
+            this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
+            this.HideEpochsCheckbox.TabIndex = 8;
+            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list (Requires Restart)";
+            this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
+            this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
             // 
             // MoreSettingsGroupBox
             // 

@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Clean-up and debuggability (#2399 by: HebaruSan; reviewed: politas)
 - [Netkan] Don't double encode GitHub download URLs (#2402 by: HebaruSan; reviewed: politas)
 - [Netkan] Option to override SpaceDock version with AVC version (#2406 by: HebaruSan; reviewed: politas)
+- [GUI] Move AutoUpdate.CanUpdate check to resolve VisualStudio Designer Error (#2407 by: DasSkellet; reviewed: Olympic1, politas)
 
 ### Internal
 
