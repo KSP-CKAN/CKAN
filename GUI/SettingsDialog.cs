@@ -406,7 +406,7 @@ namespace CKAN
             }
             else
             {
-                GUI.user.RaiseError("Can't autoupdate. Please check https://github.com/KSP-CKAN/CKAN/ for help!");
+                GUI.user.RaiseError("Error during update.\r\nCan't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.");
             }
             
         }
