@@ -11,7 +11,8 @@ namespace Tests.GUI
     [TestFixture]
     public class GUIModTests
     {
-        //TODO Work out what mocking framework the project uses and write some more tests.
+
+        // TODO: Work out what mocking framework the project uses and write some more tests.
         [Test]
         public void NewGuiModsAreNotSelectedForUpgrade()
         {
@@ -25,6 +26,7 @@ namespace Tests.GUI
                 Assert.False(mod.IsUpgradeChecked);
             }
         }
+
         [Test]
         public void HasUpdateReturnsTrueWhenUpdateAvailible()
         {
@@ -42,5 +44,37 @@ namespace Tests.GUI
                 Assert.True(mod.HasUpdate);
             }
         }
+
+        [Test]
+        public void KSPCompatibility_OutOfOrderGameVersions_TrueMaxVersion()
+        {
+            using (var tidy = new DisposableKSP())
+            {
+                // Arrange
+                CkanModule mainVersion = CkanModule.FromJson(@"{
+                    ""identifier"":  ""OutOfOrderMod"",
+                    ""version"":     ""1.2.0"",
+                    ""ksp_version"": ""0.90"",
+                    ""download"":    ""http://www.ksp-ckan.org""
+                }");
+                CkanModule prevVersion = CkanModule.FromJson(@"{
+                    ""identifier"":  ""OutOfOrderMod"",
+                    ""version"":     ""1.1.0"",
+                    ""ksp_version"": ""1.4.2"",
+                    ""download"":    ""http://www.ksp-ckan.org""
+                }");
+
+                Registry registry = Registry.Empty();
+                registry.AddAvailable(mainVersion);
+                registry.AddAvailable(prevVersion);
+
+                // Act
+                GUIMod m = new GUIMod(mainVersion, registry, tidy.KSP.VersionCriteria(), false);
+
+                // Assert
+                Assert.AreEqual("1.4.2", m.KSPCompatibility);
+            }
+        }
+
     }
 }

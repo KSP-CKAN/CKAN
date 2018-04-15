@@ -240,5 +240,38 @@ namespace Tests.NetKAN.Transformers
                 "AvcTransformer should not override an existing version."
             );
         }
+
+        [Test]
+        public void Transform_TrustVersionFileTrue_OverridesExistingInfo()
+        {
+            // Arrange
+            var mHttp          = new Mock<IHttpService>();
+            var mModuleService = new Mock<IModuleService>();
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new AvcVersion()
+                {
+                    version = new ModuleVersion("1.2.3")
+                });
+
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
+
+            JObject json = new JObject();
+            json["spec_version"]                = 1;
+            json["identifier"]                  = "AwesomeMod";
+            json["$vref"]                       = "#/ckan/ksp-avc";
+            json["download"]                    = "https://awesomemod.example/AwesomeMod.zip";
+            json["version"]                     = "9001";
+            json["x_netkan_trust_version_file"] = true;
+
+            // Act
+            Metadata result          = sut.Transform(new Metadata(json));
+            JObject  transformedJson = result.Json();
+
+            // Assert
+            Assert.That((string)transformedJson["version"], Is.EqualTo("1.2.3"),
+                "AvcTransformer should override an existing version when x_netkan_trust_version_file is true."
+            );
+        }
+
     }
 }

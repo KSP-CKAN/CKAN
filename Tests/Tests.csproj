@@ -83,7 +83,7 @@
     <Compile Include="Core\Relationships\SanityChecker.cs" />
     <Compile Include="Core\Types\GameComparator.cs" />
     <Compile Include="Core\Types\License.cs" />
-    <Compile Include="Core\Types\Module.cs" />
+    <Compile Include="Core\Types\CkanModuleTests.cs" />
     <Compile Include="Core\Types\ModuleInstallDescriptorTests.cs" />
     <Compile Include="Core\Types\RelationshipDescriptor.cs" />
     <Compile Include="Core\Types\ReleaseStatus.cs" />

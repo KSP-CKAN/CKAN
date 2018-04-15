@@ -456,9 +456,7 @@ namespace Tests.Core.Relationships
                 mod_b,
                 depender
             });
-
         }
-
 
         [Test]
         public void Constructor_WithMissingDependants_Throws()
@@ -477,14 +475,13 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
         [Category("Version")]
         [TestCase("1.0", "2.0")]
         [TestCase("1.0", "0.2")]
-        [TestCase("0", "0.2")]
+        [TestCase("0",   "0.2")]
         [TestCase("1.0", "0")]
         public void Constructor_WithMissingDependantsVersion_Throws(string ver, string dep)
         {
@@ -502,7 +499,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -530,7 +526,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -553,7 +548,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -566,10 +560,12 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {
+                new RelationshipDescriptor
+                {
                     name = dependant.identifier,
                     min_version = new ModuleVersion(dep_min),
-                    max_version = new ModuleVersion(dep_max)}
+                    max_version = new ModuleVersion(dep_max)
+                }
             });
             list.Add(depender.identifier);
             list.Add(dependant.identifier);
@@ -580,7 +576,6 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
-
         }
 
         [Test]
@@ -607,7 +602,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -634,7 +628,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -661,7 +654,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -688,7 +680,6 @@ namespace Tests.Core.Relationships
                 dependant,
                 depender
             });
-
         }
 
         [Test]
@@ -708,7 +699,6 @@ namespace Tests.Core.Relationships
                 null));
         }
 
-
         [Test]
         public void ReasonFor_WithModsNotInList_ThrowsArgumentException()
         {
@@ -722,7 +712,6 @@ namespace Tests.Core.Relationships
             var mod_not_in_resolver_list = generator.GeneratorRandomModule();
             CollectionAssert.DoesNotContain(relationship_resolver.ModList(),mod_not_in_resolver_list);
             Assert.Throws<ArgumentException>(() => relationship_resolver.ReasonFor(mod_not_in_resolver_list));
-
         }
 
         [Test]
@@ -802,7 +791,7 @@ namespace Tests.Core.Relationships
                 CkanModule mod = generator.GeneratorRandomModule(depends: depends);
 
                 new RelationshipResolver(
-                    new CKAN.CkanModule[] { mod },
+                    new CkanModule[] { mod },
                     RelationshipResolver.DefaultOpts(),
                     registry,
                     new KspVersionCriteria (KspVersion.Parse("1.0.0"))

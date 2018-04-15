@@ -102,6 +102,20 @@ namespace Tests.Core
         }
 
         [Test]
+        public void ToRelative_PathEqualsRoot_DontCrash()
+        {
+            // Arrange
+            string path = "/home/fionna/KSP";
+            string root = "/home/fionna/KSP";
+            // Act & Assert
+            Assert.DoesNotThrow(() =>
+            {
+                string s = CKAN.KSPPathUtils.ToRelative(path, root);
+                Assert.IsEmpty(s);
+            });
+        }
+
+        [Test]
         public void ToAbsolute()
         {
             Assert.AreEqual(
