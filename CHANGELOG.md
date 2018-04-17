@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.25.0
+## v1.25.1
+
+### Internal
+
+- [Build] Add more tests (#2410 by: HebaruSan, DasSkelett; reviewed: politas)
+
+## v1.25.0 (Wallops)
 
 ### Features
 
@@ -34,8 +40,8 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Clean-up and debuggability (#2399 by: HebaruSan; reviewed: politas)
 - [Netkan] Don't double encode GitHub download URLs (#2402 by: HebaruSan; reviewed: politas)
 - [Netkan] Option to override SpaceDock version with AVC version (#2406 by: HebaruSan; reviewed: politas)
-- [GUI] Move AutoUpdate.CanUpdate check to resolve VisualStudio Designer Error (#2407 by: DasSkellet; reviewed: Olympic1, politas)
-- [GUI] Better AutoUpdate.CanUpdate Error Message (#2408 by: DasSkellet; reviewed: politas)
+- [GUI] Move AutoUpdate.CanUpdate check to resolve VisualStudio Designer Error (#2407 by: DasSkelett; reviewed: Olympic1, politas)
+- [GUI] Better AutoUpdate.CanUpdate Error Message (#2408 by: DasSkelett; reviewed: politas)
 
 ### Internal
 

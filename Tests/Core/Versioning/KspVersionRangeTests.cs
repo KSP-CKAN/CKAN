@@ -598,5 +598,66 @@ namespace Tests.Core.Versioning
             // Assert
             Assert.That(act, Throws.Nothing);
         }
+
+        [Test]
+        public void VersionSpan_AllVersions_CorrectString()
+        {
+            // Arrange
+            KspVersion min = KspVersion.Any;
+            KspVersion max = KspVersion.Any;
+            // Act
+            string s = KspVersionRange.VersionSpan(min, max);
+            // Assert
+            Assert.AreEqual("KSP all versions", s);
+        }
+
+        [Test]
+        public void VersionSpan_MinOnly_CorrectString()
+        {
+            // Arrange
+            KspVersion min = new KspVersion(1, 0, 0);
+            KspVersion max = KspVersion.Any;
+            // Act
+            string s = KspVersionRange.VersionSpan(min, max);
+            // Assert
+            Assert.AreEqual("KSP 1.0.0 and later", s);
+        }
+
+        [Test]
+        public void VersionSpan_MaxOnly_CorrectString()
+        {
+            // Arrange
+            KspVersion min = KspVersion.Any;
+            KspVersion max = new KspVersion(1, 0, 0);
+            // Act
+            string s = KspVersionRange.VersionSpan(min, max);
+            // Assert
+            Assert.AreEqual("KSP 1.0.0 and earlier", s);
+        }
+
+        [Test]
+        public void VersionSpan_OneOnly_CorrectString()
+        {
+            // Arrange
+            KspVersion min = new KspVersion(1, 0, 0);
+            KspVersion max = new KspVersion(1, 0, 0);
+            // Act
+            string s = KspVersionRange.VersionSpan(min, max);
+            // Assert
+            Assert.AreEqual("KSP 1.0.0", s);
+        }
+
+        [Test]
+        public void VersionSpan_FiniteRange_CorrectString()
+        {
+            // Arrange
+            KspVersion min = new KspVersion(1, 0, 0);
+            KspVersion max = new KspVersion(1, 1, 1);
+            // Act
+            string s = KspVersionRange.VersionSpan(min, max);
+            // Assert
+            Assert.AreEqual("KSP 1.0.0 - 1.1.1", s);
+        }
+
     }
 }

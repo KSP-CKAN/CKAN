@@ -1,4 +1,5 @@
 ﻿using System;
+using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
 using Tests.Data;
@@ -10,7 +11,7 @@ namespace Tests.Core.Types
     public class GameComparator
     {
         static readonly KspVersion gameVersion = KspVersion.Parse("1.0.4");
-        CKAN.CkanModule gameMod;
+        CkanModule gameMod;
 
         [SetUp]
         public void Setup()
@@ -67,7 +68,7 @@ namespace Tests.Core.Types
 
             // Now test!
             Assert.AreEqual(expected, comparator.Compatible(new KspVersionCriteria (gameVersion), gameMod));
-        }        
+        }
 
         [Test]
         [TestCase(typeof(CKAN.StrictGameComparator), false)]
@@ -177,4 +178,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CKAN;
 using CKAN.Versioning;
@@ -9,14 +10,14 @@ using Newtonsoft.Json.Linq;
 namespace Tests.Core.Types
 {
     [TestFixture]
-    public class Module
+    public class CkanModuleTests
     {
         [Test]
         public void CompatibleWith()
         {
             CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
-            Assert.IsTrue(module.IsCompatibleKSP(new KspVersionCriteria (KspVersion.Parse("0.24.2"))));
+            Assert.IsTrue(module.IsCompatibleKSP(new KspVersionCriteria(KspVersion.Parse("0.24.2"))));
         }
 
         [Test]
@@ -32,7 +33,7 @@ namespace Tests.Core.Types
         [Test]
         public void MetaData()
         {
-            CkanModule module = CkanModule.FromJson (TestData.kOS_014 ());
+            CkanModule module = CkanModule.FromJson(TestData.kOS_014());
 
             Assert.AreEqual("kOS - Kerbal OS", module.name);
             Assert.AreEqual("kOS", module.identifier);
@@ -49,7 +50,7 @@ namespace Tests.Core.Types
             Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
             Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
-            
+
             Assert.AreEqual("C5A224AC4397770C0B19B4A6417F6C5052191608", module.download_hash.sha1.ToString());
             Assert.AreEqual("E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB", module.download_hash.sha256.ToString());
         }
@@ -122,7 +123,6 @@ namespace Tests.Core.Types
         {
             // We should support both two and three number dotted specs, on both
             // tagged and dev releases.
-
             Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("v1.1")));
             Assert.IsTrue(CkanModule.IsSpecSupported(new ModuleVersion("v1.0.2")));
         }
@@ -130,13 +130,11 @@ namespace Tests.Core.Types
         [Test]
         public void FutureModule()
         {
-            // Modules form the future are unsupported.
-
+            // Modules from the future are unsupported.
             Assert.Throws<UnsupportedKraken>(delegate
             {
                 CkanModule.FromJson(TestData.FutureMetaData());
             });
-
         }
 
         [Test]
@@ -182,5 +180,52 @@ namespace Tests.Core.Types
                 mod.resources.homepage.ToString()
             );
         }
+
+        [Test]
+        public void InternetArchiveDownload_RedistributableLicense_CorrectURL()
+        {
+            // Arrange
+            CkanModule module = TestData.kOS_014_module();
+            // Act
+            Uri uri = module.InternetArchiveDownload;
+            // Assert
+            Assert.IsNotNull(uri);
+            Assert.AreEqual("https://archive.org/download/kOS-0.14/C5A224AC-kOS-0.14.zip", uri.ToString());
+        }
+
+        [Test]
+        public void InternetArchiveDownload_RestrictedLicense_NullURL()
+        {
+            // Arrange
+            CkanModule module = TestData.FireSpitterModule();
+            // Act
+            Uri uri = module.InternetArchiveDownload;
+            // Assert
+            Assert.IsNull(uri);
+        }
+
+        [Test]
+        public void InternetArchiveDownload_EpochVersion_CorrectURL()
+        {
+            // Arrange
+            CkanModule module = TestData.kOS_014_epoch_module();
+            // Act
+            Uri uri = module.InternetArchiveDownload;
+            // Assert
+            Assert.IsNotNull(uri);
+            Assert.AreEqual("https://archive.org/download/kOS-3-0.14/C5A224AC-kOS-3-0.14.zip", uri.ToString());
+        }
+
+        [Test]
+        public void InternetArchiveDownload_NoHash_NullURL()
+        {
+            // Arrange
+            CkanModule module = TestData.RandSCapsuleDyneModule();
+            // Act
+            Uri uri = module.InternetArchiveDownload;
+            // Assert
+            Assert.IsNull(uri);
+        }
+
     }
 }

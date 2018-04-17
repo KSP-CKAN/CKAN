@@ -20,7 +20,7 @@ namespace Tests.Core
         private DisposableKSP        _instance;
         private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
-        private CKAN.CkanModule      _testModule;
+        private CkanModule           _testModule;
         private string               _gameDataDir;
 
         /// <summary>
