@@ -74,7 +74,8 @@
             //
             // ModInfoTabControl
             //
-            this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.Normal;
+            this.ModInfoTabControl.Multiline = true;
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
             this.ModInfoTabControl.Controls.Add(this.ContentTabPage);
@@ -108,11 +109,14 @@
             // splitContainer2.Panel1
             //
             this.splitContainer2.Panel1.Controls.Add(this.MetaDataUpperLayoutPanel);
+            this.splitContainer2.Panel1MinSize = 100;
             //
             // splitContainer2.Panel2
             //
             this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
+            this.splitContainer2.Panel2MinSize = 300;
             this.splitContainer2.Size = new System.Drawing.Size(348, 496);
+            this.splitContainer2.SplitterWidth = 10;
             this.splitContainer2.SplitterDistance = 235;
             this.splitContainer2.TabIndex = 0;
             //
@@ -146,6 +150,7 @@
             //
             // MetadataModuleAbstractLabel
             //
+            this.MetadataModuleAbstractLabel.BackColor = System.Drawing.SystemColors.Window;
             this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 49);
@@ -161,25 +166,26 @@
             this.MetaDataLowerLayoutPanel.ColumnCount = 2;
             this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.16279F));
             this.MetaDataLowerLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73.83721F));
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 7);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierLabel, 0, 7);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 6);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 5);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.GitHubLabel, 0, 4);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.HomePageLabel, 0, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.AuthorLabel, 0, 2);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.VersionLabel, 0, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.LicenseLabel, 0, 1);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.AuthorLabel, 0, 2);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.HomePageLabel, 0, 3);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.GitHubLabel, 0, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.ReleaseLabel, 0, 5);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.KSPCompatibilityLabel, 0, 6);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 7);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleVersionLabel, 1, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleLicenseLabel, 1, 1);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleAuthorLabel, 1, 2);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.VersionLabel, 0, 0);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 5);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 3);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 6);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 4);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 5);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 6);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierLabel, 1, 7);
             this.MetaDataLowerLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetaDataLowerLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.MetaDataLowerLayoutPanel.Name = "MetaDataLowerLayoutPanel";
+            this.MetaDataLowerLayoutPanel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
             this.MetaDataLowerLayoutPanel.RowCount = 9;
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.MetaDataLowerLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
