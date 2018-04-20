@@ -33,7 +33,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.MetaDataUpperLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleAbstractLabel = new System.Windows.Forms.RichTextBox();
+            this.MetadataModuleAbstractLabel = new System.Windows.Forms.Label();
             this.MetaDataLowerLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.IdentifierLabel = new System.Windows.Forms.Label();
             this.MetadataIdentifierLabel = new System.Windows.Forms.Label();
@@ -150,12 +150,10 @@
             //
             // MetadataModuleAbstractLabel
             //
-            this.MetadataModuleAbstractLabel.BackColor = System.Drawing.SystemColors.Window;
-            this.MetadataModuleAbstractLabel.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MetadataModuleAbstractLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleAbstractLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 49);
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
-            this.MetadataModuleAbstractLabel.ReadOnly = true;
             this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(340, 181);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "";
@@ -501,7 +499,7 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TableLayoutPanel MetaDataUpperLayoutPanel;
         private System.Windows.Forms.Label MetadataModuleNameLabel;
-        private System.Windows.Forms.RichTextBox MetadataModuleAbstractLabel;
+        private System.Windows.Forms.Label MetadataModuleAbstractLabel;
         private System.Windows.Forms.TableLayoutPanel MetaDataLowerLayoutPanel;
         private System.Windows.Forms.Label IdentifierLabel;
         private System.Windows.Forms.Label MetadataIdentifierLabel;
