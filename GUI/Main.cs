@@ -301,13 +301,13 @@ namespace CKAN
                 {
                     log.Info("Making auto-update call");
                     AutoUpdate.Instance.FetchLatestReleaseInfo();
-                    var latest_version = AutoUpdate.Instance.LatestVersion;
+                    var latest_version = AutoUpdate.Instance.latestUpdate.Version;
                     var current_version = new ModuleVersion(Meta.GetVersion());
 
                     if (AutoUpdate.Instance.IsFetched() && latest_version.IsGreaterThan(current_version))
                     {
                         log.Debug("Found higher ckan version");
-                        var release_notes = AutoUpdate.Instance.ReleaseNotes;
+                        var release_notes = AutoUpdate.Instance.latestUpdate.ReleaseNotes;
                         var dialog = new NewUpdateDialog(latest_version.ToString(), release_notes);
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
@@ -451,7 +451,7 @@ namespace CKAN
             SwitchEnabledState();
             ClearLog();
             tabController.RenameTab("WaitTabPage", "Updating CKAN");
-            SetDescription($"Upgrading CKAN to {AutoUpdate.Instance.LatestVersion}");
+            SetDescription($"Upgrading CKAN to {AutoUpdate.Instance.latestUpdate.Version}");
 
             log.Info("Start ckan update");
             BackgroundWorker updateWorker = new BackgroundWorker();
@@ -497,7 +497,7 @@ namespace CKAN
 
             ModList.Refresh();
 
-            
+
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)

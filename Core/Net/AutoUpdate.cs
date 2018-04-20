@@ -1,14 +1,70 @@
 ﻿using System;
- using System.IO;
+using System.IO;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Versioning;
 
 namespace CKAN
 {
+    /// <summary>
+    /// Object representing a CKAN release
+    /// </summary>
+    public class CkanUpdate
+    {
+        /// <summary>
+        /// Initialize the Object
+        /// </summary>
+        /// <param name="json">JSON representation of release</param>
+        public CkanUpdate(string json)
+        {
+            dynamic response = JsonConvert.DeserializeObject(json);
+
+            Version = new CkanModuleVersion(
+                response.tag_name.ToString(),
+                response.name.ToString()
+            );
+            ReleaseNotes = ExtractReleaseNotes(response.body.ToString());
+
+            foreach (var asset in response.assets)
+            {
+                string url = asset.browser_download_url.ToString();
+                if (url.EndsWith("ckan.exe"))
+                {
+                    ReleaseDownload = asset.browser_download_url;
+                    ReleaseSize     = (long)asset.size;
+                }
+                else if (url.EndsWith("AutoUpdater.exe"))
+                {
+                    UpdaterDownload = asset.browser_download_url;
+                    UpdaterSize     = (long)asset.size;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extracts release notes from the body of text provided by the github API.
+        /// By default this is everything after the first three dashes on a line by
+        /// itself, but as a fallback we'll use the whole body if not found.
+        /// </summary>
+        /// <returns>The release notes.</returns>
+        public static string ExtractReleaseNotes(string releaseBody)
+        {
+            const string divider = "\r\n---\r\n";
+            // Get at most two pieces, the first is the image, the second is the release notes
+            string[] notesArray = releaseBody.Split(new string[] { divider }, 2, StringSplitOptions.None);
+            return notesArray.Length > 1 ? notesArray[1] : notesArray[0];
+        }
+
+        public readonly CkanModuleVersion Version;
+        public readonly Uri    ReleaseDownload;
+        public readonly long   ReleaseSize;
+        public readonly Uri    UpdaterDownload;
+        public readonly long   UpdaterSize;
+        public readonly string ReleaseNotes;
+    }
 
     /// <summary>
     /// CKAN client auto-updating routines. This works in conjunction with the
@@ -16,27 +72,14 @@ namespace CKAN
     /// </summary>
     public class AutoUpdate
     {
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
-
         /// <summary>
         /// The list of releases containing ckan.exe and AutoUpdater.exe
         /// </summary>
         private static readonly Uri latestCKANReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN/releases/latest");
 
-        /// <summary>
-        /// Old release list that just contains the auto updater,
-        /// used as a fallback when missing from main release
-        /// </summary>
-        private static readonly Uri oldLatestUpdaterReleaseApiUrl = new Uri("https://api.github.com/repos/KSP-CKAN/CKAN-autoupdate/releases/latest");
-
-        private Tuple<Uri, long> fetchedUpdaterUrl;
-        private Tuple<Uri, long> fetchedCkanUrl;
-
-        public ModuleVersion LatestVersion { get; private set; }
-        public string  ReleaseNotes  { get; private set; }
-
         public static readonly AutoUpdate Instance = new AutoUpdate();
+
+        public CkanUpdate latestUpdate;
 
         // This is private so we can enforce our class being a singleton.
         private AutoUpdate() { }
@@ -73,8 +116,7 @@ namespace CKAN
         /// </summary>
         public bool IsFetched()
         {
-            return LatestVersion != null && fetchedUpdaterUrl != null &&
-                fetchedCkanUrl != null && ReleaseNotes != null;
+            return latestUpdate != null;
         }
 
         /// <summary>
@@ -83,51 +125,7 @@ namespace CKAN
         /// </summary>
         public void FetchLatestReleaseInfo()
         {
-            var response = MakeRequest(latestCKANReleaseApiUrl);
-
-            try
-            {
-                // Check whether the release includes the auto updater
-                foreach (var asset in response.assets)
-                {
-                    string url = asset.browser_download_url.ToString();
-                    if (url.EndsWith("ckan.exe"))
-                    {
-                        fetchedCkanUrl    = new Tuple<Uri, long>(new Uri(url), (long)asset.size);
-                    }
-                    else if (url.EndsWith("AutoUpdater.exe"))
-                    {
-                        fetchedUpdaterUrl = new Tuple<Uri, long>(new Uri(url), (long)asset.size);
-                    }
-                }
-                if (fetchedUpdaterUrl == null)
-                {
-                    // Older releases don't include the auto updater
-                    fetchedUpdaterUrl = RetrieveUrl(MakeRequest(oldLatestUpdaterReleaseApiUrl), 0);
-                }
-            }
-            catch (Kraken)
-            {
-                LatestVersion = new ModuleVersion(Meta.GetVersion());
-                return;
-            }
-
-            ReleaseNotes  = ExtractReleaseNotes(response.body.ToString());
-            LatestVersion = new CkanModuleVersion(response.tag_name.ToString(), response.name.ToString());
-        }
-
-        /// <summary>
-        /// Extracts release notes from the body of text provided by the github API.
-        /// By default this is everything after the first three dashes on a line by
-        /// itself, but as a fallback we'll use the whole body if not found.
-        /// </summary>
-        /// <returns>The release notes.</returns>
-        public static string ExtractReleaseNotes(string releaseBody)
-        {
-            const string divider = "\r\n---\r\n";
-            // Get at most two pieces, the first is the image, the second is the release notes
-            string[] notesArray = releaseBody.Split(new string[] { divider }, 2, StringSplitOptions.None);
-            return notesArray.Length > 1 ? notesArray[1] : notesArray[0];
+            latestUpdate = new CkanUpdate(Net.DownloadText(latestCKANReleaseApiUrl));
         }
 
         /// <summary>
@@ -146,12 +144,20 @@ namespace CKAN
 
             // download updater app and new ckan.exe
             string updaterFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            string ckanFilename = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
+            string ckanFilename    = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             Net.DownloadWithProgress(
                 new[]
                 {
-                    new Net.DownloadTarget(fetchedUpdaterUrl.Item1, null, updaterFilename, fetchedUpdaterUrl.Item2),
-                    new Net.DownloadTarget(fetchedCkanUrl.Item1,    null, ckanFilename,    fetchedCkanUrl.Item2),
+                    new Net.DownloadTarget(
+                        latestUpdate.UpdaterDownload,
+                        null,
+                        updaterFilename,
+                        latestUpdate.UpdaterSize),
+                    new Net.DownloadTarget(
+                        latestUpdate.ReleaseDownload,
+                        null,
+                        ckanFilename,
+                        latestUpdate.ReleaseSize),
                 },
                 user
             );
@@ -170,50 +176,6 @@ namespace CKAN
             Environment.Exit(0);
         }
 
-        /// <summary>
-        /// Extracts the first downloadable asset (either the ckan.exe or its updater)
-        /// from the provided github API response
-        /// </summary>
-        /// <returns>The URL to the downloadable asset.</returns>
-        internal Tuple<Uri, long> RetrieveUrl(dynamic response, int whichOne)
-        {
-            if (response.assets.Count == 0)
-            {
-                throw new Kraken("The latest release isn't uploaded yet.");
-            }
-            else if (whichOne >= response.assets.Count)
-            {
-                throw new Kraken($"Asset index {whichOne} does not exist.");
-            }
-            var asset = response.assets[whichOne];
-            string url = asset.browser_download_url.ToString();
-            return new Tuple<Uri, long>(new Uri(url), (long)asset.size);
-        }
-
-        /// <summary>
-        /// Fetches the URL provided, and de-serialises the returned JSON
-        /// data structure into a dynamic object.
-        ///
-        /// May throw an exception (especially a WebExeption) on failure.
-        /// </summary>
-        /// <returns>A dynamic object representing the JSON we fetched.</returns>
-        internal dynamic MakeRequest(Uri url)
-        {
-            var web = new WebClient();
-            web.Headers.Add("User-Agent", Net.UserAgentString);
-
-            try
-            {
-                var result = web.DownloadString(url);
-                return JsonConvert.DeserializeObject(result);
-            }
-            catch (WebException webEx)
-            {
-                log.ErrorFormat("WebException while accessing {0}: {1}", url, webEx);
-                throw;
-            }
-        }
-
         public static void SetExecutable(string fileName)
         {
             // mark as executable if on Linux or Mac
@@ -230,5 +192,7 @@ namespace CKAN
                 permsprocess.WaitForExit();
             }
         }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(AutoUpdate));
     }
 }

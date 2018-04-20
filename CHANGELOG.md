@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Build] Add more tests (#2410 by: HebaruSan, DasSkelett; reviewed: politas)
+- [Updater] AutoUpdate: tokens and tests (#2411 by: HebaruSan; reviewed: politas)
 
 ## v1.25.0 (Wallops)
 

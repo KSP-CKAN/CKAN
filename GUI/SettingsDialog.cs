@@ -379,7 +379,7 @@ namespace CKAN
             try
             {
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
-                var latestVersion = AutoUpdate.Instance.LatestVersion;
+                var latestVersion = AutoUpdate.Instance.latestUpdate.Version;
                 if (latestVersion.IsGreaterThan(new ModuleVersion(Meta.GetVersion(VersionFormat.Short))) && AutoUpdate.Instance.IsFetched())
                 {
                     InstallUpdateButton.Enabled = true;
@@ -408,7 +408,7 @@ namespace CKAN
             {
                 GUI.user.RaiseError("Error during update.\r\nCan't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.");
             }
-            
+
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)

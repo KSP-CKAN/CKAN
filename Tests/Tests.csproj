@@ -72,7 +72,7 @@
     <Compile Include="Core\KSPPathUtils.cs" />
     <Compile Include="Core\ModuleInstaller.cs" />
     <Compile Include="Core\ModuleInstallerDirTest.cs" />
-    <Compile Include="Core\Net\AutoUpdate.cs" />
+    <Compile Include="Core\Net\AutoUpdateTests.cs" />
     <Compile Include="Core\Net\Net.cs" />
     <Compile Include="Core\Net\NetAsyncModulesDownloader.cs" />
     <Compile Include="Core\Net\Repo.cs" />

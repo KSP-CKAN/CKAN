@@ -41,13 +41,13 @@ namespace CKAN.CmdLine
             {
                 User.RaiseMessage("Querying the latest CKAN version");
                 AutoUpdate.Instance.FetchLatestReleaseInfo();
-                var latestVersion = AutoUpdate.Instance.LatestVersion;
+                var latestVersion = AutoUpdate.Instance.latestUpdate.Version;
                 var currentVersion = new ModuleVersion(Meta.GetVersion(VersionFormat.Short));
 
                 if (latestVersion.IsGreaterThan(currentVersion))
                 {
                     User.RaiseMessage("New CKAN version available - " + latestVersion);
-                    var releaseNotes = AutoUpdate.Instance.ReleaseNotes;
+                    var releaseNotes = AutoUpdate.Instance.latestUpdate.ReleaseNotes;
                     User.RaiseMessage(releaseNotes);
                     User.RaiseMessage("\r\n");
 
