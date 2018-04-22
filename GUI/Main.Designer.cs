@@ -453,12 +453,14 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.ModList);
             // 
+            this.splitContainer1.Panel1MinSize = 200;
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
+            this.splitContainer1.Panel2MinSize = 300;
             this.splitContainer1.Size = new System.Drawing.Size(1522, 836);
             this.splitContainer1.SplitterDistance = 1156;
-            this.splitContainer1.SplitterWidth = 6;
+            this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 7;
             // 
             // ModList

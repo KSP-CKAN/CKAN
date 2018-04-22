@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.25.1
 
+### Bugfixes
+- [GUI] Splitter and tabstrip visual improvements (#2413 by: HebaruSan; reviewed: politas)
+
 ### Internal
 
 - [Build] Add more tests (#2410 by: HebaruSan, DasSkelett; reviewed: politas)
