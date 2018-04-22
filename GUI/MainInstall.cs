@@ -392,6 +392,19 @@ namespace CKAN
                 RetryCurrentActionButton.Visible = false;
                 UpdateChangesDialog(null, installWorker);
             }
+            else if(!result.Key && installCanceled){
+                // User cancelled the installation
+                AddStatusMessage("Manually cancelled installation process!");
+                SetDescription("The user cancelled the installation manually!");
+                UpdateChangesDialog(result.Value, installWorker);
+                RetryCurrentActionButton.Visible = true;
+                Util.Invoke(statusStrip1, () =>
+                {
+                    StatusProgress.Value = 0;
+                    StatusProgress.Style = ProgressBarStyle.Continuous;
+                    StatusProgress.Visible = false;
+                });
+            }
             else
             {
                 // There was an error
