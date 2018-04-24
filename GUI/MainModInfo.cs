@@ -302,6 +302,13 @@ namespace CKAN
             }
             catch (ModuleNotFoundKraken)
             {
+                // Maybe it's a DLC?
+                ModuleVersion installedVersion = registry.InstalledVersion(identifier, false);
+                if (installedVersion != null)
+                {
+                    return nonModuleNode(identifier, installedVersion, relationship);
+                }
+
                 // If we don't find a module by this name, look for other modules that provide it.
                 List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides(identifier, crit);
                 if (dependencyModules != null && dependencyModules.Count > 0)
@@ -339,6 +346,16 @@ namespace CKAN
                 ToolTipText = relationship.ToString(),
                 Tag         = module,
                 ForeColor   = compatible ? Color.Empty : Color.Red
+            };
+        }
+
+        private TreeNode nonModuleNode(string identifier, ModuleVersion version, RelationshipType relationship)
+        {
+            int icon = (int)relationship + 1;
+            return new TreeNode($"{identifier} {version}", icon, icon)
+            {
+                Name        = identifier,
+                ToolTipText = relationship.ToString()
             };
         }
 

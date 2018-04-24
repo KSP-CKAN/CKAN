@@ -498,7 +498,8 @@ namespace CKAN
                 {
                     try
                     {
-                        if (!LatestAvailableWithProvides(dependency.name, ksp_version).Any())
+                        if (!dependency.MatchesAny(null, InstalledDlls.ToHashSet(), InstalledDlc)
+                            && !LatestAvailableWithProvides(dependency.name, ksp_version).Any())
                         {
                             return false;
                         }
