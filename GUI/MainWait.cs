@@ -61,6 +61,12 @@ namespace CKAN
             });
         }
 
+        /// <summary>
+        /// Stay on log page and reset StatusProgress
+        /// </summary>
+        /// <param name="statusMsg">Message for the lower status bar</param>
+        /// <param name="logMsg">Message to display on WaitDialog-Log (not the real log!)</param>
+        /// <param name="description">Message displayed above the DialogProgress bar</param>
         public void FailWaitDialog(string statusMsg, string logMsg, string description)
         {
             Util.Invoke(statusStrip1, () =>
