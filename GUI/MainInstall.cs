@@ -330,11 +330,13 @@ namespace CKAN
 
             // If we're going to install something anyway, then don't list it in the
             // recommended list, since they can't de-select it anyway.
-            foreach (var kvp in selectable)
+            // The ToList dance is because we need to modify the dictionary while iterating over it,
+            // and C# doesn't like that.
+            foreach (CkanModule module in selectable.Keys.ToList())
             {
-                if (toInstall.Any(m => m.identifier == kvp.Key.identifier))
+                if (toInstall.Any(m => m.identifier == module.identifier))
                 {
-                    selectable.Remove(kvp.Key);
+                    selectable.Remove(module);
                 }
             }
 
