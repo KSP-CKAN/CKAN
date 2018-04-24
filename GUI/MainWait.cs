@@ -61,6 +61,27 @@ namespace CKAN
             });
         }
 
+        public void FailWaitDialog(string statusMsg, string logMsg, string description)
+        {
+            Util.Invoke(statusStrip1, () =>
+            {
+                StatusProgress.Value = 0;
+                StatusProgress.Style = ProgressBarStyle.Continuous;
+                StatusProgress.Visible = false;
+
+                AddStatusMessage(statusMsg);
+            });
+            Util.Invoke(WaitTabPage, () =>
+            {
+                RecreateDialogs();
+                RetryCurrentActionButton.Visible = true;
+                CancelCurrentActionButton.Enabled = false;
+            });
+
+            AddLogMessage(logMsg);
+            SetDescription(description);
+        }
+
         public void SetProgress(int progress)
         {
             if (progress < 0)
@@ -129,7 +150,6 @@ namespace CKAN
             {
                 CancelCurrentActionButton.Enabled = false;
             });
-            HideWaitDialog(true);
         }
 
     }
