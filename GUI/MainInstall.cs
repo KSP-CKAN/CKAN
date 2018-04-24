@@ -395,19 +395,20 @@ namespace CKAN
             else if(installCanceled)
             {
                 // User cancelled the installation
-                FailWaitDialog("Installation cancelled by user!", "User cancelled the installation manually!", "Install failed!");
+                // check if the mod installation/upgrade/uninstall still concluded successful
+
+                // TODO: how to do this check?
+
+                // FailWaitDialog("Installation successful!", "Too late! Mods already installed!\r \nPlease undo your changes manually!", "All mods installed!");
+                FailWaitDialog("Installation cancelled by user!", "User cancelled the installation manually!", "Installation failed!");
+
                 UpdateChangesDialog(result.Value, installWorker);
             }
             else
             {
                 // There was an error
-                // Stay on the log dialog and re-apply the user's change set to allow retry
-                AddStatusMessage("Error!");
-                SetDescription("An error occurred, check the log for information");
+                FailWaitDialog("Error during installation!", "An unknown error occurred, please try again!", "Installation failed!");
                 UpdateChangesDialog(result.Value, installWorker);
-                RetryCurrentActionButton.Visible = true;
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
             }
 
             Util.Invoke(this, () => Enabled = true);
