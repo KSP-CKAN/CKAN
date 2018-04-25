@@ -591,13 +591,6 @@ namespace CKAN
                 {
                     kraken = k;
                 }
-                catch (ModuleNotFoundKraken k)
-                {
-                    //We shouldn't need this. However the relationship provider will throw TMPs with incompatible mods.
-                    user.RaiseError("Module {0} has not been found. This may be because it is not compatible " +
-                                    "with the currently installed version of KSP", k.module);
-                    return null;
-                }
                 //Shouldn't get here unless there is a kraken.
                 var mod = await too_many_provides(kraken);
                 if (mod != null)
