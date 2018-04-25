@@ -606,6 +606,17 @@ namespace CKAN
                 // We can just rerun it as the ModInfoTabControl has been removed.
                 too_many_provides_thrown = true;
             }
+            catch (DependencyNotSatisfiedKraken k)
+            {
+                GUI.user.RaiseError(
+                    "{0} depends on {1}, which is not compatible with the currently installed version of KSP",
+                    k.parent,
+                    k.module
+                );
+
+                // Uncheck the box
+                MarkModForInstall(k.parent.identifier, true);
+            }
 
             if (too_many_provides_thrown)
             {
