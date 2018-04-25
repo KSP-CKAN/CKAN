@@ -109,12 +109,12 @@
             // splitContainer2.Panel1
             //
             this.splitContainer2.Panel1.Controls.Add(this.MetaDataUpperLayoutPanel);
-            this.splitContainer2.Panel1MinSize = 100;
+            this.splitContainer2.Panel1MinSize = 75;
             //
             // splitContainer2.Panel2
             //
             this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
-            this.splitContainer2.Panel2MinSize = 300;
+            this.splitContainer2.Panel2MinSize = 225;
             this.splitContainer2.Size = new System.Drawing.Size(348, 496);
             this.splitContainer2.SplitterWidth = 10;
             this.splitContainer2.SplitterDistance = 235;

@@ -69,7 +69,15 @@ namespace CKAN
             }
             set
             {
-                this.splitContainer2.SplitterDistance = value;
+                try
+                {
+                    this.splitContainer2.SplitterDistance = value;
+                }
+                catch
+                {
+                    // SplitContainer is mis-designed to throw exceptions
+                    // if the min/max limits are exceeded rather than simply obeying them.
+                }
             }
         }
 
