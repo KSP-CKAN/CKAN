@@ -1,4 +1,5 @@
 using System.Transactions;
+using System.Collections.Generic;
 using CKAN;
 using CKAN.Versioning;
 using NUnit.Framework;
@@ -88,6 +89,98 @@ namespace Tests.Core.Registry
             {
                 registry.LatestAvailable("ToTheMun", v0_24_2);
             });
+        }
+
+        [Test]
+        public void Available_NoDLCInstalled_ExcludesModulesDependingOnMH()
+        {
+            // Arrange
+            CkanModule DLCDepender = CkanModule.FromJson(@"{
+                ""identifier"": ""DLC-Depender"",
+                ""version"":    ""1.0.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":""MakingHistory-DLC""
+                } ]
+            }");
+            registry.AddAvailable(DLCDepender);
+
+            // Act
+            List<CkanModule> avail = registry.Available(v0_24_2);
+
+            // Assert
+            Assert.IsFalse(avail.Contains(DLCDepender));
+        }
+
+        [Test]
+        public void Available_MHInstalled_IncludesModulesDependingOnMH()
+        {
+            // Arrange
+            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
+
+            CkanModule DLCDepender = CkanModule.FromJson(@"{
+                ""identifier"": ""DLC-Depender"",
+                ""version"":    ""1.0.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":""MakingHistory-DLC""
+                } ]
+            }");
+            registry.AddAvailable(DLCDepender);
+
+            // Act
+            List<CkanModule> avail = registry.Available(v0_24_2);
+
+            // Assert
+            Assert.IsTrue(avail.Contains(DLCDepender));
+        }
+
+        [Test]
+        public void Available_MH110Installed_IncludesModulesDependingOnMH110()
+        {
+            // Arrange
+            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0"));
+
+            CkanModule DLCDepender = CkanModule.FromJson(@"{
+                ""identifier"": ""DLC-Depender"",
+                ""version"":    ""1.0.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"": ""MakingHistory-DLC"",
+                    ""version"": ""1.1.0""
+                } ]
+            }");
+            registry.AddAvailable(DLCDepender);
+
+            // Act
+            List<CkanModule> avail = registry.Available(v0_24_2);
+
+            // Assert
+            Assert.IsTrue(avail.Contains(DLCDepender));
+        }
+
+        [Test]
+        public void Available_MH100Installed_ExcludesModulesDependingOnMH110()
+        {
+            // Arrange
+            registry.RegisterDlc("MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0"));
+
+            CkanModule DLCDepender = CkanModule.FromJson(@"{
+                ""identifier"": ""DLC-Depender"",
+                ""version"":    ""1.0.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"": ""MakingHistory-DLC"",
+                    ""version"": ""1.1.0""
+                } ]
+            }");
+            registry.AddAvailable(DLCDepender);
+
+            // Act
+            List<CkanModule> avail = registry.Available(v0_24_2);
+
+            // Assert
+            Assert.IsFalse(avail.Contains(DLCDepender));
         }
 
         [Test]
@@ -186,4 +279,3 @@ namespace Tests.Core.Registry
         }
     }
 }
-
