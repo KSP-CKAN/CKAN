@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 - [GUI] Splitter and tabstrip visual improvements (#2413 by: HebaruSan; reviewed: politas)
+- [GUI] Fix "Collection was modified" exception for redundant optional dependencies (#2423 by: HebaruSan; reviewed: politas)
 
 ### Internal
 
