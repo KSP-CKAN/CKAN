@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 ## v1.25.1
 
 ### Features
-- [GUI] Replace empty max KSP version string with "any" #2420
+- [GUI] Replace empty max KSP version string with "any" (#2420 by: DasSkellet; reviewed: HebaruSan, politas)
 
 ### Bugfixes
 - [GUI] Splitter and tabstrip visual improvements (#2413 by: HebaruSan; reviewed: politas)
 - [GUI] Fix "Collection was modified" exception for redundant optional dependencies (#2423 by: HebaruSan; reviewed: politas)
 - [core] Treat installed DLC as compatible dependency (#2424 by: HebaruSan; reviewed: politas)
+- [GUI] Ignore splitter exceptions (#2426 by: HebaruSan; reviewed: politas)
 
 ### Internal
 

@@ -280,7 +280,15 @@ namespace CKAN
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
-            splitContainer1.SplitterDistance = configuration.PanelPosition;
+            try
+            {
+                splitContainer1.SplitterDistance = configuration.PanelPosition;
+            }
+            catch
+            {
+                // SplitContainer is mis-designed to throw exceptions
+                // if the min/max limits are exceeded rather than simply obeying them.
+            }
             ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
