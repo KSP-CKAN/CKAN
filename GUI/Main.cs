@@ -466,16 +466,7 @@ namespace CKAN
 
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (GUIMod)row.Tag;
-                if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
-                {
-                    MarkModForUpdate(mod.Identifier);
-                    mod.SetUpgradeChecked(row, true);
-                    ApplyToolButton.Enabled = true;
-                }
-            }
+            MarkModsForUpdate();
 
             // only sort by Update column if checkbox in settings checked
             if (Main.Instance.configuration.AutoSortByUpdate)
