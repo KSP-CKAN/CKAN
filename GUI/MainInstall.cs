@@ -19,6 +19,9 @@ namespace CKAN
         // this may happen on the recommended/suggested mods dialogs
         private volatile bool installCanceled;
 
+        // signals if all mods installed correctly
+        private volatile bool resolvedAllProvidedMods;
+
         // this will be the final list of mods we want to install
         private HashSet<CkanModule> toInstall = new HashSet<CkanModule>();
 
@@ -153,30 +156,51 @@ namespace CKAN
                 installCanceled = true;
             };
 
-            bool resolvedAllProvidedMods = false;
+            resolvedAllProvidedMods = false;
             while (!resolvedAllProvidedMods)
             {
                 try
                 {
+                    // used to check if all completed successfully despite user canceled the process
+                    // if user clicks cancel before or during these steps, stepsDone != stepsToBeDone, so we know there were steps missing
+                    // if user cancels afterwards, resolvedAllProvidedMods still evaluates to true
+                    int stepsDone = 0;
+                    int stepsToBeDone = 0;
+
                     e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
-                    if (!installCanceled && toUninstall.Count > 0)
+                    if (toUninstall.Count > 0)
                     {
-                        installer.UninstallList(toUninstall);
+                        stepsToBeDone += 1;
+                        if (!installCanceled)
+                        {
+                            installer.UninstallList(toUninstall);
+                            stepsDone += 1;
+                        }
                     }
-                    if (!installCanceled && toUpgrade.Count > 0)
+                    if (toUpgrade.Count > 0)
                     {
-                        installer.Upgrade(toUpgrade, downloader);
+                        stepsToBeDone += 1;
+                        if(!installCanceled)
+                        {
+                            installer.Upgrade(toUpgrade, downloader);
+                            stepsDone += 1;
+                        }
                     }
-                    if (!installCanceled && toInstall.Count > 0)
+                    if (toInstall.Count > 0)
                     {
-                        installer.InstallList(toInstall, opts.Value, downloader);
+                        stepsToBeDone += 1;
+                        if (!installCanceled)
+                        {
+                            installer.InstallList(toInstall, opts.Value, downloader);
+                            stepsDone += 1;
+                        }
                     }
+                    resolvedAllProvidedMods = (stepsDone == stepsToBeDone);
                     e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
                     if (installCanceled)
                     {
                         return;
                     }
-                    resolvedAllProvidedMods = true;
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
@@ -373,43 +397,43 @@ namespace CKAN
 
             if (result.Key)
             {
-                // Rebuilds the list of GUIMods
-                UpdateModsList(false, result.Value);
-
-                if (modChangedCallback != null)
-                {
-                    foreach (var mod in result.Value)
-                    {
-                        modChangedCallback(mod.Mod, mod.ChangeType);
-                    }
-                }
-
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
                 RetryCurrentActionButton.Visible = false;
-                UpdateChangesDialog(null, installWorker);
             }
             else if(installCanceled)
             {
-                // User cancelled the installation
-                // check if the mod installation/upgrade/uninstall still concluded successful
+                if (resolvedAllProvidedMods)
+                {
+                    // User cancelled the installation too late
+                    FailWaitDialog("Success!", "Too late! All operations completed! Please undo your changes manually!", "Everything done!", resolvedAllProvidedMods);
 
-                // TODO: how to do this check?
-
-                // FailWaitDialog("Installation successful!", "Too late! Mods already installed!\r \nPlease undo your changes manually!", "All mods installed!");
-                FailWaitDialog("Installation cancelled by user!", "User cancelled the installation manually!", "Installation failed!");
-
-                UpdateChangesDialog(result.Value, installWorker);
+                }
+                else
+                {
+                    // User cancelled the installation before everytihng was completed
+                    FailWaitDialog("Abort!", "User cancelled the (un)install/update manually!", "Installation cancelled!", resolvedAllProvidedMods);
+                }
             }
             else
             {
                 // There was an error
-                FailWaitDialog("Error during installation!", "An unknown error occurred, please try again!", "Installation failed!");
-                UpdateChangesDialog(result.Value, installWorker);
+                FailWaitDialog("Error during installation!", "An unknown error occurred, please try again!", "Installation failed!", false);
             }
+            // Rebuilds the list of GUIMods
+            UpdateModsList(false, result.Value);
+
+            if (modChangedCallback != null)
+            {
+                foreach (var mod in result.Value)
+                {
+                    modChangedCallback(mod.Mod, mod.ChangeType);
+                }
+            }
+            UpdateChangesDialog(result.Value, installWorker);
 
             Util.Invoke(this, () => Enabled = true);
             Util.Invoke(menuStrip1, () => menuStrip1.Enabled = true);

@@ -67,23 +67,31 @@ namespace CKAN
         /// <param name="statusMsg">Message for the lower status bar</param>
         /// <param name="logMsg">Message to display on WaitDialog-Log (not the real log!)</param>
         /// <param name="description">Message displayed above the DialogProgress bar</param>
-        public void FailWaitDialog(string statusMsg, string logMsg, string description)
+        public void FailWaitDialog(string statusMsg, string logMsg, string description, bool successful)
         {
             Util.Invoke(statusStrip1, () =>
             {
                 StatusProgress.Value = 0;
                 StatusProgress.Style = ProgressBarStyle.Continuous;
                 StatusProgress.Visible = false;
+                StatusLabel.Visible = true;
 
                 AddStatusMessage(statusMsg);
             });
             Util.Invoke(WaitTabPage, () =>
             {
+                DialogProgressBar.Value =  successful ? 100 :  0;
+                DialogProgressBar.Style = ProgressBarStyle.Continuous;
+
                 RecreateDialogs();
-                RetryCurrentActionButton.Visible = true;
+                // Hide if mods installed correctly, so user can't retry
+                RetryCurrentActionButton.Visible = !successful;
                 CancelCurrentActionButton.Enabled = false;
             });
-
+            Util.Invoke(menuStrip1, () =>
+            {
+                ApplyToolButton.Enabled = !successful;
+            });
             AddLogMessage(logMsg);
             SetDescription(description);
         }
