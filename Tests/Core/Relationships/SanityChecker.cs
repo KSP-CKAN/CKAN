@@ -296,6 +296,36 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
         }
 
+        [Test]
+        public void IsConsistent_MultipleVersionsOfSelfProvidesConflictingModule_Consistent()
+        {
+            // Arrange
+            List<CkanModule> modules = new List<CkanModule>()
+            {
+                CkanModule.FromJson(@"{
+                    ""identifier"": ""provides-conflictor"",
+                    ""version"":    ""1.0.0"",
+                    ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""provides"":   [ ""providee"" ],
+                    ""conflicts"": [ {
+                        ""name"":    ""providee""
+                    } ]
+                }"),
+                CkanModule.FromJson(@"{
+                    ""identifier"": ""provides-conflictor"",
+                    ""version"":    ""1.2.3"",
+                    ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""provides"":   [ ""providee"" ],
+                    ""conflicts"": [ {
+                        ""name"":    ""providee""
+                    } ]
+                }")
+            };
+
+            // Act & Assert
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
+        }
+
         private static void TestDepends(
             List<string> to_remove,
             List<CkanModule> mods,
