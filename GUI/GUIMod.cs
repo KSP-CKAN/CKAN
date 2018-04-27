@@ -115,7 +115,22 @@ namespace CKAN
             // KSP.
             if (latest_available_for_any_ksp != null)
             {
-                KSPCompatibility = KSPCompatibilityLong = registry.LatestCompatibleKSP(mod.identifier)?.ToString() ?? "any";
+                KspVersion ver = registry.LatestCompatibleKSP(mod.identifier);
+                string str = ver?.ToString();
+                int major = ver.Major;
+                int minor = ver.Minor;
+                int patch = ver.Patch;
+
+
+                if (str == null
+                    || (major + 1) % 10 == 0                                  
+                    || (major == 1 && minor > 90 && (minor + 1) % 10 == 0)    // 1.99.x, not 1.9.x
+                    )
+                    KSPCompatibility = "any";
+
+                else
+                    KSPCompatibility = str;
+
 
                 // If the mod we have installed is *not* the mod we have installed, or we don't know
                 // what we have installed, indicate that an upgrade would be needed.
@@ -123,6 +138,10 @@ namespace CKAN
                 {
                     KSPCompatibilityLong = string.Format("{0} (using mod version {1})",
                         KSPCompatibility, latest_available_for_any_ksp.version);
+                }
+                else
+                {
+                    KSPCompatibilityLong = KSPCompatibility;
                 }
             }
             else
