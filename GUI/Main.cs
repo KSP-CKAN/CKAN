@@ -466,7 +466,14 @@ namespace CKAN
 
         private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
         {
-            MarkModsForUpdate();
+            foreach (DataGridViewRow row in ModList.Rows)
+            {
+                var mod = (GUIMod)row.Tag;
+                if (mod.HasUpdate)
+                {
+                    MarkModForUpdate(mod.Identifier);
+                }
+            }
 
             // only sort by Update column if checkbox in settings checked
             if (Main.Instance.configuration.AutoSortByUpdate)
@@ -487,8 +494,6 @@ namespace CKAN
             }
 
             ModList.Refresh();
-
-
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)

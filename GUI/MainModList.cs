@@ -219,21 +219,16 @@ namespace CKAN
             }
         }
 
-        public void MarkModsForUpdate()
+        public void MarkModForUpdate(string identifier)
         {
-            Util.Invoke(this, () => _MarkModsForUpdate());
+            Util.Invoke(this, () => _MarkModForUpdate(identifier));
         }
         
-        public void _MarkModsForUpdate()
+        public void _MarkModForUpdate(string identifier)
         {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (GUIMod) row.Tag;
-                if (mod.HasUpdate)
-                {
-                    mod.SetUpgradeChecked(row, true);
-                }
-            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+            var mod = (GUIMod)row.Tag;
+            mod.SetUpgradeChecked(row, true);
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
