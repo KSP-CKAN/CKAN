@@ -115,23 +115,18 @@ namespace CKAN
             // KSP.
             if (latest_available_for_any_ksp != null)
             {
-                string str = registry.LatestCompatibleKSP(mod.identifier)?.ToString();
-                int major = registry.LatestCompatibleKSP(mod.identifier).Major;
-                int minor = registry.LatestCompatibleKSP(mod.identifier).Minor;
-                int patch = registry.LatestCompatibleKSP(mod.identifier).Patch;
+                KspVersion ver = registry.LatestCompatibleKSP(mod.identifier);
+                string str = ver?.ToString();
+                int major = ver.Major;
+                int minor = ver.Minor;
+                int patch = ver.Patch;
 
 
                 if (str == null
-                    || (major + 1) % 10 == 0 
-                    || (major == 1 && (minor + 1) % 10 == 0)
+                    || (major + 1) % 10 == 0                                  
+                    || (major == 1 && minor > 90 && (minor + 1) % 10 == 0)    // 1.99.x, not 1.9.x
                     )
                     KSPCompatibility = "any";
-
-                else if (major == 1
-                    && minor != -1 
-                    && (patch > 8 || patch == -1)
-                    )
-                    KSPCompatibility = major + "." + minor + ".9";
 
                 else
                     KSPCompatibility = str;
