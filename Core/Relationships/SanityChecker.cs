@@ -132,18 +132,15 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
-            modules = modules?.AsCollection();
-
             var confl = new List<KeyValuePair<CkanModule, RelationshipDescriptor>>();
-
             if (modules != null)
             {
-                foreach (var m in modules.Where(m => m.conflicts != null))
+                foreach (CkanModule m in modules.Where(m => m.conflicts != null))
                 {
-                    // Remove self from the list, so we're only comparing to OTHER modules
-                    var others = modules.Where(other => !ReferenceEquals(other, m)).AsCollection();
-
-                    foreach (var dep in m.conflicts)
+                    // Remove self from the list, so we're only comparing to OTHER modules.
+                    // Also remove other versions of self, to avoid conflicts during upgrades.
+                    var others = modules.Where(other => other.identifier != m.identifier);
+                    foreach (RelationshipDescriptor dep in m.conflicts)
                     {
                         if (dep.MatchesAny(others, dlls, dlc))
                         {
@@ -152,7 +149,6 @@ namespace CKAN
                     }
                 }
             }
-
             return confl;
         }
 
