@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.25.2
+
+### Bugfixes
+- [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
+
 ## v1.25.1
 
 ### Features
