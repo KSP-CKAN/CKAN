@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Tests.Data;
 using System.IO;
@@ -62,5 +64,30 @@ namespace Tests.Core.RegistryManager
                 }
             }
         }
+
+        [Test]
+        public void Registry_ZeroByteRegistryJson_EmptyRegistryWithoutCrash()
+        {
+            // Arrange
+            string registryPath = TestData.DataDir("zero-byte-registry.json");
+            DisposableKSP dispksp;
+            CKAN.KSP      ksp;
+
+            // Act
+            dispksp = new DisposableKSP(null, registryPath);
+            ksp     = dispksp.KSP;
+
+            // Assert
+            CKAN.Registry reg = CKAN.RegistryManager.Instance(ksp).registry;
+            Assert.IsNotNull(reg);
+            // These lists should all be empty, copied from CKAN.Registry.Empty()
+            Assert.IsFalse(reg.InstalledModules.Any());
+            Assert.IsFalse(reg.InstalledDlls.Any());
+            Assert.IsFalse(reg.HasAnyAvailable());
+            // installed_files isn't exposed for testing
+            // A default repo is set during load
+            Assert.IsTrue(reg.Repositories.Any());
+        }
+
     }
 }
