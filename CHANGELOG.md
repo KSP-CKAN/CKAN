@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 - [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
 
+### Internal
+- [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)
+
 ## v1.25.1
 
 ### Features
