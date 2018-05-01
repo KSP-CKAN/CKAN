@@ -223,19 +223,12 @@ namespace CKAN
         {
             Util.Invoke(this, () => _MarkModForUpdate(identifier));
         }
-
-
+        
         public void _MarkModForUpdate(string identifier)
         {
-            foreach (DataGridViewRow row in ModList.Rows)
-            {
-                var mod = (GUIMod) row.Tag;
-                if (mod.Identifier == identifier)
-                {
-                    (row.Cells[1] as DataGridViewCheckBoxCell).Value = true;
-                    break;
-                }
-            }
+            DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
+            var mod = (GUIMod)row.Tag;
+            mod.SetUpgradeChecked(row, true);
         }
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)

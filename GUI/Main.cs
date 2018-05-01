@@ -477,11 +477,9 @@ namespace CKAN
             foreach (DataGridViewRow row in ModList.Rows)
             {
                 var mod = (GUIMod)row.Tag;
-                if (mod.HasUpdate && row.Cells[1] is DataGridViewCheckBoxCell)
+                if (mod.HasUpdate)
                 {
                     MarkModForUpdate(mod.Identifier);
-                    mod.SetUpgradeChecked(row, true);
-                    ApplyToolButton.Enabled = true;
                 }
             }
 
@@ -504,8 +502,6 @@ namespace CKAN
             }
 
             ModList.Refresh();
-
-
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
