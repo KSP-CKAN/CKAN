@@ -617,6 +617,7 @@
             this.StatusProgress.Maximum = 100;
             this.StatusProgress.Size = new System.Drawing.Size(300, 20);
             this.StatusProgress.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            //
             // MainTabControl
             // 
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);

@@ -12,8 +12,8 @@ namespace CKAN.Versioning
         // HACK: Hardcoding a value of "0" for autodetected DLLs preserves previous behavior.
         public UnmanagedModuleVersion(string version) : base(version ?? "0")
         {
-            IsUnknownVersion = version is null;
-            _string = version is null ? "(unmanaged)" : $"{version} (unmanaged)";
+            IsUnknownVersion = version == null;
+            _string = version == null ? "(unmanaged)" : $"{version} (unmanaged)";
         }
 
         public override string ToString()
