@@ -115,5 +115,65 @@ namespace Tests.Core
             );
         }
 
+        [Test]
+        public void Valid_MissingVersionData_False()
+        {
+            // Arrange
+            string gamedir  = TestData.NewTempDir();
+            string ckandir  = Path.Combine(gamedir, "CKAN");
+            string buildid  = Path.Combine(gamedir, "buildID.txt");
+            string readme   = Path.Combine(gamedir, "readme.txt");
+            string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
+            const string compatible_ksp_versions_json = @"{
+                ""VersionOfKspWhenWritten"": ""1.4.3"",
+                ""CompatibleKspVersions"":   [""1.4""]
+            }";
+
+            // Generate a valid game dir except for missing buildID.txt and readme.txt
+            TestData.CopyDirectory(TestData.good_ksp_dir(), gamedir);
+            File.Delete(buildid);
+            File.Delete(readme);
+
+            // Save GameDir/CKAN/compatible_ksp_versions.json
+            Directory.CreateDirectory(ckandir);
+            File.WriteAllText(jsonpath, compatible_ksp_versions_json);
+
+            // Act
+            CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "missing-ver-test", NullUser.User);
+
+            // Assert
+            Assert.IsFalse(my_ksp.Valid);
+        }
+
+        [Test]
+        public void Constructor_NullMainCompatVer_NoCrash()
+        {
+            // Arrange
+            string gamedir  = TestData.NewTempDir();
+            string ckandir  = Path.Combine(gamedir, "CKAN");
+            string buildid  = Path.Combine(gamedir, "buildID.txt");
+            string readme   = Path.Combine(gamedir, "readme.txt");
+            string jsonpath = Path.Combine(ckandir, "compatible_ksp_versions.json");
+            const string compatible_ksp_versions_json = @"{
+                ""VersionOfKspWhenWritten"": null,
+                ""CompatibleKspVersions"":   [""1.4""]
+            }";
+
+            // Generate a valid game dir except for missing buildID.txt and readme.txt
+            TestData.CopyDirectory(TestData.good_ksp_dir(), gamedir);
+            File.Delete(buildid);
+            File.Delete(readme);
+
+            // Save GameDir/CKAN/compatible_ksp_versions.json
+            Directory.CreateDirectory(ckandir);
+            File.WriteAllText(jsonpath, compatible_ksp_versions_json);
+
+            // Act & Assert
+            Assert.DoesNotThrow(() =>
+            {
+                CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "null-compat-ver-test", NullUser.User);
+            });
+        }
+
     }
 }

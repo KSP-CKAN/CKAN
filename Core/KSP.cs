@@ -69,7 +69,7 @@ namespace CKAN
             }
         }
 
-        public bool Valid { get { return IsKspDir(gameDir); } }
+        public bool Valid { get { return IsKspDir(gameDir) && Version() != null; } }
 
         /// <summary>
         /// Create the CKAN directory and any supporting files.
@@ -124,7 +124,7 @@ namespace CKAN
         {
             CompatibleKspVersionsDto compatibleKspVersionsDto = new CompatibleKspVersionsDto();
 
-            compatibleKspVersionsDto.VersionOfKspWhenWritten = Version().ToString();
+            compatibleKspVersionsDto.VersionOfKspWhenWritten = Version()?.ToString();
             compatibleKspVersionsDto.CompatibleKspVersions = _compatibleVersions.Select(v => v.ToString()).ToList();
 
             String json = JsonConvert.SerializeObject(compatibleKspVersionsDto);
@@ -142,7 +142,11 @@ namespace CKAN
                 CompatibleKspVersionsDto compatibleKspVersionsDto = JsonConvert.DeserializeObject<CompatibleKspVersionsDto>(json);
 
                 _compatibleVersions = compatibleKspVersionsDto.CompatibleKspVersions.Select(v => KspVersion.Parse(v)).ToList();
-                this.VersionOfKspWhenCompatibleVersionsWereStored = KspVersion.Parse(compatibleKspVersionsDto.VersionOfKspWhenWritten);
+
+                // Get version without throwing exceptions for null
+                KspVersion mainVer = null;
+                KspVersion.TryParse(compatibleKspVersionsDto.VersionOfKspWhenWritten, out mainVer);
+                this.VersionOfKspWhenCompatibleVersionsWereStored = mainVer;
             }
         }
 
