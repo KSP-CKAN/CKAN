@@ -299,7 +299,9 @@ namespace CKAN
             log.DebugFormat("Trying to load registry from {0}", path);
             string json = File.ReadAllText(path);
             log.Debug("Registry JSON loaded; parsing...");
-            registry = JsonConvert.DeserializeObject<Registry>(json, settings);
+            // A 0-byte registry.json file loads as null without exceptions
+            registry = JsonConvert.DeserializeObject<Registry>(json, settings)
+                ?? Registry.Empty();
             log.Debug("Registry loaded and parsed");
             ScanDlc();
             log.InfoFormat("Loaded CKAN registry at {0}", path);
