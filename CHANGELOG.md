@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.25.2
 
+### Features
+- [GUI] Limit future Max KSP column values based on known versions (#2437 by: yalov; reviewed: politas)
+
 ### Bugfixes
 - [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
 - [GUI] Don't Force Apply button active when no update selected (#2429 by: DasSkelett; reviewed: politas)

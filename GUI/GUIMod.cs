@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
+using CKAN.GameVersionProviders;
 
 namespace CKAN
 {
@@ -41,6 +42,9 @@ namespace CKAN
         public bool IsCKAN { get; private set; }
         public string Abbrevation { get; private set; }
 
+        private bool VersionMaxWasGenerated = false;
+        private Dictionary<string, KspVersion> VersionsMax;
+
         /// <summary>
         /// Return whether this mod is installable.
         /// Used for determining whether to show a checkbox in the leftmost column.
@@ -62,6 +66,19 @@ namespace CKAN
         public string Version
         {
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
+        }
+
+        /// <returns>
+        ///   0 - 9   //  9  - 99    //  99 - 999    
+        ///   1 - 9   //  10 - 99    // 100 - 999
+        ///   8 - 9   //  98 - 99    // 
+        /// </returns>
+        private int UptoNines(int num)
+        {
+            //if (num == 0)
+            //    return 0;
+            //else
+                return (int)Math.Pow(10, Math.Floor(Math.Log10(num + 1)) + 1) - 1;
         }
 
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
@@ -115,7 +132,45 @@ namespace CKAN
             // KSP.
             if (latest_available_for_any_ksp != null)
             {
-                KSPCompatibility = KSPCompatibilityLong = registry.LatestCompatibleKSP(mod.identifier)?.ToString() ?? "any";
+                if (!VersionMaxWasGenerated)
+                {
+                    VersionMaxWasGenerated = true;
+                    List<KspVersion> versions = new KspBuildMap(new Win32Registry()).KnownVersions;  // should be sorted
+
+                    VersionsMax = new Dictionary<string, KspVersion>();
+                    VersionsMax[""] = versions.Last();
+
+                    foreach (var v in versions)
+                    {
+                        VersionsMax[v.Major.ToString()] = v;        // add or replace
+                        VersionsMax[v.Major + "." + v.Minor] = v;   
+                    }
+                }
+
+                const int Undefined = -1;
+
+                KspVersion ksp_ver = registry.LatestCompatibleKSP(mod.identifier);
+                string ver = ksp_ver?.ToString();
+                int major = ksp_ver.Major, minor = ksp_ver.Minor, patch = ksp_ver.Patch;
+                KspVersion value;
+
+                if ( major == Undefined
+                    //|| (major >= UptoNines(VersionsMax[""].Major))       // 9.99.99
+                    || (major > VersionsMax[""].Major)                     // 2.0.0 
+                    || (major == VersionsMax[""].Major && VersionsMax.TryGetValue(major.ToString(), out value) && minor >= UptoNines(value.Minor))  // 1.99.99 ?
+                    )
+                    KSPCompatibility = "any";
+
+                else if (minor != Undefined
+                    && VersionsMax.TryGetValue(major + "." + minor, out value)
+                    && (patch == Undefined || patch >= UptoNines(value.Patch))
+                    )
+                    KSPCompatibility = major + "." + minor + "." + UptoNines(value.Patch);
+
+                else
+                    KSPCompatibility = ver;
+
+                // KSPCompatibility += " | " + major + "." + minor + "." + patch;   // for testing
 
                 // If the mod we have installed is *not* the mod we have installed, or we don't know
                 // what we have installed, indicate that an upgrade would be needed.
@@ -123,6 +178,13 @@ namespace CKAN
                 {
                     KSPCompatibilityLong = string.Format("{0} (using mod version {1})",
                         KSPCompatibility, latest_available_for_any_ksp.version);
+                    //    ver, latest_available_for_any_ksp.version);   //  true values in the right tab
+
+                }
+                else
+                {
+                    KSPCompatibilityLong = KSPCompatibility;
+                    // KSPCompatibilityLong = ver;   //  true values in the right tab
                 }
             }
             else
