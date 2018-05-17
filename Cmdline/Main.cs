@@ -58,7 +58,7 @@ namespace CKAN.CmdLine
             // If we're starting with no options then invoke the GUI instead.
             if (args.Length == 0)
             {
-                return Gui(new GuiOptions(), args);
+                return Gui(null, new GuiOptions(), args);
             }
 
             try
@@ -174,10 +174,10 @@ namespace CKAN.CmdLine
                 switch (cmdline.action)
                 {
                     case "gui":
-                        return Gui((GuiOptions)options, args);
+                        return Gui(manager, (GuiOptions)options, args);
 
                     case "consoleui":
-                        return ConsoleUi(options, args);
+                        return ConsoleUi(manager, options, args);
 
                     case "prompt":
                         return new Prompt().RunCommand(manager, cmdline.options);
@@ -243,21 +243,21 @@ namespace CKAN.CmdLine
             return Exit.ERROR;
         }
 
-        private static int Gui(GuiOptions options, string[] args)
+        private static int Gui(KSPManager manager, GuiOptions options, string[] args)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            GUI.Main_(args, options.ShowConsole);
+            GUI.Main_(args, manager, options.ShowConsole);
 
             return Exit.OK;
         }
 
-        private static int ConsoleUi(CommonOptions opts, string[] args)
+        private static int ConsoleUi(KSPManager manager, CommonOptions opts, string[] args)
         {
             // Debug/verbose output just messes up the screen
             LogManager.GetRepository().Threshold = Level.Warn;
-            return CKAN.ConsoleUI.ConsoleUI.Main_(args, opts.Debug);
+            return CKAN.ConsoleUI.ConsoleUI.Main_(args, manager, opts.Debug);
         }
 
         private static int Version(IUser user)

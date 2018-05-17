@@ -24,9 +24,8 @@ namespace CKAN.ConsoleUI {
         public bool Run()
         {
             // If there's a default instance, try to get the lock for it.
-            if (manager.GetPreferredInstance() != null
-                    && !KSPListScreen.TryGetInstance(manager.CurrentInstance, () => Draw(false))) {
-
+            KSP ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
+            if (ksp != null && !KSPListScreen.TryGetInstance(ksp, () => Draw(false))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;

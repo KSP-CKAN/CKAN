@@ -16,7 +16,7 @@ namespace CKAN
             Main_(args);
         }
 
-        public static void Main_(string[] args, bool showConsole = false)
+        public static void Main_(string[] args, KSPManager manager = null, bool showConsole = false)
         {
             Logging.Initialize();
 
@@ -33,7 +33,7 @@ namespace CKAN
             }
             else
             {
-                new Main(args, user, showConsole);
+                new Main(args, manager, user, showConsole);
             }
         }
 

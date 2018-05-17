@@ -13,13 +13,13 @@ namespace CKAN.ConsoleUI {
         /// Starts with a splash screen, then instance selection if no default,
         /// then list of mods.
         /// </summary>
-        public ConsoleCKAN(bool debug)
+        public ConsoleCKAN(KSPManager mgr, bool debug)
         {
             // KSPManager only uses its IUser object to construct KSP objects,
             // which only use it to inform the user about the creation of the CKAN/ folder.
             // These aren't really intended to be displayed, so the manager
             // can keep a NullUser reference forever.
-            KSPManager manager = new KSPManager(new NullUser());
+            KSPManager manager = mgr ?? new KSPManager(new NullUser());
 
             // The splash screen returns true when it's safe to run the rest of the app.
             // This can be blocked by a lock file, for example.
