@@ -441,7 +441,7 @@ namespace CKAN.CmdLine
         public bool ShowConsole { get; set; }
     }
 
-    internal class ConsoleUIOptions : CommonOptions { }
+    internal class ConsoleUIOptions : InstanceSpecificOptions { }
 
     internal class UpdateOptions : InstanceSpecificOptions
     {

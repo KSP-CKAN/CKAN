@@ -158,10 +158,11 @@ namespace CKAN
             }
         }
 
-        public Main(string[] cmdlineArgs, GUIUser user, bool showConsole)
+        public Main(string[] cmdlineArgs, KSPManager mgr, GUIUser user, bool showConsole)
         {
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
+            manager = mgr ?? new KSPManager(user);
             currentUser = user;
 
             user.displayMessage = AddStatusMessage;
@@ -182,7 +183,6 @@ namespace CKAN
 
             // We want to check if our current instance is null first,
             // as it may have already been set by a command-line option.
-            Manager = new KSPManager(user);
             if (CurrentInstance == null && manager.GetPreferredInstance() == null)
             {
                 Hide();

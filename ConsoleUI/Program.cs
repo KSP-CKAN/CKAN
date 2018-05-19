@@ -17,7 +17,7 @@ namespace CKAN.ConsoleUI
         [STAThread]
         public static void Main(string[] args)
         {
-            Main_(args);
+            Main_(args, null);
         }
 
         /// <summary>
@@ -25,15 +25,16 @@ namespace CKAN.ConsoleUI
         /// and by other parts of CKAN that want to launch the console UI.
         /// </summary>
         /// <param name="args">Command line arguments</param>
+        /// <param name="manager">Game instance manager object potentially initialized by command line flags</param>
         /// <param name="debug">True if debug options should be available, false otherwise</param>
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(string[] args, bool debug = false)
+        public static int Main_(string[] args, KSPManager manager, bool debug = false)
         {
             Logging.Initialize();
 
-            new ConsoleCKAN(debug);
+            new ConsoleCKAN(manager, debug);
 
             // Tell RegistryManager not to throw Dispose-related exceptions at exit
             RegistryManager.DisposeAll();

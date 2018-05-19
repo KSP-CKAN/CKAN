@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't Force Apply button active when no update selected (#2429 by: DasSkelett; reviewed: politas)
 - [Core] Improve handling of missing game version (#2444 by: HebaruSan; reviewed: politas)
 - [Core] Handle zero byte registry.json file (#2435 by: HebaruSan; reviewed: politas)
+- [Multiple] Pass game instance from cmdline to GUI/ConsoleUI (#2449 by: HebaruSan; reviewed: politas)
 
 ### Internal
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)
