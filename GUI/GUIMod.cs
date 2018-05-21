@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
+using System.Text.RegularExpressions;
 
 namespace CKAN
 {
@@ -81,6 +82,20 @@ namespace CKAN
                 return (int)Math.Pow(10, Math.Floor(Math.Log10(num + 1)) + 1) - 1;
         }
 
+        /// <summary>
+        /// Remove prepending v V. Version_ etc
+        /// Leave 2 in 2:v5.4.3, whatever 2 is.
+        /// </summary>
+        private string RemoveV(string version)
+        {
+            Match match = Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$");
+
+            if (match.Success)
+                return match.Groups["num"].Value + match.Groups["ver"].Value;
+            else
+                return version;
+        }
+
         public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
         {
             IsCKAN = mod is CkanModule;
@@ -110,6 +125,8 @@ namespace CKAN
             }
 
             InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
+
+            InstalledVersion = RemoveV(InstalledVersion);
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
@@ -205,6 +222,8 @@ namespace CKAN
             {
                 LatestVersion = "-";
             }
+
+            LatestVersion = RemoveV(LatestVersion); 
 
             KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
 
