@@ -639,6 +639,7 @@ namespace Tests.Data
               <CheckForUpdatesOnLaunch>true</CheckForUpdatesOnLaunch>
               <CheckForUpdatesOnLaunchNoNag>true</CheckForUpdatesOnLaunchNoNag>
               <HideEpochs>true</HideEpochs>
+              <HideV>false</HideV>
               <SortByColumnIndex>2</SortByColumnIndex>
               <SortDescending>false</SortDescending>
               <WindowSize>

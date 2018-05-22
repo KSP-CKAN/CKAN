@@ -15,6 +15,7 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
         public bool HideEpochs = true;
+        public bool HideV = false;
 
         public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
         public bool RefreshOnStartupNoNag = false;
