@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
 using CKAN.GameVersionProviders;
-using System.Text.RegularExpressions;
 
 namespace CKAN
 {
