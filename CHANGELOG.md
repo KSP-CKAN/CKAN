@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Improve handling of missing game version (#2444 by: HebaruSan; reviewed: politas)
 - [Core] Handle zero byte registry.json file (#2435 by: HebaruSan; reviewed: politas)
 - [Multiple] Pass game instance from cmdline to GUI/ConsoleUI (#2449 by: HebaruSan; reviewed: politas)
+- [GUI] Show conflict messages in status bar (#2442 by: HebaruSan; reviewed: dbent, politas)
 
 ### Internal
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)

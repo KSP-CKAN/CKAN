@@ -24,37 +24,26 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
-            modules = modules?.AsCollection();
-            dlls = dlls?.AsCollection();
-
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
             var errors = new HashSet<string>();
-
-            // If we have no modules, then everything is fine. DLLs can't depend or conflict on things.
-            if (modules == null)
+            if (!CheckConsistency(modules, dlls, dlc, out unmetDepends, out conflicts))
             {
-                return errors;
+                foreach (var kvp in unmetDepends)
+                {
+                    errors.Add($"{kvp.Key} has an unsatisfied dependency: {kvp.Value} is not installed");
+                }
+                foreach (var kvp in conflicts)
+                {
+                    errors.Add($"{kvp.Key} conflicts with {kvp.Value}");
+                }
             }
-
-            foreach (var kvp in FindUnsatisfiedDepends(modules.ToList(), dlls?.ToHashSet(), dlc))
-            {
-                errors.Add($"{kvp.Key} has an unsatisfied dependency: {kvp.Value} is not installed");
-            }
-
-            // Conflicts are more difficult. Mods are allowed to conflict with themselves.
-            // So we walk all our mod conflicts, find what (if anything) provide those
-            // conflicts, and return false if it's not the module we're examining.
-            foreach (var kvp in FindConflicting(modules, dlls?.ToHashSet(), dlc))
-            {
-                errors.Add($"{kvp.Key} conflicts with {kvp.Value}");
-            }
-
-            // Return whatever we've found, which could be empty.
             return errors;
         }
 
         /// <summary>
         /// Ensures all modules in the list provided can co-exist.
-        /// Throws a InconsistentKraken containing a list of inconsistences if they do not.
+        /// Throws a BadRelationshipsKraken describing the problems otherwise.
         /// Does nothing if the modules can happily co-exist.
         /// </summary>
         public static void EnforceConsistency(
@@ -63,11 +52,11 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc = null
         )
         {
-            ICollection<string> errors = ConsistencyErrors(modules, dlls, dlc);
-
-            if (errors.Count != 0)
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
+            if (!CheckConsistency(modules, dlls, dlc, out unmetDepends, out conflicts))
             {
-                throw new InconsistentKraken(errors);
+                throw new BadRelationshipsKraken(unmetDepends, conflicts);
             }
         }
 
@@ -80,7 +69,22 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc = null
         )
         {
-            return ConsistencyErrors(modules, dlls, dlc).Count == 0;
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> unmetDepends;
+            List<KeyValuePair<CkanModule, RelationshipDescriptor>> conflicts;
+            return CheckConsistency(modules, dlls, dlc, out unmetDepends, out conflicts);
+        }
+
+        private static bool CheckConsistency(
+            IEnumerable<CkanModule> modules,
+            IEnumerable<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc,
+            out List<KeyValuePair<CkanModule, RelationshipDescriptor>> UnmetDepends,
+            out List<KeyValuePair<CkanModule, RelationshipDescriptor>> Conflicts
+        )
+        {
+            UnmetDepends = FindUnsatisfiedDepends(modules?.ToList(), dlls?.ToHashSet(), dlc);
+            Conflicts    = FindConflicting(       modules,           dlls?.ToHashSet(), dlc);
+            return !UnmetDepends.Any() && !Conflicts.Any();
         }
 
         /// <summary>
@@ -154,9 +158,9 @@ namespace CKAN
 
         private sealed class ProvidesInfo
         {
-            public string ProviderIdentifier { get; }
+            public string ProviderIdentifier     { get; }
             public ModuleVersion ProviderVersion { get; }
-            public string ProvideeIdentifier { get; }
+            public string ProvideeIdentifier     { get; }
             public ModuleVersion ProvideeVersion { get; }
 
             public ProvidesInfo(
@@ -167,9 +171,9 @@ namespace CKAN
             )
             {
                 ProviderIdentifier = providerIdentifier;
-                ProviderVersion = providerVersion;
+                ProviderVersion    = providerVersion;
                 ProvideeIdentifier = provideeIdentifier;
-                ProvideeVersion = provideeVersion;
+                ProvideeVersion    = provideeVersion;
             }
         }
     }

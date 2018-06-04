@@ -201,13 +201,13 @@ namespace CKAN
             // adding them to the list. This *must* be pre-populated with all
             // user-specified modules, as they may be supplying things that provide
             // virtual packages.
-            foreach (var module in ckan_modules)
+            foreach (CkanModule module in ckan_modules)
             {
                 log.DebugFormat("Preparing to resolve relationships for {0} {1}", module.identifier, module.version);
 
                 //Need to check against installed mods and those to install.
                 var mods = modlist.Values.Concat(installed_modules).Where(listed_mod => listed_mod.ConflictsWith(module));
-                foreach (var listed_mod in mods)
+                foreach (CkanModule listed_mod in mods)
                 {
                     if (options.procede_with_inconsistencies)
                     {
@@ -216,8 +216,8 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", module,
-                            listed_mod));
+                        throw new InconsistentKraken(
+                            $"{module} conflicts with {listed_mod}");
                     }
                 }
 
@@ -234,16 +234,29 @@ namespace CKAN
                 Resolve(module, options);
             }
 
-            if (!options.without_enforce_consistency)
+            try
             {
-                var final_modules = new List<CkanModule>(modlist.Values);
-                final_modules.AddRange(installed_modules);
                 // Finally, let's do a sanity check that our solution is actually sane.
                 SanityChecker.EnforceConsistency(
-                    final_modules,
+                    modlist.Values.Concat(installed_modules),
                     registry.InstalledDlls,
                     registry.InstalledDlc
-                    );
+                );
+            }
+            catch (BadRelationshipsKraken k)
+            {
+                // Add to this.conflicts (catches conflicting DLLs and DLCs that the above loops miss)
+                foreach (var kvp in k.Conflicts)
+                {
+                    conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(
+                        kvp.Key, null
+                    ));
+                }
+                if (!options.without_enforce_consistency)
+                {
+                    // Only re-throw if caller asked for consistency enforcement
+                    throw;
+                }
             }
         }
 
@@ -301,9 +314,7 @@ namespace CKAN
         /// options.without_toomanyprovides_kraken is not set.
         ///
         /// See RelationshipResolverOptions for further adjustments that can be made.
-        ///
         /// </summary>
-
         private void ResolveStanza(IEnumerable<RelationshipDescriptor> stanza, SelectionReason reason,
             RelationshipResolverOptions options, bool soft_resolve = false, IEnumerable<RelationshipDescriptor> old_stanza = null)
         {
@@ -312,7 +323,7 @@ namespace CKAN
                 return;
             }
 
-            foreach (var descriptor in stanza)
+            foreach (RelationshipDescriptor descriptor in stanza)
             {
                 string dep_name = descriptor.name;
                 log.DebugFormat("Considering {0}", dep_name);
@@ -419,7 +430,7 @@ namespace CKAN
                 var fixed_mods = new HashSet<CkanModule>(modlist.Values);
                 fixed_mods.UnionWith(installed_modules);
 
-                var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
+                CkanModule conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
                 if (conflicting_mod == null)
                 {
                     // Okay, looks like we want this one. Adding.
@@ -440,8 +451,8 @@ namespace CKAN
                     }
                     else
                     {
-                        throw new InconsistentKraken(string.Format("{0} conflicts with {1}, can't install both.", conflicting_mod,
-                            candidate));
+                        throw new InconsistentKraken(
+                            $"{conflicting_mod} conflicts with {candidate}");
                     }
                 }
             }
@@ -535,11 +546,11 @@ namespace CKAN
                 var dict = new Dictionary<CkanModule, String>();
                 foreach (var conflict in conflicts)
                 {
-                    var module = conflict.Key;
+                    CkanModule module = conflict.Key;
+                    CkanModule other  = conflict.Value;
                     dict[module] = string.Format("{0} conflicts with {1}\r\n\r\n{0}:\r\n{2}\r\n{1}:\r\n{3}",
-                        module.identifier, conflict.Value.identifier,
-                        ReasonStringFor(module), ReasonStringFor(conflict.Value));
-                    ;
+                        module.identifier, other?.identifier ?? "an unmanaged DLL or DLC",
+                        ReasonStringFor(module), ReasonStringFor(other));
                 }
                 return dict;
             }
@@ -557,6 +568,11 @@ namespace CKAN
         /// <returns></returns>
         public string ReasonStringFor(CkanModule mod)
         {
+            if (mod == null)
+            {
+                // If we don't have a CkanModule, it must be a DLL or DLC
+                return "Unmanaged";
+            }
             var reason = ReasonFor(mod);
             var is_root_type = reason.GetType() == typeof(SelectionReason.UserRequested)
                 || reason.GetType() == typeof(SelectionReason.Installed);

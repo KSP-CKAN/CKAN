@@ -108,14 +108,18 @@ namespace CKAN
 
         private void ConflictsUpdated()
         {
+            if (Conflicts == null) {
+                // Clear status bar if no conflicts
+                AddStatusMessage("");
+            }
             foreach (DataGridViewRow row in ModList.Rows)
             {
-                var module = (GUIMod)row.Tag;
+                GUIMod module = (GUIMod)row.Tag;
                 string value;
 
                 if (Conflicts != null && Conflicts.TryGetValue(module, out value))
                 {
-                    var conflict_text = value;
+                    string conflict_text = value;
                     foreach (DataGridViewCell cell in row.Cells)
                     {
                         cell.ToolTipText = conflict_text;
@@ -127,18 +131,15 @@ namespace CKAN
                         ModList.InvalidateRow(row.Index);
                     }
                 }
-                else
+                else if (row.DefaultCellStyle.BackColor != Color.Empty)
                 {
-                    if (row.DefaultCellStyle.BackColor != Color.Empty)
+                    foreach (DataGridViewCell cell in row.Cells)
                     {
-                        foreach (DataGridViewCell cell in row.Cells)
-                        {
-                            cell.ToolTipText = null;
-                        }
-
-                        row.DefaultCellStyle.BackColor = Color.Empty;
-                        ModList.InvalidateRow(row.Index);
+                        cell.ToolTipText = null;
                     }
+
+                    row.DefaultCellStyle.BackColor = Color.Empty;
+                    ModList.InvalidateRow(row.Index);
                 }
             }
         }
@@ -597,9 +598,10 @@ namespace CKAN
                 var module_installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
                 full_change_set = await mainModList.ComputeChangeSetFromModList(registry, user_change_set, module_installer, CurrentInstance.VersionCriteria());
             }
-            catch (InconsistentKraken)
+            catch (InconsistentKraken k)
             {
                 // Need to be recomputed due to ComputeChangeSetFromModList possibly changing it with too many provides handling.
+                AddStatusMessage(k.ShortDescription);
                 user_change_set = mainModList.ComputeUserChangeSet();
                 new_conflicts = MainModList.ComputeConflictsFromModList(registry, user_change_set, CurrentInstance.VersionCriteria());
                 full_change_set = null;

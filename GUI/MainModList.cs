@@ -223,7 +223,7 @@ namespace CKAN
         {
             Util.Invoke(this, () => _MarkModForUpdate(identifier));
         }
-        
+
         public void _MarkModForUpdate(string identifier)
         {
             DataGridViewRow row = mainModList.full_list_of_mod_rows[identifier];
@@ -234,8 +234,6 @@ namespace CKAN
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
             var module = GetSelectedModule();
-
-            AddStatusMessage(string.Empty);
 
             ModInfoTabControl.SelectedModule = module;
             if (module == null)

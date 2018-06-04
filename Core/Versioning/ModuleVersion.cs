@@ -31,7 +31,7 @@ namespace CKAN.Versioning
         private static readonly ConcurrentDictionary<Tuple<string, string>, int> ComparisonCache =
             new ConcurrentDictionary<Tuple<string, string>, int>();
     }
-    
+
     public partial class ModuleVersion
     {
         private readonly int _epoch;
@@ -298,7 +298,7 @@ namespace CKAN.Versioning
                 return comparison;
             }
 
-            if (other is null)
+            if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
             if (other._epoch == _epoch && other._version.Equals(_version))

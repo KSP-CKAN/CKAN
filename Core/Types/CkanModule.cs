@@ -539,14 +539,9 @@ namespace CKAN
         /// </summary>
         internal static bool UniConflicts(CkanModule mod1, CkanModule mod2)
         {
-            if (mod1.conflicts == null)
-            {
-                return false;
-            }
-            return
-                mod1.conflicts.Any(
-                    conflict =>
-                        mod2.ProvidesList.Contains(conflict.name) && conflict.WithinBounds(mod2.version));
+            return mod1?.conflicts?.Any(
+                conflict => conflict.MatchesAny(new CkanModule[] {mod2}, null, null)
+            ) ?? false;
         }
 
         /// <summary>

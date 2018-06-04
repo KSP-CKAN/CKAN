@@ -25,7 +25,7 @@ namespace CKAN
             string msg = String.Format(text, args);
             // No newlines in status bar
             Util.Invoke(statusStrip1, () =>
-                StatusLabel.Text = msg.Replace("\r\n", " ").Replace("\n", " ")
+                StatusLabel.ToolTipText = StatusLabel.Text = msg.Replace("\r\n", " ").Replace("\n", " ")
             );
             AddLogMessage(msg);
         }
