@@ -173,7 +173,7 @@ namespace CKAN
 
             // Update our mod listing. If we're doing a repo update, then we don't refresh
             // all (in case the user has selected changes they wish to apply).
-            mainModList.ConstructModList(gui_mods.ToList(), mc, !repo_updated, configuration.HideEpochs);
+            mainModList.ConstructModList(gui_mods.ToList(), mc, !repo_updated, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
@@ -660,7 +660,7 @@ namespace CKAN
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
         /// <param name="hideEpochs">If true, remove epochs from the displayed versions</param>
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, List<ModChange> mc = null, bool refreshAll = false, bool hideEpochs = false)
+        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, List<ModChange> mc = null, bool refreshAll = false, bool hideEpochs = false, bool hideV = false)
         {
 
             if (refreshAll || full_list_of_mod_rows == null)
@@ -708,8 +708,26 @@ namespace CKAN
 
                 var name = new DataGridViewTextBoxCell {Value = mod.Name};
                 var author = new DataGridViewTextBoxCell {Value = mod.Authors};
-                var installVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? ModuleInstaller.StripEpoch(mod.InstalledVersion) : mod.InstalledVersion };
-                var latestVersion = new DataGridViewTextBoxCell {Value = hideEpochs ? ModuleInstaller.StripEpoch(mod.LatestVersion) : mod.LatestVersion };
+
+                var installVersion = new DataGridViewTextBoxCell {
+                Value =
+                        hideEpochs ? 
+                            (hideV ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(mod.InstalledVersion))
+                            : ModuleInstaller.StripEpoch(mod.InstalledVersion))
+                        :   (hideV ? ModuleInstaller.StripV(mod.InstalledVersion)
+                            : mod.InstalledVersion)
+                };
+
+                var latestVersion = new DataGridViewTextBoxCell
+                {
+                    Value =
+                        hideEpochs ?
+                            (hideV ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(mod.LatestVersion))
+                            : ModuleInstaller.StripEpoch(mod.LatestVersion))
+                        : (hideV ? ModuleInstaller.StripV(mod.LatestVersion)
+                            : mod.LatestVersion)
+                };
+
                 var desc = new DataGridViewTextBoxCell {Value = mod.Abstract};
                 var compat = new DataGridViewTextBoxCell {Value = mod.KSPCompatibility};
                 var size = new DataGridViewTextBoxCell {Value = mod.DownloadSize};

@@ -1163,6 +1163,19 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Remove prepending v V. Version_ etc
+        /// </summary>
+        public static string StripV(string version)
+        {
+            Match match = Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$");
+
+            if (match.Success)
+                return match.Groups["num"].Value + match.Groups["ver"].Value;
+            else
+                return version;
+        }
+
+        /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         /// <param name="version">A version that might contain an epoch</param>
