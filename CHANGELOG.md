@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 - [GUI] Limit future Max KSP column values based on known versions (#2437 by: yalov; reviewed: politas)
+- [GUI] Add description to ModInfoTab (#2463 by: politas; reviewed: HebaruSan)
 
 ### Bugfixes
 - [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
