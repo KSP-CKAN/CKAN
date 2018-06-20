@@ -132,9 +132,10 @@
             this.MetaDataUpperLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetaDataUpperLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.MetaDataUpperLayoutPanel.Name = "MetaDataUpperLayoutPanel";
-            this.MetaDataUpperLayoutPanel.RowCount = 2;
-            this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.MetaDataUpperLayoutPanel.RowCount = 3;
+            this.MetaDataUpperLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize, 20F));
+            this.MetaDataUpperLayoutPanel.RowStyles.Add (new System.Windows.Forms.RowStyle (System.Windows.Forms.SizeType.AutoSize, 30F));
+            this.MetaDataUpperLayoutPanel.RowStyles.Add (new System.Windows.Forms.RowStyle (System.Windows.Forms.SizeType.AutoSize, 80F));
             this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(346, 283);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
             //
@@ -156,7 +157,7 @@
             this.MetadataModuleAbstractLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleAbstractLabel.Location = new System.Drawing.Point(3, 49);
             this.MetadataModuleAbstractLabel.Name = "MetadataModuleAbstractLabel";
-            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(340, 81);
+            this.MetadataModuleAbstractLabel.Size = new System.Drawing.Size(340, 61);
             this.MetadataModuleAbstractLabel.TabIndex = 27;
             this.MetadataModuleAbstractLabel.Text = "";
             //
@@ -165,7 +166,7 @@
             this.MetadataModuleDescriptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
 
             this.MetadataModuleDescriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MetadataModuleDescriptionLabel.Location = new System.Drawing.Point (3, 49);
+            this.MetadataModuleDescriptionLabel.Location = new System.Drawing.Point (3, 129);
             this.MetadataModuleDescriptionLabel.Name = "MetadataModuleDescriptionLabel";
             this.MetadataModuleDescriptionLabel.Size = new System.Drawing.Size (340, 121);
             this.MetadataModuleDescriptionLabel.TabIndex = 28;
