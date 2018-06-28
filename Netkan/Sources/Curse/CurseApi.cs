@@ -10,7 +10,8 @@ namespace CKAN.NetKAN.Sources.Curse
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(CurseApi));
 
-        private static string CurseApiBase = "https://api.cfwidget.com/project/";
+        private const string CurseApiBaseOld = "https://api.cfwidget.com/project/";
+        private const string CurseApiBase    = "https://api.cfwidget.com/kerbal/ksp-mods/";
 
         private readonly IHttpService _http;
 
@@ -19,10 +20,9 @@ namespace CKAN.NetKAN.Sources.Curse
             _http = http;
         }
 
-        public CurseMod GetMod(int modId)
+        public CurseMod GetMod(string nameOrId)
         {
-            var json = Call(modId);
-
+            var json = Call(nameOrId);
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
             if (!string.IsNullOrWhiteSpace(error.error))
@@ -32,7 +32,6 @@ namespace CKAN.NetKAN.Sources.Curse
                     error.message
                 ));
             }
-
             return CurseMod.FromJson(json);
         }
 
@@ -60,12 +59,15 @@ namespace CKAN.NetKAN.Sources.Curse
             return redirUrl;
         }
 
-        private string Call(int modId)
+        private string Call(string nameOrId)
         {
-            var url = CurseApiBase + modId;
-
-            Log.DebugFormat("Calling {0}", url);
-
+            int id;
+            // If it's numeric, use the old URL format,
+            // otherwise use the new.
+            var url = Int32.TryParse(nameOrId, out id)
+                ? CurseApiBaseOld + id
+                : CurseApiBase    + nameOrId;
+            Log.InfoFormat("Calling {0}", url);
             return _http.DownloadText(new Uri(url));
         }
     }

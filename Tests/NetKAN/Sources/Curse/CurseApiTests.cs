@@ -32,18 +32,43 @@ namespace Tests.NetKAN.Sources.Curse
 
         [Test]
         [Category("FlakyNetwork"), Category("Online")]
+        public void GetsOldModCorrectly()
+        {
+            // Arrange
+            var sut = new CurseApi(new CachingHttpService(_cache));
+
+            // Act
+            var result = sut.GetMod("220221"); // MechJeb
+
+            // Assert
+            var latestVersion = result.Latest();
+
+            Assert.That(result.id, Is.EqualTo(220221));
+            Assert.That(result.members, Is.Not.Null);
+            Assert.That(result.thumbnail, Is.Not.Null);
+            Assert.That(result.license, Is.Not.Null);
+            Assert.That(result.title, Is.Not.Null);
+            Assert.That(result.description, Is.Not.Null);
+            Assert.That(result.files.Count, Is.GreaterThan(0));
+            Assert.That(latestVersion.GetDownloadUrl(), Is.Not.Null);
+            Assert.That(latestVersion.GetFileVersion(), Is.Not.Null);
+            Assert.That(latestVersion.version, Is.Not.Null); // KSP Version
+        }
+
+        [Test]
+        [Category("FlakyNetwork"), Category("Online")]
         public void GetsModCorrectly()
         {
             // Arrange
             var sut = new CurseApi(new CachingHttpService(_cache));
 
             // Act
-            var result = sut.GetMod(220221); // MechJeb
+            var result = sut.GetMod("photonsail");
 
             // Assert
             var latestVersion = result.Latest();
 
-            Assert.That(result.id, Is.EqualTo(220221));
+            Assert.That(result.id, Is.EqualTo(296653));
             Assert.That(result.members, Is.Not.Null);
             Assert.That(result.thumbnail, Is.Not.Null);
             Assert.That(result.license, Is.Not.Null);
@@ -63,7 +88,7 @@ namespace Tests.NetKAN.Sources.Curse
             var sut = new CurseApi(new CachingHttpService(_cache));
 
             // Act
-            TestDelegate act = () => sut.GetMod(-1);
+            TestDelegate act = () => sut.GetMod("-1");
 
             // Assert
             Assert.That(act, Throws.Exception.InstanceOf<Kraken>());
