@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Pass game instance from cmdline to GUI/ConsoleUI (#2449 by: HebaruSan; reviewed: politas)
 - [GUI] Show conflict messages in status bar (#2442 by: HebaruSan; reviewed: dbent, politas)
 - [GUI] Remove v in installed version and latest version columns (#2451 by yalov; reviewed: politas)
+- [Netkan] Support new Curse URLs (#2464 by: HebaruSan; reviewed: Olympic1, politas)
 
 ### Internal
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)

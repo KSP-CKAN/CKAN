@@ -17,7 +17,7 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var mApi = new Mock<ICurseApi>();
-            mApi.Setup(i => i.GetMod(It.IsAny<int>()))
+            mApi.Setup(i => i.GetMod(It.IsAny<string>()))
                 .Returns(MakeTestMod());
 
             var sut = new CurseTransformer(mApi.Object);

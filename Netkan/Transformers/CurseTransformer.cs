@@ -34,7 +34,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 // Look up our mod on Curse by its Id.
-                var curseMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
+                var curseMod = _api.GetMod(metadata.Kref.Id);
                 var latestVersion = curseMod.Latest();
 
                 Log.InfoFormat("Found Curse mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion());
