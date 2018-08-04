@@ -748,6 +748,7 @@ namespace CKAN
         private readonly string why;
 
         public InvalidModuleAttributesException(string why, CkanModule module = null)
+            : base(why)
         {
             this.why = why;
             this.module = module;

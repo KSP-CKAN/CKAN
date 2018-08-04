@@ -85,6 +85,8 @@ namespace CKAN.NetKAN
             }
             catch (Exception e)
             {
+                e = e.GetBaseException() ?? e;
+
                 Log.Fatal(e.Message);
 
                 if (Options == null || Options.Debug)
