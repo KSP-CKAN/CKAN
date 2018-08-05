@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show conflict messages in status bar (#2442 by: HebaruSan; reviewed: dbent, politas)
 - [GUI] Remove v in installed version and latest version columns (#2451 by yalov; reviewed: politas)
 - [Netkan] Support new Curse URLs (#2464 by: HebaruSan; reviewed: Olympic1, politas)
+- [Netkan] Fix Netkan error message when both ksp_version and min/max are present (#2480 by: HebaruSan; reviewed: politas)
 
 ### Internal
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)
