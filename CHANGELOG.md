@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.25.2
+## v1.25.2 (Goddard)
 
 ### Features
 - [GUI] Limit future Max KSP column values based on known versions (#2437 by: yalov; reviewed: politas)
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)
 
-## v1.25.1
+## v1.25.1 (Broglio)
 
 ### Features
 - [GUI] Replace empty max KSP version string with "any" (#2420 by: DasSkellet; reviewed: HebaruSan, politas)
