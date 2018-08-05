@@ -222,7 +222,7 @@ RunTarget(target);
 
 private SemVersion GetVersion()
 {
-    var pattern = new Regex(@"^\s*##\s+v(?<version>\S+)\s*$");
+    var pattern = new Regex(@"^\s*##\s+v(?<version>\S+)\s?.*$");
     var rootDirectory = Context.Environment.WorkingDirectory;
 
     var versionMatch = System.IO.File
