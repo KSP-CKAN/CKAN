@@ -163,11 +163,13 @@ namespace CKAN
         {
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
+
+            // These are used by KSPManager's constructor to show messages about directory creation
+            user.displayMessage = AddStatusMessage;
+            user.displayError   = ErrorDialog;
+
             manager = mgr ?? new KSPManager(user);
             currentUser = user;
-
-            user.displayMessage = AddStatusMessage;
-            user.displayError = ErrorDialog;
 
             controlFactory = new ControlFactory();
             Instance = this;

@@ -40,9 +40,9 @@ namespace CKAN.CmdLine
                 Debugger.Launch();
             }
 
-            if (args.Length == 1 && args.Any(i => i == "--verbose" || i == "--debug"))
+            // Default to GUI if there are no command line args or if the only args are flags rather than commands.
+            if (args.All(a => a == "--verbose" || a == "--debug" || a == "--asroot" || a == "--show-console"))
             {
-                // Start the gui with logging enabled #437
                 var guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
                 args = guiCommand.ToArray();
@@ -54,12 +54,6 @@ namespace CKAN.CmdLine
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
             // This is on by default in .NET 4.6, but not in 4.5.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-
-            // If we're starting with no options then invoke the GUI instead.
-            if (args.Length == 0)
-            {
-                return Gui(null, new GuiOptions(), args);
-            }
 
             try
             {

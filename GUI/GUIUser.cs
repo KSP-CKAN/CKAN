@@ -21,12 +21,18 @@ namespace CKAN
 
         protected override void DisplayMessage(string message, params object[] args)
         {
-            displayMessage(message, args);
+            if (displayMessage != null)
+            {
+                displayMessage(message, args);
+            }
         }
 
         protected override void DisplayError(string message, params object[] args)
         {
-            displayError(message, args);
+            if (displayError != null)
+            {
+                displayError(message, args);
+            }
         }
 
         protected override void ReportProgress(string format, int percent)
