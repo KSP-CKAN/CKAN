@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using Newtonsoft.Json;
+using CKAN.GameVersionProviders;
 
 namespace CKAN.Versioning
 {
@@ -228,6 +230,65 @@ namespace CKAN.Versioning
             return _string;
         }
 
+        private static Dictionary<string, KspVersion> VersionsMax = new Dictionary<string, KspVersion>();
+
+        /// <summary>
+        /// Generate version mapping table once for all instances to share
+        /// </summary>
+        static KspVersion()
+        {
+            // Should be sorted
+            List<KspVersion> versions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            VersionsMax[""] = versions.Last();
+            foreach (var v in versions)
+            {
+                // Add or replace
+                VersionsMax[$"{v.Major}"          ] = v;
+                VersionsMax[$"{v.Major}.{v.Minor}"] = v;
+            }
+        }
+
+        /// <summary>
+        /// Get a string to represent a game version.
+        /// </summary>
+        /// <returns>
+        /// String representing max game version.
+        /// Partly clamped to real versions, partly rounded up to imaginary versions.
+        /// </returns>
+        public string ToYalovString()
+        {
+            KspVersion value;
+
+            if (!IsMajorDefined
+                // 2.0.0
+                || _major > VersionsMax[""].Major
+                // 1.99.99
+                || (_major == VersionsMax[""].Major && VersionsMax.TryGetValue($"{_major}", out value) && _minor >= UptoNines(value.Minor)))
+            {
+                return "any";
+            }
+            else if (IsMinorDefined
+                && VersionsMax.TryGetValue($"{_major}.{_minor}", out value)
+                && (!IsPatchDefined || _patch >= UptoNines(value.Patch)))
+            {
+                return $"{_major}.{_minor}.{UptoNines(value.Patch)}";
+            }
+            else
+            {
+                return ToString();
+            }
+        }
+
+        /// <returns>
+        ///   0 - 9   //  9  - 99    //  99 - 999
+        ///   1 - 9   //  10 - 99    // 100 - 999
+        ///   8 - 9   //  98 - 99
+        /// </returns>
+        private static int UptoNines(int num)
+        {
+            return (int)Math.Pow(10, Math.Floor(Math.Log10(num + 1)) + 1) - 1;
+        }
+
         /// <summary>
         /// Converts the value of the current <see cref="KspVersion"/> to its equivalent
         /// <see cref="KspVersionRange"/>.
@@ -239,7 +300,7 @@ namespace CKAN.Versioning
         /// </para>
         /// <para>
         /// For example, the version "1.0.0.0" would be equivalent to the range ["1.0.0.0", "1.0.0.0"], while the
-        /// version "1.0" would be equivalent to the range ["1.0.0.0", "1.1.0.0"). Where '[' and ']' represent 
+        /// version "1.0" would be equivalent to the range ["1.0.0.0", "1.1.0.0"). Where '[' and ']' represent
         /// inclusive bounds and '(' and ')' represent exclusive bounds.
         /// </para>
         /// </returns>
@@ -247,7 +308,7 @@ namespace CKAN.Versioning
         {
             KspVersionBound lower;
             KspVersionBound upper;
-        
+
             if (IsBuildDefined)
             {
                 lower = new KspVersionBound(this, inclusive: true);
