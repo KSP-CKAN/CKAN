@@ -1,18 +1,23 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
 ## v1.25.3
 
 ### Bugfixes
+
 - [Multiple] Fix crash when initializing CKAN dirs at argumentless GUI startup (#2482 by: HebaruSan; reviewed: politas)
+- [Core] Allow installing modules without `download_size` (#2491 by: HebaruSan)
 
 ## v1.25.2 (Goddard)
 
 ### Features
+
 - [GUI] Limit future Max KSP column values based on known versions (#2437 by: yalov; reviewed: politas)
 - [GUI] Add description to ModInfoTab (#2463 by: politas; reviewed: HebaruSan)
 
 ### Bugfixes
+
 - [core] Ignore conflicts between versions of same mod (#2430 by: HebaruSan; reviewed: politas)
 - [GUI] Don't Force Apply button active when no update selected (#2429 by: DasSkelett; reviewed: politas)
 - [Core] Improve handling of missing game version (#2444 by: HebaruSan; reviewed: politas)
@@ -21,17 +26,20 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show conflict messages in status bar (#2442 by: HebaruSan; reviewed: dbent, politas)
 - [GUI] Remove v in installed version and latest version columns (#2451 by yalov; reviewed: politas)
 - [Netkan] Support new Curse URLs (#2464 by: HebaruSan; reviewed: Olympic1, politas)
-- [Netkan] Fix Netkan error message when both ksp_version and min/max are present (#2480 by: HebaruSan; reviewed: politas)
+- [Netkan] Fix Netkan error message when both `ksp_version` and min/max are present (#2480 by: HebaruSan; reviewed: politas)
 
 ### Internal
+
 - [Core] Test upgrading mod with conflict on its own provides (#2431 by: HebaruSan; reviewed: politas)
 
 ## v1.25.1 (Broglio)
 
 ### Features
+
 - [GUI] Replace empty max KSP version string with "any" (#2420 by: DasSkellet; reviewed: HebaruSan, politas)
 
 ### Bugfixes
+
 - [GUI] Splitter and tabstrip visual improvements (#2413 by: HebaruSan; reviewed: politas)
 - [GUI] Fix "Collection was modified" exception for redundant optional dependencies (#2423 by: HebaruSan; reviewed: politas)
 - [core] Treat installed DLC as compatible dependency (#2424 by: HebaruSan; reviewed: politas)
@@ -57,7 +65,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Handle mod not found in versions tab (#2303 by: HebaruSan; reviewed: politas)
 - [GUI] Better resizing for Select KSP Install window (#2306 by: HebaruSan; reviewed: politas)
 - [GUI] Fix GUI sort by size (#2311 by: HebaruSan; reviewed: politas)
-- [Core] Don't crash if download_hash isn't set (#2313 by: HebaruSan; reviewed: politas)
+- [Core] Don't crash if `download_hash` isn't set (#2313 by: HebaruSan; reviewed: politas)
 - [GUI] Fix GUI instance name checking (#2316 by: HebaruSan; reviewed: politas)
 - [Core] Fix ArgumentOutOfRangeException when removing files from game root (#2332 by: HebaruSan; reviewed: politas)
 - [Core] Obey version properties of conflicts and depends relationships in sanity checks (#2339 by: HebaruSan; reviewed: politas)
