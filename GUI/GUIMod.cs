@@ -268,7 +268,7 @@ namespace CKAN
 
         private bool Equals(GUIMod other)
         {
-            return Equals(Name, other.Name);
+            return Equals(Identifier, other.Identifier);
         }
 
         public override bool Equals(object obj)
@@ -281,7 +281,7 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return (Name != null ? Name.GetHashCode() : 0);
+            return Identifier?.GetHashCode() ?? 0;
         }
 
     }
