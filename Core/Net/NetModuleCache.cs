@@ -115,7 +115,7 @@ namespace CKAN
                 throw new FileNotFoundKraken(path);
 
             // Check file size
-            if (fi.Length != module.download_size)
+            if (module.download_size > 0 && fi.Length != module.download_size)
                 throw new InvalidModuleFileKraken(module, path,
                     $"{module}: {path} has length {fi.Length}, should be {module.download_size}");
 
