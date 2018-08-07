@@ -24,7 +24,6 @@ namespace CKAN
         private FileSystemWatcher watcher;
         private string[] cachedFiles;
         private string cachePath;
-        private static readonly TxFileManager tx_file = new TxFileManager();
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
         public NetFileCache(string _cachePath)
@@ -291,6 +290,8 @@ namespace CKAN
         {
             log.DebugFormat("Storing {0}", url);
 
+            TxFileManager tx_file = new TxFileManager();
+
             // Make sure we clear our cache entry first.
             Remove(url);
 
@@ -330,6 +331,8 @@ namespace CKAN
         /// </summary>
         public bool Remove(Uri url)
         {
+            TxFileManager tx_file = new TxFileManager();
+
             string file = GetCachedFilename(url);
 
             if (file != null)

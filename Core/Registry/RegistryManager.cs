@@ -24,7 +24,6 @@ namespace CKAN
         private FileStream lockfileStream = null;
         private StreamWriter lockfileWriter = null;
 
-        private readonly TxFileManager file_transaction = new TxFileManager();
 
         // The only reason we have a KSP field is so we can pass it to the registry
         // when deserialising, and *it* only needs it to do registry upgrades.
@@ -414,6 +413,8 @@ namespace CKAN
 
         public void Save(bool enforce_consistency = true)
         {
+            TxFileManager file_transaction = new TxFileManager();
+
             log.InfoFormat("Saving CKAN registry at {0}", path);
 
             if (enforce_consistency)
@@ -463,6 +464,8 @@ namespace CKAN
         /// <param name="with_versions">True to include the mod versions in the file, false to omit them</param>
         public void ExportInstalled(string path, bool recommends, bool with_versions)
         {
+            TxFileManager file_transaction = new TxFileManager();
+
             string serialized = SerializeCurrentInstall(recommends, with_versions);
             file_transaction.WriteAllText(path, serialized);
         }

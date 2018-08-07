@@ -21,7 +21,6 @@ namespace CKAN
     public static class Repo
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
-        private static TxFileManager file_transaction = new TxFileManager();
 
         /// <summary>
         /// Download and update the local CKAN meta-info.
@@ -79,6 +78,8 @@ namespace CKAN
         /// </summary>
         private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user)
         {
+            TxFileManager file_transaction = new TxFileManager();
+
             // Use this opportunity to also update the build mappings... kind of hacky
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
 

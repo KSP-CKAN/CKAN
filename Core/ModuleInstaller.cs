@@ -31,7 +31,6 @@ namespace CKAN
         private static SortedList<string, ModuleInstaller> instances = new SortedList<string, ModuleInstaller>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
-        private static readonly TxFileManager file_transaction = new TxFileManager();
 
         private RegistryManager registry_manager;
         private KSP ksp;
@@ -686,6 +685,8 @@ namespace CKAN
         /// </summary>
         internal static void CopyZipEntry(ZipFile zipfile, ZipEntry entry, string fullPath, bool makeDirs)
         {
+            TxFileManager file_transaction = new TxFileManager();
+
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
@@ -809,6 +810,8 @@ namespace CKAN
 
         private void Uninstall(string modName)
         {
+            TxFileManager file_transaction = new TxFileManager();
+
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 InstalledModule mod = registry_manager.registry.InstalledModule(modName);
