@@ -397,7 +397,7 @@
             // 
             this.FilterNewButton.Name = "FilterNewButton";
             this.FilterNewButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterNewButton.Text = "New in repository";
+            this.FilterNewButton.Text = "Newly compatible";
             this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
             // 
             // FilterNotInstalledButton
