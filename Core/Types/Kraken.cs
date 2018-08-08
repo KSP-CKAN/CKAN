@@ -59,12 +59,17 @@ namespace CKAN
         public string version;
 
         // TODO: Is there a way to set the stringify version of this?
-        public ModuleNotFoundKraken(string module, string version = null, string reason = null, Exception innerException = null)
+        public ModuleNotFoundKraken(string module, string version, string reason, Exception innerException = null)
             : base(reason, innerException)
         {
-            this.module = module;
+            this.module  = module;
             this.version = version;
         }
+
+        public ModuleNotFoundKraken(string module, string version = null)
+            : this(module, version, $"Module not found: {module} {version ?? ""}")
+        { }
+
     }
 
     /// <summary>
