@@ -75,7 +75,11 @@ namespace CKAN
 
             if (path != null)
             {
-                return new KSP(path, "portable", User);
+                KSP portableInst = new KSP(path, "portable", User);
+                if (portableInst.Valid)
+                {
+                    return portableInst;
+                }
             }
 
             // If we only know of a single instance, return that.
