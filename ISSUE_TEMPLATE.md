@@ -4,7 +4,7 @@ Thanks for wanting to bring an issue to our attention!
 
 Before you open a ticket, please do a quick search of the existing issues to see if it's already been brought up.
 
-https://github.com/KSP-CKAN/CKAN/issues
+https://github.com/KSP-CKAN/CKAN/issues?q=is%3Aissue
 
 -->
 
