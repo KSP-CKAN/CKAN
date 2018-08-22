@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix crash when initializing CKAN dirs at argumentless GUI startup (#2482 by: HebaruSan; reviewed: politas)
 - [Core] Allow installing modules without `download_size` (#2491 by: HebaruSan)
 - [Multiple] Fix GUIMod crash when module doesn't have a compatible game version (#2486 by: HebaruSan; reviewed: politas)
+- [Core] Fix crash on invalid portable or Steam folder (#2506 by: HebaruSan; reviewed: politas)
 
 ## v1.25.2 (Goddard)
 

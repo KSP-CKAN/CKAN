@@ -75,7 +75,11 @@ namespace CKAN
 
             if (path != null)
             {
-                return new KSP(path, "portable", User);
+                KSP portableInst = new KSP(path, "portable", User);
+                if (portableInst.Valid)
+                {
+                    return portableInst;
+                }
             }
 
             // If we only know of a single instance, return that.
@@ -114,7 +118,8 @@ namespace CKAN
             try
             {
                 string gamedir = KSP.FindGameDir();
-                return AddInstance(new KSP(gamedir, "auto", User));
+                KSP foundInst = new KSP(gamedir, "auto", User);
+                return foundInst.Valid ? AddInstance(foundInst) : null;
             }
             catch (DirectoryNotFoundException)
             {
