@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix GUIMod crash when module doesn't have a compatible game version (#2486 by: HebaruSan; reviewed: cculianu, politas)
 - [Core] Fix crash on invalid portable or Steam folder (#2506 by: HebaruSan; reviewed: politas)
 - [GUI] Fix red X on HideTab (#2501 by: HebaruSan; reviewed: politas)
+- [Core] Set default Exception.Message string for ModuleNotFoundKraken (#2493 by: HebaruSan; reviewed: politas)
 
 ## v1.25.2 (Goddard)
 
