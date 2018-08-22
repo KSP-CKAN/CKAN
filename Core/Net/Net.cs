@@ -21,7 +21,6 @@ namespace CKAN
         public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
 
         private static readonly ILog          log             = LogManager.GetLogger(typeof(Net));
-        private static readonly TxFileManager FileTransaction = new TxFileManager();
 
         public static readonly Dictionary<string, Uri> ThrottledHosts = new Dictionary<string, Uri>()
         {
@@ -46,6 +45,8 @@ namespace CKAN
 
         public static string Download(string url, string filename = null, IUser user = null)
         {
+            TxFileManager FileTransaction = new TxFileManager();
+
             user = user ?? new NullUser();
             user.RaiseMessage("Downloading {0}", url);
 
@@ -128,6 +129,8 @@ namespace CKAN
 
             public DownloadTarget(Uri url, Uri fallback = null, string filename = null, long size = 0, string mimeType = "")
             {
+                TxFileManager FileTransaction = new TxFileManager();
+
                 this.url         = url;
                 this.fallbackUrl = fallback;
                 this.filename    = string.IsNullOrEmpty(filename)
