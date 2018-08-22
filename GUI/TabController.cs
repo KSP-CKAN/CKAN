@@ -111,6 +111,11 @@ namespace CKAN
 
         private void _HideTab(string name)
         {
+            // Unsafe to hide the active tab as of Mono 5.14
+            if (m_TabControl.SelectedTab.Name == name)
+            {
+                m_TabControl.DeselectTab(name);
+            }
             m_TabControl.TabPages.Remove(m_TabPages[name]);
         }
 
