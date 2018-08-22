@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## v1.25.3
 
+### Features
+- [GUI] Replace New in repository filter with Newly compatible filter (#2494 by: HebaruSan; reviewed: Olympic1, politas)
+
 ### Bugfixes
 
 - [Multiple] Fix crash when initializing CKAN dirs at argumentless GUI startup (#2482 by: HebaruSan; reviewed: politas)
 - [Core] Allow installing modules without `download_size` (#2491 by: HebaruSan)
-- [Multiple] Fix GUIMod crash when module doesn't have a compatible game version (#2486 by: HebaruSan; reviewed: politas)
+- [Multiple] Fix GUIMod crash when module doesn't have a compatible game version (#2486 by: HebaruSan; reviewed: cculianu, politas)
 - [Core] Fix crash on invalid portable or Steam folder (#2506 by: HebaruSan; reviewed: politas)
 - [GUI] Fix red X on HideTab (#2501 by: HebaruSan; reviewed: politas)
 

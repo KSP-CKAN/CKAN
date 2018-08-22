@@ -153,18 +153,31 @@ namespace CKAN
             {
                 gui_mods.Add(mod);
             }
-            var old_modules = new HashSet<GUIMod>(mainModList.Modules);
+            var old_modules = mainModList.Modules.ToDictionary(m => m, m => m.IsIncompatible);
             if (repo_updated)
             {
-                foreach (var gui_mod in gui_mods.Where(m => !old_modules.Contains(m)))
+                foreach (GUIMod gm in gui_mods)
                 {
-                    gui_mod.IsNew = true;
+                    bool oldIncompat;
+                    if (old_modules.TryGetValue(gm, out oldIncompat))
+                    {
+                        // Found it; check if newly compatible
+                        if (!gm.IsIncompatible && oldIncompat)
+                        {
+                            gm.IsNew = true;
+                        }
+                    }
+                    else
+                    {
+                        // Newly indexed, show regardless of compatibility
+                        gm.IsNew = true;
+                    }
                 }
             }
             else
             {
                 //Copy the new mod flag from the old list.
-                var old_new_mods = new HashSet<GUIMod>(old_modules.Where(m => m.IsNew));
+                var old_new_mods = new HashSet<GUIMod>(old_modules.Keys.Where(m => m.IsNew));
                 foreach (var gui_mod in gui_mods.Where(m => old_new_mods.Contains(m)))
                 {
                     gui_mod.IsNew = true;
@@ -186,7 +199,7 @@ namespace CKAN
                 mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
             FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Cached));
-            FilterToolButton.DropDownItems[4].Text = String.Format("New in repository ({0})",
+            FilterToolButton.DropDownItems[4].Text = String.Format("Newly compatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
             FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
