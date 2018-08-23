@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 - [GUI] Replace New in repository filter with Newly compatible filter (#2494 by: HebaruSan; reviewed: Olympic1, politas)
+- [GUI] Add Install Date column to GUI mod list (#2514 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

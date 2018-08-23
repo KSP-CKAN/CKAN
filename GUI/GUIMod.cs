@@ -11,17 +11,14 @@ namespace CKAN
     {
         private CkanModule Mod { get; set; }
 
-        public string Name
-        {
-            get { return Mod.name.Trim(); }
-        }
-
+        public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
         public bool HasUpdate { get; private set; }
         public bool IsIncompatible { get; private set; }
         public bool IsAutodetected { get; private set; }
         public string Authors { get; private set; }
         public string InstalledVersion { get; private set; }
+        public DateTime? InstallDate { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
         public bool IsCached { get; private set; }
@@ -32,7 +29,6 @@ namespace CKAN
         public string KSPCompatibility { get; private set; }
         public string KSPCompatibilityLong { get; private set; }
 
-        public string KSPversion { get; private set; }
         public string Abstract { get; private set; }
         public string Homepage { get; private set; }
         public string Identifier { get; private set; }
@@ -65,35 +61,81 @@ namespace CKAN
             get { return IsInstalled ? InstalledVersion : LatestVersion; }
         }
 
-        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+        /// <summary>
+        /// Initialize a GUIMod based on an InstalledModule
+        /// </summary>
+        /// <param name="instMod">The installed module to represent</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="current_ksp_version">Current game version</param>
+        /// <param name="incompatible">If true, mark this module as incompatible</param>
+        public GUIMod(InstalledModule instMod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+            : this(instMod.Module, registry, current_ksp_version, incompatible)
         {
-            IsCKAN = mod is CkanModule;
-            //Currently anything which could alter these causes a full reload of the modlist
-            // If this is ever changed these could be moved into the properties
-            Mod = mod;
-            IsInstalled = registry.IsInstalled(mod.identifier, false);
-            IsInstallChecked = IsInstalled;
-            HasUpdate = registry.HasUpdate(mod.identifier, current_ksp_version);
-            IsIncompatible = incompatible || !mod.IsCompatibleKSP(current_ksp_version);
-            IsAutodetected = registry.IsAutodetected(mod.identifier);
-            Authors = mod.author == null ? "N/A" : String.Join(",", mod.author);
+            IsInstalled      = true;
+            IsInstallChecked = true;
+            InstallDate      = instMod.InstallTime;
+            InstalledVersion = instMod.Module.version.ToString();
+            if (LatestVersion == null || LatestVersion.Equals("-"))
+            {
+                LatestVersion = InstalledVersion;
+            }
+        }
 
-            var installed_version = registry.InstalledVersion(mod.identifier);
+        /// <summary>
+        /// Initialize a GUIMod based on a CkanModule
+        /// </summary>
+        /// <param name="mod">The module to represent</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="current_ksp_version">Current game version</param>
+        /// <param name="incompatible">If true, mark this module as incompatible</param>
+        public GUIMod(CkanModule mod, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+            : this(mod.identifier, registry, current_ksp_version, incompatible)
+        {
+            Mod           = mod;
+            IsCKAN        = mod is CkanModule;
+
+            Name          = mod.name.Trim();
+            Abstract      = mod.@abstract.Trim();
+            Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
+            Authors       = mod.author == null ? "N/A" : String.Join(",", mod.author);
+
+            HasUpdate      = registry.HasUpdate(mod.identifier, current_ksp_version);
+            DownloadSize   = mod.download_size == 0 ? "N/A" : CkanModule.FmtSize(mod.download_size);
+            IsIncompatible = IsIncompatible || !mod.IsCompatibleKSP(current_ksp_version);
+
+            if (mod.resources != null)
+            {
+                Homepage = mod.resources.homepage?.ToString()
+                        ?? mod.resources.spacedock?.ToString()
+                        ?? mod.resources.curse?.ToString()
+                        ?? mod.resources.repository?.ToString()
+                        ?? "N/A";
+            }
+
+            UpdateIsCached();
+        }
+
+        /// <summary>
+        /// Initialize a GUIMod based on just an identifier
+        /// </summary>
+        /// <param name="identifier">The id of the module to represent</param>
+        /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="current_ksp_version">Current game version</param>
+        /// <param name="incompatible">If true, mark this module as incompatible</param>
+        public GUIMod(string identifier, IRegistryQuerier registry, KspVersionCriteria current_ksp_version, bool incompatible = false)
+        {
+            Identifier     = identifier;
+            IsIncompatible = incompatible;
+            IsAutodetected = registry.IsAutodetected(identifier);
+
             ModuleVersion latest_version = null;
-            var ksp_version = mod.ksp_version;
-
             try
             {
-                var latest_available = registry.LatestAvailable(mod.identifier, current_ksp_version);
-                if (latest_available != null)
-                    latest_version = latest_available.version;
+                latest_version = registry.LatestAvailable(identifier, current_ksp_version)?.version;
             }
             catch (ModuleNotFoundKraken)
             {
-                latest_version = installed_version;
             }
-
-            InstalledVersion = installed_version != null ? installed_version.ToString() : "-";
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.
@@ -102,35 +144,18 @@ namespace CKAN
 
             try
             {
-                latest_available_for_any_ksp = registry.LatestAvailable(mod.identifier, null);
+                latest_available_for_any_ksp = registry.LatestAvailable(identifier, null);
             }
             catch
-            {
-                // If we can't find the mod in the CKAN, but we've a CkanModule installed, then
-                // use that.
-                if (IsCKAN)
-                    latest_available_for_any_ksp = (CkanModule) mod;
-            }
+            { }
 
             // If there's known information for this mod in any form, calculate the highest compatible
             // KSP.
             if (latest_available_for_any_ksp != null)
             {
-                KSPCompatibility = registry.LatestCompatibleKSP(mod.identifier)?.ToYalovString()
+                KSPCompatibility = registry.LatestCompatibleKSP(identifier)?.ToYalovString()
                     ?? "Unknown";
-
-                // If the mod we have installed is *not* the mod we have installed, or we don't know
-                // what we have installed, indicate that an upgrade would be needed.
-                if (installed_version == null || !latest_available_for_any_ksp.version.IsEqualTo(installed_version))
-                {
-                    KSPCompatibilityLong = string.Format("{0} (using mod version {1})",
-                        KSPCompatibility, latest_available_for_any_ksp.version);
-
-                }
-                else
-                {
-                    KSPCompatibilityLong = KSPCompatibility;
-                }
+                KSPCompatibilityLong = $"{KSPCompatibility} (using mod version {latest_available_for_any_ksp.version})";
             }
             else
             {
@@ -151,43 +176,9 @@ namespace CKAN
                 LatestVersion = "-";
             }
 
-            KSPversion = ksp_version != null ? ksp_version.ToString() : "-";
-
-            Abstract = mod.@abstract;
-
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
 
             Homepage = "N/A";
-            if (mod.resources != null)
-            {
-                if (mod.resources.homepage != null)
-                {
-                    Homepage = mod.resources.homepage.ToString();
-                }
-                else if (mod.resources.spacedock != null)
-                {
-                    Homepage = mod.resources.spacedock.ToString();
-                }
-                else if (mod.resources.curse != null)
-                {
-                    Homepage = mod.resources.curse.ToString();
-                }
-                else if (mod.resources.repository != null)
-                {
-                    Homepage = mod.resources.repository.ToString();
-                }
-            }
-
-            Identifier = mod.identifier;
-
-            DownloadSize = (mod.download_size == 0)
-                ? "N/A"
-                : CkanModule.FmtSize(mod.download_size);
-
-            Abbrevation = new string(mod.name.Split(' ').
-                Where(s => s.Length > 0).Select(s => s[0]).ToArray());
-
-            UpdateIsCached();
         }
 
         public void UpdateIsCached()
