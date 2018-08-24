@@ -351,7 +351,9 @@ namespace CKAN
 
                 if (registry.IsInstalled(dep_name))
                 {
-                    if (descriptor.version_within_bounds(registry.InstalledVersion(dep_name)))
+                    var installedVersion = registry.InstalledVersion(dep_name);
+
+                    if (descriptor.WithinBounds(installedVersion))
                         continue;
 
                     //TODO Ideally we could check here if it can be replaced by the version we want.
