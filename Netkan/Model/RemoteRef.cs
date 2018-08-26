@@ -25,7 +25,9 @@ namespace CKAN.NetKAN.Model
             Source = arguments.Source;
             Id = arguments.Id;
 
-            _string = Id == null ? string.Format("#/{0}", Source) : string.Format("#/{0}/{1}", Source, Id);
+            _string = Id == null
+                ? $"#/ckan/{Source}"
+                : $"#/ckan/{Source}/{Id}";
         }
 
         public override string ToString()
