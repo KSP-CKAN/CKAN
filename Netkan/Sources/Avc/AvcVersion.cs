@@ -5,7 +5,14 @@ namespace CKAN.NetKAN.Sources.Avc
 {
     public class AvcVersion
     {
-        // Right now we only support KSP versioning info.
+        [JsonProperty("NAME")]
+        public string Name;
+
+        [JsonProperty("DOWNLOAD")]
+        public string Download;
+
+        [JsonProperty("GITHUB")]
+        public AvcVersionGithubRef Github;
 
         [JsonProperty("URL")]
         public string Url;
@@ -21,5 +28,15 @@ namespace CKAN.NetKAN.Sources.Avc
 
         [JsonConverter(typeof(JsonAvcToKspVersion))]
         public KspVersion ksp_version_max;
+
+    }
+
+    public class AvcVersionGithubRef
+    {
+        [JsonProperty("USERNAME")]
+        public string Username;
+
+        [JsonProperty("REPOSITORY")]
+        public string Repository;
     }
 }

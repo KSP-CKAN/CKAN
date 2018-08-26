@@ -8,6 +8,7 @@ using CKAN.NetKAN.Sources.Avc;
 using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -83,86 +84,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                     }
 
-                    // Get the minimum and maximum KSP versions that already exist in the metadata.
-                    // Use specific KSP version if min/max don't exist.
-                    var existingKspMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
-                    var existingKspMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
-
-                    var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
-                    var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
-
-                    // Get the minimum and maximum KSP versions that are in the AVC file.
-                    // Use specific KSP version if min/max don't exist.
-                    var avcKspMin = avc.ksp_version_min ?? avc.ksp_version;
-                    var avcKspMax = avc.ksp_version_max ?? avc.ksp_version;
-
-                    // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
-                    // AVC file.
-                    var kspMins = new List<KspVersion>();
-                    var kspMaxes = new List<KspVersion>();
-
-                    if (existingKspMin != null)
-                        kspMins.Add(existingKspMin);
-
-                    if (avcKspMin != null)
-                        kspMins.Add(avcKspMin);
-
-                    if (existingKspMax != null)
-                        kspMaxes.Add(existingKspMax);
-
-                    if (avcKspMax != null)
-                        kspMaxes.Add(avcKspMax);
-
-                    var kspMin = kspMins.Any() ? kspMins.Min() : null;
-                    var kspMax = kspMaxes.Any() ? kspMaxes.Max() : null;
-
-                    if (kspMin != null || kspMax != null)
-                    {
-                        // If we have either a minimum or maximum KSP version, remove all existing KSP version
-                        // information from the metadata.
-                        json.Remove("ksp_version");
-                        json.Remove("ksp_version_min");
-                        json.Remove("ksp_version_max");
-
-                        if (kspMin != null && kspMax != null)
-                        {
-                            // If we have both a minimum and maximum KSP version...
-                            if (kspMin.CompareTo(kspMax) == 0)
-                            {
-                                // ...and they are equal, then just set ksp_version
-                                json["ksp_version"] = kspMin.ToString();
-                            }
-                            else
-                            {
-                                // ...otherwise set both ksp_version_min and ksp_version_max
-                                json["ksp_version_min"] = kspMin.ToString();
-                                json["ksp_version_max"] = kspMax.ToString();
-                            }
-                        }
-                        else
-                        {
-                            // If we have only one or the other then set which ever is applicable
-
-                            if (kspMin != null)
-                                json["ksp_version_min"] = kspMin.ToString();
-
-                            if (kspMax != null)
-                                json["ksp_version_max"] = kspMax.ToString();
-                        }
-                    }
-
-                    if (avc.version != null)
-                    {
-                        // In practice, the version specified in .version files tends to be unreliable, with authors
-                        // forgetting to update it when new versions are released. Therefore if we have a version
-                        // specified from another source such as SpaceDock, curse or a GitHub tag, don't overwrite it
-                        // unless x_netkan_trust_version_file is true.
-                        if ((bool?)json["x_netkan_trust_version_file"] ?? false)
-                        {
-                            json.Remove("version");
-                        }
-                        json.SafeAdd("version", avc.version.ToString());
-                    }
+                    ApplyVersions(json, avc);
 
                     // It's cool if we don't have version info at all, it's optional in the AVC spec.
 
@@ -174,6 +96,90 @@ namespace CKAN.NetKAN.Transformers
             else
             {
                 return metadata;
+            }
+        }
+
+        public static void ApplyVersions(JObject json, AvcVersion avc)
+        {
+            // Get the minimum and maximum KSP versions that already exist in the metadata.
+            // Use specific KSP version if min/max don't exist.
+            var existingKspMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
+            var existingKspMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
+
+            var existingKspMin = existingKspMinStr == null ? null : KspVersion.Parse(existingKspMinStr);
+            var existingKspMax = existingKspMaxStr == null ? null : KspVersion.Parse(existingKspMaxStr);
+
+            // Get the minimum and maximum KSP versions that are in the AVC file.
+            // Use specific KSP version if min/max don't exist.
+            var avcKspMin = avc.ksp_version_min ?? avc.ksp_version;
+            var avcKspMax = avc.ksp_version_max ?? avc.ksp_version;
+
+            // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
+            // AVC file.
+            var kspMins  = new List<KspVersion>();
+            var kspMaxes = new List<KspVersion>();
+
+            if (existingKspMin != null)
+                kspMins.Add(existingKspMin);
+
+            if (avcKspMin != null)
+                kspMins.Add(avcKspMin);
+
+            if (existingKspMax != null)
+                kspMaxes.Add(existingKspMax);
+
+            if (avcKspMax != null)
+                kspMaxes.Add(avcKspMax);
+
+            var kspMin = kspMins.Any()  ? kspMins.Min()  : null;
+            var kspMax = kspMaxes.Any() ? kspMaxes.Max() : null;
+
+            if (kspMin != null || kspMax != null)
+            {
+                // If we have either a minimum or maximum KSP version, remove all existing KSP version
+                // information from the metadata.
+                json.Remove("ksp_version");
+                json.Remove("ksp_version_min");
+                json.Remove("ksp_version_max");
+
+                if (kspMin != null && kspMax != null)
+                {
+                    // If we have both a minimum and maximum KSP version...
+                    if (kspMin.CompareTo(kspMax) == 0)
+                    {
+                        // ...and they are equal, then just set ksp_version
+                        json["ksp_version"] = kspMin.ToString();
+                    }
+                    else
+                    {
+                        // ...otherwise set both ksp_version_min and ksp_version_max
+                        json["ksp_version_min"] = kspMin.ToString();
+                        json["ksp_version_max"] = kspMax.ToString();
+                    }
+                }
+                else
+                {
+                    // If we have only one or the other then set which ever is applicable
+
+                    if (kspMin != null)
+                        json["ksp_version_min"] = kspMin.ToString();
+
+                    if (kspMax != null)
+                        json["ksp_version_max"] = kspMax.ToString();
+                }
+            }
+
+            if (avc.version != null)
+            {
+                // In practice, the version specified in .version files tends to be unreliable, with authors
+                // forgetting to update it when new versions are released. Therefore if we have a version
+                // specified from another source such as SpaceDock, curse or a GitHub tag, don't overwrite it
+                // unless x_netkan_trust_version_file is true.
+                if ((bool?)json["x_netkan_trust_version_file"] ?? false)
+                {
+                    json.Remove("version");
+                }
+                json.SafeAdd("version", avc.version.ToString());
             }
         }
 

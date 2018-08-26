@@ -625,7 +625,7 @@ When used, the following fields will be auto-filled if not already present:
 
 ###### `#/ckan/curse/:cid`
 
-Indicates that data should be fetched from Curse, using the `:cid` provided. For example: `#/ckan/curse/220221`.
+Indicates that data should be fetched from Curse, using the `:cid` provided. The `:cid` may be a number for modules indexed prior to March 2018, or the name from the Curse URL otherwise. For example: `#/ckan/curse/220221` or `#/ckan/curse/photonsail`.
 
 When used, the following fields will be auto-filled if not already present:
 
@@ -710,8 +710,8 @@ An example `.netkan` excerpt:
     }
 }
 ```
-###### `#/ckan/http/:url`
 
+###### `#/ckan/http/:url`
 
 Indicates data should be fetched from a HTTP server, using the `:url` provided. For example: `#/ckan/http/https://ksp.marce.at/Home/DownloadMod?modId=2`.
 
@@ -726,6 +726,23 @@ This method depends on the existence of an AVC `.version` file in the download f
 to determine:
 
 - `version`
+
+###### `#/ckan/ksp-avc/:url`
+
+Indicates that data should be fetched from a KSP-AVC .version file at the `:url` provided. The file should be in the KSP-AVC JSON file format, see [the KSP-AVC spec](http://ksp.cybutek.net/kspavc/Documents/README.htm). The `DOWNLOAD` property of the file is used to find the download. For example: `#/ckan/ksp-avc/http://taniwha.org/~bill/EL.version`
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `download`
+- `download_size`
+- `download_hash`
+- `download_content_type`
+- `resources.repository`
+- `version`
+- `ksp_version`
+- `ksp_version_min`
+- `ksp_version_max`
 
 ###### `#/ckan/netkan/:url`
 
