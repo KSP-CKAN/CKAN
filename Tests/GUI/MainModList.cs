@@ -85,7 +85,12 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
+                KSPManager manager = new KSPManager(
+                    new NullUser(),
+                    new FakeWin32Registry(tidy.KSP, tidy.KSP.Name)
+                ) {
+                    CurrentInstance = tidy.KSP
+                };
 
                 var ckan_mod = TestData.FireSpitterModule();
                 var registry = Registry.Empty();
@@ -112,7 +117,12 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
-                KSPManager manager = new KSPManager(new NullUser(), new FakeWin32Registry(tidy.KSP)) { CurrentInstance = tidy.KSP };
+                KSPManager manager = new KSPManager(
+                    new NullUser(),
+                    new FakeWin32Registry(tidy.KSP, tidy.KSP.Name)
+                ) {
+                    CurrentInstance = tidy.KSP
+                };
                 var registry = Registry.Empty();
                 registry.AddAvailable(TestData.FireSpitterModule());
                 registry.AddAvailable(TestData.kOS_014_module());
@@ -132,6 +142,7 @@ namespace Tests.GUI
         {
             using (var tidy = new DisposableKSP())
             {
+                var manager = new KSPManager(new NullUser());
                 var registry = Registry.Empty();
                 var generator = new RandomModuleGenerator(new Random(0451));
                 var provide_ident = "provide";
@@ -148,7 +159,7 @@ namespace Tests.GUI
                 registry.AddAvailable(mod);
                 registry.AddAvailable(moda);
                 registry.AddAvailable(modb);
-                var installer = ModuleInstaller.GetInstance(tidy.KSP, null);
+                var installer = ModuleInstaller.GetInstance(tidy.KSP, manager.Cache, null);
                 var main_mod_list = new MainModList(null, async kraken => await Task.FromResult(choice_of_provide));
                 var a = new HashSet<ModChange>
                 {

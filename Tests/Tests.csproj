@@ -69,6 +69,7 @@
     <Compile Include="Core\FileIdentifier.cs" />
     <Compile Include="Core\KSP.cs" />
     <Compile Include="Core\KSPManager.cs" />
+    <Compile Include="Core\FakeWin32Registry.cs" />
     <Compile Include="Core\KSPPathUtils.cs" />
     <Compile Include="Core\ModuleInstaller.cs" />
     <Compile Include="Core\ModuleInstallerDirTest.cs" />

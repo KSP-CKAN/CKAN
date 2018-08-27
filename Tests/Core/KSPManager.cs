@@ -71,6 +71,7 @@ namespace Tests.Core
             manager.RenameInstance(nameInReg,"newname");
             Assert.False(manager.HasInstance(nameInReg));
         }
+
         [Test]
         public void RenameInstance_HasInstanceNewName()
         {
@@ -96,15 +97,15 @@ namespace Tests.Core
         }
 
         [Test]
-        public void AddInstance_ManagarHasInstance()
+        public void AddInstance_ManagerHasInstance()
         {
             using (var tidy2 = new DisposableKSP())
             {
                 const string newInstance = "tidy2";
                 tidy2.KSP.Name = newInstance;
-                Assert.That(manager.HasInstance(newInstance), Is.False);
+                Assert.IsFalse(manager.HasInstance(newInstance));
                 manager.AddInstance(tidy2.KSP);
-                Assert.That(manager.HasInstance(newInstance),Is.True);
+                Assert.IsTrue(manager.HasInstance(newInstance));
             }
         }
 
@@ -152,74 +153,13 @@ namespace Tests.Core
 
         private FakeWin32Registry GetTestWin32Reg(string name)
         {
-            return new FakeWin32Registry(new List<Tuple<string, string>>
-            {
-                new Tuple<string, string>(name, tidy.KSP.GameDir())
-            });
-        }
-    }
-
-    public class FakeWin32Registry : IWin32Registry
-    {
-        public FakeWin32Registry(CKAN.KSP instance,string autostart = "test")
-        {
-            Instances = new List<Tuple<string, string>>
-            {
-                new Tuple<string, string>("test", instance.GameDir())
-            };
-            AutoStartInstance = autostart;
-        }
-
-        public FakeWin32Registry(List<Tuple<string, string>> instances, string auto_start_instance = null)
-        {
-            Instances = instances;
-            AutoStartInstance = auto_start_instance;
-        }
-
-        public List<Tuple<string, string>> Instances { get; set; }
-        public string BuildMap { get; set; }
-
-        public int InstanceCount
-        {
-            get { return Instances.Count; }
-            }
-
-        // In the Win32Registry it is not possible to get null in autostart.
-        private string _AutoStartInstance;
-        public string AutoStartInstance
-        {
-            get { return _AutoStartInstance ?? string.Empty; }
-            set
-            {
-                _AutoStartInstance = value;
-            }
-        }
-
-        public Tuple<string, string> GetInstance(int i)
-        {
-            return Instances[i];
-        }
-
-        public void SetRegistryToInstances(SortedList<string, CKAN.KSP> instances, string autoStartInstance)
-        {
-            Instances =
-                instances.Select(kvpair => new Tuple<string, string>(kvpair.Key, kvpair.Value.GameDir())).ToList();
-            AutoStartInstance = autoStartInstance;
-        }
-
-        public IEnumerable<Tuple<string, string>> GetInstances()
-        {
-            return Instances;
-        }
-
-        public string GetKSPBuilds()
-        {
-            return BuildMap;
-        }
-
-        public void SetKSPBuilds(string buildMap)
-        {
-            BuildMap = buildMap;
+            return new FakeWin32Registry(
+                new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>(name, tidy.KSP.GameDir())
+                },
+                null
+            );
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+﻿using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace CKAN
 
         private long m_cacheSize;
         private int m_cacheFileCount;
+        private Win32Registry winReg;
 
         private List<Repository> _sortedRepos = new List<Repository>();
 
@@ -21,6 +23,7 @@ namespace CKAN
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
+            winReg = new Win32Registry();
         }
 
         private void SettingsDialog_Load(object sender, EventArgs e)
@@ -41,9 +44,7 @@ namespace CKAN
             HideVCheckbox.Checked = Main.Instance.configuration.HideV;
             AutoSortUpdateCheckBox.Checked = Main.Instance.configuration.AutoSortByUpdate;
 
-
-
-            UpdateCacheInfo();
+            UpdateCacheInfo(winReg.DownloadCacheDir);
         }
 
         private void RefreshReposListBox()
@@ -69,27 +70,50 @@ namespace CKAN
             manager.Save();
         }
 
-        private void UpdateCacheInfo()
+        private void UpdateCacheInfo(string newPath)
         {
-            m_cacheSize = 0;
-            m_cacheFileCount = 0;
-            var cachePath = Main.Instance.CurrentInstance.DownloadCacheDir();
-            var cacheDirectory = new DirectoryInfo(cachePath);
-            foreach (var file in cacheDirectory.GetFiles())
+            string failReason;
+            if (newPath == winReg.DownloadCacheDir
+                || Main.Instance.Manager.TrySetupCache(newPath, out failReason))
             {
-                m_cacheFileCount++;
-                m_cacheSize += file.Length;
+                Main.Instance.Manager.Cache.GetSizeInfo(out m_cacheFileCount, out m_cacheSize);
+                CachePath.Text = winReg.DownloadCacheDir;
+                CacheSummary.Text = $"{m_cacheFileCount} files, {CkanModule.FmtSize(m_cacheSize)}";
+                CacheSummary.ForeColor   = SystemColors.ControlText;
+                ClearCacheButton.Enabled = true;
+                OpenCacheButton.Enabled  = true;
             }
-
-            CKANCacheLabel.Text = String.Format
-            (
-                "There are currently {0} cached files using {1} in total",
-                m_cacheFileCount,
-                CkanModule.FmtSize(m_cacheSize)
-            );
+            else
+            {
+                CacheSummary.Text        = $"Invalid path: {failReason}";
+                CacheSummary.ForeColor   = Color.Red;
+                ClearCacheButton.Enabled = false;
+                OpenCacheButton.Enabled  = false;
+            }
         }
 
-        private void ClearCKANCacheButton_Click(object sender, EventArgs e)
+        private void CachePath_TextChanged(object sender, EventArgs e)
+        {
+            UpdateCacheInfo(CachePath.Text);
+        }
+
+        private void ChangeCacheButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog cacheChooser = new FolderBrowserDialog()
+            {
+                Description         = "Choose a folder for storing CKAN's mod downloads:",
+                RootFolder          = Environment.SpecialFolder.MyComputer,
+                SelectedPath        = winReg.DownloadCacheDir,
+                ShowNewFolderButton = true
+            };
+            DialogResult result = cacheChooser.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                UpdateCacheInfo(cacheChooser.SelectedPath);
+            }
+        }
+
+        private void ClearCacheButton_Click(object sender, EventArgs e)
         {
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format
@@ -99,21 +123,10 @@ namespace CKAN
                 CkanModule.FmtSize(m_cacheSize)
             );
 
-            if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == System.Windows.Forms.DialogResult.Yes)
+            if (deleteConfirmationDialog.ShowYesNoDialog(confirmationText) == DialogResult.Yes)
             {
-                foreach (var file in Directory.GetFiles(Main.Instance.CurrentInstance.DownloadCacheDir()))
-                {
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-
                 // tell the cache object to nuke itself
-                Main.Instance.CurrentInstance.Cache.Clear();
+                Main.Instance.Manager.Cache.RemoveAll();
 
                 // forcibly tell all mod rows to re-check cache state
                 foreach (DataGridViewRow row in Main.Instance.ModList.Rows)
@@ -125,8 +138,24 @@ namespace CKAN
                 // finally, clear the preview contents list
                 Main.Instance.UpdateModContentsTree(null, true);
 
-                UpdateCacheInfo();
+                UpdateCacheInfo(winReg.DownloadCacheDir);
             }
+        }
+
+        private void ResetCacheButton_Click(object sender, EventArgs e)
+        {
+            // Reset to default cache path
+            UpdateCacheInfo("");
+        }
+
+        private void OpenCacheButton_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName        = winReg.DownloadCacheDir,
+                UseShellExecute = true,
+                Verb            = "open"
+            });
         }
 
         private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)

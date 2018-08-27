@@ -49,7 +49,7 @@ namespace CKAN
                 CkanModule m = change.Mod.ToModule();
                 ListViewItem item = new ListViewItem()
                 {
-                    Text = CurrentInstance.Cache.IsMaybeCachedZip(m)
+                    Text = Manager.Cache.IsMaybeCachedZip(m)
                         ? $"{m.name} {m.version} (cached)"
                         : $"{m.name} {m.version} ({m.download.Host ?? ""}, {CkanModule.FmtSize(m.download_size)})"
                 };

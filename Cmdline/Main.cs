@@ -87,6 +87,10 @@ namespace CKAN.CmdLine
 
                     case "authtoken":
                         return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+
+                    case "cache":
+                        return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+
                 }
             }
             catch (NoGameInstanceKraken)
@@ -180,7 +184,7 @@ namespace CKAN.CmdLine
                         return Version(user);
 
                     case "update":
-                        return (new Update(user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Update(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "available":
                         return (new Available(user)).RunCommand(GetGameInstance(manager), cmdline.options);
@@ -188,7 +192,7 @@ namespace CKAN.CmdLine
                     case "add":
                     case "install":
                         Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Install(user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Install(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "scan":
                         return Scan(GetGameInstance(manager), user);
@@ -204,17 +208,17 @@ namespace CKAN.CmdLine
 
                     case "uninstall":
                     case "remove":
-                        return (new Remove(user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Remove(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "upgrade":
                         Scan(GetGameInstance(manager), user, cmdline.action);
-                        return (new Upgrade(user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Upgrade(manager, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "import":
-                        return (new Import(user)).RunCommand(GetGameInstance(manager), options);
+                        return (new Import(manager, user)).RunCommand(GetGameInstance(manager), options);
 
                     case "clean":
-                        return Clean(GetGameInstance(manager));
+                        return Clean(manager.Cache);
 
                     case "compare":
                         return (new Compare(user)).RunCommand(cmdline.options);
@@ -294,9 +298,9 @@ namespace CKAN.CmdLine
             }
         }
 
-        private static int Clean(CKAN.KSP current_instance)
+        private static int Clean(NetModuleCache cache)
         {
-            current_instance.CleanCache();
+            cache.RemoveAll();
             return Exit.OK;
         }
     }

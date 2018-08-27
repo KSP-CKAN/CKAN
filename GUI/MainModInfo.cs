@@ -434,7 +434,7 @@ namespace CKAN
             ContentsPreviewTree.Nodes.Clear();
             ContentsPreviewTree.Nodes.Add(module.name);
 
-            IEnumerable<string> contents = ModuleInstaller.GetInstance(manager.CurrentInstance, GUI.user).GetModuleContentsList(module);
+            IEnumerable<string> contents = ModuleInstaller.GetInstance(manager.CurrentInstance, Main.Instance.Manager.Cache, GUI.user).GetModuleContentsList(module);
             if (contents == null)
             {
                 return;
@@ -455,7 +455,7 @@ namespace CKAN
 
             NetAsyncModulesDownloader downloader = new NetAsyncModulesDownloader(Main.Instance.currentUser);
 
-            downloader.DownloadModules(Main.Instance.CurrentInstance.Cache, new List<CkanModule> { (CkanModule)e.Argument });
+            downloader.DownloadModules(Main.Instance.Manager.Cache, new List<CkanModule> { (CkanModule)e.Argument });
             e.Result = e.Argument;
         }
 

@@ -35,21 +35,15 @@ namespace CKAN
         private RegistryManager registry_manager;
         private KSP ksp;
 
+        private NetModuleCache Cache;
+
         public ModuleInstallerReportModInstalled onReportModInstalled = null;
 
-        // Our own cache is that of the KSP instance we're using.
-        public NetModuleCache Cache
-        {
-            get
-            {
-                return ksp.Cache;
-            }
-        }
-
         // Constructor
-        private ModuleInstaller(KSP ksp, IUser user)
+        private ModuleInstaller(KSP ksp, NetModuleCache cache, IUser user)
         {
             User = user;
+            Cache = cache;
             this.ksp = ksp;
             registry_manager = RegistryManager.Instance(ksp);
             log.DebugFormat("Creating ModuleInstaller for {0}", ksp.GameDir());
@@ -61,7 +55,7 @@ namespace CKAN
         /// <returns>The ModuleInstaller instance.</returns>
         /// <param name="ksp_instance">Current KSP instance.</param>
         /// <param name="user">IUser implementation.</param>
-        public static ModuleInstaller GetInstance(KSP ksp_instance, IUser user)
+        public static ModuleInstaller GetInstance(KSP ksp_instance, NetModuleCache cache, IUser user)
         {
             ModuleInstaller instance;
 
@@ -69,7 +63,7 @@ namespace CKAN
             if (!instances.TryGetValue(ksp_instance.GameDir().ToLower(), out instance))
             {
                 // Create a new instance and insert it in the static list.
-                instance = new ModuleInstaller(ksp_instance, user);
+                instance = new ModuleInstaller(ksp_instance, cache, user);
 
                 instances.Add(ksp_instance.GameDir().ToLower(), instance);
             }
@@ -167,7 +161,7 @@ namespace CKAN
 
             foreach (CkanModule module in modsToInstall)
             {
-                if (!ksp.Cache.IsMaybeCachedZip(module))
+                if (!Cache.IsMaybeCachedZip(module))
                 {
                     User.RaiseMessage(" * {0} {1} ({2}, {3})",
                         module.name,
@@ -199,7 +193,7 @@ namespace CKAN
                     downloader = new NetAsyncModulesDownloader(User);
                 }
 
-                downloader.DownloadModules(ksp.Cache, downloads);
+                downloader.DownloadModules(Cache, downloads);
             }
 
             // We're about to install all our mods; so begin our transaction.
@@ -271,7 +265,7 @@ namespace CKAN
         // TODO: Return files relative to GameRoot
         public IEnumerable<string> GetModuleContentsList(CkanModule module)
         {
-            string filename = ksp.Cache.GetCachedZip(module);
+            string filename = Cache.GetCachedZip(module);
 
             if (filename == null)
             {
@@ -1089,11 +1083,11 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
-            List<CkanModule> downloads = mods.Where(module => !ksp.Cache.IsCachedZip(module)).ToList();
+            List<CkanModule> downloads = mods.Where(module => !Cache.IsCachedZip(module)).ToList();
 
             if (downloads.Count > 0)
             {
-                downloader.DownloadModules(ksp.Cache, downloads);
+                downloader.DownloadModules(Cache, downloads);
             }
         }
 

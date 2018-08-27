@@ -183,14 +183,17 @@ namespace CKAN
             Homepage = "N/A";
         }
 
+        /// <summary>
+        /// Refresh the IsCached property based on current contents of the cache
+        /// </summary>
         public void UpdateIsCached()
         {
-            if (Main.Instance?.CurrentInstance?.Cache == null || Mod?.download == null)
+            if (Main.Instance?.Manager?.Cache == null || Mod?.download == null)
             {
                 return;
             }
 
-            IsCached = Main.Instance.CurrentInstance.Cache.IsMaybeCachedZip(Mod);
+            IsCached = Main.Instance.Manager.Cache.IsMaybeCachedZip(Mod);
         }
 
         public CkanModule ToCkanModule()

@@ -288,7 +288,7 @@ namespace CKAN.ConsoleUI {
 
         private bool ImportDownloads()
         {
-            DownloadImportDialog.ImportDownloads(manager.CurrentInstance, plan);
+            DownloadImportDialog.ImportDownloads(manager.CurrentInstance, manager.Cache, plan);
             RefreshList();
             return true;
         }
@@ -385,6 +385,7 @@ namespace CKAN.ConsoleUI {
                     Repo.UpdateAllRepositories(
                         RegistryManager.Instance(manager.CurrentInstance),
                         manager.CurrentInstance,
+                        manager.Cache,
                         this
                     );
                 } catch (Exception ex) {

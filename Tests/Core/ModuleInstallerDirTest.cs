@@ -17,6 +17,7 @@ namespace Tests.Core
     [TestFixture]
     public class ModuleInstallerDirTest
     {
+        private KSPManager           _manager;
         private DisposableKSP        _instance;
         private CKAN.Registry        _registry;
         private CKAN.ModuleInstaller _installer;
@@ -32,14 +33,15 @@ namespace Tests.Core
         {
             _testModule = TestData.DogeCoinFlag_101_module();
 
+            _manager   = new KSPManager(NullUser.User);
             _instance  = new DisposableKSP();
             _registry  = CKAN.RegistryManager.Instance(_instance.KSP).registry;
-            _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, NullUser.User);
+            _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, NullUser.User);
 
             _gameDataDir = _instance.KSP.GameData();
             _registry.AddAvailable(_testModule);
             var testModFile = TestData.DogeCoinFlagZip();
-            _instance.KSP.Cache.Store(_testModule, testModFile);
+            _manager.Cache.Store(_testModule, testModFile);
             _installer.InstallList(
                 new List<string>() { _testModule.identifier },
                 new RelationshipResolverOptions()
