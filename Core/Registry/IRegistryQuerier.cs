@@ -12,6 +12,8 @@ namespace CKAN
         IEnumerable<string> InstalledDlls { get; }
         IDictionary<string, UnmanagedModuleVersion> InstalledDlc { get; }
 
+        int? DownloadCount(string identifier);
+
         /// <summary>
         /// Returns a simple array of all latest available modules for
         /// the specified version of KSP.

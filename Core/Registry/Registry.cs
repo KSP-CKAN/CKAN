@@ -38,6 +38,29 @@ namespace CKAN
         [JsonProperty] private Dictionary<string, InstalledModule> installed_modules;
         [JsonProperty] private Dictionary<string, string> installed_files; // filename => module
 
+        [JsonProperty] public readonly SortedDictionary<string, int> download_counts = new SortedDictionary<string, int>();
+
+        public int? DownloadCount(string identifier)
+        {
+            int count;
+            if (download_counts.TryGetValue(identifier, out count))
+            {
+                return count;
+            }
+            return null;
+        }
+
+        public void SetDownloadCounts(SortedDictionary<string, int> counts)
+        {
+            if (counts != null)
+            {
+                foreach (var kvp in counts)
+                {
+                    download_counts[kvp.Key] = kvp.Value;
+                }
+            }
+        }
+
         // Index of which mods provide what, format:
         //   providers[provided] = { provider1, provider2, ... }
         // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.

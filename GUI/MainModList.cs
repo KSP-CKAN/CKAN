@@ -27,6 +27,7 @@ namespace CKAN
                 case 0: case 1: return Sort(rows, CheckboxSorter);
                 case 7:         return Sort(rows, DownloadSizeSorter);
                 case 8:         return Sort(rows, InstallDateSorter);
+                case 9:         return Sort(rows, r => (r.Tag as GUIMod)?.DownloadCount ?? 0);
             }
             return Sort(rows, DefaultSorter);
         }
@@ -766,12 +767,13 @@ namespace CKAN
                         : mod.LatestVersion)
             };
 
-            var compat      = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility };
-            var size        = new DataGridViewTextBoxCell() { Value = mod.DownloadSize     };
-            var installDate = new DataGridViewTextBoxCell() { Value = mod.InstallDate      };
-            var desc        = new DataGridViewTextBoxCell() { Value = mod.Abstract         };
+            var compat        = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility };
+            var size          = new DataGridViewTextBoxCell() { Value = mod.DownloadSize     };
+            var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate      };
+            var downloadCount = new DataGridViewTextBoxCell() { Value = mod.DownloadCount    };
+            var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract         };
 
-            item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, installDate, desc);
+            item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
 
             selecting.ReadOnly = selecting is DataGridViewTextBoxCell;
             updating.ReadOnly  = updating  is DataGridViewTextBoxCell;
