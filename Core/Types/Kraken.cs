@@ -294,7 +294,7 @@ namespace CKAN
             foreach (var kvp in kraken.exceptions)
             {
                 exceptions.Add(new KeyValuePair<CkanModule, Exception>(
-                    modules[kvp.Key], kvp.Value
+                    modules[kvp.Key], kvp.Value.GetBaseException() ?? kvp.Value
                 ));
             }
         }
