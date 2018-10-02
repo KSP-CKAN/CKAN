@@ -7,8 +7,6 @@ namespace CKAN
         public YesNoDialog()
         {
             InitializeComponent();
-            ApplyFormCompatibilityFixes();
-            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public DialogResult ShowYesNoDialog(string text)
