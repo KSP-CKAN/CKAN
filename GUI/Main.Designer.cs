@@ -470,6 +470,8 @@
             this.ModList.AllowUserToDeleteRows = false;
             this.ModList.AllowUserToResizeRows = false;
             this.ModList.BackgroundColor = System.Drawing.SystemColors.Window;
+            this.ModList.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.ModList.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.ModList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
