@@ -283,6 +283,18 @@ namespace CKAN
                     GUI.user.RaiseMessage("\r\n{0}", kraken.Message);
                     return;
                 }
+                catch (DllNotFoundException exc)
+                {
+                    if (GUI.user.RaiseYesNoDialog("libcurl installation not found. Open wiki page for help?"))
+                    {
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            UseShellExecute = true,
+                            FileName        = "https://github.com/KSP-CKAN/CKAN/wiki/libcurl"
+                        });
+                    }
+                    throw;
+                }
             }
         }
 
