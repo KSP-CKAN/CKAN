@@ -75,6 +75,7 @@
             this.KSPCompatibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SizeCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstallDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -483,6 +484,7 @@
             this.KSPCompatibility,
             this.SizeCol,
             this.InstallDate,
+            this.DownloadCount,
             this.Description});
             this.ModList.ContextMenuStrip = this.ModListContextMenuStrip;
             this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -570,6 +572,14 @@
             this.InstallDate.ReadOnly = true;
             this.InstallDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.InstallDate.Width = 140;
+            //
+            // DownloadCount
+            //
+            this.DownloadCount.HeaderText = "Downloads";
+            this.DownloadCount.Name = "DownloadCount";
+            this.DownloadCount.ReadOnly = true;
+            this.DownloadCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.DownloadCount.Width = 70;
             //
             // Description
             // 
@@ -1158,6 +1168,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn KSPCompatibility;
         private System.Windows.Forms.DataGridViewTextBoxColumn SizeCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstallDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;

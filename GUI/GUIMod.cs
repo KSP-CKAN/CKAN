@@ -21,6 +21,7 @@ namespace CKAN
         public DateTime? InstallDate { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
+        public int? DownloadCount { get; private set; }
         public bool IsCached { get; private set; }
 
         // These indicate the maximum KSP version that the maximum available
@@ -127,6 +128,7 @@ namespace CKAN
             Identifier     = identifier;
             IsIncompatible = incompatible;
             IsAutodetected = registry.IsAutodetected(identifier);
+            DownloadCount  = registry.DownloadCount(identifier);
 
             ModuleVersion latest_version = null;
             try

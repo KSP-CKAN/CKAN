@@ -12,6 +12,7 @@ using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using Newtonsoft.Json;
 
 namespace CKAN
 {
@@ -34,7 +35,9 @@ namespace CKAN
             foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
                 log.InfoFormat("About to update {0}", repository.Value.name);
-                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user);
+                SortedDictionary<string, int> downloadCounts;
+                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user, out downloadCounts);
+                registry_manager.registry.SetDownloadCounts(downloadCounts);
                 if (avail == null)
                 {
                     // Report failure if any repo fails, rather than losing half the list.
@@ -76,9 +79,10 @@ namespace CKAN
         /// <summary>
         /// Retrieve available modules from the URL given.
         /// </summary>
-        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user)
+        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user, out SortedDictionary<string, int> downloadCounts)
         {
             TxFileManager file_transaction = new TxFileManager();
+            downloadCounts = null;
 
             // Use this opportunity to also update the build mappings... kind of hacky
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
@@ -103,7 +107,7 @@ namespace CKAN
             switch (type)
             {
                 case FileType.TarGz:
-                    newAvailable = UpdateRegistryFromTarGz(repo_file);
+                    newAvailable = UpdateRegistryFromTarGz(repo_file, out downloadCounts);
                     break;
                 case FileType.Zip:
                     newAvailable = UpdateRegistryFromZip(repo_file);
@@ -387,7 +391,11 @@ Do you wish to reinstall now?", sb)))
                 repo = CKAN.Repository.default_ckan_repo_uri;
             }
 
-            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user);
+            SortedDictionary<string, int> downloadCounts;
+            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user, out downloadCounts);
+
+            registry_manager.registry.SetDownloadCounts(downloadCounts);
+
             if (newAvail != null && newAvail.Count > 0)
             {
                 registry_manager.registry.SetAllAvailable(newAvail);
@@ -404,10 +412,11 @@ Do you wish to reinstall now?", sb)))
         /// <summary>
         /// Returns available modules from the supplied tar.gz file.
         /// </summary>
-        private static List<CkanModule> UpdateRegistryFromTarGz(string path)
+        private static List<CkanModule> UpdateRegistryFromTarGz(string path, out SortedDictionary<string, int> downloadCounts)
         {
             log.DebugFormat("Starting registry update from tar.gz file: \"{0}\".", path);
 
+            downloadCounts = null;
             List<CkanModule> modules = new List<CkanModule>();
             // Open the gzip'ed file.
             using (Stream inputStream = File.OpenRead(path))
@@ -433,9 +442,15 @@ Do you wish to reinstall now?", sb)))
 
                             string filename = entry.Name;
 
-                            // Skip things we don't want.
-                            if (!Regex.IsMatch(filename, filter))
+                            if (filename.EndsWith("download_counts.json"))
                             {
+                                downloadCounts = JsonConvert.DeserializeObject<SortedDictionary<string, int>>(
+                                    tarStreamString(tarStream, entry)
+                                );
+                            }
+                            else if (!Regex.IsMatch(filename, filter))
+                            {
+                                // Skip things we don't want.
                                 log.DebugFormat("Skipping archive entry {0}", filename);
                                 continue;
                             }
@@ -443,24 +458,7 @@ Do you wish to reinstall now?", sb)))
                             log.DebugFormat("Reading CKAN data from {0}", filename);
 
                             // Read each file into a buffer.
-                            int buffer_size;
-
-                            try
-                            {
-                                buffer_size = Convert.ToInt32(entry.Size);
-                            }
-                            catch (OverflowException)
-                            {
-                                log.ErrorFormat("Error processing {0}: Metadata size too large.", entry.Name);
-                                continue;
-                            }
-
-                            byte[] buffer = new byte[buffer_size];
-
-                            tarStream.Read(buffer, 0, buffer_size);
-
-                            // Convert the buffer data to a string.
-                            string metadata_json = Encoding.ASCII.GetString(buffer);
+                            string metadata_json = tarStreamString(tarStream, entry);
 
                             CkanModule module = ProcessRegistryMetadataFromJSON(metadata_json, filename);
                             if (module != null)
@@ -472,6 +470,29 @@ Do you wish to reinstall now?", sb)))
                 }
             }
             return modules;
+        }
+
+        private static string tarStreamString(TarInputStream stream, TarEntry entry)
+        {
+            // Read each file into a buffer.
+            int buffer_size;
+
+            try
+            {
+                buffer_size = Convert.ToInt32(entry.Size);
+            }
+            catch (OverflowException)
+            {
+                log.ErrorFormat("Error processing {0}: Metadata size too large.", entry.Name);
+                return null;
+            }
+
+            byte[] buffer = new byte[buffer_size];
+
+            stream.Read(buffer, 0, buffer_size);
+
+            // Convert the buffer data to a string.
+            return Encoding.ASCII.GetString(buffer);
         }
 
         /// <summary>
