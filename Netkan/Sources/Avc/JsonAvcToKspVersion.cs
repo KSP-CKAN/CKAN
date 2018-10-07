@@ -24,9 +24,9 @@ namespace CKAN.NetKAN.Sources.Avc
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
-            var major = "0";
-            var minor = "0";
-            var patch = "0";
+            string major = null;
+            string minor = null;
+            string patch = null;
 
             var token = JToken.Load(reader);
             Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
@@ -62,15 +62,15 @@ namespace CKAN.NetKAN.Sources.Avc
             //AVC uses -1 to indicate a wildcard.
             int integer;
             string version;
-            if (int.TryParse(major, out integer) && integer == AvcWildcard)
+            if (major == null || int.TryParse(major, out integer) && integer == AvcWildcard)
             {
                 return KspVersion.Any;
             }
-            else if (int.TryParse(minor, out integer) && integer == AvcWildcard)
+            else if (minor == null || int.TryParse(minor, out integer) && integer == AvcWildcard)
             {
                 version = major;
             }
-            else if (int.TryParse(patch, out integer) && integer == AvcWildcard)
+            else if (patch == null || int.TryParse(patch, out integer) && integer == AvcWildcard)
             {
                 version = string.Join(".", major, minor);
             }
