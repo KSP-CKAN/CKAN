@@ -28,6 +28,10 @@ namespace CKAN.NetKAN
 
         public static int Main(string[] args)
         {
+            // Keep these for purging downloads in the exception handler
+            NetFileCache cache = null;
+            IHttpService http  = null;
+
             try
             {
                 ProcessArgs(args);
@@ -50,7 +54,8 @@ namespace CKAN.NetKAN
 
                     var moduleService = new ModuleService();
                     var fileService = new FileService();
-                    var http = new CachingHttpService(FindCache(new KSPManager(new ConsoleUser(false))));
+                    cache = FindCache(new KSPManager(new ConsoleUser(false)));
+                    http  = new CachingHttpService(cache);
 
                     var netkan = ReadNetkan();
                     Log.Info("Finished reading input");
@@ -86,6 +91,9 @@ namespace CKAN.NetKAN
             catch (Exception e)
             {
                 e = e.GetBaseException() ?? e;
+
+                // Purge anything we download for a failed indexing attempt from the cache to allow re-downloads
+                PurgeDownloads(http, cache);
 
                 Log.Fatal(e.Message);
 
@@ -189,5 +197,17 @@ namespace CKAN.NetKAN
 
             Log.InfoFormat("Transformation written to {0}", finalPath);
         }
+
+        private static void PurgeDownloads(IHttpService http, NetFileCache cache)
+        {
+            if (http != null && cache != null)
+            {
+                foreach (Uri url in http.RequestedURLs)
+                {
+                    cache.Remove(url);
+                }
+            }
+        }
+
     }
 }

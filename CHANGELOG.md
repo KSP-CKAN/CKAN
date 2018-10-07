@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.25.4
 
+### Features
+- [Netkan] Purge downloads that failed to index from Netkan cache (#2526 by: HebaruSan; reviewed: politas)
+
 ## v1.25.3 (Woomera)
 
 ### Features

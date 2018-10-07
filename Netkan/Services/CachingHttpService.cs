@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CKAN.NetKAN.Services
 {
     internal sealed class CachingHttpService : IHttpService
     {
         private readonly NetFileCache _cache;
+        private          HashSet<Uri> _requestedURLs = new HashSet<Uri>();
 
         public CachingHttpService(NetFileCache cache)
         {
@@ -13,6 +15,8 @@ namespace CKAN.NetKAN.Services
 
         public string DownloadPackage(Uri url, string identifier, DateTime? updated)
         {
+            _requestedURLs.Add(url);
+
             var cachedFile = _cache.GetCachedFilename(url, updated);
 
             if (!string.IsNullOrWhiteSpace(cachedFile))
@@ -65,5 +69,8 @@ namespace CKAN.NetKAN.Services
         {
             return Net.DownloadText(url);
         }
+
+        public IEnumerable<Uri> RequestedURLs { get { return _requestedURLs; } }
+
     }
 }
