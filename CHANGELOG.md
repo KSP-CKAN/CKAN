@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 - [Netkan] Purge downloads that failed to index from Netkan cache (#2526 by: HebaruSan; reviewed: politas)
 - [Multiple] Add download count column to GUI (#2518 by: HebaruSan; reviewed: politas)
+- [Netkan] Catch invalid $kref in Netkan (#2516 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 - [GUI] Show innermost download exceptions (#2528 by: HebaruSan; reviewed: politas)

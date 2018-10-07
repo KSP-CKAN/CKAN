@@ -11,7 +11,8 @@ namespace CKAN.NetKAN.Validators
         {
             _validators = new List<IValidator>
             {
-                new HasIdentifierValidator()
+                new HasIdentifierValidator(),
+                new KrefValidator()
             };
         }
 
