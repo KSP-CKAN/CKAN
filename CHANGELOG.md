@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix grid colors for dark themes (#2529 by: HebaruSan; reviewed: politas)
 - [GUI] Fix YesNoDialog layout (#2530 by: HebaruSan; reviewed: politas)
 - [GUI] Handle exception for missing libcurl (#2531 by: HebaruSan; reviewed: politas)
+- [Core] Catch illegal characters in ZIP exceptions (#2515 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 

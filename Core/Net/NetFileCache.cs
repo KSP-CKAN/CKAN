@@ -274,6 +274,11 @@ namespace CKAN
                 invalidReason = ze.Message;
                 return false;
             }
+            catch (ArgumentException ex)
+            {
+                invalidReason = ex.Message;
+                return false;
+            }
         }
 
         /// <summary>
