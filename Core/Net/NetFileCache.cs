@@ -11,6 +11,7 @@ using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using CKAN.Extensions;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -288,6 +289,103 @@ namespace CKAN
                 .Select(ksp => ksp.DownloadCacheDir())
                 .Where(dir => Directory.Exists(dir))
                 .ToHashSet();
+        }
+
+        public void EnforceSizeLimit(long bytes, Registry registry)
+        {
+            int numFiles;
+            long curBytes;
+            GetSizeInfo(out numFiles, out curBytes);
+            if (curBytes > bytes)
+            {
+                // This object will let us determine whether a module is compatible with any of our instances
+                KspVersionCriteria aggregateCriteria = manager?.Instances.Values
+                    .Where(ksp => ksp.Valid)
+                    .Select(ksp => ksp.VersionCriteria())
+                    .Aggregate((a, b) => a.Union(b));
+
+                // This object lets us find the modules associated with a cached file
+                Dictionary<string, List<CkanModule>> hashMap = registry.GetDownloadHashIndex();
+
+                // Prune the module lists to only those that are compatible
+                foreach (var kvp in hashMap)
+                {
+                    kvp.Value.RemoveAll(mod => !mod.IsCompatibleKSP(aggregateCriteria));
+                }
+
+                // Now get all the files in all the caches...
+                List<FileInfo> files = allFiles();
+                // ... and sort them by compatibilty and timestamp...
+                files.Sort((a, b) => compareFiles(
+                    hashMap, aggregateCriteria, a, b
+                ));
+
+                // ... and delete them till we're under the limit
+                foreach (FileInfo fi in files)
+                {
+                    curBytes -= fi.Length;
+                    fi.Delete();
+                    if (curBytes <= bytes)
+                    {
+                        // Limit met, all done!
+                        break;
+                    }
+                }
+                OnCacheChanged();
+            }
+        }
+
+        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, KspVersionCriteria crit, FileInfo a, FileInfo b)
+        {
+            // Compatible modules for file A
+            List<CkanModule> modulesA;
+            hashMap.TryGetValue(a.Name.Substring(0, 8), out modulesA);
+            bool compatA = modulesA?.Any() ?? false;
+
+            // Compatible modules for file B
+            List<CkanModule> modulesB;
+            hashMap.TryGetValue(b.Name.Substring(0, 8), out modulesB);
+            bool compatB = modulesB?.Any() ?? false;
+
+            if (modulesA == null && modulesB != null)
+            {
+                // A isn't indexed but B is, delete A first
+                return -1;
+            }
+            else if (modulesA != null && modulesB == null)
+            {
+                // A is indexed but B isn't, delete B first
+                return 1;
+            }
+            else if (!compatA && compatB)
+            {
+                // A isn't compatible but B is, delete A first
+                return -1;
+            }
+            else if (compatA && !compatB)
+            {
+                // A is compatible but B isn't, delete B first
+                return 1;
+            }
+            else
+            {
+                // Both are either compatible or incompatible
+                // Go by file age, oldest first
+                return (int)(a.CreationTime - b.CreationTime).TotalSeconds;
+            }
+            return 0;
+        }
+
+        private List<FileInfo> allFiles()
+        {
+            DirectoryInfo mainDir = new DirectoryInfo(cachePath);
+            var files = mainDir.EnumerateFiles();
+            foreach (string legacyDir in legacyDirs())
+            {
+                DirectoryInfo legDir = new DirectoryInfo(legacyDir);
+                files = files.Union(legDir.EnumerateFiles());
+            }
+            return files.ToList();
         }
 
         /// <summary>

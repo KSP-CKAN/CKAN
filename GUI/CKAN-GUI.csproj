@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="Configuration.cs" />
     <Compile Include="ControlFactory.cs" />
+    <Compile Include="DropdownMenuButton.cs" />
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>

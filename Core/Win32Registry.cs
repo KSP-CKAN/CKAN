@@ -14,6 +14,7 @@ namespace CKAN
         string GetKSPBuilds();
         void SetKSPBuilds(string buildMap);
         string DownloadCacheDir { get; set; }
+        long? CacheSizeLimit { get; set; }
     }
 
     public class Win32Registry : IWin32Registry
@@ -54,6 +55,30 @@ namespace CKAN
                         value = Path.GetFullPath(value);
                     }
                     SetRegistryValue(@"DownloadCacheDir", value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get and set the maximum number of bytes allowed in the cache.
+        /// Unlimited if null.
+        /// </summary>
+        public long? CacheSizeLimit
+        {
+            get
+            {
+                string val = GetRegistryValue<string>(@"CacheSizeLimit", null);
+                return string.IsNullOrEmpty(val) ? null : (long?)Convert.ToInt64(val);
+            }
+            set
+            {
+                if (!value.HasValue)
+                {
+                    DeleteRegistryValue(@"CacheSizeLimit");
+                }
+                else
+                {
+                    SetRegistryValue(@"CacheSizeLimit", value.Value);
                 }
             }
         }

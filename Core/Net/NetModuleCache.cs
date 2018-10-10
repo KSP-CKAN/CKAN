@@ -74,6 +74,10 @@ namespace CKAN
         {
             cache.GetSizeInfo(out numFiles, out numBytes);
         }
+        public void EnforceSizeLimit(long bytes, Registry registry)
+        {
+            cache.EnforceSizeLimit(bytes, registry);
+        }
 
         /// <summary>
         /// Calculate the SHA1 hash of a file

@@ -219,6 +219,8 @@ namespace CKAN
 
             }
 
+            EnforceCacheSizeLimit();
+
             // We can scan GameData as a separate transaction. Installing the mods
             // leaves everything consistent, and this is just gravy. (And ScanGameData
             // acts as a Tx, anyway, so we don't need to provide our own.)
@@ -253,6 +255,8 @@ namespace CKAN
                 User.RaiseProgress("Committing filesystem changes", 80);
 
                 transaction.Complete();
+
+                EnforceCacheSizeLimit();
             }
         }
 
@@ -996,6 +1000,8 @@ namespace CKAN
                 registry_manager.Save(enforceConsistency);
 
                 tx.Complete();
+
+                EnforceCacheSizeLimit();
             }
         }
 
@@ -1156,6 +1162,18 @@ namespace CKAN
                 {
                     f.Delete();
                 }
+            }
+
+            EnforceCacheSizeLimit();
+        }
+
+        private void EnforceCacheSizeLimit()
+        {
+            // Purge old downloads if we're over the limit
+            Win32Registry winReg = new Win32Registry();
+            if (winReg.CacheSizeLimit.HasValue)
+            {
+                Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry_manager.registry);
             }
         }
 
