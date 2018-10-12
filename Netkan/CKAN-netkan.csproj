@@ -94,6 +94,7 @@
     <Compile Include="Sources\Spacedock\SpacedockMod.cs" />
     <Compile Include="Sources\Spacedock\SpacedockUser.cs" />
     <Compile Include="Transformers\AvcTransformer.cs" />
+    <Compile Include="Transformers\AvcKrefTransformer.cs" />
     <Compile Include="Transformers\CurseTransformer.cs" />
     <Compile Include="Transformers\DownloadAttributeTransformer.cs" />
     <Compile Include="Transformers\EpochTransformer.cs" />

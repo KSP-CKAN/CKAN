@@ -18,6 +18,7 @@ namespace CKAN.NetKAN.Validators
                 case "curse":
                 case "github":
                 case "http":
+                case "ksp-avc":
                 case "jenkins":
                 case "netkan":
                 case "spacedock":
