@@ -464,8 +464,18 @@ namespace CKAN
                     string toFile = Path.Combine(cachePath, Path.GetFileName(fromFile));
                     if (File.Exists(toFile))
                     {
-                        // Don't need multiple copies of the same file
-                        File.Delete(fromFile);
+                        if (File.GetCreationTime(fromFile) == File.GetCreationTime(toFile))
+                        {
+                            // Same filename with same timestamp, almost certainly the same
+                            // actual file on disk via different paths thanks to symlinks.
+                            // Skip this whole folder!
+                            break;
+                        }
+                        else
+                        {
+                            // Don't need multiple copies of the same file
+                            File.Delete(fromFile);
+                        }
                     }
                     else
                     {
