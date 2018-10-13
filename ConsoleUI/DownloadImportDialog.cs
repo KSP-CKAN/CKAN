@@ -15,8 +15,9 @@ namespace CKAN.ConsoleUI {
         /// Let the user choose some zip files, then import them to the mod cache.
         /// </summary>
         /// <param name="gameInst">Game instance to import into</param>
+        /// <param name="cache">Cache object to import into</param>
         /// <param name="cp">Change plan object for marking things to be installed</param>
-        public static void ImportDownloads(KSP gameInst, ChangePlan cp)
+        public static void ImportDownloads(KSP gameInst, NetModuleCache cache, ChangePlan cp)
         {
             ConsoleFileMultiSelectDialog cfmsd = new ConsoleFileMultiSelectDialog(
                 "Import Downloads",
@@ -28,7 +29,7 @@ namespace CKAN.ConsoleUI {
 
             if (files.Count > 0) {
                 ProgressScreen  ps   = new ProgressScreen("Importing Downloads", "Calculating...");
-                ModuleInstaller inst = ModuleInstaller.GetInstance(gameInst, ps);
+                ModuleInstaller inst = ModuleInstaller.GetInstance(gameInst, cache, ps);
                 ps.Run(() => inst.ImportFiles(files, ps,
                     (CkanModule mod) => cp.Install.Add(mod)));
                 // Don't let the installer re-use old screen references

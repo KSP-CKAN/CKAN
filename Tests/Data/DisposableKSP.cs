@@ -68,8 +68,6 @@ namespace Tests.Data
                 }
             }
 
-            //proceed to dispose our wrapped KSP object
-            KSP.Dispose();
             KSP = null;
         }
     }

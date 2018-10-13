@@ -9,12 +9,27 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(Install));
 
         public IUser user { get; set; }
+        private KSPManager manager;
 
-        public Install(IUser user)
+        /// <summary>
+        /// Initialize the install command object
+        /// </summary>
+        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="user">IUser object for interaction</param>
+        public Install(KSPManager mgr, IUser user)
         {
+            manager   = mgr;
             this.user = user;
         }
 
+        /// <summary>
+        /// Installs a module, if available
+        /// </summary>
+        /// <param name="ksp">Game instance into which to install</param>
+        /// <param name="raw_options">Command line options object</param>
+        /// <returns>
+        /// Exit code for shell environment
+        /// </returns>
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
             InstallOptions options = (InstallOptions) raw_options;
@@ -113,7 +128,7 @@ namespace CKAN.CmdLine
             // Install everything requested. :)
             try
             {
-                var installer = ModuleInstaller.GetInstance(ksp, user);
+                var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                 installer.InstallList(options.modules, install_ops);
             }
             catch (DependencyNotSatisfiedKraken ex)
@@ -187,7 +202,7 @@ namespace CKAN.CmdLine
                 // Add the module to the list.
                 options.modules.Add(ex.modules[result].identifier);
 
-                return (new Install(user).RunCommand(ksp, options));
+                return (new Install(manager, user).RunCommand(ksp, options));
             }
             catch (FileExistsKraken ex)
             {

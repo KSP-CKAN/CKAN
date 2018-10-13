@@ -55,7 +55,7 @@ namespace CKAN.ConsoleUI {
 
                         // FUTURE: BackgroundWorker
 
-                        ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, this);
+                        ModuleInstaller inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, this);
                         inst.onReportModInstalled = OnModInstalled;
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove);

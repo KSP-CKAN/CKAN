@@ -12,22 +12,23 @@ namespace Tests.NetKAN.Sources.Curse
     [Category("Online")]
     public sealed class CurseApiTests
     {
+        private string       _cachePath;
         private NetFileCache _cache;
 
         [OneTimeSetUp]
         public void TestFixtureSetup()
         {
-            var tempDirectory = Path.Combine(Path.GetTempPath(), "CKAN", Guid.NewGuid().ToString("N"));
+            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN", Guid.NewGuid().ToString("N"));
 
-            Directory.CreateDirectory(tempDirectory);
+            Directory.CreateDirectory(_cachePath);
 
-            _cache = new NetFileCache(tempDirectory);
+            _cache = new NetFileCache(_cachePath);
         }
 
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
-            Directory.Delete(_cache.GetCachePath(), recursive: true);
+            Directory.Delete(_cachePath, recursive: true);
         }
 
         [Test]

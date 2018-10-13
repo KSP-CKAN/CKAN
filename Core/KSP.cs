@@ -20,7 +20,7 @@ namespace CKAN
     /// <summary>
     /// Everything for dealing with KSP itself.
     /// </summary>
-    public class KSP : IDisposable
+    public class KSP
     {
         /// <summary>
         /// List of DLLs that should never be added to the autodetect list.
@@ -45,8 +45,6 @@ namespace CKAN
         public KspVersion VersionOfKspWhenCompatibleVersionsWereStored { get; private set; }
         public bool CompatibleVersionsAreFromDifferentKsp { get { return _compatibleVersions.Count > 0 && VersionOfKspWhenCompatibleVersionsWereStored != Version(); } }
 
-        public NetModuleCache Cache { get; private set; }
-
         #endregion
         #region Construction and Initialisation
 
@@ -65,7 +63,6 @@ namespace CKAN
             {
                 SetupCkanDirectories();
                 LoadCompatibleVersions();
-                Cache = new NetModuleCache(DownloadCacheDir());
             }
         }
 
@@ -88,11 +85,6 @@ namespace CKAN
                 ScanGameData();
             }
 
-            if (!Directory.Exists(DownloadCacheDir()))
-            {
-                User.RaiseMessage("Creating {0}", DownloadCacheDir());
-                Directory.CreateDirectory(DownloadCacheDir());
-            }
             if (!Directory.Exists(InstallHistoryDir()))
             {
                 User.RaiseMessage("Creating {0}", InstallHistoryDir());
@@ -163,24 +155,6 @@ namespace CKAN
         #endregion
 
         #region Destructors and Disposal
-
-        /// <summary>
-        /// Releases all resource used by the <see cref="CKAN.KSP"/> object.
-        /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.KSP"/>. The <see cref="Dispose"/>
-        /// method leaves the <see cref="CKAN.KSP"/> in an unusable state. After calling <see cref="Dispose"/>, you must
-        /// release all references to the <see cref="CKAN.KSP"/> so the garbage collector can reclaim the memory that
-        /// the <see cref="CKAN.KSP"/> was occupying.</remarks>
-        public void Dispose()
-        {
-            if (Cache != null)
-            {
-                Cache.Dispose();
-                Cache = null;
-            }
-
-            // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
-        }
 
         #endregion
 
@@ -425,31 +399,6 @@ namespace CKAN
         #endregion
 
         #region CKAN/GameData Directory Maintenance
-
-        /// <summary>
-        /// Removes all files from the download (cache) directory.
-        /// </summary>
-        public void CleanCache()
-        {
-            // TODO: We really should be asking our Cache object to do the
-            // cleaning, rather than doing it ourselves.
-
-            log.Info("Cleaning cache directory");
-
-            string[] files = Directory.GetFiles(DownloadCacheDir(), "*", SearchOption.AllDirectories);
-
-            foreach (string file in files)
-            {
-                if (Directory.Exists(file))
-                {
-                    log.DebugFormat("Skipping directory: {0}", file);
-                    continue;
-                }
-
-                log.DebugFormat("Deleting {0}", file);
-                File.Delete(file);
-            }
-        }
 
         /// <summary>
         /// Clears the registry of DLL data, and refreshes it by scanning GameData.

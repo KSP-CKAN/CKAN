@@ -50,7 +50,7 @@ namespace CKAN
                                 null
                             )
                         },
-                        ModuleInstaller.GetInstance(CurrentInstance, GUI.user),
+                        ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user),
                         CurrentInstance.VersionCriteria()
                     )
                 );
@@ -86,7 +86,7 @@ namespace CKAN
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
 
             IRegistryQuerier registry  = RegistryManager.Instance(manager.CurrentInstance).registry;
-            ModuleInstaller  installer = ModuleInstaller.GetInstance(CurrentInstance, GUI.user);
+            ModuleInstaller  installer = ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user);
             // Avoid accumulating multiple event handlers
             installer.onReportModInstalled -= OnModInstalled;
             installer.onReportModInstalled += OnModInstalled;
@@ -283,7 +283,7 @@ namespace CKAN
                     GUI.user.RaiseMessage("\r\n{0}", kraken.Message);
                     return;
                 }
-                catch (DllNotFoundException exc)
+                catch (DllNotFoundException)
                 {
                     if (GUI.user.RaiseYesNoDialog("libcurl installation not found. Open wiki page for help?"))
                     {
@@ -439,7 +439,7 @@ namespace CKAN
                 {
                     Tag = module,
                     Checked = false,
-                    Text = CurrentInstance.Cache.IsMaybeCachedZip(module)
+                    Text = Manager.Cache.IsMaybeCachedZip(module)
                         ? $"{module.name} {module.version} (cached)"
                         : $"{module.name} {module.version} ({module.download.Host ?? ""}, {CkanModule.FmtSize(module.download_size)})"
                 };
@@ -559,7 +559,7 @@ namespace CKAN
                 {
                     Tag = module,
                     Checked = !suggested,
-                    Text = CurrentInstance.Cache.IsMaybeCachedZip(pair.Key)
+                    Text = Manager.Cache.IsMaybeCachedZip(pair.Key)
                         ? $"{pair.Key.name} {pair.Key.version} (cached)"
                         : $"{pair.Key.name} {pair.Key.version} ({pair.Key.download.Host ?? ""}, {CkanModule.FmtSize(pair.Key.download_size)})"
                 };

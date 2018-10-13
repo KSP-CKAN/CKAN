@@ -9,13 +9,27 @@ namespace CKAN.CmdLine
         private static readonly ILog log = LogManager.GetLogger(typeof(Upgrade));
 
         public IUser User { get; set; }
+        private KSPManager manager;
 
-        public Upgrade(IUser user)
+        /// <summary>
+        /// Initialize the upgrade command object
+        /// </summary>
+        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="user">IUser object for interaction</param>
+        public Upgrade(KSPManager mgr, IUser user)
         {
+            manager   = mgr;
             User = user;
         }
 
-
+        /// <summary>
+        /// Upgrade an installed module
+        /// </summary>
+        /// <param name="ksp">Game instance from which to remove</param>
+        /// <param name="raw_options">Command line options object</param>
+        /// <returns>
+        /// Exit code for shell environment
+        /// </returns>
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
             UpgradeOptions options = (UpgradeOptions) raw_options;
@@ -115,13 +129,13 @@ namespace CKAN.CmdLine
 
                     }
 
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(to_upgrade, new NetAsyncModulesDownloader(User));
                 }
                 else
                 {
                     // TODO: These instances all need to go.
                     Search.AdjustModulesCase(ksp, options.modules);
-                    ModuleInstaller.GetInstance(ksp, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
+                    ModuleInstaller.GetInstance(ksp, manager.Cache, User).Upgrade(options.modules, new NetAsyncModulesDownloader(User));
                 }
             }
             catch (ModuleNotFoundKraken kraken)

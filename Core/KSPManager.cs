@@ -9,12 +9,13 @@ namespace CKAN
     /// <summary>
     /// Manage multiple KSP installs.
     /// </summary>
-    public class KSPManager
+    public class KSPManager : IDisposable
     {
         public IUser User { get; set; }
         public IWin32Registry Win32Registry { get; set; }
         public KSP CurrentInstance { get; set; }
 
+        public NetModuleCache Cache { get; private set; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof (KSPManager));
 
@@ -302,6 +303,13 @@ namespace CKAN
                 instances.Add(name, new KSP(path, name, User));
             }
 
+            if (!Directory.Exists(Win32Registry.DownloadCacheDir))
+            {
+                Directory.CreateDirectory(Win32Registry.DownloadCacheDir);
+            }
+            string failReason;
+            TrySetupCache(Win32Registry.DownloadCacheDir, out failReason);
+
             try
             {
                 AutoStartInstance = Win32Registry.AutoStartInstance;
@@ -311,6 +319,70 @@ namespace CKAN
                 log.WarnFormat("Auto-start instance was invalid: {0}", e.Message);
                 AutoStartInstance = null;
             }
+        }
+
+        /// <summary>
+        /// Switch to using a download cache in a new location
+        /// </summary>
+        /// <param name="path">Location of folder for new cache</param>
+        /// <returns>
+        /// true if successful, false otherwise
+        /// </returns>
+        public bool TrySetupCache(string path, out string failureReason)
+        {
+            string origPath = Win32Registry.DownloadCacheDir;
+            try
+            {
+                if (string.IsNullOrEmpty(path))
+                {
+                    Win32Registry.DownloadCacheDir = "";
+                    Cache = new NetModuleCache(this, Win32Registry.DownloadCacheDir);
+                    Cache.MoveFrom(origPath);
+                }
+                else
+                {
+                    Cache = new NetModuleCache(this, path);
+                    Cache.MoveFrom(origPath);
+                    Win32Registry.DownloadCacheDir = path;
+                }
+                failureReason = null;
+                return true;
+            }
+            catch (DirectoryNotFoundKraken)
+            {
+                failureReason = $"{path} does not exist";
+                return false;
+            }
+            catch (PathErrorKraken ex)
+            {
+                failureReason = ex.Message;
+                return false;
+            }
+            catch (IOException ex)
+            {
+                // MoveFrom failed, possibly full disk, so undo the change
+                Win32Registry.DownloadCacheDir = origPath;
+                failureReason = ex.Message;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Releases all resource used by the <see cref="CKAN.KSP"/> object.
+        /// </summary>
+        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="CKAN.KSP"/>. The <see cref="Dispose"/>
+        /// method leaves the <see cref="CKAN.KSP"/> in an unusable state. After calling <see cref="Dispose"/>, you must
+        /// release all references to the <see cref="CKAN.KSP"/> so the garbage collector can reclaim the memory that
+        /// the <see cref="CKAN.KSP"/> was occupying.</remarks>
+        public void Dispose()
+        {
+            if (Cache != null)
+            {
+                Cache.Dispose();
+                Cache = null;
+            }
+
+            // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
         }
 
     }

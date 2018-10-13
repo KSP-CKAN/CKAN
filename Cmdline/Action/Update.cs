@@ -6,12 +6,27 @@ namespace CKAN.CmdLine
     public class Update : ICommand
     {
         public IUser user { get; set; }
+        private KSPManager manager;
 
-        public Update(IUser user)
+        /// <summary>
+        /// Initialize the update command object
+        /// </summary>
+        /// <param name="mgr">KSPManager containing our instances</param>
+        /// <param name="user">IUser object for interaction</param>
+        public Update(KSPManager mgr, IUser user)
         {
+            manager   = mgr;
             this.user = user;
         }
 
+        /// <summary>
+        /// Update the registry
+        /// </summary>
+        /// <param name="ksp">Game instance to update</param>
+        /// <param name="raw_options">Command line options object</param>
+        /// <returns>
+        /// Exit code for shell environment
+        /// </returns>
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
             UpdateOptions options = (UpdateOptions) raw_options;
@@ -135,7 +150,7 @@ namespace CKAN.CmdLine
             RegistryManager registry_manager = RegistryManager.Instance(ksp);
 
             var updated = repository == null
-                ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, user)
+                ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, manager.Cache, user)
                 : CKAN.Repo.Update(registry_manager, ksp, user, repository);
 
             user.RaiseMessage("Updated information on {0} available modules", updated);

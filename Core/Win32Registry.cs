@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Microsoft.Win32;
 
 namespace CKAN
@@ -12,6 +13,7 @@ namespace CKAN
         IEnumerable<Tuple<string, string>> GetInstances();
         string GetKSPBuilds();
         void SetKSPBuilds(string buildMap);
+        string DownloadCacheDir { get; set; }
     }
 
     public class Win32Registry : IWin32Registry
@@ -22,10 +24,40 @@ namespace CKAN
         private const           string authTokenKey         = CKAN_KEY + @"\AuthTokens";
         private static readonly string authTokenKeyNoPrefix = StripPrefixKey(authTokenKey);
 
-        public Win32Registry()
+        static Win32Registry()
         {
             ConstructKey(CKAN_KEY_NO_PREFIX);
         }
+
+        private static readonly string defaultDownloadCacheDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "CKAN",
+            "downloads"
+        );
+
+        /// <summary>
+        /// Get and set the path to the download cache
+        /// </summary>
+        public string DownloadCacheDir
+        {
+            get { return GetRegistryValue(@"DownloadCacheDir", defaultDownloadCacheDir); }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    DeleteRegistryValue(@"DownloadCacheDir");
+                }
+                else
+                {
+                    if (!Path.IsPathRooted(value))
+                    {
+                        value = Path.GetFullPath(value);
+                    }
+                    SetRegistryValue(@"DownloadCacheDir", value);
+                }
+            }
+        }
+
         private int InstanceCount
         {
             get { return GetRegistryValue(@"KSPInstanceCount", 0); }
@@ -170,5 +202,12 @@ namespace CKAN
         {
             return (T)Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, defaultValue);
         }
+
+        private static void DeleteRegistryValue(string name)
+        {
+            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX, true);
+            key.DeleteValue(name);
+        }
+
     }
 }

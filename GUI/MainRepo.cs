@@ -69,7 +69,7 @@ namespace CKAN
             try
             {
                 AddStatusMessage("Updating repositories...");
-                e.Result = Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), CurrentInstance, GUI.user);
+                e.Result = Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), CurrentInstance, Manager.Cache, GUI.user);
             }
             catch (UriFormatException ex)
             {

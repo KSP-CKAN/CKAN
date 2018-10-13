@@ -54,8 +54,11 @@ namespace CKAN.NetKAN
 
                     var moduleService = new ModuleService();
                     var fileService = new FileService();
-                    cache = FindCache(new KSPManager(new ConsoleUser(false)));
-                    http  = new CachingHttpService(cache);
+                    cache = FindCache(
+                        new KSPManager(new ConsoleUser(false)),
+                        new Win32Registry()
+                    );
+                    http = new CachingHttpService(cache);
 
                     var netkan = ReadNetkan();
                     Log.Info("Finished reading input");
@@ -136,7 +139,7 @@ namespace CKAN.NetKAN
             }
         }
 
-        private static NetFileCache FindCache(KSPManager kspManager)
+        private static NetFileCache FindCache(KSPManager kspManager, IWin32Registry reg)
         {
             if (Options.CacheDir != null)
             {
@@ -146,10 +149,9 @@ namespace CKAN.NetKAN
 
             try
             {
-                var ksp = kspManager.GetPreferredInstance();
-                Log.InfoFormat("Using CKAN cache at {0}", ksp.Cache.GetCachePath());
+                Log.InfoFormat("Using main CKAN meta-cache at {0}", reg.DownloadCacheDir);
                 /// Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(ksp.Cache.GetCachePath());
+                return new NetFileCache(kspManager, reg.DownloadCacheDir);
             }
             catch
             {

@@ -54,17 +54,20 @@ namespace Tests.GUI
         {
             _instance = new DisposableKSP();
             _registry = Registry.Empty();
-            _manager = new KSPManager(new NullUser(), new FakeWin32Registry(_instance.KSP));
+            _manager = new KSPManager(
+                new NullUser(),
+                new FakeWin32Registry(_instance.KSP, _instance.KSP.Name)
+            );
 
             // this module contains a ksp_version of "any" which repros our issue
             _anyVersionModule = TestData.DogeCoinFlag_101_module();
 
             // install it and set it as pre-installed
-            _instance.KSP.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
+            _manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip());
             _registry.RegisterModule(_anyVersionModule, new string[] { }, _instance.KSP);
             _registry.AddAvailable(_anyVersionModule);
 
-            ModuleInstaller.GetInstance(_instance.KSP, _manager.User).InstallList(
+            ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                 new List<CkanModule> { { _anyVersionModule } },
                 new RelationshipResolverOptions(),
                 new NetAsyncModulesDownloader(_manager.User)
@@ -130,7 +133,7 @@ namespace Tests.GUI
             Assert.DoesNotThrow(() =>
             {
                 // perform the install of the "other" module - now we need to sort
-                ModuleInstaller.GetInstance(_instance.KSP, _manager.User).InstallList(
+                ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _manager.User).InstallList(
                     _modList.ComputeUserChangeSet().Select(change => change.Mod.ToCkanModule()).ToList(),
                     new RelationshipResolverOptions(),
                     new NetAsyncModulesDownloader(_manager.User)

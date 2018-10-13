@@ -97,6 +97,9 @@ namespace CKAN.CmdLine
         [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
         public AuthTokenSubOptions AuthToken { get; set; }
 
+        [VerbOption("cache", HelpText = "Manage download cache path")]
+        public SubCommandOptions Cache { get; set; }
+
         [VerbOption("compat", HelpText = "Manage KSP version compatibility")]
         public SubCommandOptions Compat { get; set; }
 

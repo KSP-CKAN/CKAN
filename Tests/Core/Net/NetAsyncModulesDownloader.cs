@@ -13,12 +13,12 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloader
     {
-
-        private CKAN.RegistryManager manager;
-        private CKAN.Registry registry;
-        private DisposableKSP ksp;
-        private CKAN.IDownloader async;
-        private NetModuleCache cache;
+        private CKAN.KSPManager      manager;
+        private CKAN.RegistryManager registry_manager;
+        private CKAN.Registry        registry;
+        private DisposableKSP        ksp;
+        private CKAN.IDownloader     async;
+        private NetModuleCache       cache;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (NetAsyncModulesDownloader));
 
@@ -28,20 +28,21 @@ namespace Tests.Core.Net
             // Make sure curl is all set up.
             Curl.Init();
 
+            manager = new KSPManager(new NullUser());
             // Give us a registry to play with.
             ksp = new DisposableKSP();
-            manager = CKAN.RegistryManager.Instance(ksp.KSP);
-            registry = manager.registry;
+            registry_manager = CKAN.RegistryManager.Instance(ksp.KSP);
+            registry = registry_manager.registry;
             registry.ClearDlls();
             registry.Installed().Clear();
             // Make sure we have a registry we can use.
-            CKAN.Repo.Update(manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
+            CKAN.Repo.Update(registry_manager, ksp.KSP, new NullUser(), TestData.TestKANZip());
 
             // Ready our downloader.
             async = new CKAN.NetAsyncModulesDownloader(new NullUser());
 
             // General shortcuts
-            cache = ksp.KSP.Cache;
+            cache = manager.Cache;
         }
 
         [TearDown]
@@ -72,10 +73,10 @@ namespace Tests.Core.Net
             Assert.IsFalse(cache.IsCached(kOS));
 
             //
-            log.InfoFormat("Downloading kOS from {0}",kOS.download);
+            log.InfoFormat("Downloading kOS from {0}", kOS.download);
 
             // Download our module.
-            async.DownloadModules(ksp.KSP.Cache, modules);
+            async.DownloadModules(manager.Cache, modules);
 
             // Assert that we have it, and it passes zip validation.
             Assert.IsTrue(cache.IsCachedZip(kOS));

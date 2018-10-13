@@ -28,7 +28,7 @@ namespace CKAN
         /// Optionally takes a URL to the zipfile repo to download.
         /// Returns the number of unique modules updated.
         /// </summary>
-        public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, IUser user)
+        public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
             List<CkanModule> allAvail = new List<CkanModule>();
@@ -63,7 +63,7 @@ namespace CKAN
                 List<CkanModule> metadataChanges = GetChangedInstalledModules(registry_manager.registry);
                 if (metadataChanges.Count > 0)
                 {
-                    HandleModuleChanges(metadataChanges, user, ksp);
+                    HandleModuleChanges(metadataChanges, user, ksp, cache);
                 }
 
                 // Return how many we got!
@@ -166,7 +166,7 @@ namespace CKAN
         /// <param name="metadataChanges">List of modules that changed</param>
         /// <param name="user">Object for user interaction callbacks</param>
         /// <param name="ksp">Game instance</param>
-        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp)
+        private static void HandleModuleChanges(List<CkanModule> metadataChanges, IUser user, KSP ksp, NetModuleCache cache)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < metadataChanges.Count; i++)
@@ -182,7 +182,7 @@ You should reinstall them in order to preserve consistency with the repository.
 
 Do you wish to reinstall now?", sb)))
             {
-                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, new NullUser());
+                ModuleInstaller installer = ModuleInstaller.GetInstance(ksp, cache, new NullUser());
                 // New upstream metadata may break the consistency of already installed modules
                 // e.g. if user installs modules A and B and then later up A is made to conflict with B
                 // This is perfectly normal and shouldn't produce an error, therefore we skip enforcing

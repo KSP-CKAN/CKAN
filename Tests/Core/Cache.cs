@@ -33,7 +33,7 @@ namespace Tests.Core
         public void Sanity()
         {
             Assert.IsInstanceOf<NetFileCache>(cache);
-            Assert.IsTrue(Directory.Exists(cache.GetCachePath()));
+            Assert.IsInstanceOf<NetModuleCache>(module_cache);
         }
 
         [Test]
@@ -41,9 +41,6 @@ namespace Tests.Core
         {
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
-
-            // Sanity check, our cache dir is there, right?
-            Assert.IsTrue(Directory.Exists(cache.GetCachePath()));
 
             // Our URL shouldn't be cached to begin with.
             Assert.IsFalse(cache.IsCached(url));

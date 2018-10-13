@@ -17,8 +17,9 @@ namespace CKAN.CmdLine
         /// Initialize the command
         /// </summary>
         /// <param name="user">IUser object for user interaction</param>
-        public Import(IUser user)
+        public Import(KSPManager mgr, IUser user)
         {
+            manager   = mgr;
             this.user = user;
         }
 
@@ -45,7 +46,7 @@ namespace CKAN.CmdLine
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     List<string>    toInstall = new List<string>();
-                    ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, user);
+                    ModuleInstaller inst      = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                     inst.ImportFiles(toImport, user, mod => toInstall.Add(mod.identifier), !opts.Headless);
                     if (toInstall.Count > 0)
                     {
@@ -99,8 +100,9 @@ namespace CKAN.CmdLine
             }
         }
 
-        private        readonly IUser user;
-        private static readonly ILog  log = LogManager.GetLogger(typeof(Import));
+        private        readonly KSPManager manager;
+        private        readonly IUser      user;
+        private static readonly ILog       log = LogManager.GetLogger(typeof(Import));
     }
 
 }

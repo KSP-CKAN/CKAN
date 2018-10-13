@@ -2,12 +2,15 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
+using System.Security.Permissions;
 using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System.Security.Permissions;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -24,18 +27,32 @@ namespace CKAN
         private FileSystemWatcher watcher;
         private string[] cachedFiles;
         private string cachePath;
+        private KSPManager manager;
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
-        public NetFileCache(string _cachePath)
+        /// <summary>
+        /// Initialize a cache given a KSPManager
+        /// </summary>
+        /// <param name="mgr">KSPManager object containing the Instances that might have old caches</param>
+        public NetFileCache(KSPManager mgr, string path)
+            : this(path)
         {
+            manager = mgr;
+        }
+
+        /// <summary>
+        /// Initialize a cache given a path
+        /// </summary>
+        /// <param name="path">Location of folder to use for caching</param>
+        public NetFileCache(string path)
+        {
+            cachePath = path;
+
             // Basic validation, our cache has to exist.
-
-            if (!Directory.Exists(_cachePath))
+            if (!Directory.Exists(cachePath))
             {
-                throw new DirectoryNotFoundKraken(_cachePath, "Cannot find cache directory");
+                throw new DirectoryNotFoundKraken(cachePath, $"Cannot find cache directory: {cachePath}");
             }
-
-            cachePath = _cachePath;
 
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
@@ -88,11 +105,6 @@ namespace CKAN
         public void OnCacheChanged()
         {
             cachedFiles = null;
-        }
-
-        public string GetCachePath()
-        {
-            return cachePath;
         }
 
         // returns true if a url is already in the cache
@@ -165,10 +177,33 @@ namespace CKAN
             // check them to see if we can find the one we're looking
             // for.
 
+            string found = scanDirectory(files, hash, remoteTimestamp);
+            if (!string.IsNullOrEmpty(found))
+            {
+                return found;
+            }
+
+            // Check legacy caches if we have them
+            if (manager != null)
+            {
+                string foundLegacy = legacyDirs()
+                    .Select(dir => scanDirectory(Directory.EnumerateFiles(dir), hash, remoteTimestamp))
+                    .FirstOrDefault(f => !string.IsNullOrEmpty(f));
+                if (!string.IsNullOrEmpty(foundLegacy))
+                {
+                    return foundLegacy;
+                }
+            }
+
+            return null;
+        }
+
+        private string scanDirectory(IEnumerable<string> files, string findHash, DateTime? remoteTimestamp = null)
+        {
             foreach (string file in files)
             {
                 string filename = Path.GetFileName(file);
-                if (filename.StartsWith(hash))
+                if (filename.StartsWith(findHash))
                 {
                     // Check local vs remote timestamps; if local is older, then it's invalid.
                     // null means we don't know the remote timestamp (so file is OK)
@@ -185,7 +220,6 @@ namespace CKAN
                     }
                 }
             }
-
             return null;
         }
 
@@ -219,6 +253,41 @@ namespace CKAN
                     return null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Count the files and bytes in the cache
+        /// </summary>
+        /// <param name="numFiles">Output parameter set to number of files in cache</param>
+        /// <param name="numBytes">Output parameter set to number of bytes in cache</param>
+        public void GetSizeInfo(out int numFiles, out long numBytes)
+        {
+            numFiles = 0;
+            numBytes = 0;
+            GetSizeInfo(cachePath, ref numFiles, ref numBytes);
+            foreach (var legacyDir in legacyDirs())
+            {
+                GetSizeInfo(legacyDir, ref numFiles, ref numBytes);
+            }
+        }
+
+        private void GetSizeInfo(string path, ref int numFiles, ref long numBytes)
+        {
+            DirectoryInfo cacheDir = new DirectoryInfo(path);
+            foreach (var file in cacheDir.EnumerateFiles())
+            {
+                ++numFiles;
+                numBytes += file.Length;
+            }
+        }
+
+        private HashSet<string> legacyDirs()
+        {
+            return manager?.Instances.Values
+                .Where(ksp => ksp.Valid)
+                .Select(ksp => ksp.DownloadCacheDir())
+                .Where(dir => Directory.Exists(dir))
+                .ToHashSet();
         }
 
         /// <summary>
@@ -353,7 +422,71 @@ namespace CKAN
             return false;
         }
 
-        // returns the 8-byte hash for a given url
+        /// <summary>
+        /// Clear all files in cache, including main directory and legacy directories
+        /// </summary>
+        public void RemoveAll()
+        {
+            foreach (string file in Directory.EnumerateFiles(cachePath))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch { }
+            }
+            foreach (string dir in legacyDirs())
+            {
+                foreach (string file in Directory.EnumerateFiles(dir))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch { }
+                }
+            }
+            OnCacheChanged();
+        }
+
+        /// <summary>
+        /// Move files from another folder into this cache
+        /// May throw an IOException if disk is full!
+        /// </summary>
+        /// <param name="fromDir">Path from which to move files</param>
+        public void MoveFrom(string fromDir)
+        {
+            if (cachePath != fromDir && Directory.Exists(fromDir))
+            {
+                bool hasAny = false;
+                foreach (string fromFile in Directory.EnumerateFiles(fromDir))
+                {
+                    string toFile = Path.Combine(cachePath, Path.GetFileName(fromFile));
+                    if (File.Exists(toFile))
+                    {
+                        // Don't need multiple copies of the same file
+                        File.Delete(fromFile);
+                    }
+                    else
+                    {
+                        File.Move(fromFile, toFile);
+                        hasAny = true;
+                    }
+                }
+                if (hasAny)
+                {
+                    OnCacheChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generate the hash used for caching
+        /// </summary>
+        /// <param name="url">URL to hash</param>
+        /// <returns>
+        /// Returns the 8-byte hash for a given url
+        /// </returns>
         public static string CreateURLHash(Uri url)
         {
             using (var sha1 = new SHA1Cng())

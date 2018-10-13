@@ -18,6 +18,15 @@ namespace CKAN
         /// <summary>
         /// Initialize the cache
         /// </summary>
+        /// <param name="mgr">KSPManager containing instances that might have legacy caches</param>
+        public NetModuleCache(KSPManager mgr, string path)
+        {
+            cache = new NetFileCache(mgr, path);
+        }
+
+        /// <summary>
+        /// Initialize the cache
+        /// </summary>
         /// <param name="path">Path to directory to use as the cache</param>
         public NetModuleCache(string path)
         {
@@ -29,13 +38,13 @@ namespace CKAN
         {
             cache.Dispose();
         }
-        public void Clear()
+        public void RemoveAll()
         {
-            cache.OnCacheChanged();
+            cache.RemoveAll();
         }
-        public string GetCachePath()
+        public void MoveFrom(string fromDir)
         {
-            return cache.GetCachePath();
+            cache.MoveFrom(fromDir);
         }
         public bool IsCached(CkanModule m)
         {
@@ -60,6 +69,10 @@ namespace CKAN
         public string GetCachedZip(CkanModule m)
         {
             return cache.GetCachedZip(m.download);
+        }
+        public void GetSizeInfo(out int numFiles, out long numBytes)
+        {
+            cache.GetSizeInfo(out numFiles, out numBytes);
         }
 
         /// <summary>

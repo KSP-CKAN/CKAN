@@ -103,7 +103,7 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => false);
 
             AddTip("Ctrl+D", "Download",
-                () => !manager.CurrentInstance.Cache.IsMaybeCachedZip(mod)
+                () => !manager.Cache.IsMaybeCachedZip(mod)
             );
             AddBinding(Keys.CtrlD, (object sender) => {
                 Download();
@@ -460,13 +460,13 @@ namespace CKAN.ConsoleUI {
         {
             ProgressScreen            ps   = new ProgressScreen($"Downloading {mod.identifier}");
             NetAsyncModulesDownloader dl   = new NetAsyncModulesDownloader(ps);
-            ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, ps);
+            ModuleInstaller           inst = ModuleInstaller.GetInstance(manager.CurrentInstance, manager.Cache, ps);
             LaunchSubScreen(
                 ps,
                 () => {
                     try {
-                        dl.DownloadModules(inst.Cache, new List<CkanModule> {mod});
-                        if (!inst.Cache.IsMaybeCachedZip(mod)) {
+                        dl.DownloadModules(manager.Cache, new List<CkanModule> {mod});
+                        if (!manager.Cache.IsMaybeCachedZip(mod)) {
                             ps.RaiseError("Download failed, file is corrupted");
                         }
                     } catch (Exception ex) {
