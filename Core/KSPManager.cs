@@ -337,12 +337,10 @@ namespace CKAN
                 {
                     Win32Registry.DownloadCacheDir = "";
                     Cache = new NetModuleCache(this, Win32Registry.DownloadCacheDir);
-                    Cache.MoveFrom(origPath);
                 }
                 else
                 {
                     Cache = new NetModuleCache(this, path);
-                    Cache.MoveFrom(origPath);
                     Win32Registry.DownloadCacheDir = path;
                 }
                 failureReason = null;
