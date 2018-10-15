@@ -143,7 +143,7 @@
             //
             this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MetadataModuleNameLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.MetadataModuleNameLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
             this.MetadataModuleNameLabel.Size = new System.Drawing.Size(340, 46);
@@ -215,7 +215,7 @@
             //
             this.IdentifierLabel.AutoSize = true;
             this.IdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.IdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.IdentifierLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.IdentifierLabel.Location = new System.Drawing.Point(3, 210);
             this.IdentifierLabel.Name = "IdentifierLabel";
             this.IdentifierLabel.Size = new System.Drawing.Size(84, 20);
@@ -237,7 +237,7 @@
             //
             this.KSPCompatibilityLabel.AutoSize = true;
             this.KSPCompatibilityLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.KSPCompatibilityLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.KSPCompatibilityLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.KSPCompatibilityLabel.Location = new System.Drawing.Point(3, 180);
             this.KSPCompatibilityLabel.Name = "KSPCompatibilityLabel";
             this.KSPCompatibilityLabel.Size = new System.Drawing.Size(84, 30);
@@ -248,7 +248,7 @@
             //
             this.ReleaseLabel.AutoSize = true;
             this.ReleaseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReleaseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.ReleaseLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.ReleaseLabel.Location = new System.Drawing.Point(3, 150);
             this.ReleaseLabel.Name = "ReleaseLabel";
             this.ReleaseLabel.Size = new System.Drawing.Size(84, 30);
@@ -259,7 +259,7 @@
             //
             this.GitHubLabel.AutoSize = true;
             this.GitHubLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GitHubLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.GitHubLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.GitHubLabel.Location = new System.Drawing.Point(3, 120);
             this.GitHubLabel.Name = "GitHubLabel";
             this.GitHubLabel.Size = new System.Drawing.Size(84, 30);
@@ -270,7 +270,7 @@
             //
             this.HomePageLabel.AutoSize = true;
             this.HomePageLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HomePageLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.HomePageLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.HomePageLabel.Location = new System.Drawing.Point(3, 90);
             this.HomePageLabel.Name = "HomePageLabel";
             this.HomePageLabel.Size = new System.Drawing.Size(84, 30);
@@ -281,7 +281,7 @@
             //
             this.AuthorLabel.AutoSize = true;
             this.AuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AuthorLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.AuthorLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.AuthorLabel.Location = new System.Drawing.Point(3, 60);
             this.AuthorLabel.Name = "AuthorLabel";
             this.AuthorLabel.Size = new System.Drawing.Size(84, 30);
@@ -292,7 +292,7 @@
             //
             this.LicenseLabel.AutoSize = true;
             this.LicenseLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LicenseLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.LicenseLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.LicenseLabel.Location = new System.Drawing.Point(3, 30);
             this.LicenseLabel.Name = "LicenseLabel";
             this.LicenseLabel.Size = new System.Drawing.Size(84, 30);
@@ -333,7 +333,7 @@
             //
             this.VersionLabel.AutoSize = true;
             this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.VersionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.VersionLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.VersionLabel.Location = new System.Drawing.Point(3, 0);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(84, 30);
