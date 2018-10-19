@@ -114,6 +114,7 @@
     <Compile Include="FormCompatibility.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FlatToolStripRenderer.cs" />
     <Compile Include="GUIMod.cs" />
     <Compile Include="GUIUser.cs" />
     <Compile Include="HintTextBox.cs">
