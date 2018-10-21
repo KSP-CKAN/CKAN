@@ -864,6 +864,7 @@
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(1505, 851);
             this.LogTextBox.TabIndex = 8;
@@ -1108,9 +1109,11 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.MainTabControl.ResumeLayout(false);
+            this.MainTabControl.PerformLayout();
             this.ManageModsTabPage.ResumeLayout(false);
             this.ManageModsTabPage.PerformLayout();
             this.ChangesetTabPage.ResumeLayout(false);
+            this.ChangesetTabPage.PerformLayout();
             this.WaitTabPage.ResumeLayout(false);
             this.WaitTabPage.PerformLayout();
             this.ChooseRecommendedModsTabPage.ResumeLayout(false);
