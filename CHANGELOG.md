@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v1.25.4
 
 ### Features
+
 - [Netkan] Purge downloads that failed to index from Netkan cache (#2526 by: HebaruSan; reviewed: politas)
 - [Multiple] Add download count column to GUI (#2518 by: HebaruSan; reviewed: politas)
 - [Netkan] Catch invalid $kref in Netkan (#2516 by: HebaruSan; reviewed: politas)
@@ -12,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] One Cache to Rule Them All (#2535 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
+
 - [GUI] Show innermost download exceptions (#2528 by: HebaruSan; reviewed: politas)
 - [GUI] Fix grid colors for dark themes (#2529 by: HebaruSan; reviewed: politas)
 - [GUI] Fix YesNoDialog layout (#2530 by: HebaruSan; reviewed: politas)
@@ -19,10 +21,12 @@ All notable changes to this project will be documented in this file.
 - [Core] Catch illegal characters in ZIP exceptions (#2515 by: HebaruSan; reviewed: politas)
 - [Netkan] Handle two-part KSP-AVC versions (#2532 by: HebaruSan; reviewed: politas)
 - [Core] Stop auto-moving cached files (#2538 by: HebaruSan; reviewed: politas)
+- [GUI] Fix toolbar background colors for dark themes (#2541 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.25.3 (Woomera)
 
 ### Features
+
 - [GUI] Replace New in repository filter with Newly compatible filter (#2494 by: HebaruSan; reviewed: Olympic1, politas)
 - [GUI] Add Install Date column to GUI mod list (#2514 by: HebaruSan; reviewed: politas)
 

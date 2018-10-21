@@ -181,6 +181,14 @@ namespace CKAN
 
             InitializeComponent();
 
+            // Replace mono's broken, ugly toolstrip renderer
+            menuStrip1.Renderer = new FlatToolStripRenderer();
+            menuStrip2.Renderer = new FlatToolStripRenderer();
+            fileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+
             // We need to initialize the error dialog first to display errors.
             errorDialog = controlFactory.CreateControl<ErrorDialog>();
 
