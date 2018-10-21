@@ -198,7 +198,7 @@ namespace CKAN
             {
                 Hide();
 
-                var result = new ChooseKSPInstance().ShowDialog();
+                var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
                     Application.Exit();
@@ -285,6 +285,24 @@ namespace CKAN
         }
 
         public static Main Instance { get; private set; }
+
+        /// <summary>
+        /// Form.Visible says true even when the form hasn't shown yet.
+        /// This value will tell the truth.
+        /// </summary>
+        private static bool actuallyVisible = false;
+
+        protected override void OnShown(EventArgs e)
+        {
+            actuallyVisible = true;
+            base.OnShown(e);
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            actuallyVisible = false;
+            base.OnFormClosed(e);
+        }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -444,16 +462,15 @@ namespace CKAN
                 Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}    --    {CurrentInstance.GameDir()}";
             });
 
-            configuration = Configuration.LoadOrCreateConfiguration
-            (
+            configuration = Configuration.LoadOrCreateConfiguration(
                 Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
                 CKAN.Repository.default_ckan_repo_uri.ToString()
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
             {
-                CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(CurrentInstance);
-                dialog.ShowDialog();
+                new CompatibleKspVersionsDialog(CurrentInstance, !actuallyVisible)
+                    .ShowDialog();
             }
 
             UpdateModsList();
@@ -873,7 +890,7 @@ namespace CKAN
         {
             Instance.Manager.ClearAutoStart();
             var old_instance = Instance.CurrentInstance;
-            var result = new ChooseKSPInstance().ShowDialog();
+            var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
                 Instance.CurrentInstanceUpdated();
         }
@@ -885,9 +902,15 @@ namespace CKAN
 
         private void CompatibleKspVersionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var instanceSettingsDialog = new CompatibleKspVersionsDialog(Instance.manager.CurrentInstance);
-            instanceSettingsDialog.ShowDialog();
-            UpdateModsList();
+            CompatibleKspVersionsDialog dialog = new CompatibleKspVersionsDialog(
+                Instance.manager.CurrentInstance,
+                !actuallyVisible
+            );
+            if (dialog.ShowDialog() != DialogResult.Cancel)
+            {
+                // This takes a while, so don't do it if they cancel out
+                UpdateModsList();
+            }
         }
 
         public void ResetFilterAndSelectModOnList(string key)

@@ -459,6 +459,7 @@
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
             this.RepositoryGroupBox.ResumeLayout(false);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.AuthTokensGroupBox.ResumeLayout(false);
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
