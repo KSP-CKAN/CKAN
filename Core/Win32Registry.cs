@@ -206,7 +206,7 @@ namespace CKAN
         private static void DeleteRegistryValue(string name)
         {
             RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX, true);
-            key.DeleteValue(name);
+            key.DeleteValue(name, false);
         }
 
     }
