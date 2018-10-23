@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,7 +24,6 @@ namespace CKAN
         {
             public Uri url;
             public Uri fallbackUrl;
-            public WebClient agent = new WebClient();
             public DateTime lastProgressUpdateTime;
             public string path;
             public long bytesLeft;
@@ -33,22 +33,45 @@ namespace CKAN
             public Exception error;
             public int lastProgressUpdateSize;
 
+            public event DownloadProgressChangedEventHandler Progress;
+            public event AsyncCompletedEventHandler          Done;
+
+            private string mimeType;
+            private WebClient agent;
+
             public NetAsyncDownloaderDownloadPart(Net.DownloadTarget target, string path = null)
             {
-                this.url  = target.url;
+                this.url = target.url;
                 this.fallbackUrl = target.fallbackUrl;
+                this.mimeType = target.mimeType;
                 this.triedFallback = false;
                 this.path = path ?? Path.GetTempFileName();
-                size = bytesLeft = target.size;
-                lastProgressUpdateTime = DateTime.Now;
+                this.size = bytesLeft = target.size;
+                this.lastProgressUpdateTime = DateTime.Now;
+            }
+
+            public void Download(Uri url, string path)
+            {
+                ResetAgent();
+                agent.DownloadFileAsync(url, path);
+            }
+
+            public void Abort()
+            {
+                agent?.CancelAsync();
+            }
+
+            private void ResetAgent()
+            {
+                agent = new WebClient();
 
                 agent.Headers.Add("User-Agent", Net.UserAgentString);
 
                 // Tell the server what kind of files we want
-                if (!string.IsNullOrEmpty(target.mimeType))
+                if (!string.IsNullOrEmpty(mimeType))
                 {
-                    log.InfoFormat("Setting MIME type {0}", target.mimeType);
-                    agent.Headers.Add("Accept", target.mimeType);
+                    log.InfoFormat("Setting MIME type {0}", mimeType);
+                    agent.Headers.Add("Accept", mimeType);
                 }
 
                 // Check whether to use an auth token for this host
@@ -60,6 +83,20 @@ namespace CKAN
                     // Send our auth token to the GitHub API (or whoever else needs one)
                     agent.Headers.Add("Authorization", $"token {token}");
                 }
+
+                // Forward progress and completion events to our listeners
+                agent.DownloadProgressChanged += (sender, args) => {
+                    if (Progress != null)
+                    {
+                        Progress(sender, args);
+                    }
+                };
+                agent.DownloadFileCompleted += (sender, args) => {
+                    if (Done != null)
+                    {
+                        Done(sender, args);
+                    }
+                };
             }
         }
 
@@ -132,16 +169,18 @@ namespace CKAN
                 int index = i;
 
                 // Schedule for us to get back progress reports.
-                downloads[i].agent.DownloadProgressChanged +=
-                    (sender, args) =>
-                        FileProgressReport(index, args.ProgressPercentage, args.BytesReceived,
-                            args.TotalBytesToReceive);
+                downloads[i].Progress += (sender, args) =>
+                    FileProgressReport(index,
+                        args.ProgressPercentage,
+                        args.BytesReceived,
+                        args.TotalBytesToReceive);
 
                 // And schedule a notification if we're done (or if something goes wrong)
-                downloads[i].agent.DownloadFileCompleted += (sender, args) => FileDownloadComplete(index, args.Error);
+                downloads[i].Done += (sender, args) =>
+                    FileDownloadComplete(index, args.Error);
 
                 // Start the download!
-                downloads[i].agent.DownloadFileAsync(downloads[i].url, downloads[i].path);
+                downloads[i].Download(downloads[i].url, downloads[i].path);
             }
         }
 
@@ -294,7 +333,7 @@ namespace CKAN
                 // Abort all our traditional downloads, if there are any.
                 foreach (var download in downloads.ToList())
                 {
-                    download.agent.CancelAsync();
+                    download.Abort();
                 }
 
                 // Abort all our curl downloads, if there are any.
@@ -447,7 +486,7 @@ namespace CKAN
                     log.InfoFormat("Trying fallback URL: {0}", downloads[index].fallbackUrl);
                     // Try the fallbackUrl
                     downloads[index].triedFallback = true;
-                    downloads[index].agent.DownloadFileAsync(downloads[index].fallbackUrl, downloads[index].path);
+                    downloads[index].Download(downloads[index].fallbackUrl, downloads[index].path);
                     // Short circuit the completion process so the fallback can run
                     return;
                 }
