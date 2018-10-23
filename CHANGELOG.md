@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Clean up mod list spacebar handling in GUI (#2543 by: HebaruSan; reviewed: politas)
 - [Core] Use fresh WebClient for fallback URLs (#2539 by: HebaruSan; reviewed: politas)
 - [GUI] Clean up popup positioning in GUI (#2544 by: HebaruSan; reviewed: politas)
+- [Core] Don't throw exceptions when resetting cache dir (#2547 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 
