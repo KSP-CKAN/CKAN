@@ -1,9 +1,10 @@
-﻿using CKAN.GameVersionProviders;
+using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Autofac;
 using CKAN.Versioning;
-using System;
+using CKAN.GameVersionProviders;
 
 namespace CKAN
 {
@@ -11,11 +12,20 @@ namespace CKAN
     {
         private KSP _ksp;
 
-        public CompatibleKspVersionsDialog(KSP ksp)
+        /// <summary>
+        /// Initialize the compatible game versions dialog
+        /// </summary>
+        /// <param name="ksp">Game instance</param>
+        /// <param name="centerScreen">true to center the dialog on the screen, false to center on the parent</param>
+        public CompatibleKspVersionsDialog(KSP ksp, bool centerScreen)
         {
-
             this._ksp = ksp;
             InitializeComponent();
+
+            if (centerScreen)
+            {
+                StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            }
 
             List<KspVersion> compatibleVersions = ksp.GetCompatibleVersions();
 
@@ -61,7 +71,7 @@ namespace CKAN
         {
             versions.Sort();
             versions.Reverse();
-            foreach (var version in versions)
+            foreach (KspVersion version in versions)
             {
                 if (!version.Equals(_ksp.Version()))
                 {
@@ -70,7 +80,7 @@ namespace CKAN
             }
         }
 
-        private void AddVersionToListButton_Click(object sender, System.EventArgs e)
+        private void AddVersionToListButton_Click(object sender, EventArgs e)
         {
             if (AddVersionToListTextBox.Text.Length == 0)
             {
@@ -97,18 +107,17 @@ namespace CKAN
 
         private void CancelButton_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            List<KspVersion> selectedVersion = new List<KspVersion>();
-            foreach (KspVersion item in SelectedVersionsCheckedListBox.CheckedItems)
-            {
-                selectedVersion.Add(item);
-            }
-            _ksp.SetCompatibleVersions(selectedVersion);
+            _ksp.SetCompatibleVersions(
+                SelectedVersionsCheckedListBox.CheckedItems.Cast<KspVersion>().ToList()
+            );
 
+            DialogResult = DialogResult.OK;
             this.Close();
         }
     }

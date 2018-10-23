@@ -21,12 +21,19 @@ namespace CKAN
 
         public bool HasSelections => KSPInstancesListView.SelectedItems.Count > 0;
 
-        public ChooseKSPInstance()
+        /// <summary>
+        /// Initialize the game instance selection window
+        /// </summary>
+        /// <param name="centerScreen">true to center the window on the screen, false to center it on the parent</param>
+        public ChooseKSPInstance(bool centerScreen)
         {
             _manager = Main.Instance.Manager;
             InitializeComponent();
 
-            StartPosition = FormStartPosition.CenterScreen;
+            if (centerScreen)
+            {
+                StartPosition = FormStartPosition.CenterScreen;
+            }
 
             if (!_manager.Instances.Any())
             {

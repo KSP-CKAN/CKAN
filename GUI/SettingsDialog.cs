@@ -19,6 +19,9 @@ namespace CKAN
 
         private List<Repository> _sortedRepos = new List<Repository>();
 
+        /// <summary>
+        /// Initialize a settings window
+        /// </summary>
         public SettingsDialog()
         {
             InitializeComponent();

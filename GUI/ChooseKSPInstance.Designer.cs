@@ -158,6 +158,7 @@
             this.Controls.Add(this.KSPInstancesListView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChooseKSPInstance";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select KSP install";
             this.ResumeLayout(false);
             this.PerformLayout();

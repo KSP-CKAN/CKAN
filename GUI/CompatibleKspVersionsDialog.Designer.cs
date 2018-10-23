@@ -163,7 +163,7 @@
             this.SaveButton.Name = "saveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 11;
-            this.SaveButton.Text = "Save";
+            this.SaveButton.Text = "Accept";
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
@@ -204,7 +204,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelChooseCompatibleVersionsButton;
             this.ClientSize = new System.Drawing.Size(443, 364);
-            this.ControlBox = false;
             this.Controls.Add(this.CancelChooseCompatibleVersionsButton);
             this.Controls.Add(this.GameLocationLabel);
             this.Controls.Add(this.label8);
@@ -221,13 +220,13 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "CompatibleKspVersionsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Compatible Ksp Versions";
+            this.Text = "Compatible KSP Versions";
             this.Shown += new System.EventHandler(this.CompatibleKspVersionsDialog_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
