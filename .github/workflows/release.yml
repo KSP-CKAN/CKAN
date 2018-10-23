@@ -24,6 +24,17 @@ jobs:
         run: ./build --configuration=Release
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
+      - name: Sign release
+        run: |
+          signcode \
+            -spc codesigning.spc \
+            -v   codesigning.pvk \
+            -a   sha1 \
+            -$   individual \
+            -t   http://timestamp.verisign.com/scripts/timstamp.dll \
+            -n   'Comprehensive Kerbal Archive Network client' \
+            -i   https://github.com/KSP-CKAN/CKAN \
+            _build/repack/$BUILD_CONFIGURATION/ckan.exe
 
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
