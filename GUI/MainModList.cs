@@ -289,26 +289,39 @@ namespace CKAN
         /// </summary>
         private void ModList_KeyDown(object sender, KeyEventArgs e)
         {
-            DataGridViewCell cell = null;
             switch (e.KeyCode)
             {
                 case Keys.Home:
                     // First row.
-                    cell = ModList.Rows[0].Cells[2];
+                    ModList.CurrentCell = ModList.Rows[0].Cells[2];
+                    e.Handled = true;
                     break;
 
                 case Keys.End:
                     // Last row.
-                    cell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
+                    ModList.CurrentCell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
+                    e.Handled = true;
                     break;
-            }
 
-            if (cell != null)
-            {
-                e.Handled = true;
-
-                // Selects the top/bottom row and scrolls the list to it.
-                ModList.CurrentCell = cell;
+                case Keys.Space:
+                    // If they've focused one of the checkbox columns, don't intercept
+                    if (ModList.CurrentCell.ColumnIndex > 1)
+                    {
+                        DataGridViewRow row = ModList.CurrentRow;
+                        // Toggle Update column if enabled, otherwise Install
+                        for (int colIndex = 1; colIndex >= 0; --colIndex)
+                        {
+                            if (row?.Cells[colIndex] is DataGridViewCheckBoxCell)
+                            {
+                                // Need to change the state here, because the user hasn't clicked on a checkbox
+                                row.Cells[colIndex].Value = !(bool)row.Cells[colIndex].Value;
+                                ModList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                                e.Handled = true;
+                                break;
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -321,29 +334,13 @@ namespace CKAN
         /// </summary>
         private void ModList_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var current_row = ModList.CurrentRow;
+            // Don't search for spaces or newlines
+            if (e.KeyChar == (char)Keys.Space || e.KeyChar == (char)Keys.Enter)
+            {
+                return;
+            }
+
             var key = e.KeyChar.ToString();
-
-            // Check the key. If it is space and the current row is selected, mark the current mod as selected.
-            if (key == " ")
-            {
-                if (current_row != null && current_row.Selected)
-                {
-                    var gui_mod = (GUIMod)current_row.Tag;
-                    if (gui_mod.IsInstallable())
-                        MarkModForInstall(gui_mod.Identifier, gui_mod.IsInstallChecked);
-                }
-
-                e.Handled = true;
-                return;
-            }
-
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                // Don't try to search for newlines.
-                return;
-            }
-
             // Determine time passed since last key press.
             TimeSpan interval = DateTime.Now - lastSearchTime;
             if (interval.TotalSeconds < 1)

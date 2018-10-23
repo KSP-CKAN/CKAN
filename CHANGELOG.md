@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Stop auto-moving cached files (#2538 by: HebaruSan; reviewed: politas)
 - [GUI] Fix toolbar background colors for dark themes (#2541 by: HebaruSan; reviewed: Olympic1)
 - [GUI] Fix text colors for dark themes (#2540 by: HebaruSan; reviewed: Olympic1)
+- [GUI] Clean up mod list spacebar handling in GUI (#2543 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 
