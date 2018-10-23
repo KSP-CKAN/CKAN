@@ -40,12 +40,18 @@
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
-            this.ClearCacheButton = new System.Windows.Forms.Button();
+            this.ClearCacheButton = new CKAN.DropdownMenuButton();
+            this.ClearCacheMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.PurgeToLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PurgeAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangeCacheButton = new System.Windows.Forms.Button();
             this.ResetCacheButton = new System.Windows.Forms.Button();
             this.OpenCacheButton = new System.Windows.Forms.Button();
             this.CachePath = new System.Windows.Forms.TextBox();
+            this.CacheLimit = new System.Windows.Forms.TextBox();
             this.CacheSummary = new System.Windows.Forms.Label();
+            this.CacheLimitPreLabel = new System.Windows.Forms.Label();
+            this.CacheLimitPostLabel = new System.Windows.Forms.Label();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
             this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
@@ -203,33 +209,59 @@
             this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
             this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
             this.CacheGroupBox.Controls.Add(this.CachePath);
+            this.CacheGroupBox.Controls.Add(this.CacheLimit);
             this.CacheGroupBox.Controls.Add(this.CacheSummary);
+            this.CacheGroupBox.Controls.Add(this.CacheLimitPreLabel);
+            this.CacheGroupBox.Controls.Add(this.CacheLimitPostLabel);
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(16, 343);
             this.CacheGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.CacheGroupBox.Size = new System.Drawing.Size(635, 120);
+            this.CacheGroupBox.Size = new System.Drawing.Size(635, 140);
             this.CacheGroupBox.TabIndex = 10;
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "Download Cache";
             //
             // ClearCacheButton
             //
+            this.ClearCacheButton.Menu = this.ClearCacheMenu;
             this.ClearCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearCacheButton.Location = new System.Drawing.Point(116, 80);
+            this.ClearCacheButton.Location = new System.Drawing.Point(116, 100);
             this.ClearCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ClearCacheButton.Name = "ClearCacheButton";
             this.ClearCacheButton.Size = new System.Drawing.Size(100, 28);
             this.ClearCacheButton.TabIndex = 1;
-            this.ClearCacheButton.Text = "Clear";
+            this.ClearCacheButton.Text = "Purge";
             this.ClearCacheButton.UseVisualStyleBackColor = true;
-            this.ClearCacheButton.Click += new System.EventHandler(this.ClearCacheButton_Click);
+            //
+            // ClearCacheMenu
+            //
+            this.ClearCacheMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.PurgeToLimitMenuItem,
+                this.PurgeAllMenuItem
+            });
+            this.ClearCacheMenu.Name = "ClearCacheMenu";
+            this.ClearCacheMenu.Size = new System.Drawing.Size(180, 70);
+            //
+            // PurgeToLimitMenuItem
+            //
+            this.PurgeToLimitMenuItem.Name = "PurgeToLimitMenuItem";
+            this.PurgeToLimitMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.PurgeToLimitMenuItem.Text = "Purge to limit";
+            this.PurgeToLimitMenuItem.Click += new System.EventHandler(this.PurgeToLimitMenuItem_Click);
+            //
+            // PurgeAllMenuItem
+            //
+            this.PurgeAllMenuItem.Name = "PurgeAllMenuItem";
+            this.PurgeAllMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.PurgeAllMenuItem.Text = "Purge all";
+            this.PurgeAllMenuItem.Click += new System.EventHandler(this.PurgeAllMenuItem_Click);
             //
             // ChangeCacheButton
             //
             this.ChangeCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeCacheButton.Location = new System.Drawing.Point(8, 80);
+            this.ChangeCacheButton.Location = new System.Drawing.Point(8, 100);
             this.ChangeCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
             this.ChangeCacheButton.Size = new System.Drawing.Size(100, 28);
@@ -241,7 +273,7 @@
             // ResetCacheButton
             //
             this.ResetCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetCacheButton.Location = new System.Drawing.Point(224, 80);
+            this.ResetCacheButton.Location = new System.Drawing.Point(224, 100);
             this.ResetCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ResetCacheButton.Name = "ResetCacheButton";
             this.ResetCacheButton.Size = new System.Drawing.Size(100, 28);
@@ -253,7 +285,7 @@
             // OpenCacheButton
             //
             this.OpenCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenCacheButton.Location = new System.Drawing.Point(332, 80);
+            this.OpenCacheButton.Location = new System.Drawing.Point(332, 100);
             this.OpenCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.OpenCacheButton.Name = "OpenCacheButton";
             this.OpenCacheButton.Size = new System.Drawing.Size(100, 28);
@@ -283,6 +315,38 @@
             this.CacheSummary.TabIndex = 12;
             this.CacheSummary.Text = "N files, M MB";
             //
+            // CacheLimitPreLabel
+            //
+            this.CacheLimitPreLabel.AutoSize = true;
+            this.CacheLimitPreLabel.Location = new System.Drawing.Point(8, 76);
+            this.CacheLimitPreLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CacheLimitPreLabel.Name = "CacheLimitPreLabel";
+            this.CacheLimitPreLabel.Size = new System.Drawing.Size(148, 17);
+            this.CacheLimitPreLabel.TabIndex = 12;
+            this.CacheLimitPreLabel.Text = "Maximum cache size:";
+            //
+            // CacheLimit
+            //
+            this.CacheLimit.AutoSize = false;
+            this.CacheLimit.BackColor = System.Drawing.SystemColors.Control;
+            this.CacheLimit.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.CacheLimit.Location = new System.Drawing.Point(156, 72);
+            this.CacheLimit.Name = "CacheLimit";
+            this.CacheLimit.Size = new System.Drawing.Size(75, 17);
+            this.CacheLimit.TabIndex = 11;
+            this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
+            this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
+            //
+            // CacheLimitPostLabel
+            //
+            this.CacheLimitPostLabel.AutoSize = true;
+            this.CacheLimitPostLabel.Location = new System.Drawing.Point(236, 76);
+            this.CacheLimitPostLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CacheLimitPostLabel.Name = "CacheLimitPostLabel";
+            this.CacheLimitPostLabel.Size = new System.Drawing.Size(60, 17);
+            this.CacheLimitPostLabel.TabIndex = 12;
+            this.CacheLimitPostLabel.Text = "MB (empty for unlimited)";
+            //
             // AutoUpdateGroupBox
             //
             this.AutoUpdateGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
@@ -294,7 +358,7 @@
             this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
             this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(16, 471);
+            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(16, 491);
             this.AutoUpdateGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
             this.AutoUpdateGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
@@ -409,7 +473,7 @@
             this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
-            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(16, 609);
+            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(16, 629);
             this.MoreSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
             this.MoreSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
@@ -446,7 +510,7 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 735);
+            this.ClientSize = new System.Drawing.Size(660, 755);
             this.Controls.Add(this.MoreSettingsGroupBox);
             this.Controls.Add(this.AutoUpdateGroupBox);
             this.Controls.Add(this.CacheGroupBox);
@@ -476,8 +540,14 @@
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
         private System.Windows.Forms.GroupBox CacheGroupBox;
         private System.Windows.Forms.TextBox CachePath;
+        private System.Windows.Forms.TextBox CacheLimit;
         private System.Windows.Forms.Label CacheSummary;
-        private System.Windows.Forms.Button ClearCacheButton;
+        private System.Windows.Forms.Label CacheLimitPreLabel;
+        private System.Windows.Forms.Label CacheLimitPostLabel;
+        private CKAN.DropdownMenuButton ClearCacheButton;
+        private System.Windows.Forms.ContextMenuStrip ClearCacheMenu;
+        private System.Windows.Forms.ToolStripMenuItem PurgeToLimitMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;
         private System.Windows.Forms.Button ChangeCacheButton;
         private System.Windows.Forms.Button ResetCacheButton;
         private System.Windows.Forms.Button OpenCacheButton;

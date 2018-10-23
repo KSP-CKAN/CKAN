@@ -1,5 +1,5 @@
 using System;
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -22,6 +22,7 @@ namespace CKAN
         public SettingsDialog()
         {
             InitializeComponent();
+            this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             StartPosition = FormStartPosition.CenterScreen;
             winReg = new Win32Registry();
         }
@@ -45,6 +46,11 @@ namespace CKAN
             AutoSortUpdateCheckBox.Checked = Main.Instance.configuration.AutoSortByUpdate;
 
             UpdateCacheInfo(winReg.DownloadCacheDir);
+            if (winReg.CacheSizeLimit.HasValue)
+            {
+                // Show setting in MB
+                CacheLimit.Text = (winReg.CacheSizeLimit.Value / 1024 / 1024).ToString();
+            }
         }
 
         private void RefreshReposListBox()
@@ -80,21 +86,45 @@ namespace CKAN
                 CachePath.Text = winReg.DownloadCacheDir;
                 CacheSummary.Text = $"{m_cacheFileCount} files, {CkanModule.FmtSize(m_cacheSize)}";
                 CacheSummary.ForeColor   = SystemColors.ControlText;
-                ClearCacheButton.Enabled = true;
                 OpenCacheButton.Enabled  = true;
+                ClearCacheButton.Enabled = (m_cacheSize > 0);
+                PurgeToLimitMenuItem.Enabled = (winReg.CacheSizeLimit.HasValue
+                    && m_cacheSize > winReg.CacheSizeLimit.Value);
             }
             else
             {
                 CacheSummary.Text        = $"Invalid path: {failReason}";
                 CacheSummary.ForeColor   = Color.Red;
-                ClearCacheButton.Enabled = false;
                 OpenCacheButton.Enabled  = false;
+                ClearCacheButton.Enabled = false;
             }
         }
 
         private void CachePath_TextChanged(object sender, EventArgs e)
         {
             UpdateCacheInfo(CachePath.Text);
+        }
+
+        private void CacheLimit_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(CacheLimit.Text))
+            {
+                winReg.CacheSizeLimit = null;
+            }
+            else
+            {
+                // Translate from MB to bytes
+                winReg.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
+            }
+            UpdateCacheInfo(CachePath.Text);
+        }
+
+        private void CacheLimit_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private void ChangeCacheButton_Click(object sender, EventArgs e)
@@ -113,7 +143,20 @@ namespace CKAN
             }
         }
 
-        private void ClearCacheButton_Click(object sender, EventArgs e)
+        private void PurgeToLimitMenuItem_Click(object sender, EventArgs e)
+        {
+            // Purge old downloads if we're over the limit
+            if (winReg.CacheSizeLimit.HasValue)
+            {
+                Main.Instance.Manager.Cache.EnforceSizeLimit(
+                    winReg.CacheSizeLimit.Value,
+                    RegistryManager.Instance(Main.Instance.CurrentInstance).registry
+                );
+                UpdateCacheInfo(winReg.DownloadCacheDir);
+            }
+        }
+
+        private void PurgeAllMenuItem_Click(object sender, EventArgs e)
         {
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
             string confirmationText = String.Format

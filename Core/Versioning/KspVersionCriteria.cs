@@ -6,7 +6,7 @@ namespace CKAN.Versioning
 {
     public class KspVersionCriteria
     {
-        private List<KspVersion> _versions = new List<KspVersion> ();
+        private List<KspVersion> _versions = new List<KspVersion>();
 
         public KspVersionCriteria (KspVersion v)
         {
@@ -32,6 +32,14 @@ namespace CKAN.Versioning
             {
                 return _versions.AsReadOnly();
             }
+        }
+
+        public KspVersionCriteria Union(KspVersionCriteria other)
+        {
+            return new KspVersionCriteria(
+                null,
+                _versions.Union(other.Versions).ToList()
+            );
         }
 
         public override String ToString()

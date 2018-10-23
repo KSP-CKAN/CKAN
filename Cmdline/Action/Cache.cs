@@ -25,6 +25,12 @@ namespace CKAN.CmdLine
             [VerbOption("reset", HelpText = "Set the download cache path to the default")]
             public CommonOptions ResetOptions { get; set; }
 
+            [VerbOption("showlimit", HelpText = "Show the cache size limit")]
+            public CommonOptions ShowLimitOptions { get; set; }
+
+            [VerbOption("setlimit", HelpText = "Set the cache size limit")]
+            public SetLimitOptions SetLimitOptions { get; set; }
+
             [HelpVerbOption]
             public string GetUsage(string verb)
             {
@@ -45,11 +51,15 @@ namespace CKAN.CmdLine
                         case "set":
                             ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] path");
                             break;
+                        case "setlimit":
+                            ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options] megabytes");
+                            break;
 
                         // Now the commands with only --flag type options
                         case "list":
                         case "clear":
                         case "reset":
+                        case "showlimit":
                         default:
                             ht.AddPreOptionsLine($"Usage: ckan cache {verb} [options]");
                             break;
@@ -63,6 +73,12 @@ namespace CKAN.CmdLine
         {
             [ValueOption(0)]
             public string Path { get; set; }
+        }
+
+        private class SetLimitOptions : CommonOptions
+        {
+            [ValueOption(0)]
+            public long Megabytes { get; set; } = -1;
         }
 
         /// <summary>
@@ -109,6 +125,14 @@ namespace CKAN.CmdLine
 
                         case "reset":
                             exitCode = ResetCacheDirectory((CommonOptions)suboptions);
+                            break;
+
+                        case "showlimit":
+                            exitCode = ShowCacheSizeLimit((CommonOptions)suboptions);
+                            break;
+
+                        case "setlimit":
+                            exitCode = SetCacheSizeLimit((SetLimitOptions)suboptions);
                             break;
 
                         default:
@@ -176,6 +200,34 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        private int ShowCacheSizeLimit(CommonOptions options)
+        {
+            IWin32Registry winReg = new Win32Registry();
+            if (winReg.CacheSizeLimit.HasValue)
+            {
+                user.RaiseMessage(CkanModule.FmtSize(winReg.CacheSizeLimit.Value));
+            }
+            else
+            {
+                user.RaiseMessage("Unlimited");
+            }
+            return Exit.OK;
+        }
+
+        private int SetCacheSizeLimit(SetLimitOptions options)
+        {
+            IWin32Registry winReg = new Win32Registry();
+            if (options.Megabytes < 0)
+            {
+                winReg.CacheSizeLimit = null;
+            }
+            else
+            {
+                winReg.CacheSizeLimit = options.Megabytes * (long)1024 * (long)1024;
+            }
+            return ShowCacheSizeLimit(null);
+        }
+
         private void printCacheInfo()
         {
             int fileCount;
@@ -187,7 +239,7 @@ namespace CKAN.CmdLine
         private KSPManager manager;
         private IUser      user;
 
-        private static readonly ILog       log = LogManager.GetLogger(typeof(Cache));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Cache));
     }
 
 }

@@ -1097,15 +1097,54 @@ namespace CKAN
         public Dictionary<string, List<CkanModule>> GetSha1Index()
         {
             var index = new Dictionary<string, List<CkanModule>>();
-            foreach (var kvp in available_modules) {
+            foreach (var kvp in available_modules)
+            {
                 AvailableModule am = kvp.Value;
-                foreach (var kvp2 in am.module_version) {
+                foreach (var kvp2 in am.module_version)
+                {
                     CkanModule mod = kvp2.Value;
-                    if (mod.download_hash != null) {
-                        if (index.ContainsKey(mod.download_hash.sha1)) {
+                    if (mod.download_hash != null)
+                    {
+                        if (index.ContainsKey(mod.download_hash.sha1))
+                        {
                             index[mod.download_hash.sha1].Add(mod);
-                        } else {
+                        }
+                        else
+                        {
                             index.Add(mod.download_hash.sha1, new List<CkanModule>() {mod});
+                        }
+                    }
+                }
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Get a dictionary of all mod versions indexed by their download URLs' hash.
+        /// Useful for finding the mods for a group of URLs without repeatedly searching the entire registry.
+        /// </summary>
+        /// <returns>
+        /// dictionary[urlHash] = {mod1, mod2, mod3};
+        /// </returns>
+        public Dictionary<string, List<CkanModule>> GetDownloadHashIndex()
+        {
+            var index = new Dictionary<string, List<CkanModule>>();
+            foreach (var kvp in available_modules)
+            {
+                AvailableModule am = kvp.Value;
+                foreach (var kvp2 in am.module_version)
+                {
+                    CkanModule mod = kvp2.Value;
+                    if (mod.download != null)
+                    {
+                        string hash = NetFileCache.CreateURLHash(mod.download);
+                        if (index.ContainsKey(hash))
+                        {
+                            index[hash].Add(mod);
+                        }
+                        else
+                        {
+                            index.Add(hash, new List<CkanModule>() {mod});
                         }
                     }
                 }

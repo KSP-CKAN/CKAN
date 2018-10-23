@@ -44,6 +44,10 @@ namespace Tests.Core
         /// Path to download cache folder for the fake registry
         /// </summary>
         public string                      DownloadCacheDir { get; set; }
+        /// <summary>
+        /// Maximum number of bytes of downloads to retain on disk
+        /// </summary>
+        public long?                       CacheSizeLimit   { get; set; }
 
         /// <summary>
         /// Number of instances in the fake registry
