@@ -222,6 +222,31 @@ namespace CKAN
             return null;
         }
 
+        /// <summary>
+        /// Set the properties to match a change set element.
+        /// Doesn't update grid, use SetInstallChecked or SetUpgradeChecked
+        /// if you need to update the grid.
+        /// </summary>
+        /// <param name="change">Type of change</param>
+        public void SetRequestedChange(GUIModChangeType change)
+        {
+            switch (change)
+            {
+                case GUIModChangeType.Install:
+                    IsInstallChecked = true;
+                    IsUpgradeChecked = false;
+                    break;
+                case GUIModChangeType.Remove:
+                    IsInstallChecked = false;
+                    IsUpgradeChecked = false;
+                    break;
+                case GUIModChangeType.Update:
+                    IsInstallChecked = true;
+                    IsUpgradeChecked = true;
+                    break;
+            }
+        }
+
         public static implicit operator CkanModule(GUIMod mod)
         {
             return mod.ToModule();
