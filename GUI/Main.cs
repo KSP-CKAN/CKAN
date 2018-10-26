@@ -242,7 +242,7 @@ namespace CKAN
                 Util.HideConsoleWindow();
 
             // Disable the modinfo controls until a mod has been choosen.
-            ModInfoTabControl.SelectedModule = null;
+            ActiveModInfo = null;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,
             // making our download speeds really slow unless you move the mouse while
@@ -974,6 +974,76 @@ namespace CKAN
             else
             {
                 AddStatusMessage("Not found.");
+            }
+        }
+
+        private GUIMod ActiveModInfo
+        {
+            set {
+                if (value == null)
+                {
+                    splitContainer1.Panel2Collapsed = true;
+                }
+                else
+                {
+                    if (splitContainer1.Panel2Collapsed)
+                    {
+                        splitContainer1.Panel2Collapsed = false;
+                    }
+                    ModInfoTabControl.SelectedModule = value;
+                }
+            }
+        }
+
+        private void ShowSelectionModInfo(ListView.SelectedListViewItemCollection selection)
+        {
+            CkanModule module = (CkanModule)selection?.Cast<ListViewItem>().FirstOrDefault()?.Tag;
+
+            ActiveModInfo = module == null ? null : new GUIMod(
+                module,
+                RegistryManager.Instance(CurrentInstance).registry,
+                CurrentInstance.VersionCriteria()
+            );
+        }
+
+        private void ChangesListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowSelectionModInfo(ChangesListView.SelectedItems);
+        }
+
+        private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowSelectionModInfo(RecommendedModsListView.SelectedItems);
+        }
+
+        private void ChooseProvidedModsListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowSelectionModInfo(ChooseProvidedModsListView.SelectedItems);
+        }
+
+        private void MainTabControl_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (MainTabControl.SelectedTab?.Name)
+            {
+                case "ManageModsTabPage":
+                    ModList_SelectedIndexChanged(sender, e);
+                    break;
+
+                case "WaitTabPage":
+                    ShowSelectionModInfo(null);
+                    break;
+
+                case "ChangesetTabPage":
+                    ShowSelectionModInfo(ChangesListView.SelectedItems);
+                    break;
+
+                case "ChooseRecommendedModsTabPage":
+                    ShowSelectionModInfo(RecommendedModsListView.SelectedItems);
+                    break;
+
+                case "ChooseProvidedModsTabPage":
+                    ShowSelectionModInfo(ChooseProvidedModsListView.SelectedItems);
+                    break;
             }
         }
 

@@ -270,7 +270,7 @@ namespace CKAN
         {
             var module = GetSelectedModule();
 
-            ModInfoTabControl.SelectedModule = module;
+            ActiveModInfo = module;
             if (module == null)
                 return;
 
