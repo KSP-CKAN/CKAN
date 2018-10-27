@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
             this.NewRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
@@ -301,7 +302,7 @@
             this.CachePath.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CachePath.Location = new System.Drawing.Point(8, 24);
             this.CachePath.Name = "CachePath";
-            this.CachePath.Size = new System.Drawing.Size(620, 17);
+            this.CachePath.Size = new System.Drawing.Size(620, 22);
             this.CachePath.TabIndex = 11;
             this.CachePath.TextChanged += new System.EventHandler(this.CachePath_TextChanged);
             //
@@ -332,7 +333,7 @@
             this.CacheLimit.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CacheLimit.Location = new System.Drawing.Point(156, 72);
             this.CacheLimit.Name = "CacheLimit";
-            this.CacheLimit.Size = new System.Drawing.Size(75, 17);
+            this.CacheLimit.Size = new System.Drawing.Size(75, 22);
             this.CacheLimit.TabIndex = 11;
             this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
             this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
