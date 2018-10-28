@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Clean up popup positioning in GUI (#2544 by: HebaruSan; reviewed: politas)
 - [Core] Don't throw exceptions when resetting cache dir (#2547 by: HebaruSan; reviewed: politas)
 - [GUI] Fix crash at startup on Windows risen in #2536 (#2557 by: HebaruSan; reviewed: Olympic1)
+- [Core] Allow game version of "any" with a vref (#2553 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.25.3 (Woomera)
 

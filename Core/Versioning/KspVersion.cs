@@ -379,6 +379,12 @@ namespace CKAN.Versioning
             if (ReferenceEquals(input, null))
                 return false;
 
+            if (input == "any")
+            {
+                result = KspVersion.Any;
+                return true;
+            }
+
             var major = Undefined;
             var minor = Undefined;
             var patch = Undefined;
@@ -784,8 +790,6 @@ namespace CKAN.Versioning
             {
                 case null:
                     return null;
-                case "any":
-                    return KspVersion.Any;
                 default:
                     KspVersion result;
 
