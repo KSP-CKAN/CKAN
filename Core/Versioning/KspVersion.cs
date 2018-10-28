@@ -95,6 +95,19 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
+        /// Check whether a version is null or Any.
+        /// We group them here because they mean the same thing.
+        /// </summary>
+        /// <param name="v">The version to check</param>
+        /// <returns>
+        /// True if null or Any, false otherwise
+        /// </returns>
+        public static bool IsNullOrAny(KspVersion v)
+        {
+            return v == null || v.IsAny;
+        }
+
+        /// <summary>
         /// Initialize a new instance of the <see cref="KspVersion"/> class with all components unspecified.
         /// </summary>
         public KspVersion()
