@@ -548,7 +548,11 @@ Do you wish to reinstall now?", sb)))
             try
             {
                 CkanModule module = CkanModule.FromJson(metadata);
-                log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
+                // FromJson can return null for the empty string
+                if (module != null)
+                {
+                    log.DebugFormat("Found {0} version {1}", module.identifier, module.version);
+                }
                 return module;
             }
             catch (Exception exception)
