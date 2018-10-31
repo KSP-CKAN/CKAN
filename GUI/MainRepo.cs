@@ -91,7 +91,7 @@ namespace CKAN
         {
             if ((e.Result as int? ?? 0) > 0)
             {
-                UpdateModsList(repo_updated: true);
+                UpdateModsList(true, ChangeSet);
                 AddStatusMessage("Repositories successfully updated.");
                 ShowRefreshQuestion();
                 HideWaitDialog(true);

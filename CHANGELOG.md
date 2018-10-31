@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Allow game version of "any" with a vref (#2553 by: HebaruSan; reviewed: Olympic1)
 - [Core] Fix null ref exception when repo has empty ckan file (#2549 by: HebaruSan; reviewed: Olympic1)
 - [Multiple] Avoid null ksp_version in Netkan (#2558 by: HebaruSan; reviewed: politas)
+- [GUI] Show latest updates after refresh (#2552 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 

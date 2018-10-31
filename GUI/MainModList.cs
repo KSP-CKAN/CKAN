@@ -14,11 +14,6 @@ namespace CKAN
 {
     public partial class Main
     {
-        private void UpdateFilters(Main control)
-        {
-            Util.Invoke(control, _UpdateFilters);
-        }
-
         private IEnumerable<DataGridViewRow> _SortRowsByColumn(IEnumerable<DataGridViewRow> rows)
         {
             switch (this.configuration.SortByColumnIndex)
@@ -97,9 +92,15 @@ namespace CKAN
             return -(row.Tag as GUIMod)?.InstallDate?.Ticks ?? 0;
         }
 
+        private void UpdateFilters(Main control)
+        {
+            Util.Invoke(control, _UpdateFilters);
+        }
+
         private void _UpdateFilters()
         {
-            if (ModList == null) return;
+            if (ModList == null)
+                return;
 
             // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
             // To make the filtering process faster, Copy the list of rows. Filter out the hidden and replace the
@@ -138,12 +139,12 @@ namespace CKAN
             }
         }
 
-        public void UpdateModsList(Boolean repo_updated = false, List<ModChange> mc = null)
+        public void UpdateModsList(Boolean repo_updated = false, IEnumerable<ModChange> mc = null)
         {
             Util.Invoke(this, () => _UpdateModsList(repo_updated, mc ?? new List<ModChange>()));
         }
 
-        private void _UpdateModsList(bool repo_updated, List<ModChange> mc)
+        private void _UpdateModsList(bool repo_updated, IEnumerable<ModChange> mc)
         {
             log.Info("Updating the mod list");
 
@@ -163,6 +164,17 @@ namespace CKAN
                 registry.Incompatible(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
             );
+
+            if (mc != null)
+            {
+                foreach (ModChange change in mc)
+                {
+                    // Propagate IsInstallChecked and IsUpgradeChecked to the next generation
+                    gui_mods.FirstOrDefault(
+                        mod => mod.Identifier == change.Mod.Identifier
+                    )?.SetRequestedChange(change.ChangeType);
+                }
+            }
 
             var old_modules = mainModList.Modules.ToDictionary(m => m, m => m.IsIncompatible);
             if (repo_updated)
@@ -195,9 +207,8 @@ namespace CKAN
                 }
             }
 
-            // Update our mod listing. If we're doing a repo update, then we don't refresh
-            // all (in case the user has selected changes they wish to apply).
-            mainModList.ConstructModList(gui_mods.ToList(), mc, !repo_updated, configuration.HideEpochs, configuration.HideV);
+            // Update our mod listing
+            mainModList.ConstructModList(gui_mods.ToList(), mc, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
@@ -673,39 +684,22 @@ namespace CKAN
 
         /// <summary>
         /// Constructs the mod list suitable for display to the user.
-        /// This manipulates <c>full_list_of_mod_rows</c> as it runs, and by default
-        /// will only update entries which have changed or were previously missing.
-        /// (Set <c>refreshAll</c> to force update everything.)
+        /// Manipulates <c>full_list_of_mod_rows</c>.
         /// </summary>
-        /// <returns>The mod list.</returns>
         /// <param name="modules">A list of modules that may require updating</param>
-        /// <param name="refreshAll">If set to <c>true</c> then always rebuild the list from scratch</param>
+        /// <param name="mc">Changes the user has made</param>
         /// <param name="hideEpochs">If true, remove epochs from the displayed versions</param>
-        public IEnumerable<DataGridViewRow> ConstructModList(IEnumerable<GUIMod> modules, List<ModChange> mc = null, bool refreshAll = false, bool hideEpochs = false, bool hideV = false)
+        /// <param name="hideV">If true, strip 'v' prefix from versions</param>
+        /// <returns>The mod list</returns>
+        public IEnumerable<DataGridViewRow> ConstructModList(
+            IEnumerable<GUIMod> modules, IEnumerable<ModChange> mc = null,
+            bool hideEpochs = false, bool hideV = false)
         {
-
-            if (refreshAll || full_list_of_mod_rows == null)
-            {
-                full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
-            }
-
-            // We're only going to update the status of rows that either don't already exist,
-            // or which exist but have changed their latest version
-            // or whose installation status has changed
-            //
-            // TODO: Will this catch a mod where the latest version number remains the same, but
-            // another part of the metadata (eg: dependencies or description) has changed?
-            IEnumerable<GUIMod> rowsToUpdate = modules.Where(
-                mod => !full_list_of_mod_rows.ContainsKey(mod.Identifier) ||
-                mod.LatestVersion != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod)?.LatestVersion ||
-                mod.IsInstalled != (full_list_of_mod_rows[mod.Identifier].Tag as GUIMod)?.IsInstalled);
-
-            // Let's update our list!
-            foreach (var mod in rowsToUpdate)
-            {
-                full_list_of_mod_rows.Remove(mod.Identifier);
-                full_list_of_mod_rows.Add(mod.Identifier, MakeRow(mod, mc, hideEpochs, hideV));
-            }
+            List<ModChange> changes = mc?.ToList();
+            full_list_of_mod_rows = modules.ToDictionary(
+                gm => gm.Identifier,
+                gm => MakeRow(gm, changes, hideEpochs, hideV)
+            );
             return full_list_of_mod_rows.Values;
         }
 
