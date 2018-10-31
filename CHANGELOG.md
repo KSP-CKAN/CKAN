@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix crash at startup on Windows risen in #2536 (#2557 by: HebaruSan; reviewed: Olympic1)
 - [Core] Allow game version of "any" with a vref (#2553 by: HebaruSan; reviewed: Olympic1)
 - [Core] Fix null ref exception when repo has empty ckan file (#2549 by: HebaruSan; reviewed: Olympic1)
+- [Multiple] Avoid null ksp_version in Netkan (#2558 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 

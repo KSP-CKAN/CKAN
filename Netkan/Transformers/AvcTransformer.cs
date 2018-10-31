@@ -119,16 +119,16 @@ namespace CKAN.NetKAN.Transformers
             var kspMins  = new List<KspVersion>();
             var kspMaxes = new List<KspVersion>();
 
-            if (existingKspMin != null)
+            if (!KspVersion.IsNullOrAny(existingKspMin))
                 kspMins.Add(existingKspMin);
 
-            if (avcKspMin != null)
+            if (!KspVersion.IsNullOrAny(avcKspMin))
                 kspMins.Add(avcKspMin);
 
-            if (existingKspMax != null)
+            if (!KspVersion.IsNullOrAny(existingKspMax))
                 kspMaxes.Add(existingKspMax);
 
-            if (avcKspMax != null)
+            if (!KspVersion.IsNullOrAny(avcKspMax))
                 kspMaxes.Add(avcKspMax);
 
             var kspMin = kspMins.Any()  ? kspMins.Min()  : null;
