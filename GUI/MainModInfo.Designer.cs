@@ -70,6 +70,7 @@
             this.MetaDataLowerLayoutPanel.SuspendLayout();
             this.RelationshipTabPage.SuspendLayout();
             this.ContentTabPage.SuspendLayout();
+            this.AllModVersions.SuspendLayout();
             this.AllModVersionsTabPage.SuspendLayout();
             this.SuspendLayout();
             //
@@ -90,7 +91,7 @@
             //
             // MetadataTabPage
             //
-            this.MetadataTabPage.Controls.Add(this.splitContainer2);
+            this.MetadataTabPage.Controls.Add(this.MetaDataLowerLayoutPanel);
             this.MetadataTabPage.Location = new System.Drawing.Point(4, 25);
             this.MetadataTabPage.Name = "MetadataTabPage";
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -101,7 +102,6 @@
             //
             // splitContainer2
             //
-            this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(3, 3);
             this.splitContainer2.Name = "splitContainer2";
@@ -114,7 +114,7 @@
             //
             // splitContainer2.Panel2
             //
-            this.splitContainer2.Panel2.Controls.Add(this.MetaDataLowerLayoutPanel);
+            this.splitContainer2.Panel2.Controls.Add(this.ModInfoTabControl);
             this.splitContainer2.Panel2MinSize = 225;
             this.splitContainer2.Size = new System.Drawing.Size(348, 496);
             this.splitContainer2.SplitterWidth = 10;
@@ -487,7 +487,7 @@
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.ModInfoTabControl);
+            this.Controls.Add(this.splitContainer2);
             this.Name = "MainModInfoTab";
             this.Size = new System.Drawing.Size(362, 531);
             this.ModInfoTabControl.ResumeLayout(false);
@@ -501,9 +501,10 @@
             this.MetaDataLowerLayoutPanel.PerformLayout();
             this.RelationshipTabPage.ResumeLayout(false);
             this.ContentTabPage.ResumeLayout(false);
+            this.AllModVersions.ResumeLayout(false);
             this.AllModVersionsTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
-
+            this.PerformLayout();
         }
 
         #endregion
