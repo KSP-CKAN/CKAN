@@ -135,7 +135,7 @@ namespace CKAN
 
         public void InstallList(List<string> modules, RelationshipResolverOptions options, IDownloader downloader = null)
         {
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
+            var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             InstallList(resolver.ModList().ToList(), options, downloader);
         }
 
@@ -150,7 +150,7 @@ namespace CKAN
         public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, IDownloader downloader = null)
         {
             // TODO: Break this up into smaller pieces! It's huge!
-            var resolver = new RelationshipResolver(modules, options, registry_manager.registry, ksp.VersionCriteria());
+            var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             List<CkanModule> downloads = new List<CkanModule>();
 
@@ -1018,7 +1018,7 @@ namespace CKAN
             options.with_recommends = false;
             options.with_suggests = false;
 
-            var resolver = new RelationshipResolver(identifiers.ToList(), options, registry_manager.registry, ksp.VersionCriteria());
+            var resolver = new RelationshipResolver(identifiers.ToList(), null, options, registry_manager.registry, ksp.VersionCriteria());
             Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
         }
 
