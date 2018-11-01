@@ -78,9 +78,7 @@ namespace CKAN
 
         private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
         {
-            ShowWaitDialog();
             installCanceled = false;
-
             ClearLog();
 
             var opts = (KeyValuePair<ModChanges, RelationshipResolverOptions>) e.Argument;
@@ -134,16 +132,14 @@ namespace CKAN
 
             if (installCanceled)
             {
-                tabController.HideTab("WaitTabPage");
                 tabController.ShowTab("ManageModsTabPage");
                 e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                 return;
             }
 
             // Now let's make all our changes.
-
             tabController.RenameTab("WaitTabPage", "Status log");
-            tabController.ShowTab("WaitTabPage");
+            ShowWaitDialog();
             tabController.SetTabLock(true);
 
             IDownloader downloader = new NetAsyncModulesDownloader(GUI.user);
