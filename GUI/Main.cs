@@ -76,6 +76,9 @@ namespace CKAN
 
         private Timer filterTimer;
 
+        private bool enableTrayIcon;
+        private bool minimizeToTray;
+
         private DateTime lastSearchTime;
         private string lastSearchKey;
 
@@ -359,6 +362,9 @@ namespace CKAN
                     log.Error("Error in auto-update", exception);
                 }
             }
+
+            CheckTrayState();
+            RunRefreshTimer();
 
             m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
 
@@ -1065,6 +1071,99 @@ namespace CKAN
             Instance.ShowWaitDialog(false);
             ModInfoTabControl.CacheWorker.RunWorkerAsync(module.ToCkanModule());
         }
+
+        private void Main_Resize(object sender, EventArgs e)
+        {
+            UpdateTrayState();
+        }
+
+        private void minimizeNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+        }
+
+        private void updatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            MarkAllUpdatesToolButton_Click(sender, e);
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateRepo();
+        }
+
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            configuration.RefreshPaused = !configuration.RefreshPaused;
+            if (configuration.RefreshPaused)
+            {
+                refreshTimer.Stop();
+                pauseToolStripMenuItem.Text = "Resume";
+            }
+            else
+            {
+                refreshTimer.Start();
+                pauseToolStripMenuItem.Text = "Pause";
+            }
+        }
+
+        private void openCKANToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+        }
+
+        private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            new SettingsDialog().ShowDialog();
+        }
+
+        #region Tray Behaviour
+
+        public void CheckTrayState()
+        {
+            enableTrayIcon = configuration.EnableTrayIcon;
+            minimizeToTray = configuration.MinimizeToTray;
+            UpdateTrayState();
+        }
+
+        private void UpdateTrayState()
+        {
+            if (enableTrayIcon)
+            {
+                minimizeNotifyIcon.Visible = true;
+
+                if (minimizeToTray && WindowState == FormWindowState.Minimized)
+                    Hide();
+            }
+            else
+            {
+                minimizeNotifyIcon.Visible = false;
+            }
+        }
+
+        public void UpdateTrayInfo()
+        {
+            var count = mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable);
+
+            if (count == 0)
+            {
+                updatesToolStripMenuItem.Enabled = false;
+                updatesToolStripMenuItem.Text = "No available updates";
+            }
+            else
+            {
+                updatesToolStripMenuItem.Enabled = true;
+                updatesToolStripMenuItem.Text = $"{count} available update" + (count == 1 ? "" : "s");
+            }
+        }
+
+        #endregion
 
         #region Navigation History
 

@@ -26,7 +26,6 @@ namespace CKAN
         {
             InitializeComponent();
             this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
-            StartPosition = FormStartPosition.CenterScreen;
             winReg = new Win32Registry();
         }
 
@@ -47,6 +46,10 @@ namespace CKAN
             HideEpochsCheckbox.Checked = Main.Instance.configuration.HideEpochs;
             HideVCheckbox.Checked = Main.Instance.configuration.HideV;
             AutoSortUpdateCheckBox.Checked = Main.Instance.configuration.AutoSortByUpdate;
+            EnableTrayIconCheckBox.Checked = MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon;
+            MinimizeToTrayCheckBox.Checked = Main.Instance.configuration.MinimizeToTray;
+
+            UpdateRefreshRate();
 
             UpdateCacheInfo(winReg.DownloadCacheDir);
             if (winReg.CacheSizeLimit.HasValue)
@@ -54,6 +57,14 @@ namespace CKAN
                 // Show setting in MB
                 CacheLimit.Text = (winReg.CacheSizeLimit.Value / 1024 / 1024).ToString();
             }
+        }
+
+        private void UpdateRefreshRate()
+        {
+            int rate = winReg.RefreshRate;
+            RefreshTextBox.Text = rate.ToString();
+            PauseRefreshCheckBox.Enabled = rate != 0;
+            Main.Instance.UpdateRefreshTimer();
         }
 
         private void RefreshReposListBox()
@@ -517,6 +528,41 @@ namespace CKAN
             Main.Instance.configuration.Save();
         }
 
+        private void EnableTrayIconCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
+            Main.Instance.configuration.Save();
+            Main.Instance.CheckTrayState();
+        }
 
+        private void MinimizeToTrayCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.configuration.MinimizeToTray = MinimizeToTrayCheckBox.Checked;
+            Main.Instance.configuration.Save();
+            Main.Instance.CheckTrayState();
+        }
+
+        private void RefreshTextBox_TextChanged(object sender, EventArgs e)
+        {
+            winReg.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
+            UpdateRefreshRate();
+        }
+
+        private void RefreshTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void PauseRefreshCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Main.Instance.configuration.RefreshPaused = PauseRefreshCheckBox.Checked;
+            Main.Instance.configuration.Save();
+
+            if (Main.Instance.configuration.RefreshPaused)
+                Main.Instance.refreshTimer.Stop();
+            else
+                Main.Instance.refreshTimer.Start();
+        }
     }
 }

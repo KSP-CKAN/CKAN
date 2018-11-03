@@ -104,7 +104,9 @@
     </Compile>
     <Compile Include="Configuration.cs" />
     <Compile Include="ControlFactory.cs" />
-    <Compile Include="DropdownMenuButton.cs" />
+    <Compile Include="DropdownMenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +154,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainImport.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainInstall.cs">
       <SubType>Form</SubType>

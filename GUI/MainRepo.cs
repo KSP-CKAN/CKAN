@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
+using System.Timers;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -8,7 +9,9 @@ namespace CKAN
 
     public partial class Main
     {
+        private Win32Registry winReg;
         private BackgroundWorker m_UpdateRepoWorker;
+        public Timer refreshTimer;
 
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
@@ -118,6 +121,45 @@ namespace CKAN
                 }
                 configuration.Save();
                 currentUser.displayYesNo = null;
+            }
+        }
+
+        public void RunRefreshTimer()
+        {
+            winReg = new Win32Registry();
+            if (refreshTimer == null)
+            {
+                if (winReg.RefreshRate == 0)
+                    return;
+
+                refreshTimer = new Timer
+                {
+                    // Interval is set to 1 minute * RefreshRate
+                    Interval = 1000 * 60 * winReg.RefreshRate,
+                    AutoReset = true,
+                    Enabled = true
+                };
+                refreshTimer.Elapsed += OnRefreshTimer;
+                refreshTimer.Start();
+            }
+        }
+
+        public void UpdateRefreshTimer()
+        {
+            refreshTimer.Stop();
+            if (winReg.RefreshRate == 0)
+                return;
+
+            refreshTimer.Interval = 1000 * 60 * winReg.RefreshRate;
+            refreshTimer.Start();
+        }
+
+        private void OnRefreshTimer(object sender, ElapsedEventArgs e)
+        {
+            if (!configuration.RefreshPaused)
+            {
+                // Just a safety check
+                UpdateRepo();
             }
         }
     }
