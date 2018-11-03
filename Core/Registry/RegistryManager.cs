@@ -359,8 +359,7 @@ namespace CKAN
             using (JsonTextWriter writer = new JsonTextWriter(sw))
             {
                 writer.Formatting = Formatting.Indented;
-                writer.Indentation = 1;
-                writer.IndentChar = '\t';
+                writer.Indentation = 0;
 
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(writer, registry);
