@@ -181,8 +181,7 @@ namespace CKAN
         private void minimizeNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
         {
             // Unminimize
-            Show();
-            WindowState = System.Windows.Forms.FormWindowState.Normal;
+            OpenWindow();
 
             // Check all the upgrade checkboxes
             MarkAllUpdatesToolButton_Click(null, null);

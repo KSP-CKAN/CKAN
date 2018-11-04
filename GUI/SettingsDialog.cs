@@ -48,6 +48,7 @@ namespace CKAN
             AutoSortUpdateCheckBox.Checked = Main.Instance.configuration.AutoSortByUpdate;
             EnableTrayIconCheckBox.Checked = MinimizeToTrayCheckBox.Enabled = Main.Instance.configuration.EnableTrayIcon;
             MinimizeToTrayCheckBox.Checked = Main.Instance.configuration.MinimizeToTray;
+            PauseRefreshCheckBox.Checked = Main.Instance.configuration.RefreshPaused;
 
             UpdateRefreshRate();
 

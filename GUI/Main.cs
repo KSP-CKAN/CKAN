@@ -445,7 +445,7 @@ namespace CKAN
             configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
 
             //copy window maximized state to app settings
-            configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized ? true : false;
+            configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized;
 
             // Copy panel position to app settings
             configuration.PanelPosition = splitContainer1.SplitterDistance;
@@ -1079,14 +1079,12 @@ namespace CKAN
 
         private void minimizeNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
+            OpenWindow();
         }
 
         private void updatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
+            OpenWindow();
             MarkAllUpdatesToolButton_Click(sender, e);
         }
 
@@ -1112,14 +1110,12 @@ namespace CKAN
 
         private void openCKANToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
+            OpenWindow();
         }
 
         private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
+            OpenWindow();
             new SettingsDialog().ShowDialog();
         }
 
@@ -1139,7 +1135,15 @@ namespace CKAN
                 minimizeNotifyIcon.Visible = true;
 
                 if (minimizeToTray && WindowState == FormWindowState.Minimized)
+                {
                     Hide();
+                }
+                else
+                {
+                    // Save the window state
+                    configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized;
+                    configuration.Save();
+                }
             }
             else
             {
@@ -1161,6 +1165,15 @@ namespace CKAN
                 updatesToolStripMenuItem.Enabled = true;
                 updatesToolStripMenuItem.Text = $"{count} available update" + (count == 1 ? "" : "s");
             }
+        }
+
+        /// <summary>
+        /// Open the GUI and set it to the correct state.
+        /// </summary>
+        public void OpenWindow()
+        {
+            Show();
+            WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
         }
 
         #endregion
