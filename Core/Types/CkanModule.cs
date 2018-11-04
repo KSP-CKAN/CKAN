@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -259,7 +260,8 @@ namespace CKAN
         [JsonProperty("download_hash", NullValueHandling = NullValueHandling.Ignore)]
         public DownloadHashesDescriptor download_hash;
 
-        [JsonProperty("download_content_type", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("download_content_type", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue("application/zip")]
         public string download_content_type;
 
         [JsonProperty("identifier", Required = Required.Always)]
@@ -274,7 +276,8 @@ namespace CKAN
         [JsonProperty("ksp_version_min", NullValueHandling = NullValueHandling.Ignore)]
         public KspVersion ksp_version_min;
 
-        [JsonProperty("ksp_version_strict")]
+        [JsonProperty("ksp_version_strict", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool ksp_version_strict = false;
 
         [JsonProperty("license")]

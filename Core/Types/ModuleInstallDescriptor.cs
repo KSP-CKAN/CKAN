@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -26,10 +27,12 @@ namespace CKAN
         [JsonProperty("find_regexp", NullValueHandling = NullValueHandling.Ignore)]
         public string find_regexp;
 
-        [JsonProperty("find_matches_files")]
+        [JsonProperty("find_matches_files", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool find_matches_files;
 
-        [JsonProperty("install_to", Required = Required.Always)]
+        [JsonProperty("install_to", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue("GameData")]
         public string install_to;
 
         [JsonProperty("as", NullValueHandling = NullValueHandling.Ignore)]

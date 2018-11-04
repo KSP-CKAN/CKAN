@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Avoid null ksp_version in Netkan (#2558 by: HebaruSan; reviewed: politas)
 - [GUI] Show latest updates after refresh (#2552 by: HebaruSan; reviewed: politas)
 - [GUI] Don't show status progress bar till actually installing (#2560 by: HebaruSan; reviewed: Olympic1)
+- [Core] Purge 5.5 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.25.3 (Woomera)
 
