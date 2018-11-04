@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix null ref exception when repo has empty ckan file (#2549 by: HebaruSan; reviewed: Olympic1)
 - [Multiple] Avoid null ksp_version in Netkan (#2558 by: HebaruSan; reviewed: politas)
 - [GUI] Show latest updates after refresh (#2552 by: HebaruSan; reviewed: politas)
+- [GUI] Don't show status progress bar till actually installing (#2560 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.25.3 (Woomera)
 
