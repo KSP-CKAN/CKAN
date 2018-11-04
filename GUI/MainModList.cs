@@ -606,7 +606,10 @@ namespace CKAN
                 TooManyModsProvideKraken kraken;
                 try
                 {
-                    new RelationshipResolver(modules_to_install.ToList(), options, registry, version);
+                    new RelationshipResolver(
+                        modules_to_install,
+                        modules_to_remove,
+                        options, registry, version);
                     handled_all_too_many_provides = true;
                     continue;
                 }
@@ -635,10 +638,10 @@ namespace CKAN
                 changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
             }
 
-            var resolver = new RelationshipResolver(options, registry, version);
-            resolver.RemoveModsFromInstalledList(
-                changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()));
-            resolver.AddModulesToInstall(modules_to_install.ToList());
+            var resolver = new RelationshipResolver(
+                modules_to_install,
+                changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()),
+                options, registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
                     .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));
@@ -859,7 +862,12 @@ namespace CKAN
                     name => CkanModule.FromIDandVersion(registry, name, ksp_version)
                 )
             );
-            var resolver = new RelationshipResolver(mods_to_check, options, registry, ksp_version);
+            var resolver = new RelationshipResolver(
+                mods_to_check,
+                change_set.Where(ch => ch.ChangeType == GUIModChangeType.Remove)
+                    .Select(ch => ch.Mod.ToModule()),
+                options, registry, ksp_version
+            );
             return resolver.ConflictList.ToDictionary(item => new GUIMod(item.Key, registry, ksp_version),
                 item => item.Value);
         }

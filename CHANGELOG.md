@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show latest updates after refresh (#2552 by: HebaruSan; reviewed: politas)
 - [GUI] Don't show status progress bar till actually installing (#2560 by: HebaruSan; reviewed: Olympic1)
 - [Core] Purge 5.5 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: Olympic1)
+- [GUI] Allow uninstallation of conflicting mods (#2561 by: HebaruSan; reviewed: Olympic1)
 
 ## v1.25.3 (Woomera)
 

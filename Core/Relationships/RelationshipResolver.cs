@@ -125,16 +125,17 @@ namespace CKAN
         /// <summary>
         /// Attempts to convert the module_names to ckan modules via  CkanModule.FromIDandVersion and then calls RelationshipResolver.ctor(IEnumerable{CkanModule}, Registry, KSPVersion)"/>
         /// </summary>
-        /// <param name="module_names"></param>
+        /// <param name="modulesToInstall">Identifiers of modules to install</param>
+        /// <param name="modulesToRemove">Identifiers of modules to remove</param>
         /// <param name="options"></param>
         /// <param name="registry"></param>
         /// <param name="kspversion"></param>
-        public RelationshipResolver(IEnumerable<string> module_names, RelationshipResolverOptions options, IRegistryQuerier registry,
+        public RelationshipResolver(IEnumerable<string> modulesToInstall, IEnumerable<string> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
             KspVersionCriteria kspversion) :
-                this(module_names.Select(name => TranslateModule(name, options, registry, kspversion)).ToList(),
-                    options,
-                    registry,
-                    kspversion)
+                this(
+                    modulesToInstall?.Select(name => TranslateModule(name, options, registry, kspversion)),
+                    modulesToRemove?.Select(name => TranslateModule(name, options, registry, kspversion)),
+                    options, registry, kspversion)
         {
             // Does nothing, just calls the other overloaded constructor
         }
@@ -163,10 +164,23 @@ namespace CKAN
         /// <summary>
         /// Creates a new resolver that will find a way to install all the modules specified.
         /// </summary>
-        public RelationshipResolver(IEnumerable<CkanModule> modules, RelationshipResolverOptions options, IRegistryQuerier registry,
-            KspVersionCriteria kspversion):this(options,registry,kspversion)
+        /// <param name="modulesToInstall">Modules to install</param>
+        /// <param name="modulesToRemove">Modules to remove</param>
+        /// <param name="options"></param>
+        /// <param name="registry"></param>
+        /// <param name="kspversion"></param>
+        public RelationshipResolver(IEnumerable<CkanModule> modulesToInstall, IEnumerable<CkanModule> modulesToRemove, RelationshipResolverOptions options, IRegistryQuerier registry,
+            KspVersionCriteria kspversion)
+            : this(options, registry, kspversion)
         {
-            AddModulesToInstall(modules);
+            if (modulesToRemove != null)
+            {
+                RemoveModsFromInstalledList(modulesToRemove);
+            }
+            if (modulesToInstall != null)
+            {
+                AddModulesToInstall(modulesToInstall);
+            }
         }
 
         /// <summary>
@@ -191,7 +205,7 @@ namespace CKAN
         /// Add modules to consideration of the relationship resolver.
         /// </summary>
         /// <param name="modules">Modules to attempt to install</param>
-        public void AddModulesToInstall(IEnumerable<CkanModule> modules)
+        private void AddModulesToInstall(IEnumerable<CkanModule> modules)
         {
             //Count may need to do a full enumeration. Might as well convert to array
             var ckan_modules = modules as CkanModule[] ?? modules.ToArray();
@@ -265,7 +279,7 @@ namespace CKAN
         /// in which the mod is to be un-installed.
         /// </summary>
         /// <param name="mods">The mods to remove.</param>
-        public void RemoveModsFromInstalledList(IEnumerable<CkanModule> mods)
+        private void RemoveModsFromInstalledList(IEnumerable<CkanModule> mods)
         {
             foreach (var module in mods)
             {

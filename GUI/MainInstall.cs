@@ -510,6 +510,7 @@ namespace CKAN
                 {
                     RelationshipResolver resolver = new RelationshipResolver(
                         new List<CkanModule> { pair.Key },
+                        null,
                         opts,
                         RegistryManager.Instance(manager.CurrentInstance).registry,
                         CurrentInstance.VersionCriteria()
