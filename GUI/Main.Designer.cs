@@ -1112,6 +1112,7 @@
             this.minimizeNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("minimizeNotifyIcon.Icon")));
             this.minimizeNotifyIcon.Text = "CKAN";
             this.minimizeNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseDoubleClick);
+            this.minimizeNotifyIcon.BalloonTipClicked += new System.EventHandler(this.minimizeNotifyIcon_BalloonTipClicked);
             // 
             // minimizedContextMenuStrip
             // 

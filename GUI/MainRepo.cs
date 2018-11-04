@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Net;
 using System.Timers;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -9,7 +10,6 @@ namespace CKAN
 
     public partial class Main
     {
-        private Win32Registry winReg;
         private BackgroundWorker m_UpdateRepoWorker;
         public Timer refreshTimer;
 
@@ -98,6 +98,7 @@ namespace CKAN
                 AddStatusMessage("Repositories successfully updated.");
                 ShowRefreshQuestion();
                 HideWaitDialog(true);
+                UpgradeNotification();
             }
             else
             {
@@ -124,34 +125,31 @@ namespace CKAN
             }
         }
 
-        public void RunRefreshTimer()
+        public void InitRefreshTimer()
         {
-            winReg = new Win32Registry();
             if (refreshTimer == null)
             {
-                if (winReg.RefreshRate == 0)
-                    return;
-
                 refreshTimer = new Timer
                 {
-                    // Interval is set to 1 minute * RefreshRate
-                    Interval = 1000 * 60 * winReg.RefreshRate,
                     AutoReset = true,
                     Enabled = true
                 };
                 refreshTimer.Elapsed += OnRefreshTimer;
-                refreshTimer.Start();
             }
+            UpdateRefreshTimer();
         }
 
         public void UpdateRefreshTimer()
         {
             refreshTimer.Stop();
-            if (winReg.RefreshRate == 0)
-                return;
+            Win32Registry winReg = new Win32Registry();
 
-            refreshTimer.Interval = 1000 * 60 * winReg.RefreshRate;
-            refreshTimer.Start();
+            // Interval is set to 1 minute * RefreshRate
+            if (winReg.RefreshRate > 0)
+            {
+                refreshTimer.Interval = 1000 * 60 * winReg.RefreshRate;
+                refreshTimer.Start();
+            }
         }
 
         private void OnRefreshTimer(object sender, ElapsedEventArgs e)
@@ -162,5 +160,39 @@ namespace CKAN
                 UpdateRepo();
             }
         }
+
+        private void UpgradeNotification()
+        {
+            int numUpgradeable = mainModList.Modules.Count(mod => mod.HasUpdate);
+            if (numUpgradeable > 0)
+            {
+                Util.Invoke(this, () =>
+                {
+                    minimizeNotifyIcon.ShowBalloonTip(
+                        10000,
+                        $"{numUpgradeable} update{(numUpgradeable > 1 ? "s" : "")} available",
+                        $"Click to upgrade",
+                        System.Windows.Forms.ToolTipIcon.Info
+                    );
+                });
+            }
+        }
+
+        private void minimizeNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            // Unminimize
+            Show();
+            WindowState = System.Windows.Forms.FormWindowState.Normal;
+
+            // Check all the upgrade checkboxes
+            MarkAllUpdatesToolButton_Click(null, null);
+
+            // Click Apply
+            ApplyToolButton_Click(null, null);
+
+            // Click Continue
+            ConfirmChangesButton_Click(null, null);
+        }
+
     }
 }

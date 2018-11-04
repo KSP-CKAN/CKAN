@@ -364,7 +364,7 @@ namespace CKAN
             }
 
             CheckTrayState();
-            RunRefreshTimer();
+            InitRefreshTimer();
 
             m_UpdateRepoWorker = new BackgroundWorker { WorkerReportsProgress = false, WorkerSupportsCancellation = true };
 
