@@ -1134,9 +1134,13 @@ namespace CKAN
             {
                 minimizeNotifyIcon.Visible = true;
 
-                if (minimizeToTray && WindowState == FormWindowState.Minimized)
+                if (WindowState == FormWindowState.Minimized)
                 {
-                    Hide();
+                    if (minimizeToTray)
+                    {
+                        // Remove our taskbar entry
+                        Hide();
+                    }
                 }
                 else
                 {
