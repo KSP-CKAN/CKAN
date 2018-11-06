@@ -65,6 +65,7 @@ namespace CKAN
             int rate = winReg.RefreshRate;
             RefreshTextBox.Text = rate.ToString();
             PauseRefreshCheckBox.Enabled = rate != 0;
+            Main.Instance.pauseToolStripMenuItem.Enabled = winReg.RefreshRate != 0;
             Main.Instance.UpdateRefreshTimer();
         }
 
