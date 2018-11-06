@@ -48,6 +48,10 @@ namespace Tests.Core
         /// Maximum number of bytes of downloads to retain on disk
         /// </summary>
         public long?                       CacheSizeLimit   { get; set; }
+        /// <summary>
+        /// Interval in minutes to refresh the modlist
+        /// </summary>
+        public int                         RefreshRate      { get; set; }
 
         /// <summary>
         /// Number of instances in the fake registry

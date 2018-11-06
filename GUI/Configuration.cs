@@ -14,11 +14,15 @@ namespace CKAN
         public bool CheckForUpdatesOnLaunch = false;
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
+        public bool EnableTrayIcon = false;
+        public bool MinimizeToTray = false;
+
         public bool HideEpochs = true;
         public bool HideV = false;
 
         public bool RefreshOnStartup = true; // Defaults to true, so everyone is forced to refresh on first start
         public bool RefreshOnStartupNoNag = false;
+        public bool RefreshPaused = false;
 
         public bool AutoSortByUpdate = true;
 

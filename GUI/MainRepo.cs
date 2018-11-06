@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
+using System.Timers;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace CKAN
@@ -9,6 +11,7 @@ namespace CKAN
     public partial class Main
     {
         private BackgroundWorker m_UpdateRepoWorker;
+        public Timer refreshTimer;
 
         public static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
@@ -95,6 +98,7 @@ namespace CKAN
                 AddStatusMessage("Repositories successfully updated.");
                 ShowRefreshQuestion();
                 HideWaitDialog(true);
+                UpgradeNotification();
             }
             else
             {
@@ -120,5 +124,74 @@ namespace CKAN
                 currentUser.displayYesNo = null;
             }
         }
+
+        public void InitRefreshTimer()
+        {
+            if (refreshTimer == null)
+            {
+                refreshTimer = new Timer
+                {
+                    AutoReset = true,
+                    Enabled = true
+                };
+                refreshTimer.Elapsed += OnRefreshTimer;
+            }
+            UpdateRefreshTimer();
+        }
+
+        public void UpdateRefreshTimer()
+        {
+            refreshTimer.Stop();
+            Win32Registry winReg = new Win32Registry();
+
+            // Interval is set to 1 minute * RefreshRate
+            if (winReg.RefreshRate > 0)
+            {
+                refreshTimer.Interval = 1000 * 60 * winReg.RefreshRate;
+                refreshTimer.Start();
+            }
+        }
+
+        private void OnRefreshTimer(object sender, ElapsedEventArgs e)
+        {
+            if (!configuration.RefreshPaused)
+            {
+                // Just a safety check
+                UpdateRepo();
+            }
+        }
+
+        private void UpgradeNotification()
+        {
+            int numUpgradeable = mainModList.Modules.Count(mod => mod.HasUpdate);
+            if (numUpgradeable > 0)
+            {
+                Util.Invoke(this, () =>
+                {
+                    minimizeNotifyIcon.ShowBalloonTip(
+                        10000,
+                        $"{numUpgradeable} update{(numUpgradeable > 1 ? "s" : "")} available",
+                        $"Click to upgrade",
+                        System.Windows.Forms.ToolTipIcon.Info
+                    );
+                });
+            }
+        }
+
+        private void minimizeNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            // Unminimize
+            OpenWindow();
+
+            // Check all the upgrade checkboxes
+            MarkAllUpdatesToolButton_Click(null, null);
+
+            // Click Apply
+            ApplyToolButton_Click(null, null);
+
+            // Click Continue
+            ConfirmChangesButton_Click(null, null);
+        }
+
     }
 }

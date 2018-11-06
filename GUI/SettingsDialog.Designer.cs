@@ -30,506 +30,561 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDialog));
-            this.NewRepoButton = new System.Windows.Forms.Button();
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
-            this.DownRepoButton = new System.Windows.Forms.Button();
-            this.UpRepoButton = new System.Windows.Forms.Button();
-            this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.ReposListBox = new System.Windows.Forms.ListBox();
+            this.NewRepoButton = new System.Windows.Forms.Button();
+            this.UpRepoButton = new System.Windows.Forms.Button();
+            this.DownRepoButton = new System.Windows.Forms.Button();
+            this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.AuthTokensGroupBox = new System.Windows.Forms.GroupBox();
             this.AuthTokensListBox = new System.Windows.Forms.ListBox();
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
+            this.CachePath = new System.Windows.Forms.TextBox();
+            this.CacheSummary = new System.Windows.Forms.Label();
+            this.CacheLimitPreLabel = new System.Windows.Forms.Label();
+            this.CacheLimit = new System.Windows.Forms.TextBox();
+            this.CacheLimitPostLabel = new System.Windows.Forms.Label();
+            this.ChangeCacheButton = new System.Windows.Forms.Button();
             this.ClearCacheButton = new CKAN.DropdownMenuButton();
             this.ClearCacheMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.PurgeToLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PurgeAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ChangeCacheButton = new System.Windows.Forms.Button();
             this.ResetCacheButton = new System.Windows.Forms.Button();
             this.OpenCacheButton = new System.Windows.Forms.Button();
-            this.CachePath = new System.Windows.Forms.TextBox();
-            this.CacheLimit = new System.Windows.Forms.TextBox();
-            this.CacheSummary = new System.Windows.Forms.Label();
-            this.CacheLimitPreLabel = new System.Windows.Forms.Label();
-            this.CacheLimitPostLabel = new System.Windows.Forms.Label();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
-            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
-            this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
-            this.InstallUpdateButton = new System.Windows.Forms.Button();
-            this.LatestVersionLabel = new System.Windows.Forms.Label();
-            this.LatestVersionLabelLabel = new System.Windows.Forms.Label();
+            this.LocalVersionPreLabel = new System.Windows.Forms.Label();
             this.LocalVersionLabel = new System.Windows.Forms.Label();
-            this.LocalVersionLabelLabel = new System.Windows.Forms.Label();
+            this.LatestVersionPreLabel = new System.Windows.Forms.Label();
+            this.LatestVersionLabel = new System.Windows.Forms.Label();
+            this.CheckUpdateOnLaunchCheckbox = new System.Windows.Forms.CheckBox();
             this.CheckForUpdatesButton = new System.Windows.Forms.Button();
-            this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
+            this.InstallUpdateButton = new System.Windows.Forms.Button();
+            this.BehaviourGroupBox = new System.Windows.Forms.GroupBox();
+            this.EnableTrayIconCheckBox = new System.Windows.Forms.CheckBox();
+            this.MinimizeToTrayCheckBox = new System.Windows.Forms.CheckBox();
+            this.RefreshPreLabel = new System.Windows.Forms.Label();
+            this.RefreshTextBox = new System.Windows.Forms.TextBox();
+            this.RefreshPostLabel = new System.Windows.Forms.Label();
+            this.PauseRefreshCheckBox = new System.Windows.Forms.CheckBox();
             this.MoreSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
+            this.RefreshOnStartupCheckbox = new System.Windows.Forms.CheckBox();
+            this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.HideVCheckbox = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.RepositoryGroupBox.SuspendLayout();
             this.AuthTokensGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
+            this.ClearCacheMenu.SuspendLayout();
             this.AutoUpdateGroupBox.SuspendLayout();
+            this.BehaviourGroupBox.SuspendLayout();
             this.MoreSettingsGroupBox.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
+            // RepositoryGroupBox
+            // 
+            this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
+            this.RepositoryGroupBox.Controls.Add(this.NewRepoButton);
+            this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
+            this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
+            this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
+            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 6);
+            this.RepositoryGroupBox.Name = "RepositoryGroupBox";
+            this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 128);
+            this.RepositoryGroupBox.TabIndex = 0;
+            this.RepositoryGroupBox.TabStop = false;
+            this.RepositoryGroupBox.Text = "Metadata Repositories";
+            // 
+            // ReposListBox
+            // 
+            this.ReposListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ReposListBox.FormattingEnabled = true;
+            this.ReposListBox.Location = new System.Drawing.Point(12, 18);
+            this.ReposListBox.Name = "ReposListBox";
+            this.ReposListBox.Size = new System.Drawing.Size(452, 67);
+            this.ReposListBox.TabIndex = 0;
+            this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
+            // 
             // NewRepoButton
-            //
+            // 
             this.NewRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NewRepoButton.Location = new System.Drawing.Point(8, 116);
-            this.NewRepoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.NewRepoButton.Location = new System.Drawing.Point(12, 93);
             this.NewRepoButton.Name = "NewRepoButton";
-            this.NewRepoButton.Size = new System.Drawing.Size(75, 28);
-            this.NewRepoButton.TabIndex = 6;
+            this.NewRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.NewRepoButton.TabIndex = 1;
             this.NewRepoButton.Text = "New";
             this.NewRepoButton.UseVisualStyleBackColor = true;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
-            //
-            // RepositoryGroupBox
-            //
-            this.RepositoryGroupBox.Controls.Add(this.DownRepoButton);
-            this.RepositoryGroupBox.Controls.Add(this.UpRepoButton);
-            this.RepositoryGroupBox.Controls.Add(this.DeleteRepoButton);
-            this.RepositoryGroupBox.Controls.Add(this.ReposListBox);
-            this.RepositoryGroupBox.Controls.Add(this.NewRepoButton);
-            this.RepositoryGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RepositoryGroupBox.Location = new System.Drawing.Point(16, 15);
-            this.RepositoryGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.RepositoryGroupBox.Name = "RepositoryGroupBox";
-            this.RepositoryGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.RepositoryGroupBox.Size = new System.Drawing.Size(635, 156);
-            this.RepositoryGroupBox.TabIndex = 12;
-            this.RepositoryGroupBox.TabStop = false;
-            this.RepositoryGroupBox.Text = "Metadata Repositories";
-            //
-            // DownRepoButton
-            //
-            this.DownRepoButton.Enabled = false;
-            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownRepoButton.Location = new System.Drawing.Point(173, 116);
-            this.DownRepoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.DownRepoButton.Name = "DownRepoButton";
-            this.DownRepoButton.Size = new System.Drawing.Size(75, 28);
-            this.DownRepoButton.TabIndex = 11;
-            this.DownRepoButton.Text = "Down";
-            this.DownRepoButton.UseVisualStyleBackColor = true;
-            this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
-            //
+            // 
             // UpRepoButton
-            //
+            // 
             this.UpRepoButton.Enabled = false;
             this.UpRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.UpRepoButton.Location = new System.Drawing.Point(91, 116);
-            this.UpRepoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UpRepoButton.Location = new System.Drawing.Point(74, 93);
             this.UpRepoButton.Name = "UpRepoButton";
-            this.UpRepoButton.Size = new System.Drawing.Size(75, 28);
-            this.UpRepoButton.TabIndex = 10;
+            this.UpRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.UpRepoButton.TabIndex = 2;
             this.UpRepoButton.Text = "Up";
             this.UpRepoButton.UseVisualStyleBackColor = true;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
-            //
+            // 
+            // DownRepoButton
+            // 
+            this.DownRepoButton.Enabled = false;
+            this.DownRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownRepoButton.Location = new System.Drawing.Point(136, 93);
+            this.DownRepoButton.Name = "DownRepoButton";
+            this.DownRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.DownRepoButton.TabIndex = 3;
+            this.DownRepoButton.Text = "Down";
+            this.DownRepoButton.UseVisualStyleBackColor = true;
+            this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
+            // 
             // DeleteRepoButton
-            //
+            // 
             this.DeleteRepoButton.Enabled = false;
             this.DeleteRepoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteRepoButton.Location = new System.Drawing.Point(552, 116);
-            this.DeleteRepoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DeleteRepoButton.Location = new System.Drawing.Point(408, 93);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
-            this.DeleteRepoButton.Size = new System.Drawing.Size(75, 28);
-            this.DeleteRepoButton.TabIndex = 9;
+            this.DeleteRepoButton.Size = new System.Drawing.Size(56, 23);
+            this.DeleteRepoButton.TabIndex = 4;
             this.DeleteRepoButton.Text = "Delete";
             this.DeleteRepoButton.UseVisualStyleBackColor = true;
             this.DeleteRepoButton.Click += new System.EventHandler(this.DeleteRepoButton_Click);
-            //
-            // ReposListBox
-            //
-            this.ReposListBox.FormattingEnabled = true;
-            this.ReposListBox.ItemHeight = 16;
-            this.ReposListBox.Location = new System.Drawing.Point(8, 23);
-            this.ReposListBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ReposListBox.Name = "ReposListBox";
-            this.ReposListBox.Size = new System.Drawing.Size(617, 84);
-            this.ReposListBox.TabIndex = 9;
-            this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
-            //
+            // 
             // AuthTokensGroupBox
-            //
+            // 
             this.AuthTokensGroupBox.Controls.Add(this.AuthTokensListBox);
             this.AuthTokensGroupBox.Controls.Add(this.NewAuthTokenButton);
             this.AuthTokensGroupBox.Controls.Add(this.DeleteAuthTokenButton);
             this.AuthTokensGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AuthTokensGroupBox.Location = new System.Drawing.Point(16, 178);
-            this.AuthTokensGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.AuthTokensGroupBox.Location = new System.Drawing.Point(12, 140);
             this.AuthTokensGroupBox.Name = "AuthTokensGroupBox";
-            this.AuthTokensGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.AuthTokensGroupBox.Size = new System.Drawing.Size(635, 156);
-            this.AuthTokensGroupBox.TabIndex = 13;
+            this.AuthTokensGroupBox.Size = new System.Drawing.Size(476, 128);
+            this.AuthTokensGroupBox.TabIndex = 1;
             this.AuthTokensGroupBox.TabStop = false;
             this.AuthTokensGroupBox.Text = "Authentication Tokens";
-            //
+            // 
             // AuthTokensListBox
-            //
+            // 
+            this.AuthTokensListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.AuthTokensListBox.FormattingEnabled = true;
-            this.AuthTokensListBox.ItemHeight = 16;
-            this.AuthTokensListBox.Location = new System.Drawing.Point(8, 23);
-            this.AuthTokensListBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.AuthTokensListBox.Location = new System.Drawing.Point(12, 18);
             this.AuthTokensListBox.Name = "AuthTokensListBox";
-            this.AuthTokensListBox.Size = new System.Drawing.Size(617, 84);
-            this.AuthTokensListBox.TabIndex = 14;
+            this.AuthTokensListBox.Size = new System.Drawing.Size(452, 67);
+            this.AuthTokensListBox.TabIndex = 0;
             this.AuthTokensListBox.SelectedIndexChanged += new System.EventHandler(this.AuthTokensListBox_SelectedIndexChanged);
-            //
+            // 
             // NewAuthTokenButton
-            //
+            // 
             this.NewAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NewAuthTokenButton.Location = new System.Drawing.Point(8, 116);
-            this.NewAuthTokenButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.NewAuthTokenButton.Location = new System.Drawing.Point(12, 93);
             this.NewAuthTokenButton.Name = "NewAuthTokenButton";
-            this.NewAuthTokenButton.Size = new System.Drawing.Size(75, 28);
-            this.NewAuthTokenButton.TabIndex = 15;
+            this.NewAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.NewAuthTokenButton.TabIndex = 1;
             this.NewAuthTokenButton.Text = "New";
             this.NewAuthTokenButton.UseVisualStyleBackColor = true;
             this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
-            //
+            // 
             // DeleteAuthTokenButton
-            //
+            // 
             this.DeleteAuthTokenButton.Enabled = false;
             this.DeleteAuthTokenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(552, 116);
-            this.DeleteAuthTokenButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DeleteAuthTokenButton.Location = new System.Drawing.Point(408, 93);
             this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
-            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(75, 28);
-            this.DeleteAuthTokenButton.TabIndex = 16;
+            this.DeleteAuthTokenButton.Size = new System.Drawing.Size(56, 23);
+            this.DeleteAuthTokenButton.TabIndex = 2;
             this.DeleteAuthTokenButton.Text = "Delete";
             this.DeleteAuthTokenButton.UseVisualStyleBackColor = true;
             this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
-            //
+            // 
             // CacheGroupBox
-            //
-            this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
-            this.CacheGroupBox.Controls.Add(this.ChangeCacheButton);
-            this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
-            this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
+            // 
             this.CacheGroupBox.Controls.Add(this.CachePath);
-            this.CacheGroupBox.Controls.Add(this.CacheLimit);
             this.CacheGroupBox.Controls.Add(this.CacheSummary);
             this.CacheGroupBox.Controls.Add(this.CacheLimitPreLabel);
+            this.CacheGroupBox.Controls.Add(this.CacheLimit);
             this.CacheGroupBox.Controls.Add(this.CacheLimitPostLabel);
+            this.CacheGroupBox.Controls.Add(this.ChangeCacheButton);
+            this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
+            this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
+            this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CacheGroupBox.Location = new System.Drawing.Point(16, 343);
-            this.CacheGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CacheGroupBox.Location = new System.Drawing.Point(12, 274);
             this.CacheGroupBox.Name = "CacheGroupBox";
-            this.CacheGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.CacheGroupBox.Size = new System.Drawing.Size(635, 140);
-            this.CacheGroupBox.TabIndex = 10;
+            this.CacheGroupBox.Size = new System.Drawing.Size(476, 124);
+            this.CacheGroupBox.TabIndex = 2;
             this.CacheGroupBox.TabStop = false;
             this.CacheGroupBox.Text = "Download Cache";
-            //
-            // ClearCacheButton
-            //
-            this.ClearCacheButton.Menu = this.ClearCacheMenu;
-            this.ClearCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearCacheButton.Location = new System.Drawing.Point(116, 100);
-            this.ClearCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ClearCacheButton.Name = "ClearCacheButton";
-            this.ClearCacheButton.Size = new System.Drawing.Size(100, 28);
-            this.ClearCacheButton.TabIndex = 1;
-            this.ClearCacheButton.Text = "Purge";
-            this.ClearCacheButton.UseVisualStyleBackColor = true;
-            //
-            // ClearCacheMenu
-            //
-            this.ClearCacheMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.PurgeToLimitMenuItem,
-                this.PurgeAllMenuItem
-            });
-            this.ClearCacheMenu.Name = "ClearCacheMenu";
-            this.ClearCacheMenu.Size = new System.Drawing.Size(180, 70);
-            //
-            // PurgeToLimitMenuItem
-            //
-            this.PurgeToLimitMenuItem.Name = "PurgeToLimitMenuItem";
-            this.PurgeToLimitMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.PurgeToLimitMenuItem.Text = "Purge to limit";
-            this.PurgeToLimitMenuItem.Click += new System.EventHandler(this.PurgeToLimitMenuItem_Click);
-            //
-            // PurgeAllMenuItem
-            //
-            this.PurgeAllMenuItem.Name = "PurgeAllMenuItem";
-            this.PurgeAllMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.PurgeAllMenuItem.Text = "Purge all";
-            this.PurgeAllMenuItem.Click += new System.EventHandler(this.PurgeAllMenuItem_Click);
-            //
+            // 
+            // CachePath
+            // 
+            this.CachePath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CachePath.Location = new System.Drawing.Point(12, 18);
+            this.CachePath.Margin = new System.Windows.Forms.Padding(2);
+            this.CachePath.Name = "CachePath";
+            this.CachePath.Size = new System.Drawing.Size(452, 20);
+            this.CachePath.TabIndex = 0;
+            this.CachePath.TextChanged += new System.EventHandler(this.CachePath_TextChanged);
+            // 
+            // CacheSummary
+            // 
+            this.CacheSummary.AutoSize = true;
+            this.CacheSummary.Location = new System.Drawing.Point(9, 44);
+            this.CacheSummary.Name = "CacheSummary";
+            this.CacheSummary.Size = new System.Drawing.Size(70, 13);
+            this.CacheSummary.TabIndex = 1;
+            this.CacheSummary.Text = "N files, M MB";
+            // 
+            // CacheLimitPreLabel
+            // 
+            this.CacheLimitPreLabel.AutoSize = true;
+            this.CacheLimitPreLabel.Location = new System.Drawing.Point(9, 65);
+            this.CacheLimitPreLabel.Name = "CacheLimitPreLabel";
+            this.CacheLimitPreLabel.Size = new System.Drawing.Size(108, 13);
+            this.CacheLimitPreLabel.TabIndex = 2;
+            this.CacheLimitPreLabel.Text = "Maximum cache size:";
+            // 
+            // CacheLimit
+            // 
+            this.CacheLimit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CacheLimit.Location = new System.Drawing.Point(117, 63);
+            this.CacheLimit.Margin = new System.Windows.Forms.Padding(2);
+            this.CacheLimit.Name = "CacheLimit";
+            this.CacheLimit.Size = new System.Drawing.Size(50, 20);
+            this.CacheLimit.TabIndex = 3;
+            this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
+            this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
+            // 
+            // CacheLimitPostLabel
+            // 
+            this.CacheLimitPostLabel.AutoSize = true;
+            this.CacheLimitPostLabel.Location = new System.Drawing.Point(167, 65);
+            this.CacheLimitPostLabel.Name = "CacheLimitPostLabel";
+            this.CacheLimitPostLabel.Size = new System.Drawing.Size(119, 13);
+            this.CacheLimitPostLabel.TabIndex = 4;
+            this.CacheLimitPostLabel.Text = "MB (empty for unlimited)";
+            // 
             // ChangeCacheButton
-            //
+            // 
             this.ChangeCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeCacheButton.Location = new System.Drawing.Point(8, 100);
-            this.ChangeCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ChangeCacheButton.Location = new System.Drawing.Point(12, 89);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
-            this.ChangeCacheButton.Size = new System.Drawing.Size(100, 28);
-            this.ChangeCacheButton.TabIndex = 1;
+            this.ChangeCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ChangeCacheButton.TabIndex = 5;
             this.ChangeCacheButton.Text = "Change...";
             this.ChangeCacheButton.UseVisualStyleBackColor = true;
             this.ChangeCacheButton.Click += new System.EventHandler(this.ChangeCacheButton_Click);
-            //
+            // 
+            // ClearCacheButton
+            // 
+            this.ClearCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ClearCacheButton.Location = new System.Drawing.Point(93, 89);
+            this.ClearCacheButton.Menu = this.ClearCacheMenu;
+            this.ClearCacheButton.Name = "ClearCacheButton";
+            this.ClearCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ClearCacheButton.TabIndex = 6;
+            this.ClearCacheButton.Text = "Purge";
+            this.ClearCacheButton.UseVisualStyleBackColor = true;
+            // 
+            // ClearCacheMenu
+            // 
+            this.ClearCacheMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PurgeToLimitMenuItem,
+            this.PurgeAllMenuItem});
+            this.ClearCacheMenu.Name = "ClearCacheMenu";
+            this.ClearCacheMenu.Size = new System.Drawing.Size(147, 48);
+            // 
+            // PurgeToLimitMenuItem
+            // 
+            this.PurgeToLimitMenuItem.Name = "PurgeToLimitMenuItem";
+            this.PurgeToLimitMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.PurgeToLimitMenuItem.Text = "Purge to limit";
+            this.PurgeToLimitMenuItem.Click += new System.EventHandler(this.PurgeToLimitMenuItem_Click);
+            // 
+            // PurgeAllMenuItem
+            // 
+            this.PurgeAllMenuItem.Name = "PurgeAllMenuItem";
+            this.PurgeAllMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.PurgeAllMenuItem.Text = "Purge all";
+            this.PurgeAllMenuItem.Click += new System.EventHandler(this.PurgeAllMenuItem_Click);
+            // 
             // ResetCacheButton
-            //
+            // 
             this.ResetCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetCacheButton.Location = new System.Drawing.Point(224, 100);
-            this.ResetCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ResetCacheButton.Location = new System.Drawing.Point(174, 89);
             this.ResetCacheButton.Name = "ResetCacheButton";
-            this.ResetCacheButton.Size = new System.Drawing.Size(100, 28);
-            this.ResetCacheButton.TabIndex = 1;
+            this.ResetCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.ResetCacheButton.TabIndex = 7;
             this.ResetCacheButton.Text = "Reset";
             this.ResetCacheButton.UseVisualStyleBackColor = true;
             this.ResetCacheButton.Click += new System.EventHandler(this.ResetCacheButton_Click);
-            //
+            // 
             // OpenCacheButton
-            //
+            // 
             this.OpenCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenCacheButton.Location = new System.Drawing.Point(332, 100);
-            this.OpenCacheButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.OpenCacheButton.Location = new System.Drawing.Point(255, 89);
             this.OpenCacheButton.Name = "OpenCacheButton";
-            this.OpenCacheButton.Size = new System.Drawing.Size(100, 28);
-            this.OpenCacheButton.TabIndex = 1;
+            this.OpenCacheButton.Size = new System.Drawing.Size(75, 23);
+            this.OpenCacheButton.TabIndex = 8;
             this.OpenCacheButton.Text = "Open";
             this.OpenCacheButton.UseVisualStyleBackColor = true;
             this.OpenCacheButton.Click += new System.EventHandler(this.OpenCacheButton_Click);
-            //
-            // CachePath
-            //
-            this.CachePath.AutoSize = false;
-            this.CachePath.BackColor = System.Drawing.SystemColors.Control;
-            this.CachePath.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CachePath.Location = new System.Drawing.Point(8, 24);
-            this.CachePath.Name = "CachePath";
-            this.CachePath.Size = new System.Drawing.Size(620, 22);
-            this.CachePath.TabIndex = 11;
-            this.CachePath.TextChanged += new System.EventHandler(this.CachePath_TextChanged);
-            //
-            // CacheSummary
-            //
-            this.CacheSummary.AutoSize = true;
-            this.CacheSummary.Location = new System.Drawing.Point(8, 52);
-            this.CacheSummary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.CacheSummary.Name = "CacheSummary";
-            this.CacheSummary.Size = new System.Drawing.Size(359, 17);
-            this.CacheSummary.TabIndex = 12;
-            this.CacheSummary.Text = "N files, M MB";
-            //
-            // CacheLimitPreLabel
-            //
-            this.CacheLimitPreLabel.AutoSize = true;
-            this.CacheLimitPreLabel.Location = new System.Drawing.Point(8, 76);
-            this.CacheLimitPreLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.CacheLimitPreLabel.Name = "CacheLimitPreLabel";
-            this.CacheLimitPreLabel.Size = new System.Drawing.Size(148, 17);
-            this.CacheLimitPreLabel.TabIndex = 12;
-            this.CacheLimitPreLabel.Text = "Maximum cache size:";
-            //
-            // CacheLimit
-            //
-            this.CacheLimit.AutoSize = false;
-            this.CacheLimit.BackColor = System.Drawing.SystemColors.Control;
-            this.CacheLimit.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CacheLimit.Location = new System.Drawing.Point(156, 72);
-            this.CacheLimit.Name = "CacheLimit";
-            this.CacheLimit.Size = new System.Drawing.Size(75, 22);
-            this.CacheLimit.TabIndex = 11;
-            this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
-            this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
-            //
-            // CacheLimitPostLabel
-            //
-            this.CacheLimitPostLabel.AutoSize = true;
-            this.CacheLimitPostLabel.Location = new System.Drawing.Point(236, 76);
-            this.CacheLimitPostLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.CacheLimitPostLabel.Name = "CacheLimitPostLabel";
-            this.CacheLimitPostLabel.Size = new System.Drawing.Size(60, 17);
-            this.CacheLimitPostLabel.TabIndex = 12;
-            this.CacheLimitPostLabel.Text = "MB (empty for unlimited)";
-            //
+            // 
             // AutoUpdateGroupBox
-            //
-            this.AutoUpdateGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
-            this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
-            this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
-            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabelLabel);
+            // 
+            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionPreLabel);
             this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabel);
-            this.AutoUpdateGroupBox.Controls.Add(this.LocalVersionLabelLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionPreLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.LatestVersionLabel);
+            this.AutoUpdateGroupBox.Controls.Add(this.CheckUpdateOnLaunchCheckbox);
             this.AutoUpdateGroupBox.Controls.Add(this.CheckForUpdatesButton);
+            this.AutoUpdateGroupBox.Controls.Add(this.InstallUpdateButton);
             this.AutoUpdateGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(16, 491);
-            this.AutoUpdateGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 404);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
-            this.AutoUpdateGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(635, 129);
-            this.AutoUpdateGroupBox.TabIndex = 11;
+            this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 119);
+            this.AutoUpdateGroupBox.TabIndex = 3;
             this.AutoUpdateGroupBox.TabStop = false;
             this.AutoUpdateGroupBox.Text = "Auto-Updates";
-            //
-            // RefreshOnStartupCheckbox
-            //
-            this.RefreshOnStartupCheckbox.AutoSize = true;
-            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(367, 53);
-            this.RefreshOnStartupCheckbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
-            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(220, 21);
-            this.RefreshOnStartupCheckbox.TabIndex = 7;
-            this.RefreshOnStartupCheckbox.Text = "Update repositories on launch";
-            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
-            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
-            //
+            // 
+            // LocalVersionPreLabel
+            // 
+            this.LocalVersionPreLabel.AutoSize = true;
+            this.LocalVersionPreLabel.Location = new System.Drawing.Point(9, 18);
+            this.LocalVersionPreLabel.Name = "LocalVersionPreLabel";
+            this.LocalVersionPreLabel.Size = new System.Drawing.Size(73, 13);
+            this.LocalVersionPreLabel.TabIndex = 0;
+            this.LocalVersionPreLabel.Text = "Local version:";
+            // 
+            // LocalVersionLabel
+            // 
+            this.LocalVersionLabel.AutoSize = true;
+            this.LocalVersionLabel.Location = new System.Drawing.Point(85, 18);
+            this.LocalVersionLabel.Name = "LocalVersionLabel";
+            this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
+            this.LocalVersionLabel.TabIndex = 1;
+            this.LocalVersionLabel.Text = "v0.0.0";
+            // 
+            // LatestVersionPreLabel
+            // 
+            this.LatestVersionPreLabel.AutoSize = true;
+            this.LatestVersionPreLabel.Location = new System.Drawing.Point(9, 39);
+            this.LatestVersionPreLabel.Name = "LatestVersionPreLabel";
+            this.LatestVersionPreLabel.Size = new System.Drawing.Size(76, 13);
+            this.LatestVersionPreLabel.TabIndex = 2;
+            this.LatestVersionPreLabel.Text = "Latest version:";
+            // 
+            // LatestVersionLabel
+            // 
+            this.LatestVersionLabel.AutoSize = true;
+            this.LatestVersionLabel.Location = new System.Drawing.Point(85, 39);
+            this.LatestVersionLabel.Name = "LatestVersionLabel";
+            this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
+            this.LatestVersionLabel.TabIndex = 3;
+            this.LatestVersionLabel.Text = "???";
+            // 
             // CheckUpdateOnLaunchCheckbox
-            //
+            // 
             this.CheckUpdateOnLaunchCheckbox.AutoSize = true;
-            this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(367, 20);
-            this.CheckUpdateOnLaunchCheckbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(12, 61);
             this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
-            this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(252, 21);
-            this.CheckUpdateOnLaunchCheckbox.TabIndex = 6;
+            this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
+            this.CheckUpdateOnLaunchCheckbox.TabIndex = 4;
             this.CheckUpdateOnLaunchCheckbox.Text = "Check for CKAN updates on launch";
             this.CheckUpdateOnLaunchCheckbox.UseVisualStyleBackColor = true;
             this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
-            //
-            // InstallUpdateButton
-            //
-            this.InstallUpdateButton.Enabled = false;
-            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallUpdateButton.Location = new System.Drawing.Point(155, 94);
-            this.InstallUpdateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(139, 28);
-            this.InstallUpdateButton.TabIndex = 5;
-            this.InstallUpdateButton.Text = "Install update";
-            this.InstallUpdateButton.UseVisualStyleBackColor = true;
-            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
-            //
-            // LatestVersionLabel
-            //
-            this.LatestVersionLabel.AutoSize = true;
-            this.LatestVersionLabel.Location = new System.Drawing.Point(115, 53);
-            this.LatestVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LatestVersionLabel.Name = "LatestVersionLabel";
-            this.LatestVersionLabel.Size = new System.Drawing.Size(32, 17);
-            this.LatestVersionLabel.TabIndex = 4;
-            this.LatestVersionLabel.Text = "???";
-            //
-            // LatestVersionLabelLabel
-            //
-            this.LatestVersionLabelLabel.AutoSize = true;
-            this.LatestVersionLabelLabel.Location = new System.Drawing.Point(9, 53);
-            this.LatestVersionLabelLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LatestVersionLabelLabel.Name = "LatestVersionLabelLabel";
-            this.LatestVersionLabelLabel.Size = new System.Drawing.Size(101, 17);
-            this.LatestVersionLabelLabel.TabIndex = 3;
-            this.LatestVersionLabelLabel.Text = "Latest version:";
-            //
-            // LocalVersionLabel
-            //
-            this.LocalVersionLabel.AutoSize = true;
-            this.LocalVersionLabel.Location = new System.Drawing.Point(115, 25);
-            this.LocalVersionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LocalVersionLabel.Name = "LocalVersionLabel";
-            this.LocalVersionLabel.Size = new System.Drawing.Size(47, 17);
-            this.LocalVersionLabel.TabIndex = 2;
-            this.LocalVersionLabel.Text = "v0.0.0";
-            //
-            // LocalVersionLabelLabel
-            //
-            this.LocalVersionLabelLabel.AutoSize = true;
-            this.LocalVersionLabelLabel.Location = new System.Drawing.Point(9, 25);
-            this.LocalVersionLabelLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LocalVersionLabelLabel.Name = "LocalVersionLabelLabel";
-            this.LocalVersionLabelLabel.Size = new System.Drawing.Size(96, 17);
-            this.LocalVersionLabelLabel.TabIndex = 1;
-            this.LocalVersionLabelLabel.Text = "Local version:";
-            //
+            // 
             // CheckForUpdatesButton
-            //
+            // 
             this.CheckForUpdatesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CheckForUpdatesButton.Location = new System.Drawing.Point(8, 94);
-            this.CheckForUpdatesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 84);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
-            this.CheckForUpdatesButton.Size = new System.Drawing.Size(139, 28);
-            this.CheckForUpdatesButton.TabIndex = 0;
+            this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 23);
+            this.CheckForUpdatesButton.TabIndex = 5;
             this.CheckForUpdatesButton.Text = "Check for updates";
             this.CheckForUpdatesButton.UseVisualStyleBackColor = true;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
-            //
-            // HideEpochsCheckbox
-            //
-            this.HideEpochsCheckbox.AutoSize = true;
-            this.HideEpochsCheckbox.Location = new System.Drawing.Point(8, 52);
-            this.HideEpochsCheckbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
-            this.HideEpochsCheckbox.Size = new System.Drawing.Size(349, 21);
-            this.HideEpochsCheckbox.TabIndex = 8;
-            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list (Requires Restart)";
-            this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
-            this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
-            //
+            // 
+            // InstallUpdateButton
+            // 
+            this.InstallUpdateButton.Enabled = false;
+            this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallUpdateButton.Location = new System.Drawing.Point(130, 84);
+            this.InstallUpdateButton.Name = "InstallUpdateButton";
+            this.InstallUpdateButton.Size = new System.Drawing.Size(112, 23);
+            this.InstallUpdateButton.TabIndex = 6;
+            this.InstallUpdateButton.Text = "Install update";
+            this.InstallUpdateButton.UseVisualStyleBackColor = true;
+            this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
+            // 
+            // BehaviourGroupBox
+            // 
+            this.BehaviourGroupBox.Controls.Add(this.EnableTrayIconCheckBox);
+            this.BehaviourGroupBox.Controls.Add(this.MinimizeToTrayCheckBox);
+            this.BehaviourGroupBox.Controls.Add(this.RefreshPreLabel);
+            this.BehaviourGroupBox.Controls.Add(this.RefreshTextBox);
+            this.BehaviourGroupBox.Controls.Add(this.RefreshPostLabel);
+            this.BehaviourGroupBox.Controls.Add(this.PauseRefreshCheckBox);
+            this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BehaviourGroupBox.Location = new System.Drawing.Point(278, 404);
+            this.BehaviourGroupBox.Name = "BehaviourGroupBox";
+            this.BehaviourGroupBox.Size = new System.Drawing.Size(210, 119);
+            this.BehaviourGroupBox.TabIndex = 4;
+            this.BehaviourGroupBox.TabStop = false;
+            this.BehaviourGroupBox.Text = "Behaviour";
+            // 
+            // EnableTrayIconCheckBox
+            // 
+            this.EnableTrayIconCheckBox.AutoSize = true;
+            this.EnableTrayIconCheckBox.Location = new System.Drawing.Point(12, 18);
+            this.EnableTrayIconCheckBox.Name = "EnableTrayIconCheckBox";
+            this.EnableTrayIconCheckBox.Size = new System.Drawing.Size(102, 17);
+            this.EnableTrayIconCheckBox.TabIndex = 0;
+            this.EnableTrayIconCheckBox.Text = "Enable tray icon";
+            this.EnableTrayIconCheckBox.UseVisualStyleBackColor = true;
+            this.EnableTrayIconCheckBox.CheckedChanged += new System.EventHandler(this.EnableTrayIconCheckBox_CheckedChanged);
+            // 
+            // MinimizeToTrayCheckBox
+            // 
+            this.MinimizeToTrayCheckBox.AutoSize = true;
+            this.MinimizeToTrayCheckBox.Location = new System.Drawing.Point(12, 41);
+            this.MinimizeToTrayCheckBox.Name = "MinimizeToTrayCheckBox";
+            this.MinimizeToTrayCheckBox.Size = new System.Drawing.Size(98, 17);
+            this.MinimizeToTrayCheckBox.TabIndex = 1;
+            this.MinimizeToTrayCheckBox.Text = "Minimize to tray";
+            this.MinimizeToTrayCheckBox.UseVisualStyleBackColor = true;
+            this.MinimizeToTrayCheckBox.CheckedChanged += new System.EventHandler(this.MinimizeToTrayCheckBox_CheckedChanged);
+            // 
+            // RefreshPreLabel
+            // 
+            this.RefreshPreLabel.AutoSize = true;
+            this.RefreshPreLabel.Location = new System.Drawing.Point(9, 66);
+            this.RefreshPreLabel.Name = "RefreshPreLabel";
+            this.RefreshPreLabel.Size = new System.Drawing.Size(108, 13);
+            this.RefreshPreLabel.TabIndex = 2;
+            this.RefreshPreLabel.Text = "Refresh modlist every";
+            // 
+            // RefreshTextBox
+            // 
+            this.RefreshTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RefreshTextBox.Location = new System.Drawing.Point(117, 64);
+            this.RefreshTextBox.Name = "RefreshTextBox";
+            this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
+            this.RefreshTextBox.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.RefreshTextBox, "Setting to 0 will not refresh modlist");
+            this.RefreshTextBox.TextChanged += new System.EventHandler(this.RefreshTextBox_TextChanged);
+            this.RefreshTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.RefreshTextBox_KeyPress);
+            // 
+            // RefreshPostLabel
+            // 
+            this.RefreshPostLabel.AutoSize = true;
+            this.RefreshPostLabel.Location = new System.Drawing.Point(142, 66);
+            this.RefreshPostLabel.Name = "RefreshPostLabel";
+            this.RefreshPostLabel.Size = new System.Drawing.Size(49, 13);
+            this.RefreshPostLabel.TabIndex = 4;
+            this.RefreshPostLabel.Text = "minute(s)";
+            // 
+            // PauseRefreshCheckBox
+            // 
+            this.PauseRefreshCheckBox.AutoSize = true;
+            this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 90);
+            this.PauseRefreshCheckBox.Name = "PauseRefreshCheckBox";
+            this.PauseRefreshCheckBox.Size = new System.Drawing.Size(105, 17);
+            this.PauseRefreshCheckBox.TabIndex = 5;
+            this.PauseRefreshCheckBox.Text = "Pause refreshing";
+            this.PauseRefreshCheckBox.UseVisualStyleBackColor = true;
+            this.PauseRefreshCheckBox.CheckedChanged += new System.EventHandler(this.PauseRefreshCheckBox_CheckedChanged);
+            // 
             // MoreSettingsGroupBox
-            //
-            this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
-            this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
+            // 
             this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
-            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(16, 629);
-            this.MoreSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MoreSettingsGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
+            this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
+            this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
+            this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.MoreSettingsGroupBox.Location = new System.Drawing.Point(12, 529);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
-            this.MoreSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(635, 113);
-            this.MoreSettingsGroupBox.TabIndex = 14;
+            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 116);
+            this.MoreSettingsGroupBox.TabIndex = 5;
             this.MoreSettingsGroupBox.TabStop = false;
             this.MoreSettingsGroupBox.Text = "More Settings";
-            //
+            // 
             // AutoSortUpdateCheckBox
-            //
+            // 
             this.AutoSortUpdateCheckBox.AutoSize = true;
-            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(8, 23);
-            this.AutoSortUpdateCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 18);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
-            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(511, 21);
+            this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(393, 17);
             this.AutoSortUpdateCheckBox.TabIndex = 0;
             this.AutoSortUpdateCheckBox.Text = "Automatically sort by \"Update\"-column when clicking \"Add available updates\"";
             this.AutoSortUpdateCheckBox.UseVisualStyleBackColor = true;
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
-            //
+            // 
+            // RefreshOnStartupCheckbox
+            // 
+            this.RefreshOnStartupCheckbox.AutoSize = true;
+            this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(12, 41);
+            this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
+            this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
+            this.RefreshOnStartupCheckbox.TabIndex = 1;
+            this.RefreshOnStartupCheckbox.Text = "Update repositories on launch";
+            this.RefreshOnStartupCheckbox.UseVisualStyleBackColor = true;
+            this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
+            // 
+            // HideEpochsCheckbox
+            // 
+            this.HideEpochsCheckbox.AutoSize = true;
+            this.HideEpochsCheckbox.Location = new System.Drawing.Point(12, 64);
+            this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
+            this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
+            this.HideEpochsCheckbox.TabIndex = 2;
+            this.HideEpochsCheckbox.Text = "Hide epoch numbers in mod list (Requires Restart)";
+            this.HideEpochsCheckbox.UseVisualStyleBackColor = true;
+            this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
+            // 
             // HideVCheckbox
-            //
+            // 
             this.HideVCheckbox.AutoSize = true;
-            this.HideVCheckbox.Location = new System.Drawing.Point(8, 80);
-            this.HideVCheckbox.Margin = new System.Windows.Forms.Padding(4);
+            this.HideVCheckbox.Location = new System.Drawing.Point(12, 87);
             this.HideVCheckbox.Name = "HideVCheckbox";
-            this.HideVCheckbox.Size = new System.Drawing.Size(268, 21);
-            this.HideVCheckbox.TabIndex = 9;
+            this.HideVCheckbox.Size = new System.Drawing.Size(204, 17);
+            this.HideVCheckbox.TabIndex = 3;
             this.HideVCheckbox.Text = "Hide \"v\" in mod list (Requires Restart)";
             this.HideVCheckbox.UseVisualStyleBackColor = true;
             this.HideVCheckbox.CheckedChanged += new System.EventHandler(this.HideVCheckbox_CheckedChanged);
-            //
+            // 
             // SettingsDialog
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 755);
-            this.Controls.Add(this.MoreSettingsGroupBox);
-            this.Controls.Add(this.AutoUpdateGroupBox);
-            this.Controls.Add(this.CacheGroupBox);
+            this.ClientSize = new System.Drawing.Size(500, 657);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.AuthTokensGroupBox);
+            this.Controls.Add(this.CacheGroupBox);
+            this.Controls.Add(this.AutoUpdateGroupBox);
+            this.Controls.Add(this.BehaviourGroupBox);
+            this.Controls.Add(this.MoreSettingsGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SettingsDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsDialog_Load);
             this.RepositoryGroupBox.ResumeLayout(false);
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.AuthTokensGroupBox.ResumeLayout(false);
             this.CacheGroupBox.ResumeLayout(false);
             this.CacheGroupBox.PerformLayout();
+            this.ClearCacheMenu.ResumeLayout(false);
             this.AutoUpdateGroupBox.ResumeLayout(false);
             this.AutoUpdateGroupBox.PerformLayout();
+            this.BehaviourGroupBox.ResumeLayout(false);
+            this.BehaviourGroupBox.PerformLayout();
             this.MoreSettingsGroupBox.ResumeLayout(false);
             this.MoreSettingsGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -538,41 +593,49 @@
 
         #endregion
 
-        private System.Windows.Forms.Button NewRepoButton;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
-        private System.Windows.Forms.GroupBox CacheGroupBox;
-        private System.Windows.Forms.TextBox CachePath;
-        private System.Windows.Forms.TextBox CacheLimit;
-        private System.Windows.Forms.Label CacheSummary;
-        private System.Windows.Forms.Label CacheLimitPreLabel;
-        private System.Windows.Forms.Label CacheLimitPostLabel;
-        private CKAN.DropdownMenuButton ClearCacheButton;
-        private System.Windows.Forms.ContextMenuStrip ClearCacheMenu;
-        private System.Windows.Forms.ToolStripMenuItem PurgeToLimitMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;
-        private System.Windows.Forms.Button ChangeCacheButton;
-        private System.Windows.Forms.Button ResetCacheButton;
-        private System.Windows.Forms.Button OpenCacheButton;
-        private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.ListBox ReposListBox;
+        private System.Windows.Forms.Button NewRepoButton;
         private System.Windows.Forms.Button UpRepoButton;
         private System.Windows.Forms.Button DownRepoButton;
+        private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.GroupBox AuthTokensGroupBox;
         private System.Windows.Forms.ListBox AuthTokensListBox;
         private System.Windows.Forms.Button NewAuthTokenButton;
         private System.Windows.Forms.Button DeleteAuthTokenButton;
+        private System.Windows.Forms.GroupBox CacheGroupBox;
+        private System.Windows.Forms.TextBox CachePath;
+        private System.Windows.Forms.Label CacheSummary;
+        private System.Windows.Forms.Label CacheLimitPreLabel;
+        private System.Windows.Forms.TextBox CacheLimit;
+        private System.Windows.Forms.Label CacheLimitPostLabel;
+        private System.Windows.Forms.Button ChangeCacheButton;
+        private CKAN.DropdownMenuButton ClearCacheButton;
+        private System.Windows.Forms.ContextMenuStrip ClearCacheMenu;
+        private System.Windows.Forms.ToolStripMenuItem PurgeToLimitMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;
+        private System.Windows.Forms.Button ResetCacheButton;
+        private System.Windows.Forms.Button OpenCacheButton;
         private System.Windows.Forms.GroupBox AutoUpdateGroupBox;
-        private System.Windows.Forms.Label LatestVersionLabel;
-        private System.Windows.Forms.Label LatestVersionLabelLabel;
+        private System.Windows.Forms.Label LocalVersionPreLabel;
         private System.Windows.Forms.Label LocalVersionLabel;
-        private System.Windows.Forms.Label LocalVersionLabelLabel;
+        private System.Windows.Forms.Label LatestVersionPreLabel;
+        private System.Windows.Forms.Label LatestVersionLabel;
+        private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
         private System.Windows.Forms.Button CheckForUpdatesButton;
         private System.Windows.Forms.Button InstallUpdateButton;
-        private System.Windows.Forms.CheckBox CheckUpdateOnLaunchCheckbox;
-        private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
-        private System.Windows.Forms.CheckBox HideEpochsCheckbox;
+        private System.Windows.Forms.GroupBox BehaviourGroupBox;
+        private System.Windows.Forms.CheckBox MinimizeToTrayCheckBox;
+        private System.Windows.Forms.CheckBox EnableTrayIconCheckBox;
+        private System.Windows.Forms.Label RefreshPreLabel;
+        private System.Windows.Forms.TextBox RefreshTextBox;
+        private System.Windows.Forms.Label RefreshPostLabel;
+        private System.Windows.Forms.CheckBox PauseRefreshCheckBox;
         private System.Windows.Forms.GroupBox MoreSettingsGroupBox;
         private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
+        private System.Windows.Forms.CheckBox RefreshOnStartupCheckbox;
+        private System.Windows.Forms.CheckBox HideEpochsCheckbox;
         private System.Windows.Forms.CheckBox HideVCheckbox;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

@@ -232,6 +232,7 @@ namespace CKAN
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
+            UpdateTrayInfo();
         }
 
         public void MarkModForInstall(string identifier, bool uncheck = false)

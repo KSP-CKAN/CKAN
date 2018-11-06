@@ -15,6 +15,7 @@ namespace CKAN
         void SetKSPBuilds(string buildMap);
         string DownloadCacheDir { get; set; }
         long? CacheSizeLimit { get; set; }
+        int RefreshRate { get; set; }
     }
 
     public class Win32Registry : IWin32Registry
@@ -79,6 +80,26 @@ namespace CKAN
                 else
                 {
                     SetRegistryValue(@"CacheSizeLimit", value.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get and set the interval in minutes to refresh the modlist.
+        /// Never refresh if 0.
+        /// </summary>
+        public int RefreshRate
+        {
+            get { return GetRegistryValue(@"RefreshRate", 0); }
+            set
+            {
+                if (value <= 0)
+                {
+                    DeleteRegistryValue(@"RefreshRate");
+                }
+                else
+                {
+                    SetRegistryValue(@"RefreshRate", value);
                 }
             }
         }
