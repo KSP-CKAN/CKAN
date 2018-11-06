@@ -9,4 +9,4 @@ nightingale | jrossignol | Self-managing metadata
 RoverDude | BobPalmer | Self-managing metadata
 Sarbian | Sarbian | Self-managing metadata
 Angel-125 | Angel-125 | Installation problems and request by author
-DefiantZombie | DefiantZombie | 
+DefiantZombie | DefiantZombie | request by author
