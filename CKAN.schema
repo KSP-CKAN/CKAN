@@ -359,7 +359,7 @@
                 {
                     "description" : "Spec v1.25 Missions path",
                     "type"        : "string",
-                    "pattern"     : "^Missions/"
+                    "pattern"     : "^Missions"
                 }
             ]
         },
