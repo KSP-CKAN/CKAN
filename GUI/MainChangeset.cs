@@ -51,7 +51,8 @@ namespace CKAN
                 {
                     Text = Manager.Cache.IsMaybeCachedZip(m)
                         ? $"{m.name} {m.version} (cached)"
-                        : $"{m.name} {m.version} ({m.download.Host ?? ""}, {CkanModule.FmtSize(m.download_size)})"
+                        : $"{m.name} {m.version} ({m.download.Host ?? ""}, {CkanModule.FmtSize(m.download_size)})",
+                    Tag  = change.Mod.ToModule()
                 };
 
                 var sub_change_type = new ListViewItem.ListViewSubItem {Text = change.ChangeType.ToString()};

@@ -471,26 +471,29 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 111);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 35);
             this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer1.Name = "splitContainer1";
-            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            //
             // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.ModList);
-            // 
+            //
+            this.splitContainer1.Panel1.Controls.Add(this.MainTabControl);
             this.splitContainer1.Panel1MinSize = 200;
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
             this.splitContainer1.Panel2MinSize = 300;
-            this.splitContainer1.Size = new System.Drawing.Size(1522, 836);
+            this.splitContainer1.Size = new System.Drawing.Size(1544, 981);
             this.splitContainer1.SplitterDistance = 1156;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 7;
             // 
             // ModList
             // 
+            this.ModList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ModList.AllowUserToAddRows = false;
             this.ModList.AllowUserToDeleteRows = false;
             this.ModList.AllowUserToResizeRows = false;
@@ -513,14 +516,13 @@
             this.DownloadCount,
             this.Description});
             this.ModList.ContextMenuStrip = this.ModListContextMenuStrip;
-            this.ModList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModList.Location = new System.Drawing.Point(0, 0);
+            this.ModList.Location = new System.Drawing.Point(0, 111);
             this.ModList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ModList.MultiSelect = false;
             this.ModList.Name = "ModList";
             this.ModList.RowHeadersVisible = false;
             this.ModList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.ModList.Size = new System.Drawing.Size(1156, 836);
+            this.ModList.Size = new System.Drawing.Size(1536, 837);
             this.ModList.TabIndex = 3;
             this.ModList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModList_CellContentClick);
             this.ModList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModList_CellMouseDoubleClick);
@@ -678,7 +680,8 @@
             this.MainTabControl.SelectedIndex = 0;
             this.MainTabControl.Size = new System.Drawing.Size(1544, 981);
             this.MainTabControl.TabIndex = 9;
-            // 
+            this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_OnSelectedIndexChanged);
+            //
             // ManageModsTabPage
             // 
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
@@ -689,7 +692,7 @@
             this.ManageModsTabPage.Controls.Add(this.FilterByDescriptionLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByDescriptionTextBox);
             this.ManageModsTabPage.Controls.Add(this.menuStrip2);
-            this.ManageModsTabPage.Controls.Add(this.splitContainer1);
+            this.ManageModsTabPage.Controls.Add(this.ModList);
             this.ManageModsTabPage.Location = new System.Drawing.Point(4, 29);
             this.ManageModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ManageModsTabPage.Name = "ManageModsTabPage";
@@ -770,7 +773,7 @@
             this.ChangesetTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesetTabPage.Name = "ChangesetTabPage";
             this.ChangesetTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ChangesetTabPage.Size = new System.Drawing.Size(1536, 1001);
+            this.ChangesetTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChangesetTabPage.TabIndex = 2;
             this.ChangesetTabPage.Text = "Changeset";
             this.ChangesetTabPage.UseVisualStyleBackColor = true;
@@ -779,7 +782,7 @@
             // 
             this.CancelChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelChangesButton.Location = new System.Drawing.Point(1288, 949);
+            this.CancelChangesButton.Location = new System.Drawing.Point(1288, 896);
             this.CancelChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelChangesButton.Name = "CancelChangesButton";
             this.CancelChangesButton.Size = new System.Drawing.Size(112, 35);
@@ -792,7 +795,7 @@
             // 
             this.ConfirmChangesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ConfirmChangesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ConfirmChangesButton.Location = new System.Drawing.Point(1410, 949);
+            this.ConfirmChangesButton.Location = new System.Drawing.Point(1410, 896);
             this.ConfirmChangesButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ConfirmChangesButton.Name = "ConfirmChangesButton";
             this.ConfirmChangesButton.Size = new System.Drawing.Size(112, 35);
@@ -815,10 +818,11 @@
             this.ChangesListView.Location = new System.Drawing.Point(-2, 0);
             this.ChangesListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChangesListView.Name = "ChangesListView";
-            this.ChangesListView.Size = new System.Drawing.Size(1532, 939);
+            this.ChangesListView.Size = new System.Drawing.Size(1532, 886);
             this.ChangesListView.TabIndex = 4;
             this.ChangesListView.UseCompatibleStateImageBehavior = false;
             this.ChangesListView.View = System.Windows.Forms.View.Details;
+            this.ChangesListView.SelectedIndexChanged += new System.EventHandler(ChangesListView_SelectedIndexChanged);
             //
             // Mod
             //
@@ -847,7 +851,7 @@
             this.WaitTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.WaitTabPage.Name = "WaitTabPage";
             this.WaitTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.WaitTabPage.Size = new System.Drawing.Size(1536, 1001);
+            this.WaitTabPage.Size = new System.Drawing.Size(1536, 948);
             this.WaitTabPage.TabIndex = 1;
             this.WaitTabPage.Text = "Status log";
             // 
@@ -855,7 +859,7 @@
             // 
             this.CancelCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelCurrentActionButton.Location = new System.Drawing.Point(1410, 951);
+            this.CancelCurrentActionButton.Location = new System.Drawing.Point(1410, 898);
             this.CancelCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CancelCurrentActionButton.Name = "CancelCurrentActionButton";
             this.CancelCurrentActionButton.Size = new System.Drawing.Size(112, 35);
@@ -868,7 +872,7 @@
             //
             this.RetryCurrentActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RetryCurrentActionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RetryCurrentActionButton.Location = new System.Drawing.Point(1290, 951);
+            this.RetryCurrentActionButton.Location = new System.Drawing.Point(1290, 898);
             this.RetryCurrentActionButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RetryCurrentActionButton.Name = "RetryCurrentActionButton";
             this.RetryCurrentActionButton.Size = new System.Drawing.Size(112, 35);
@@ -891,7 +895,7 @@
             this.LogTextBox.ReadOnly = true;
             this.LogTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogTextBox.Size = new System.Drawing.Size(1505, 851);
+            this.LogTextBox.Size = new System.Drawing.Size(1505, 799);
             this.LogTextBox.TabIndex = 8;
             // 
             // DialogProgressBar
@@ -933,7 +937,7 @@
             this.ChooseRecommendedModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseRecommendedModsTabPage.Name = "ChooseRecommendedModsTabPage";
             this.ChooseRecommendedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1536, 1001);
+            this.ChooseRecommendedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseRecommendedModsTabPage.TabIndex = 3;
             this.ChooseRecommendedModsTabPage.Text = "Choose recommended mods";
             this.ChooseRecommendedModsTabPage.UseVisualStyleBackColor = true;
@@ -942,7 +946,7 @@
             // 
             this.RecommendedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsCancelButton.Location = new System.Drawing.Point(1288, 949);
+            this.RecommendedModsCancelButton.Location = new System.Drawing.Point(1288, 896);
             this.RecommendedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsCancelButton.Name = "RecommendedModsCancelButton";
             this.RecommendedModsCancelButton.Size = new System.Drawing.Size(112, 35);
@@ -955,7 +959,7 @@
             // 
             this.RecommendedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RecommendedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsContinueButton.Location = new System.Drawing.Point(1410, 949);
+            this.RecommendedModsContinueButton.Location = new System.Drawing.Point(1410, 896);
             this.RecommendedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsContinueButton.Name = "RecommendedModsContinueButton";
             this.RecommendedModsContinueButton.Size = new System.Drawing.Size(112, 35);
@@ -969,7 +973,7 @@
             this.RecommendedModsToggleCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RecommendedModsToggleCheckbox.AutoSize = true;
             this.RecommendedModsToggleCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(12, 956);
+            this.RecommendedModsToggleCheckbox.Location = new System.Drawing.Point(12, 903);
             this.RecommendedModsToggleCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
@@ -1004,11 +1008,12 @@
             this.RecommendedModsListView.Location = new System.Drawing.Point(9, 45);
             this.RecommendedModsListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RecommendedModsListView.Name = "RecommendedModsListView";
-            this.RecommendedModsListView.Size = new System.Drawing.Size(1510, 894);
+            this.RecommendedModsListView.Size = new System.Drawing.Size(1510, 841);
             this.RecommendedModsListView.TabIndex = 5;
             this.RecommendedModsListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedModsListView.View = System.Windows.Forms.View.Details;
-            // 
+            this.RecommendedModsListView.SelectedIndexChanged += new System.EventHandler(RecommendedModsListView_SelectedIndexChanged);
+            //
             // columnHeader3
             // 
             this.columnHeader3.Text = "Mod";
@@ -1034,7 +1039,7 @@
             this.ChooseProvidedModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsTabPage.Name = "ChooseProvidedModsTabPage";
             this.ChooseProvidedModsTabPage.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1536, 1001);
+            this.ChooseProvidedModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ChooseProvidedModsTabPage.TabIndex = 4;
             this.ChooseProvidedModsTabPage.Text = "Choose mods";
             this.ChooseProvidedModsTabPage.UseVisualStyleBackColor = true;
@@ -1043,7 +1048,7 @@
             // 
             this.ChooseProvidedModsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ChooseProvidedModsCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(1286, 948);
+            this.ChooseProvidedModsCancelButton.Location = new System.Drawing.Point(1286, 895);
             this.ChooseProvidedModsCancelButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsCancelButton.Name = "ChooseProvidedModsCancelButton";
             this.ChooseProvidedModsCancelButton.Size = new System.Drawing.Size(112, 35);
@@ -1056,7 +1061,7 @@
             // 
             this.ChooseProvidedModsContinueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ChooseProvidedModsContinueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(1407, 948);
+            this.ChooseProvidedModsContinueButton.Location = new System.Drawing.Point(1407, 895);
             this.ChooseProvidedModsContinueButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsContinueButton.Name = "ChooseProvidedModsContinueButton";
             this.ChooseProvidedModsContinueButton.Size = new System.Drawing.Size(112, 35);
@@ -1081,11 +1086,12 @@
             this.ChooseProvidedModsListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ChooseProvidedModsListView.MultiSelect = false;
             this.ChooseProvidedModsListView.Name = "ChooseProvidedModsListView";
-            this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1510, 894);
+            this.ChooseProvidedModsListView.Size = new System.Drawing.Size(1510, 841);
             this.ChooseProvidedModsListView.TabIndex = 8;
             this.ChooseProvidedModsListView.UseCompatibleStateImageBehavior = false;
             this.ChooseProvidedModsListView.View = System.Windows.Forms.View.Details;
-            // 
+            this.ChooseProvidedModsListView.SelectedIndexChanged += new System.EventHandler(ChooseProvidedModsListView_SelectedIndexChanged);
+            //
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mod";
@@ -1199,7 +1205,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1544, 1038);
-            this.Controls.Add(this.MainTabControl);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

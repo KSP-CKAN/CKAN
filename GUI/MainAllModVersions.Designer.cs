@@ -76,7 +76,7 @@
             listViewItem4});
             this.VersionsListView.Location = new System.Drawing.Point(3, 76);
             this.VersionsListView.Name = "VersionsListView";
-            this.VersionsListView.Size = new System.Drawing.Size(421, 174);
+            this.VersionsListView.Size = new System.Drawing.Size(348, 423);
             this.VersionsListView.TabIndex = 1;
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
@@ -142,8 +142,6 @@
             // 
             // MainAllModVersions
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -153,10 +151,9 @@
             this.Controls.Add(this.VersionsListView);
             this.Controls.Add(this.label1);
             this.Name = "MainAllModVersions";
-            this.Size = new System.Drawing.Size(427, 253);
+            this.Size = new System.Drawing.Size(354, 502);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

@@ -5,16 +5,18 @@ namespace CKAN
 {
     public class MainTabControl : TabControl
     {
-        public MainTabControl() : base()
-        {
-        }
+        public MainTabControl() : base() { }
 
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
             base.OnSelectedIndexChanged(e);
-            if (this.SelectedTab != null && this.SelectedTab.Name.Equals("ManageModsTabPage"))
-                ((Main)this.Parent).ModList.Focus();
+            switch (this.SelectedTab?.Name)
+            {
+                case "ManageModsTabPage":
+                    // Focus the grid
+                    Main.Instance.ModList.Focus();
+                    break;
+            }
         }
     }
 }
-
