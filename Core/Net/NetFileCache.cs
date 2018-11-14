@@ -26,7 +26,8 @@ namespace CKAN
     public class NetFileCache : IDisposable
     {
         private FileSystemWatcher watcher;
-        private string[] cachedFiles;
+        // hash => full file path
+        private Dictionary<string, string> cachedFiles;
         private string cachePath;
         private KSPManager manager;
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
@@ -166,12 +167,17 @@ namespace CKAN
             // *may* get cleared by OnCacheChanged while we're
             // using it.
 
-            string[] files = cachedFiles;
+            Dictionary<string, string> files = cachedFiles;
 
             if (files == null)
             {
                 log.Debug("Rebuilding cache index");
-                cachedFiles = files = Directory.GetFiles(cachePath);
+                cachedFiles = files = allFiles()
+                    .GroupBy(fi => fi.Name.Substring(0, 8))
+                    .ToDictionary(
+                        grp => grp.Key,
+                        grp => grp.First().FullName
+                    );
             }
 
             // Now that we have a list of files one way or another,
@@ -184,41 +190,26 @@ namespace CKAN
                 return found;
             }
 
-            // Check legacy caches if we have them
-            if (manager != null)
-            {
-                string foundLegacy = legacyDirs()
-                    .Select(dir => scanDirectory(Directory.EnumerateFiles(dir), hash, remoteTimestamp))
-                    .FirstOrDefault(f => !string.IsNullOrEmpty(f));
-                if (!string.IsNullOrEmpty(foundLegacy))
-                {
-                    return foundLegacy;
-                }
-            }
-
             return null;
         }
 
-        private string scanDirectory(IEnumerable<string> files, string findHash, DateTime? remoteTimestamp = null)
+        private string scanDirectory(Dictionary<string, string> files, string findHash, DateTime? remoteTimestamp = null)
         {
-            foreach (string file in files)
+            string file;
+            if (files.TryGetValue(findHash, out file))
             {
-                string filename = Path.GetFileName(file);
-                if (filename.StartsWith(findHash))
+                // Check local vs remote timestamps; if local is older, then it's invalid.
+                // null means we don't know the remote timestamp (so file is OK)
+                if (remoteTimestamp == null
+                    || remoteTimestamp < File.GetLastWriteTime(file).ToUniversalTime())
                 {
-                    // Check local vs remote timestamps; if local is older, then it's invalid.
-                    // null means we don't know the remote timestamp (so file is OK)
-                    if (remoteTimestamp == null
-                        || remoteTimestamp < File.GetLastWriteTime(file).ToUniversalTime())
-                    {
-                        // File not too old, use it
-                        return file;
-                    }
-                    else
-                    {
-                        // Local file too old, delete it
-                        File.Delete(file);
-                    }
+                    // File not too old, use it
+                    return file;
+                }
+                else
+                {
+                    // Local file too old, delete it
+                    File.Delete(file);
                 }
             }
             return null;
@@ -288,7 +279,8 @@ namespace CKAN
                 .Where(ksp => ksp.Valid)
                 .Select(ksp => ksp.DownloadCacheDir())
                 .Where(dir => Directory.Exists(dir))
-                .ToHashSet();
+                .ToHashSet()
+                ?? new HashSet<string>();
         }
 
         public void EnforceSizeLimit(long bytes, Registry registry)
