@@ -78,6 +78,7 @@ namespace CKAN
 
         private bool enableTrayIcon;
         private bool minimizeToTray;
+        private Win32Registry winReg = new Win32Registry();
 
         private DateTime lastSearchTime;
         private string lastSearchKey;
@@ -1195,6 +1196,8 @@ namespace CKAN
         {
             enableTrayIcon = configuration.EnableTrayIcon;
             minimizeToTray = configuration.MinimizeToTray;
+            pauseToolStripMenuItem.Enabled = winReg.RefreshRate != 0;
+            pauseToolStripMenuItem.Text = configuration.RefreshPaused ? "Resume" : "Pause";
             UpdateTrayState();
         }
 

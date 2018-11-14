@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] One Cache to Rule Them All (#2535 by: HebaruSan; reviewed: politas)
 - [Multiple] Configurable cache size limit (#2536 by: HebaruSan; reviewed: politas)
 - [GUI] Minimize CKAN to tray and automatic refreshing (#2565 by: Olympic1; reviewed: HebaruSan)
+- [GUI] Show mod info for change set, recs/sugs, and providers (#2556 by HebaruSan; reviewed: politas)
 
 ### Bugfixes
 
