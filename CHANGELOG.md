@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Purge 5.5 MB of bloat from `registry.json` (#2179 by: HebaruSan; reviewed: Olympic1)
 - [GUI] Allow uninstallation of conflicting mods (#2561 by: HebaruSan; reviewed: Olympic1)
 - [Core] Cache listings of legacy cache dirs (#2563 by: HebaruSan; reviewed: politas)
+- [Netkan] Treat AVC min without max as open range (#2571 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 
