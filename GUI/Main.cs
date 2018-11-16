@@ -1018,11 +1018,6 @@ namespace CKAN
             ShowSelectionModInfo(ChangesListView.SelectedItems);
         }
 
-        private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ShowSelectionModInfo(RecommendedModsListView.SelectedItems);
-        }
-
         private void ChooseProvidedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             ShowSelectionModInfo(ChooseProvidedModsListView.SelectedItems);
@@ -1052,18 +1047,6 @@ namespace CKAN
                     ShowSelectionModInfo(ChooseProvidedModsListView.SelectedItems);
                     break;
             }
-        }
-
-        private void RecommendedModsToggleCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            var state = ((CheckBox)sender).Checked;
-            foreach (ListViewItem item in RecommendedModsListView.Items)
-            {
-                if (item.Checked != state)
-                    item.Checked = state;
-            }
-
-            RecommendedModsListView.Refresh();
         }
 
         private void reportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)

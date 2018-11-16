@@ -168,6 +168,8 @@
     <Compile Include="MainModList.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MainRecommendations.cs">
+    </Compile>
     <Compile Include="MainRepo.cs">
       <SubType>Form</SubType>
     </Compile>
