@@ -609,7 +609,7 @@ namespace CKAN
                 {
                     new RelationshipResolver(
                         modules_to_install,
-                        modules_to_remove,
+                        null,
                         options, registry, version);
                     handled_all_too_many_provides = true;
                     continue;
