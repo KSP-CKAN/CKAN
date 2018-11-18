@@ -29,7 +29,12 @@ namespace CKAN
                 }
             }
 
-            Dictionary<CkanModule, string> mods = GetShowableMods(selectable);
+            Dictionary<CkanModule, string> mods = GetShowableMods(
+                selectable,
+                RegistryManager.Instance(CurrentInstance).registry,
+                CurrentInstance.VersionCriteria(),
+                toInstall
+            );
 
             // If there are any mods that would be recommended, prompt the user to make
             // selections.
@@ -95,9 +100,17 @@ namespace CKAN
         /// Tries to get every mod in the Dictionary, which can be installed
         /// It also transforms the Recommender list to a string
         /// </summary>
-        /// <param name="mods"></param>
-        /// <returns></returns>
-        private Dictionary<CkanModule, string> GetShowableMods(Dictionary<CkanModule, List<string>> mods)
+        /// <param name="mods">Map from recommendations to lists of recommenders</param>
+        /// <param name="registry">Registry of current game instance</param>
+        /// <param name="versionCriteria">Versions compatible with current instance</param>
+        /// <param name="toInstall">Modules planned to be installed</param>
+        /// <returns>Map from installable recommendations to string describing recommenders</returns>
+        private Dictionary<CkanModule, string> GetShowableMods(
+            Dictionary<CkanModule, List<string>> mods,
+            IRegistryQuerier                     registry,
+            KspVersionCriteria                   versionCriteria,
+            HashSet<CkanModule>                  toInstall
+        )
         {
             Dictionary<CkanModule, string> modules = new Dictionary<CkanModule, string>();
 
@@ -114,12 +127,12 @@ namespace CKAN
             {
                 try
                 {
+                    List<CkanModule> instPlusOne = toInstall.ToList();
+                    instPlusOne.Add(pair.Key);
                     RelationshipResolver resolver = new RelationshipResolver(
-                        new List<CkanModule> { pair.Key },
+                        instPlusOne,
                         null,
-                        opts,
-                        RegistryManager.Instance(manager.CurrentInstance).registry,
-                        CurrentInstance.VersionCriteria()
+                        opts, registry, versionCriteria
                     );
 
                     if (resolver.ModList().Any())
