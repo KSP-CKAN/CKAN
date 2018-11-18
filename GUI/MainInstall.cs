@@ -172,6 +172,30 @@ namespace CKAN
                     }
                     resolvedAllProvidedMods = true;
                 }
+                catch (TooManyModsProvideKraken k)
+                {
+                    // Prompt user to choose which mod to use
+                    CkanModule chosen = TooManyModsProvideCore(k).Result;
+                    // Close the selection prompt
+                    Util.Invoke(this, () =>
+                    {
+                        tabController.ShowTab("WaitTabPage");
+                        tabController.HideTab("ChooseProvidedModsTabPage");
+                    });
+                    if (chosen != null)
+                    {
+                        // User picked a mod, queue it up for installation
+                        toInstall.Add(chosen);
+                        // DON'T return so we can loop around and try the above InstallList call again
+                    }
+                    else
+                    {
+                        // User cancelled, get out
+                        tabController.ShowTab("ManageModsTabPage");
+                        e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
+                        return;
+                    }
+                }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
                     GUI.user.RaiseMessage(

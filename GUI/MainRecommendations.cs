@@ -112,38 +112,90 @@ namespace CKAN
             HashSet<CkanModule>                  toInstall
         )
         {
-            Dictionary<CkanModule, string> modules = new Dictionary<CkanModule, string>();
-
-            var opts = new RelationshipResolverOptions
-            {
-                with_all_suggests              = false,
-                with_recommends                = false,
-                with_suggests                  = false,
-                without_enforce_consistency    = false,
-                without_toomanyprovides_kraken = true
-            };
-
-            foreach (var pair in mods)
-            {
-                try
+            return mods.Where(kvp => CanInstall(
+                registry, versionCriteria,
+                new RelationshipResolverOptions()
                 {
-                    List<CkanModule> instPlusOne = toInstall.ToList();
-                    instPlusOne.Add(pair.Key);
-                    RelationshipResolver resolver = new RelationshipResolver(
-                        instPlusOne,
-                        null,
-                        opts, registry, versionCriteria
-                    );
+                    with_all_suggests              = false,
+                    with_recommends                = false,
+                    with_suggests                  = false,
+                    without_enforce_consistency    = false,
+                    without_toomanyprovides_kraken = false
+                },
+                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()
+            )).ToDictionary(
+                kvp => kvp.Key,
+                kvp => string.Join(", ", kvp.Value.ToArray())
+            );
+        }
 
-                    if (resolver.ModList().Any())
+        /// <summary>
+        /// Determine whether there is any way to install the given set of mods.
+        /// Handles virtual dependencies, including recursively.
+        /// </summary>
+        /// <param name="registry">Registry of instance into which we want to install</param>
+        /// <param name="versionCriteria">Compatible versions of instance</param>
+        /// <param name="opts">Installer options</param>
+        /// <param name="toInstall">Mods we want to install</param>
+        /// <returns>
+        /// True if it's possible to install these mods, false otherwise
+        /// </returns>
+        private bool CanInstall(
+            IRegistryQuerier            registry,
+            KspVersionCriteria          versionCriteria,
+            RelationshipResolverOptions opts,
+            List<CkanModule>            toInstall
+        )
+        {
+            string request = toInstall.Select(m => m.identifier).Aggregate((a, b) => $"{a}, {b}");
+            try
+            {
+                RelationshipResolver resolver = new RelationshipResolver(
+                    toInstall,
+                    null,
+                    opts, registry, versionCriteria
+                );
+
+                if (resolver.ModList().Count() >= toInstall.Count)
+                {
+                    // We can install with no further dependencies
+                    string recipe = resolver.ModList()
+                        .Select(m => m.identifier)
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    log.Debug($"Installable: {request}: {recipe}");
+                    return true;
+                }
+                else
+                {
+                    string problems = resolver.ConflictList.Values
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    log.Debug($"Can't install {request}: {problems}");
+                    return false;
+                }
+            }
+            catch (TooManyModsProvideKraken k)
+            {
+                // One of the dependencies is virtual
+                foreach (CkanModule mod in k.modules)
+                {
+                    // Try each option recursively to see if any are successful
+                    if (CanInstall(registry, versionCriteria, opts, toInstall.Concat(new List<CkanModule>() { mod }).ToList()))
                     {
-                        // Resolver was able to find a way to install, so show it to the user
-                        modules.Add(pair.Key, String.Join(",", pair.Value.ToArray()));
+                        // Child call will emit debug output, so we don't need to here
+                        return true;
                     }
                 }
-                catch { }
+                log.Debug($"Can't install {request}: Can't install provider of {k.requested}");
             }
-            return modules;
+            catch (InconsistentKraken k)
+            {
+                log.Debug($"Can't install {request}: {k.ShortDescription}");
+            }
+            catch (Exception ex)
+            {
+                log.Debug($"Can't install {request}: {ex.Message}");
+            }
+            return false;
         }
 
         private void UpdateRecommendedDialog(Dictionary<CkanModule, string> mods, bool suggested = false)
