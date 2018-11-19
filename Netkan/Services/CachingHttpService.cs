@@ -6,15 +6,24 @@ namespace CKAN.NetKAN.Services
     internal sealed class CachingHttpService : IHttpService
     {
         private readonly NetFileCache _cache;
-        private          HashSet<Uri> _requestedURLs = new HashSet<Uri>();
+        private          HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
+        private          bool         _overwriteCache = false;
 
-        public CachingHttpService(NetFileCache cache)
+        public CachingHttpService(NetFileCache cache, bool overwrite = false)
         {
-            _cache = cache;
+            _cache          = cache;
+            _overwriteCache = overwrite;
         }
 
         public string DownloadPackage(Uri url, string identifier, DateTime? updated)
         {
+            if (_overwriteCache && !_requestedURLs.Contains(url))
+            {
+                // Discard cached file if command line says so,
+                // but only the first time in each run
+                _cache.Remove(url);
+            }
+
             _requestedURLs.Add(url);
 
             var cachedFile = _cache.GetCachedFilename(url, updated);
