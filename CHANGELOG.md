@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Configurable cache size limit (#2536 by: HebaruSan; reviewed: politas)
 - [GUI] Minimize CKAN to tray and automatic refreshing (#2565 by: Olympic1; reviewed: HebaruSan)
 - [GUI] Show mod info for change set, recs/sugs, and providers (#2556 by HebaruSan; reviewed: politas)
+- [Netkan] Add Netkan option to overwrite cached files (#2582 by HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

@@ -31,6 +31,9 @@ namespace CKAN.NetKAN
         [Option("prerelease", HelpText = "Index GitHub prereleases")]
         public bool PreRelease { get; set; }
 
+        [Option("overwrite-cache", HelpText = "Overwrite cached files")]
+        public bool OverwriteCache { get; set; }
+
         [Option("version", HelpText = "Display the netkan version number and exit")]
         public bool Version { get; set; }
 

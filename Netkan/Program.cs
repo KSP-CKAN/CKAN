@@ -58,7 +58,7 @@ namespace CKAN.NetKAN
                         new KSPManager(new ConsoleUser(false)),
                         new Win32Registry()
                     );
-                    http = new CachingHttpService(cache);
+                    http = new CachingHttpService(cache, Options.OverwriteCache);
 
                     var netkan = ReadNetkan();
                     Log.Info("Finished reading input");
