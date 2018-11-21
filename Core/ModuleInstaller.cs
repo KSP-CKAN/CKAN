@@ -232,7 +232,7 @@ namespace CKAN
                 ksp.ScanGameData();
             }
 
-            User.RaiseProgress("Done!\r\n", 100);
+            User.RaiseProgress("Done!", 100);
         }
 
         public void InstallList(ModuleResolution modules, RelationshipResolverOptions options)

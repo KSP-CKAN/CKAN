@@ -130,6 +130,7 @@ namespace CKAN.CmdLine
             {
                 var installer = ModuleInstaller.GetInstance(ksp, manager.Cache, user);
                 installer.InstallList(options.modules, install_ops);
+                user.RaiseMessage("\r\n");
             }
             catch (DependencyNotSatisfiedKraken ex)
             {
