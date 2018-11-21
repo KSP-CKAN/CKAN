@@ -40,6 +40,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.importDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.auditRecommendationsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -177,6 +178,8 @@
             this.toolStripSeparator2,
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator3,
+            this.auditRecommendationsMenuItem,
+            this.toolStripSeparator3,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
@@ -233,6 +236,14 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             // 
+            //
+            // importDownloadsToolStripMenuItem
+            //
+            this.auditRecommendationsMenuItem.Name = "auditRecommendationsMenuItem";
+            this.auditRecommendationsMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.auditRecommendationsMenuItem.Text = "Audit recommendations";
+            this.auditRecommendationsMenuItem.Click += new System.EventHandler(this.auditRecommendationsMenuItem_Click);
+            //
             // ExitToolButton
             // 
             this.ExitToolButton.Name = "ExitToolButton";
@@ -1258,6 +1269,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem importDownloadsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem auditRecommendationsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolButton;
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem;

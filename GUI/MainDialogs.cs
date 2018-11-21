@@ -40,15 +40,12 @@ namespace CKAN
             return yesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
         }
 
-        //Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop
-        //over reason for to find a user requested mod. Or, you know, pass in a handler to it.
+        // Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop
+        // over reason for to find a user requested mod. Or, you know, pass in a handler to it.
         private readonly ConcurrentStack<GUIMod> last_mod_to_have_install_toggled = new ConcurrentStack<GUIMod>();
-        public async Task<CkanModule> TooManyModsProvide(TooManyModsProvideKraken kraken)
-        {
-            //We want LMtHIT to be the last user selection. If we alter this handling a too many provides
-            // it needs to be reset so a potential second too many provides doesn't use the wrong mod.
-            GUIMod mod;
 
+        private async Task<CkanModule> TooManyModsProvideCore(TooManyModsProvideKraken kraken)
+        {
             TaskCompletionSource<CkanModule> task = new TaskCompletionSource<CkanModule>();
             Util.Invoke(this, () =>
             {
@@ -56,7 +53,16 @@ namespace CKAN
                 tabController.ShowTab("ChooseProvidedModsTabPage", 3);
                 tabController.SetTabLock(true);
             });
-            var module = await task.Task;
+            return await task.Task;
+        }
+
+        public async Task<CkanModule> TooManyModsProvide(TooManyModsProvideKraken kraken)
+        {
+            // We want LMtHIT to be the last user selection. If we alter this handling a too many provides
+            // it needs to be reset so a potential second too many provides doesn't use the wrong mod.
+            GUIMod mod;
+
+            var module = await TooManyModsProvideCore(kraken);
 
             if (module == null
                     && last_mod_to_have_install_toggled.TryPeek(out mod))
