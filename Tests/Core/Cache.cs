@@ -175,5 +175,54 @@ namespace Tests.Core
             Assert.IsTrue(cache.IsCached(url));
             Assert.IsTrue(cache.IsCachedZip(url));
         }
+
+        [Test]
+        public void ZipValid_ContainsFilenameWithBadChars_NoException()
+        {
+            bool valid = false;
+            string reason = "";
+            Assert.DoesNotThrow(() =>
+                valid = NetFileCache.ZipValid(TestData.ZipWithBadChars, out reason));
+
+            // The file is considered valid on Linux;
+            // only check the reason if found invalid
+            if (!valid)
+            {
+                Assert.AreEqual(reason, "Illegal characters in path.");
+            }
+        }
+
+        [Test]
+        public void EnforceSizeLimit_UnderLimit_FileRetained()
+        {
+            // Arrange
+            CKAN.Registry registry = CKAN.Registry.Empty();
+            long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
+
+            // Act
+            Uri url = new Uri("http://kitte.nz/");
+            cache.Store(url, TestData.DogeCoinFlagZip());
+            cache.EnforceSizeLimit(fileSize + 100, registry);
+
+            // Assert
+            Assert.IsTrue(cache.IsCached(url));
+        }
+
+        [Test]
+        public void EnforceSizeLimit_OverLimit_FileRemoved()
+        {
+            // Arrange
+            CKAN.Registry registry = CKAN.Registry.Empty();
+            long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
+
+            // Act
+            Uri url = new Uri("http://kitte.nz/");
+            cache.Store(url, TestData.DogeCoinFlagZip());
+            cache.EnforceSizeLimit(fileSize - 100, registry);
+
+            // Assert
+            Assert.IsFalse(cache.IsCached(url));
+        }
+
     }
 }

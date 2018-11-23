@@ -110,14 +110,19 @@ namespace Tests.Data
             ";
         }
 
-        public static CkanModule DogeCoinFlag_101_LZMA_module = CkanModule.FromJson(
+        public static readonly CkanModule DogeCoinFlag_101_LZMA_module = CkanModule.FromJson(
             DogeCoinFlag_101_LZMA()
         );
 
         /// <summary>
         /// Test case for LZMA-format ZIPs
         /// </summary>
-        public static string DogeCoinFlagZipLZMA = Path.Combine(DataDir(), "DogeCoinFlag-1.01-LZMA.zip");
+        public static readonly string DogeCoinFlagZipLZMA = DataDir("DogeCoinFlag-1.01-LZMA.zip");
+
+        /// <summary>
+        /// Contains files with names that include characters that aren't allowed on Windows
+        /// </summary>
+        public static readonly string ZipWithBadChars = DataDir("ZipWithBadChars.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the

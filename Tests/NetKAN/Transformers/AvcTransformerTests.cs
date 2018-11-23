@@ -151,6 +151,21 @@ namespace Tests.NetKAN.Transformers
             "1.0.2", "1.0.3", "1.0.4",
             null, "1.0.0", "1.0.4"
         )]
+        [TestCase(
+            null, null, null,
+            "1.5.1", "1.5.1", null,
+            null, "1.5.1", null
+        )]
+        [TestCase(
+            null, null, null,
+            "1.5.1", null, "1.5.1",
+            null, null, "1.5.1"
+        )]
+        [TestCase(
+            "any", null, null,
+            null, null, null,
+            "any", null, null
+        )]
         public void CorrectlyCalculatesKspVersionInfo(
             string existingKsp, string existingKspMin, string existingKspMax,
             string avcKsp, string avcKspMin, string avcKspMax,
