@@ -176,6 +176,9 @@
     <Compile Include="MainTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MainTrayIcon.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainWait.cs">
       <SubType>Form</SubType>
     </Compile>
