@@ -227,6 +227,7 @@
     <Compile Include="TabController.cs" />
     <Compile Include="URLHandlers.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="X11.cs" />
     <Compile Include="YesNoDialog.cs">
       <SubType>Form</SubType>
     </Compile>
