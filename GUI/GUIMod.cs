@@ -279,10 +279,13 @@ namespace CKAN
                 if ((bool)install_cell.Value != IsInstallChecked)
                 {
                     install_cell.Value = IsInstallChecked;
-                    // These calls are needed to force the UI to update,
-                    // otherwise the checkbox will look checked when it's unchecked or vice versa
-                    row.DataGridView.RefreshEdit();
-                    row.DataGridView.Refresh();
+                    if (row.DataGridView != null)
+                    {
+                        // These calls are needed to force the UI to update,
+                        // otherwise the checkbox will look checked when it's unchecked or vice versa
+                        row.DataGridView.RefreshEdit();
+                        row.DataGridView.Refresh();
+                    }
                 }
             }
         }
