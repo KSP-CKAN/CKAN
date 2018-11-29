@@ -1146,7 +1146,8 @@
             this.quitToolStripMenuItem});
             this.minimizedContextMenuStrip.Name = "minimizedContextMenuStrip";
             this.minimizedContextMenuStrip.Size = new System.Drawing.Size(181, 148);
-            // 
+            this.minimizedContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.minimizedContextMenuStrip_Opening);
+            //
             // updatesToolStripMenuItem
             // 
             this.updatesToolStripMenuItem.Name = "updatesToolStripMenuItem";

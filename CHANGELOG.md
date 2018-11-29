@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Cache listings of legacy cache dirs (#2563 by: HebaruSan; reviewed: politas)
 - [Netkan] Treat AVC min without max as open range (#2571 by: HebaruSan; reviewed: politas)
 - [GUI] Restore uninstallation of dependencies (#2579 by: HebaruSan; reviewed: politas)
+- [GUI] Fix tray icon menu position and color on Linux (Gnome) (#2587 by: HebaruSan; reviewed: politas)
 
 ## v1.25.3 (Woomera)
 
