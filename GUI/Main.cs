@@ -260,6 +260,12 @@ namespace CKAN
                 timer.Start();
             }
 
+            // Set the window name and class for X11
+            if (Platform.IsUnix)
+            {
+                HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
+            }
+
             Application.Run(this);
 
             var registry = RegistryManager.Instance(Manager.CurrentInstance);
