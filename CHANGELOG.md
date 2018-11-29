@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show recommendations of installed modules in GUI (#2577 by HebaruSan; reviewed: politas)
 - [GUI] Remove newline from Done progress message (#2580 by HebaruSan; reviewed: politas)
 - [GUI] Set window properties on X11 (#2586 by: HebaruSan; reviewed: politas)
+- [Build] Add tests for recent changes (#2583 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

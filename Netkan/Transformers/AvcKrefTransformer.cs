@@ -2,6 +2,7 @@ using System;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Avc;
+using CKAN.NetKAN.Services;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,8 +17,12 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(AvcKrefTransformer));
 
         public string Name { get { return "avc-kref"; } }
+        private IHttpService httpSvc;
 
-        public AvcKrefTransformer() { }
+        public AvcKrefTransformer(IHttpService http)
+        {
+            httpSvc = http;
+        }
 
         public Metadata Transform(Metadata metadata)
         {
@@ -29,7 +34,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 AvcVersion remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(
-                    Net.DownloadText(new Uri(metadata.Kref.Id))
+                    httpSvc.DownloadText(new Uri(metadata.Kref.Id))
                 );
 
                 json.SafeAdd("name",     remoteAvc.Name);

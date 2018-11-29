@@ -113,6 +113,7 @@
     <Compile Include="NetKAN\Sources\Curse\CurseApiTests.cs" />
     <Compile Include="NetKAN\Sources\Github\GithubApiTests.cs" />
     <Compile Include="NetKAN\Sources\Spacedock\SpacedockApiTests.cs" />
+    <Compile Include="NetKAN\Transformers\AvcKrefTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\AvcTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\CurseTransformerTests.cs" />
     <Compile Include="NetKAN\Transformers\DownloadAttributeTransformerTests.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="NetKAN\Validators\IsCkanModuleValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\MatchingIdentifiersValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
+    <Compile Include="NetKAN\Validators\KrefValidatorTests.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

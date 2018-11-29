@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Transformers
                 new GithubTransformer(new GithubApi(githubToken), prerelease),
                 new HttpTransformer(),
                 new JenkinsTransformer(http),
-                new AvcKrefTransformer(),
+                new AvcKrefTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),
                 new VersionEditTransformer(),
