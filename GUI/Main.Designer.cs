@@ -131,6 +131,7 @@
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.openCKANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openKSPDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -1140,6 +1141,7 @@
             this.pauseToolStripMenuItem,
             this.toolStripSeparator5,
             this.openCKANToolStripMenuItem,
+            this.openKSPToolStripMenuItem,
             this.openKSPDirectoryToolStripMenuItem1,
             this.cKANSettingsToolStripMenuItem1,
             this.toolStripSeparator6,
@@ -1186,6 +1188,14 @@
             this.openCKANToolStripMenuItem.Text = "Open CKAN";
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
             // 
+            //
+            // openKSPToolStripMenuItem
+            //
+            this.openKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
+            this.openKSPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openKSPToolStripMenuItem.Text = "Launch KSP";
+            this.openKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
+            //
             // openKSPDirectoryToolStripMenuItem1
             // 
             this.openKSPDirectoryToolStripMenuItem1.Name = "openKSPDirectoryToolStripMenuItem1";
@@ -1361,6 +1371,7 @@
         public System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem openCKANToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openKSPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openKSPDirectoryToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
