@@ -306,6 +306,18 @@ namespace CKAN
         protected override void OnShown(EventArgs e)
         {
             actuallyVisible = true;
+
+            try
+            {
+                splitContainer1.SplitterDistance = configuration.PanelPosition;
+            }
+            catch
+            {
+                // SplitContainer is mis-designed to throw exceptions
+                // if the min/max limits are exceeded rather than simply obeying them.
+            }
+            ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
+
             base.OnShown(e);
         }
 
@@ -320,16 +332,6 @@ namespace CKAN
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
-            try
-            {
-                splitContainer1.SplitterDistance = configuration.PanelPosition;
-            }
-            catch
-            {
-                // SplitContainer is mis-designed to throw exceptions
-                // if the min/max limits are exceeded rather than simply obeying them.
-            }
-            ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
             {
