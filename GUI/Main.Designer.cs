@@ -134,6 +134,7 @@
             this.openKSPDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -179,7 +180,7 @@
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator3,
             this.auditRecommendationsMenuItem,
-            this.toolStripSeparator3,
+            this.toolStripSeparator7,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
@@ -236,6 +237,12 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             // 
+            //
+            // toolStripSeparator7
+            //
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
+            //
             //
             // importDownloadsToolStripMenuItem
             //
@@ -1364,6 +1371,7 @@
         private System.Windows.Forms.ToolStripMenuItem openKSPDirectoryToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
     }
 }
