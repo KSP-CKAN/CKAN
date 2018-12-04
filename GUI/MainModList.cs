@@ -448,14 +448,7 @@ namespace CKAN
             if (this.InstallAllCheckbox.Checked)
             {
                 // Reset changeset
-                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
-                {
-                    GUIMod mod = row.Tag as GUIMod;
-                    if (mod.IsInstallChecked != mod.IsInstalled)
-                    {
-                        mod.SetInstallChecked(row, mod.IsInstalled);
-                    }
-                }
+                ClearChangeSet();
             }
             else
             {
