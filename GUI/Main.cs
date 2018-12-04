@@ -261,7 +261,7 @@ namespace CKAN
             }
 
             // Set the window name and class for X11
-            if (Platform.IsUnix)
+            if (Platform.IsX11)
             {
                 HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
             }

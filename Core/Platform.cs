@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Reflection;
-
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-
 
 namespace CKAN
 {
@@ -18,11 +16,45 @@ namespace CKAN
     {
         static Platform()
         {
-            IsMac = IsRunningOnMac();
-            IsMono = IsOnMono();
-            // Depends on IsMono
+            // This call throws if we try to do it as a static initializer.
             IsMonoFourOrLater = IsOnMonoFourOrLater();
         }
+
+        /// <summary>
+        /// Are we on a Mac?
+        /// </summary>
+        /// <value><c>true</c> if is mac; otherwise, <c>false</c>.</value>
+        public static readonly bool IsMac = IsRunningOnMac();
+
+        /// <summary>
+        /// Are we on a Unix (including Linux, but *not* Mac) system.
+        /// Note that Mono thinks Mac is Unix! So we need to negate Mac explicitly.
+        /// </summary>
+        /// <value><c>true</c> if is unix; otherwise, <c>false</c>.</value>
+        public static readonly bool IsUnix = Environment.OSVersion.Platform == PlatformID.Unix && !IsMac;
+
+        /// <summary>
+        /// Are we on a flavour of Windows? This is implemented internally by checking
+        /// if we're not on Unix or Mac.
+        /// </summary>
+        /// <value><c>true</c> if is windows; otherwise, <c>false</c>.</value>
+        public static readonly bool IsWindows = !IsUnix && !IsMac;
+
+        /// <summary>
+        /// Are we on Mono?
+        /// </summary>
+        public static readonly bool IsMono = Type.GetType("Mono.Runtime") != null;
+
+        /// <summary>
+        /// Are we running on a Mono with major version 4 or later?
+        /// </summary>
+        public static readonly bool IsMonoFourOrLater;
+
+        /// <summary>
+        /// Are we running in an X11 environment?
+        /// </summary>
+        public static readonly bool IsX11 = IsUnix && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DISPLAY"));
+
 
         // From https://github.com/mono/monodevelop/blob/master/main/src/core/Mono.Texteditor/Mono.TextEditor/Platform.cs
         // Environment.OSVersion.Platform returns Unix for Mac OS X as of Mono v4.0.0:
@@ -55,48 +87,6 @@ namespace CKAN
 
         [DllImport("libc")]
         private static extern int uname(IntPtr buf);
-
-
-        /// <summary>
-        /// Are we on a Unix (including Linux, but *not* Mac) system.
-        /// </summary>
-        /// <value><c>true</c> if is unix; otherwise, <c>false</c>.</value>
-        public static bool IsUnix
-        {
-            get { return Environment.OSVersion.Platform == PlatformID.Unix; }
-        }
-
-        /// <summary>
-        /// Are we on a Mac?
-        /// </summary>
-        /// <value><c>true</c> if is mac; otherwise, <c>false</c>.</value>
-        public static bool IsMac { get; private set; }
-
-
-        /// <summary>
-        /// Are we on a flavour of Windows? This is implemented internally by checking
-        /// if we're not on Unix or Mac.
-        /// </summary>
-        /// <value><c>true</c> if is windows; otherwise, <c>false</c>.</value>
-        public static bool IsWindows
-        {
-            get { return !(IsUnix || IsMac); }
-        }
-
-        /// <summary>
-        /// Are we on Mono?
-        /// </summary>
-        public static bool IsMono { get; private set; }
-
-        private static bool IsOnMono()
-        {
-            return Type.GetType("Mono.Runtime") != null;
-        }
-
-        /// <summary>
-        /// Are we running on a Mono with major version 4 or later?
-        /// </summary>
-        public static bool IsMonoFourOrLater { get; private set; }
 
         private static bool IsOnMonoFourOrLater()
         {
