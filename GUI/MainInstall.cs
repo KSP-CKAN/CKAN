@@ -147,30 +147,43 @@ namespace CKAN
                 installCanceled = true;
             };
 
-            bool resolvedAllProvidedMods = false;
+             // checks if all actions were successfull
+             bool resolvedAllProvidedMods = false;
+            // uninstall/installs/upgrades until every list is empty
+            // if the queue is NOT empty, resolvedAllProvidedMods is set to false until the action is done
             while (!resolvedAllProvidedMods)
             {
                 try
                 {
                     e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
-                    if (!installCanceled && toUninstall.Count > 0)
+                    if (toUninstall.Count > 0)
                     {
-                        installer.UninstallList(toUninstall);
+                        resolvedAllProvidedMods = false;
+                        if (!installCanceled) {
+                            installer.UninstallList(toUninstall);
+                            resolvedAllProvidedMods = true;
+                        }
                     }
-                    if (!installCanceled && toUpgrade.Count > 0)
+                    if (toUpgrade.Count > 0)
                     {
-                        installer.Upgrade(toUpgrade, downloader);
+                        resolvedAllProvidedMods = false;
+                        if (!installCanceled) {
+                            installer.Upgrade(toUpgrade, downloader);
+                            resolvedAllProvidedMods = true;
+                        }
                     }
-                    if (!installCanceled && toInstall.Count > 0)
+                    if (toInstall.Count > 0)
                     {
-                        installer.InstallList(toInstall, opts.Value, downloader);
+                        resolvedAllProvidedMods = false;
+                        if (!installCanceled) {
+                            installer.InstallList(toInstall, opts.Value, downloader);
+                            resolvedAllProvidedMods = true;
+                        }
                     }
-                    e.Result = new KeyValuePair<bool, ModChanges>(!installCanceled, opts.Key);
-                    if (installCanceled)
-                    {
-                        return;
+                    e.Result = new KeyValuePair<bool, ModChanges>(resolvedAllProvidedMods, opts.Key);
+                    if (installCanceled) {
+                        return; 
                     }
-                    resolvedAllProvidedMods = true;
                 }
                 catch (TooManyModsProvideKraken k)
                 {
@@ -327,7 +340,7 @@ namespace CKAN
 
             tabController.SetTabLock(false);
 
-            if (result.Key)
+            if (result.Key && !installCanceled)
             {
                 // Rebuilds the list of GUIMods
                 UpdateModsList(false, result.Value);
@@ -344,20 +357,26 @@ namespace CKAN
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
                 tabController.HideTab("ChangesetTabPage");
+                // move to UpdateChangesDialog()?
                 ApplyToolButton.Enabled = false;
                 RetryCurrentActionButton.Visible = false;
                 UpdateChangesDialog(null, installWorker);
             }
-            else
+            else if(installCanceled) {
+                // User cancelled the installation
+                // Rebuilds the list of GUIMods
+                UpdateModsList(false, result.Value);
+                UpdateChangesDialog(null, installWorker);
+                if (result.Key) {
+                    FailWaitDialog("Cancellation to late, process complete!", "User canceled the process manually, but all mods already (un)installed/upgraded.", "Process complete!", result.Key);
+                } else {
+                    FailWaitDialog("Process canceled by user!", "User canceled the process manually!", "(Un)Install/Upgrade canceled!", result.Key);
+                }
+            } else
             {
                 // There was an error
-                // Stay on the log dialog and re-apply the user's change set to allow retry
-                AddStatusMessage("Error!");
-                SetDescription("An error occurred, check the log for information");
+                FailWaitDialog("Error during installation!", "An unknown error occurred, please try again!", "Installation failed!", result.Key);
                 UpdateChangesDialog(result.Value, installWorker);
-                RetryCurrentActionButton.Visible = true;
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Style = ProgressBarStyle.Continuous);
-                Util.Invoke(DialogProgressBar, () => DialogProgressBar.Value = 0);
             }
 
             Util.Invoke(this, () => Enabled = true);
