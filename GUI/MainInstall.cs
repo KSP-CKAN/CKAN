@@ -147,8 +147,9 @@ namespace CKAN
                 installCanceled = true;
             };
 
-             // checks if all actions were successfull
-             bool resolvedAllProvidedMods = false;
+            // checks if all actions were successfull
+            bool processSuccessful = false;
+            bool resolvedAllProvidedMods = false;
             // uninstall/installs/upgrades until every list is empty
             // if the queue is NOT empty, resolvedAllProvidedMods is set to false until the action is done
             while (!resolvedAllProvidedMods)
@@ -158,32 +159,37 @@ namespace CKAN
                     e.Result = new KeyValuePair<bool, ModChanges>(false, opts.Key);
                     if (toUninstall.Count > 0)
                     {
-                        resolvedAllProvidedMods = false;
-                        if (!installCanceled) {
+                        processSuccessful = false;
+                        if (!installCanceled)
+                        {
                             installer.UninstallList(toUninstall);
-                            resolvedAllProvidedMods = true;
+                            processSuccessful = true;
                         }
                     }
                     if (toUpgrade.Count > 0)
                     {
-                        resolvedAllProvidedMods = false;
-                        if (!installCanceled) {
+                        processSuccessful = false;
+                        if (!installCanceled)
+                        {
                             installer.Upgrade(toUpgrade, downloader);
-                            resolvedAllProvidedMods = true;
+                            processSuccessful = true;
                         }
                     }
                     if (toInstall.Count > 0)
                     {
-                        resolvedAllProvidedMods = false;
-                        if (!installCanceled) {
+                        processSuccessful = false;
+                        if (!installCanceled)
+                        {
                             installer.InstallList(toInstall, opts.Value, downloader);
-                            resolvedAllProvidedMods = true;
+                            processSuccessful = true;
                         }
                     }
-                    e.Result = new KeyValuePair<bool, ModChanges>(resolvedAllProvidedMods, opts.Key);
-                    if (installCanceled) {
-                        return; 
+                    e.Result = new KeyValuePair<bool, ModChanges>(processSuccessful, opts.Key);
+                    if (installCanceled)
+                    {
+                        return;
                     }
+                    resolvedAllProvidedMods = true;
                 }
                 catch (TooManyModsProvideKraken k)
                 {
