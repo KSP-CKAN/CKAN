@@ -213,8 +213,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
                 (
-                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                    CKAN.Repository.default_ckan_repo_uri.ToString()
+                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
                 );
 
             // Check if there is any other instances already running.
@@ -477,8 +476,7 @@ namespace CKAN
             });
 
             configuration = Configuration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                CKAN.Repository.default_ckan_repo_uri.ToString()
+                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)

@@ -81,7 +81,7 @@ namespace CKAN
             SaveConfiguration(this, path);
         }
 
-        public static Configuration LoadOrCreateConfiguration(string path, string defaultRepo)
+        public static Configuration LoadOrCreateConfiguration(string path)
         {
             if (!File.Exists(path))
             {
