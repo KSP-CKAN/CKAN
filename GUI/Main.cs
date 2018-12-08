@@ -476,7 +476,7 @@ namespace CKAN
             });
 
             configuration = Configuration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
+                Path.Combine(CurrentInstance.CkanDir (), "GUIConfig.xml")
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)

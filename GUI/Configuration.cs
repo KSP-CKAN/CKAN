@@ -78,7 +78,7 @@ namespace CKAN
 
         public void Save()
         {
-            SaveConfiguration(this, path);
+            SaveConfiguration(this);
         }
 
         public static Configuration LoadOrCreateConfiguration(string path)
@@ -88,12 +88,12 @@ namespace CKAN
                 var configuration = new Configuration
                 {
                     path = path,
-                        CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
+                    CommandLineArguments = Platform.IsUnix ? "./KSP.x86_64 -single-instance" :
                             Platform.IsMac  ? "./KSP.app/Contents/MacOS/KSP" :
                             "KSP_x64.exe -single-instance"
                 };
 
-                SaveConfiguration(configuration, path);
+                SaveConfiguration(configuration);
             }
 
             return LoadConfiguration(path);
@@ -137,11 +137,11 @@ namespace CKAN
             return configuration;
         }
 
-        public static void SaveConfiguration(Configuration configuration, string path)
+        public static void SaveConfiguration(Configuration configuration)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
 
-            using (var writer = new StreamWriter(path))
+            using (var writer = new StreamWriter(configuration.path))
             {
                 serializer.Serialize(writer, configuration);
                 writer.Close();
