@@ -79,7 +79,7 @@ sub close_ticket {
     my ($issues, $id) = @_;
 
     $issues->create_comment($id, {
-        body => "Hey there! I'm a fun-loving automated bot who's responsible for making sure old support tickets get closed out. As we haven't seen any activity on this ticket for a while, we're hoping the problem has been resolved and I'm closing out the ticket automaically. If I'm doing this in error, please add a comment to this ticket to let us know, and we'll re-open it!"
+        body => "Hey there! I'm a fun-loving automated bot who's responsible for making sure old support tickets get closed out. As we haven't seen any activity on this ticket for a while, we're hoping the problem has been resolved and I'm closing out the ticket automatically. If I'm doing this in error, please add a comment to this ticket to let us know, and we'll re-open it!"
     });
 
     $issues->update_issue( $id, { state => "closed" });
