@@ -23,7 +23,7 @@ namespace Tests.GUI
         }
 
         [Test]
-        public void LoadConfiguration_MalformedXMLFile_ThrowsKraken()
+        public void LoadOrCreateConfiguration_MalformedXMLFile_ThrowsKraken()
         {
             string tempFile = Path.Combine(tempDir, "invalid.xml");
 
@@ -32,11 +32,11 @@ namespace Tests.GUI
                 stream.Write("This is not a valid XML file.");
             }
 
-            Assert.Throws<Kraken>(() => Configuration.LoadConfiguration(tempFile));
+            Assert.Throws<Kraken>(() => Configuration.LoadOrCreateConfiguration(tempFile));
         }
 
         [Test]
-        public void LoadConfiguration_CorrectConfigurationFile_Loaded()
+        public void LoadOrCreateConfiguration_CorrectConfigurationFile_Loaded()
         {
             string tempFile = Path.Combine(tempDir, "valid.xml");
 
@@ -45,7 +45,7 @@ namespace Tests.GUI
                 stream.Write(TestData.ConfigurationFile());
             }
 
-            var result = Configuration.LoadConfiguration(tempFile);
+            var result = Configuration.LoadOrCreateConfiguration(tempFile);
 
             Assert.IsNotNull(result);
         }

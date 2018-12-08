@@ -99,7 +99,7 @@ namespace CKAN
             return LoadConfiguration(path);
         }
 
-        public static Configuration LoadConfiguration(string path)
+        private static Configuration LoadConfiguration(string path)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
 
@@ -137,7 +137,7 @@ namespace CKAN
             return configuration;
         }
 
-        public static void SaveConfiguration(Configuration configuration)
+        private static void SaveConfiguration(Configuration configuration)
         {
             var serializer = new XmlSerializer(typeof (Configuration));
 
