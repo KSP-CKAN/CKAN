@@ -151,7 +151,7 @@
             this.MetadataModuleNameTextBox.Text = "Mod Name";
             this.MetadataModuleNameTextBox.ReadOnly = true;
             this.MetadataModuleNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.MetadataModuleNameTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataModuleNameTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
@@ -237,7 +237,7 @@
             this.MetadataIdentifierTextBox.TabIndex = 27;
             this.MetadataIdentifierTextBox.Text = "-";
             this.MetadataIdentifierTextBox.ReadOnly = true;
-            this.MetadataIdentifierTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataIdentifierTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataIdentifierTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
@@ -337,7 +337,7 @@
             this.MetadataModuleAuthorTextBox.TabIndex = 6;
             this.MetadataModuleAuthorTextBox.Text = "Nobody";
             this.MetadataModuleAuthorTextBox.ReadOnly = true;
-            this.MetadataModuleAuthorTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataModuleAuthorTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.MetadataModuleAuthorTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
