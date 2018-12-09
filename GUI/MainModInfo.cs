@@ -137,13 +137,13 @@ namespace CKAN
         {
             CkanModule module = gui_module.ToModule();
 
-            Util.Invoke(MetadataModuleNameLabel, () => MetadataModuleNameLabel.Text = gui_module.Name);
+            Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = gui_module.Name);
             Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = gui_module.LatestVersion.ToString());
             Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ", module.license));
-            Util.Invoke(MetadataModuleAuthorLabel, () => MetadataModuleAuthorLabel.Text = gui_module.Authors);
-            Util.Invoke (MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
-            Util.Invoke (MetadataModuleDescriptionLabel, () => MetadataModuleDescriptionLabel.Text = module.description);
-            Util.Invoke(MetadataIdentifierLabel, () => MetadataIdentifierLabel.Text = module.identifier);
+            Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
+            Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
+            Util.Invoke(MetadataModuleDescriptionLabel, () => MetadataModuleDescriptionLabel.Text = module.description);
+            Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
             Util.Invoke(MetadataModuleHomePageLinkLabel,

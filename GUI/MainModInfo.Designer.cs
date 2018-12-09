@@ -32,12 +32,12 @@
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.MetaDataUpperLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.MetadataModuleNameLabel = new System.Windows.Forms.Label();
+            this.MetadataModuleNameTextBox = new System.Windows.Forms.TextBox();
             this.MetadataModuleAbstractLabel = new System.Windows.Forms.Label ();
             this.MetadataModuleDescriptionLabel = new System.Windows.Forms.Label ();
             this.MetaDataLowerLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.IdentifierLabel = new System.Windows.Forms.Label();
-            this.MetadataIdentifierLabel = new System.Windows.Forms.Label();
+            this.MetadataIdentifierTextBox = new System.Windows.Forms.TextBox();
             this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
             this.GitHubLabel = new System.Windows.Forms.Label();
@@ -46,7 +46,7 @@
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleLicenseLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleAuthorLabel = new System.Windows.Forms.Label();
+            this.MetadataModuleAuthorTextBox = new System.Windows.Forms.TextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusLabel = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -126,7 +126,7 @@
             this.MetaDataUpperLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.MetaDataUpperLayoutPanel.ColumnCount = 1;
             this.MetaDataUpperLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.MetaDataUpperLayoutPanel.Controls.Add(this.MetadataModuleNameLabel, 0, 0);
+            this.MetaDataUpperLayoutPanel.Controls.Add(this.MetadataModuleNameTextBox, 0, 0);
             this.MetaDataUpperLayoutPanel.Controls.Add(this.MetadataModuleAbstractLabel, 0, 1);
             this.MetaDataUpperLayoutPanel.Controls.Add(this.MetadataModuleDescriptionLabel, 0, 2);
             this.MetaDataUpperLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -139,17 +139,21 @@
             this.MetaDataUpperLayoutPanel.Size = new System.Drawing.Size(346, 283);
             this.MetaDataUpperLayoutPanel.TabIndex = 0;
             //
-            // MetadataModuleNameLabel
+            // MetadataModuleNameTextBox
             //
-            this.MetadataModuleNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MetadataModuleNameLabel.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.MetadataModuleNameLabel.Location = new System.Drawing.Point(3, 0);
-            this.MetadataModuleNameLabel.Name = "MetadataModuleNameLabel";
-            this.MetadataModuleNameLabel.Size = new System.Drawing.Size(340, 46);
-            this.MetadataModuleNameLabel.TabIndex = 0;
-            this.MetadataModuleNameLabel.Text = "Mod Name";
-            this.MetadataModuleNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MetadataModuleNameTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.MetadataModuleNameTextBox.Location = new System.Drawing.Point(3, 0);
+            this.MetadataModuleNameTextBox.Name = "MetadataModuleNameTextBox";
+            this.MetadataModuleNameTextBox.Size = new System.Drawing.Size(340, 46);
+            this.MetadataModuleNameTextBox.TabIndex = 0;
+            this.MetadataModuleNameTextBox.Text = "Mod Name";
+            this.MetadataModuleNameTextBox.ReadOnly = true;
+            this.MetadataModuleNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.MetadataModuleNameTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MetadataModuleNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
             // MetadataModuleAbstractLabel
             //
@@ -188,12 +192,12 @@
             this.MetaDataLowerLayoutPanel.Controls.Add(this.IdentifierLabel, 0, 7);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleVersionLabel, 1, 0);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleLicenseLabel, 1, 1);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleAuthorLabel, 1, 2);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleAuthorTextBox, 1, 2);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleHomePageLinkLabel, 1, 3);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleGitHubLinkLabel, 1, 4);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleReleaseStatusLabel, 1, 5);
             this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataModuleKSPCompatibilityLabel, 1, 6);
-            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierLabel, 1, 7);
+            this.MetaDataLowerLayoutPanel.Controls.Add(this.MetadataIdentifierTextBox, 1, 7);
             this.MetaDataLowerLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetaDataLowerLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.MetaDataLowerLayoutPanel.Name = "MetaDataLowerLayoutPanel";
@@ -222,16 +226,20 @@
             this.IdentifierLabel.TabIndex = 28;
             this.IdentifierLabel.Text = "Identifier";
             //
-            // MetadataIdentifierLabel
+            // MetadataIdentifierTextBox
             //
-            this.MetadataIdentifierLabel.AutoSize = true;
-            this.MetadataIdentifierLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataIdentifierLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MetadataIdentifierLabel.Location = new System.Drawing.Point(93, 210);
-            this.MetadataIdentifierLabel.Name = "MetadataIdentifierLabel";
-            this.MetadataIdentifierLabel.Size = new System.Drawing.Size(250, 20);
-            this.MetadataIdentifierLabel.TabIndex = 27;
-            this.MetadataIdentifierLabel.Text = "-";
+            this.MetadataIdentifierTextBox.AutoSize = true;
+            this.MetadataIdentifierTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MetadataIdentifierTextBox.Location = new System.Drawing.Point(93, 210);
+            this.MetadataIdentifierTextBox.Name = "MetadataIdentifierTextBox";
+            this.MetadataIdentifierTextBox.Size = new System.Drawing.Size(250, 20);
+            this.MetadataIdentifierTextBox.TabIndex = 27;
+            this.MetadataIdentifierTextBox.Text = "-";
+            this.MetadataIdentifierTextBox.ReadOnly = true;
+            this.MetadataIdentifierTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MetadataIdentifierTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
             // KSPCompatibilityLabel
             //
@@ -319,15 +327,19 @@
             this.MetadataModuleLicenseLabel.TabIndex = 4;
             this.MetadataModuleLicenseLabel.Text = "None";
             //
-            // MetadataModuleAuthorLabel
+            // MetadataModuleAuthorTextBox
             //
-            this.MetadataModuleAuthorLabel.AutoSize = true;
-            this.MetadataModuleAuthorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleAuthorLabel.Location = new System.Drawing.Point(93, 60);
-            this.MetadataModuleAuthorLabel.Name = "MetadataModuleAuthorLabel";
-            this.MetadataModuleAuthorLabel.Size = new System.Drawing.Size(250, 30);
-            this.MetadataModuleAuthorLabel.TabIndex = 6;
-            this.MetadataModuleAuthorLabel.Text = "Nobody";
+            this.MetadataModuleAuthorTextBox.AutoSize = true;
+            this.MetadataModuleAuthorTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MetadataModuleAuthorTextBox.Location = new System.Drawing.Point(93, 60);
+            this.MetadataModuleAuthorTextBox.Name = "MetadataModuleAuthorTextBox";
+            this.MetadataModuleAuthorTextBox.Size = new System.Drawing.Size(250, 30);
+            this.MetadataModuleAuthorTextBox.TabIndex = 6;
+            this.MetadataModuleAuthorTextBox.Text = "Nobody";
+            this.MetadataModuleAuthorTextBox.ReadOnly = true;
+            this.MetadataModuleAuthorTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.MetadataModuleAuthorTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MetadataModuleAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
             // VersionLabel
             //
@@ -513,12 +525,12 @@
         private System.Windows.Forms.TabPage MetadataTabPage;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TableLayoutPanel MetaDataUpperLayoutPanel;
-        private System.Windows.Forms.Label MetadataModuleNameLabel;
+        private System.Windows.Forms.TextBox MetadataModuleNameTextBox;
         private System.Windows.Forms.Label MetadataModuleAbstractLabel;
         private System.Windows.Forms.Label MetadataModuleDescriptionLabel;
         private System.Windows.Forms.TableLayoutPanel MetaDataLowerLayoutPanel;
         private System.Windows.Forms.Label IdentifierLabel;
-        private System.Windows.Forms.Label MetadataIdentifierLabel;
+        private System.Windows.Forms.TextBox MetadataIdentifierTextBox;
         private System.Windows.Forms.Label KSPCompatibilityLabel;
         private System.Windows.Forms.Label ReleaseLabel;
         private System.Windows.Forms.Label GitHubLabel;
@@ -527,7 +539,7 @@
         private System.Windows.Forms.Label LicenseLabel;
         private System.Windows.Forms.Label MetadataModuleVersionLabel;
         private System.Windows.Forms.Label MetadataModuleLicenseLabel;
-        private System.Windows.Forms.Label MetadataModuleAuthorLabel;
+        private System.Windows.Forms.TextBox MetadataModuleAuthorTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private System.Windows.Forms.Label MetadataModuleReleaseStatusLabel;
         private System.Windows.Forms.LinkLabel MetadataModuleHomePageLinkLabel;
