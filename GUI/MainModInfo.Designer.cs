@@ -20,6 +20,17 @@
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Create a new TransparentTextBox control that allows the backcolor to be transparent
+        /// </summary>
+        private partial class TransparentTextBox : System.Windows.Forms.TextBox
+        {
+            public TransparentTextBox ()
+            {
+                SetStyle (System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
+            }
+        }
+
         #region Component Designer generated code
 
         /// <summary>
@@ -32,12 +43,12 @@
             this.MetadataTabPage = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.MetaDataUpperLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.MetadataModuleNameTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataModuleNameTextBox = new TransparentTextBox();
             this.MetadataModuleAbstractLabel = new System.Windows.Forms.Label ();
             this.MetadataModuleDescriptionLabel = new System.Windows.Forms.Label ();
             this.MetaDataLowerLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.IdentifierLabel = new System.Windows.Forms.Label();
-            this.MetadataIdentifierTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataIdentifierTextBox = new TransparentTextBox();
             this.KSPCompatibilityLabel = new System.Windows.Forms.Label();
             this.ReleaseLabel = new System.Windows.Forms.Label();
             this.GitHubLabel = new System.Windows.Forms.Label();
@@ -46,7 +57,7 @@
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.MetadataModuleVersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleLicenseLabel = new System.Windows.Forms.Label();
-            this.MetadataModuleAuthorTextBox = new System.Windows.Forms.TextBox();
+            this.MetadataModuleAuthorTextBox = new TransparentTextBox();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusLabel = new System.Windows.Forms.Label();
             this.MetadataModuleHomePageLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -143,7 +154,6 @@
             //
             this.MetadataModuleNameTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MetadataModuleNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.GrayText;
             this.MetadataModuleNameTextBox.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameTextBox.Name = "MetadataModuleNameTextBox";
             this.MetadataModuleNameTextBox.Size = new System.Drawing.Size(340, 46);
@@ -151,7 +161,7 @@
             this.MetadataModuleNameTextBox.Text = "Mod Name";
             this.MetadataModuleNameTextBox.ReadOnly = true;
             this.MetadataModuleNameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.MetadataModuleNameTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.MetadataModuleNameTextBox.BackColor = MetaDataUpperLayoutPanel.BackColor;
             this.MetadataModuleNameTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
@@ -230,14 +240,13 @@
             //
             this.MetadataIdentifierTextBox.AutoSize = true;
             this.MetadataIdentifierTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataIdentifierTextBox.Location = new System.Drawing.Point(93, 210);
             this.MetadataIdentifierTextBox.Name = "MetadataIdentifierTextBox";
             this.MetadataIdentifierTextBox.Size = new System.Drawing.Size(250, 20);
             this.MetadataIdentifierTextBox.TabIndex = 27;
             this.MetadataIdentifierTextBox.Text = "-";
             this.MetadataIdentifierTextBox.ReadOnly = true;
-            this.MetadataIdentifierTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.MetadataIdentifierTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataIdentifierTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataIdentifierTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
@@ -337,7 +346,7 @@
             this.MetadataModuleAuthorTextBox.TabIndex = 6;
             this.MetadataModuleAuthorTextBox.Text = "Nobody";
             this.MetadataModuleAuthorTextBox.ReadOnly = true;
-            this.MetadataModuleAuthorTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.MetadataModuleAuthorTextBox.BackColor = MetadataTabPage.BackColor;
             this.MetadataModuleAuthorTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MetadataModuleAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             //
@@ -525,12 +534,12 @@
         private System.Windows.Forms.TabPage MetadataTabPage;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TableLayoutPanel MetaDataUpperLayoutPanel;
-        private System.Windows.Forms.TextBox MetadataModuleNameTextBox;
+        private TransparentTextBox MetadataModuleNameTextBox;
         private System.Windows.Forms.Label MetadataModuleAbstractLabel;
         private System.Windows.Forms.Label MetadataModuleDescriptionLabel;
         private System.Windows.Forms.TableLayoutPanel MetaDataLowerLayoutPanel;
         private System.Windows.Forms.Label IdentifierLabel;
-        private System.Windows.Forms.TextBox MetadataIdentifierTextBox;
+        private TransparentTextBox MetadataIdentifierTextBox;
         private System.Windows.Forms.Label KSPCompatibilityLabel;
         private System.Windows.Forms.Label ReleaseLabel;
         private System.Windows.Forms.Label GitHubLabel;
@@ -539,7 +548,7 @@
         private System.Windows.Forms.Label LicenseLabel;
         private System.Windows.Forms.Label MetadataModuleVersionLabel;
         private System.Windows.Forms.Label MetadataModuleLicenseLabel;
-        private System.Windows.Forms.TextBox MetadataModuleAuthorTextBox;
+        private TransparentTextBox MetadataModuleAuthorTextBox;
         private System.Windows.Forms.Label VersionLabel;
         private System.Windows.Forms.Label MetadataModuleReleaseStatusLabel;
         private System.Windows.Forms.LinkLabel MetadataModuleHomePageLinkLabel;
