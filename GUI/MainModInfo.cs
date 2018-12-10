@@ -138,11 +138,11 @@ namespace CKAN
             CkanModule module = gui_module.ToModule();
 
             Util.Invoke(MetadataModuleNameTextBox, () => MetadataModuleNameTextBox.Text = gui_module.Name);
-            Util.Invoke(MetadataModuleVersionLabel, () => MetadataModuleVersionLabel.Text = gui_module.LatestVersion.ToString());
-            Util.Invoke(MetadataModuleLicenseLabel, () => MetadataModuleLicenseLabel.Text = string.Join(", ", module.license));
+            Util.Invoke(MetadataModuleVersionTextBox, () => MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString());
+            Util.Invoke(MetadataModuleLicenseTextBox, () => MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license));
             Util.Invoke(MetadataModuleAuthorTextBox, () => MetadataModuleAuthorTextBox.Text = gui_module.Authors);
             Util.Invoke(MetadataModuleAbstractLabel, () => MetadataModuleAbstractLabel.Text = module.@abstract);
-            Util.Invoke(MetadataModuleDescriptionLabel, () => MetadataModuleDescriptionLabel.Text = module.description);
+            Util.Invoke(MetadataModuleDescriptionTextBox, () => MetadataModuleDescriptionTextBox.Text = module.description);
             Util.Invoke(MetadataIdentifierTextBox, () => MetadataIdentifierTextBox.Text = module.identifier);
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
@@ -162,10 +162,10 @@ namespace CKAN
 
             if (module.release_status != null)
             {
-                Util.Invoke(MetadataModuleReleaseStatusLabel, () => MetadataModuleReleaseStatusLabel.Text = module.release_status.ToString());
+                Util.Invoke(MetadataModuleReleaseStatusTextBox, () => MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString());
             }
 
-            Util.Invoke(MetadataModuleKSPCompatibilityLabel, () => MetadataModuleKSPCompatibilityLabel.Text = gui_module.KSPCompatibilityLong);
+            Util.Invoke(MetadataModuleKSPCompatibilityTextBox, () => MetadataModuleKSPCompatibilityTextBox.Text = gui_module.KSPCompatibilityLong);
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
