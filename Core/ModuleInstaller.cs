@@ -1012,13 +1012,7 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<string> identifiers, IDownloader netAsyncDownloader, bool enforceConsistency = true)
         {
-            var options = new RelationshipResolverOptions();
-
-            // We do not wish to pull in any suggested or recommended mods.
-            options.with_recommends = false;
-            options.with_suggests = false;
-
-            var resolver = new RelationshipResolver(identifiers.ToList(), null, options, registry_manager.registry, ksp.VersionCriteria());
+            var resolver = new RelationshipResolver(identifiers.ToList(), null, RelationshipResolver.DependsOnlyOpts(), registry_manager.registry, ksp.VersionCriteria());
             Upgrade(resolver.ModList(), netAsyncDownloader, enforceConsistency);
         }
 

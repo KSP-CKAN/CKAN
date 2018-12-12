@@ -191,14 +191,25 @@ namespace CKAN
         // and the defaults in the class definition should do the right thing.
         public static RelationshipResolverOptions DefaultOpts()
         {
-            var opts = new RelationshipResolverOptions
+            return new RelationshipResolverOptions
             {
-                with_recommends = true,
-                with_suggests = false,
+                with_recommends   = true,
+                with_suggests     = false,
                 with_all_suggests = false
             };
+        }
 
-            return opts;
+        /// <summary>
+        /// Options to install without recommendations.
+        /// </summary>
+        public static RelationshipResolverOptions DependsOnlyOpts()
+        {
+            return new RelationshipResolverOptions
+            {
+                with_recommends   = false,
+                with_suggests     = false,
+                with_all_suggests = false
+            };
         }
 
         /// <summary>

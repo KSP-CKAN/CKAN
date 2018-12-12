@@ -155,11 +155,13 @@ namespace CKAN
                 UpdateChangesDialog(ChangeSet.ToList(), installWorker);
                 tabController.ShowTab("ChangesetTabPage", 1, false);
                 ApplyToolButton.Enabled = true;
+                auditRecommendationsMenuItem.Enabled = false;
             }
             else
             {
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                auditRecommendationsMenuItem.Enabled = true;
             }
         }
 
