@@ -89,5 +89,6 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
+		$2.SpaceAfterMethodCallName = False
 	EndGlobalSection
 EndGlobal

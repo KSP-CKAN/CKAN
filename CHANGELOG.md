@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Stop splitters from migrating between sessions (#2598 by: HebaruSan; reviewed: politas)
 - [Multiple] Don't auto-install recommendations when auditing recommendations (#2606 by: HebaruSan; reviewed: politas)
 - [GUI] Suppress wrapping of status bar in Mono (#2607 by: HebaruSan; reviewed: politas)
+- [GUI] Remove unnecessary parameter in Configuration methods (#2608 by: DasSkellett; reviewed: HebaruSan)
 
 ## v1.25.4
 
