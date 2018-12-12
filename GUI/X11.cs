@@ -28,7 +28,14 @@ namespace CKAN
             IntPtr classHints = Marshal.AllocCoTaskMem(Marshal.SizeOf(hint));
             Marshal.StructureToPtr(hint, classHints, true);
 
-            XSetClassHint(DisplayHandle, GetWindow(handle), classHints);
+            try
+            {
+                XSetClassHint(DisplayHandle, GetWindow(handle), classHints);
+            }
+            catch (DllNotFoundException)
+            {
+                // If the DLL isn't there, don't worry about it
+            }
 
             Marshal.FreeCoTaskMem(hint.res_name);
             Marshal.FreeCoTaskMem(hint.res_class);

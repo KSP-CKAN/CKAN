@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.25.5
+
+### Bugfixes
+- [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
+
 ## v1.25.4
 
 ### Features
