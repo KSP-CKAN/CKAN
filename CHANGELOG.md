@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.25.5
 
+### Features
+- [GUI] Checkbox to uninstall all mods and reset changeset (#2596 by: HebaruSan; reviewed: politas)
+
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
 - [GUI] Fix file menu separator (#2593 by: HebaruSan; reviewed: politas)

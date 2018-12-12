@@ -69,6 +69,7 @@
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModList = new CKAN.MainModListGUI();
+            this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -551,8 +552,8 @@
             this.ModList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);
             // 
             // Installed
-            // 
-            this.Installed.HeaderText = "Installed";
+            //
+            this.Installed.HeaderText = "    Inst";
             this.Installed.Name = "Installed";
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.Width = 50;
@@ -703,6 +704,7 @@
             // ManageModsTabPage
             // 
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.ManageModsTabPage.Controls.Add(this.InstallAllCheckbox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameLabel);
@@ -719,6 +721,14 @@
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             // 
+            //
+            // InstallAllCheckbox
+            //
+            this.InstallAllCheckbox.Location = new System.Drawing.Point(4, 118);
+            this.InstallAllCheckbox.Size = new System.Drawing.Size(18, 18);
+            this.InstallAllCheckbox.Checked = true;
+            this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
+            //
             // FilterByAuthorTextBox
             // 
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1306,6 +1316,7 @@
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         public CKAN.MainModListGUI ModList;
+        private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
         private System.Windows.Forms.DataGridViewCheckBoxColumn UpdateCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModName;

@@ -443,6 +443,26 @@ namespace CKAN
             }
         }
 
+        private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
+        {
+            if (this.InstallAllCheckbox.Checked)
+            {
+                // Reset changeset
+                ClearChangeSet();
+            }
+            else
+            {
+                // Uninstall all
+                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+                {
+                    GUIMod mod = row.Tag as GUIMod;
+                    if (mod.IsInstallChecked)
+                    {
+                        mod.SetInstallChecked(row, false);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>

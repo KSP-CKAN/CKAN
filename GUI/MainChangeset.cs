@@ -76,6 +76,18 @@ namespace CKAN
             }
         }
 
+        private void ClearChangeSet()
+        {
+            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+            {
+                GUIMod mod = row.Tag as GUIMod;
+                if (mod.IsInstallChecked != mod.IsInstalled)
+                {
+                    mod.SetInstallChecked(row, mod.IsInstalled);
+                }
+            }
+        }
+
         /// <summary>
         /// This method creates the Install part of the changeset
         /// It arranges the changeset in a human-friendly order
@@ -104,11 +116,9 @@ namespace CKAN
 
         private void CancelChangesButton_Click(object sender, EventArgs e)
         {
-            UpdateModsList();
+            ClearChangeSet();
             UpdateChangesDialog(null, installWorker);
             tabController.ShowTab("ManageModsTabPage");
-            tabController.HideTab("ChangesetTabPage");
-            ApplyToolButton.Enabled = false;
         }
 
         private void ConfirmChangesButton_Click(object sender, EventArgs e)
