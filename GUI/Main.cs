@@ -797,6 +797,20 @@ namespace CKAN
             if (split.Length == 0)
                 return;
 
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
+            if (incomp.Any())
+            {
+                // Warn that it might not be safe to run KSP with incompatible modules installed
+                string incompatDescrip = incomp
+                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
+                    .Aggregate((a, b) => $"{a}, {b}");
+                if (!YesNoDialog($"Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?\r\n\r\n{incompatDescrip}"))
+                {
+                    return;
+                }
+            }
+
             var binary = split[0];
             var args = string.Join(" ", split.Skip(1));
 

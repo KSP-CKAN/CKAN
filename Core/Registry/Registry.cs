@@ -110,6 +110,19 @@ namespace CKAN
             get { return _installedDlcModules; }
         }
 
+        /// <summary>
+        /// Find installed modules that are not compatible with the given versions
+        /// </summary>
+        /// <param name="crit">Version criteria against which to check modules</param>
+        /// <returns>
+        /// Installed modules that are incompatible, if any
+        /// </returns>
+        public IEnumerable<InstalledModule> IncompatibleInstalled(KspVersionCriteria crit)
+        {
+            return installed_modules.Values
+                .Where(im => !im.Module.IsCompatibleKSP(crit));
+        }
+
         #region Registry Upgrades
 
         [OnDeserialized]

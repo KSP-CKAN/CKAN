@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add legend for relationships tab (#2592 by: HebaruSan; reviewed: politas)
 - [GUI] Add Launch KSP option to tray icon menu (#2597 by: HebaruSan; reviewed: politas)
 - [GUI] Confirm quit with pending change set or conflicts (#2599 by: HebaruSan; reviewed: politas)
+- [Multiple] Warn before launching KSP with installed incompatible modules (#2601 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
