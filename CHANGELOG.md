@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
 - [GUI] Fix file menu separator (#2593 by: HebaruSan; reviewed: politas)
+- [GUI] Fix error popup text for dark themes (#2594 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4
 
