@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix error popup text for dark themes (#2594 by: HebaruSan; reviewed: politas)
 - [GUI] Stop splitters from migrating between sessions (#2598 by: HebaruSan; reviewed: politas)
 - [Multiple] Don't auto-install recommendations when auditing recommendations (#2606 by: HebaruSan; reviewed: politas)
+- [GUI] Suppress wrapping of status bar in Mono (#2607 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4
 

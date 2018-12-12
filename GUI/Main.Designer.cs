@@ -671,6 +671,7 @@
             // StatusLabel
             //
             this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Font = System.Drawing.SystemFonts.DefaultFont;
             this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
             this.StatusLabel.Spring = true;
             this.StatusLabel.Text = "";
