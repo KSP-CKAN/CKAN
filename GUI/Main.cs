@@ -448,6 +448,45 @@ namespace CKAN
                 return;
             }
 
+            if (Conflicts != null)
+            {
+                if (Conflicts.Any())
+                {
+                    // Ask if they want to resolve conflicts
+                    string confDescrip = Conflicts
+                        .Select(kvp => kvp.Value)
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    if (!YesNoDialog($"There are conflicts. Really quit?\r\n\r\n{confDescrip}"))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+                else
+                {
+                    // The Conflicts dictionary is empty even when there are unmet dependencies.
+                    if (!YesNoDialog("There are unmet dependencies. Really quit?"))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+            }
+            else if (ChangeSet?.Any() ?? false)
+            {
+                // Ask if they want to discard the change set
+                string changeDescrip = ChangeSet
+                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.Name)
+                    .Select(grp => $"{grp.Key}: "
+                        + grp.Aggregate((a, b) => $"{a}, {b}"))
+                    .Aggregate((a, b) => $"{a}\r\n{b}");
+                if (!YesNoDialog($"You have unapplied changes. Really quit?\r\n\r\n{changeDescrip}"))
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             // Copy window location to app settings
             configuration.WindowLoc = Location;
 
