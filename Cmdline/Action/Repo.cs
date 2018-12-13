@@ -160,14 +160,12 @@ namespace CKAN.CmdLine
 
         private static RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
         {
-            WebClient client = new WebClient();
-
             if (master_uri == null)
             {
                 master_uri = Repository.default_repo_master_list;
             }
 
-            string json = client.DownloadString(master_uri);
+            string json = Net.DownloadText(master_uri);
             return JsonConvert.DeserializeObject<RepositoryList>(json);
         }
 

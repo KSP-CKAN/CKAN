@@ -53,7 +53,7 @@ namespace CKAN
             try
             {
                 return JsonConvert.DeserializeObject<RepositoryList>(
-                    new WebClient().DownloadString(Repository.default_repo_master_list)
+                    Net.DownloadText(Repository.default_repo_master_list)
                 );
             }
             catch
