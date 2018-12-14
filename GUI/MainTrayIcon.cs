@@ -41,7 +41,7 @@ namespace CKAN
             }
             else
             {
-                //minimizeNotifyIcon.Visible = false;
+                minimizeNotifyIcon.Visible = false;
             }
         }
 

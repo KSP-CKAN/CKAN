@@ -44,6 +44,7 @@
             // 
             // ErrorMessage
             // 
+            this.ErrorMessage.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ErrorMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ErrorMessage.Location = new System.Drawing.Point(0, 0);
             this.ErrorMessage.Name = "ErrorMessage";

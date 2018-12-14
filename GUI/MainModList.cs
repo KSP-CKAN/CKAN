@@ -443,6 +443,26 @@ namespace CKAN
             }
         }
 
+        private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
+        {
+            if (this.InstallAllCheckbox.Checked)
+            {
+                // Reset changeset
+                ClearChangeSet();
+            }
+            else
+            {
+                // Uninstall all
+                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+                {
+                    GUIMod mod = row.Tag as GUIMod;
+                    if (mod.IsInstallChecked)
+                    {
+                        mod.SetInstallChecked(row, false);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -572,11 +592,6 @@ namespace CKAN
         {
             var modules_to_install = new HashSet<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
-            var options = new RelationshipResolverOptions
-            {
-                without_toomanyprovides_kraken = false,
-                with_recommends = false
-            };
 
             foreach (var change in changeSet)
             {
@@ -610,7 +625,8 @@ namespace CKAN
                     new RelationshipResolver(
                         modules_to_install,
                         null,
-                        options, registry, version);
+                        RelationshipResolver.DependsOnlyOpts(),
+                        registry, version);
                     handled_all_too_many_provides = true;
                     continue;
                 }
@@ -642,7 +658,7 @@ namespace CKAN
             var resolver = new RelationshipResolver(
                 modules_to_install,
                 changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()),
-                options, registry, version);
+                RelationshipResolver.DependsOnlyOpts(), registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
                     .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));

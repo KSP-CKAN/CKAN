@@ -69,6 +69,7 @@
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ModList = new CKAN.MainModListGUI();
+            this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -131,9 +132,11 @@
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.openCKANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openKSPDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -179,7 +182,7 @@
             this.exportModListToolStripMenuItem,
             this.toolStripSeparator3,
             this.auditRecommendationsMenuItem,
-            this.toolStripSeparator3,
+            this.toolStripSeparator7,
             this.ExitToolButton});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
@@ -236,6 +239,12 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             // 
+            //
+            // toolStripSeparator7
+            //
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
+            //
             //
             // importDownloadsToolStripMenuItem
             //
@@ -544,8 +553,8 @@
             this.ModList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModList_MouseDown);
             // 
             // Installed
-            // 
-            this.Installed.HeaderText = "Installed";
+            //
+            this.Installed.HeaderText = "    Inst";
             this.Installed.Name = "Installed";
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.Width = 50;
@@ -662,6 +671,7 @@
             // StatusLabel
             //
             this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Font = System.Drawing.SystemFonts.DefaultFont;
             this.StatusLabel.Size = new System.Drawing.Size(1050, 29);
             this.StatusLabel.Spring = true;
             this.StatusLabel.Text = "";
@@ -696,6 +706,7 @@
             // ManageModsTabPage
             // 
             this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
+            this.ManageModsTabPage.Controls.Add(this.InstallAllCheckbox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorTextBox);
             this.ManageModsTabPage.Controls.Add(this.FilterByAuthorLabel);
             this.ManageModsTabPage.Controls.Add(this.FilterByNameLabel);
@@ -712,6 +723,14 @@
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
             // 
+            //
+            // InstallAllCheckbox
+            //
+            this.InstallAllCheckbox.Location = new System.Drawing.Point(4, 118);
+            this.InstallAllCheckbox.Size = new System.Drawing.Size(18, 18);
+            this.InstallAllCheckbox.Checked = true;
+            this.InstallAllCheckbox.CheckedChanged += new System.EventHandler(this.InstallAllCheckbox_CheckChanged);
+            //
             // FilterByAuthorTextBox
             // 
             this.FilterByAuthorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1140,6 +1159,7 @@
             this.pauseToolStripMenuItem,
             this.toolStripSeparator5,
             this.openCKANToolStripMenuItem,
+            this.openKSPToolStripMenuItem,
             this.openKSPDirectoryToolStripMenuItem1,
             this.cKANSettingsToolStripMenuItem1,
             this.toolStripSeparator6,
@@ -1186,6 +1206,14 @@
             this.openCKANToolStripMenuItem.Text = "Open CKAN";
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
             // 
+            //
+            // openKSPToolStripMenuItem
+            //
+            this.openKSPToolStripMenuItem.Name = "launchKSPToolStripMenuItem";
+            this.openKSPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openKSPToolStripMenuItem.Text = "Launch KSP";
+            this.openKSPToolStripMenuItem.Click += new System.EventHandler(this.launchKSPToolStripMenuItem_Click);
+            //
             // openKSPDirectoryToolStripMenuItem1
             // 
             this.openKSPDirectoryToolStripMenuItem1.Name = "openKSPDirectoryToolStripMenuItem1";
@@ -1299,6 +1327,7 @@
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         public CKAN.MainModListGUI ModList;
+        private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
         private System.Windows.Forms.DataGridViewCheckBoxColumn UpdateCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModName;
@@ -1361,9 +1390,11 @@
         public System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem openCKANToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openKSPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openKSPDirectoryToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
     }
 }

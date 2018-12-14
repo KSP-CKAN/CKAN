@@ -155,11 +155,13 @@ namespace CKAN
                 UpdateChangesDialog(ChangeSet.ToList(), installWorker);
                 tabController.ShowTab("ChangesetTabPage", 1, false);
                 ApplyToolButton.Enabled = true;
+                auditRecommendationsMenuItem.Enabled = false;
             }
             else
             {
                 tabController.HideTab("ChangesetTabPage");
                 ApplyToolButton.Enabled = false;
+                auditRecommendationsMenuItem.Enabled = true;
             }
         }
 
@@ -213,8 +215,7 @@ namespace CKAN
 
             configuration = Configuration.LoadOrCreateConfiguration
                 (
-                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                    CKAN.Repository.default_ckan_repo_uri.ToString()
+                    Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml")
                 );
 
             // Check if there is any other instances already running.
@@ -261,7 +262,7 @@ namespace CKAN
             }
 
             // Set the window name and class for X11
-            if (Platform.IsUnix)
+            if (Platform.IsX11)
             {
                 HandleCreated += (sender, e) => X11.SetWMClass("CKAN", "CKAN", Handle);
             }
@@ -306,6 +307,18 @@ namespace CKAN
         protected override void OnShown(EventArgs e)
         {
             actuallyVisible = true;
+
+            try
+            {
+                splitContainer1.SplitterDistance = configuration.PanelPosition;
+            }
+            catch
+            {
+                // SplitContainer is mis-designed to throw exceptions
+                // if the min/max limits are exceeded rather than simply obeying them.
+            }
+            ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
+
             base.OnShown(e);
         }
 
@@ -320,16 +333,6 @@ namespace CKAN
             Location = configuration.WindowLoc;
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
-            try
-            {
-                splitContainer1.SplitterDistance = configuration.PanelPosition;
-            }
-            catch
-            {
-                // SplitContainer is mis-designed to throw exceptions
-                // if the min/max limits are exceeded rather than simply obeying them.
-            }
-            ModInfoTabControl.ModMetaSplitPosition = configuration.ModInfoPosition;
 
             if (!configuration.CheckForUpdatesOnLaunchNoNag && AutoUpdate.CanUpdate)
             {
@@ -446,6 +449,45 @@ namespace CKAN
                 return;
             }
 
+            if (Conflicts != null)
+            {
+                if (Conflicts.Any())
+                {
+                    // Ask if they want to resolve conflicts
+                    string confDescrip = Conflicts
+                        .Select(kvp => kvp.Value)
+                        .Aggregate((a, b) => $"{a}, {b}");
+                    if (!YesNoDialog($"There are conflicts. Really quit?\r\n\r\n{confDescrip}"))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+                else
+                {
+                    // The Conflicts dictionary is empty even when there are unmet dependencies.
+                    if (!YesNoDialog("There are unmet dependencies. Really quit?"))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+            }
+            else if (ChangeSet?.Any() ?? false)
+            {
+                // Ask if they want to discard the change set
+                string changeDescrip = ChangeSet
+                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.Name)
+                    .Select(grp => $"{grp.Key}: "
+                        + grp.Aggregate((a, b) => $"{a}, {b}"))
+                    .Aggregate((a, b) => $"{a}\r\n{b}");
+                if (!YesNoDialog($"You have unapplied changes. Really quit?\r\n\r\n{changeDescrip}"))
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             // Copy window location to app settings
             configuration.WindowLoc = Location;
 
@@ -477,8 +519,7 @@ namespace CKAN
             });
 
             configuration = Configuration.LoadOrCreateConfiguration(
-                Path.Combine(CurrentInstance.CkanDir(), "GUIConfig.xml"),
-                CKAN.Repository.default_ckan_repo_uri.ToString()
+                Path.Combine(CurrentInstance.CkanDir (), "GUIConfig.xml")
             );
 
             if (CurrentInstance.CompatibleVersionsAreFromDifferentKsp)
@@ -755,6 +796,20 @@ namespace CKAN
             var split = configuration.CommandLineArguments.Split(' ');
             if (split.Length == 0)
                 return;
+
+            var registry = RegistryManager.Instance(CurrentInstance).registry;
+            var incomp   = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria());
+            if (incomp.Any())
+            {
+                // Warn that it might not be safe to run KSP with incompatible modules installed
+                string incompatDescrip = incomp
+                    .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
+                    .Aggregate((a, b) => $"{a}, {b}");
+                if (!YesNoDialog($"Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?\r\n\r\n{incompatDescrip}"))
+                {
+                    return;
+                }
+            }
 
             var binary = split[0];
             var args = string.Join(" ", split.Skip(1));

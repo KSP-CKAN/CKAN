@@ -362,13 +362,12 @@ namespace CKAN
                 // install successful
                 AddStatusMessage("Success!");
                 HideWaitDialog(true);
-                tabController.HideTab("ChangesetTabPage");
-                // move to UpdateChangesDialog()?
-                ApplyToolButton.Enabled = false;
+                ChangeSet = null;
                 RetryCurrentActionButton.Visible = false;
                 UpdateChangesDialog(null, installWorker);
             }
-            else if(installCanceled) {
+            else if(installCanceled)
+            {
                 // User cancelled the installation
                 // Rebuilds the list of GUIMods
                 UpdateModsList(false, result.Value);
@@ -378,7 +377,8 @@ namespace CKAN
                 } else {
                     FailWaitDialog("Process canceled by user!", "User canceled the process manually!", "(Un)Install/Upgrade canceled!", result.Key);
                 }
-            } else
+            }
+            else
             {
                 // There was an error
                 FailWaitDialog("Error during installation!", "An unknown error occurred, please try again!", "Installation failed!", result.Key);

@@ -114,14 +114,7 @@ namespace CKAN
         {
             return mods.Where(kvp => CanInstall(
                 registry, versionCriteria,
-                new RelationshipResolverOptions()
-                {
-                    with_all_suggests              = false,
-                    with_recommends                = false,
-                    with_suggests                  = false,
-                    without_enforce_consistency    = false,
-                    without_toomanyprovides_kraken = false
-                },
+                RelationshipResolver.DependsOnlyOpts(),
                 toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()
             )).ToDictionary(
                 kvp => kvp.Key,
@@ -336,7 +329,7 @@ namespace CKAN
                             GUIModChangeType.Install,
                             null
                         )).ToList(),
-                        RelationshipResolver.DefaultOpts()
+                        RelationshipResolver.DependsOnlyOpts()
                     )
                 );
             }
