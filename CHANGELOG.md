@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Don't auto-install recommendations when auditing recommendations (#2606 by: HebaruSan; reviewed: politas)
 - [GUI] Suppress wrapping of status bar in Mono (#2607 by: HebaruSan; reviewed: politas)
 - [GUI] Remove unnecessary parameter in Configuration methods (#2608 by: DasSkellett; reviewed: HebaruSan)
+- [GUI] Revert unintentional tray icon change from #2587 (#2609 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4
 
