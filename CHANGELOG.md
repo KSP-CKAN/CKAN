@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add Launch KSP option to tray icon menu (#2597 by: HebaruSan; reviewed: politas)
 - [GUI] Confirm quit with pending change set or conflicts (#2599 by: HebaruSan; reviewed: politas)
 - [Multiple] Warn before launching KSP with installed incompatible modules (#2601 by: HebaruSan; reviewed: politas)
+- [GUI] Allow selection of text in mod info panel (#2610 by: DasSkelett; reviewed: HebaruSan)
 
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
@@ -18,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Stop splitters from migrating between sessions (#2598 by: HebaruSan; reviewed: politas)
 - [Multiple] Don't auto-install recommendations when auditing recommendations (#2606 by: HebaruSan; reviewed: politas)
 - [GUI] Suppress wrapping of status bar in Mono (#2607 by: HebaruSan; reviewed: politas)
-- [GUI] Remove unnecessary parameter in Configuration methods (#2608 by: DasSkellett; reviewed: HebaruSan)
+- [GUI] Remove unnecessary parameter in Configuration methods (#2608 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Revert unintentional tray icon change from #2587 (#2609 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4

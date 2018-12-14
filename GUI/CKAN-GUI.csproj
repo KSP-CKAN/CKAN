@@ -237,6 +237,7 @@
     <Compile Include="YesNoDialog.Designer.cs">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransparentTextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutDialog.resx">
