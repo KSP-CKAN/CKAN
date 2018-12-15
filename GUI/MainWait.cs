@@ -61,6 +61,30 @@ namespace CKAN
             });
         }
 
+        /// <summary>
+        /// Stay on log page and reset StatusProgress
+        /// </summary>
+        /// <param name="statusMsg">Message for the lower status bar</param>
+        /// <param name="logMsg">Message to display on WaitDialog-Log (not the real log!)</param>
+        /// <param name="description">Message displayed above the DialogProgress bar</param>
+        public void FailWaitDialog(string statusMsg, string logMsg, string description, bool success)
+        {
+            Util.Invoke(statusStrip1, () => {
+                StatusProgress.Visible = false;
+                AddStatusMessage(statusMsg);
+            });
+            Util.Invoke(WaitTabPage, () => {
+                RecreateDialogs();
+                RetryCurrentActionButton.Visible = !success;
+                CancelCurrentActionButton.Enabled = false;
+                SetProgress(100);
+            });
+            tabController.HideTab("ChangesetTabPage");
+            AddLogMessage(logMsg);
+            SetDescription(description);
+            ApplyToolButton.Enabled = !success;
+        }
+
         public void SetProgress(int progress)
         {
             if (progress < 0)
@@ -129,7 +153,6 @@ namespace CKAN
             {
                 CancelCurrentActionButton.Enabled = false;
             });
-            HideWaitDialog(true);
         }
 
     }

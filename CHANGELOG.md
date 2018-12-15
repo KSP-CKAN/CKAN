@@ -21,8 +21,9 @@ All notable changes to this project will be documented in this file.
 - [GUI] Suppress wrapping of status bar in Mono (#2607 by: HebaruSan; reviewed: politas)
 - [GUI] Remove unnecessary parameter in Configuration methods (#2608 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Revert unintentional tray icon change from #2587 (#2609 by: HebaruSan; reviewed: politas)
+- [GUI] Show correct error messages after canceling (un)installations/upgrades (#2602 by: DasSkelett; reviewed: HebaruSan)
 
-## v1.25.4
+## v1.25.4 Kennedy
 
 ### Features
 
