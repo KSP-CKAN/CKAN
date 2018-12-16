@@ -87,6 +87,12 @@
     <Compile Include="Sources\Github\GithubRelease.cs" />
     <Compile Include="Sources\Github\GithubRepo.cs" />
     <Compile Include="Sources\Github\IGithubApi.cs" />
+    <Compile Include="Sources\Jenkins\IJenkinsApi.cs" />
+    <Compile Include="Sources\Jenkins\JenkinsApi.cs" />
+    <Compile Include="Sources\Jenkins\JenkinsArtifact.cs" />
+    <Compile Include="Sources\Jenkins\JenkinsBuild.cs" />
+    <Compile Include="Sources\Jenkins\JenkinsOptions.cs" />
+    <Compile Include="Sources\Jenkins\JenkinsRef.cs" />
     <Compile Include="Sources\Spacedock\ISpaceDock.cs" />
     <Compile Include="Sources\Spacedock\SDVersion.cs" />
     <Compile Include="Sources\Spacedock\SpaceDockApi.cs" />
