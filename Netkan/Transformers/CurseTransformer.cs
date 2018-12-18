@@ -1,10 +1,12 @@
-﻿using System;
+using System;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
+using log4net;
+using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Curse;
-using log4net;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -42,8 +44,20 @@ namespace CKAN.NetKAN.Transformers
                 // Only pre-fill version info if there's none already. GH #199
                 if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
                 {
-                    Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);
-                    json["ksp_version"] = latestVersion.version.ToString();
+
+                    KspVersion minVer = latestVersion.versions.Min();
+                    KspVersion maxVer = latestVersion.versions.Max();
+                    if (minVer == maxVer)
+                    {
+                        Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);
+                        json["ksp_version"] = latestVersion.version.ToString();
+                    }
+                    else
+                    {
+                        Log.DebugFormat("Writing ksp_version_min,_max from Curse: {0}, {1}", minVer, maxVer);
+                        json["ksp_version_min"] = minVer.ToString();
+                        json["ksp_version_max"] = maxVer.ToString();
+                    }
                 }
 
                 var useDownloadNameVersion = false;
