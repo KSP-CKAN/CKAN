@@ -28,7 +28,7 @@ namespace CKAN
         /// Optionally takes a URL to the zipfile repo to download.
         /// Returns the number of unique modules updated.
         /// </summary>
-        public static int UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
+        public static bool UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
             List<CkanModule> allAvail = new List<CkanModule>();
@@ -42,7 +42,7 @@ namespace CKAN
                 {
                     // Report failure if any repo fails, rather than losing half the list.
                     // UpdateRegistry will have alerted the user to specific errors already.
-                    return 0;
+                    return false;
                 }
                 else
                 {
@@ -66,13 +66,14 @@ namespace CKAN
                     HandleModuleChanges(metadataChanges, user, ksp, cache);
                 }
 
-                // Return how many we got!
-                return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
+                // Registry.Available is slow, just return success,
+                // caller can check it if it's really needed
+                return true;
             }
             else
             {
                 // Return failure
-                return 0;
+                return false;
             }
         }
 
@@ -372,7 +373,7 @@ Do you wish to reinstall now?", sb)))
         /// <returns>
         /// Number of modules found in repo
         /// </returns>
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
+        public static bool Update(RegistryManager registry_manager, KSP ksp, IUser user, string repo = null)
         {
             if (repo == null)
             {
@@ -383,7 +384,7 @@ Do you wish to reinstall now?", sb)))
         }
 
         // Same as above, just with a Uri instead of string for the repo
-        public static int Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
+        public static bool Update(RegistryManager registry_manager, KSP ksp, IUser user, Uri repo = null)
         {
             // Use our default repo, unless we've been told otherwise.
             if (repo == null)
@@ -405,8 +406,9 @@ Do you wish to reinstall now?", sb)))
 
             ShowUserInconsistencies(registry_manager.registry, user);
 
-            // Return how many we got!
-            return registry_manager.registry.Available(ksp.VersionCriteria()).Count;
+            // Registry.Available is slow, just return success,
+            // caller can check it if it's really needed
+            return true;
         }
 
         /// <summary>
