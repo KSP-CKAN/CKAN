@@ -1,7 +1,9 @@
-using CKAN.Versioning;
-using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Curse
 {
@@ -9,6 +11,10 @@ namespace CKAN.NetKAN.Sources.Curse
     {
         [JsonConverter(typeof(JsonConvertKSPVersion))]
         [JsonProperty] public KspVersion version;
+
+        [JsonConverter(typeof(JsonConvertKSPVersion))]
+        [JsonProperty] public KspVersion[] versions;
+
         [JsonProperty] public string name = "";
         [JsonProperty] public string type;
         [JsonProperty] public int id;
@@ -102,12 +108,20 @@ namespace CKAN.NetKAN.Sources.Curse
                 JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
             )
             {
-                if (reader.Value == null)
-                    return null;
-
-                string raw_version = reader.Value.ToString();
-
-                return KspVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
+                if (reader.TokenType == JsonToken.StartArray)
+                {
+                    return JArray.Load(reader)
+                        .Values<string>()
+                        .Select(v => KspVersion.Parse(Regex.Replace(v, @"-.*$", "")))
+                        .ToArray();
+                }
+                else
+                {
+                    if (reader.Value == null)
+                        return null;
+                    string raw_version = reader.Value.ToString();
+                    return KspVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
+                }
             }
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

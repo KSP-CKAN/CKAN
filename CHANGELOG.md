@@ -23,6 +23,8 @@ All notable changes to this project will be documented in this file.
 - [GUI] Revert unintentional tray icon change from #2587 (#2609 by: HebaruSan; reviewed: politas)
 - [GUI] Show correct error messages after canceling (un)installations/upgrades (#2602 by: DasSkelett; reviewed: HebaruSan)
 - [Netkan] Jenkins as a Netkan "source" (#2613 by: HebaruSan; reviewed: politas)
+- [Multiple] Encapsulate usages of WebClient (#2614 by: HebaruSan; reviewed: politas)
+- [Netkan] Handle multiple game versions from Curse (#2616 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
