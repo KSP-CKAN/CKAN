@@ -5,6 +5,7 @@ using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Spacedock;
+using CKAN.NetKAN.Sources.Jenkins;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -32,7 +33,7 @@ namespace CKAN.NetKAN.Transformers
                 new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(new GithubApi(githubToken), prerelease),
                 new HttpTransformer(),
-                new JenkinsTransformer(http),
+                new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),

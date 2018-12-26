@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using log4net;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Services;
-using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Sources.Jenkins;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -16,27 +13,12 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class JenkinsTransformer : ITransformer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(JenkinsTransformer));
-
-        private static readonly Dictionary<string, string> BuildTypeToProperty = new Dictionary<string, string>
+        public JenkinsTransformer(IJenkinsApi api)
         {
-            { "any", "lastBuild" },
-            { "completed", "lastCompletedBuild" },
-            { "failed", "lastFailedBuild" },
-            { "stable", "lastStableBuild" },
-            { "successful", "lastSuccessfulBuild" },
-            { "unstable", "lastUnstableBuild" },
-            { "unsuccessful", "lastUnsuccessfulBuild" }
-        };
-
-        private readonly IHttpService _http;
+            _api = api;
+        }
 
         public string Name { get { return "jenkins"; } }
-
-        public JenkinsTransformer(IHttpService http)
-        {
-            _http = http;
-        }
 
         public Metadata Transform(Metadata metadata)
         {
@@ -47,81 +29,33 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing Jenkins transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                var buildType = "stable";
-                var useFilenameVersion = false;
-                var assetMatchPattern = Constants.DefaultAssetMatchPattern;
+                JenkinsOptions options = json["x_netkan_jenkins"]?.ToObject<JenkinsOptions>()
+                    ?? new JenkinsOptions();
 
-                var jenkinsMetadata = (JObject)json["x_netkan_jenkins"];
-                if (jenkinsMetadata != null)
-                {
-                    var jenkinsBuildMetadata = (string)jenkinsMetadata["build"];
-
-                    if (jenkinsBuildMetadata != null)
-                    {
-                        buildType = jenkinsBuildMetadata;
-                    }
-
-                    var jenkinsUseFilenameVersionMetadata = (bool?)jenkinsMetadata["use_filename_version"];
-
-                    if (jenkinsUseFilenameVersionMetadata != null)
-                    {
-                        useFilenameVersion = jenkinsUseFilenameVersionMetadata.Value;
-                    }
-
-                    var jenkinsAssetMatchMetadata = (string)jenkinsMetadata["asset_match"];
-
-                    if (jenkinsAssetMatchMetadata != null)
-                    {
-                        assetMatchPattern = new Regex(jenkinsAssetMatchMetadata);
-                    }
-                }
-
-                Log.InfoFormat("Attempting to retrieve the last {0} build", buildType);
-
-                // Get the job metadata
-                var job = JsonConvert.DeserializeObject<JObject>(
-                    _http.DownloadText(new Uri(metadata.Kref.Id + "api/json"))
+                JenkinsBuild build = _api.GetLatestBuild(
+                    new JenkinsRef(metadata.Kref),
+                    options
                 );
 
-                // Get the build reference metadata
-                var buildRef = (JObject)job[BuildTypeToProperty[buildType]];
+                JenkinsArtifact[] artifacts = build.Artifacts
+                    .Where(a => options.AssetMatchPattern.IsMatch(a.FileName))
+                    .ToArray();
 
-                // Get the build number and url
-                var buildNumber = (int)buildRef["number"];
-                var buildUrl = (string)buildRef["url"];
-
-                Log.InfoFormat("The last {0} build is #{1}", buildType, buildNumber);
-
-                // Get the build metadata
-                var build = JsonConvert.DeserializeObject<JObject>(
-                    _http.DownloadText(new Uri(buildUrl + "api/json"))
-                );
-
-                // Get the artifact metadata
-                var artifacts = ((JArray)build["artifacts"])
-                    .Select(i => (JObject)i)
-                    .Where(i => assetMatchPattern.IsMatch((string)i["fileName"]))
-                    .ToList();
-
-                switch (artifacts.Count)
+                switch (artifacts.Length)
                 {
                     case 1:
-                        var artifact = artifacts.Single();
+                        JenkinsArtifact artifact = artifacts.Single();
 
-                        var artifactFileName = artifact["fileName"];
-                        var artifactRelativePath = artifact["relativePath"];
-
-                        // I'm not sure if 'relativePath' is the right property to use here
-                        var download = Uri.EscapeUriString(buildUrl + "artifact/" + artifactRelativePath);
-                        var version = artifactFileName;
-
+                        string download = Uri.EscapeUriString(
+                            $"{build.Url}artifact/{artifact.RelativePath}"
+                        );
                         Log.DebugFormat("Using download URL: {0}", download);
                         json.SafeAdd("download", download);
 
-                        if (useFilenameVersion)
+                        if (options.UseFilenameVersion)
                         {
-                            Log.DebugFormat("Using filename as version: {0}", version);
-                            json.SafeAdd("version", version);
+                            Log.DebugFormat("Using filename as version: {0}", artifact.FileName);
+                            json.SafeAdd("version", artifact.FileName);
                         }
 
                         // Make sure resources exist.
@@ -136,14 +70,19 @@ namespace CKAN.NetKAN.Transformers
                         Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                         return new Metadata(json);
+                        break;
+
                     case 0:
                         throw new Exception("Could not find any matching artifacts");
+
                     default:
                         throw new Exception("Found too many matching artifacts");
                 }
             }
-
             return metadata;
         }
+
+        private readonly IJenkinsApi _api;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(JenkinsTransformer));
     }
 }
