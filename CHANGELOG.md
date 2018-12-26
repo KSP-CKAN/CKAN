@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Confirm quit with pending change set or conflicts (#2599 by: HebaruSan; reviewed: politas)
 - [Multiple] Warn before launching KSP with installed incompatible modules (#2601 by: HebaruSan; reviewed: politas)
 - [GUI] Allow selection of text in mod info panel (#2610 by: DasSkelett; reviewed: HebaruSan)
+- [Multiple] Show progress bar while loading registry (#2617 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)

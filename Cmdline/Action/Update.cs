@@ -153,7 +153,8 @@ namespace CKAN.CmdLine
                 ? CKAN.Repo.UpdateAllRepositories(registry_manager, ksp, manager.Cache, user)
                 : CKAN.Repo.Update(registry_manager, ksp, user, repository);
 
-            user.RaiseMessage("Updated information on {0} available modules", updated);
+            user.RaiseMessage("Updated information on {0} available modules",
+                registry_manager.registry.Available(ksp.VersionCriteria()).Count);
         }
     }
 }

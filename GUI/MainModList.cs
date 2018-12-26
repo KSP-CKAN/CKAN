@@ -141,25 +141,39 @@ namespace CKAN
 
         public void UpdateModsList(Boolean repo_updated = false, IEnumerable<ModChange> mc = null)
         {
-            Util.Invoke(this, () => _UpdateModsList(repo_updated, mc ?? new List<ModChange>()));
+            // Run the update in the background so the UI thread can appear alive
+            Task.Factory.StartNew(() =>
+                _UpdateModsList(repo_updated, mc ?? new List<ModChange>())
+            );
         }
 
         private void _UpdateModsList(bool repo_updated, IEnumerable<ModChange> mc)
         {
             log.Info("Updating the mod list");
 
+            ResetProgress();
+            tabController.RenameTab("WaitTabPage", "Loading modules");
+            ShowWaitDialog(false);
+            tabController.SetTabLock(true);
+            SwitchEnabledState();
+            ClearLog();
+
+            AddLogMessage("Loading registry...");
             KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
             IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
 
+            AddLogMessage("Loading installed modules...");
             var gui_mods = new HashSet<GUIMod>();
             gui_mods.UnionWith(
                 registry.InstalledModules
                     .Select(instMod => new GUIMod(instMod, registry, versionCriteria))
             );
+            AddLogMessage("Loading available modules...");
             gui_mods.UnionWith(
                 registry.Available(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria))
             );
+            AddLogMessage("Loading incompatible modules...");
             gui_mods.UnionWith(
                 registry.Incompatible(versionCriteria)
                     .Select(m => new GUIMod(m, registry, versionCriteria, true))
@@ -167,6 +181,7 @@ namespace CKAN
 
             if (mc != null)
             {
+                AddLogMessage("Restoring change set...");
                 foreach (ModChange change in mc)
                 {
                     // Propagate IsInstallChecked and IsUpgradeChecked to the next generation
@@ -176,6 +191,7 @@ namespace CKAN
                 }
             }
 
+            AddLogMessage("Preserving new flags...");
             var old_modules = mainModList.Modules.ToDictionary(m => m, m => m.IsIncompatible);
             if (repo_updated)
             {
@@ -207,11 +223,13 @@ namespace CKAN
                 }
             }
 
+            AddLogMessage("Populating mod list...");
             // Update our mod listing
             mainModList.ConstructModList(gui_mods.ToList(), mc, configuration.HideEpochs, configuration.HideV);
             mainModList.Modules = new ReadOnlyCollection<GUIMod>(
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
+            AddLogMessage("Updating filters...");
             //TODO Consider using smart enumeration pattern so stuff like this is easier
             FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
                 mainModList.CountModsByFilter(GUIModFilter.Compatible));
@@ -232,7 +250,14 @@ namespace CKAN
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
             UpdateAllToolButton.Enabled = has_any_updates;
             UpdateFilters(this);
+
+            AddLogMessage("Updating tray...");
             UpdateTrayInfo();
+
+            HideWaitDialog(true);
+            tabController.HideTab("WaitTabPage");
+            tabController.SetTabLock(false);
+            SwitchEnabledState();
         }
 
         public void MarkModForInstall(string identifier, bool uncheck = false)

@@ -90,7 +90,7 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            if ((e.Result as int? ?? 0) > 0)
+            if (e.Result as bool? ?? true)
             {
                 UpdateModsList(true, ChangeSet);
                 AddStatusMessage("Repositories successfully updated.");
