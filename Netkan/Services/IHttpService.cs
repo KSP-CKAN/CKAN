@@ -7,6 +7,7 @@ namespace CKAN.NetKAN.Services
     {
         string DownloadPackage(Uri url, string identifier, DateTime? updated);
         string DownloadText(Uri url);
+        string DownloadText(Uri url, string authToken);
 
         IEnumerable<Uri> RequestedURLs { get; }
     }

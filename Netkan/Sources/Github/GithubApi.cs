@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
 using System.Net;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
+using CKAN.NetKAN.Services;
 
 // We could use OctoKit for this, but since we're only pinging the
 // release API, I'm happy enough without yet another dependency.
@@ -16,21 +17,25 @@ namespace CKAN.NetKAN.Sources.Github
         private static readonly ILog Log = LogManager.GetLogger(typeof(GithubApi));
         private static readonly Uri ApiBase = new Uri("https://api.github.com/");
 
-        private readonly string _oauthToken;
+        private readonly IHttpService _http;
+        private readonly string       _oauthToken;
 
-        public GithubApi(string oauthToken = null)
+        public GithubApi(IHttpService http, string oauthToken = null)
         {
+            _http       = http;
             _oauthToken = oauthToken;
         }
 
         public GithubRepo GetRepo(GithubRef reference)
         {
-            return JsonConvert.DeserializeObject<GithubRepo>(Call(string.Format("repos/{0}", reference.Repository)));
+            return JsonConvert.DeserializeObject<GithubRepo>(
+                Call($"repos/{reference.Repository}")
+            );
         }
 
         public GithubRelease GetLatestRelease(GithubRef reference)
         {
-            var json = Call(string.Format("repos/{0}/releases", reference.Repository));
+            var json = Call($"repos/{reference.Repository}/releases");
             Log.Debug("Parsing JSON...");
             var releases = JArray.Parse(json);
 
@@ -86,20 +91,12 @@ namespace CKAN.NetKAN.Sources.Github
 
         private string Call(string path)
         {
-            var web = new WebClient();
-            web.Headers.Add("User-Agent", Net.UserAgentString);
-
-            if (_oauthToken != null)
-            {
-                web.Headers.Add("Authorization", string.Format("token {0}", _oauthToken));
-            }
-
             var url = new Uri(ApiBase, path);
             Log.DebugFormat("Calling {0}", url);
 
             try
             {
-                return web.DownloadString(url);
+                return _http.DownloadText(url, _oauthToken);
             }
             catch (WebException webEx)
             {

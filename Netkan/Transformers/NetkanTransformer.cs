@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
                 new MetaNetkanTransformer(http),
                 new SpacedockTransformer(new SpacedockApi(http)),
                 new CurseTransformer(new CurseApi(http)),
-                new GithubTransformer(new GithubApi(githubToken), prerelease),
+                new GithubTransformer(new GithubApi(http, githubToken), prerelease),
                 new HttpTransformer(),
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http),

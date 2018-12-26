@@ -170,7 +170,7 @@ namespace CKAN
             }.DownloadAndWait(downloadTargets);
         }
 
-        public static string DownloadText(Uri url)
+        public static string DownloadText(Uri url, string authToken = "")
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
@@ -179,13 +179,13 @@ namespace CKAN
                 WebClient agent = MakeDefaultHttpClient();
 
                 // Check whether to use an auth token for this host
-                string token;
-                if (Win32Registry.TryGetAuthToken(url.Host, out token)
-                        && !string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(authToken)
+                    || (Win32Registry.TryGetAuthToken(url.Host, out authToken)
+                        && !string.IsNullOrEmpty(authToken)))
                 {
                     log.InfoFormat("Using auth token for {0}", url.Host);
                     // Send our auth token to the GitHub API (or whoever else needs one)
-                    agent.Headers.Add("Authorization", $"token {token}");
+                    agent.Headers.Add("Authorization", $"token {authToken}");
                 }
 
                 return agent.DownloadString(url.OriginalString);
