@@ -27,6 +27,9 @@ namespace CKAN.CmdLine
             [VerbOption("default", HelpText = "Set the default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
 
+            [VerbOption("fake", HelpText = "Fake a KSP install")]
+            public CommonOptions FakeOptions { get; set; }
+
             [HelpVerbOption]
             public string GetUsage(string verb)
             {
@@ -61,6 +64,7 @@ namespace CKAN.CmdLine
 
                         // Now the commands with only --flag type options
                         case "list":
+                        case "fake":
                         default:
                             ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options]");
                             break;
@@ -151,6 +155,10 @@ namespace CKAN.CmdLine
                         case "use":
                         case "default":
                             exitCode = SetDefaultInstall((DefaultOptions)suboptions);
+                            break;
+
+                        case "fake":
+                            exitCode = FakeNewKSPInstall();
                             break;
 
                         default:
@@ -359,6 +367,36 @@ namespace CKAN.CmdLine
 
             User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", name);
             return Exit.OK;
+        }
+
+        /// <summary>
+        /// Creates a new fake KSP install after the conditions CKAN tests for valid install directories.
+        /// Used for developing and testing purposes.
+        /// </summary>
+        private int FakeNewKSPInstall ()
+        {
+            // TODO
+            // Create new folder
+            // Currently inside directory in which ckan is started, later choosable
+            // Create fake file buildID.txt
+            // Create fake file readme.txt
+
+            try
+            {
+                string folder = "_fakeKSP/";
+                System.IO.Directory.CreateDirectory(folder);
+                System.IO.Directory.CreateDirectory(folder + "GameData");
+                System.IO.File.WriteAllText(folder + "buildID.txt", "build id = 023352018.10.17");
+                System.IO.File.WriteAllText(folder + "readme.txt", "Version 1.5.1");
+
+                return Exit.OK;
+            }
+            catch (Exception e)
+            {
+                User.RaiseError(e.ToString());
+                
+                return Exit.ERROR;
+            }
         }
     }
 }
