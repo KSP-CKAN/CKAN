@@ -29,7 +29,7 @@ namespace CKAN.CmdLine
             public DefaultOptions DefaultOptions { get; set; }
 
             [VerbOption("fake",    HelpText = "Fake a KSP install")]
-            public CommonOptions  FakeOptions    { get; set; }
+            public FakeOptions    FakeOptions    { get; set; }
 
             [HelpVerbOption]
             public string GetUsage(string verb)
@@ -49,7 +49,8 @@ namespace CKAN.CmdLine
                     {
                         // First the commands with three string arguments
                         case "fake":
-                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] version name path");
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name path version dlcVersion");
+                            ht.AddPreOptionsLine($"Choose dlcVersion \"none\" if you want no simulated dlc.");
                             break;
 
                         // Second the commands with two string arguments
@@ -104,11 +105,10 @@ namespace CKAN.CmdLine
 
         internal class FakeOptions : CommonOptions
         {
-            [ValueOption(0)] public string version { get; set; }
-            [ValueOption(1)] public string name { get; set; }
-            [ValueOption(2)] public string path { get; set; }
-            [Option("dlc", DefaultValue = true, HelpText = "Include faked DLC.")]
-            public bool dlc { get; set; }
+            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(1)] public string path { get; set; }
+            [ValueOption(2)] public string version { get; set; }
+            [ValueOption(3)] public string dlcVersion { get; set; }
         }
 
         // This is required by ISubCommand
@@ -187,6 +187,8 @@ namespace CKAN.CmdLine
 
         private KSPManager Manager { get; set; }
         private IUser      User    { get; set; }
+
+        #region option functions
 
         private int ListInstalls()
         {
@@ -389,21 +391,15 @@ namespace CKAN.CmdLine
         /// </summary>
         private int FakeNewKSPInstall (FakeOptions options)
         {
-            // TODO
-            // buildID64 ?
-            // help ?
-            // DLC support
-            User.RaiseMessage("Test");
-
             // Parse all options
-            bool DLC = options.dlc;
-            KspVersion version;
+            bool DLC = !(options.dlcVersion.ToLower() == "none");
             string installName = options.name;
-            string path;
+            string path = options.path;
+            KspVersion version;
+            string dlcVersion = options.dlcVersion;
             try
             {
                 version = KspVersion.Parse(options.version);
-                path = Path.GetDirectoryName(options.path);
             }
             catch (Exception e)
             {
@@ -416,17 +412,18 @@ namespace CKAN.CmdLine
             try
             {
                 // Create a KSP root directory, containing a GameData folder, a buildID.txt and a readme.txt
-                string directory = Path.Combine(path, "fakeKSP");
-                Directory.CreateDirectory(directory);
-                Directory.CreateDirectory(Path.Combine(directory, "GameData"));
-                File.WriteAllText(Path.Combine(directory, "buildID.txt"), String.Format("build id = {0}", version.Build));
-                File.WriteAllText(Path.Combine(directory, "readme.txt"), String.Format("Version {0}", version.ToYalovString()));
+                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(Path.Combine(path, "GameData"));
+                File.WriteAllText(Path.Combine(path, "buildID.txt"), String.Format("build id = {0}", version.Build));
+                File.WriteAllText(Path.Combine(path, "readme.txt"), String.Format("Version {0}", version.ToString()));
 
                 // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
                 if (DLC && version.CompareTo(KspVersion.Parse("1.4.0")) >= 0)
                 {
-                    Directory.CreateDirectory(Path.Combine(directory, "GameData", "SquadExpansion", "MakingHistory"));
-                    File.WriteAllText(Path.Combine(directory, "GameData", "SquadExpansion", "MakingHistory", "readme.txt"), "Version 1.1.0");
+                    Directory.CreateDirectory(Path.Combine(path, "GameData", "SquadExpansion", "MakingHistory"));
+                    File.WriteAllText(
+                        Path.Combine(path, "GameData", "SquadExpansion", "MakingHistory", "readme.txt"),
+                        String.Format("Version {0}", dlcVersion) );
                 }
 
 
@@ -434,7 +431,7 @@ namespace CKAN.CmdLine
                 // We need an AddOptions object first, with the desired name and the path
                 AddOptions addInstallOptions = new AddOptions {
                     name = installName,
-                    path = directory
+                    path = path
                 };
 
                 AddInstall(addInstallOptions);
@@ -444,9 +441,10 @@ namespace CKAN.CmdLine
             catch (Exception e)
             {
                 User.RaiseError(e.ToString());
-                
+                User.RaiseMessage("Type ckan ksp fake --help to get help.");
                 return Exit.ERROR;
             }
         }
+        #endregion
     }
 }
