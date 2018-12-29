@@ -155,7 +155,7 @@ namespace CKAN
             tabController.RenameTab("WaitTabPage", "Loading modules");
             ShowWaitDialog(false);
             tabController.SetTabLock(true);
-            SwitchEnabledState();
+            Util.Invoke(this, SwitchEnabledState);
             ClearLog();
 
             AddLogMessage("Loading registry...");
@@ -257,7 +257,7 @@ namespace CKAN
             HideWaitDialog(true);
             tabController.HideTab("WaitTabPage");
             tabController.SetTabLock(false);
-            SwitchEnabledState();
+            Util.Invoke(this, SwitchEnabledState);
         }
 
         public void MarkModForInstall(string identifier, bool uncheck = false)
