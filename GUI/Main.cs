@@ -247,7 +247,7 @@ namespace CKAN
             if (!showConsole)
                 Util.HideConsoleWindow();
 
-            // Disable the modinfo controls until a mod has been choosen.
+            // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
             ActiveModInfo = null;
 
             // WinForms on Mac OS X has a nasty bug where the UI thread hogs the CPU,

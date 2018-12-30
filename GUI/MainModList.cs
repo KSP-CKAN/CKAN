@@ -294,6 +294,13 @@ namespace CKAN
 
         private void ModList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Skip if already disposed (i.e. after the form has been closed).
+            // Needed for TransparentTextBoxes
+            if (ModInfoTabControl.IsDisposed)
+            {
+                return;
+            }
+
             var module = GetSelectedModule();
 
             ActiveModInfo = module;

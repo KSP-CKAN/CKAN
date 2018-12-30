@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Encapsulate usages of WebClient (#2614 by: HebaruSan; reviewed: politas)
 - [Netkan] Handle multiple game versions from Curse (#2616 by: HebaruSan; reviewed: politas)
 - [GUI] Fix UpdateModsList crash on Mono (#2625 by: HebaruSan; reviewed: politas)
+- [GUI] Fix System.ObjectDisposedException for TransparentTextBox (#2619 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.25.4 Kennedy
 
