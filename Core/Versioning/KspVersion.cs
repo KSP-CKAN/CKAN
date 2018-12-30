@@ -444,6 +444,31 @@ namespace CKAN.Versioning
                 return false;
             }
         }
+
+        /// <summary>
+        /// Returns a complete KspVersion object, including the build number.
+        /// </summary>
+        /// <returns>The build for the version. Null if version is not known in the build map.</returns>
+        public KspVersion AddBuildToVersion ()
+        {
+            if (!IsPatchDefined)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            KspVersion version = null;
+
+            foreach (KspVersion ver in knownVersions)
+            {
+                if (ver.Major == Major && ver.Minor == Minor && ver.Patch == Patch)
+                {
+                    version = new KspVersion(ver.Major, ver.Minor, ver.Patch, ver.Build);
+                    break;
+                }
+            }
+            return version;
+        }
     }
 
     public sealed partial class KspVersion : IEquatable<KspVersion>

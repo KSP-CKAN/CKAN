@@ -4,12 +4,14 @@ using System.Linq;
 using CKAN.Versioning;
 using CommandLine;
 using CommandLine.Text;
+using log4net;
 
 namespace CKAN.CmdLine
 {
     public class KSP : ISubCommand
     {
         public KSP() { }
+        protected static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
         internal class KSPSubOptions : VerbCommandOptions
         {
@@ -391,6 +393,8 @@ namespace CKAN.CmdLine
         /// </summary>
         private int FakeNewKSPInstall (FakeOptions options)
         {
+            log.Info("Creating a new fake KSP install");
+
             // Parse all options
             bool DLC = !(options.dlcVersion.ToLower() == "none");
             string installName = options.name;
@@ -399,49 +403,36 @@ namespace CKAN.CmdLine
             string dlcVersion = options.dlcVersion;
             try
             {
+                log.Debug("Parsing KSP version");
                 version = KspVersion.Parse(options.version);
+                if (!version.IsBuildDefined)
+                {
+                    version = version.AddBuildToVersion();
+                }
+                if (version == null)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
             }
-            catch (Exception e)
+            catch (ArgumentOutOfRangeException e)
             {
+                log.Error(e);
                 User.RaiseError(e.ToString());
+                User.RaiseMessage("Valid version formats: 1.5.0 | 1.5.1 | 1.6.0.2395");
                 return Exit.ERROR;
             }
 
-
-            // Try to create the folder structure and the txt files
-            try
+            // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
+            Manager.FakeInstance(installName, path, version, DLC, dlcVersion);
+            // Test if the instance was added to the registry.
+            // No need to test if valid, because this is done in AddInstance().
+            if (Manager.HasInstance(installName))
             {
-                // Create a KSP root directory, containing a GameData folder, a buildID.txt and a readme.txt
-                Directory.CreateDirectory(path);
-                Directory.CreateDirectory(Path.Combine(path, "GameData"));
-                File.WriteAllText(Path.Combine(path, "buildID.txt"), String.Format("build id = {0}", version.Build));
-                File.WriteAllText(Path.Combine(path, "readme.txt"), String.Format("Version {0}", version.ToString()));
-
-                // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
-                if (DLC && version.CompareTo(KspVersion.Parse("1.4.0")) >= 0)
-                {
-                    Directory.CreateDirectory(Path.Combine(path, "GameData", "SquadExpansion", "MakingHistory"));
-                    File.WriteAllText(
-                        Path.Combine(path, "GameData", "SquadExpansion", "MakingHistory", "readme.txt"),
-                        String.Format("Version {0}", dlcVersion) );
-                }
-
-
-                // Add it to the known instances for CKAN
-                // We need an AddOptions object first, with the desired name and the path
-                AddOptions addInstallOptions = new AddOptions {
-                    name = installName,
-                    path = path
-                };
-
-                AddInstall(addInstallOptions);
-
                 return Exit.OK;
             }
-            catch (Exception e)
+            else
             {
-                User.RaiseError(e.ToString());
-                User.RaiseMessage("Type ckan ksp fake --help to get help.");
+                User.RaiseMessage("Something went wrong. Try to add the instance yourself.");
                 return Exit.ERROR;
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CKAN.Versioning;
 using log4net;
 
 namespace CKAN
@@ -149,6 +150,76 @@ namespace CKAN
                 throw new NotKSPDirKraken(ksp_instance.GameDir());
             }
             return ksp_instance;
+        }
+
+        /// <summary>
+        /// Clones an existing KSP installation.
+        /// </summary>
+        /// <param name="existing_instance">The KSP instance to clone.</param>
+        /// <param name="new_name">The name for the new instance.</param>
+        /// <param name="new_path">The path where the new instance should be located.</param>
+        public void CloneInstance (KSP existing_instance, string new_name, string new_path)
+        {
+            if (existing_instance.Valid)
+            {
+                KspVersion version = existing_instance.Version();
+
+                CKAN.DLC.MakingHistoryDlcDetector dlcDetector = new DLC.MakingHistoryDlcDetector();
+                bool DLC = dlcDetector.IsInstalled(existing_instance, out string identifier, out UnmanagedModuleVersion moduleVersion);
+                string dlcVersion = moduleVersion.ToString();
+
+                FakeInstance(new_name, new_path, version, DLC, dlcVersion);
+            }
+            else
+            {
+                NotKSPDirKraken kraken = new NotKSPDirKraken(existing_instance.GameDir());
+                log.Error(kraken);
+                throw kraken;
+            }
+        }
+
+        /// <summary>
+        /// Create a new fake KSP instance
+        /// </summary>
+        /// <param name="new_name">The name for the new instance.</param>
+        /// <param name="new_path">The loaction of the new instance.</param>
+        /// <param name="version">The version of the new instance.</param>
+        /// <param name="DLC">Whether to fake the DLC too.</param>
+        /// <param name="dlcVersion">The version of the DLC. Can be null if DLC == false.</param>
+        public void FakeInstance(string new_name, string new_path, KspVersion version, bool DLC, string dlcVersion)
+        {
+            try
+            {
+                if (KSP.IsKspDir(new_path)) {
+                    throw new BadInstallLocationKraken("There is already a KSP instance at this path. Delete the old one first.");
+                }
+
+                log.DebugFormat("Creating folder structure and text files at {0} for KSP version {1}", Path.GetFullPath(new_path), version.ToString());
+
+                // Create a KSP root directory, containing a GameData folder, a buildID.txt and a readme.txt
+                Directory.CreateDirectory(new_path);
+                Directory.CreateDirectory(Path.Combine(new_path, "GameData"));
+                File.WriteAllText(Path.Combine(new_path, "buildID.txt"), String.Format("build id = {0}", version.Build));
+                File.WriteAllText(Path.Combine(new_path, "readme.txt"), String.Format("Version {0}", version.ToString()));
+
+                // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
+                if (DLC && version.CompareTo(new KspVersion(1, 4, 0)) >= 0)
+                {
+                    Directory.CreateDirectory(Path.Combine(new_path, "GameData", "SquadExpansion", "MakingHistory"));
+                    File.WriteAllText(
+                        Path.Combine(new_path, "GameData", "SquadExpansion", "MakingHistory", "readme.txt"),
+                        String.Format("Version {0}", dlcVersion));
+                }
+
+                // Add the new instance to the registry
+                KSP new_instance = new KSP(new_path, new_name, User);
+                AddInstance(new_instance);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                User.RaiseError(e.ToString());
+            }
         }
 
         /// <summary>
