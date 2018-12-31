@@ -28,6 +28,8 @@ namespace Tests.NetKAN.Sources.Spacedock
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
+            _cache.Dispose();
+            _cache = null;
             Directory.Delete(_cachePath, recursive: true);
         }
 
