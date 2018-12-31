@@ -446,7 +446,29 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
+        /// Searches the build map if it knows the version.
+        /// </summary>
+        /// <returns><c>true</c>, if version is valid, <c>false</c> otherwise.</returns>
+        public bool IsValid()
+        {
+            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+
+            foreach (KspVersion ver in knownVersions)
+            {
+                if (ver.Major == Major && ver.Minor == Minor && ver.Patch == Patch)
+                {
+                    if (ver.Build == Build || !IsBuildDefined)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns a complete KspVersion object, including the build number.
+        /// If a version number has multiple possible builds, it takes the earliest one.
         /// </summary>
         /// <returns>The build for the version. Null if version is not known in the build map.</returns>
         public KspVersion AddBuildToVersion ()

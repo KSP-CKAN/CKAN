@@ -21,6 +21,9 @@ namespace CKAN.CmdLine
             [VerbOption("add",     HelpText = "Add a KSP install")]
             public AddOptions     AddOptions     { get; set; }
 
+            [VerbOption("clone",   HelpText = "Clone an existing KSP install")]
+            public CloneOptions   CloneOptions   { get; set; }
+
             [VerbOption("rename",  HelpText = "Rename a KSP install")]
             public RenameOptions  RenameOptions  { get; set; }
 
@@ -55,6 +58,10 @@ namespace CKAN.CmdLine
                             ht.AddPreOptionsLine($"Choose dlcVersion \"none\" if you want no simulated dlc.");
                             break;
 
+                        case "clone":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] instanceName newname newpath");
+                            break;
+
                         // Second the commands with two string arguments
                         case "add":
                             ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name url");
@@ -87,6 +94,13 @@ namespace CKAN.CmdLine
         {
             [ValueOption(0)] public string name { get; set; }
             [ValueOption(1)] public string path { get; set; }
+        }
+
+        internal class CloneOptions : CommonOptions
+        {
+            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(1)] public string new_name { get; set; }
+            [ValueOption(1)] public string new_path { get; set; }
         }
 
         internal class RenameOptions : CommonOptions
@@ -158,6 +172,10 @@ namespace CKAN.CmdLine
 
                         case "add":
                             exitCode = AddInstall((AddOptions)suboptions);
+                            break;
+
+                        case "clone":
+                            exitCode = CloneInstall((CloneOptions)suboptions);
                             break;
 
                         case "rename":
@@ -271,6 +289,49 @@ namespace CKAN.CmdLine
             {
                 User.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", ex.path);
                 return Exit.BADOPT;
+            }
+        }
+
+        private int CloneInstall(CloneOptions options)
+        {
+            log.Info("Cloning the KSP instance: " + options.name);
+
+            // Parse all options
+            string existingInstance_name = options.name;
+            string new_name = options.new_name;
+            string new_path = options.new_path;
+
+            if (!Manager.HasInstance(existingInstance_name))
+            {
+                NoGameInstanceKraken kraken = new NoGameInstanceKraken();
+                log.Error(kraken);
+                User.RaiseError(kraken.ToString());
+                return Exit.BADOPT;
+            }
+
+            CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
+            foreach (CKAN.KSP instance in listOfInstances)
+            {
+                if (instance.Name == existingInstance_name)
+                {
+                    Manager.CloneInstance(instance, new_name, new_path);
+                    break;
+                }
+            }
+
+            // Test if the instance was added to the registry.
+            // No need to test if valid, because this is done in AddInstance(),
+            // so if something went wrong, HasInstance is false.
+            if (Manager.HasInstance(new_name))
+            {
+                return Exit.OK;
+            }
+            else
+            {
+                User.RaiseMessage("Something went wrong. Please look if the new directory has been created.");
+                User.RaiseMessage("Try to add it manually with \"ckan ksp add\". Also make sure the name of the instance to clone was correct.");
+                User.RaiseMessage("Run \"ckan ksp list\" to list your known instances.");
+                return Exit.ERROR;
             }
         }
 
@@ -411,14 +472,14 @@ namespace CKAN.CmdLine
                 }
                 if (version == null)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(version), "Your specified version is invalid.");
                 }
             }
             catch (ArgumentOutOfRangeException e)
             {
                 log.Error(e);
                 User.RaiseError(e.ToString());
-                User.RaiseMessage("Valid version formats: 1.5.0 | 1.5.1 | 1.6.0.2395");
+                User.RaiseMessage("Examples for valid version formats: 1.5.0 | 1.5.1 | 1.6.0.2395");
                 return Exit.ERROR;
             }
 
