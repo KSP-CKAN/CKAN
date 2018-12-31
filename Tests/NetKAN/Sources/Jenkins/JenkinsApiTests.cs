@@ -7,17 +7,17 @@ using CKAN.NetKAN.Sources.Jenkins;
 
 namespace Tests.NetKAN.Sources.Jenkins
 {
-	[TestFixture]
-	public sealed class JenkinsApiTests
-	{
-		[OneTimeSetUp]
+    [TestFixture]
+    public sealed class JenkinsApiTests
+    {
+        [OneTimeSetUp]
         public void TestFixtureSetup()
         {
             _cachePath = Path.Combine(
-				Path.GetTempPath(),
-				"CKAN",
-				Guid.NewGuid().ToString("N")
-			);
+                Path.GetTempPath(),
+                "CKAN",
+                Guid.NewGuid().ToString("N")
+            );
             Directory.CreateDirectory(_cachePath);
             _cache = new NetFileCache(_cachePath);
         }
@@ -25,30 +25,32 @@ namespace Tests.NetKAN.Sources.Jenkins
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
+            _cache.Dispose();
+            _cache = null;
             Directory.Delete(_cachePath, recursive: true);
         }
 
 
-		[Test]
-		[Category("FlakyNetwork")]
-		[Category("Online")]
-		public void GetLatestBuild_ModuleManager_Works()
-		{
-			// Arrange
+        [Test]
+        [Category("FlakyNetwork")]
+        [Category("Online")]
+        public void GetLatestBuild_ModuleManager_Works()
+        {
+            // Arrange
             IJenkinsApi sut = new JenkinsApi(new CachingHttpService(_cache));
 
             // Act
-			JenkinsBuild build = sut.GetLatestBuild(
-				new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/"),
-				new JenkinsOptions()
-			);
+            JenkinsBuild build = sut.GetLatestBuild(
+                new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/"),
+                new JenkinsOptions()
+            );
 
             // Assert
             Assert.IsNotNull(build.Url);
             Assert.IsNotNull(build.Artifacts);
-		}
+        }
 
         private string       _cachePath;
         private NetFileCache _cache;
-	}
+    }
 }

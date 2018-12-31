@@ -26,6 +26,10 @@ namespace Tests.Core
         [TearDown]
         public void RemoveCache()
         {
+            cache.Dispose();
+            cache = null;
+            module_cache.Dispose();
+            module_cache = null;            
             Directory.Delete(cache_dir, true);
         }
 

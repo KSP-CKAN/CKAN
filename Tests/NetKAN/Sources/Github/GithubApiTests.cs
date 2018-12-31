@@ -30,6 +30,8 @@ namespace Tests.NetKAN.Sources.Github
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
+            _cache.Dispose();
+            _cache = null;
             Directory.Delete(_cachePath, recursive: true);
         }
 
