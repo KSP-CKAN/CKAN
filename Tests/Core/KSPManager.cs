@@ -110,6 +110,37 @@ namespace Tests.Core
         }
 
         [Test]
+        public void CloneInstance_BadInstance_ThrowsNotKSPDirKraken()
+        {
+            using (var badKSP = new DisposableKSP(String.Concat(TestData.bad_ksp_dirs().First())))
+            {
+                string tempdir = TestData.NewTempDir();
+
+                Assert.Throws<NotKSPDirKraken>(() =>
+                    manager.CloneInstance(badKSP.KSP, "badInstance", tempdir));
+
+                // Tidy up                        
+                System.IO.Directory.Delete(tempdir, true);
+            }
+        }
+
+        [Test]
+        public void CloneInstance_GoodInstance_ManagerHasValidInstance()
+        {
+            using (var KSP = new DisposableKSP())
+            {
+                string instanceName = "goodInstance";
+                string tempdir = String.Concat(TestData.NewTempDir());
+
+                manager.CloneInstance(KSP.KSP, instanceName, tempdir);
+                Assert.IsTrue(manager.HasInstance(instanceName));
+
+                // Tidy up.
+                System.IO.Directory.Delete(tempdir, true);
+            }
+        }
+
+        [Test]
         public void GetPreferredInstance_WithAutoStart_ReturnsAutoStart()
         {
             Assert.That(manager.GetPreferredInstance(),Is.EqualTo(tidy.KSP));

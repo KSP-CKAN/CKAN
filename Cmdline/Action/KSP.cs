@@ -59,7 +59,7 @@ namespace CKAN.CmdLine
                             break;
 
                         case "clone":
-                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] instanceName newname newpath");
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] instanceNameOrPath newname newpath");
                             break;
 
                         // Second the commands with two string arguments
@@ -98,7 +98,7 @@ namespace CKAN.CmdLine
 
         internal class CloneOptions : CommonOptions
         {
-            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(0)] public string nameOrPath { get; set; }
             [ValueOption(1)] public string new_name { get; set; }
             [ValueOption(1)] public string new_path { get; set; }
         }
@@ -294,30 +294,95 @@ namespace CKAN.CmdLine
 
         private int CloneInstall(CloneOptions options)
         {
-            log.Info("Cloning the KSP instance: " + options.name);
+            log.Info("Cloning the KSP instance: " + options.nameOrPath);
 
             // Parse all options
-            string existingInstance_name = options.name;
+            string instanceNameOrPath = options.nameOrPath;
             string new_name = options.new_name;
             string new_path = options.new_path;
 
-            if (!Manager.HasInstance(existingInstance_name))
+            // Try instanceNameOrPath as name and search the registry for it.
+            if (Manager.HasInstance(instanceNameOrPath))
+            {
+                CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
+                foreach (CKAN.KSP instance in listOfInstances)
+                {
+                    if (instance.Name == instanceNameOrPath)
+                    {
+                        // Found it, now clone it.
+                        try
+                        {
+                            Manager.CloneInstance(instance, new_name, new_path);
+                        }
+                        catch (NotKSPDirKraken kraken)
+                        {
+                            // Two possible reasons:
+                            // First: The instance to clone is not a valid KSP instance.
+                            // Only occurs if user manipulated directory and deleted files/folders
+                            // which CKAN searches for in validity test.
+
+                            // Second: Something went wrong adding the new instance to the registry,
+                            // most likely because the newly created directory is not valid.
+
+                            User.RaiseError(kraken.ToString());
+                            log.Error(kraken);
+                            return Exit.ERROR;
+                        }
+                        catch (IOException e)
+                        {
+                            // The new path is not empty
+                            // The exception contains a message to inform the user.
+
+                            User.RaiseError(e.ToString());
+                            log.Error(e);
+                            return Exit.ERROR;
+                        }
+                        break;
+                    }
+                }
+            }
+            // Try to use instanceNameOrPath as a path and create a new KSP object.
+            // If it's valid, go on.
+            else if (new CKAN.KSP(instanceNameOrPath, new_name, User) is CKAN.KSP instance && instance.Valid)
+            {
+                // Same as above.
+                try
+                {
+                    Manager.CloneInstance(instance, new_name, new_path);
+                }
+                catch (NotKSPDirKraken kraken)
+                {
+                    // Two possible reasons:
+                    // First: The instance to clone is not a valid KSP instance.
+                    // Only occurs if user manipulated directory and deleted files/folders
+                    // which CKAN searches for in validity test.
+
+                    // Second: Something went wrong adding the new instance to the registry,
+                    // most likely because the newly created directory is not valid.
+
+                    User.RaiseError(kraken.ToString());
+                    log.Error(kraken);
+                    return Exit.ERROR;
+                }
+                catch (IOException e)
+                {
+                    // The new path is not empty
+                    // The exception contains a message to inform the user.
+
+                    User.RaiseError(e.ToString());
+                    log.Error(e);
+                    return Exit.ERROR;
+                }
+            }
+            // There is no instance with this name or at this path.
+            else
             {
                 NoGameInstanceKraken kraken = new NoGameInstanceKraken();
                 log.Error(kraken);
-                User.RaiseError(kraken.ToString());
-                return Exit.BADOPT;
+                User.RaiseError(String.Concat(kraken.ToString(), "\n", "No instance with this name or at this path: ", instanceNameOrPath));
+                return Exit.ERROR;
             }
 
-            CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
-            foreach (CKAN.KSP instance in listOfInstances)
-            {
-                if (instance.Name == existingInstance_name)
-                {
-                    Manager.CloneInstance(instance, new_name, new_path);
-                    break;
-                }
-            }
 
             // Test if the instance was added to the registry.
             // No need to test if valid, because this is done in AddInstance(),
@@ -328,9 +393,8 @@ namespace CKAN.CmdLine
             }
             else
             {
-                User.RaiseMessage("Something went wrong. Please look if the new directory has been created.");
-                User.RaiseMessage("Try to add it manually with \"ckan ksp add\". Also make sure the name of the instance to clone was correct.");
-                User.RaiseMessage("Run \"ckan ksp list\" to list your known instances.");
+                User.RaiseMessage("Something went wrong. Please look if the new directory has been created.\n",
+                    "Try to add the new instance manually with \"ckan ksp add\".\n");
                 return Exit.ERROR;
             }
         }
@@ -483,8 +547,37 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
 
-            // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
-            Manager.FakeInstance(installName, path, version, DLC, dlcVersion);
+            try
+            {
+                // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
+                Manager.FakeInstance(installName, path, version, DLC, dlcVersion);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                // The version could not be found in the known builds.
+                log.Error(e);
+                User.RaiseError(e.ToString());
+                return Exit.ERROR;
+            }
+            catch (BadInstallLocationKraken kraken)
+            {
+                // The folder exists and is not empty.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+            catch (NotKSPDirKraken kraken)
+            {
+                // Something went wrong adding the new instance to the registry,
+                // most likely because the newly created directory is not valid.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+
+
             // Test if the instance was added to the registry.
             // No need to test if valid, because this is done in AddInstance().
             if (Manager.HasInstance(installName))
@@ -493,7 +586,8 @@ namespace CKAN.CmdLine
             }
             else
             {
-                User.RaiseMessage("Something went wrong. Try to add the instance yourself.");
+                User.RaiseError("Something went wrong. Try to add the instance yourself with \"ckan ksp add\".",
+                    "Also look if the new directory has been created.");
                 return Exit.ERROR;
             }
         }

@@ -6,7 +6,7 @@ namespace CKAN
     public static class Utilities
     {
         /// <summary>
-        /// Copies a directory and optionally its supdirectories.
+        /// Copies a directory and optionally its subdirectories.
         /// </summary>
         /// <param name="sourceDirPath">Source directory path.</param>
         /// <param name="destDirPath">Destination directory path.</param>
@@ -17,9 +17,9 @@ namespace CKAN
 
             if (!sourceDir.Exists)
             {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirPath);
+                throw new DirectoryNotFoundKraken(
+                    sourceDirPath,
+                    "Source directory does not exist or could not be found.");
             }
 
             // If the destination directory doesn't exist, create it.
@@ -27,9 +27,9 @@ namespace CKAN
             {
                 Directory.CreateDirectory(destDirPath);
             }
-            else if (Directory.GetDirectories(sourceDirPath).Length != 0 || Directory.GetFiles(sourceDirPath).Length != 0)
+            else if (Directory.GetDirectories(destDirPath).Length != 0 || Directory.GetFiles(destDirPath).Length != 0)
             {
-                throw new IOException("Directory not empty: "+ sourceDirPath);
+                throw new IOException("Directory not empty: " + destDirPath);
             }
 
             // Get the files in the directory and copy them to the new location.

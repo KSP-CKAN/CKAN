@@ -160,18 +160,11 @@ namespace CKAN
         /// <param name="new_path">The path where the new instance should be located.</param>
         public void CloneInstance (KSP existing_instance, string new_name, string new_path)
         {
-            if (KSP.IsKspDir(new_path))
-            {
-                BadInstallLocationKraken kraken = new BadInstallLocationKraken("There is already a KSP instance at this path. Delete the old one first.");
-                log.Error(kraken);
-                User.RaiseError(kraken.ToString());
-            }
             if (!existing_instance.Valid)
             {
-                NotKSPDirKraken kraken = new NotKSPDirKraken(existing_instance.GameDir(), "The given path does not point to a valid KSP directory.");
-                log.Error(kraken);
-                User.RaiseError(kraken.ToString());
+                throw new NotKSPDirKraken(existing_instance.GameDir(), "The specified instance is not a valid KSP instance.");
             }
+
             try
             {
                 log.Debug("Copying directory.");
@@ -181,10 +174,21 @@ namespace CKAN
                 KSP new_instance = new KSP(new_path, new_name, User);
                 AddInstance(new_instance);
             }
-            catch (Exception e)
+            // Thrown by AddInstance() if created instance is not valid.
+            // Thrown f.e. if something went wrong with copying.
+            catch (NotKSPDirKraken kraken)
             {
-                log.Error(e);
-                User.RaiseError(e.ToString());
+                throw kraken;
+            }
+            // Thrown by CopyDirectory() if directory doesn't exist. Shouldn't be thrown anytime.
+            catch (DirectoryNotFoundKraken kraken)
+            {
+                throw kraken;
+            }
+            // Thrown by CopyDirectory() if the specified folder already exists and is not empty.
+            catch (IOException e)
+            {
+                throw e;
             }
         }
 
@@ -193,29 +197,35 @@ namespace CKAN
         /// </summary>
         /// <param name="new_name">The name for the new instance.</param>
         /// <param name="new_path">The loaction of the new instance.</param>
-        /// <param name="version">The version of the new instance.</param>
+        /// <param name="version">The version of the new instance. Should have a build number.</param>
         /// <param name="DLC">Whether to fake the DLC too.</param>
         /// <param name="dlcVersion">The version of the DLC. Can be null if DLC == false.</param>
         public void FakeInstance(string new_name, string new_path, KspVersion version, bool DLC, string dlcVersion)
         {
+            if (!version.IsValid())
+            {
+                throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a valid version.");
+            }
+            if (Directory.Exists(new_path) && (Directory.GetFiles(new_path).Length != 0 || Directory.GetDirectories(new_path).Length != 0))
+            {
+                throw new BadInstallLocationKraken("The specified folder already exists and is not empty.");
+            }
+
             try
             {
-                if (!version.IsValid())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a valid version.");
-                }
-                if (KSP.IsKspDir(new_path))
-                {
-                    throw new BadInstallLocationKraken("There is already a KSP instance at this path. Delete the old one first.");
-                }
-
                 log.DebugFormat("Creating folder structure and text files at {0} for KSP version {1}", Path.GetFullPath(new_path), version.ToString());
 
                 // Create a KSP root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
                 Directory.CreateDirectory(new_path);
                 Directory.CreateDirectory(Path.Combine(new_path, "GameData"));
-                File.WriteAllText(Path.Combine(new_path, "buildID.txt"), String.Format("build id = {0}", version.Build));
-                File.WriteAllText(Path.Combine(new_path, "buildID64.txt"), String.Format("build id = {0}", version.Build));
+
+                // Don't write the buildID.txts if we have no build, otherwise it would be -1.
+                if (version.IsBuildDefined)
+                {
+                    File.WriteAllText(Path.Combine(new_path, "buildID.txt"), String.Format("build id = {0}", version.Build));
+                    File.WriteAllText(Path.Combine(new_path, "buildID64.txt"), String.Format("build id = {0}", version.Build));
+                }
+
                 File.WriteAllText(Path.Combine(new_path, "readme.txt"), String.Format("Version {0}", version.ToString()));
 
                 // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
@@ -231,10 +241,11 @@ namespace CKAN
                 KSP new_instance = new KSP(new_path, new_name, User);
                 AddInstance(new_instance);
             }
-            catch (Exception e)
+            // Thrown by AddInstance() if created instance is not valid.
+            // Thrown f.e. if a write operation didn't complete for unknown reasons.
+            catch (NotKSPDirKraken kraken)
             {
-                log.Error(e);
-                User.RaiseError(e.ToString());
+                throw kraken;
             }
         }
 

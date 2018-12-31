@@ -467,8 +467,8 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
-        /// Returns a complete KspVersion object, including the build number.
-        /// If a version number has multiple possible builds, it takes the earliest one.
+        /// Returns a "complete" KspVersion object, including the build number.
+        /// If a version number has multiple possible builds, it takes the latest one.
         /// </summary>
         /// <returns>The build for the version. Null if version is not known in the build map.</returns>
         public KspVersion AddBuildToVersion ()
@@ -479,6 +479,7 @@ namespace CKAN.Versioning
             }
 
             List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            knownVersions.Reverse();
             KspVersion version = null;
 
             foreach (KspVersion ver in knownVersions)
