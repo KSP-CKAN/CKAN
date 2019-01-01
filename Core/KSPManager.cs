@@ -198,11 +198,10 @@ namespace CKAN
         /// <param name="new_name">The name for the new instance.</param>
         /// <param name="new_path">The loaction of the new instance.</param>
         /// <param name="version">The version of the new instance. Should have a build number.</param>
-        /// <param name="DLC">Whether to fake the DLC too.</param>
-        /// <param name="dlcVersion">The version of the DLC. Can be null if DLC == false.</param>
-        public void FakeInstance(string new_name, string new_path, KspVersion version, bool DLC, string dlcVersion)
+        /// <param name="dlcVersion">The version of the DLC. Null if DLC should be faked.</param>
+        public void FakeInstance(string new_name, string new_path, KspVersion version, string dlcVersion = null)
         {
-            if (!version.IsValid())
+            if (!version.InBuildMap())
             {
                 throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a valid version.");
             }
@@ -226,10 +225,11 @@ namespace CKAN
                     File.WriteAllText(Path.Combine(new_path, "buildID64.txt"), String.Format("build id = {0}", version.Build));
                 }
 
-                File.WriteAllText(Path.Combine(new_path, "readme.txt"), String.Format("Version {0}", version.ToString()));
+                // Create the readme.txt WITHOUT build number.
+                File.WriteAllText(Path.Combine(new_path, "readme.txt"), String.Format("Version {0}", new KspVersion(version.Major, version.Minor, version.Patch).ToString()));
 
                 // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
-                if (DLC && version.CompareTo(new KspVersion(1, 4, 0)) >= 0)
+                if (dlcVersion != null && version.CompareTo(new KspVersion(1, 4, 0)) >= 0)
                 {
                     Directory.CreateDirectory(Path.Combine(new_path, "GameData", "SquadExpansion", "MakingHistory"));
                     File.WriteAllText(

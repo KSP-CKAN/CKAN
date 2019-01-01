@@ -100,7 +100,7 @@ namespace CKAN.CmdLine
         {
             [ValueOption(0)] public string nameOrPath { get; set; }
             [ValueOption(1)] public string new_name { get; set; }
-            [ValueOption(1)] public string new_path { get; set; }
+            [ValueOption(2)] public string new_path { get; set; }
         }
 
         internal class RenameOptions : CommonOptions
@@ -301,83 +301,61 @@ namespace CKAN.CmdLine
             string new_name = options.new_name;
             string new_path = options.new_path;
 
-            // Try instanceNameOrPath as name and search the registry for it.
-            if (Manager.HasInstance(instanceNameOrPath))
+
+            try
             {
-                CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
-                foreach (CKAN.KSP instance in listOfInstances)
+                // Try instanceNameOrPath as name and search the registry for it.
+                if (Manager.HasInstance(instanceNameOrPath))
                 {
-                    if (instance.Name == instanceNameOrPath)
+                    CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
+                    foreach (CKAN.KSP instance in listOfInstances)
                     {
-                        // Found it, now clone it.
-                        try
+                        if (instance.Name == instanceNameOrPath)
                         {
+                            // Found it, now clone it.
                             Manager.CloneInstance(instance, new_name, new_path);
+                            break;
                         }
-                        catch (NotKSPDirKraken kraken)
-                        {
-                            // Two possible reasons:
-                            // First: The instance to clone is not a valid KSP instance.
-                            // Only occurs if user manipulated directory and deleted files/folders
-                            // which CKAN searches for in validity test.
-
-                            // Second: Something went wrong adding the new instance to the registry,
-                            // most likely because the newly created directory is not valid.
-
-                            User.RaiseError(kraken.ToString());
-                            log.Error(kraken);
-                            return Exit.ERROR;
-                        }
-                        catch (IOException e)
-                        {
-                            // The new path is not empty
-                            // The exception contains a message to inform the user.
-
-                            User.RaiseError(e.ToString());
-                            log.Error(e);
-                            return Exit.ERROR;
-                        }
-                        break;
                     }
                 }
-            }
-            // Try to use instanceNameOrPath as a path and create a new KSP object.
-            // If it's valid, go on.
-            else if (new CKAN.KSP(instanceNameOrPath, new_name, User) is CKAN.KSP instance && instance.Valid)
-            {
-                // Same as above.
-                try
+                // Try to use instanceNameOrPath as a path and create a new KSP object.
+                // If it's valid, go on.
+                else if (new CKAN.KSP(instanceNameOrPath, new_name, User) is CKAN.KSP instance && instance.Valid)
                 {
                     Manager.CloneInstance(instance, new_name, new_path);
+
                 }
-                catch (NotKSPDirKraken kraken)
+                // There is no instance with this name or at this path.
+                else
                 {
-                    // Two possible reasons:
-                    // First: The instance to clone is not a valid KSP instance.
-                    // Only occurs if user manipulated directory and deleted files/folders
-                    // which CKAN searches for in validity test.
-
-                    // Second: Something went wrong adding the new instance to the registry,
-                    // most likely because the newly created directory is not valid.
-
-                    User.RaiseError(kraken.ToString());
-                    log.Error(kraken);
-                    return Exit.ERROR;
-                }
-                catch (IOException e)
-                {
-                    // The new path is not empty
-                    // The exception contains a message to inform the user.
-
-                    User.RaiseError(e.ToString());
-                    log.Error(e);
-                    return Exit.ERROR;
+                    throw new NoGameInstanceKraken();
                 }
             }
-            // There is no instance with this name or at this path.
-            else
+            catch (NotKSPDirKraken kraken)
             {
-                NoGameInstanceKraken kraken = new NoGameInstanceKraken();
+                // Two possible reasons:
+                // First: The instance to clone is not a valid KSP instance.
+                // Only occurs if user manipulated directory and deleted files/folders
+                // which CKAN searches for in validity test.
+
+                // Second: Something went wrong adding the new instance to the registry,
+                // most likely because the newly created directory is not valid.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+            catch (IOException e)
+            {
+                // The new path is not empty
+                // The exception contains a message to inform the user.
+
+                User.RaiseError(e.ToString());
+                log.Error(e);
+                return Exit.ERROR;
+            }
+            catch (NoGameInstanceKraken kraken)
+            {
                 log.Error(kraken);
                 User.RaiseError(String.Concat(kraken.ToString(), "\n", "No instance with this name or at this path: ", instanceNameOrPath));
                 return Exit.ERROR;
@@ -521,18 +499,18 @@ namespace CKAN.CmdLine
             log.Info("Creating a new fake KSP install");
 
             // Parse all options
-            bool DLC = !(options.dlcVersion.ToLower() == "none");
             string installName = options.name;
             string path = options.path;
             KspVersion version;
-            string dlcVersion = options.dlcVersion;
+            // dlcVersion is null if no user wants no simulated DLC
+            string dlcVersion = options.dlcVersion.ToLower() == "none" ? null : options.dlcVersion;
             try
             {
                 log.Debug("Parsing KSP version");
                 version = KspVersion.Parse(options.version);
                 if (!version.IsBuildDefined)
                 {
-                    version = version.AddBuildToVersion();
+                    version = version.FindKnownVersion();
                 }
                 if (version == null)
                 {
@@ -550,7 +528,7 @@ namespace CKAN.CmdLine
             try
             {
                 // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
-                Manager.FakeInstance(installName, path, version, DLC, dlcVersion);
+                Manager.FakeInstance(installName, path, version, dlcVersion);
             }
             catch (ArgumentOutOfRangeException e)
             {

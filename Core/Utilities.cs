@@ -1,17 +1,28 @@
 ﻿using System;
 using System.IO;
+using System.Transactions;
 
 namespace CKAN
 {
     public static class Utilities
     {
         /// <summary>
-        /// Copies a directory and optionally its subdirectories.
+        /// Copies a directory and optionally its subdirectories as a transaction.
         /// </summary>
         /// <param name="sourceDirPath">Source directory path.</param>
         /// <param name="destDirPath">Destination directory path.</param>
         /// <param name="copySubDirs">Copy sub dirs recursively if set to <c>true</c>.</param>
         public static void CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs)
+        {
+            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
+            {
+                _CopyDirectory(sourceDirPath, destDirPath, copySubDirs);
+                transaction.Complete();
+            }
+        }
+
+
+        private static void _CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs)
         {
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirPath);
 
@@ -49,7 +60,7 @@ namespace CKAN
                 foreach (DirectoryInfo subdir in dirs)
                 {
                     string temppath = Path.Combine(destDirPath, subdir.Name);
-                    CopyDirectory(subdir.FullName, temppath, copySubDirs);
+                    _CopyDirectory(subdir.FullName, temppath, copySubDirs);
                 }
             }
         }
