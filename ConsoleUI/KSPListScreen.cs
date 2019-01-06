@@ -130,10 +130,31 @@ namespace CKAN.ConsoleUI {
             });
 
             AddObject(kspList);
+            mainMenu = kspList.SortMenu();
+        }
 
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => "KSP Instances";
-            mainMenu     = kspList.SortMenu();
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "KSP Instances";
+        }
+
+        /// <summary>
+        /// Label the menu as Sort
+        /// </summary>
+        protected override string MenuTip()
+        {
+            return "Sort";
         }
 
         /// <summary>

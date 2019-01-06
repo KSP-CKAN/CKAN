@@ -15,9 +15,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public AuthTokenScreen() : base()
         {
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => "Authentication Tokens";
-            mainMenu     = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
+            mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
                 new ConsoleMenuOption("Make a GitHub API token", "",
                     "Open the web page for creating GitHub API authentication tokens",
                     true, openGitHubURL)
@@ -79,6 +77,22 @@ namespace CKAN.ConsoleUI {
                 }
                 return true;
             });
+        }
+
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Authentication Tokens";
         }
 
         private bool openGitHubURL()

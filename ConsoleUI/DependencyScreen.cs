@@ -112,9 +112,22 @@ namespace CKAN.ConsoleUI {
                 }
                 return false;
             });
+        }
 
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => "Recommendations & Suggestions";
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Recommendations & Suggestions";
         }
 
         /// <summary>
