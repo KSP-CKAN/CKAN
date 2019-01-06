@@ -63,13 +63,25 @@ namespace CKAN.ConsoleUI.Toolkit {
             new Dictionary<ConsoleKeyInfo, ConsoleScreen.KeyAction>();
 
         /// <summary>
-        /// Add a custom key bindings
+        /// Add a custom key binding
         /// </summary>
         /// <param name="k">Key to bind</param>
         /// <param name="a">Action to bind to key</param>
         public void AddBinding(ConsoleKeyInfo k, ConsoleScreen.KeyAction a)
         {
             Bindings.Add(k, a);
+        }
+
+        /// <summary>
+        /// Add custom key bindings
+        /// </summary>
+        /// <param name="keys">Keys to bind</param>
+        /// <param name="a">Action to bind to key</param>
+        public void AddBinding(IEnumerable<ConsoleKeyInfo> keys, ConsoleScreen.KeyAction a)
+        {
+            foreach (ConsoleKeyInfo k in keys) {
+                AddBinding(k, a);
+            }
         }
 
         /// <summary>
