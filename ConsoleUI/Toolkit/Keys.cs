@@ -111,12 +111,19 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         /// <summary>
         /// Representation of plus key for key bindings
+        /// Both with and without Shift for those pesky Germans
         /// </summary>
-        public static readonly ConsoleKeyInfo Plus = new ConsoleKeyInfo(
-            (System.Char)'+',
-            Platform.IsWindows ? ConsoleKey.OemPlus : ConsoleKey.Add,
-            Platform.IsWindows ? true : false, false, false
-        );
+        public static readonly ConsoleKeyInfo[] Plus = new ConsoleKeyInfo[] {
+            new ConsoleKeyInfo(
+                (System.Char)'+',
+                Platform.IsWindows ? ConsoleKey.OemPlus : ConsoleKey.Add,
+                false, false, false
+            ), new ConsoleKeyInfo(
+                (System.Char)'+',
+                Platform.IsWindows ? ConsoleKey.OemPlus : ConsoleKey.Add,
+                true, false, false
+            )
+        };
 
         /// <summary>
         /// Representation of minus key for key bindings

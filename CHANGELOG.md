@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix System.ObjectDisposedException for TransparentTextBox (#2619 by: DasSkelett; reviewed: HebaruSan)
 - [Build] Dispose caches in tests (#2628 by: HebaruSan; reviewed: politas)
 - [GUI] Don't override menu renderers on Windows (#2632 by: HebaruSan; reviewed: politas)
+- [ConsoleUI] Handle plus without shift in ConsoleUI (#2634 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
