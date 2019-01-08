@@ -294,13 +294,19 @@ namespace CKAN.CmdLine
 
         private int CloneInstall(CloneOptions options)
         {
-            log.Info("Cloning the KSP instance: " + options.nameOrPath);
+            if (options.nameOrPath == null || options.new_name == null || options.new_path == null)
+            {
+                User.RaiseMessage("ksp clone <nameOrPathExistingInstance> <newName> <newPath> - argument(s) missing");
+                return Exit.BADOPT;
+            }
 
             // Parse all options
             string instanceNameOrPath = options.nameOrPath;
             string new_name = options.new_name;
             string new_path = options.new_path;
 
+
+            log.Info("Cloning the KSP instance: " + options.nameOrPath);
 
             try
             {
@@ -354,10 +360,10 @@ namespace CKAN.CmdLine
                 log.Error(e);
                 return Exit.ERROR;
             }
-            catch (NoGameInstanceKraken kraken)
+            catch (NoGameInstanceKraken)
             {
-                log.Error(kraken);
-                User.RaiseError(String.Concat(kraken.ToString(), "\n", "No instance with this name or at this path: ", instanceNameOrPath));
+                User.RaiseError(String.Format("No instance with this name or at this path: {0}\n See below for a list of known instances:\n", instanceNameOrPath));
+                ListInstalls();
                 return Exit.ERROR;
             }
 
@@ -496,46 +502,106 @@ namespace CKAN.CmdLine
         /// </summary>
         private int FakeNewKSPInstall (FakeOptions options)
         {
-            log.Info("Creating a new fake KSP install");
+            if (options.name == null || options.path == null || options.version == null)
+            {
+                User.RaiseMessage("ksp fake <name> <path> <version> [dlcVersion] - argument(s) missing");
+                return Exit.BADOPT;
+            }
 
+            log.Debug("Parsing arguments...");
             // Parse all options
             string installName = options.name;
             string path = options.path;
             KspVersion version;
-            // dlcVersion is null if no user wants no simulated DLC
-            string dlcVersion = options.dlcVersion.ToLower() == "none" ? null : options.dlcVersion;
+            // dlcVersion is null if a user wants no simulated DLC
+            string dlcVersion;
+            if (options.dlcVersion == null || options.dlcVersion.ToLower() == "none")
+            {
+                dlcVersion = null;
+            }
+            else
+            {
+                dlcVersion = options.dlcVersion;
+            }
+
+            // Parse the choosen KSP version
             try
             {
-                log.Debug("Parsing KSP version");
                 version = KspVersion.Parse(options.version);
-                if (!version.IsBuildDefined)
-                {
-                    version = version.FindKnownVersion();
-                }
-                if (version == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(version), "Your specified version is invalid.");
-                }
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (FormatException)
             {
-                log.Error(e);
-                User.RaiseError(e.ToString());
-                User.RaiseMessage("Examples for valid version formats: 1.5.0 | 1.5.1 | 1.6.0.2395");
-                return Exit.ERROR;
+                // Thrown if there is anything besides numbers and points in the version string or a different syntactic error.
+                User.RaiseError("Please check the version argument - Format it like Maj.Min.Patch[.Build] - e.g. 1.6.0 or 1.2.2.1622");
+                return Exit.BADOPT;
             }
+
+            if (!version.IsMajorDefined || !version.IsMinorDefined)
+            {
+                User.RaiseError("Please enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
+                return Exit.BADOPT;
+            }
+
+            if (!version.IsFullyDefined)
+            {
+                // Let the user select the sepcific version.
+                KspVersion[] knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions.ToArray();
+                System.Collections.Generic.List<KspVersion> possibleVersions = new System.Collections.Generic.List<KspVersion>();
+                foreach (KspVersion ver in knownVersions)
+                {
+                    if (!version.IsPatchDefined)
+                    {
+                        if (version.Major == ver.Major && version.Minor == ver.Minor)
+                        {
+                            possibleVersions.Add(ver);
+                        }
+                    }
+                    else
+                    {
+                        if (version.Major == ver.Major && version.Minor == ver.Minor && version.Patch == ver.Patch)
+                        {
+                            possibleVersions.Add(ver);
+                        }
+                    }
+                }
+                if (possibleVersions.Count == 0 )
+                {
+                    User.RaiseError("Your specified version is not known to CKAN. Please enter a real KSP version.");
+                    return Exit.BADOPT;
+                }
+                else if (possibleVersions.Count == 1)
+                {
+                    version = possibleVersions.ElementAt(0);
+                }
+                else
+                {
+                    int choosen = User.RaiseSelectionDialog("The specified version is not unique, please select one:", possibleVersions.ToArray());
+                    if (choosen > 0 && choosen < possibleVersions.Count)
+                    {
+                        version = possibleVersions.ElementAt(choosen);
+                    }
+                    else
+                    {
+                        User.RaiseError("Selection cancelled! Please call 'ckan ksp fake' again.");
+                        return Exit.ERROR;
+                    }
+
+                }
+            }
+            else if (!version.InBuildMap())
+            {
+                // Happens if fully defined but not in build map
+                User.RaiseError("Your specified version is not known to CKAN. Please enter a real KSP version.\n You can leave the patch and/or the build number aside to get a list to choose from. ");
+                return Exit.BADOPT;
+            }
+
+
+            User.RaiseMessage(String.Format("Creating new fake KSP install {0} at {1} with version {2}", installName, path, version.ToString()));
 
             try
             {
                 // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
                 Manager.FakeInstance(installName, path, version, dlcVersion);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                // The version could not be found in the known builds.
-                log.Error(e);
-                User.RaiseError(e.ToString());
-                return Exit.ERROR;
             }
             catch (BadInstallLocationKraken kraken)
             {
@@ -560,6 +626,7 @@ namespace CKAN.CmdLine
             // No need to test if valid, because this is done in AddInstance().
             if (Manager.HasInstance(installName))
             {
+                User.RaiseMessage("--Done--");
                 return Exit.OK;
             }
             else

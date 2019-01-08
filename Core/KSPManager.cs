@@ -203,7 +203,7 @@ namespace CKAN
         {
             if (!version.InBuildMap())
             {
-                throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a valid version.");
+                throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a known version.");
             }
             if (Directory.Exists(new_path) && (Directory.GetFiles(new_path).Length != 0 || Directory.GetDirectories(new_path).Length != 0))
             {
@@ -217,6 +217,12 @@ namespace CKAN
                 // Create a KSP root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
                 Directory.CreateDirectory(new_path);
                 Directory.CreateDirectory(Path.Combine(new_path, "GameData"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships", "VAB"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships", "SPH"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships", "@thumbs"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships", "@thumbs", "VAB"));
+                Directory.CreateDirectory(Path.Combine(new_path, "Ships", "@thumbs", "SPH"));
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
                 if (version.IsBuildDefined)
