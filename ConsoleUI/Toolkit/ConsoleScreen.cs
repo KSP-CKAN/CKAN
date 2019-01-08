@@ -15,7 +15,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         protected ConsoleScreen()
         {
             AddTip(
-                "F10", "Menu",
+                "F10", MenuTip(),
                 () => mainMenu != null
             );
             AddBinding(Keys.F10, (object sender) => {
@@ -46,11 +46,27 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Function returning text to be shown at the left edge of the top header bar
         /// </summary>
-        protected Func<string> LeftHeader   = () => "";
+        protected virtual string LeftHeader()
+        {
+            return "";
+        }
+
         /// <summary>
         /// Function returning text to be shown in the center of the top header bar
         /// </summary>
-        protected Func<string> CenterHeader = () => "";
+        protected virtual string CenterHeader()
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Function returning text to be shown to explain the F10 menu hotkey
+        /// </summary>
+        protected virtual string MenuTip()
+        {
+            return "Menu";
+        }
+
         /// <summary>
         /// Menu to open for F10 from the hamburger icon of this screen
         /// </summary>

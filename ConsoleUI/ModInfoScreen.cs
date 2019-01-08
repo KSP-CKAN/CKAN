@@ -161,9 +161,30 @@ namespace CKAN.ConsoleUI {
                     mainMenu = new ConsolePopupMenu(opts);
                 }
             }
+        }
 
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => "Mod Details";
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+             return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Mod Details";
+        }
+
+        /// <summary>
+        /// Label menu as Links
+        /// </summary>
+        protected override string MenuTip()
+        {
+            return "Links";
         }
 
         private bool ViewMetadata()

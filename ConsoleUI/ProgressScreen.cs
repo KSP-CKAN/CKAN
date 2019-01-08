@@ -14,9 +14,9 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the Screen
         /// </summary>
-        /// <param name="taskDescription">Description of the task being done for the header</param>
+        /// <param name="descrip">Description of the task being done for the header</param>
         /// <param name="initMsg">Starting string to put in the progress bar</param>
-        public ProgressScreen(string taskDescription, string initMsg = "")
+        public ProgressScreen(string descrip, string initMsg = "")
         {
             // A nice frame to take up some of the blank space at the top
             AddObject(new ConsoleDoubleFrame(
@@ -37,9 +37,24 @@ namespace CKAN.ConsoleUI {
             AddObject(progress);
             AddObject(messages);
 
-            topMessage   = initMsg;
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => taskDescription;
+            topMessage      = initMsg;
+            taskDescription = descrip;
+        }
+
+        /// <summary>
+        /// Put CKAN 1.25.5 in upper left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description of what we're doing in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return taskDescription;
         }
 
         // IUser stuff for managing the progress bar and message box
@@ -106,8 +121,9 @@ namespace CKAN.ConsoleUI {
         private ConsoleProgressBar progress;
         private ConsoleTextBox     messages;
 
-        private string topMessage = "";
-        private double percent    = 0;
+        private string topMessage      = "";
+        private string taskDescription = "";
+        private double percent         = 0;
     }
 
 }

@@ -275,9 +275,22 @@ namespace CKAN.ConsoleUI {
                     true, CaptureKey));
             }
             mainMenu = new ConsolePopupMenu(opts);
+        }
 
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => $"KSP {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})";
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return $"KSP {manager.CurrentInstance.Version()} ({manager.CurrentInstance.Name})";
         }
 
         // Alt+H doesn't work on Mac, but F1 does, and we need

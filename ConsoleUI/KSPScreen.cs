@@ -43,9 +43,22 @@ namespace CKAN.ConsoleUI {
             AddObject(name);
             AddObject(new ConsoleLabel(1, pathRow, labelWidth, () => "Path to KSP:"));
             AddObject(path);
+        }
 
-            LeftHeader   = () => $"CKAN {Meta.GetVersion()}";
-            CenterHeader = () => "Edit KSP Instance";
+        /// <summary>
+        /// Put CKAN 1.25.5 in top left corner
+        /// </summary>
+        protected override string LeftHeader()
+        {
+            return $"CKAN {Meta.GetVersion()}";
+        }
+
+        /// <summary>
+        /// Put description in top center
+        /// </summary>
+        protected override string CenterHeader()
+        {
+            return "Edit KSP Instance";
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Allow selection of text in mod info panel (#2610 by: DasSkelett; reviewed: HebaruSan)
 - [Multiple] Show progress bar while loading registry (#2617 by: HebaruSan; reviewed: politas)
 - [Multiple] Add possibility to clone KSP installs and create dummy ones (#2627 by: DasSkelett; reviewed: HebaruSan, politas)
+- [ConsoleUI] Allow overriding menu tip in ConsoleUI (#2635 by: HebaruSan; reviewed: DasSkelett, politas)
 
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
