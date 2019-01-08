@@ -25,7 +25,10 @@ namespace CKAN
         public SettingsDialog()
         {
             InitializeComponent();
-            this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
+            if (Platform.IsMono)
+            {
+                this.ClearCacheMenu.Renderer = new FlatToolStripRenderer();
+            }
             winReg = new Win32Registry();
         }
 
