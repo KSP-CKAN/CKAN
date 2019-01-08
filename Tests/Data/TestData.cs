@@ -401,7 +401,7 @@ namespace Tests.Data
         {
             var dirs = new List<string>
             {
-                Path.Combine(DataDir(), "KSP/bad-ksp"),
+                Path.Combine(DataDir(), "KSP/bad-KSP"),
                 Path.Combine(DataDir(), "KSP/missing-gamedata")
             };
 

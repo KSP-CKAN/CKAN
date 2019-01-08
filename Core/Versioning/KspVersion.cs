@@ -444,6 +444,57 @@ namespace CKAN.Versioning
                 return false;
             }
         }
+
+        /// <summary>
+        /// Searches the build map if the version is a valid, known KSP version.
+        /// </summary>
+        /// <returns><c>true</c>, if version is in the build map, <c>false</c> otherwise.</returns>
+        public bool InBuildMap()
+        {
+            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+
+            foreach (KspVersion ver in knownVersions)
+            {
+                if (ver.Major == Major && ver.Minor == Minor && ver.Patch == Patch)
+                {
+                    // If it found a matching maj, min and patch,
+                    // test if the build numbers are the same too, but ignore if the
+                    // version is NOT build defined.
+                    if (ver.Build == Build || !IsBuildDefined)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns a "complete" KspVersion object, including the build number.
+        /// If a version number has multiple possible builds, it takes the latest one.
+        /// </summary>
+        /// <returns>The build for the version. Null if version is not known in the build map.</returns>
+        public KspVersion FindKnownVersion ()
+        {
+            if (!IsPatchDefined)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
+            knownVersions.Reverse();
+            KspVersion version = null;
+
+            foreach (KspVersion ver in knownVersions)
+            {
+                if (ver.Major == Major && ver.Minor == Minor && ver.Patch == Patch)
+                {
+                    version = new KspVersion(ver.Major, ver.Minor, ver.Patch, ver.Build);
+                    break;
+                }
+            }
+            return version;
+        }
     }
 
     public sealed partial class KspVersion : IEquatable<KspVersion>

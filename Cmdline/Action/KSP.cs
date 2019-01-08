@@ -1,31 +1,40 @@
 using System;
+using System.IO;
 using System.Linq;
+using CKAN.Versioning;
 using CommandLine;
 using CommandLine.Text;
-using CKAN.Versioning;
+using log4net;
 
 namespace CKAN.CmdLine
 {
     public class KSP : ISubCommand
     {
         public KSP() { }
+        protected static readonly ILog log = LogManager.GetLogger(typeof(KSP));
 
         internal class KSPSubOptions : VerbCommandOptions
         {
             [VerbOption("list",    HelpText = "List KSP installs")]
-            public CommonOptions ListOptions     { get; set; }
+            public CommonOptions  ListOptions    { get; set; }
 
             [VerbOption("add",     HelpText = "Add a KSP install")]
-            public AddOptions    AddOptions      { get; set; }
+            public AddOptions     AddOptions     { get; set; }
+
+            [VerbOption("clone",   HelpText = "Clone an existing KSP install")]
+            public CloneOptions   CloneOptions   { get; set; }
 
             [VerbOption("rename",  HelpText = "Rename a KSP install")]
-            public RenameOptions RenameOptions   { get; set; }
+            public RenameOptions  RenameOptions  { get; set; }
 
             [VerbOption("forget",  HelpText = "Forget a KSP install")]
-            public ForgetOptions ForgetOptions   { get; set; }
+            public ForgetOptions  ForgetOptions  { get; set; }
 
             [VerbOption("default", HelpText = "Set the default KSP install")]
             public DefaultOptions DefaultOptions { get; set; }
+
+            [VerbOption("fake",    HelpText = "Fake a KSP install")]
+            public FakeOptions    FakeOptions    { get; set; }
 
             [HelpVerbOption]
             public string GetUsage(string verb)
@@ -43,7 +52,17 @@ namespace CKAN.CmdLine
                     ht.AddPreOptionsLine("ksp " + verb + " - " + GetDescription(verb));
                     switch (verb)
                     {
-                        // First the commands with two string arguments
+                        // First the commands with three string arguments
+                        case "fake":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name path version dlcVersion");
+                            ht.AddPreOptionsLine($"Choose dlcVersion \"none\" if you want no simulated dlc.");
+                            break;
+
+                        case "clone":
+                            ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] instanceNameOrPath newname newpath");
+                            break;
+
+                        // Second the commands with two string arguments
                         case "add":
                             ht.AddPreOptionsLine($"Usage: ckan ksp {verb} [options] name url");
                             break;
@@ -77,6 +96,13 @@ namespace CKAN.CmdLine
             [ValueOption(1)] public string path { get; set; }
         }
 
+        internal class CloneOptions : CommonOptions
+        {
+            [ValueOption(0)] public string nameOrPath { get; set; }
+            [ValueOption(1)] public string new_name { get; set; }
+            [ValueOption(2)] public string new_path { get; set; }
+        }
+
         internal class RenameOptions : CommonOptions
         {
             [ValueOption(0)] public string old_name { get; set; }
@@ -91,6 +117,14 @@ namespace CKAN.CmdLine
         internal class DefaultOptions : CommonOptions
         {
             [ValueOption(0)] public string name { get; set; }
+        }
+
+        internal class FakeOptions : CommonOptions
+        {
+            [ValueOption(0)] public string name { get; set; }
+            [ValueOption(1)] public string path { get; set; }
+            [ValueOption(2)] public string version { get; set; }
+            [ValueOption(3)] public string dlcVersion { get; set; }
         }
 
         // This is required by ISubCommand
@@ -140,6 +174,10 @@ namespace CKAN.CmdLine
                             exitCode = AddInstall((AddOptions)suboptions);
                             break;
 
+                        case "clone":
+                            exitCode = CloneInstall((CloneOptions)suboptions);
+                            break;
+
                         case "rename":
                             exitCode = RenameInstall((RenameOptions)suboptions);
                             break;
@@ -151,6 +189,10 @@ namespace CKAN.CmdLine
                         case "use":
                         case "default":
                             exitCode = SetDefaultInstall((DefaultOptions)suboptions);
+                            break;
+
+                        case "fake":
+                            exitCode = FakeNewKSPInstall((FakeOptions)suboptions);
                             break;
 
                         default:
@@ -165,6 +207,8 @@ namespace CKAN.CmdLine
 
         private KSPManager Manager { get; set; }
         private IUser      User    { get; set; }
+
+        #region option functions
 
         private int ListInstalls()
         {
@@ -245,6 +289,91 @@ namespace CKAN.CmdLine
             {
                 User.RaiseMessage("Sorry, {0} does not appear to be a KSP directory", ex.path);
                 return Exit.BADOPT;
+            }
+        }
+
+        private int CloneInstall(CloneOptions options)
+        {
+            log.Info("Cloning the KSP instance: " + options.nameOrPath);
+
+            // Parse all options
+            string instanceNameOrPath = options.nameOrPath;
+            string new_name = options.new_name;
+            string new_path = options.new_path;
+
+
+            try
+            {
+                // Try instanceNameOrPath as name and search the registry for it.
+                if (Manager.HasInstance(instanceNameOrPath))
+                {
+                    CKAN.KSP[] listOfInstances = Manager.Instances.Values.ToArray();
+                    foreach (CKAN.KSP instance in listOfInstances)
+                    {
+                        if (instance.Name == instanceNameOrPath)
+                        {
+                            // Found it, now clone it.
+                            Manager.CloneInstance(instance, new_name, new_path);
+                            break;
+                        }
+                    }
+                }
+                // Try to use instanceNameOrPath as a path and create a new KSP object.
+                // If it's valid, go on.
+                else if (new CKAN.KSP(instanceNameOrPath, new_name, User) is CKAN.KSP instance && instance.Valid)
+                {
+                    Manager.CloneInstance(instance, new_name, new_path);
+
+                }
+                // There is no instance with this name or at this path.
+                else
+                {
+                    throw new NoGameInstanceKraken();
+                }
+            }
+            catch (NotKSPDirKraken kraken)
+            {
+                // Two possible reasons:
+                // First: The instance to clone is not a valid KSP instance.
+                // Only occurs if user manipulated directory and deleted files/folders
+                // which CKAN searches for in validity test.
+
+                // Second: Something went wrong adding the new instance to the registry,
+                // most likely because the newly created directory is not valid.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+            catch (IOException e)
+            {
+                // The new path is not empty
+                // The exception contains a message to inform the user.
+
+                User.RaiseError(e.ToString());
+                log.Error(e);
+                return Exit.ERROR;
+            }
+            catch (NoGameInstanceKraken kraken)
+            {
+                log.Error(kraken);
+                User.RaiseError(String.Concat(kraken.ToString(), "\n", "No instance with this name or at this path: ", instanceNameOrPath));
+                return Exit.ERROR;
+            }
+
+
+            // Test if the instance was added to the registry.
+            // No need to test if valid, because this is done in AddInstance(),
+            // so if something went wrong, HasInstance is false.
+            if (Manager.HasInstance(new_name))
+            {
+                return Exit.OK;
+            }
+            else
+            {
+                User.RaiseMessage("Something went wrong. Please look if the new directory has been created.\n",
+                    "Try to add the new instance manually with \"ckan ksp add\".\n");
+                return Exit.ERROR;
             }
         }
 
@@ -360,5 +489,86 @@ namespace CKAN.CmdLine
             User.RaiseMessage("Successfully set \"{0}\" as the default KSP installation", name);
             return Exit.OK;
         }
+
+        /// <summary>
+        /// Creates a new fake KSP install after the conditions CKAN tests for valid install directories.
+        /// Used for developing and testing purposes.
+        /// </summary>
+        private int FakeNewKSPInstall (FakeOptions options)
+        {
+            log.Info("Creating a new fake KSP install");
+
+            // Parse all options
+            string installName = options.name;
+            string path = options.path;
+            KspVersion version;
+            // dlcVersion is null if no user wants no simulated DLC
+            string dlcVersion = options.dlcVersion.ToLower() == "none" ? null : options.dlcVersion;
+            try
+            {
+                log.Debug("Parsing KSP version");
+                version = KspVersion.Parse(options.version);
+                if (!version.IsBuildDefined)
+                {
+                    version = version.FindKnownVersion();
+                }
+                if (version == null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(version), "Your specified version is invalid.");
+                }
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                log.Error(e);
+                User.RaiseError(e.ToString());
+                User.RaiseMessage("Examples for valid version formats: 1.5.0 | 1.5.1 | 1.6.0.2395");
+                return Exit.ERROR;
+            }
+
+            try
+            {
+                // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
+                Manager.FakeInstance(installName, path, version, dlcVersion);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                // The version could not be found in the known builds.
+                log.Error(e);
+                User.RaiseError(e.ToString());
+                return Exit.ERROR;
+            }
+            catch (BadInstallLocationKraken kraken)
+            {
+                // The folder exists and is not empty.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+            catch (NotKSPDirKraken kraken)
+            {
+                // Something went wrong adding the new instance to the registry,
+                // most likely because the newly created directory is not valid.
+
+                User.RaiseError(kraken.ToString());
+                log.Error(kraken);
+                return Exit.ERROR;
+            }
+
+
+            // Test if the instance was added to the registry.
+            // No need to test if valid, because this is done in AddInstance().
+            if (Manager.HasInstance(installName))
+            {
+                return Exit.OK;
+            }
+            else
+            {
+                User.RaiseError("Something went wrong. Try to add the instance yourself with \"ckan ksp add\".",
+                    "Also look if the new directory has been created.");
+                return Exit.ERROR;
+            }
+        }
+        #endregion
     }
 }

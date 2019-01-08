@@ -137,6 +137,7 @@
     <Compile Include="Versioning\KspVersionCriteria.cs" />
     <Compile Include="Versioning\KspVersionRange.cs" />
     <Compile Include="Win32Registry.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

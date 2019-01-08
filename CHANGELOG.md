@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Warn before launching KSP with installed incompatible modules (#2601 by: HebaruSan; reviewed: politas)
 - [GUI] Allow selection of text in mod info panel (#2610 by: DasSkelett; reviewed: HebaruSan)
 - [Multiple] Show progress bar while loading registry (#2617 by: HebaruSan; reviewed: politas)
+- [Multiple] Add possibility to clone KSP installs and create dummy ones (#2627 by: DasSkelett; reviewed: HebaruSan, politas)
 
 ### Bugfixes
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
@@ -33,6 +34,8 @@ All notable changes to this project will be documented in this file.
 ## v1.25.4 Kennedy
 
 ### Features
+
+
 
 - [Netkan] Purge downloads that failed to index from Netkan cache (#2526 by: HebaruSan; reviewed: politas)
 - [Multiple] Add download count column to GUI (#2518 by: HebaruSan; reviewed: politas)
