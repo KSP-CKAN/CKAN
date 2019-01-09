@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -301,39 +302,35 @@ namespace CKAN
 
         private TreeNode findDependencyShallow(IRegistryQuerier registry, string identifier, RelationshipType relationship, KspVersionCriteria crit)
         {
-            try
+            // Maybe it's a DLC?
+            ModuleVersion installedVersion = registry.InstalledVersion(identifier, false);
+            if (installedVersion != null)
             {
-                CkanModule dependencyModule = registry.LatestAvailable(identifier, crit);
-                if (dependencyModule != null)
-                {
-                    return indexedNode(registry, dependencyModule, relationship, crit != null);
-                }
+                return nonModuleNode(identifier, installedVersion, relationship);
             }
-            catch (ModuleNotFoundKraken)
-            {
-                // Maybe it's a DLC?
-                ModuleVersion installedVersion = registry.InstalledVersion(identifier, false);
-                if (installedVersion != null)
-                {
-                    return nonModuleNode(identifier, installedVersion, relationship);
-                }
 
-                // If we don't find a module by this name, look for other modules that provide it.
-                List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides(identifier, crit);
-                if (dependencyModules != null && dependencyModules.Count > 0)
-                {
-                    List<TreeNode> children = new List<TreeNode>();
-                    foreach (CkanModule dep in dependencyModules)
-                    {
-                        children.Add(indexedNode(registry, dep, relationship, crit != null));
-                    }
-                    return providesNode(identifier, relationship, children);
-                }
+            // Find modules that satisfy this dependency
+            List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides(identifier, crit);
+            if (dependencyModules.Count == 0)
+            {
+                // Nothing found, don't return a node
+                return null;
             }
-            return null;
+            else if (dependencyModules.Count == 1 && dependencyModules[0].identifier == identifier)
+            {
+                // Only one exact match module, return a simple node
+                return indexedNode(registry, dependencyModules[0], relationship, crit != null);
+            }
+            else
+            {
+                // Several found or not same id, return a "provides" node
+                return providesNode(identifier, relationship,
+                    dependencyModules.Select(dep => indexedNode(registry, dep, relationship, crit != null))
+                );
+            }
         }
 
-        private TreeNode providesNode(string identifier, RelationshipType relationship, List<TreeNode> children)
+        private TreeNode providesNode(string identifier, RelationshipType relationship, IEnumerable<TreeNode> children)
         {
             int icon = (int)relationship + 1;
             return new TreeNode(identifier + " (virtual)", icon, icon, children.ToArray())
