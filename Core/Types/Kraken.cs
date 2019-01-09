@@ -494,4 +494,15 @@ namespace CKAN
         }
     }
 
+    /// <summary>
+    /// The version is either not in the build map, or incomplete or something like this.
+    /// </summary>
+    public class IncorrectKSPVersionKraken : Kraken
+    {
+        public IncorrectKSPVersionKraken(string reason = null, Exception inner_exception = null)
+            : base(reason, inner_exception)
+        {
+        }
+    }
+
 }

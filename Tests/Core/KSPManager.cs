@@ -169,7 +169,7 @@ namespace Tests.Core
             string tempdir = TestData.NewTempDir();
             CKAN.Versioning.KspVersion version = CKAN.Versioning.KspVersion.Parse("1.1.99");
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            Assert.Throws<IncorrectKSPVersionKraken>(() =>
                 manager.FakeInstance(name, tempdir, version));
             Assert.IsFalse(manager.HasInstance(name));
 

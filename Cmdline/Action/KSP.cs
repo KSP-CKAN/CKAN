@@ -125,6 +125,7 @@ namespace CKAN.CmdLine
             [ValueOption(1)] public string path { get; set; }
             [ValueOption(2)] public string version { get; set; }
             [ValueOption(3)] public string dlcVersion { get; set; }
+            [Option("set-default", DefaultValue = false, HelpText = "Set the new instance to the default one.")] public bool setToDefault { get; set; }
         }
 
         // This is required by ISubCommand
@@ -347,7 +348,6 @@ namespace CKAN.CmdLine
                 // Second: Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is not valid.
 
-                User.RaiseError(kraken.ToString());
                 log.Error(kraken);
                 return Exit.ERROR;
             }
@@ -355,8 +355,6 @@ namespace CKAN.CmdLine
             {
                 // The new path is not empty
                 // The exception contains a message to inform the user.
-
-                User.RaiseError(e.ToString());
                 log.Error(e);
                 return Exit.ERROR;
             }
@@ -513,6 +511,7 @@ namespace CKAN.CmdLine
             string installName = options.name;
             string path = options.path;
             KspVersion version;
+            bool setToDefault = options.setToDefault;
             // dlcVersion is null if a user wants no simulated DLC
             string dlcVersion;
             if (options.dlcVersion == null || options.dlcVersion.ToLower() == "none")
@@ -536,63 +535,21 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!version.IsMajorDefined || !version.IsMinorDefined)
+            // Get the full version including build number.
+            try
             {
-                User.RaiseError("Please enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
+                version = version.RaiseVersionSelectionDialog(User);
+            }
+            catch (IncorrectKSPVersionKraken)
+            {
+                User.RaiseError("Couldn't find a valid KSP version for your input.\n" +
+                	"Make sure to enter the at least the version major and minor values in the form Maj.Min - e.g. 1.5");
                 return Exit.BADOPT;
             }
-
-            if (!version.IsFullyDefined)
+            catch (CancelledActionKraken)
             {
-                // Let the user select the sepcific version.
-                KspVersion[] knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions.ToArray();
-                System.Collections.Generic.List<KspVersion> possibleVersions = new System.Collections.Generic.List<KspVersion>();
-                foreach (KspVersion ver in knownVersions)
-                {
-                    if (!version.IsPatchDefined)
-                    {
-                        if (version.Major == ver.Major && version.Minor == ver.Minor)
-                        {
-                            possibleVersions.Add(ver);
-                        }
-                    }
-                    else
-                    {
-                        if (version.Major == ver.Major && version.Minor == ver.Minor && version.Patch == ver.Patch)
-                        {
-                            possibleVersions.Add(ver);
-                        }
-                    }
-                }
-                if (possibleVersions.Count == 0 )
-                {
-                    User.RaiseError("Your specified version is not known to CKAN. Please enter a real KSP version.");
-                    return Exit.BADOPT;
-                }
-                else if (possibleVersions.Count == 1)
-                {
-                    version = possibleVersions.ElementAt(0);
-                }
-                else
-                {
-                    int choosen = User.RaiseSelectionDialog("The specified version is not unique, please select one:", possibleVersions.ToArray());
-                    if (choosen > 0 && choosen < possibleVersions.Count)
-                    {
-                        version = possibleVersions.ElementAt(choosen);
-                    }
-                    else
-                    {
-                        User.RaiseError("Selection cancelled! Please call 'ckan ksp fake' again.");
-                        return Exit.ERROR;
-                    }
-
-                }
-            }
-            else if (!version.InBuildMap())
-            {
-                // Happens if fully defined but not in build map
-                User.RaiseError("Your specified version is not known to CKAN. Please enter a real KSP version.\n You can leave the patch and/or the build number aside to get a list to choose from. ");
-                return Exit.BADOPT;
+                User.RaiseError("Selection cancelled! Please call 'ckan ksp fake' again.");
+                return Exit.ERROR;
             }
 
 
@@ -602,12 +559,13 @@ namespace CKAN.CmdLine
             {
                 // Pass all arguments to CKAN.KSPManager.FakeInstance() and create a new one.
                 Manager.FakeInstance(installName, path, version, dlcVersion);
+                if (setToDefault)
+                    User.RaiseMessage("Setting new instance to default...");
+                    Manager.SetAutoStart(installName);
             }
             catch (BadInstallLocationKraken kraken)
             {
                 // The folder exists and is not empty.
-
-                User.RaiseError(kraken.ToString());
                 log.Error(kraken);
                 return Exit.ERROR;
             }
@@ -615,10 +573,13 @@ namespace CKAN.CmdLine
             {
                 // Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is not valid.
-
-                User.RaiseError(kraken.ToString());
                 log.Error(kraken);
                 return Exit.ERROR;
+            }
+            catch (InvalidKSPInstanceKraken)
+            {
+                // Thrown by Manager.SetAutoStart() if Manager.HasInstance returns false.
+                // Will be checked again down below with a proper error message
             }
 
 

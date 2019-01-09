@@ -203,7 +203,7 @@ namespace CKAN
         {
             if (!version.InBuildMap())
             {
-                throw new ArgumentOutOfRangeException(nameof(version), "The specified KSP version is not a known version.");
+                throw new IncorrectKSPVersionKraken(String.Format("The specified KSP version is not a known version: {0}", version.ToString()));
             }
             if (Directory.Exists(new_path) && (Directory.GetFiles(new_path).Length != 0 || Directory.GetDirectories(new_path).Length != 0))
             {
