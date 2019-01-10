@@ -75,3 +75,7 @@ KSP version that BDArmory is not compatible with.
 <HebaruSan> I mean, how the heck do we know? You're WebClient, you figure it out!!
 
     -- regarding CKAN#2297
+%
+Almost messed me up with that PR title. Bash ran the command when I tried to commit!
+
+    -- politas when merging #2642 "`ckan ksp fake/clone` fixes"
