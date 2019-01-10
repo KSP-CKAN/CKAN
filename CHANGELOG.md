@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v1.25.5
 
 ### Features
+
 - [GUI] Checkbox to uninstall all mods and reset changeset (#2596 by: HebaruSan; reviewed: politas)
 - [GUI] Add legend for relationships tab (#2592 by: HebaruSan; reviewed: politas)
 - [GUI] Add Launch KSP option to tray icon menu (#2597 by: HebaruSan; reviewed: politas)
@@ -16,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Allow overriding menu tip in ConsoleUI (#2635 by: HebaruSan; reviewed: DasSkelett, politas)
 
 ### Bugfixes
+
 - [GUI] Fix platform checks and crash on Mac OS X (#2600 by: HebaruSan; reviewed: politas)
 - [GUI] Fix file menu separator (#2593 by: HebaruSan; reviewed: politas)
 - [GUI] Fix error popup text for dark themes (#2594 by: HebaruSan; reviewed: politas)
@@ -33,12 +35,11 @@ All notable changes to this project will be documented in this file.
 - [Build] Dispose caches in tests (#2628 by: HebaruSan; reviewed: politas)
 - [GUI] Don't override menu renderers on Windows (#2632 by: HebaruSan; reviewed: politas)
 - [ConsoleUI] Handle plus without shift in ConsoleUI (#2634 by: HebaruSan; reviewed: politas)
+- [Multiple] `ckan ksp fake/clone` fixes (#2642 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.25.4 Kennedy
 
 ### Features
-
-
 
 - [Netkan] Purge downloads that failed to index from Netkan cache (#2526 by: HebaruSan; reviewed: politas)
 - [Multiple] Add download count column to GUI (#2518 by: HebaruSan; reviewed: politas)

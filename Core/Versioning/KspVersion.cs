@@ -470,30 +470,90 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
-        /// Returns a "complete" KspVersion object, including the build number.
-        /// If a version number has multiple possible builds, it takes the latest one.
+        /// Raises a selection dialog for choosing a specific KSP version, if it is not fully defined yet.
+        /// If a build number is specified but not known, it presents a list of all builds
+        /// of the patch range.
+        /// Needs at least a Major and Minor (doesn't make sense else). 
         /// </summary>
-        /// <returns>The build for the version. Null if version is not known in the build map.</returns>
-        public KspVersion FindKnownVersion ()
+        /// <returns>A complete KspVersion object</returns>
+        /// <param name="user">A IUser instance, to raise the corresponding dialog.</param>
+        public KspVersion RaiseVersionSelectionDialog (IUser user)
         {
-            if (!IsPatchDefined)
+            if (IsFullyDefined && InBuildMap())
             {
-                throw new ArgumentOutOfRangeException();
+                // The specified version is complete and known :hooray:. Return this instance.
+                return this;
+
             }
-
-            List<KspVersion> knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions;
-            knownVersions.Reverse();
-            KspVersion version = null;
-
-            foreach (KspVersion ver in knownVersions)
+            else if (!IsMajorDefined || !IsMinorDefined)
             {
-                if (ver.Major == Major && ver.Minor == Minor && ver.Patch == Patch)
+                throw new IncorrectKSPVersionKraken("Needs at least Major and Minor");
+            }
+            else
+            {
+                // Get all known versions out of the build map.
+                KspVersion[] knownVersions = new KspBuildMap(new Win32Registry()).KnownVersions.ToArray();
+                List<KspVersion> possibleVersions = new List<KspVersion>();
+
+                // Default message passed to RaiseSelectionDialog.
+                string message = "The specified version is not unique, please select one:";
+
+                // Find the versions which are part of the range.
+                foreach (KspVersion ver in knownVersions)
                 {
-                    version = new KspVersion(ver.Major, ver.Minor, ver.Patch, ver.Build);
-                    break;
+                    // If we only have Major and Minor -> compare these two.
+                    if (!IsPatchDefined)
+                    {
+                        if (Major == ver.Major && Minor == ver.Minor)
+                        {
+                            possibleVersions.Add(ver);
+                        }
+                    } 
+                    // If we also have Patch -> compare it too.
+                    else if (!IsBuildDefined)
+                    {
+                        if (Major == ver.Major && Minor == ver.Minor && Patch == ver.Patch)
+                        {
+                            possibleVersions.Add(ver);
+                        }
+                    }
+                    // And if we are here, there's a build number not known in the build map.
+                    // Only compare Major, Minor, Patch and adjust the message.
+                    else
+                    {
+                        message = "The build number is not known for this patch. Please select one:";
+                        if (Major == ver.Major && Minor == ver.Minor && Patch == ver.Patch)
+                        {
+                            possibleVersions.Add(ver);
+                        }
+                    }
+                }
+
+                // Now do some checks and raise the selection dialog.
+                if (possibleVersions.Count == 0)
+                {
+                    // No version found in the map. Happens for future or other unknown versions.
+                    throw new IncorrectKSPVersionKraken("The version is not known to CKAN.");
+                }
+                else if (possibleVersions.Count == 1)
+                {
+                    // Lucky, there's only one possible version. Happens f.e. if there's only one build per patch (especially the case for newer versions).
+                    return possibleVersions.ElementAt(0);
+                }
+                else
+                {
+                    int choosen = user.RaiseSelectionDialog(message, possibleVersions.ToArray());
+                    if (choosen >= 0 && choosen < possibleVersions.Count)
+                    {
+                        return possibleVersions.ElementAt(choosen);
+                    }
+                    else
+                    {
+                        throw new CancelledActionKraken();
+                    }
+
                 }
             }
-            return version;
         }
     }
 

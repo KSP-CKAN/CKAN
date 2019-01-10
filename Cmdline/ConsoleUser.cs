@@ -125,6 +125,9 @@ namespace CKAN.CmdLine
                 }
             }
 
+            // Write passed message
+            RaiseMessage(message);
+
             // List options.
             for (int i = 0; i < args.Length; i++)
             {
