@@ -34,8 +34,7 @@ namespace CKAN
         /// <param name="args">Array of offered options.</param>
         public int RaiseSelectionDialog(string message, params object[] args)
         {
-            // TODO Implement a selection dialog for the GUI
-            throw new NotImplementedException();
+            return Main.Instance.SelectionDialog(message, args);
         }
 
         /// <summary>
