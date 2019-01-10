@@ -99,7 +99,7 @@ namespace CKAN
 
         private void _UpdateFilters()
         {
-            if (ModList == null)
+            if (ModList == null || mainModList?.full_list_of_mod_rows == null)
                 return;
 
             // Each time a row in DataGridViewRow is changed, DataGridViewRow updates the view. Which is slow.
