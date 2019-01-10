@@ -149,7 +149,7 @@ namespace CKAN
                     opts, registry, versionCriteria
                 );
 
-                if (resolver.ModList().Count() >= toInstall.Count)
+                if (resolver.ModList().Count() >= toInstall.Count(m => !m.IsMetapackage))
                 {
                     // We can install with no further dependencies
                     string recipe = resolver.ModList()
