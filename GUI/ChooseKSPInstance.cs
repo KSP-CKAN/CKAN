@@ -87,7 +87,7 @@ namespace CKAN
             }
             catch (NotKSPDirKraken k)
             {
-                GUI.user.displayError("Directory {0} is not valid KSP directory.",
+                GUI.user.RaiseError("Directory {0} is not valid KSP directory.",
                     new object[] { k.path });
                 return;
             }
@@ -125,7 +125,7 @@ namespace CKAN
             }
             catch (NotKSPDirKraken k)
             {
-                GUI.user.displayError("Directory {0} is not valid KSP directory.",
+                GUI.user.RaiseError("Directory {0} is not valid KSP directory.",
                     new object[] { k.path });
             }
         }

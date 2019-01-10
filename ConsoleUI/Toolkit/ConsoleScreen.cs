@@ -72,7 +72,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected ConsolePopupMenu mainMenu = null;
 
-        // IUser
+        #region IUser
 
         /// <summary>
         /// Tell IUser clients that we have the ability to interact with the user
@@ -207,7 +207,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="percent">Value from 0 to 100 representing task completion</param>
         protected virtual void Progress(string message, int percent) { }
 
-        // End IUser
+        #endregion IUser
 
         private void DrawSelectedHamburger()
         {

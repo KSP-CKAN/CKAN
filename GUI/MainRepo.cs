@@ -26,9 +26,6 @@ namespace CKAN
 
         public void UpdateRepo()
         {
-            var old_dialog = currentUser.displayYesNo;
-            currentUser.displayYesNo = YesNoDialog;
-
             tabController.RenameTab("WaitTabPage", "Updating repositories");
 
             CurrentInstance.ScanGameData();
@@ -37,10 +34,7 @@ namespace CKAN
             {
                 m_UpdateRepoWorker.RunWorkerAsync();
             }
-            finally
-            {
-                currentUser.displayYesNo = old_dialog;
-            }
+            catch { }
 
             Util.Invoke(this, SwitchEnabledState);
 
@@ -84,8 +78,6 @@ namespace CKAN
             {
                 errorDialog.ShowErrorDialog("Failed to connect to repository. Exception: " + ex.Message);
             }
-
-            currentUser.displayYesNo = null;
         }
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
@@ -112,14 +104,12 @@ namespace CKAN
         {
             if (!configuration.RefreshOnStartupNoNag)
             {
-                currentUser.displayYesNo = YesNoDialog;
                 configuration.RefreshOnStartupNoNag = true;
-                if (!currentUser.displayYesNo("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
+                if (!currentUser.RaiseYesNoDialog("Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)"))
                 {
                     configuration.RefreshOnStartup = false;
                 }
                 configuration.Save();
-                currentUser.displayYesNo = null;
             }
         }
 

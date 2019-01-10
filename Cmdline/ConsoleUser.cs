@@ -4,32 +4,44 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
-    public class ConsoleUser : NullUser
+    /// <summary>
+    /// The commandline implementation of the IUser interface.
+    /// </summary>
+    public class ConsoleUser : IUser
     {
+        /// <summary>
+        /// A logger for this class.
+        /// ONLY FOR INTERNAL USE!
+        /// </summary>
         private static readonly ILog log = LogManager.GetLogger(typeof(ConsoleUser));
 
-        private bool m_Headless = false;
-        public ConsoleUser(bool headless)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:CKAN.CmdLine.ConsoleUser"/> class.
+        /// </summary>
+        /// <param name="headless">If set to <c>true</c>, supress interactive dialogs like Yes/No-Dialog or SelectionDialog.</param>
+        public ConsoleUser (bool headless)
         {
-            m_Headless = headless;
+            Headless = headless;
         }
 
-        public override bool Headless
-        {
-            get
-            {
-                return m_Headless;
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:CKAN.CmdLine.ConsoleUser"/> is headless.
+        /// </summary>
+        /// <value><c>true</c> if headless; otherwise, <c>false</c>.</value>
+        public bool Headless { get; }
 
-        protected override bool DisplayYesNoDialog(string message)
+        /// <summary>
+        /// Ask the user for a yes or no input.
+        /// </summary>
+        /// <param name="question">Question.</param>
+        public bool RaiseYesNoDialog(string question)
         {
-            if (m_Headless)
+            if (Headless)
             {
                 return true;
             }
 
-            Console.Write("{0} [Y/n] ", message);
+            Console.Write("{0} [Y/n] ", question);
             while (true)
             {
                 var input = Console.In.ReadLine();
@@ -60,22 +72,20 @@ namespace CKAN.CmdLine
             }
         }
 
-        protected override void DisplayMessage(string message, params object[] args)
-        {
-            Console.WriteLine(message, args);
-        }
-
-        protected override void DisplayError(string message, params object[] args)
-        {
-            Console.Error.WriteLine(message, args);
-        }
-
-        protected override int DisplaySelectionDialog(string message, params object[] args)
+        /// <summary>
+        /// Ask the user to select one of the elements of the array.
+        /// The output is index 0 based.
+        /// To supply a default option, make the first option an integer indicating the index of it.
+        /// </summary>
+        /// <returns>The selection dialog.</returns>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Array of available options.</param>
+        public int RaiseSelectionDialog(string message, params object[] args)
         {
             const int return_cancel = -1;
 
             // Check for the headless flag.
-            if (m_Headless)
+            if (Headless)
             {
                 // Return that the user cancelled the selection process.
                 return return_cancel;
@@ -227,17 +237,33 @@ namespace CKAN.CmdLine
             return result;
         }
 
-        protected override void ReportProgress(string format, int percent)
+        /// <summary>
+        /// Write an error to the console.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Possible arguments to format the message.</param>
+        public void RaiseError(string message, params object[] args)
         {
-            if (Regex.IsMatch(format, "download", RegexOptions.IgnoreCase))
+            Console.Error.WriteLine(message, args);
+        }
+
+        /// <summary>
+        /// Write a progress message including the percentage to the console.
+        /// Rewrites the line, so the console is not cluttered by progress messages.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="percent">Progress in percent.</param>
+        public void RaiseProgress(string message, int percent)
+        {
+            if (Regex.IsMatch(message, "download", RegexOptions.IgnoreCase))
             {
                 // In headless mode, only print a new message if the percent has changed,
                 // to reduce clutter in Jenkins for large downloads
-                if (!m_Headless || percent != previousPercent)
+                if (!Headless || percent != previousPercent)
                 {
                     // The \r at the front here causes download messages to *overwrite* each other.
                     Console.Write(
-                        "\r{0} - {1}%           ", format, percent);
+                        "\r{0} - {1}%           ", message, percent);
                     previousPercent = percent;
                 }
             }
@@ -246,10 +272,23 @@ namespace CKAN.CmdLine
                 // The percent looks weird on non-download messages.
                 // The leading newline makes sure we don't end up with a mess from previous
                 // download messages.
-                Console.Write("\r\n{0}", format);
+                Console.Write("\r\n{0}", message);
             }
         }
 
+        /// <summary>
+        /// Needed for <see cref="RaiseProgress(string, int)"/>
+        /// </summary>
         private int previousPercent = -1;
+
+        /// <summary>
+        /// Writes a message to the console.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Arguments to format the message.</param>
+        public void RaiseMessage(string message, params object[] args)
+        {
+            Console.WriteLine(message, args);
+        }
     }
 }

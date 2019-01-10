@@ -2,43 +2,72 @@ using System;
 
 namespace CKAN
 {
-
-    public class GUIUser : NullUser
+    /// <summary>
+    /// The GUI implementation of the IUser interface.
+    /// </summary>
+    public class GUIUser : IUser
     {
-        public delegate bool DisplayYesNo(string message);
-
-        public Action<string, object[]> displayMessage;
-        public Action<string, object[]> displayError;
-        public DisplayYesNo displayYesNo;
-
-        protected override bool DisplayYesNoDialog(string message)
+        /// <summary>
+        /// A GUIUser is obviously not headless. Returns false.
+        /// </summary>
+        public bool Headless
         {
-            if (displayYesNo == null)
-                return true;
-
-            return displayYesNo(message);
+            get { return false; }
         }
 
-        protected override void DisplayMessage(string message, params object[] args)
+        /// <summary>
+        /// Shows a small form with the question.
+        /// User can select yes or no (ya dont say).
+        /// </summary>
+        /// <returns><c>true</c> if user pressed yes, <c>false</c> if no.</returns>
+        /// <param name="question">Question.</param>
+        public bool RaiseYesNoDialog (string question)
         {
-            if (displayMessage != null)
-            {
-                displayMessage(message, args);
-            }
+            return Main.Instance.YesNoDialog(question);
         }
 
-        protected override void DisplayError(string message, params object[] args)
+        /// <summary>
+        /// Will show a small form with the message and a list to choose from.
+        /// </summary>
+        /// <returns>The index of the selection in the args array. 0-based!</returns>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Array of offered options.</param>
+        public int RaiseSelectionDialog(string message, params object[] args)
         {
-            if (displayError != null)
-            {
-                displayError(message, args);
-            }
+            // TODO Implement a selection dialog for the GUI
+            throw new NotImplementedException();
         }
 
-        protected override void ReportProgress(string format, int percent)
+        /// <summary>
+        /// Shows a message box containing the formatted error message.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Arguments to format the message.</param>
+        public void RaiseError (string message, params object[] args)
         {
-            Main.Instance.SetDescription($"{format} - {percent}%");
+            Main.Instance.ErrorDialog(message, args);
+        }
+
+        /// <summary>
+        /// Sets the progress bars and the message box of the current WaitTabPage.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="percent">Progress in percent.</param>
+        public void RaiseProgress( string message, int percent)
+        {
+            Main.Instance.SetDescription($"{message} - {percent}%");
             Main.Instance.SetProgress(percent);
+        }
+
+        /// <summary>
+        /// Displays the formatted message in the lower StatusStrip.
+        /// Removes any newline strings.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="args">Arguments to fromat the message.</param>
+        public void RaiseMessage (string message, params object[] args)
+        {
+            Main.Instance.AddStatusMessage(message, args);
         }
     }
 

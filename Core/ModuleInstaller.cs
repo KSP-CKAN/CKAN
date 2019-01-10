@@ -177,7 +177,15 @@ namespace CKAN
                 }
             }
 
-            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
+            bool ok;
+            if (User.GetType().ToString() == "CKAN.GUIUser")
+            {
+                ok = true;
+            }
+            else
+            {
+                ok = User.RaiseYesNoDialog("\r\nContinue?");
+            }
 
             if (!ok)
             {
@@ -770,7 +778,15 @@ namespace CKAN
                 User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
-            bool ok = User.RaiseYesNoDialog("\r\nContinue?");
+            bool ok;
+            if (User.GetType().ToString() == "CKAN.GUIUser")
+            {
+                ok = true;
+            }
+            else
+            {
+                ok = User.RaiseYesNoDialog("\r\nContinue?");
+            }
 
             if (!ok)
             {
