@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't override menu renderers on Windows (#2632 by: HebaruSan; reviewed: politas)
 - [ConsoleUI] Handle plus without shift in ConsoleUI (#2634 by: HebaruSan; reviewed: politas)
 - [Multiple] `ckan ksp fake/clone` fixes (#2642 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Handle semi-virtual dependencies in Relationships tab (#2645 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
