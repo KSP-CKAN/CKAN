@@ -258,6 +258,7 @@ namespace CKAN
             tabController.HideTab("WaitTabPage");
             tabController.SetTabLock(false);
             Util.Invoke(this, SwitchEnabledState);
+            Util.Invoke(this, () => Main.Instance.ModList.Focus());
         }
 
         public void MarkModForInstall(string identifier, bool uncheck = false)
