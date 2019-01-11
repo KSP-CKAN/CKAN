@@ -8,6 +8,7 @@ namespace CKAN
     public interface IUser
     {
         bool Headless { get; }
+        bool ConfirmPrompt { get; }
 
         bool RaiseYesNoDialog(string question);
         int  RaiseSelectionDialog(string message, params object[] args);
@@ -23,22 +24,35 @@ namespace CKAN
     /// </summary>
     public class NullUser : IUser
     {
-        public static readonly IUser User = new NullUser();
+        /// <summary>
+        /// NullUser is headless. Variable not used for NullUser.
+        /// </summary>
+        public bool Headless
+        {
+            get { return true; }
+        }
 
-        public virtual bool Headless
+        /// <summary>
+        /// Indicates if a confirmation prompt should be shown for this type of User.
+        /// NullUser returns false.
+        /// </summary>
+        /// <value><c>true</c> if confirm prompt should be shown; <c>false</c> if not.</value>
+        public bool ConfirmPrompt
         {
             get { return false; }
         }
 
-        protected virtual void DisplayMessage(string message, params object[] args)
-        {
-        }
-
+        /// <summary>
+        /// NullUser returns true.
+        /// </summary>
         public bool RaiseYesNoDialog(string question)
         {
             return true;
         }
 
+        /// <summary>
+        /// NullUser returns 0.
+        /// </summary>
         public int RaiseSelectionDialog(string message, params object[] args)
         {
             return 0;

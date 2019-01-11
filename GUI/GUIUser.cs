@@ -16,6 +16,17 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Indicates if a confirmation prompt should be shown for this type of User.
+        /// E.g. don't ask for confirmation prior to installing mods in the GUI,
+        /// because it's already done in a different way.
+        /// </summary>
+        /// <value><c>true</c> if confirm prompt should be shown; <c>false</c> if not.</value>
+        public bool ConfirmPrompt
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Shows a small form with the question.
         /// User can select yes or no (ya dont say).
         /// </summary>

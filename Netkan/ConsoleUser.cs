@@ -27,6 +27,15 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="T:CKAN.CmdLine.ConsoleUser"/>
+        /// should show confirmation prompts. Depends on <see cref="T:CKAN.CmdLine.ConsoleUser.Headless"/>.
+        /// </summary>
+        public bool ConfirmPrompt
+        {
+            get { return !Headless; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="T:CKAN.CmdLine.ConsoleUser"/> is headless.
         /// </summary>
         /// <value><c>true</c> if headless; otherwise, <c>false</c>.</value>
