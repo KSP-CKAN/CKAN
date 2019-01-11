@@ -779,13 +779,13 @@ namespace CKAN
             }
 
             bool ok;
-            if (User.GetType().ToString() == "CKAN.GUIUser")
+            if (User.ConfirmPrompt)
             {
-                ok = true;
+                ok = User.RaiseYesNoDialog("\r\nContinue?");
             }
             else
             {
-                ok = User.RaiseYesNoDialog("\r\nContinue?");
+                ok = true;
             }
 
             if (!ok)

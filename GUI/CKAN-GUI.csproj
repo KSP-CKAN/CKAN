@@ -238,8 +238,12 @@
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TransparentTextBox.cs" />
-    <Compile Include="SelectionDialog.cs" />
-    <Compile Include="SelectionDialog.Designer.cs" />
+    <Compile Include="SelectionDialog.cs">
+        <Subtype>Form</Subtype>
+    </Compile>
+    <Compile Include="SelectionDialog.Designer.cs">
+        <DependentUpon>SelectionDialog.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutDialog.resx">
@@ -296,6 +300,9 @@
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SelectionDialog.resx">
+      <DependentUpon>SelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -304,7 +311,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="SelectionDialog.resx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
