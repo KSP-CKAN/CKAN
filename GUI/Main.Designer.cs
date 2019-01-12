@@ -612,6 +612,7 @@
             this.SizeCol.Name = "SizeCol";
             this.SizeCol.ReadOnly = true;
             this.SizeCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             // 
             // InstallDate
             //
@@ -627,6 +628,7 @@
             this.DownloadCount.Name = "DownloadCount";
             this.DownloadCount.ReadOnly = true;
             this.DownloadCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.DownloadCount.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             this.DownloadCount.Width = 70;
             //
             // Description

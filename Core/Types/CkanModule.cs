@@ -737,11 +737,11 @@ namespace CKAN
             if (bytes < K) {
                 return $"{bytes} B";
             } else if (bytes < K * K) {
-                return $"{bytes / K :N1} KB";
+                return $"{bytes / K :N1} KiB";
             } else if (bytes < K * K * K) {
-                return $"{bytes / K / K :N1} MB";
+                return $"{bytes / K / K :N1} MiB";
             } else {
-                return $"{bytes / K / K / K :N1} GB";
+                return $"{bytes / K / K / K :N1} GiB";
             }
         }
     }
