@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Derive User classes from IUser interface instead of NullUser (#2648 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Show all recommendations of metapackages in GUI (#2653 by: HebaruSan; reviewed: politas)
 - [GUI] Don't try to update filters if mod list missing (#2654 by: HebaruSan; reviewed: politas)
+- [GUI] Invoke control accesses in UpdateModsList (#2656 by: DasSkelett; reviewed: politas)
 
 ## v1.25.4 Kennedy
 

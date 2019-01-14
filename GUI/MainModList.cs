@@ -230,25 +230,32 @@ namespace CKAN
                 mainModList.full_list_of_mod_rows.Values.Select(row => row.Tag as GUIMod).ToList());
 
             AddLogMessage("Updating filters...");
-            //TODO Consider using smart enumeration pattern so stuff like this is easier
-            FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Compatible));
-            FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Installed));
-            FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
-            FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Cached));
-            FilterToolButton.DropDownItems[4].Text = String.Format("Newly compatible ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
-            FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
-            FilterToolButton.DropDownItems[6].Text = String.Format("Incompatible ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.Incompatible));
-            FilterToolButton.DropDownItems[7].Text = String.Format("All ({0})",
-                mainModList.CountModsByFilter(GUIModFilter.All));
+
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
-            UpdateAllToolButton.Enabled = has_any_updates;
+
+            //TODO Consider using smart enumeration pattern so stuff like this is easier
+            Util.Invoke(menuStrip2, () =>
+            {
+                FilterToolButton.DropDownItems[0].Text = String.Format("Compatible ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.Compatible));
+                FilterToolButton.DropDownItems[1].Text = String.Format("Installed ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.Installed));
+                FilterToolButton.DropDownItems[2].Text = String.Format("Upgradeable ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+                FilterToolButton.DropDownItems[3].Text = String.Format("Cached ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.Cached));
+                FilterToolButton.DropDownItems[4].Text = String.Format("Newly compatible ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
+                FilterToolButton.DropDownItems[5].Text = String.Format("Not installed ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
+                FilterToolButton.DropDownItems[6].Text = String.Format("Incompatible ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+                FilterToolButton.DropDownItems[7].Text = String.Format("All ({0})",
+                    mainModList.CountModsByFilter(GUIModFilter.All));
+
+                UpdateAllToolButton.Enabled = has_any_updates;
+            });
+                                    
             UpdateFilters(this);
 
             AddLogMessage("Updating tray...");

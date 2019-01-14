@@ -17,13 +17,10 @@ namespace CKAN
             {
                 tabController.ShowTab("WaitTabPage", 2);
 
-                CancelCurrentActionButton.Enabled = cancelable;
-
                 DialogProgressBar.Value = 0;
                 DialogProgressBar.Minimum = 0;
                 DialogProgressBar.Maximum = 100;
                 DialogProgressBar.Style = ProgressBarStyle.Marquee;
-                MessageTextBox.Text = "Please wait";
             });
             Util.Invoke(statusStrip1, () =>
             {
@@ -31,6 +28,8 @@ namespace CKAN
                 StatusProgress.Style = ProgressBarStyle.Marquee;
                 StatusProgress.Visible = true;
             });
+            Util.Invoke(CancelCurrentActionButton, () => CancelCurrentActionButton.Enabled = cancelable);
+            Util.Invoke(MessageTextBox, () => MessageTextBox.Text = "Please wait");
         }
 
         public void HideWaitDialog(bool success)
