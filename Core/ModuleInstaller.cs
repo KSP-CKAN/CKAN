@@ -147,7 +147,7 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// Propagates a CancelledActionKraken if the user cancelled the install.
         /// </summary>
-        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, IDownloader downloader = null)
+        public void InstallList(ICollection<CkanModule> modules, RelationshipResolverOptions options, IDownloader downloader = null, bool ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
             var resolver = new RelationshipResolver(modules, null, options, registry_manager.registry, ksp.VersionCriteria());
@@ -178,7 +178,7 @@ namespace CKAN
             }
 
             bool ok;
-            if (User.ConfirmPrompt)
+            if (ConfirmPrompt)
             {
                 ok = User.RaiseYesNoDialog("\r\nContinue?");
             }
@@ -752,7 +752,7 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(IEnumerable<string> mods)
+        public void UninstallList(IEnumerable<string> mods, bool ConfirmPrompt = true)
         {
             // Pre-check, have they even asked for things which are installed?
 
@@ -779,7 +779,7 @@ namespace CKAN
             }
 
             bool ok;
-            if (User.ConfirmPrompt)
+            if (ConfirmPrompt)
             {
                 ok = User.RaiseYesNoDialog("\r\nContinue?");
             }
