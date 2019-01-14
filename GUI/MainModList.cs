@@ -818,11 +818,11 @@ namespace CKAN
                         : mod.LatestVersion)
             };
 
-            var compat        = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility };
-            var size          = new DataGridViewTextBoxCell() { Value = mod.DownloadSize     };
-            var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate      };
-            var downloadCount = new DataGridViewTextBoxCell() { Value = mod.DownloadCount    };
-            var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract         };
+            var downloadCount = new DataGridViewTextBoxCell() { Value = String.Format("{0:N0}", mod.DownloadCount) };
+            var compat        = new DataGridViewTextBoxCell() { Value = mod.KSPCompatibility                       };
+            var size          = new DataGridViewTextBoxCell() { Value = mod.DownloadSize                           };
+            var installDate   = new DataGridViewTextBoxCell() { Value = mod.InstallDate                            };
+            var desc          = new DataGridViewTextBoxCell() { Value = mod.Abstract                               };
 
             item.Cells.AddRange(selecting, updating, name, author, installVersion, latestVersion, compat, size, installDate, downloadCount, desc);
 

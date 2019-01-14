@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't try to update filters if mod list missing (#2654 by: HebaruSan; reviewed: politas)
 - [GUI] Invoke control accesses in UpdateModsList (#2656 by: DasSkelett; reviewed: politas)
 - [GUI] Set focus to mod list after loading (#2657 by: HebaruSan; reviewed: politas)
+- [GUI] Small text/number formatting changes to mod list (#2658 by: DasSkelett; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
