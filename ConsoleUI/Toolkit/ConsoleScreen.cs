@@ -72,12 +72,18 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         protected ConsolePopupMenu mainMenu = null;
 
-        // IUser
+        #region IUser
 
         /// <summary>
         /// Tell IUser clients that we have the ability to interact with the user
         /// </summary>
         public bool Headless { get { return false; } }
+
+        /// <summary>
+        /// Show confirmation prompts.
+        /// Atm used to ask for confirmation prior to installing mods.
+        /// </summary>
+        public bool ConfirmPrompt { get { return true; } }
 
         // These functions can be implemented the same on all screens,
         // so they are not virtual.
@@ -207,7 +213,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="percent">Value from 0 to 100 representing task completion</param>
         protected virtual void Progress(string message, int percent) { }
 
-        // End IUser
+        #endregion IUser
 
         private void DrawSelectedHamburger()
         {

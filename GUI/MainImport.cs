@@ -31,10 +31,7 @@ namespace CKAN
             if (dlg.ShowDialog() == DialogResult.OK
                     && dlg.FileNames.Length > 0)
             {
-
-                // Set up GUI to respond to IUser calls...
-                GUIUser.DisplayYesNo old_YesNoDialog = currentUser.displayYesNo;
-                currentUser.displayYesNo = YesNoDialog;
+                // Show WaitTabPage (status page) and lock it.
                 tabController.RenameTab("WaitTabPage", "Status log");
                 tabController.ShowTab("WaitTabPage");
                 tabController.SetTabLock(true);
@@ -50,7 +47,6 @@ namespace CKAN
                 finally
                 {
                     // Put GUI back the way we found it
-                    currentUser.displayYesNo = old_YesNoDialog;
                     tabController.SetTabLock(false);
                     tabController.HideTab("WaitTabPage");
                 }

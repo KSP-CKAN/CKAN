@@ -23,6 +23,7 @@ namespace Tests.Core
         private CKAN.ModuleInstaller _installer;
         private CkanModule           _testModule;
         private string               _gameDataDir;
+        private IUser                _nullUser;
 
         /// <summary>
         /// Prep environment by setting up a single mod in
@@ -33,10 +34,12 @@ namespace Tests.Core
         {
             _testModule = TestData.DogeCoinFlag_101_module();
 
-            _manager   = new KSPManager(NullUser.User);
+            _nullUser  = new NullUser();
+
+            _manager   = new KSPManager(_nullUser);
             _instance  = new DisposableKSP();
             _registry  = CKAN.RegistryManager.Instance(_instance.KSP).registry;
-            _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, NullUser.User);
+            _installer = CKAN.ModuleInstaller.GetInstance(_instance.KSP, _manager.Cache, _nullUser);
 
             _gameDataDir = _instance.KSP.GameData();
             _registry.AddAvailable(_testModule);

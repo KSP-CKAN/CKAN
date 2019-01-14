@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Handle plus without shift in ConsoleUI (#2634 by: HebaruSan; reviewed: politas)
 - [Multiple] `ckan ksp fake/clone` fixes (#2642 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Handle semi-virtual dependencies in Relationships tab (#2645 by: HebaruSan; reviewed: politas)
+- [Multiple] Derive User classes from IUser interface instead of NullUser (#2648 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.25.4 Kennedy
 

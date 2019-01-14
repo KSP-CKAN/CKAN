@@ -238,6 +238,12 @@
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TransparentTextBox.cs" />
+    <Compile Include="SelectionDialog.cs">
+        <Subtype>Form</Subtype>
+    </Compile>
+    <Compile Include="SelectionDialog.Designer.cs">
+        <DependentUpon>SelectionDialog.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutDialog.resx">
@@ -293,6 +299,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="YesNoDialog.resx">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectionDialog.resx">
+      <DependentUpon>SelectionDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

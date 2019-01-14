@@ -12,13 +12,15 @@ namespace Tests.Core
     {
         private CKAN.KSP ksp;
         private string ksp_dir;
+        private IUser nullUser;
 
         [SetUp]
         public void Setup()
         {
             ksp_dir = TestData.NewTempDir();
+            nullUser = new NullUser();
             TestData.CopyDirectory(TestData.good_ksp_dir(), ksp_dir);
-            ksp = new CKAN.KSP(ksp_dir, "test", NullUser.User);
+            ksp = new CKAN.KSP(ksp_dir, "test", nullUser);
         }
 
         [TearDown]
@@ -138,7 +140,7 @@ namespace Tests.Core
             File.WriteAllText(jsonpath, compatible_ksp_versions_json);
 
             // Act
-            CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "missing-ver-test", NullUser.User);
+            CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "missing-ver-test", nullUser);
 
             // Assert
             Assert.IsFalse(my_ksp.Valid);
@@ -170,7 +172,7 @@ namespace Tests.Core
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "null-compat-ver-test", NullUser.User);
+                CKAN.KSP my_ksp = new CKAN.KSP(gamedir, "null-compat-ver-test", nullUser);
             });
         }
 

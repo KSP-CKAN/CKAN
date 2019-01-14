@@ -11,6 +11,7 @@ namespace CKAN
         private SettingsDialog settingsDialog;
         private PluginsDialog pluginsDialog;
         private YesNoDialog yesNoDialog;
+        private SelectionDialog selectionDialog;
 
         public void RecreateDialogs()
         {
@@ -18,6 +19,7 @@ namespace CKAN
             settingsDialog = controlFactory.CreateControl<SettingsDialog>();
             pluginsDialog = controlFactory.CreateControl<PluginsDialog>();
             yesNoDialog = controlFactory.CreateControl<YesNoDialog>();
+            selectionDialog = controlFactory.CreateControl<SelectionDialog>();
         }
 
         public void AddStatusMessage(string text, params object[] args)
@@ -38,6 +40,11 @@ namespace CKAN
         public bool YesNoDialog(string text)
         {
             return yesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
+        }
+
+        public int SelectionDialog(string message, params object[] args)
+        {
+            return selectionDialog.ShowSelectionDialog(message, args);
         }
 
         // Ugly Hack. Possible fix is to alter the relationship provider so we can use a loop

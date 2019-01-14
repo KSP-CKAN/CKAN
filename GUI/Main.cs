@@ -170,10 +170,6 @@ namespace CKAN
             log.Info("Starting the GUI");
             commandLineArgs = cmdlineArgs;
 
-            // These are used by KSPManager's constructor to show messages about directory creation
-            user.displayMessage = AddStatusMessage;
-            user.displayError   = ErrorDialog;
-
             manager = mgr ?? new KSPManager(user);
             currentUser = user;
 
@@ -389,10 +385,7 @@ namespace CKAN
             installWorker.RunWorkerCompleted += PostInstallMods;
             installWorker.DoWork += InstallMods;
 
-            var old_YesNoDialog = currentUser.displayYesNo;
-            currentUser.displayYesNo = YesNoDialog;
             URLHandlers.RegisterURLHandler(configuration, currentUser);
-            currentUser.displayYesNo = old_YesNoDialog;
 
             ApplyToolButton.Enabled = false;
 
