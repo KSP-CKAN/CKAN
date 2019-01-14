@@ -38,6 +38,8 @@ All notable changes to this project will be documented in this file.
 - [Multiple] `ckan ksp fake/clone` fixes (#2642 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Handle semi-virtual dependencies in Relationships tab (#2645 by: HebaruSan; reviewed: politas)
 - [Multiple] Derive User classes from IUser interface instead of NullUser (#2648 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Show all recommendations of metapackages in GUI (#2653 by: HebaruSan; reviewed: politas)
+- [GUI] Don't try to update filters if mod list missing (#2654 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
