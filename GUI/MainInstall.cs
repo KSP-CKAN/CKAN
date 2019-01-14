@@ -162,7 +162,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.UninstallList(toUninstall);
+                            installer.UninstallList(toUninstall, false);
                             processSuccessful = true;
                         }
                     }
@@ -180,7 +180,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.InstallList(toInstall, opts.Value, downloader);
+                            installer.InstallList(toInstall, opts.Value, downloader, false);
                             processSuccessful = true;
                         }
                     }

@@ -31,15 +31,6 @@ namespace CKAN.CmdLine
         public bool Headless { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:CKAN.CmdLine.ConsoleUser"/>
-        /// should show confirmation prompts. Depends on <see cref="T:CKAN.CmdLine.ConsoleUser.Headless"/>.
-        /// </summary>
-        public bool ConfirmPrompt
-        {
-            get { return !Headless; }
-        }
-
-        /// <summary>
         /// Ask the user for a yes or no input.
         /// </summary>
         /// <param name="question">Question.</param>

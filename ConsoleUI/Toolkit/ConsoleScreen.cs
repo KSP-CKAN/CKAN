@@ -79,12 +79,6 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public bool Headless { get { return false; } }
 
-        /// <summary>
-        /// Show confirmation prompts.
-        /// Atm used to ask for confirmation prior to installing mods.
-        /// </summary>
-        public bool ConfirmPrompt { get { return true; } }
-
         // These functions can be implemented the same on all screens,
         // so they are not virtual.
 
