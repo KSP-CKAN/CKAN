@@ -93,6 +93,7 @@ namespace Tests.GUI
         public void Down()
         {
             _instance.Dispose();
+            _manager.Dispose();
         }
 
         [Test]

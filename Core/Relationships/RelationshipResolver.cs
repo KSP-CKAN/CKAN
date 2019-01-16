@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CKAN.Versioning;
 using log4net;
+using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -350,71 +351,74 @@ namespace CKAN
 
             foreach (RelationshipDescriptor descriptor in stanza)
             {
-                string dep_name = descriptor.name;
-                log.DebugFormat("Considering {0}", dep_name);
+                log.DebugFormat("Considering {0}", descriptor.ToString());
 
                 // If we already have this dependency covered, skip.
-                // If it's already installed, skip.
-
-                if (modlist.ContainsKey(dep_name))
+                if (descriptor.MatchesAny(modlist.Values, null, null))
                 {
-                    var module = modlist[dep_name];
-                    if (descriptor.WithinBounds(module.version))
-                        continue;
-                    //TODO Ideally we could check here if it can be replaced by the version we want.
+                    continue;
+                }
+                else if (descriptor.ContainsAny(modlist.Keys))
+                {
+                    CkanModule module = modlist.Values
+                        .Where(m => descriptor.ContainsAny(new string[] { m.identifier }))
+                        .FirstOrDefault();
                     if (options.proceed_with_inconsistencies)
                     {
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
                         conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
                         continue;
                     }
-                    throw new InconsistentKraken(
-                        string.Format(
-                            "{0} requires a version {1}. However an incompatible version, {2}, is in the resolver",
-                            dep_name, descriptor.RequiredVersion, module.version));
+                    else
+                    {
+                        throw new InconsistentKraken(
+                            $"{descriptor} required, but an incompatible version is in the resolver"
+                        );
+                    }
                 }
 
-                if (registry.IsInstalled(dep_name))
+                // If it's already installed, skip.
+                if (descriptor.MatchesAny(
+                    registry.InstalledModules.Select(im => im.Module),
+                    registry.InstalledDlls.ToHashSet(),
+                    registry.InstalledDlc))
                 {
-                    var installedVersion = registry.InstalledVersion(dep_name);
-
-                    if (descriptor.WithinBounds(installedVersion))
-                        continue;
-
-                    //TODO Ideally we could check here if it can be replaced by the version we want.
+                    continue;
+                }
+                else if (descriptor.ContainsAny(registry.InstalledModules.Select(im => im.Module.identifier)))
+                {
+                    CkanModule module = registry.InstalledModules
+                        .Select(im => im.Module)
+                        .Where(m => descriptor.ContainsAny(new string[] { m.identifier }))
+                        .FirstOrDefault();
                     if (options.proceed_with_inconsistencies)
                     {
-                        // If the installed version is an UnmanagedModuleVersion (DLL or DLC) we can't do this since
-                        // they don't have real Modules.
-                        if (!(installedVersion is UnmanagedModuleVersion))
-                        {
-                            var module = registry.InstalledModule(dep_name).Module;
-                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
-                            conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
-                        }
-
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(module, reason.Parent));
+                        conflicts.Add(new KeyValuePair<CkanModule, CkanModule>(reason.Parent, module));
                         continue;
                     }
-
-                    throw new InconsistentKraken(
-                        $"{dep_name} version {descriptor.RequiredVersion} is required. " +
-                        $"However an incompatible version, {installedVersion}, " +
-                        "is already installed."
-                    );
+                    else
+                    {
+                        throw new InconsistentKraken(
+                            $"{descriptor} required, but an incompatible version is installed"
+                        );
+                    }
                 }
 
                 var descriptor1 = descriptor;
-                List<CkanModule> candidates = registry.LatestAvailableWithProvides(dep_name, kspversion, descriptor)
-                    .Where(mod=>descriptor1.WithinBounds(mod.version) && MightBeInstallable(mod)).ToList();
+                List<CkanModule> candidates = descriptor
+                    .LatestAvailableWithProvides(registry, kspversion)
+                    .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
+                    .ToList();
 
                 if (candidates.Count == 0)
                 {
                     if (!soft_resolve)
                     {
-                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", dep_name);
-                        throw new DependencyNotSatisfiedKraken(reason.Parent, dep_name);
+                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your version of KSP.", descriptor.ToString());
+                        throw new DependencyNotSatisfiedKraken(reason.Parent, descriptor.ToString());
                     }
-                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your version of KSP.", dep_name);
+                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your version of KSP.", descriptor.ToString());
                     continue;
                 }
                 if (candidates.Count > 1)
@@ -431,18 +435,20 @@ namespace CKAN
                     // we need, then select that.
                     if (old_stanza != null)
                     {
-                        List<CkanModule> provide = candidates.Where(can => old_stanza.Where(relation => can.identifier == relation.name).Any()).ToList();
+                        List<CkanModule> provide = candidates
+                            .Where(cand => old_stanza.Any(rel => rel.WithinBounds(cand)))
+                            .ToList();
                         if (!provide.Any() || provide.Count() > 1)
                         {
                             //We still have either nothing, or too many to pick from
                             //Just throw the TMP now
-                            throw new TooManyModsProvideKraken(dep_name, candidates);
+                            throw new TooManyModsProvideKraken(descriptor.ToString(), candidates);
                         }
                         candidates[0] = provide.First();
                     }
                     else
                     {
-                        throw new TooManyModsProvideKraken(dep_name, candidates);
+                        throw new TooManyModsProvideKraken(descriptor.ToString(), candidates);
                     }
                 }
 
@@ -545,7 +551,7 @@ namespace CKAN
             // in case a dependent depends on it
             compatible.Add(module.identifier);
 
-            var needed = module.depends.Select(depend => registry.LatestAvailableWithProvides(depend.name, kspversion));
+            var needed = module.depends.Select(depend => depend.LatestAvailableWithProvides(registry, kspversion));
             //We need every dependency to have at least one possible module
             var installable = needed.All(need => need.Any(mod => MightBeInstallable(mod, compatible)));
             compatible.Remove(module.identifier);

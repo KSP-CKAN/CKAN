@@ -29,6 +29,8 @@ namespace Tests.GUI
                 registry.AddAvailable(ckan_mod);
                 var mod = new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria());
                 Assert.False(mod.IsUpgradeChecked);
+
+                manager.Dispose();
             }
         }
 

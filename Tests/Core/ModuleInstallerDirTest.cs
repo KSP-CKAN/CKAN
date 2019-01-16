@@ -51,6 +51,12 @@ namespace Tests.Core
             );
         }
 
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            _manager.Dispose();
+        }
+
         /// <summary>
         /// Make sure that the GameData directory is not included.
         /// </summary>

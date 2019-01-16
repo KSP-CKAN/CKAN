@@ -77,7 +77,7 @@ namespace CKAN.ConsoleUI {
                                     string conflictsWith = filter.Substring(2);
                                     // Search for mods depending on a given mod
                                     foreach (var rel in m.conflicts) {
-                                        if (rel.name.IndexOf(conflictsWith, StringComparison.CurrentCultureIgnoreCase) == 0) {
+                                        if (rel.StartsWith(conflictsWith)) {
                                             return true;
                                         }
                                     }
@@ -88,7 +88,7 @@ namespace CKAN.ConsoleUI {
                                     string dependsOn = filter.Substring(2);
                                     // Search for mods depending on a given mod
                                     foreach (var rel in m.depends) {
-                                        if (rel.name.IndexOf(dependsOn, StringComparison.CurrentCultureIgnoreCase) == 0) {
+                                        if (rel.StartsWith(dependsOn)) {
                                             return true;
                                         }
                                     }

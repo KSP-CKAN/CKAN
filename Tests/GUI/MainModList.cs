@@ -61,7 +61,7 @@ namespace Tests.GUI
             {
                 var registry = Registry.Empty();
                 var module = TestData.FireSpitterModule();
-                module.conflicts = new List<RelationshipDescriptor> { new RelationshipDescriptor { name = "kOS" } };
+                module.conflicts = new List<RelationshipDescriptor> { new ModuleRelationshipDescriptor { name = "kOS" } };
                 registry.AddAvailable(module);
                 registry.AddAvailable(TestData.kOS_014_module());
                 registry.RegisterModule(module, Enumerable.Empty<string>(), tidy.KSP);
@@ -97,6 +97,8 @@ namespace Tests.GUI
                 registry.AddAvailable(ckan_mod);
                 var item = new MainModList(delegate { }, null);
                 Assert.That(item.IsVisible(new GUIMod(ckan_mod, registry, manager.CurrentInstance.VersionCriteria())));
+
+                manager.Dispose();
             }
         }
 
@@ -133,6 +135,8 @@ namespace Tests.GUI
                     new GUIMod(TestData.kOS_014_module(), registry, manager.CurrentInstance.VersionCriteria())
                 });
                 Assert.That(mod_list, Has.Count.EqualTo(2));
+
+                manager.Dispose();
             }
         }
 
@@ -149,7 +153,7 @@ namespace Tests.GUI
                 var ksp_version = tidy.KSP.Version();
                 var mod = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
                 {
-                    new RelationshipDescriptor {name = provide_ident}
+                    new ModuleRelationshipDescriptor {name = provide_ident}
                 },ksp_version:ksp_version);
                 var moda = generator.GeneratorRandomModule(provides: new List<string> { provide_ident }
                 , ksp_version: ksp_version);
@@ -173,6 +177,7 @@ namespace Tests.GUI
                         new ModChange(new GUIMod(modb,registry,new KspVersionCriteria(ksp_version)),GUIModChangeType.Install, null)
                     }, mod_list);
 
+                manager.Dispose();
             }
         }
 

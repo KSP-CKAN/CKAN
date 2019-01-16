@@ -535,14 +535,14 @@ namespace CKAN
                     try
                     {
                         if (!dependency.MatchesAny(null, InstalledDlls.ToHashSet(), InstalledDlc)
-                            && !LatestAvailableWithProvides(dependency.name, ksp_version).Any())
+                            && !dependency.LatestAvailableWithProvides(this, ksp_version).Any())
                         {
                             return false;
                         }
                     }
                     catch (KeyNotFoundException e)
                     {
-                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.ToString());
                         throw e;
                     }
                     catch (ModuleNotFoundKraken)

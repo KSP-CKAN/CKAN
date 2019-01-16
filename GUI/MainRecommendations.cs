@@ -69,10 +69,9 @@ namespace CKAN
                 return;
             foreach (RelationshipDescriptor rel in relations)
             {
-                List<CkanModule> providers = registry.LatestAvailableWithProvides(
-                    rel.name,
-                    CurrentInstance.VersionCriteria(),
-                    rel
+                List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                    registry,
+                    CurrentInstance.VersionCriteria()
                 );
                 foreach (CkanModule provider in providers)
                 {

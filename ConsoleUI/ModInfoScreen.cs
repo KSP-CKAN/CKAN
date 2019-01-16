@@ -261,8 +261,8 @@ namespace CKAN.ConsoleUI {
                     foreach (RelationshipDescriptor rd in mod.depends) {
                         tb.AddLine(ScreenObject.FormatExactWidth(
                             // Show install status
-                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.name))
-                                + rd.name,
+                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
+                                + rd.ToString(),
                             nameW
                         ));
                     }
@@ -286,8 +286,8 @@ namespace CKAN.ConsoleUI {
                     foreach (RelationshipDescriptor rd in mod.conflicts) {
                         tb.AddLine(ScreenObject.FormatExactWidth(
                             // Show install status
-                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.name))
-                            + rd.name,
+                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
+                            + rd.ToString(),
                             nameW
                         ));
                     }

@@ -453,6 +453,24 @@ to treat them as if they were absent. (**v1.8**) Clients implementing the
 `v1.8` spec and above *must* respect the optional version fields if
 present.
 
+(**v1.26**) Clients implementing version `v1.26` or later of the spec *must* support
+an alternate form of relationship consisting of an `any-of` key with a
+value containing an array of relationships. This relationship is considered
+satisfied if **any** of the specified modules are installed. It is intended for
+situations in which a module supports multiple ways of providing functionality,
+which are not in themselves mutually compatible enough to use the `"provides"` property.
+
+    "depends": [
+        {
+            "any-of": [
+                { "name": "TextureReplacer"          },
+                { "name": "TextureReplacerReplaced"  },
+                { "name": "SigmaReplacements-Skybox" },
+                { "name": "DiRT"                     }
+            ]
+        }
+    ]
+
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.

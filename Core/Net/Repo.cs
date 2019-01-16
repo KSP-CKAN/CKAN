@@ -301,61 +301,17 @@ Do you wish to reinstall now?", sb)))
                 return false;
 
             // Sort the lists so we can compare each relationship
-            var aSorted = a.OrderBy(i => i.name).ToList();
-            var bSorted = b.OrderBy(i => i.name).ToList();
+            var aSorted = a.OrderBy(i => i.ToString()).ToList();
+            var bSorted = b.OrderBy(i => i.ToString()).ToList();
 
             for (var i = 0; i < a.Count; i++)
             {
                 var aRel = aSorted[i];
                 var bRel = bSorted[i];
 
-                if (aRel.name != bRel.name)
+                if (!aRel.Same(bRel))
                 {
-                    // If corresponding relationships are the same they must not be equivalent
                     return false;
-                }
-
-                // Calculate min/max for each based on explicit min/max or the bare version
-                var aMinVersion = aRel.min_version ?? aRel.version;
-                var aMaxVersion = aRel.max_version ?? aRel.version;
-                var bMinVersion = bRel.min_version ?? bRel.version;
-                var bMaxVersion = bRel.max_version ?? bRel.version;
-
-                if (!ReferenceEquals(aMinVersion, bMinVersion))
-                {
-                    // If they're not the same object they may not be equivalent
-
-                    if (aMinVersion != null && bMinVersion != null)
-                    {
-                        if (aMinVersion.CompareTo(bMinVersion) != 0)
-                        {
-                            // If they're not equal then they must not be equivalent
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // If one or the other is null they must not be equivalent
-                        return false;
-                    }
-                }
-
-                if (!ReferenceEquals(aMaxVersion, bMaxVersion))
-                {
-                    // If they're not the same object they may not be equivalent
-                    if (aMaxVersion != null && bMaxVersion != null)
-                    {
-                        if (aMaxVersion.CompareTo(bMaxVersion) != 0)
-                        {
-                            // If they're not equal then they must not be equivalent
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // If one or the other is null they must not be equivalent
-                        return false;
-                    }
                 }
             }
 
