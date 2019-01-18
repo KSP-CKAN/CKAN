@@ -540,6 +540,10 @@ namespace CKAN.Versioning
                     // Lucky, there's only one possible version. Happens f.e. if there's only one build per patch (especially the case for newer versions).
                     return possibleVersions.ElementAt(0);
                 }
+                else if (user.Headless)
+                {
+                    return possibleVersions.LastOrDefault();
+                }
                 else
                 {
                     int choosen = user.RaiseSelectionDialog(message, possibleVersions.ToArray());
