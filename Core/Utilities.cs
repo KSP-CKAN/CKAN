@@ -47,6 +47,11 @@ namespace CKAN
             FileInfo[] files = sourceDir.GetFiles();
             foreach (FileInfo file in files)
             {
+                if (file.Name == "registry.locked")
+                {
+                    continue;
+                }
+
                 string temppath = Path.Combine(destDirPath, file.Name);
                 file.CopyTo(temppath, false);
             }

@@ -235,7 +235,7 @@ namespace CKAN
                 File.WriteAllText(Path.Combine(new_path, "readme.txt"), String.Format("Version {0}", new KspVersion(version.Major, version.Minor, version.Patch).ToString()));
 
                 // If a installed DLC should be simulated, we create the needed folder structure and the readme.txt
-                if (dlcVersion != null && version.CompareTo(new KspVersion(1, 4, 0)) >= 0)
+                if (!String.IsNullOrEmpty(dlcVersion) && version.CompareTo(new KspVersion(1, 4, 0)) >= 0)
                 {
                     Directory.CreateDirectory(Path.Combine(new_path, "GameData", "SquadExpansion", "MakingHistory"));
                     File.WriteAllText(
