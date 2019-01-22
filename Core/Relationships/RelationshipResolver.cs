@@ -407,7 +407,7 @@ namespace CKAN
 
                 var descriptor1 = descriptor;
                 List<CkanModule> candidates = descriptor
-                    .LatestAvailableWithProvides(registry, kspversion)
+                    .LatestAvailableWithProvides(registry, kspversion, modlist.Values)
                     .Where(mod => descriptor1.WithinBounds(mod) && MightBeInstallable(mod))
                     .ToList();
 

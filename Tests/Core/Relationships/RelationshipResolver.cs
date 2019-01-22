@@ -724,6 +724,89 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
+        public void Constructor_ReverseDependencyDoesntMatchLatest_ChoosesOlderVersion()
+        {
+            // Arrange
+            CkanModule depender = CkanModule.FromJson(@"{
+                ""identifier"": ""depender"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ { ""name"": ""dependency"" } ]
+            }");
+
+            CkanModule olderDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":        ""depender"",
+                    ""min_version"": ""1.0""
+                } ]
+            }");
+
+            CkanModule newerDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""2.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":        ""depender"",
+                    ""min_version"": ""2.0""
+                } ]
+            }");
+
+            AddToRegistry(olderDependency, newerDependency, depender);
+
+            // Act
+            RelationshipResolver rr = new RelationshipResolver(
+                new CkanModule[] { depender }, null,
+                options, registry, null
+            );
+
+            // Assert
+            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
+        }
+
+        [Test]
+        public void Constructor_ReverseDependencyConflictsLatest_ChoosesOlderVersion()
+        {
+            // Arrange
+            CkanModule depender = CkanModule.FromJson(@"{
+                ""identifier"": ""depender"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ { ""name"": ""dependency"" } ]
+            }");
+
+            CkanModule olderDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
+            }");
+
+            CkanModule newerDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""2.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""conflicts"": [ {
+                    ""name"": ""depender""
+                } ]
+            }");
+
+            AddToRegistry(olderDependency, newerDependency, depender);
+
+            // Act
+            RelationshipResolver rr = new RelationshipResolver(
+                new CkanModule[] { depender }, null,
+                options, registry, null
+            );
+
+            // Assert
+            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
+        }
+
+        [Test]
         public void ReasonFor_WithModsNotInList_ThrowsArgumentException()
         {
             var list = new List<string>();
