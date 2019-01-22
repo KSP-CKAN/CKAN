@@ -18,5 +18,14 @@ namespace CKAN.NetKAN.Sources.Github
 
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
+
+        [JsonProperty("license")]
+        public GithubLicense License { get; set; }
+    }
+
+    public class GithubLicense
+    {
+        [JsonProperty("spdx_id")]
+        public string Id;
     }
 }

@@ -648,6 +648,7 @@ For example: `#/ckan/github/pjf/DogeCoinFlag`.
 When used, the following fields will be auto-filled if not already present:
 
 - `name`
+- `license`
 - `abstract`
 - `author`
 - `version`
