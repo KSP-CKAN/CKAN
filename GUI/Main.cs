@@ -978,13 +978,6 @@ namespace CKAN
             }
         }
 
-        private void cloneFakeKSPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CloneKspDialog dialog = new CloneKspDialog(Instance.manager);
-            dialog.ShowDialog();
-
-        }
-
         public void ResetFilterAndSelectModOnList(string key)
         {
             FilterByNameTextBox.Text = string.Empty;

@@ -96,11 +96,11 @@
     <Compile Include="ChooseKSPInstance.Designer.cs">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </Compile>
-    <Compile Include="CloneKspDialog.cs">
+    <Compile Include="CloneFakeKspDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CloneKspDialog.Designer.cs">
-      <DependentUpon>CloneKspDialog.cs</DependentUpon>
+    <Compile Include="CloneFakeKspDialog.Designer.cs">
+      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="CompatibleKspVersionsDialog.cs">
       <SubType>Form</SubType>
@@ -264,8 +264,8 @@
     <EmbeddedResource Include="ChooseKSPInstance.resx">
       <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CloneKspDialog.resx">
-      <DependentUpon>CloneKspDialog.cs</DependentUpon>
+    <EmbeddedResource Include="CloneFakeKspDialog.resx">
+      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
       <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>

@@ -1,6 +1,6 @@
 ﻿namespace CKAN
 {
-    partial class CloneKspDialog
+    partial class CloneFakeKspDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -133,7 +133,7 @@
             this.buttonOK.Location = new System.Drawing.Point(337, 252);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 5;
+            this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -188,7 +188,7 @@
             this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 256);
             this.checkBoxSwitchInstance.Name = "checkBoxSwitchInstance";
             this.checkBoxSwitchInstance.Size = new System.Drawing.Size(136, 17);
-            this.checkBoxSwitchInstance.TabIndex = 10;
+            this.checkBoxSwitchInstance.TabIndex = 5;
             this.checkBoxSwitchInstance.Text = "Switch to new instance";
             this.checkBoxSwitchInstance.UseVisualStyleBackColor = true;
             // 
@@ -229,7 +229,7 @@
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);
             // 
-            // CloneKspDialog
+            // CloneFakeKspDialog
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Dialog;
             this.AllowDrop = true;
@@ -249,7 +249,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "CloneKspDialog";
+            this.Name = "CloneFakeKspDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Clone KSP instance";

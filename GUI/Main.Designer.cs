@@ -34,7 +34,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectKSPInstallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openKspDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cloneFakeKSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -176,7 +175,6 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectKSPInstallMenuItem,
             this.openKspDirectoryToolStripMenuItem,
-            this.cloneFakeKSPToolStripMenuItem,
             this.toolStripSeparator1,
             this.installFromckanToolStripMenuItem,
             this.importDownloadsToolStripMenuItem,
@@ -203,13 +201,6 @@
             this.openKspDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.openKspDirectoryToolStripMenuItem.Text = "Open KSP Directory";
             this.openKspDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openKspDirectoryToolStripMenuItem_Click);
-            // 
-            // cloneFakeKSPToolStripMenuItem
-            // 
-            this.cloneFakeKSPToolStripMenuItem.Name = "cloneFakeKSPToolStripMenuItem";
-            this.cloneFakeKSPToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.cloneFakeKSPToolStripMenuItem.Text = "Clone a KSP instance";
-            this.cloneFakeKSPToolStripMenuItem.Click += new System.EventHandler(this.cloneFakeKSPToolStripMenuItem_Click);
             //
             // toolStripSeparator1
             // 
@@ -1303,7 +1294,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectKSPInstallMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openKspDirectoryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cloneFakeKSPToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;

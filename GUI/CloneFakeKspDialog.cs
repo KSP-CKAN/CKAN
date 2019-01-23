@@ -11,14 +11,17 @@ namespace CKAN
     /// The GUI implementation of clone and fake.
     /// It's a seperate window, handling the whole process.
     /// </summary>
-    public partial class CloneKspDialog : Form
+    public partial class CloneFakeKspDialog : Form
     {
         private GUIUser user = new GUIUser();
         private KSPManager manager;
 
-        public CloneKspDialog(KSPManager manager)
+        private ChooseKSPInstance chooseKSPInstanceForm;
+
+        public CloneFakeKspDialog(KSPManager manager, ChooseKSPInstance chooseKSPInstanceForm)
         {
             this.manager = manager;
+            this.chooseKSPInstanceForm = chooseKSPInstanceForm;
 
             InitializeComponent();
 
@@ -149,7 +152,8 @@ namespace CKAN
                 try
                 {
                     Task.Run(() => {
-                        user.RaiseProgress("Cloning instance...", 0);
+                        user.RaiseMessage("Cloning instance...");
+
                         manager.CloneInstance(selectedInstance, newName, newPath);
 
                         if (checkBoxSetAsDefault.Checked)
@@ -157,7 +161,15 @@ namespace CKAN
                             manager.SetAutoStart(newName);
                         }
 
-                        user.RaiseProgress("Successfully cloned instance.", 100);
+                        if (checkBoxSwitchInstance.Checked)
+                        {
+                            manager.SetCurrentInstance(newName);
+                        }
+
+                        // Update the list in the ChooseKSPInstanceForm.
+                        Util.Invoke(chooseKSPInstanceForm, chooseKSPInstanceForm.UpdateInstancesList);
+
+                        user.RaiseMessage("Successfully cloned instance.");
                     });
                 }
                 catch (NotKSPDirKraken)
@@ -181,8 +193,10 @@ namespace CKAN
 
                 try
                 {
-                    Task.Run(() => {
-                        user.RaiseProgress("Creating new instance...", 0);
+                    Task.Run(() =>
+                    {
+                        user.RaiseMessage("Creating new instance...");
+
                         manager.FakeInstance(newName, newPath, kspVersion, dlcVersion);
 
                         if (checkBoxSetAsDefault.Checked)
@@ -190,7 +204,15 @@ namespace CKAN
                             manager.SetAutoStart(newName);
                         }
 
-                        user.RaiseProgress("Successfully created instance.", 100);
+                        if (checkBoxSwitchInstance.Checked)
+                        {
+                            manager.SetCurrentInstance(newName);
+                        }
+
+                        // Update the list in the ChooseKSPInstanceForm.
+                        Util.Invoke(chooseKSPInstanceForm, chooseKSPInstanceForm.UpdateInstancesList);
+
+                        user.RaiseMessage("Successfully created instance.");
                     });
                 }
                 catch (BadInstallLocationKraken)
@@ -205,15 +227,10 @@ namespace CKAN
                 }
             }
 
-            if (checkBoxSwitchInstance.Checked)
-            {
-                manager.SetCurrentInstance(newName);
-            }
-
             DialogResult = DialogResult.OK;
             this.Close();
         }
-
+            
         private void buttonPathBrowser_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialogNewPath.ShowDialog().Equals(DialogResult.OK))

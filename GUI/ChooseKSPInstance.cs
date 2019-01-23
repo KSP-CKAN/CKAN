@@ -43,8 +43,8 @@ namespace CKAN
             UpdateInstancesList();
             UpdateButtonState();
         }
-
-        private void UpdateInstancesList()
+        
+        public void UpdateInstancesList()
         {
             KSPInstancesListView.Items.Clear();
             UpdateButtonState();
@@ -70,7 +70,7 @@ namespace CKAN
             }
         }
 
-        private void AddNewButton_Click(object sender, EventArgs e)
+        private void AddToCKANMenuItem_Click(object sender, EventArgs e)
         {
             if (_instanceDialog.ShowDialog() != DialogResult.OK
                     || !File.Exists(_instanceDialog.FileName))
@@ -91,6 +91,12 @@ namespace CKAN
                     new object[] { k.path });
                 return;
             }
+        }
+
+        private void CloneFakeInstanceMenuItem_Click(object sender, EventArgs e)
+        {
+            CloneFakeKspDialog dialog = new CloneFakeKspDialog(_manager, this);
+            dialog.ShowDialog();
         }
 
         private void SelectButton_Click(object sender, EventArgs e)
