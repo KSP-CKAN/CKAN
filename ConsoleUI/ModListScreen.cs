@@ -185,10 +185,13 @@ namespace CKAN.ConsoleUI {
 
             moduleList.AddTip("-", "Remove",
                 () => moduleList.Selection != null
-                    && (registry.IsInstalled(moduleList.Selection.identifier, false))
+                    && registry.IsInstalled(moduleList.Selection.identifier, false)
+                    && !registry.IsAutodetected(moduleList.Selection.identifier)
             );
             moduleList.AddBinding(Keys.Minus, (object sender) => {
-                if (moduleList.Selection != null && registry.IsInstalled(moduleList.Selection.identifier, false)) {
+                if (moduleList.Selection != null
+                    && registry.IsInstalled(moduleList.Selection.identifier, false)
+                    && !registry.IsAutodetected(moduleList.Selection.identifier)) {
                     plan.ToggleRemove(moduleList.Selection);
                 }
                 return true;
@@ -547,6 +550,7 @@ namespace CKAN.ConsoleUI {
                 case InstallStatus.Installed:    return installed;
                 case InstallStatus.Installing:   return installing;
                 case InstallStatus.NotInstalled: return notinstalled;
+                case InstallStatus.AutoDetected: return autodetected;
                 default:                         return "";
             }
         }
@@ -581,6 +585,7 @@ namespace CKAN.ConsoleUI {
         private static readonly string upgradable   = Symbols.greaterEquals;
         private static readonly string upgrading    = "^";
         private static readonly string removing     = "-";
+        private static readonly string autodetected = Symbols.infinity;
     }
 
     /// <summary>
@@ -659,7 +664,9 @@ namespace CKAN.ConsoleUI {
         public InstallStatus GetModStatus(KSPManager manager, IRegistryQuerier registry, string identifier)
         {
             if (registry.IsInstalled(identifier, false)) {
-                if (Remove.Contains(identifier)) {
+                if (registry.IsAutodetected(identifier)) {
+                    return InstallStatus.AutoDetected;
+                } else if (Remove.Contains(identifier)) {
                     return InstallStatus.Removing;
                 } else if (registry.HasUpdate(identifier, manager.CurrentInstance.VersionCriteria())) {
                     if (Upgrade.Contains(identifier)) {
@@ -789,5 +796,10 @@ namespace CKAN.ConsoleUI {
         /// This mod is installed and we are planning to upgrade it
         /// </summary>
         Upgrading,
+
+        /// <summary>
+        /// This mod was installed manually
+        /// </summary>
+        AutoDetected,
     };
 }

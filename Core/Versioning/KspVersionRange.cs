@@ -86,7 +86,9 @@ namespace CKAN.Versioning
 
         private static string SameVersionString(KspVersion v)
         {
-            return v.IsAny ? "all versions" : v.ToString();
+            return v == null ? "???"
+                :  v.IsAny   ? "all versions"
+                :              v.ToString();
         }
 
         /// <summary>

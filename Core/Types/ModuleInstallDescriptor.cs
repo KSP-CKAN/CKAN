@@ -107,7 +107,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a default install stanza for the identifer provided.
+        /// Returns a default install stanza for the identifier provided.
         /// </summary>
         public static ModuleInstallDescriptor DefaultInstallStanza(string ident, ZipFile zipfile)
         {
