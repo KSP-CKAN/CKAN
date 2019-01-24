@@ -195,8 +195,8 @@ namespace CKAN
                 this.minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
-            // We need to initialize the error dialog first to display errors.
-            errorDialog = controlFactory.CreateControl<ErrorDialog>();
+            // Initialize all user interaction dialogs.
+            RecreateDialogs();
 
             // We want to check if our current instance is null first,
             // as it may have already been set by a command-line option.
@@ -240,8 +240,6 @@ namespace CKAN
 
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");
-
-            RecreateDialogs();
 
             if (!showConsole)
                 Util.HideConsoleWindow();

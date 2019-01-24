@@ -39,6 +39,12 @@ namespace CKAN
             {
                 _manager.FindAndRegisterDefaultInstance();
             }
+            
+            // Set the renderer for the AddNewMenu
+            if (Platform.IsMono)
+            {
+                this.AddNewMenu.Renderer = new FlatToolStripRenderer();
+            }
 
             UpdateInstancesList();
             UpdateButtonState();
@@ -95,8 +101,9 @@ namespace CKAN
 
         private void CloneFakeInstanceMenuItem_Click(object sender, EventArgs e)
         {
-            CloneFakeKspDialog dialog = new CloneFakeKspDialog(_manager, this);
+            CloneFakeKspDialog dialog = new CloneFakeKspDialog(_manager);
             dialog.ShowDialog();
+            UpdateInstancesList();
         }
 
         private void SelectButton_Click(object sender, EventArgs e)

@@ -34,6 +34,9 @@
             this.buttonOpenInstanceSelection = new System.Windows.Forms.Button();
             this.radioButtonClone = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.labelDlcVersion = new System.Windows.Forms.Label();
+            this.textBoxDlcVersion = new System.Windows.Forms.TextBox();
+            this.comboBoxKspVersion = new System.Windows.Forms.ComboBox();
             this.radioButtonFake = new System.Windows.Forms.RadioButton();
             this.folderBrowserDialogNewPath = new System.Windows.Forms.FolderBrowserDialog();
             this.buttonOK = new System.Windows.Forms.Button();
@@ -43,16 +46,16 @@
             this.labelNewPath = new System.Windows.Forms.Label();
             this.textBoxNewPath = new System.Windows.Forms.TextBox();
             this.checkBoxSwitchInstance = new System.Windows.Forms.CheckBox();
-            this.comboBoxKspVersion = new System.Windows.Forms.ComboBox();
-            this.textBoxDlcVersion = new System.Windows.Forms.TextBox();
-            this.labelDlcVersion = new System.Windows.Forms.Label();
             this.buttonPathBrowser = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.textBoxClonePath);
             this.groupBox1.Controls.Add(this.buttonInstancePathSelection);
             this.groupBox1.Controls.Add(this.buttonOpenInstanceSelection);
@@ -106,6 +109,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.labelDlcVersion);
             this.groupBox2.Controls.Add(this.textBoxDlcVersion);
             this.groupBox2.Controls.Add(this.comboBoxKspVersion);
@@ -115,6 +120,33 @@
             this.groupBox2.Size = new System.Drawing.Size(399, 80);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
+            // 
+            // labelDlcVersion
+            // 
+            this.labelDlcVersion.AutoSize = true;
+            this.labelDlcVersion.Location = new System.Drawing.Point(219, 20);
+            this.labelDlcVersion.Name = "labelDlcVersion";
+            this.labelDlcVersion.Size = new System.Drawing.Size(174, 26);
+            this.labelDlcVersion.TabIndex = 3;
+            this.labelDlcVersion.Text = "Enter DLC version here (e.g. 1.6.1).\r\nLeave empty to fake no DLC.";
+            // 
+            // textBoxDlcVersion
+            // 
+            this.textBoxDlcVersion.Location = new System.Drawing.Point(214, 53);
+            this.textBoxDlcVersion.Name = "textBoxDlcVersion";
+            this.textBoxDlcVersion.Size = new System.Drawing.Size(179, 20);
+            this.textBoxDlcVersion.TabIndex = 2;
+            // 
+            // comboBoxKspVersion
+            // 
+            this.comboBoxKspVersion.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBoxKspVersion.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.comboBoxKspVersion.FormattingEnabled = true;
+            this.comboBoxKspVersion.Location = new System.Drawing.Point(7, 53);
+            this.comboBoxKspVersion.MaxDropDownItems = 6;
+            this.comboBoxKspVersion.Name = "comboBoxKspVersion";
+            this.comboBoxKspVersion.Size = new System.Drawing.Size(183, 21);
+            this.comboBoxKspVersion.TabIndex = 1;
             // 
             // radioButtonFake
             // 
@@ -192,33 +224,6 @@
             this.checkBoxSwitchInstance.Text = "Switch to new instance";
             this.checkBoxSwitchInstance.UseVisualStyleBackColor = true;
             // 
-            // comboBoxKspVersion
-            // 
-            this.comboBoxKspVersion.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.comboBoxKspVersion.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.comboBoxKspVersion.FormattingEnabled = true;
-            this.comboBoxKspVersion.Location = new System.Drawing.Point(7, 53);
-            this.comboBoxKspVersion.MaxDropDownItems = 6;
-            this.comboBoxKspVersion.Name = "comboBoxKspVersion";
-            this.comboBoxKspVersion.Size = new System.Drawing.Size(183, 21);
-            this.comboBoxKspVersion.TabIndex = 1;
-            // 
-            // textBoxDlcVersion
-            // 
-            this.textBoxDlcVersion.Location = new System.Drawing.Point(214, 53);
-            this.textBoxDlcVersion.Name = "textBoxDlcVersion";
-            this.textBoxDlcVersion.Size = new System.Drawing.Size(179, 20);
-            this.textBoxDlcVersion.TabIndex = 2;
-            // 
-            // labelDlcVersion
-            // 
-            this.labelDlcVersion.AutoSize = true;
-            this.labelDlcVersion.Location = new System.Drawing.Point(219, 20);
-            this.labelDlcVersion.Name = "labelDlcVersion";
-            this.labelDlcVersion.Size = new System.Drawing.Size(174, 26);
-            this.labelDlcVersion.TabIndex = 3;
-            this.labelDlcVersion.Text = "Enter DLC version here (e.g. 1.6.1).\r\nLeave empty to fake no DLC.";
-            // 
             // buttonPathBrowser
             // 
             this.buttonPathBrowser.Location = new System.Drawing.Point(149, 219);
@@ -229,6 +234,17 @@
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(13, 281);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(400, 23);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 7;
+            this.progressBar.Visible = false;
+            // 
             // CloneFakeKspDialog
             // 
             this.AccessibleRole = System.Windows.Forms.AccessibleRole.Dialog;
@@ -236,6 +252,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 287);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonPathBrowser);
             this.Controls.Add(this.checkBoxSwitchInstance);
             this.Controls.Add(this.textBoxNewPath);
@@ -283,5 +300,6 @@
         private System.Windows.Forms.TextBox textBoxDlcVersion;
         private System.Windows.Forms.Label labelDlcVersion;
         private System.Windows.Forms.Button buttonPathBrowser;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
