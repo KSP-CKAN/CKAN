@@ -110,7 +110,7 @@ namespace CKAN
         /// User is done. Start cloning or faking, depending on the clicked radio button.
         /// Close the window if everythin went right.
         /// </summary>
-        private void buttonOK_Click(object sender, EventArgs e)
+        private async void buttonOK_Click(object sender, EventArgs e)
         {
             // Do some basic checks.
             if (textBoxNewName.TextLength == 0)
@@ -139,14 +139,14 @@ namespace CKAN
             // Done in a new task to not block the GUI thread.
             if (radioButtonClone.Checked)
             {
-                Task.Run(() =>
-                {
-                    user.RaiseMessage("Cloning instance...");
-                        
-                    KSP instanceToClone = new KSP(textBoxClonePath.Text, "irrelevant", user);
+                user.RaiseMessage("Cloning instance...");
 
-                    try
+                try
+                {
+                    await Task.Run(() =>
                     {
+                        KSP instanceToClone = new KSP(textBoxClonePath.Text, "irrelevant", user);
+
                         if (instanceToClone.Valid)
                         {
                             manager.CloneInstance(instanceToClone, newName, newPath);
@@ -155,43 +155,35 @@ namespace CKAN
                         {
                             throw new NotKSPDirKraken(instanceToClone.GameDir());
                         }
-                    }
-                    catch (NotKSPDirKraken kraken)
-                    {
-                        user.RaiseError("The instance you wanted to clone is not valid: " + kraken.path);
-                        reactivateDialog();
-                        return;
-                    }
-                    catch (IOException exception)
-                    {
-                        user.RaiseError("The destination folder is not empty or invalid: " + exception.Message);
-                        reactivateDialog();
-                        return;
-                    }
+                    });
+                }
+                catch (NotKSPDirKraken kraken)
+                {
+                    user.RaiseError("The instance you wanted to clone is not valid: " + kraken.path);
+                    reactivateDialog();
+                    return;
+                }
+                catch (IOException exception)
+                {
+                    user.RaiseError("The destination folder is not empty or invalid: " + exception.Message);
+                    reactivateDialog();
+                    return;
+                }
 
-                    if (checkBoxSetAsDefault.Checked)
-                    {
-                        manager.SetAutoStart(newName);
-                    }
+                if (checkBoxSetAsDefault.Checked)
+                {
+                    manager.SetAutoStart(newName);
+                }
 
-                    if (checkBoxSwitchInstance.Checked)
-                    {
-                        manager.SetCurrentInstance(newName);
-                    }
+                if (checkBoxSwitchInstance.Checked)
+                {
+                    manager.SetCurrentInstance(newName);
+                }
 
-                    user.RaiseMessage("Successfully cloned instance.");
+                user.RaiseMessage("Successfully cloned instance.");
 
-                    DialogResult = DialogResult.OK;
-                    try
-                    {
-                        Util.Invoke(this, this.Close);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // Invoke throws an ObjectDisposedException, for unknown reasons.
-                        // Dosn't bother, because a disposed object is what we want.
-                    }
-                });
+                DialogResult = DialogResult.OK;
+                this.Close();
             }
 
             // Create a new dummy instance.
@@ -200,70 +192,57 @@ namespace CKAN
             {
                 Versioning.KspVersion kspVersion = Versioning.KspVersion.Parse(comboBoxKspVersion.Text);
                 string dlcVersion = textBoxDlcVersion.Text;
-                
-                Task.Run(() =>
-                {
-                    user.RaiseMessage("Creating new instance...");
 
-                    try
+                user.RaiseMessage("Creating new instance...");
+
+                try
+                {
+                    await Task.Run(() =>
                     {
                         manager.FakeInstance(newName, newPath, kspVersion, dlcVersion);
-                    }
-                    catch (BadInstallLocationKraken)
-                    {
-                        user.RaiseError("The destination folder is not empty or invalid.");
-                        reactivateDialog();
-                        return;
-                    }
-                    catch (ArgumentException)
-                    {
-                        user.RaiseError("This name is already used.");
-                        reactivateDialog();
-                        return;
-                    }
+                    });
+                }
+                catch (BadInstallLocationKraken)
+                {
+                    user.RaiseError("The destination folder is not empty or invalid.");
+                    reactivateDialog();
+                    return;
+                }
+                catch (ArgumentException)
+                {
+                    user.RaiseError("This name is already used.");
+                    reactivateDialog();
+                    return;
+                }
 
-                    if (checkBoxSetAsDefault.Checked)
-                    {
-                        manager.SetAutoStart(newName);
-                    }
+                if (checkBoxSetAsDefault.Checked)
+                {
+                    manager.SetAutoStart(newName);
+                }
 
-                    if (checkBoxSwitchInstance.Checked)
-                    {
-                        manager.SetCurrentInstance(newName);
-                    }
+                if (checkBoxSwitchInstance.Checked)
+                {
+                    manager.SetCurrentInstance(newName);
+                }
 
-                    user.RaiseMessage("Successfully created instance.");
+                user.RaiseMessage("Successfully created instance.");
 
-                    DialogResult = DialogResult.OK;
-                    try
-                    {
-                        Util.Invoke(this, this.Close);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // Invoke throws an ObjectDisposedException, for unknown reasons.
-                        // Dosn't bother, because a disposed object is what we want.
-                    }
-                });
+                DialogResult = DialogResult.OK;
+                this.Close();
             }
         }
 
         /// <summary>
         /// Activate all controls, shrink window and hide progress bar.
-        /// Invokes itsel.
         /// </summary>
         private void reactivateDialog()
         {
-            Util.Invoke(this, () =>
+            foreach (Control ctrl in this.Controls)
             {
-                foreach (Control ctrl in this.Controls)
-                {
-                    ctrl.Enabled = true;
-                }
-                this.Size = new System.Drawing.Size(440, 326);
-                progressBar.Hide();
-            });
-            
+                ctrl.Enabled = true;
+            }
+            this.Size = new System.Drawing.Size(440, 326);
+            progressBar.Hide();
         }
             
         private void buttonPathBrowser_Click(object sender, EventArgs e)
