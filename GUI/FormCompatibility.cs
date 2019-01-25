@@ -3,17 +3,20 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
+    /// <summary>
+    /// Inheriting from this class ensures that forms are equally sized on Windows and on Linux/MacOSX
+    /// Choose the form size so that it is the right one for Windows.
+    /// </summary>
     public class FormCompatibility : Form
     {
-
-        // inheriting from this class ensures that forms are equally sized on windows and on linux/ macosx
+        private const int formWidthDifference = 0;
         private const int formHeightDifference = 24;
 
         public void ApplyFormCompatibilityFixes()
         {
             if (!Platform.IsWindows)
             {
-                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
+                ClientSize = new Size(ClientSize.Width + formWidthDifference, ClientSize.Height + formHeightDifference);      
             }
         }
 

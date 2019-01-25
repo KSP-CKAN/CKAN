@@ -11,7 +11,7 @@ namespace CKAN
     /// The GUI implementation of clone and fake.
     /// It's a seperate window, handling the whole process.
     /// </summary>
-    public partial class CloneFakeKspDialog : Form
+    public partial class CloneFakeKspDialog : FormCompatibility
     {
         private GUIUser user = new GUIUser();
         private KSPManager manager;
@@ -22,10 +22,21 @@ namespace CKAN
 
             InitializeComponent();
 
-            // Populate the combobox for fake instance.
+            // Populate the version combobox for fake instance.
             List<Versioning.KspVersion> knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions;
             knownVersions.Reverse();
             comboBoxKspVersion.DataSource = knownVersions;
+        }
+
+        new private void ApplyFormCompatibilityFixes ()
+        {
+            const int formWidthDifference  = 71;
+            const int formHeightDifference = 22;
+
+            if (!Platform.IsWindows)
+            {
+                ClientSize = new System.Drawing.Size(ClientSize.Width + formWidthDifference, ClientSize.Height + formHeightDifference);
+            }
         }
 
         #region clone
@@ -108,7 +119,7 @@ namespace CKAN
 
         /// <summary>
         /// User is done. Start cloning or faking, depending on the clicked radio button.
-        /// Close the window if everythin went right.
+        /// Close the window if everything went right.
         /// </summary>
         private async void buttonOK_Click(object sender, EventArgs e)
         {
@@ -128,7 +139,9 @@ namespace CKAN
             string newPath = textBoxNewPath.Text;
 
             // Show progress bar and deactivate controls.
-            this.Size = new System.Drawing.Size(440, 351);
+            this.ClientSize = new System.Drawing.Size(424, 317);
+            ApplyFormCompatibilityFixes();
+            progressBar.Style = ProgressBarStyle.Marquee;
             progressBar.Show();
             foreach (Control ctrl in this.Controls)
             {
@@ -241,8 +254,11 @@ namespace CKAN
             {
                 ctrl.Enabled = true;
             }
-            this.Size = new System.Drawing.Size(440, 326);
+            progressBar.Style = ProgressBarStyle.Continuous;
+            progressBar.Value = 0;
             progressBar.Hide();
+            this.ClientSize = new System.Drawing.Size(424, 287);
+            ApplyFormCompatibilityFixes();
         }
             
         private void buttonPathBrowser_Click(object sender, EventArgs e)

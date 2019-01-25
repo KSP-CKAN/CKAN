@@ -210,7 +210,7 @@
             this.textBoxNewPath.Location = new System.Drawing.Point(227, 221);
             this.textBoxNewPath.Name = "textBoxNewPath";
             this.textBoxNewPath.Size = new System.Drawing.Size(185, 20);
-            this.textBoxNewPath.TabIndex = 3;
+            this.textBoxNewPath.TabIndex = 4;
             // 
             // checkBoxSwitchInstance
             // 
@@ -229,7 +229,7 @@
             this.buttonPathBrowser.Location = new System.Drawing.Point(149, 219);
             this.buttonPathBrowser.Name = "buttonPathBrowser";
             this.buttonPathBrowser.Size = new System.Drawing.Size(72, 23);
-            this.buttonPathBrowser.TabIndex = 11;
+            this.buttonPathBrowser.TabIndex = 3;
             this.buttonPathBrowser.Text = "Select Path";
             this.buttonPathBrowser.UseVisualStyleBackColor = true;
             this.buttonPathBrowser.Click += new System.EventHandler(this.buttonPathBrowser_Click);
@@ -240,7 +240,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(13, 281);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(400, 23);
+            this.progressBar.Size = new System.Drawing.Size(398, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar.TabIndex = 7;
             this.progressBar.Visible = false;
