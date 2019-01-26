@@ -9,14 +9,13 @@ namespace CKAN
     /// </summary>
     public class FormCompatibility : Form
     {
-        private const int formWidthDifference = 0;
         private const int formHeightDifference = 24;
 
         public void ApplyFormCompatibilityFixes()
         {
             if (!Platform.IsWindows)
             {
-                ClientSize = new Size(ClientSize.Width + formWidthDifference, ClientSize.Height + formHeightDifference);      
+                ClientSize = new Size(ClientSize.Width, ClientSize.Height + formHeightDifference);      
             }
         }
 

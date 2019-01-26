@@ -11,12 +11,13 @@ namespace CKAN
     /// The GUI implementation of clone and fake.
     /// It's a seperate window, handling the whole process.
     /// </summary>
-    public partial class CloneFakeKspDialog : FormCompatibility
+    public partial class CloneFakeKspDialog : Form
     {
         private GUIUser user = new GUIUser();
         private KSPManager manager;
 
         public CloneFakeKspDialog(KSPManager manager)
+            : base()
         {
             this.manager = manager;
 
@@ -26,46 +27,29 @@ namespace CKAN
             List<Versioning.KspVersion> knownVersions = new GameVersionProviders.KspBuildMap(new Win32Registry()).KnownVersions;
             knownVersions.Reverse();
             comboBoxKspVersion.DataSource = knownVersions;
-        }
 
-        new private void ApplyFormCompatibilityFixes ()
-        {
-            const int formWidthDifference  = 71;
-            const int formHeightDifference = 22;
-
-            if (!Platform.IsWindows)
-            {
-                ClientSize = new System.Drawing.Size(ClientSize.Width + formWidthDifference, ClientSize.Height + formHeightDifference);
-            }
+            // Populate the instances combobox with names of known instances
+            comboBoxKnownInstance.DataSource = new string[] { "" }
+                .Concat(manager.Instances.Values
+                    .Where(i => i.Valid)
+                    .OrderBy(i => i.Version())
+                    .Reverse()
+                    .Select(i => i.Name))
+                .ToList();
+            comboBoxKnownInstance.Text = manager.CurrentInstance?.Name
+                ?? manager.AutoStartInstance
+                ?? "";
+            this.radioButtonClone.Checked = true;
         }
 
         #region clone
 
-        /// <summary>
-        /// Click event for the OpenInstanceSelection button, which is used to raise a selection dialog
-        /// to choose which known KSP instance the user wants to clone.
-        /// </summary>
-        private void buttonOpenInstanceSelection_Click(object sender, EventArgs e)
+        private void comboBoxKnownInstance_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Get all to the regisrty known instances.
-            KSP[] knownInstances = manager.Instances.Values.ToArray();
-            List<string> instancesAsStrings = new List<string>();
-            
-            // Now turn them into a list of nice, readable strings.
-            foreach (KSP instance in knownInstances)
-            {
-                string instanceString = String.Format("{0} ({1}) at {2}", instance.Name, instance.Version()?.ToString() ?? "N/D", instance.GameDir() );
-                instancesAsStrings.Add(instanceString);
-            }
-            
-            // Raise the selection dialog.
-            int selection = user.RaiseSelectionDialog("Choose an existing instance:", instancesAsStrings.ToArray());
-
-            // Now set the textbox text to the path of the picked one.
-            if (selection != -1)
-            {
-                textBoxClonePath.Text = knownInstances[selection].GameDir();
-            }     
+            string sel = comboBoxKnownInstance.SelectedItem as string;
+            textBoxClonePath.Text = string.IsNullOrEmpty(sel)
+                ? ""
+                : manager.Instances[sel].GameDir();
         }
 
         /// <summary>
@@ -107,10 +91,12 @@ namespace CKAN
                 if (clickedRadioButton == radioButtonClone)
                 {
                     radioButtonFake.Checked = false;
+                    cloneGroupBox.Enabled = !(fakeGroupBox.Enabled = false);
                 }
                 else
                 {
                     radioButtonClone.Checked = false;
+                    fakeGroupBox.Enabled = !(cloneGroupBox.Enabled = false);
                 }
             }
         }
@@ -139,8 +125,6 @@ namespace CKAN
             string newPath = textBoxNewPath.Text;
 
             // Show progress bar and deactivate controls.
-            this.ClientSize = new System.Drawing.Size(424, 317);
-            ApplyFormCompatibilityFixes();
             progressBar.Style = ProgressBarStyle.Marquee;
             progressBar.Show();
             foreach (Control ctrl in this.Controls)
@@ -179,6 +163,12 @@ namespace CKAN
                 catch (IOException exception)
                 {
                     user.RaiseError("The destination folder is not empty or invalid: " + exception.Message);
+                    reactivateDialog();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    user.RaiseError($"Clone failed: {ex.Message}");
                     reactivateDialog();
                     return;
                 }
@@ -227,6 +217,12 @@ namespace CKAN
                     reactivateDialog();
                     return;
                 }
+                catch (Exception ex)
+                {
+                    user.RaiseError($"Fake instance creation failed: {ex.Message}");
+                    reactivateDialog();
+                    return;
+                }
 
                 if (checkBoxSetAsDefault.Checked)
                 {
@@ -245,6 +241,12 @@ namespace CKAN
             }
         }
 
+        private async void buttonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
         /// <summary>
         /// Activate all controls, shrink window and hide progress bar.
         /// </summary>
@@ -254,20 +256,21 @@ namespace CKAN
             {
                 ctrl.Enabled = true;
             }
+            // Conditionally enable/disable the fake/clone fields
+            radioButton_CheckedChanged(radioButtonClone, null);
+            radioButton_CheckedChanged(radioButtonFake,  null);
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Value = 0;
             progressBar.Hide();
-            this.ClientSize = new System.Drawing.Size(424, 287);
-            ApplyFormCompatibilityFixes();
         }
-            
+
         private void buttonPathBrowser_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialogNewPath.ShowDialog().Equals(DialogResult.OK))
             {
                 textBoxNewPath.Text = folderBrowserDialogNewPath.SelectedPath;
             }
-            
+
         }
     }
 }
