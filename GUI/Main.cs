@@ -949,7 +949,7 @@ namespace CKAN
             }
         }
 
-        private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
+        private void manageKspInstancesMenuItem_Click(object sender, EventArgs e)
         {
             Instance.Manager.ClearAutoStart();
             var old_instance = Instance.CurrentInstance;

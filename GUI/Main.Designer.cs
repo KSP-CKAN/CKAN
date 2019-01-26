@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectKSPInstallMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manageKspInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openKspDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,7 +173,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectKSPInstallMenuItem,
+            this.manageKspInstancesMenuItem,
             this.openKspDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.installFromckanToolStripMenuItem,
@@ -188,12 +188,12 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // selectKSPInstallMenuItem
+            // manageKspInstancesMenuItem
             // 
-            this.selectKSPInstallMenuItem.Name = "selectKSPInstallMenuItem";
-            this.selectKSPInstallMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.selectKSPInstallMenuItem.Text = "Select KSP Install...";
-            this.selectKSPInstallMenuItem.Click += new System.EventHandler(this.selectKSPInstallMenuItem_Click);
+            this.manageKspInstancesMenuItem.Name = "manageKspInstancesMenuItem";
+            this.manageKspInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.manageKspInstancesMenuItem.Text = "Manage KSP Instances";
+            this.manageKspInstancesMenuItem.Click += new System.EventHandler(this.manageKspInstancesMenuItem_Click);
             // 
             // openKspDirectoryToolStripMenuItem
             // 
@@ -1292,7 +1292,7 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem selectKSPInstallMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem manageKspInstancesMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openKspDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
