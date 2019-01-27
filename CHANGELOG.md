@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Set focus to mod list after loading (#2657 by: HebaruSan; reviewed: politas)
 - [GUI] Small text/number formatting changes to mod list (#2658 by: DasSkelett; reviewed: politas)
 - [Multiple] Remove ConfirmPrompt from IUser (#2659 by: HebaruSan; reviewed: politas)
+- [ConsoleUI] Handle manually installed mods in ConsoleUI (#2666 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
@@ -519,7 +520,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [GUI] The CKAN Identifer for each mod is now shown in their metadata panel. (plague006, #1476)
+- [GUI] The CKAN Identifier for each mod is now shown in their metadata panel. (plague006, #1476)
 - [GUI] Double-clicking on a filename in the 'Contents' panel now opens the directory containing that file. (Postremus, #1443)
 - [GUI] The progress bar now shows the progress of downloading to the cache. (Postremus, #1445)
 - [GUI] Mods can now be searched by their CKAN identifier in the name textbox (Postremus, #1475)

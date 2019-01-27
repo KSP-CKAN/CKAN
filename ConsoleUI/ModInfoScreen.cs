@@ -297,9 +297,10 @@ namespace CKAN.ConsoleUI {
             return top - 1;
         }
 
-        private DateTime InstalledOn(string identifier)
+        private DateTime? InstalledOn(string identifier)
         {
-            return registry.InstalledModule(identifier).InstallTime;
+            // This can be null for manually installed mods
+            return registry.InstalledModule(identifier)?.InstallTime;
         }
 
         private int addVersionDisplay()
@@ -323,13 +324,13 @@ namespace CKAN.ConsoleUI {
 
                 if (installed) {
 
-                    DateTime instTime = InstalledOn(mod.identifier);
+                    DateTime? instTime = InstalledOn(mod.identifier);
 
                     if (latestIsInstalled) {
 
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                            () => $"Latest/Installed {instTime.ToString("d")}",
+                            () => $"Latest/Installed {instTime?.ToString("d") ?? "manually"}",
                             () => ConsoleTheme.Current.ActiveFrameFg,
                             true,
                             new List<CkanModule>() {inst}
@@ -349,7 +350,7 @@ namespace CKAN.ConsoleUI {
 
                         addVersionBox(
                             boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                            () => $"Installed {instTime.ToString("d")}",
+                            () => $"Installed {instTime?.ToString("d") ?? "manually"}",
                             () => ConsoleTheme.Current.ActiveFrameFg,
                             true,
                             new List<CkanModule>() {inst}
@@ -385,12 +386,12 @@ namespace CKAN.ConsoleUI {
 
             } else {
 
-                DateTime instTime = InstalledOn(mod.identifier);
+                DateTime? instTime = InstalledOn(mod.identifier);
                 // Mod is no longer indexed, but we can generate a display
                 // of the old info about it from when we installed it
                 addVersionBox(
                     boxLeft, boxTop, boxRight, boxTop + boxH - 1,
-                    () => $"UNAVAILABLE/Installed {instTime.ToString("d")}",
+                    () => $"UNAVAILABLE/Installed {instTime?.ToString("d") ?? "manually"}",
                     () => ConsoleTheme.Current.AlertFrameFg,
                     true,
                     new List<CkanModule>() {mod}
@@ -413,14 +414,14 @@ namespace CKAN.ConsoleUI {
 
             if (releases != null && releases.Count > 0) {
 
-                ModuleVersion    minMod = null, maxMod = null;
-                KspVersion minKsp = null, maxKsp = null;
+                ModuleVersion minMod = null, maxMod = null;
+                KspVersion    minKsp = null, maxKsp = null;
                 Registry.GetMinMaxVersions(releases, out minMod, out maxMod, out minKsp, out maxKsp);
                 AddObject(new ConsoleLabel(
                     l + 2, t + 1, r - 2,
                     () => minMod == maxMod
-                        ? $"{ModuleInstaller.WithAndWithoutEpoch(minMod.ToString())}"
-                        : $"{ModuleInstaller.WithAndWithoutEpoch(minMod.ToString())} - {ModuleInstaller.WithAndWithoutEpoch(maxMod.ToString())}",
+                        ? $"{ModuleInstaller.WithAndWithoutEpoch(minMod?.ToString() ?? "???")}"
+                        : $"{ModuleInstaller.WithAndWithoutEpoch(minMod?.ToString() ?? "???")} - {ModuleInstaller.WithAndWithoutEpoch(maxMod?.ToString() ?? "???")}",
                     null,
                     color
                 ));

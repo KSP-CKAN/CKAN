@@ -633,24 +633,29 @@ namespace CKAN
         /// <param name="minKsp">Return parameter for the lowest  game version</param>
         /// <param name="maxKsp">Return parameter for the highest game version</param>
         public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
-                out ModuleVersion    minMod, out ModuleVersion    maxMod,
-                out KspVersion minKsp, out KspVersion maxKsp)
+                out ModuleVersion minMod, out ModuleVersion maxMod,
+                out KspVersion    minKsp, out KspVersion    maxKsp)
         {
             minMod = maxMod = null;
             minKsp = maxKsp = null;
-            foreach (CkanModule rel in modVersions) {
-                if (minMod == null || minMod > rel.version) {
+            foreach (CkanModule rel in modVersions.Where(v => v != null))
+            {
+                if (minMod == null || minMod > rel.version)
+                {
                     minMod = rel.version;
                 }
-                if (maxMod == null || maxMod < rel.version) {
+                if (maxMod == null || maxMod < rel.version)
+                {
                     maxMod = rel.version;
                 }
                 KspVersion relMin = rel.EarliestCompatibleKSP();
                 KspVersion relMax = rel.LatestCompatibleKSP();
-                if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny)) {
+                if (minKsp == null || !minKsp.IsAny && (minKsp > relMin || relMin.IsAny))
+                {
                     minKsp = relMin;
                 }
-                if (maxKsp == null || !maxKsp.IsAny && (maxKsp < relMax || relMax.IsAny)) {
+                if (maxKsp == null || !maxKsp.IsAny && (maxKsp < relMax || relMax.IsAny))
+                {
                     maxKsp = relMax;
                 }
             }
@@ -1010,10 +1015,10 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
         /// </summary>
-        public CkanModule GetInstalledVersion(string mod_identifer)
+        public CkanModule GetInstalledVersion(string mod_identifier)
         {
             InstalledModule installedModule;
-            return installed_modules.TryGetValue(mod_identifer, out installedModule)
+            return installed_modules.TryGetValue(mod_identifier, out installedModule)
                 ? installedModule.Module
                 : null;
         }

@@ -29,9 +29,10 @@ namespace CKAN.ConsoleUI {
             AddObject(symbolTb);
             symbolTb.AddLine("Status Symbols");
             symbolTb.AddLine("==============");
-            symbolTb.AddLine($"{installed}    Installed");
-            symbolTb.AddLine($"{upgradable}  Upgradeable");
-            symbolTb.AddLine($"!  Unavailable");
+            symbolTb.AddLine($"{installed}           Installed");
+            symbolTb.AddLine($"{upgradable}         Upgradeable");
+            symbolTb.AddLine($"{autodetected}  Manually installed");
+            symbolTb.AddLine($"!         Unavailable");
             symbolTb.AddLine(" ");
             symbolTb.AddLine("Basic Keys");
             symbolTb.AddLine("==========");
@@ -65,6 +66,7 @@ namespace CKAN.ConsoleUI {
 
         private static readonly string installed    = Symbols.checkmark;
         private static readonly string upgradable   = Symbols.greaterEquals;
+        private static readonly string autodetected = Symbols.infinity;
     }
 
 }
