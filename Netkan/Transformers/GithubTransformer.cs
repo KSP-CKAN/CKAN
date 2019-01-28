@@ -66,6 +66,11 @@ namespace CKAN.NetKAN.Transformers
                 if (!string.IsNullOrWhiteSpace(ghRepo.Description))
                     json.SafeAdd("abstract", ghRepo.Description);
 
+                // GitHub says NOASSERTION if it can't figure out the repo's license
+                if (!string.IsNullOrWhiteSpace(ghRepo.License?.Id)
+                    && ghRepo.License.Id != "NOASSERTION")
+                    json.SafeAdd("license", ghRepo.License.Id);
+
                 if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
                     resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
 
