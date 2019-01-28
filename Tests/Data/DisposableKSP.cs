@@ -25,7 +25,7 @@ namespace Tests.Data
         {
             directoryToClone = directoryToClone ?? _goodKsp;
             _disposableDir = TestData.NewTempDir();
-            TestData.CopyDirectory(directoryToClone, _disposableDir);
+            Utilities.CopyDirectory(directoryToClone, _disposableDir, true);
 
             // If we've been given a registry file, then copy it into position before
             // creating our KSP object.
