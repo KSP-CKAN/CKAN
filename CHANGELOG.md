@@ -46,6 +46,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Small text/number formatting changes to mod list (#2658 by: DasSkelett; reviewed: politas)
 - [Multiple] Remove ConfirmPrompt from IUser (#2659 by: HebaruSan; reviewed: politas)
 - [ConsoleUI] Handle manually installed mods in ConsoleUI (#2666 by: HebaruSan; reviewed: politas)
+- [GUI] Add AD mods back into GUI's installed filter (#2668 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 

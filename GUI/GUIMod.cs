@@ -129,6 +129,10 @@ namespace CKAN
             IsIncompatible = incompatible;
             IsAutodetected = registry.IsAutodetected(identifier);
             DownloadCount  = registry.DownloadCount(identifier);
+            if (registry.IsAutodetected(identifier))
+            {
+                IsInstalled = true;
+            }
 
             ModuleVersion latest_version = null;
             try
