@@ -134,6 +134,7 @@
     <Compile Include="NetKAN\Validators\NetkanValidatorTests.cs" />
     <Compile Include="NetKAN\Validators\KrefValidatorTests.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Core\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
