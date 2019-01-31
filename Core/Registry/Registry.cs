@@ -1069,6 +1069,12 @@ namespace CKAN
             IDictionary<string, UnmanagedModuleVersion> dlc
         )
         {
+            if (!modules_to_remove.Any())
+            {
+                // The empty list has no reverse dependencies
+                // (Don't remove broken modules if we're only installing)
+                return new HashSet<string>();
+            }
             while (true)
             {
                 // Make our hypothetical install, and remove the listed modules from it.
