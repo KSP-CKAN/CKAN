@@ -40,21 +40,11 @@ namespace CKAN
         /// </summary>
         public bool IsWindowMaximised = false;
 
-        private Point windowLocation = new Point(0,0);
-        //Workaround for bug which mis-sets the window location.
-        // Here instead of in Main_FormClosing due to the mistaken
-        // value possibly being written out to config file. After some time
-        // it should be save to move. RLake 2015/05
+        private Point windowLocation = new Point(-1, -1);
+
         public Point WindowLoc
         {
-            get
-            {
-                if (windowLocation.X < 0 && windowLocation.Y < 0)
-                {
-                    windowLocation = new Point(60, 30);
-                }
-                return windowLocation;
-            }
+            get { return windowLocation;  }
             set { windowLocation = value; }
         }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
+using System.Drawing;
 
 namespace CKAN
 {
@@ -115,5 +115,58 @@ namespace CKAN
                 return false;
             }
         }
+
+        /// <summary>
+        /// Adjust position of a box so it fits entirely on one screen
+        /// </summary>
+        /// <param name="location">Top left corner of box</param>
+        /// <param name="size">Width and height of box</param>
+        /// <returns>
+        /// Original location if already fully on-screen, otherwise
+        /// a position representing sliding it onto the screen
+        /// </returns>
+        public static Point ClampedLocation(Point location, Size size)
+        {
+            var rect = new Rectangle(location, size);
+            // Find a screen that the default position overlaps
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                if (screen.WorkingArea.IntersectsWith(rect))
+                {
+                    // Slide the whole rectangle fully onto the screen
+                    if (location.X < screen.WorkingArea.Top)
+                        location.X = screen.WorkingArea.Top;
+                    if (location.Y < screen.WorkingArea.Left)
+                        location.Y = screen.WorkingArea.Left;
+                    if (location.X + size.Width > screen.WorkingArea.Right)
+                        location.X = screen.WorkingArea.Right - size.Width;
+                    if (location.Y + size.Height > screen.WorkingArea.Bottom)
+                        location.Y = screen.WorkingArea.Bottom - size.Height;
+                    // Stop checking screens
+                    break;
+                }
+            }
+            return location;
+        }
+
+        /// <summary>
+        /// Adjust position of a box so it fits on one screen with a margin around it
+        /// </summary>
+        /// <param name="location">Top left corner of box</param>
+        /// <param name="size">Width and height of box</param>
+        /// <param name="topLeftMargin">Size of space between window and top left edge of screen</param>
+        /// <param name="bottomRightMargin">Size of space between window and bottom right edge of screen</param>
+        /// <returns>
+        /// Original location if already fully on-screen plus margins, otherwise
+        /// a position representing sliding it onto the screen
+        /// </returns>
+        public static Point ClampedLocationWithMargins(Point location, Size size, Size topLeftMargin, Size bottomRightMargin)
+        {
+            // Imagine drawing a larger box around the window, the size of the desired margin.
+            // We pass that box to ClampedLocation to make sure it fits on screen,
+            // then place our window at an offset within the box
+            return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin) + topLeftMargin;
+        }
+
     }
 }
