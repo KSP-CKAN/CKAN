@@ -752,7 +752,7 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(IEnumerable<string> mods, bool ConfirmPrompt = true)
+        public void UninstallList(IEnumerable<string> mods, bool ConfirmPrompt = true, IEnumerable<string> installing = null)
         {
             // Pre-check, have they even asked for things which are installed?
 
@@ -762,7 +762,9 @@ namespace CKAN
             }
 
             // Find all the things which need uninstalling.
-            IEnumerable<string> goners = registry_manager.registry.FindReverseDependencies(mods);
+            IEnumerable<string> goners = mods.Union(
+                registry_manager.registry.FindReverseDependencies(
+                    mods.Except(installing ?? new string[] {})));
 
             // If there us nothing to uninstall, skip out.
             if (!goners.Any())
@@ -802,7 +804,9 @@ namespace CKAN
                     Uninstall(mod);
                 }
 
-                registry_manager.Save();
+                // Enforce consistency if we're not installing anything,
+                // otherwise consistency will be enforced after the installs
+                registry_manager.Save(installing == null);
 
                 transaction.Complete();
             }

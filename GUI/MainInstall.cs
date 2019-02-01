@@ -31,28 +31,34 @@ namespace CKAN
 
             try
             {
-                // Resolve the provides relationships in the dependencies
+                var initialChangeSet = new HashSet<ModChange>();
+                // Install the selected mod
+                initialChangeSet.Add(new ModChange(
+                    new GUIMod(module, registry, CurrentInstance.VersionCriteria()),
+                    GUIModChangeType.Install,
+                    null
+                ));
+                InstalledModule installed = registry.InstalledModule(module.identifier);
+                if (installed != null)
+                {
+                    // Already installed, remove it first
+                    initialChangeSet.Add(new ModChange(
+                        new GUIMod(installed.Module, registry, CurrentInstance.VersionCriteria()),
+                        GUIModChangeType.Remove,
+                        null
+                    ));
+                }
                 List<ModChange> fullChangeSet = new List<ModChange>(
                     await mainModList.ComputeChangeSetFromModList(
                         registry,
-                        new HashSet<ModChange>()
-                        {
-                            new ModChange(
-                                new GUIMod(
-                                    module,
-                                    registry,
-                                    CurrentInstance.VersionCriteria()
-                                ),
-                                GUIModChangeType.Install,
-                                null
-                            )
-                        },
+                        initialChangeSet,
                         ModuleInstaller.GetInstance(CurrentInstance, Manager.Cache, GUI.user),
                         CurrentInstance.VersionCriteria()
                     )
                 );
                 if (fullChangeSet != null && fullChangeSet.Count > 0)
                 {
+                    // Resolve the provides relationships in the dependencies
                     installWorker.RunWorkerAsync(
                         new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                             fullChangeSet,
@@ -162,7 +168,7 @@ namespace CKAN
                         processSuccessful = false;
                         if (!installCanceled)
                         {
-                            installer.UninstallList(toUninstall, false);
+                            installer.UninstallList(toUninstall, false, toInstall.Select(m => m.identifier));
                             processSuccessful = true;
                         }
                     }

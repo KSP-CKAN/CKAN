@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Add possibility to clone KSP installs and create dummy ones (#2627 by: DasSkelett; reviewed: HebaruSan, politas)
 - [ConsoleUI] Allow overriding menu tip in ConsoleUI (#2635 by: HebaruSan; reviewed: DasSkelett, politas)
 - [Netkan] Get license from GitHub (#2663 by: HebaruSan; reviewed: politas)
+- [Multiple] Cleanly switch versions of installed mod (#2669 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

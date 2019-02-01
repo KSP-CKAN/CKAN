@@ -255,7 +255,7 @@ namespace CKAN
 
                 UpdateAllToolButton.Enabled = has_any_updates;
             });
-                                    
+
             UpdateFilters(this);
 
             AddLogMessage("Updating tray...");
@@ -687,7 +687,11 @@ namespace CKAN
                 }
             }
 
-            foreach (var dependency in registry.FindReverseDependencies(modules_to_remove.Select(mod=>mod.identifier)))
+            foreach (var dependency in registry.FindReverseDependencies(
+                modules_to_remove
+                    .Select(mod => mod.identifier)
+                    .Except(modules_to_install.Select(m => m.identifier))
+            ))
             {
                 //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
                 CkanModule module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
@@ -702,7 +706,6 @@ namespace CKAN
             changeSet.UnionWith(
                 resolver.ModList()
                     .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));
-
 
             return changeSet;
         }

@@ -35,7 +35,15 @@ namespace CKAN
 
         public override int GetHashCode()
         {
-            return Mod != null ? Mod.Identifier.GetHashCode() : 0;
+            // Distinguish between installing and removing
+            return Mod == null
+                ? 0
+                : (4 * Mod.GetHashCode() + (int)ChangeType);
+        }
+
+        public override string ToString()
+        {
+            return $"{ChangeType} {Mod} ({Reason})";
         }
     }
 }
