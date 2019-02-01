@@ -329,7 +329,24 @@ namespace CKAN
 
         protected override void OnLoad(EventArgs e)
         {
-            Location = configuration.WindowLoc;
+            if (configuration.WindowLoc.X == -1 && configuration.WindowLoc.Y == -1)
+            {
+                // Center on screen for first launch
+                StartPosition = FormStartPosition.CenterScreen;
+            }
+            else if (Platform.IsMac)
+            {
+                // Make sure there's room at the top for the MacOSX menu bar
+                Location = Util.ClampedLocationWithMargins(
+                    configuration.WindowLoc, configuration.WindowSize,
+                    new Size(0, 30), new Size(0, 0)
+                );
+            }
+            else
+            {
+                // Just make sure it's fully on screen
+                Location = Util.ClampedLocation(configuration.WindowLoc, configuration.WindowSize);
+            }
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
 

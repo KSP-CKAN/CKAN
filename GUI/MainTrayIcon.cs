@@ -116,34 +116,10 @@ namespace CKAN
         {
             // The menu location can be partly off-screen by default.
             // Fix it.
-            minimizedContextMenuStrip.Location = ClampedLocation(
+            minimizedContextMenuStrip.Location = Util.ClampedLocation(
                 minimizedContextMenuStrip.Location,
                 minimizedContextMenuStrip.Size
             );
-        }
-
-        private Point ClampedLocation(Point location, Size size)
-        {
-            var rect = new Rectangle(location, size);
-            // Find a screen that the default position overlaps
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                if (screen.WorkingArea.IntersectsWith(rect))
-                {
-                    // Slide the whole menu fully onto the screen
-                    if (location.X < screen.WorkingArea.Top)
-                        location.X = screen.WorkingArea.Top;
-                    if (location.Y < screen.WorkingArea.Left)
-                        location.Y = screen.WorkingArea.Left;
-                    if (location.X + size.Width > screen.WorkingArea.Right)
-                        location.X = screen.WorkingArea.Right - size.Width;
-                    if (location.Y + size.Height > screen.WorkingArea.Bottom)
-                        location.Y = screen.WorkingArea.Bottom - size.Height;
-                    // Stop checking screens
-                    break;
-                }
-            }
-            return location;
         }
 
         #endregion
