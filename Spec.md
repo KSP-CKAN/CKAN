@@ -454,7 +454,7 @@ to treat them as if they were absent. (**v1.8**) Clients implementing the
 present.
 
 (**v1.26**) Clients implementing version `v1.26` or later of the spec *must* support
-an alternate form of relationship consisting of an `any-of` key with a
+an alternate form of relationship consisting of an `any_of` key with a
 value containing an array of relationships. This relationship is considered
 satisfied if **any** of the specified modules are installed. It is intended for
 situations in which a module supports multiple ways of providing functionality,
@@ -462,7 +462,7 @@ which are not in themselves mutually compatible enough to use the `"provides"` p
 
     "depends": [
         {
-            "any-of": [
+            "any_of": [
                 { "name": "TextureReplacer"          },
                 { "name": "TextureReplacerReplaced"  },
                 { "name": "SigmaReplacements-Skybox" },

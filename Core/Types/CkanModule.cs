@@ -211,7 +211,7 @@ namespace CKAN
 
     public class AnyOfRelationshipDescriptor : RelationshipDescriptor
     {
-        [JsonProperty("any-of", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("any_of", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> any_of;
 

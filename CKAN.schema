@@ -338,12 +338,12 @@
                     {
                         "type": "object",
                         "properties": {
-                            "any-of": {
+                            "any_of": {
                                 "description": "List of modules that can satisfy this relationship",
                                 "$ref": "#/definitions/relationship"
                             }
                         },
-                        "required": [ "any-of" ]
+                        "required": [ "any_of" ]
                     }
                 ]
             }
