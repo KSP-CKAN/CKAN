@@ -5,7 +5,7 @@ using System.IO;
 
 namespace CKAN
 {
-    public partial class ChooseKSPInstance : Form
+    public partial class ManageKspInstances : Form
     {
         private readonly KSPManager _manager;
         private RenameInstanceDialog _renameInstanceDialog;
@@ -25,7 +25,7 @@ namespace CKAN
         /// Initialize the game instance selection window
         /// </summary>
         /// <param name="centerScreen">true to center the window on the screen, false to center it on the parent</param>
-        public ChooseKSPInstance(bool centerScreen)
+        public ManageKspInstances(bool centerScreen)
         {
             _manager = Main.Instance.Manager;
             InitializeComponent();

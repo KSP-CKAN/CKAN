@@ -90,11 +90,11 @@
     <Compile Include="AskUserForAutoUpdatesDialog.Designer.cs">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChooseKSPInstance.cs">
+    <Compile Include="ManageKspInstances.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChooseKSPInstance.Designer.cs">
-      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    <Compile Include="ManageKspInstances.Designer.cs">
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
     </Compile>
     <Compile Include="CloneFakeKspDialog.cs">
       <SubType>Form</SubType>
@@ -262,7 +262,7 @@
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
-      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CloneFakeKspDialog.resx">
       <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>

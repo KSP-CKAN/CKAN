@@ -204,7 +204,7 @@ namespace CKAN
             {
                 Hide();
 
-                var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
+                var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
                     Application.Exit();
@@ -953,7 +953,7 @@ namespace CKAN
         {
             Instance.Manager.ClearAutoStart();
             var old_instance = Instance.CurrentInstance;
-            var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
+            var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
                 Instance.CurrentInstanceUpdated();
         }

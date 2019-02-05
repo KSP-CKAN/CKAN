@@ -1,6 +1,6 @@
 ﻿namespace CKAN
 {
-    partial class ChooseKSPInstance
+    partial class ManageKspInstances
     {
         /// <summary>
         /// Required designer variable.
@@ -33,7 +33,7 @@
             "dsadsa",
             "",
             ""}, -1);
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChooseKSPInstance));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageKspInstances));
             this.KSPInstancesListView = new System.Windows.Forms.ListView();
             this.KSPInstallName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.KSPInstallVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -170,7 +170,7 @@
             this.ForgetButton.UseVisualStyleBackColor = true;
             this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
             // 
-            // ChooseKSPInstance
+            // ManageKspInstances
             // 
             this.AcceptButton = this.SelectButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -184,9 +184,9 @@
             this.Controls.Add(this.KSPInstancesListView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(450, 200);
-            this.Name = "ChooseKSPInstance";
+            this.Name = "ManageKspInstances";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Select KSP install";
+            this.Text = "Manage KSP Instances";
             this.AddNewMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

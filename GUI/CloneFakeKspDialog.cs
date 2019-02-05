@@ -53,7 +53,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Open an file dialog to search for a KSP instance, like in <code>ChooseKSPInstance</code>.
+        /// Open an file dialog to search for a KSP instance, like in <code>ManageKspInstances</code>.
         /// </summary>
         private void buttonInstancePathSelection_Click(object sender, EventArgs e)
         {
