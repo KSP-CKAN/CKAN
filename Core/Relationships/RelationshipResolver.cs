@@ -503,6 +503,9 @@ namespace CKAN
             modlist.Add(module.identifier, module);
             if (!reasons.ContainsKey(module))
                 reasons.Add(module, reason);
+            // Override Installed for upgrades
+            else if (reasons[module] is SelectionReason.Installed)
+                reasons[module] = reason;
 
             log.DebugFormat("Added {0}", module.identifier);
             // Stop here if it doesn't have any provide aliases.

@@ -81,7 +81,6 @@ namespace CKAN
             tabController.HideTab("ChangesetTabPage");
             AddLogMessage(logMsg);
             SetDescription(description);
-            ApplyToolButton.Enabled = !success;
         }
 
         public void SetProgress(int progress)
