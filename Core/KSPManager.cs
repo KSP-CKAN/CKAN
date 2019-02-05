@@ -186,6 +186,11 @@ namespace CKAN
                 throw kraken;
             }
             // Thrown by CopyDirectory() if the specified folder already exists and is not empty.
+            catch (PathErrorKraken kraken)
+            {
+                throw kraken;
+            }
+            // Thrown by CopyDirectory() if something goes wrong during the process.
             catch (IOException e)
             {
                 throw e;

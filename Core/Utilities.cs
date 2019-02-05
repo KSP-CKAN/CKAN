@@ -40,7 +40,7 @@ namespace CKAN
             }
             else if (Directory.GetDirectories(destDirPath).Length != 0 || Directory.GetFiles(destDirPath).Length != 0)
             {
-                throw new IOException("Directory not empty: " + destDirPath);
+                throw new PathErrorKraken(destDirPath, "Directory not empty: ");
             }
 
             // Get the files in the directory and copy them to the new location.

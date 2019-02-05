@@ -351,10 +351,16 @@ namespace CKAN.CmdLine
                 log.Error(kraken);
                 return Exit.ERROR;
             }
-            catch (IOException e)
+            catch (PathErrorKraken kraken)
             {
                 // The new path is not empty
-                // The exception contains a message to inform the user.
+                // The kraken contains a message to inform the user.
+                log.Error(kraken.Message + kraken.path);
+                return Exit.ERROR;
+            }
+            catch (IOException e)
+            {
+                // Something went wrong copying the files. Contains a message.
                 log.Error(e);
                 return Exit.ERROR;
             }

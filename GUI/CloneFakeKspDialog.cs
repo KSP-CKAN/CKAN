@@ -160,9 +160,15 @@ namespace CKAN
                     reactivateDialog();
                     return;
                 }
-                catch (IOException exception)
+                catch (PathErrorKraken kraken)
                 {
-                    user.RaiseError("The destination folder is not empty or invalid: " + exception.Message);
+                    user.RaiseError("The destination folder is not empty: " + kraken.path);
+                    reactivateDialog();
+                    return;
+                }
+                catch (IOException ex)
+                {
+                    user.RaiseError($"Clone failed: {ex.Message}");
                     reactivateDialog();
                     return;
                 }
