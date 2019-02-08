@@ -90,11 +90,17 @@
     <Compile Include="AskUserForAutoUpdatesDialog.Designer.cs">
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChooseKSPInstance.cs">
+    <Compile Include="ManageKspInstances.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChooseKSPInstance.Designer.cs">
-      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+    <Compile Include="ManageKspInstances.Designer.cs">
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CloneFakeKspDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CloneFakeKspDialog.Designer.cs">
+      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="CompatibleKspVersionsDialog.cs">
       <SubType>Form</SubType>
@@ -169,6 +175,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainRecommendations.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainRepo.cs">
       <SubType>Form</SubType>
@@ -237,12 +244,14 @@
     <Compile Include="YesNoDialog.Designer.cs">
       <DependentUpon>YesNoDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TransparentTextBox.cs" />
+    <Compile Include="TransparentTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SelectionDialog.cs">
-        <Subtype>Form</Subtype>
+      <Subtype>Form</Subtype>
     </Compile>
     <Compile Include="SelectionDialog.Designer.cs">
-        <DependentUpon>SelectionDialog.cs</DependentUpon>
+      <DependentUpon>SelectionDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -253,7 +262,10 @@
       <DependentUpon>AskUserForAutoUpdatesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseKSPInstance.resx">
-      <DependentUpon>ChooseKSPInstance.cs</DependentUpon>
+      <DependentUpon>ManageKspInstances.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CloneFakeKspDialog.resx">
+      <DependentUpon>CloneFakeKspDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CompatibleKspVersionsDialog.resx">
       <DependentUpon>CompatibleKspVersionsDialog.cs</DependentUpon>

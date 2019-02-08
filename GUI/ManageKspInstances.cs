@@ -5,7 +5,7 @@ using System.IO;
 
 namespace CKAN
 {
-    public partial class ChooseKSPInstance : Form
+    public partial class ManageKspInstances : Form
     {
         private readonly KSPManager _manager;
         private RenameInstanceDialog _renameInstanceDialog;
@@ -25,7 +25,7 @@ namespace CKAN
         /// Initialize the game instance selection window
         /// </summary>
         /// <param name="centerScreen">true to center the window on the screen, false to center it on the parent</param>
-        public ChooseKSPInstance(bool centerScreen)
+        public ManageKspInstances(bool centerScreen)
         {
             _manager = Main.Instance.Manager;
             InitializeComponent();
@@ -39,12 +39,18 @@ namespace CKAN
             {
                 _manager.FindAndRegisterDefaultInstance();
             }
+            
+            // Set the renderer for the AddNewMenu
+            if (Platform.IsMono)
+            {
+                this.AddNewMenu.Renderer = new FlatToolStripRenderer();
+            }
 
             UpdateInstancesList();
             UpdateButtonState();
         }
-
-        private void UpdateInstancesList()
+        
+        public void UpdateInstancesList()
         {
             KSPInstancesListView.Items.Clear();
             UpdateButtonState();
@@ -70,7 +76,7 @@ namespace CKAN
             }
         }
 
-        private void AddNewButton_Click(object sender, EventArgs e)
+        private void AddToCKANMenuItem_Click(object sender, EventArgs e)
         {
             if (_instanceDialog.ShowDialog() != DialogResult.OK
                     || !File.Exists(_instanceDialog.FileName))
@@ -91,6 +97,13 @@ namespace CKAN
                     new object[] { k.path });
                 return;
             }
+        }
+
+        private void CloneFakeInstanceMenuItem_Click(object sender, EventArgs e)
+        {
+            CloneFakeKspDialog dialog = new CloneFakeKspDialog(_manager);
+            dialog.ShowDialog();
+            UpdateInstancesList();
         }
 
         private void SelectButton_Click(object sender, EventArgs e)

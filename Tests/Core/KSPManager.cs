@@ -135,7 +135,7 @@ namespace Tests.Core
                 string tempdir = TestData.NewTempDir();
                 System.IO.File.Create(System.IO.Path.Combine(tempdir, "shouldntbehere.txt"));
 
-                Assert.Throws<System.IO.IOException>(() =>
+                Assert.Throws<PathErrorKraken>(() =>
                     manager.CloneInstance(KSP.KSP, instanceName, tempdir));
                 Assert.IsFalse(manager.HasInstance(instanceName));
 

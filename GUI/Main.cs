@@ -195,8 +195,8 @@ namespace CKAN
                 this.minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
-            // We need to initialize the error dialog first to display errors.
-            errorDialog = controlFactory.CreateControl<ErrorDialog>();
+            // Initialize all user interaction dialogs.
+            RecreateDialogs();
 
             // We want to check if our current instance is null first,
             // as it may have already been set by a command-line option.
@@ -204,7 +204,7 @@ namespace CKAN
             {
                 Hide();
 
-                var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
+                var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
                 if (result == DialogResult.Cancel || result == DialogResult.Abort)
                 {
                     Application.Exit();
@@ -240,8 +240,6 @@ namespace CKAN
 
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");
-
-            RecreateDialogs();
 
             if (!showConsole)
                 Util.HideConsoleWindow();
@@ -968,11 +966,11 @@ namespace CKAN
             }
         }
 
-        private void selectKSPInstallMenuItem_Click(object sender, EventArgs e)
+        private void manageKspInstancesMenuItem_Click(object sender, EventArgs e)
         {
             Instance.Manager.ClearAutoStart();
             var old_instance = Instance.CurrentInstance;
-            var result = new ChooseKSPInstance(!actuallyVisible).ShowDialog();
+            var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
                 Instance.CurrentInstanceUpdated();
         }
