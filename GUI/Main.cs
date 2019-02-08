@@ -896,11 +896,15 @@ namespace CKAN
                 // We'll need to make some registry changes to do this.
                 RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance);
 
-                // Remove this version of the module in the registry, if it exists.
-                registry_manager.registry.RemoveAvailable(module);
+                // Don't add metapacakges to the registry
+                if (!module.IsMetapackage)
+                {
+                    // Remove this version of the module in the registry, if it exists.
+                    registry_manager.registry.RemoveAvailable(module);
 
-                // Sneakily add our version in...
-                registry_manager.registry.AddAvailable(module);
+                    // Sneakily add our version in...
+                    registry_manager.registry.AddAvailable(module);
+                }
 
                 menuStrip1.Enabled = false;
 

@@ -51,6 +51,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add AD mods back into GUI's installed filter (#2668 by: HebaruSan; reviewed: politas)
 - [GUI] Allow installation of missing dependencies in GUI (#2674 by: HebaruSan; reviewed: politas)
 - [GUI] Fix window position on MacOSX (#2677 by: HebaruSan; reviewed: politas)
+- [GUI] Fix upgrading and installing from .ckan in GUI (#2680 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
