@@ -75,58 +75,62 @@ namespace CKAN
         /// </summary>
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
+        /// <param name="installed">Modules that are already installed</param>
+        /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
-        public CkanModule Latest(KspVersionCriteria ksp_version = null, RelationshipDescriptor relationship=null)
+        public CkanModule Latest(
+            KspVersionCriteria      ksp_version  = null,
+            RelationshipDescriptor  relationship = null,
+            IEnumerable<CkanModule> installed    = null,
+            IEnumerable<CkanModule> toInstall    = null
+        )
         {
-            var available_versions = new List<ModuleVersion>(module_version.Keys);
-            CkanModule module;
             log.DebugFormat("Our dictionary has {0} keys", module_version.Keys.Count);
-            log.DebugFormat("Choosing between {0} available versions", available_versions.Count);
-
-            // Uh oh, nothing available. Maybe this existed once, but not any longer.
-            if (available_versions.Count == 0)
+            IEnumerable<CkanModule> modules = module_version.Values;
+            if (relationship != null)
             {
-                return null;
+                modules = modules.Where(relationship.WithinBounds);
             }
-
-            // No restrictions? Great, we can just pick the latest one!
-            if (ksp_version == null && relationship == null)
+            if (ksp_version != null)
             {
-                module = module_version[available_versions.Last()];
-
-                log.DebugFormat("No KSP version restriction, {0} is most recent", module);
-                return module;
+                modules = modules.Where(m => m.IsCompatibleKSP(ksp_version));
             }
-
-            // If there's no relationship to satisfy, we can just pick the latest that is
-            // compatible with our version of KSP.
-            if (relationship == null)
+            if (installed != null)
             {
-                // Time to check if there's anything that we can satisfy.
-                var version =
-                    available_versions.LastOrDefault(v => module_version[v].IsCompatibleKSP(ksp_version));
-                if (version != null)
-                    return module_version[version];
-
-                log.DebugFormat("No version of {0} is compatible with KSP {1}",
-                    module_version[available_versions[0]].identifier, ksp_version);
-
-                return null;
+                modules = modules.Where(m => DependsAndConflictsOK(m, installed));
             }
-
-            // If we're here, then we have a relationship to satisfy, so things get more complex.
-            if (ksp_version == null)
+            if (toInstall != null)
             {
-                var version = available_versions.LastOrDefault(relationship.WithinBounds);
-                return version == null ? null : module_version[version];
+                modules = modules.Where(m => DependsAndConflictsOK(m, toInstall));
             }
-            else
+            return modules.LastOrDefault();
+        }
+
+        private static bool DependsAndConflictsOK(CkanModule module, IEnumerable<CkanModule> others)
+        {
+            if (module.depends != null)
             {
-                var version = available_versions.LastOrDefault(v =>
-                    relationship.WithinBounds(v) &&
-                    module_version[v].IsCompatibleKSP(ksp_version));
-                return version == null ? null : module_version[version];
+                foreach (RelationshipDescriptor rel in module.depends)
+                {
+                    // If 'others' matches an identifier, it must also match the versions, else fail
+                    if (rel.ContainsAny(others.Select(m => m.identifier)) && !rel.MatchesAny(others, null, null))
+                    {
+                        return false;
+                    }
+                }
             }
+            if (module.conflicts != null)
+            {
+                foreach (RelationshipDescriptor rel in module.conflicts)
+                {
+                    // If any of the conflicts are present, fail
+                    if (rel.MatchesAny(others, null, null))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         /// <summary>

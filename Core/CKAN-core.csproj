@@ -71,6 +71,7 @@
     <Compile Include="Converters\JsonOldResourceUrlConverter.cs" />
     <Compile Include="Converters\JsonSimpleStringConverter.cs" />
     <Compile Include="Converters\JsonSingleOrArrayConverter.cs" />
+    <Compile Include="Converters\JsonRelationshipConverter.cs" />
     <Compile Include="DLC\IDlcDetector.cs" />
     <Compile Include="DLC\MakingHistoryDlcDetector.cs" />
     <Compile Include="Exporters\BbCodeExporter.cs" />

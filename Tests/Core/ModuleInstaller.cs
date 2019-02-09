@@ -442,6 +442,7 @@ namespace Tests.Core
                 });
 
                 manager.CurrentInstance = null; // I weep even more.
+                manager.Dispose();
             }
         }
 
@@ -488,6 +489,8 @@ namespace Tests.Core
 
                 // Check that the module is installed.
                 Assert.IsTrue(File.Exists(mod_file_path));
+
+                manager.Dispose();
             }
         }
 
@@ -525,6 +528,8 @@ namespace Tests.Core
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
+
+                manager.Dispose();
             }
         }
 
@@ -579,6 +584,8 @@ namespace Tests.Core
 
                 // Check that the directory has been deleted.
                 Assert.IsFalse(Directory.Exists(directoryPath));
+
+                manager.Dispose();
             }
         }
 
@@ -617,6 +624,8 @@ namespace Tests.Core
                         string mod_file_path = Path.Combine(ksp.KSP.GameData(), mod_file_name);
 
                         Assert.IsTrue(File.Exists(mod_file_path));
+
+                        manager.Dispose();
                     }
                 }
             });

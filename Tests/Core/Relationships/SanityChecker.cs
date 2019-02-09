@@ -108,7 +108,7 @@ namespace Tests.Core.Relationships
             mods.Add(registry.LatestAvailable("CustomBiomes", null));
             Assert.Contains(
                 "CustomBiomesData",
-                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.name).ToList(),
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.ToString()).ToList(),
                 "Missing CustomBiomesData"
             );
 
@@ -120,7 +120,7 @@ namespace Tests.Core.Relationships
 
             Assert.Contains(
                 "CustomBiomes",
-                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.name).ToList(),
+                CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Value.ToString()).ToList(),
                 "Missing CustomBiomes"
             );
         }
@@ -136,8 +136,8 @@ namespace Tests.Core.Relationships
             };
 
             // Make sure some of our expectations regarding dependencies are correct.
-            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal",null).depends.Select(x => x.name).ToList());
-            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes",null).depends.Select(x => x.name).ToList());
+            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal",null).depends.Select(x => x.ToString()).ToList());
+            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes",null).depends.Select(x => x.ToString()).ToList());
 
             // Removing DCF should only remove itself.
             var to_remove = new List<string> {"DogeCoinFlag"};

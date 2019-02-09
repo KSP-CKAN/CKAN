@@ -155,7 +155,7 @@ namespace CKAN.CmdLine
             }
 
             user.RaiseMessage("- status:\t{0}", module.release_status);
-            user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license)); 
+            user.RaiseMessage("- license:\t{0}", string.Join(", ", module.license));
             #endregion
 
             #region Relationships
@@ -185,7 +185,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("\r\nProvides:");
                 foreach (string prov in module.ProvidesList)
                     user.RaiseMessage("- {0}", prov);
-            } 
+            }
             #endregion
 
             user.RaiseMessage("\r\nResources:");
@@ -219,12 +219,8 @@ namespace CKAN.CmdLine
         private static string RelationshipToPrintableString(RelationshipDescriptor dep)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(dep.name);
-            if (dep.version != null) sb.Append(", version: " + dep.version);
-            if (dep.min_version != null) sb.Append(", min: " + dep.min_version);
-            if (dep.max_version != null) sb.Append(", max: " + dep.max_version);
+            sb.Append(dep.ToString());
             return sb.ToString();
         }
     }
 }
-

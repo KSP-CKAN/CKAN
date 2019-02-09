@@ -151,11 +151,10 @@ namespace CKAN.ConsoleUI {
         {
             if (source != null) {
                 foreach (RelationshipDescriptor dependency in source) {
-                    if (!rejected.Contains(dependency.name)) {
-                        List<CkanModule> opts = registry.LatestAvailableWithProvides(
-                            dependency.name,
-                            manager.CurrentInstance.VersionCriteria(),
-                            dependency
+                    if (dependency.ContainsAny(rejected)) {
+                        List<CkanModule> opts = dependency.LatestAvailableWithProvides(
+                            registry,
+                            manager.CurrentInstance.VersionCriteria()
                         );
                         foreach (CkanModule provider in opts) {
                             if (!registry.IsInstalled(provider.identifier)

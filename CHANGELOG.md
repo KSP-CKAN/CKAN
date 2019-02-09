@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.25.5
+## v1.26.0.PRE-1
 
 ### Features
 
@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Get license from GitHub (#2663 by: HebaruSan; reviewed: politas)
 - [Multiple] Cleanly switch versions of installed mod (#2669 by: HebaruSan; reviewed: politas)
 - [Multiple] Implementation of clone and fake in GUI (#2665 by: DasSkelett; reviewed: HebaruSan, politas)
+- [Multiple] Support depends on any_of lists (#2660 by: HebaruSan; reviewed: politas)
 
 ### Bugfixes
 

@@ -312,26 +312,40 @@
             "description" : "A relationship to a list of mods",
             "type" : "array",
             "items" : {
-                "type" : "object",
-                "properties" : {
-                    "name" : {
-                        "description" : "Identifier of the mod",
-                        "$ref"        : "#/definitions/identifier"
+                "oneOf": [
+                    {
+                        "type" : "object",
+                        "properties" : {
+                            "name" : {
+                                "description" : "Identifier of the mod",
+                                "$ref"        : "#/definitions/identifier"
+                            },
+                            "version" : {
+                                "description" : "Optional version",
+                                "$ref"        : "#/definitions/version"
+                            },
+                            "min_version" : {
+                                "description" : "Optional minimum version",
+                                "$ref"        : "#/definitions/version"
+                            },
+                            "max_version" : {
+                                "description" : "Optional maximum version",
+                                "$ref"        : "#/definitions/version"
+                            }
+                        },
+                        "required" : [ "name" ]
                     },
-                    "version" : {
-                        "description" : "Optional version",
-                        "$ref"        : "#/definitions/version"
-                    },
-                    "min_version" : {
-                        "description" : "Optional minimum version",
-                        "$ref"        : "#/definitions/version"
-                    },
-                    "max_version" : {
-                        "description" : "Optional maximum version",
-                        "$ref"        : "#/definitions/version"
+                    {
+                        "type": "object",
+                        "properties": {
+                            "any_of": {
+                                "description": "List of modules that can satisfy this relationship",
+                                "$ref": "#/definitions/relationship"
+                            }
+                        },
+                        "required": [ "any_of" ]
                     }
-                },
-                "required" : [ "name" ]
+                ]
             }
         },
         "install_to" : {

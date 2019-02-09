@@ -49,6 +49,7 @@ namespace Tests.Core.Net
         public void TearDown()
         {
             Curl.CleanUp();
+            manager.Dispose();
             ksp.Dispose();
         }
 

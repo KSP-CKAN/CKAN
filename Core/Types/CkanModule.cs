@@ -6,14 +6,35 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Autofac;
-using CKAN.Extensions;
-using CKAN.Versioning;
 using log4net;
 using Newtonsoft.Json;
+using CKAN.Extensions;
+using CKAN.Versioning;
 
 namespace CKAN
 {
-    public class RelationshipDescriptor
+    public abstract class RelationshipDescriptor
+    {
+        public abstract bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        );
+
+        public abstract bool WithinBounds(CkanModule otherModule);
+
+        public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null);
+
+        public abstract bool Same(RelationshipDescriptor other);
+
+        public abstract bool ContainsAny(IEnumerable<string> identifiers);
+
+        public abstract bool StartsWith(string prefix);
+
+        // virtual ToString() already present in 'object'
+    }
+
+    public class ModuleRelationshipDescriptor : RelationshipDescriptor
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion max_version;
@@ -23,6 +44,13 @@ namespace CKAN
         public /* required */ string name;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ModuleVersion version;
+
+
+        public override bool WithinBounds(CkanModule otherModule)
+        {
+            return otherModule.ProvidesList.Contains(name)
+                && WithinBounds(otherModule.version);
+        }
 
         /// <summary>
         /// Returns if the other version satisfies this RelationshipDescriptor.
@@ -69,7 +97,7 @@ namespace CKAN
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
-        public bool MatchesAny(
+        public override bool MatchesAny(
             IEnumerable<CkanModule> modules,
             HashSet<string> dlls,
             IDictionary<string, UnmanagedModuleVersion> dlc
@@ -95,7 +123,7 @@ namespace CKAN
                 // See if the real thing is there
                 foreach (var m in modules.Where(m => m.identifier == name))
                 {
-                    if (WithinBounds(m.version))
+                    if (WithinBounds(m))
                     {
                         return true;
                     }
@@ -115,6 +143,32 @@ namespace CKAN
 
             return false;
         }
+
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
+        {
+            return registry.LatestAvailableWithProvides(name, crit, this, toInstall);
+        }
+
+        public override bool Same(RelationshipDescriptor other)
+        {
+            ModuleRelationshipDescriptor modRel = other as ModuleRelationshipDescriptor;
+            return modRel != null
+                && name        == modRel.name
+                && version     == modRel.version
+                && min_version == modRel.min_version
+                && max_version == modRel.max_version;
+        }
+
+        public override bool ContainsAny(IEnumerable<string> identifiers)
+        {
+            return identifiers.Contains(name);
+        }
+
+        public override bool StartsWith(string prefix)
+        {
+            return name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
+        }
+
 
         /// <summary>
         /// A user friendly message for what versions satisfies this descriptor.
@@ -153,6 +207,59 @@ namespace CKAN
                 : name;
         }
 
+    }
+
+    public class AnyOfRelationshipDescriptor : RelationshipDescriptor
+    {
+        [JsonProperty("any_of", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
+        public List<RelationshipDescriptor> any_of;
+
+        public override bool WithinBounds(CkanModule otherModule)
+        {
+            return any_of?.Any(r => r.WithinBounds(otherModule))
+                ?? false;
+        }
+
+        public override bool MatchesAny(
+            IEnumerable<CkanModule> modules,
+            HashSet<string> dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc
+        )
+        {
+            return any_of?.Any(r => r.MatchesAny(modules, dlls, dlc))
+                ?? false;
+        }
+
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null)
+        {
+            return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, toInstall)).ToList();
+        }
+
+        public override bool Same(RelationshipDescriptor other)
+        {
+            AnyOfRelationshipDescriptor anyRel = other as AnyOfRelationshipDescriptor;
+            return anyRel != null
+                && (any_of?.SequenceEqual(anyRel.any_of) ?? anyRel.any_of == null);
+        }
+
+        public override bool ContainsAny(IEnumerable<string> identifiers)
+        {
+            return any_of?.Any(r => r.ContainsAny(identifiers))
+                ?? false;
+        }
+
+        public override bool StartsWith(string prefix)
+        {
+            return any_of?.Any(r => r.StartsWith(prefix))
+                ?? false;
+        }
+
+        public override string ToString()
+        {
+            return any_of?.Select(r => r.ToString())
+                .Aggregate((a, b) => $"{a} OR {b}");
+        }
     }
 
     public class ResourcesDescriptor
@@ -246,9 +353,11 @@ namespace CKAN
         public string comment;
 
         [JsonProperty("conflicts", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> conflicts;
 
         [JsonProperty("depends", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> depends;
 
         [JsonProperty("download")]
@@ -291,6 +400,7 @@ namespace CKAN
         public List<string> provides;
 
         [JsonProperty("recommends", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> recommends;
 
         [JsonProperty("release_status", NullValueHandling = NullValueHandling.Ignore)]
@@ -300,12 +410,14 @@ namespace CKAN
         public ResourcesDescriptor resources;
 
         [JsonProperty("suggests", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> suggests;
 
         [JsonProperty("version", Required = Required.Always)]
         public ModuleVersion version;
 
         [JsonProperty("supports", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> supports;
 
         [JsonProperty("install", NullValueHandling = NullValueHandling.Ignore)]

@@ -47,7 +47,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule();
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier}
             });
 
             list.Add(mod_a.identifier);
@@ -79,7 +79,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule();
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, version=mod_a.version}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, version=mod_a.version}
             });
 
             list.Add(mod_a.identifier);
@@ -104,7 +104,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
             });
 
             list.Add(mod_a.identifier);
@@ -129,7 +129,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -155,7 +155,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -180,7 +180,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, version=new ModuleVersion(conf)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, version=new ModuleVersion(conf)}
             });
 
             list.Add(mod_a.identifier);
@@ -204,7 +204,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
             });
 
             list.Add(mod_a.identifier);
@@ -228,7 +228,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -253,7 +253,7 @@ namespace Tests.Core.Relationships
             var mod_a = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
             });
 
             list.Add(mod_a.identifier);
@@ -285,7 +285,7 @@ namespace Tests.Core.Relationships
             });
             var mod_d = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=mod_a.identifier}
+                new ModuleRelationshipDescriptor {name=mod_a.identifier}
             });
 
             list.Add(mod_d.identifier);
@@ -341,7 +341,7 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule();
             var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = suggested.identifier}
+                new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             list.Add(suggester.identifier);
@@ -360,11 +360,11 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule();
             var mod = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = suggested.identifier}
+                new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
             var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = suggested.identifier}
+                new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             list.Add(suggester.identifier);
@@ -382,11 +382,11 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule();
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier}
+                new ModuleRelationshipDescriptor {name = dependant.identifier}
             });
             var conflicts_with_dependant = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name=dependant.identifier}
+                new ModuleRelationshipDescriptor {name=dependant.identifier}
             });
 
 
@@ -410,7 +410,7 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule();
             var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = suggested.identifier}
+                new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             list.Add(suggester.identifier);
@@ -429,13 +429,13 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
-                    new RelationshipDescriptor { name = suggested2.identifier }
+                    new ModuleRelationshipDescriptor { name = suggested2.identifier }
                 }
             );
             var suggester = generator.GeneratorRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
-                    new RelationshipDescriptor { name = suggested.identifier }
+                    new ModuleRelationshipDescriptor { name = suggested.identifier }
                 }
             );
 
@@ -462,7 +462,7 @@ namespace Tests.Core.Relationships
             });
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = mod_a.identifier}
+                new ModuleRelationshipDescriptor {name = mod_a.identifier}
             });
             list.Add(depender.identifier);
             AddToRegistry(mod_b, depender);
@@ -482,7 +482,7 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule();
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier}
+                new ModuleRelationshipDescriptor {name = dependant.identifier}
             });
             list.Add(depender.identifier);
             registry.AddAvailable(depender);
@@ -507,7 +507,7 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
@@ -529,7 +529,7 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant);
@@ -558,7 +558,7 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             list.Add(dependant.identifier);
@@ -582,7 +582,7 @@ namespace Tests.Core.Relationships
             var dependant = generator.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor
+                new ModuleRelationshipDescriptor
                 {
                     name = dependant.identifier,
                     min_version = new ModuleVersion(dep_min),
@@ -613,7 +613,7 @@ namespace Tests.Core.Relationships
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
             });
 
             list.Add(depender.identifier);
@@ -640,7 +640,7 @@ namespace Tests.Core.Relationships
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
@@ -666,7 +666,7 @@ namespace Tests.Core.Relationships
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
@@ -692,7 +692,7 @@ namespace Tests.Core.Relationships
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min), max_version = new ModuleVersion(dep_max)}
+                new ModuleRelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min), max_version = new ModuleVersion(dep_max)}
             });
             list.Add(depender.identifier);
             AddToRegistry(depender, dependant, other_dependant);
@@ -721,6 +721,89 @@ namespace Tests.Core.Relationships
                 options,
                 registry,
                 null));
+        }
+
+        [Test]
+        public void Constructor_ReverseDependencyDoesntMatchLatest_ChoosesOlderVersion()
+        {
+            // Arrange
+            CkanModule depender = CkanModule.FromJson(@"{
+                ""identifier"": ""depender"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ { ""name"": ""dependency"" } ]
+            }");
+
+            CkanModule olderDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":        ""depender"",
+                    ""min_version"": ""1.0""
+                } ]
+            }");
+
+            CkanModule newerDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""2.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ {
+                    ""name"":        ""depender"",
+                    ""min_version"": ""2.0""
+                } ]
+            }");
+
+            AddToRegistry(olderDependency, newerDependency, depender);
+
+            // Act
+            RelationshipResolver rr = new RelationshipResolver(
+                new CkanModule[] { depender }, null,
+                options, registry, null
+            );
+
+            // Assert
+            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
+        }
+
+        [Test]
+        public void Constructor_ReverseDependencyConflictsLatest_ChoosesOlderVersion()
+        {
+            // Arrange
+            CkanModule depender = CkanModule.FromJson(@"{
+                ""identifier"": ""depender"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""depends"": [ { ""name"": ""dependency"" } ]
+            }");
+
+            CkanModule olderDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
+            }");
+
+            CkanModule newerDependency = CkanModule.FromJson(@"{
+                ""identifier"": ""dependency"",
+                ""version"":    ""2.0"",
+                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""conflicts"": [ {
+                    ""name"": ""depender""
+                } ]
+            }");
+
+            AddToRegistry(olderDependency, newerDependency, depender);
+
+            // Act
+            RelationshipResolver rr = new RelationshipResolver(
+                new CkanModule[] { depender }, null,
+                options, registry, null
+            );
+
+            // Assert
+            CollectionAssert.Contains(      rr.ModList(), olderDependency);
+            CollectionAssert.DoesNotContain(rr.ModList(), newerDependency);
         }
 
         [Test]
@@ -759,7 +842,7 @@ namespace Tests.Core.Relationships
             var suggested = generator.GeneratorRandomModule();
             var mod =
                 generator.GeneratorRandomModule(suggests:
-                    new List<RelationshipDescriptor> {new RelationshipDescriptor {name = suggested.identifier}});
+                    new List<RelationshipDescriptor> {new ModuleRelationshipDescriptor {name = suggested.identifier}});
             list.Add(mod.identifier);
             AddToRegistry(mod, suggested);
 
@@ -781,14 +864,14 @@ namespace Tests.Core.Relationships
             var mod = generator.GeneratorRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
-                    new RelationshipDescriptor { name = suggested.identifier }
+                    new ModuleRelationshipDescriptor { name = suggested.identifier }
                 }
             );
             list.Add(mod.identifier);
             suggested.recommends = new List<RelationshipDescriptor>
             {
-                new RelationshipDescriptor { name = recommendedA.identifier },
-                new RelationshipDescriptor { name = recommendedB.identifier }
+                new ModuleRelationshipDescriptor { name = recommendedA.identifier },
+                new ModuleRelationshipDescriptor { name = recommendedB.identifier }
             };
 
             AddToRegistry(mod, suggested, recommendedA, recommendedB);
@@ -816,7 +899,7 @@ namespace Tests.Core.Relationships
                 registry.RegisterDll(ksp.KSP, Path.Combine(ksp.KSP.GameData(), "ModuleManager.dll"));
 
                 var depends = new List<CKAN.RelationshipDescriptor>();
-                depends.Add(new CKAN.RelationshipDescriptor { name = "ModuleManager" });
+                depends.Add(new CKAN.ModuleRelationshipDescriptor { name = "ModuleManager" });
 
                 CkanModule mod = generator.GeneratorRandomModule(depends: depends);
 

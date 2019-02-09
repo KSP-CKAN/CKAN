@@ -535,14 +535,14 @@ namespace CKAN
                     try
                     {
                         if (!dependency.MatchesAny(null, InstalledDlls.ToHashSet(), InstalledDlc)
-                            && !LatestAvailableWithProvides(dependency.name, ksp_version).Any())
+                            && !dependency.LatestAvailableWithProvides(this, ksp_version).Any())
                         {
                             return false;
                         }
                     }
                     catch (KeyNotFoundException e)
                     {
-                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.name);
+                        log.ErrorFormat("Cannot find available version with provides for {0} in registry", dependency.ToString());
                         throw e;
                     }
                     catch (ModuleNotFoundKraken)
@@ -563,7 +563,7 @@ namespace CKAN
         public CkanModule LatestAvailable(
             string module,
             KspVersionCriteria ksp_version,
-            RelationshipDescriptor relationship_descriptor =null)
+            RelationshipDescriptor relationship_descriptor = null)
         {
             log.DebugFormat("Finding latest available for {0}", module);
 
@@ -695,15 +695,22 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(
-            string                 module,
-            KspVersionCriteria     ksp_version,
-            RelationshipDescriptor relationship_descriptor = null)
+            string                  module,
+            KspVersionCriteria      ksp_version,
+            RelationshipDescriptor  relationship_descriptor = null,
+            IEnumerable<CkanModule> toInstall               = null)
         {
             HashSet<AvailableModule> provs;
             if (providers.TryGetValue(module, out provs))
             {
                 // For each AvailableModule, we want the latest one matching our constraints
-                return provs.Select(am => am.Latest(ksp_version, relationship_descriptor))
+                return provs
+                    .Select(am => am.Latest(
+                        ksp_version,
+                        relationship_descriptor,
+                        InstalledModules.Select(im => im.Module),
+                        toInstall
+                    ))
                     .Where(m => m?.ProvidesList?.Contains(module) ?? false)
                     .ToList();
             }

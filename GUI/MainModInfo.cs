@@ -286,13 +286,13 @@ namespace CKAN
                         {
                             // Look for compatible mods
                             TreeNode child = findDependencyShallow(
-                                    registry, dependency.name, relationship,
+                                    registry, dependency, relationship,
                                     manager.CurrentInstance.VersionCriteria())
                                 // Then incompatible mods
                                 ?? findDependencyShallow(
-                                    registry, dependency.name, relationship, null)
+                                    registry, dependency, relationship, null)
                                 // Then give up and note the name without a module
-                                ?? nonindexedNode(dependency.name, relationship);
+                                ?? nonindexedNode(dependency, relationship);
                             node.Nodes.Add(child);
                         }
                     }
@@ -300,23 +300,26 @@ namespace CKAN
             }
         }
 
-        private TreeNode findDependencyShallow(IRegistryQuerier registry, string identifier, RelationshipType relationship, KspVersionCriteria crit)
+        private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, KspVersionCriteria crit)
         {
             // Maybe it's a DLC?
-            ModuleVersion installedVersion = registry.InstalledVersion(identifier, false);
-            if (installedVersion != null)
+            if (relDescr.MatchesAny(
+                registry.InstalledModules.Select(im => im.Module),
+                new HashSet<string>(registry.InstalledDlls),
+                registry.InstalledDlc))
             {
-                return nonModuleNode(identifier, installedVersion, relationship);
+                return nonModuleNode(relDescr, null, relationship);
             }
 
             // Find modules that satisfy this dependency
-            List<CkanModule> dependencyModules = registry.LatestAvailableWithProvides(identifier, crit);
+            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(registry, crit);
             if (dependencyModules.Count == 0)
             {
                 // Nothing found, don't return a node
                 return null;
             }
-            else if (dependencyModules.Count == 1 && dependencyModules[0].identifier == identifier)
+            else if (dependencyModules.Count == 1
+                && relDescr.ContainsAny(new string[] { dependencyModules[0].identifier }))
             {
                 // Only one exact match module, return a simple node
                 return indexedNode(registry, dependencyModules[0], relationship, crit != null);
@@ -324,7 +327,7 @@ namespace CKAN
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(identifier, relationship,
+                return providesNode(relDescr.ToString(), relationship,
                     dependencyModules.Select(dep => indexedNode(registry, dep, relationship, crit != null))
                 );
             }
@@ -355,23 +358,23 @@ namespace CKAN
             };
         }
 
-        private TreeNode nonModuleNode(string identifier, ModuleVersion version, RelationshipType relationship)
+        private TreeNode nonModuleNode(RelationshipDescriptor relDescr, ModuleVersion version, RelationshipType relationship)
         {
             int icon = (int)relationship + 1;
-            return new TreeNode($"{identifier} {version}", icon, icon)
+            return new TreeNode($"{relDescr} {version}", icon, icon)
             {
-                Name        = identifier,
+                Name        = relDescr.ToString(),
                 ToolTipText = relationship.ToString()
             };
         }
 
-        private TreeNode nonindexedNode(string identifier, RelationshipType relationship)
+        private TreeNode nonindexedNode(RelationshipDescriptor relDescr, RelationshipType relationship)
         {
             // Completely nonexistent dependency, e.g. "AJE"
             int icon = (int)relationship + 1;
-            return new TreeNode(identifier + " (not indexed)", icon, icon)
+            return new TreeNode(relDescr.ToString() + " (not indexed)", icon, icon)
             {
-                Name        = identifier,
+                Name        = relDescr.ToString(),
                 ToolTipText = relationship.ToString(),
                 ForeColor   = Color.Red
             };
