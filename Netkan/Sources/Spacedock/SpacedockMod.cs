@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace CKAN.NetKAN.Sources.Spacedock
@@ -32,6 +33,11 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
             // There should only ever be one.
             return latest.First();
+        }
+
+        public IEnumerable<SDVersion> All()
+        {
+            return versions;
         }
 
         /// <summary>

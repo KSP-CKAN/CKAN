@@ -1,12 +1,13 @@
 ﻿using System;
-using CKAN;
-using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Sources.Github;
-using CKAN.NetKAN.Transformers;
-using CKAN.Versioning;
+using System.Linq;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using CKAN;
+using CKAN.Versioning;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Sources.Github;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -36,10 +37,10 @@ namespace Tests.NetKAN.Transformers
                     null
                 ));
 
-            var sut = new GithubTransformer(mApi.Object, matchPreleases: false);
+            var sut = new GithubTransformer(mApi.Object, false, false);
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -72,10 +73,10 @@ namespace Tests.NetKAN.Transformers
                     null
                 ));
 
-            ITransformer sut = new GithubTransformer(mApi.Object, matchPreleases: false);
+            ITransformer sut = new GithubTransformer(mApi.Object, false, false);
 
             // Act
-            Metadata result = sut.Transform(new Metadata(json));
+            Metadata result = sut.Transform(new Metadata(json)).First();
             JObject transformedJson = result.Json();
 
             // Assert

@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
+using Moq;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Transformers;
-using Moq;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -47,7 +48,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -82,7 +83,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -104,7 +105,7 @@ namespace Tests.NetKAN.Transformers
             json["spec_version"] = 1;
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert

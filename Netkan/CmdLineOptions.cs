@@ -28,6 +28,9 @@ namespace CKAN.NetKAN
         [Option("net-useragent", DefaultValue = null, HelpText = "Set the default User-Agent string for HTTP requests")]
         public string NetUserAgent { get; set; }
 
+        [Option("backfill", HelpText = "Process all releases instead of only the most recent")]
+        public bool BackFill { get; set; }
+
         [Option("prerelease", HelpText = "Index GitHub prereleases")]
         public bool PreRelease { get; set; }
 

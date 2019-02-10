@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
+using CKAN.Versioning;
 using CKAN.NetKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Spacedock;
 using CKAN.NetKAN.Transformers;
-using CKAN.Versioning;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -36,7 +37,7 @@ namespace Tests.NetKAN.Transformers
                     }
                 });
 
-            ITransformer sut = new SpacedockTransformer(mApi.Object);
+            ITransformer sut = new SpacedockTransformer(mApi.Object, false);
 
             JObject json            = new JObject();
             json["spec_version"]    = 1;
@@ -44,7 +45,7 @@ namespace Tests.NetKAN.Transformers
             json["ksp_version_min"] = "0.23.5";
 
             // Act
-            Metadata result          = sut.Transform(new Metadata(json));
+            Metadata result          = sut.Transform(new Metadata(json)).First();
             JObject  transformedJson = result.Json();
 
             // Assert

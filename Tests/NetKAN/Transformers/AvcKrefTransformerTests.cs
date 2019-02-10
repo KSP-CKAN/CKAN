@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using Moq;
@@ -65,7 +66,7 @@ namespace Tests.NetKAN.Transformers
 
             // Act
             var tran = new AvcKrefTransformer(http);
-            return tran.Transform(new Metadata(json));
+            return tran.Transform(new Metadata(json)).First();
         }
 
     }

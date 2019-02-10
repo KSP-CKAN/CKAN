@@ -23,17 +23,18 @@ namespace CKAN.NetKAN.Transformers
             IFileService fileService,
             IModuleService moduleService,
             string githubToken,
-            bool prerelease
+            bool prerelease,
+            bool backfill
         )
         {
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
                 new MetaNetkanTransformer(http),
-                new SpacedockTransformer(new SpacedockApi(http)),
-                new CurseTransformer(new CurseApi(http)),
-                new GithubTransformer(new GithubApi(http, githubToken), prerelease),
+                new SpacedockTransformer(new SpacedockApi(http), backfill),
+                new CurseTransformer(new CurseApi(http), backfill),
+                new GithubTransformer(new GithubApi(http, githubToken), prerelease, backfill),
                 new HttpTransformer(),
-                new JenkinsTransformer(new JenkinsApi(http)),
+                new JenkinsTransformer(new JenkinsApi(http), backfill),
                 new AvcKrefTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),
@@ -51,12 +52,14 @@ namespace CKAN.NetKAN.Transformers
             });
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             return _transformers
                 .Aggregate(
-                    metadata,
-                    (transformedMetadata, transformer) => transformer.Transform(transformedMetadata)
+                    (IEnumerable<Metadata>) new Metadata[] { metadata },
+                    (transformedMetadata, transformer) =>
+                        transformedMetadata.SelectMany(meta =>
+                            transformer.Transform(meta))
                 );
         }
 

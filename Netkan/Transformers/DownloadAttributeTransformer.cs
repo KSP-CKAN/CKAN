@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using log4net;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
-using log4net;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -25,7 +26,7 @@ namespace CKAN.NetKAN.Transformers
             _fileService = fileService;
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Download != null)
             {
@@ -51,10 +52,12 @@ namespace CKAN.NetKAN.Transformers
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-                return new Metadata(json);
+                yield return new Metadata(json);
             }
-
-            return metadata;
+            else
+            {
+                yield return metadata;
+            }
         }
     }
 }

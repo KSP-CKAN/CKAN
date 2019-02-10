@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -16,7 +17,7 @@ namespace Tests.NetKAN.Transformers
             var sut = new StripNetkanMetadataTransformer();
 
             // Act
-            var result = sut.Transform(new Metadata(JObject.Parse(json)));
+            var result = sut.Transform(new Metadata(JObject.Parse(json))).First();
             var transformedJson = result.Json();
 
             // Assert

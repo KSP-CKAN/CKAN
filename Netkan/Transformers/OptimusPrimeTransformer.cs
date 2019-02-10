@@ -1,6 +1,7 @@
-﻿using CKAN.NetKAN.Model;
+using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -10,7 +11,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "optimus_prime"; } }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             var json = metadata.Json();
 
@@ -20,7 +21,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.Info("Autobots roll out!");
             }
 
-            return metadata;
+            yield return metadata;
         }
     }
 }

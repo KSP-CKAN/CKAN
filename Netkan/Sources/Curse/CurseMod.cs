@@ -31,6 +31,11 @@ namespace CKAN.NetKAN.Sources.Curse
             return files.First();
         }
 
+        public IEnumerable<CurseFile> All()
+        {
+            return files;
+        }
+
         /// <summary>
         /// Returns the static Url of the project
         /// </summary>

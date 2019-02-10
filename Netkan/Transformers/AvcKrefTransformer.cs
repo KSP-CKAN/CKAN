@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Avc;
@@ -24,7 +25,7 @@ namespace CKAN.NetKAN.Transformers
             httpSvc = http;
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Kref?.Source == "ksp-avc")
             {
@@ -55,10 +56,12 @@ namespace CKAN.NetKAN.Transformers
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-                return new Metadata(json);
+                yield return new Metadata(json);
             }
-
-            return metadata;
+            else
+            {
+                yield return metadata;
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -22,7 +23,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = kref;
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
