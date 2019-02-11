@@ -71,7 +71,7 @@ namespace Tests.Core
         {
             File.WriteAllText(Path.Combine(tempDir, "thatsafile"), "not empty");
 
-            Assert.Throws<IOException>(() => CKAN.Utilities.CopyDirectory(goodKspDir, tempDir, true));
+            Assert.Throws<PathErrorKraken>(() => CKAN.Utilities.CopyDirectory(goodKspDir, tempDir, true));
         }
     }
 }
