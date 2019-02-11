@@ -82,17 +82,25 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Result as bool? ?? true)
+            switch (e.Result as RepoUpdateResult?)
             {
-                UpdateModsList(true, ChangeSet);
-                AddStatusMessage("Repositories successfully updated.");
-                ShowRefreshQuestion();
-                HideWaitDialog(true);
-                UpgradeNotification();
-            }
-            else
-            {
-                AddStatusMessage("Repository update failed!");
+                case RepoUpdateResult.NoChanges:
+                    AddStatusMessage("Repositories already up to date.");
+                    HideWaitDialog(true);
+                    break;
+
+                case RepoUpdateResult.Failed:
+                    AddStatusMessage("Repository update failed!");
+                    break;
+
+                case RepoUpdateResult.Updated:
+                default:
+                    UpdateModsList(true, ChangeSet);
+                    AddStatusMessage("Repositories successfully updated.");
+                    ShowRefreshQuestion();
+                    HideWaitDialog(true);
+                    UpgradeNotification();
+                    break;
             }
 
             Util.Invoke(this, SwitchEnabledState);
