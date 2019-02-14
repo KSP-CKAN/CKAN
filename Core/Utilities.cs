@@ -56,18 +56,21 @@ namespace CKAN
                 file.CopyTo(temppath, false);
             }
 
-            // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
-            {
-                // Get the subdirectories for the specified directory.
-                DirectoryInfo[] dirs = sourceDir.GetDirectories();
+            // Create all first level subdirectories
+            DirectoryInfo[] dirs = sourceDir.GetDirectories();
 
-                foreach (DirectoryInfo subdir in dirs)
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                string temppath = Path.Combine(destDirPath, subdir.Name);
+                Directory.CreateDirectory(temppath);
+
+                // If copying subdirectories, copy their contents to new location.
+                if (copySubDirs)
                 {
-                    string temppath = Path.Combine(destDirPath, subdir.Name);
                     _CopyDirectory(subdir.FullName, temppath, copySubDirs);
                 }
             }
+
         }
     }
 }

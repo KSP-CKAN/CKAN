@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Cleanly switch versions of installed mod (#2669 by: HebaruSan; reviewed: politas)
 - [Multiple] Implementation of clone and fake in GUI (#2665 by: DasSkelett; reviewed: HebaruSan, politas)
 - [Multiple] Support depends on any_of lists (#2660 by: HebaruSan; reviewed: politas)
+- [Build] Use Core.Utilities.CopyDirectory in tests (#2670 by: DasSkelett; reviewed: HebaruSan)
 
 ### Bugfixes
 

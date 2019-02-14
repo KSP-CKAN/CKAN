@@ -19,7 +19,7 @@ namespace Tests.Core
         {
             ksp_dir = TestData.NewTempDir();
             nullUser = new NullUser();
-            TestData.CopyDirectory(TestData.good_ksp_dir(), ksp_dir);
+            CKAN.Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, true);
             ksp = new CKAN.KSP(ksp_dir, "test", nullUser);
         }
 
@@ -131,7 +131,7 @@ namespace Tests.Core
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
-            TestData.CopyDirectory(TestData.good_ksp_dir(), gamedir);
+            CKAN.Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, true);
             File.Delete(buildid);
             File.Delete(readme);
 
@@ -161,7 +161,7 @@ namespace Tests.Core
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
-            TestData.CopyDirectory(TestData.good_ksp_dir(), gamedir);
+            CKAN.Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, true);
             File.Delete(buildid);
             File.Delete(readme);
 

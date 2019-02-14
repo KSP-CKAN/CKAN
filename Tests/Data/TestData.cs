@@ -618,22 +618,6 @@ namespace Tests.Data
             return temp_folder;
         }
 
-        // Ugh, this is awful.
-        public static void CopyDirectory(string src, string dst)
-        {
-            // Create directory structure
-            foreach (string path in Directory.GetDirectories(src, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(path.Replace(src, dst));
-            }
-
-            // Copy files.
-            foreach (string file in Directory.GetFiles(src, "*", SearchOption.AllDirectories))
-            {
-                File.Copy(file, file.Replace(src, dst));
-            }
-        }
-
         public static string ConfigurationFile()
         {
             return @"<?xml version=""1.0"" encoding=""utf-8""?>
