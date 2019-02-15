@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -17,18 +18,18 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IGithubApi _api;
         private readonly bool       _matchPreleases;
-        private readonly bool       _backfill;
+        private readonly int?       _releases;
 
         public string Name { get { return "github"; } }
 
-        public GithubTransformer(IGithubApi api, bool matchPreleases, bool backfill)
+        public GithubTransformer(IGithubApi api, bool matchPreleases, int? releases)
         {
             if (api == null)
                 throw new ArgumentNullException("api");
 
             _api            = api;
             _matchPreleases = matchPreleases;
-            _backfill       = backfill;
+            _releases       = releases;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata)
@@ -57,18 +58,14 @@ namespace CKAN.NetKAN.Transformers
 
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
-
-                if (_backfill)
+                var versions = _api.GetAllReleases(ghRef);
+                if (_releases.HasValue)
                 {
-                    foreach (GithubRelease rel in _api.GetAllReleases(ghRef))
-                    {
-                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel);
-                    }
+                    versions = versions.Take(_releases.Value);
                 }
-                else
+                foreach (GithubRelease rel in versions)
                 {
-                    // Get the GitHub release
-                    yield return TransformOne(metadata, json, ghRef, ghRepo, _api.GetLatestRelease(ghRef));
+                    yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel);
                 }
             }
             else

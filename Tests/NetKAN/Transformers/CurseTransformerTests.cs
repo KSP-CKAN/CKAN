@@ -21,7 +21,7 @@ namespace Tests.NetKAN.Transformers
             mApi.Setup(i => i.GetMod(It.IsAny<string>()))
                 .Returns(MakeTestMod());
 
-            var sut = new CurseTransformer(mApi.Object, false);
+            var sut = new CurseTransformer(mApi.Object, 1);
 
             var json = new JObject();
             json["spec_version"] = 1;

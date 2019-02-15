@@ -24,17 +24,17 @@ namespace CKAN.NetKAN.Transformers
             IModuleService moduleService,
             string githubToken,
             bool prerelease,
-            bool backfill
+            int? releases
         )
         {
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
                 new MetaNetkanTransformer(http),
-                new SpacedockTransformer(new SpacedockApi(http), backfill),
-                new CurseTransformer(new CurseApi(http), backfill),
-                new GithubTransformer(new GithubApi(http, githubToken), prerelease, backfill),
+                new SpacedockTransformer(new SpacedockApi(http), releases),
+                new CurseTransformer(new CurseApi(http), releases),
+                new GithubTransformer(new GithubApi(http, githubToken), prerelease, releases),
                 new HttpTransformer(),
-                new JenkinsTransformer(new JenkinsApi(http), backfill),
+                new JenkinsTransformer(new JenkinsApi(http), releases),
                 new AvcKrefTransformer(http),
                 new InternalCkanTransformer(http, moduleService),
                 new AvcTransformer(http, moduleService),

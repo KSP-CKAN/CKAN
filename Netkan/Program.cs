@@ -73,7 +73,7 @@ namespace CKAN.NetKAN
                         moduleService,
                         Options.GitHubToken,
                         Options.PreRelease,
-                        Options.BackFill
+                        ParseReleases(Options.Releases)
                     );
 
                     IEnumerable<Metadata> ckans = transformer.Transform(netkan);
@@ -113,6 +113,11 @@ namespace CKAN.NetKAN
             }
 
             return ExitOk;
+        }
+
+        private static int? ParseReleases(string val)
+        {
+            return val == "all" ? (int?)null : int.Parse(val);
         }
 
         private static void ProcessArgs(string[] args)

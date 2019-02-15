@@ -14,10 +14,10 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class JenkinsTransformer : ITransformer
     {
-        public JenkinsTransformer(IJenkinsApi api, bool backfill)
+        public JenkinsTransformer(IJenkinsApi api, int? releases)
         {
             _api      = api;
-            _backfill = backfill;
+            _releases = releases;
         }
 
         public string Name { get { return "jenkins"; } }
@@ -35,16 +35,14 @@ namespace CKAN.NetKAN.Transformers
                     ?? new JenkinsOptions();
                 JenkinsRef jRef = new JenkinsRef(metadata.Kref);
 
-                if (_backfill)
+                var versions = _api.GetAllBuilds(jRef, options);
+                if (_releases.HasValue)
                 {
-                    foreach (JenkinsBuild build in _api.GetAllBuilds(jRef, options))
-                    {
-                        yield return TransformOne(metadata, metadata.Json(), build, options);
-                    }
+                    versions = versions.Take(_releases.Value);
                 }
-                else
+                foreach (JenkinsBuild build in versions)
                 {
-                    yield return TransformOne(metadata, json, _api.GetLatestBuild(jRef, options), options);
+                    yield return TransformOne(metadata, metadata.Json(), build, options);
                 }
             }
             else
@@ -99,7 +97,7 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private readonly IJenkinsApi _api;
-        private readonly bool        _backfill;
+        private readonly int?        _releases;
         private static readonly ILog Log = LogManager.GetLogger(typeof(JenkinsTransformer));
     }
 }

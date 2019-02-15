@@ -37,7 +37,7 @@ namespace Tests.NetKAN.Transformers
                     }
                 });
 
-            ITransformer sut = new SpacedockTransformer(mApi.Object, false);
+            ITransformer sut = new SpacedockTransformer(mApi.Object, 1);
 
             JObject json            = new JObject();
             json["spec_version"]    = 1;
