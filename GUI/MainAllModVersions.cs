@@ -35,6 +35,15 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// Make the ListView redraw itself.
+        /// Works around a problem where the headers aren't drawn when this tab activates.
+        /// </summary>
+        public void ForceRedraw()
+        {
+            VersionsListView.EndUpdate();
+        }
+
         public GUIMod SelectedModule
         {
             set
