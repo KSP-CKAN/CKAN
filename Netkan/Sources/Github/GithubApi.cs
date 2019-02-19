@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Sources.Github
 
         public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference)
         {
-            var json = Call($"repos/{reference.Repository}/releases");
+            var json = Call($"repos/{reference.Repository}/releases?per_page=100");
             Log.Debug("Parsing JSON...");
             var releases = JArray.Parse(json);
 
