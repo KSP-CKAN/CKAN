@@ -471,7 +471,7 @@
             // RefreshTextBox
             // 
             this.RefreshTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.RefreshTextBox.Location = new System.Drawing.Point(117, 64);
+            this.RefreshTextBox.Location = new System.Drawing.Point(122, 64);
             this.RefreshTextBox.Name = "RefreshTextBox";
             this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
             this.RefreshTextBox.TabIndex = 3;
@@ -482,7 +482,7 @@
             // RefreshPostLabel
             // 
             this.RefreshPostLabel.AutoSize = true;
-            this.RefreshPostLabel.Location = new System.Drawing.Point(142, 66);
+            this.RefreshPostLabel.Location = new System.Drawing.Point(150, 66);
             this.RefreshPostLabel.Name = "RefreshPostLabel";
             this.RefreshPostLabel.Size = new System.Drawing.Size(49, 13);
             this.RefreshPostLabel.TabIndex = 4;
