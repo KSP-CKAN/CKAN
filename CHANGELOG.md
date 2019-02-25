@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Use Core.Utilities.CopyDirectory in tests (#2670 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Avoid redundant metadata downloads (#2682 by: HebaruSan, reviewed: DasSkelett, politas)
 - [Netkan] Releases option for Netkan (#2681 by: HebaruSan, reviewed: politas)
+- [Multiple] Support replaced_by property (#2671 by: politas, HebaruSan; reviewed: DasSkelett, politas)
 
 ### Bugfixes
 

@@ -79,7 +79,8 @@ namespace CKAN
             }
         }
 
-        private void InstallMods(object sender, DoWorkEventArgs e) // this probably needs to be refactored
+        // this probably needs to be refactored
+        private void InstallMods(object sender, DoWorkEventArgs e)
         {
             installCanceled = false;
             ClearLog();
@@ -111,6 +112,14 @@ namespace CKAN
                         break;
                     case GUIModChangeType.Install:
                         toInstall.Add(change.Mod.ToModule());
+                        break;
+                    case GUIModChangeType.Replace:
+                        ModuleReplacement repl = registry.GetReplacement(change.Mod.ToModule(), CurrentInstance.VersionCriteria());
+                        if (repl != null)
+                        {
+                            toUninstall.Add(repl.ToReplace.identifier);
+                            toInstall.Add(repl.ReplaceWith);
+                        }
                         break;
                 }
             }

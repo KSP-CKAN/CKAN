@@ -1,21 +1,30 @@
 
 namespace CKAN
 {
+    public enum GUIModChangeType
+    {
+        None    = 0,
+        Install = 1,
+        Remove  = 2,
+        Update  = 3,
+        Replace = 4
+    }
+
     /// <summary>
     /// Everything the GUI needs to know about a change, including
     /// the mod itself, the change we're making, and the reason why.
     /// </summary>
     public class ModChange
     {
-        public GUIMod Mod { get; private set; }
+        public GUIMod           Mod        { get; private set; }
         public GUIModChangeType ChangeType { get; private set; }
-        public SelectionReason Reason { get; private set; }
+        public SelectionReason  Reason     { get; private set; }
 
         public ModChange(GUIMod mod, GUIModChangeType changeType, SelectionReason reason)
         {
-            Mod = mod;
+            Mod        = mod;
             ChangeType = changeType;
-            Reason = reason;
+            Reason     = reason;
 
             if (Reason == null)
             {

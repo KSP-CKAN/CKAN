@@ -71,6 +71,10 @@ namespace CKAN.ConsoleUI {
                             inst.InstallList(iList, resolvOpts, dl);
                             plan.Install.Clear();
                         }
+                        if (plan.Replace.Count > 0) {
+                            inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, true);
+                        }
+
                         trans.Complete();
                         // Don't let the installer re-use old screen references
                         inst.User = null;
@@ -139,6 +143,20 @@ namespace CKAN.ConsoleUI {
         private void OnModInstalled(CkanModule mod)
         {
             RaiseMessage($"{Symbols.checkmark} Successfully installed {mod.name} {ModuleInstaller.StripEpoch(mod.version)}");
+        }
+
+        private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)
+        {
+            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance).registry;
+
+            foreach (string id in identifiers) {
+                ModuleReplacement repl = registry.GetReplacement(
+                    id, manager.CurrentInstance.VersionCriteria()
+                );
+                if (repl != null) {
+                    yield return repl;
+                }
+            }
         }
 
         private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {

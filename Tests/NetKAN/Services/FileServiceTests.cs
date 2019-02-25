@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using CKAN.NetKAN.Services;
 using NUnit.Framework;
 using Tests.Data;

@@ -1,4 +1,4 @@
-﻿using CKAN;
+using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.Versioning;
 using Newtonsoft.Json.Linq;

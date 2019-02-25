@@ -144,6 +144,25 @@
             "items"       : { "type" : "string" },
             "uniqueItems" : true
         },
+        "replaced_by" : {
+            "description" : "Optional pointer to mod that should be selected instead and treated as an update to this mod",
+            "type" : "object",
+            "properties" : {
+                "name" : {
+                    "description" : "Identifier of the mod",
+                    "$ref"        : "#/definitions/identifier"
+                },
+                "version" : {
+                    "description" : "Optional version",
+                    "$ref"        : "#/definitions/version"
+                },
+                "min_version" : {
+                    "description" : "Optional minimum version",
+                    "$ref"        : "#/definitions/version"
+                }
+            },
+            "required" : [ "name" ]
+        },
         "resources" : {
             "description" : "Additional resources",
             "type" : "object",

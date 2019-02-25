@@ -262,6 +262,12 @@ namespace CKAN
         }
     }
 
+    public class ModuleReplacement
+    {
+        public CkanModule ToReplace;
+        public CkanModule ReplaceWith;
+    }
+
     public class ResourcesDescriptor
     {
         [JsonProperty("repository", NullValueHandling = NullValueHandling.Ignore)]
@@ -359,6 +365,9 @@ namespace CKAN
         [JsonProperty("depends", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor> depends;
+
+        [JsonProperty("replaced_by", NullValueHandling = NullValueHandling.Ignore)]
+        public ModuleRelationshipDescriptor replaced_by;
 
         [JsonProperty("download")]
         public Uri download;
@@ -608,6 +617,7 @@ namespace CKAN
         );
 
         /// <summary> Generates a CKAN.Meta object given a filename</summary>
+        /// TODO: Catch and display errors
         public static CkanModule FromFile(string filename)
         {
             string json = File.ReadAllText(filename);
@@ -664,7 +674,7 @@ namespace CKAN
         /// </summary>
         public bool IsCompatibleKSP(KspVersionCriteria version)
         {
-            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version);
+            log.DebugFormat("Testing if {0} is compatible with KSP {1}", this, version.ToString());
 
 
             return _comparator.Compatible(version, this);

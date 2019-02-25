@@ -674,6 +674,20 @@ namespace CKAN
             }
         }
 
+        public class Replacement : SelectionReason
+        {
+            public Replacement(CkanModule module)
+            {
+                if (module == null) throw new ArgumentNullException();
+                Parent = module;
+            }
+
+            public override string Reason
+            {
+                get { return "  Replacing " + Parent.name + ".\r\n"; }
+            }
+        }
+
         public sealed class Suggested : SelectionReason
         {
             public Suggested(CkanModule module)

@@ -60,6 +60,7 @@
             this.FilterCompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterReplaceableButton = new System.Windows.Forms.ToolStripMenuItem();
             this.cachedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,6 +73,7 @@
             this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
             this.Installed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.UpdateCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ReplaceCol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Author = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstalledVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -225,7 +227,6 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
-            // 
             //
             // importDownloadsToolStripMenuItem
             //
@@ -238,13 +239,11 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
-            // 
             //
             // toolStripSeparator7
             //
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
-            //
             //
             // importDownloadsToolStripMenuItem
             //
@@ -322,7 +321,6 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             //
             // statusStrip1
             //
@@ -400,6 +398,7 @@
             this.FilterCompatibleButton,
             this.FilterInstalledButton,
             this.FilterInstalledUpdateButton,
+            this.FilterReplaceableButton,
             this.cachedToolStripMenuItem,
             this.FilterNewButton,
             this.FilterNotInstalledButton,
@@ -431,7 +430,14 @@
             this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(307, 30);
             this.FilterInstalledUpdateButton.Text = "Installed (update available)";
             this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
-            // 
+            //
+            // FilterReplaceableButton
+            //
+            this.FilterReplaceableButton.Name = "FilterReplaceableButton";
+            this.FilterReplaceableButton.Size = new System.Drawing.Size(307, 30);
+            this.FilterReplaceableButton.Text = "Replaceable";
+            this.FilterReplaceableButton.Click += new System.EventHandler(this.FilterReplaceableButton_Click);
+            //
             // cachedToolStripMenuItem
             // 
             this.cachedToolStripMenuItem.Name = "cachedToolStripMenuItem";
@@ -500,6 +506,7 @@
             //
             this.splitContainer1.Panel1.Controls.Add(this.MainTabControl);
             this.splitContainer1.Panel1MinSize = 200;
+            //
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.ModInfoTabControl);
@@ -526,6 +533,7 @@
             this.ModList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
             this.UpdateCol,
+            this.ReplaceCol,
             this.ModName,
             this.Author,
             this.InstalledVersion,
@@ -565,7 +573,14 @@
             this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.UpdateCol.Width = 46;
-            // 
+            //
+            // ReplaceCol
+            //
+            this.ReplaceCol.HeaderText = "Replace";
+            this.ReplaceCol.Name = "ReplaceCol";
+            this.ReplaceCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ReplaceCol.Width = 46;
+            //
             // ModName
             // 
             this.ModName.HeaderText = "Name";
@@ -724,7 +739,6 @@
             this.ManageModsTabPage.Size = new System.Drawing.Size(1536, 948);
             this.ManageModsTabPage.TabIndex = 0;
             this.ManageModsTabPage.Text = "Manage mods";
-            // 
             //
             // InstallAllCheckbox
             //
@@ -1320,6 +1334,7 @@
         private System.Windows.Forms.ToolStripMenuItem FilterCompatibleButton;
         private System.Windows.Forms.ToolStripMenuItem FilterInstalledButton;
         private System.Windows.Forms.ToolStripMenuItem FilterInstalledUpdateButton;
+        private System.Windows.Forms.ToolStripMenuItem FilterReplaceableButton;
         private System.Windows.Forms.ToolStripMenuItem cachedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem FilterNewButton;
         private System.Windows.Forms.ToolStripMenuItem FilterNotInstalledButton;
@@ -1332,6 +1347,7 @@
         private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
         private System.Windows.Forms.DataGridViewCheckBoxColumn UpdateCol;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn ReplaceCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn ModName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Author;
         private System.Windows.Forms.DataGridViewTextBoxColumn InstalledVersion;
