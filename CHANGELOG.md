@@ -55,6 +55,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix window position on MacOSX (#2677 by: HebaruSan; reviewed: politas)
 - [GUI] Fix upgrading and installing from .ckan in GUI (#2680 by: HebaruSan; reviewed: politas)
 - [GUI] Fix RefreshPreLabel overlapping RefreshTextBox in Settings (#2686 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Force redraw of versions ListView on Mono (#2685 by: HebaruSan; reviewed: DasSkelett, politas)
 
 ## v1.25.4 Kennedy
 

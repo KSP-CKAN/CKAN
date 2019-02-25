@@ -107,13 +107,6 @@ namespace CKAN
             Main.Instance.ResetFilterAndSelectModOnList(e.Node.Name);
         }
 
-        private void ModuleRelationshipType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            GUIMod module = SelectedModule;
-            if (module == null) return;
-            UpdateModDependencyGraph(module);
-        }
-
         private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             OpenFileBrowser(e.Node);
@@ -383,10 +376,26 @@ namespace CKAN
         // When switching tabs ensure that the resulting tab is updated.
         private void ModInfoIndexChanged(object sender, EventArgs e)
         {
-            if (ModInfoTabControl.SelectedIndex == ContentTabPage.TabIndex)
-                UpdateModContentsTree(null);
-            if (ModInfoTabControl.SelectedIndex == RelationshipTabPage.TabIndex)
-                UpdateModDependencyGraph(null);
+            switch (ModInfoTabControl.SelectedTab.Name)
+            {
+
+                case "ContentTabPage":
+                    UpdateModContentsTree(null);
+                    break;
+
+                case "RelationshipTabPage":
+                    UpdateModDependencyGraph(null);
+                    break;
+
+                case "AllModVersionsTabPage":
+                    if (Platform.IsMono)
+                    {
+                        // Workaround: make sure the ListView headers are drawn
+                        AllModVersions.ForceRedraw();
+                    }
+                    break;
+
+            }
         }
 
         public void UpdateModContentsTree(CkanModule module, bool force = false)
