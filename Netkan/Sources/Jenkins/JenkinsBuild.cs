@@ -7,6 +7,9 @@ namespace CKAN.NetKAN.Sources.Jenkins
         [JsonProperty("url")]
         public string Url;
 
+        [JsonProperty("result")]
+        public string Result;
+
         [JsonProperty("artifacts")]
         public JenkinsArtifact[] Artifacts;
     }

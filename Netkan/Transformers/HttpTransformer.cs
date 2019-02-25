@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CKAN.NetKAN.Model;
 using log4net;
 
@@ -13,7 +14,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "http"; } }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "http")
             {
@@ -34,7 +35,7 @@ namespace CKAN.NetKAN.Transformers
 
                         Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-                        return new Metadata(json);
+                        yield return new Metadata(json);
                     }
                     else
                     {
@@ -48,7 +49,7 @@ namespace CKAN.NetKAN.Transformers
             }
             else
             {
-                return metadata;
+                yield return metadata;
             }
         }
     }

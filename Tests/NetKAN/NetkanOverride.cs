@@ -1,8 +1,9 @@
-﻿using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Tests.Data;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN
 {
@@ -145,8 +146,8 @@ namespace Tests.NetKAN
             var earlyTransformer = new VersionedOverrideTransformer(new[] { "$all" }, new[] { "$none" });
             var lateTransformer = new VersionedOverrideTransformer(new[] { "$none" }, new[] { "$all" });
 
-            var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata)).Json();
-            var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1));
+            var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata)).First().Json();
+            var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1)).First();
 
             Assert.AreEqual((string)transformedMetadata2.Json()["name"], "LATE");
         }
@@ -169,7 +170,7 @@ namespace Tests.NetKAN
                 after: new string[] { null }
             );
 
-            return transformer.Transform(new Metadata(metadata)).Json();
+            return transformer.Transform(new Metadata(metadata)).First().Json();
         }
 
         /// <summary>
@@ -182,4 +183,3 @@ namespace Tests.NetKAN
         }
     }
 }
-

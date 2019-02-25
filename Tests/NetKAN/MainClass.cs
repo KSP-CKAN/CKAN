@@ -1,10 +1,11 @@
-﻿using CKAN;
-using CKAN.NetKAN;
-using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Tests.Data;
+using CKAN;
+using CKAN.NetKAN;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN
 {
@@ -18,7 +19,7 @@ namespace Tests.NetKAN
 
             Assert.AreEqual("1.01", (string)metadata["version"], "Original version as expected");
 
-            metadata = new EpochTransformer().Transform(new Metadata(metadata)).Json();
+            metadata = new EpochTransformer().Transform(new Metadata(metadata)).First().Json();
             Assert.AreEqual("1.01", (string)metadata["version"], "Version unharmed without x_netkan_force_v");
         }
 
@@ -35,7 +36,7 @@ namespace Tests.NetKAN
 
             Assert.AreEqual(orig_version, (string)metadata["version"], "JSON parsed as expected");
 
-            metadata = new ForcedVTransformer().Transform(new Metadata(metadata)).Json();
+            metadata = new ForcedVTransformer().Transform(new Metadata(metadata)).First().Json();
 
             Assert.AreEqual(new_version, (string)metadata["version"], "Output string as expected");
         }
@@ -49,7 +50,7 @@ namespace Tests.NetKAN
         {
             JObject metadata = JObject.Parse(json);
             Assert.AreEqual(orig_version, (string)metadata["version"], "JSON parsed as expected");
-            metadata = new EpochTransformer().Transform(new Metadata(metadata)).Json();
+            metadata = new EpochTransformer().Transform(new Metadata(metadata)).First().Json();
             Assert.AreEqual(new_version, (string)metadata["version"], "Output string as expected");
         }
 
@@ -59,7 +60,7 @@ namespace Tests.NetKAN
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01"", ""x_netkan_epoch"" : ""5.5""}", true)]
         public void Invaild(string json, bool expected_to_throw)
         {
-            TestDelegate test_delegate = () => new EpochTransformer().Transform(new Metadata(JObject.Parse(json))).Json();
+            TestDelegate test_delegate = () => new EpochTransformer().Transform(new Metadata(JObject.Parse(json))).First().Json();
             if (expected_to_throw)
                 Assert.Throws<BadMetadataKraken>(test_delegate);
             else

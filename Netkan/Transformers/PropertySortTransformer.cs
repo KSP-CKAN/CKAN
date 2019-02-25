@@ -61,7 +61,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "property_sort"; } }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             var json = metadata.Json();
             var sortedJson = new JObject();
@@ -101,7 +101,7 @@ namespace CKAN.NetKAN.Transformers
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, sortedJson);
 
-            return new Metadata(sortedJson);
+            yield return new Metadata(sortedJson);
         }
 
         private static double GetPropertySortOrder(string propertyName)

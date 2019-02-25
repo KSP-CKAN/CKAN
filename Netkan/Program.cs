@@ -1,18 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Transformers;
-using CKAN.NetKAN.Validators;
 using CommandLine;
 using log4net;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Transformers;
+using CKAN.NetKAN.Validators;
 
 namespace CKAN.NetKAN
 {
@@ -71,16 +72,19 @@ namespace CKAN.NetKAN
                         fileService,
                         moduleService,
                         Options.GitHubToken,
-                        Options.PreRelease
+                        Options.PreRelease,
+                        ParseReleases(Options.Releases)
                     );
 
-                    var ckan = transformer.Transform(netkan);
+                    IEnumerable<Metadata> ckans = transformer.Transform(netkan);
                     Log.Info("Finished transformation");
+                    foreach (Metadata ckan in ckans)
+                    {
+                        new CkanValidator(netkan, http, moduleService).Validate(ckan);
+                        Log.Info("Output successfully passed post-validation");
 
-                    new CkanValidator(netkan, http, moduleService).Validate(ckan);
-                    Log.Info("Output successfully passed post-validation");
-
-                    WriteCkan(ckan);
+                        WriteCkan(ckan);
+                    }
                 }
                 else
                 {
@@ -109,6 +113,11 @@ namespace CKAN.NetKAN
             }
 
             return ExitOk;
+        }
+
+        private static int? ParseReleases(string val)
+        {
+            return val == "all" ? (int?)null : int.Parse(val);
         }
 
         private static void ProcessArgs(string[] args)

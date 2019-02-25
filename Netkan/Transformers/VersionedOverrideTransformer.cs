@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Transformers
             _after.Add(after);
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             var json = metadata.Json();
 
@@ -62,7 +62,7 @@ namespace CKAN.NetKAN.Transformers
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-                    return new Metadata(json);
+                    yield return new Metadata(json);
                 }
                 else
                 {
@@ -72,8 +72,10 @@ namespace CKAN.NetKAN.Transformers
                             overrideList));
                 }
             }
-
-            return metadata;
+            else
+            {
+                yield return metadata;
+            }
         }
 
         /// <summary>

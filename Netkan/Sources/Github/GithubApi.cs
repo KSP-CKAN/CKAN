@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,7 +36,12 @@ namespace CKAN.NetKAN.Sources.Github
 
         public GithubRelease GetLatestRelease(GithubRef reference)
         {
-            var json = Call($"repos/{reference.Repository}/releases");
+            return GetAllReleases(reference).FirstOrDefault();
+        }
+
+        public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference)
+        {
+            var json = Call($"repos/{reference.Repository}/releases?per_page=100");
             Log.Debug("Parsing JSON...");
             var releases = JArray.Parse(json);
 
@@ -81,12 +87,10 @@ namespace CKAN.NetKAN.Sources.Github
 
                     if (download != null)
                     {
-                        return new GithubRelease(author, version, download, updated);
+                        yield return new GithubRelease(author, version, download, updated);
                     }
                 }
             }
-
-            return null;
         }
 
         private string Call(string path)

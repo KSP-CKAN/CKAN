@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 ﻿using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
@@ -17,6 +18,6 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="metadata">The metadata to transform.</param>
         /// <returns>The transformed metadata.</returns>
-        Metadata Transform(Metadata metadata);
+        IEnumerable<Metadata> Transform(Metadata metadata);
     }
 }

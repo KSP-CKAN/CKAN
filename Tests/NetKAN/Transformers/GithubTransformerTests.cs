@@ -1,12 +1,13 @@
 ﻿using System;
-using CKAN;
-using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Sources.Github;
-using CKAN.NetKAN.Transformers;
-using CKAN.Versioning;
+using System.Linq;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using CKAN;
+using CKAN.Versioning;
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Sources.Github;
+using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -36,10 +37,18 @@ namespace Tests.NetKAN.Transformers
                     null
                 ));
 
-            var sut = new GithubTransformer(mApi.Object, matchPreleases: false);
+            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
+                .Returns(new GithubRelease[] { new GithubRelease(
+                    "ExampleProject",
+                    new ModuleVersion("1.0"),
+                    new Uri("http://github.example/download"),
+                    null
+                )});
+
+            var sut = new GithubTransformer(mApi.Object, false, 1);
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -72,10 +81,18 @@ namespace Tests.NetKAN.Transformers
                     null
                 ));
 
-            ITransformer sut = new GithubTransformer(mApi.Object, matchPreleases: false);
+            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
+                .Returns(new GithubRelease[] { new GithubRelease(
+                    "DestructionEffects",
+                    new ModuleVersion("v1.8,0"),
+                    new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
+                    null
+                )});
+
+            ITransformer sut = new GithubTransformer(mApi.Object, false, 1);
 
             // Act
-            Metadata result = sut.Transform(new Metadata(json));
+            Metadata result = sut.Transform(new Metadata(json)).First();
             JObject transformedJson = result.Json();
 
             // Assert

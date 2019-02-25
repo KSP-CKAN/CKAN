@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CKAN.NetKAN.Model;
 using log4net;
 
@@ -14,7 +15,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "generated_by"; } }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             var json = metadata.Json();
 
@@ -25,7 +26,7 @@ namespace CKAN.NetKAN.Transformers
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-            return new Metadata(json);
+            yield return new Metadata(json);
         }
     }
 }

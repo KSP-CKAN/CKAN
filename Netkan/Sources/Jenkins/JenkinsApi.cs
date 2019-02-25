@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Services;
 
 namespace CKAN.NetKAN.Sources.Jenkins
@@ -24,6 +25,27 @@ namespace CKAN.NetKAN.Sources.Jenkins
             return Call<JenkinsBuild>(
                 $"{url}/{BuildTypeToProperty[options.BuildType]}/api/json"
             );
+        }
+
+        public IEnumerable<JenkinsBuild> GetAllBuilds(JenkinsRef reference, JenkinsOptions options)
+        {
+            if (options == null)
+            {
+                options = new JenkinsOptions();
+            }
+            string url = Regex.Replace(reference.BaseUri.ToString(), @"/$", "");
+            JObject job = Call<JObject>($"{url}/api/json");
+            JArray builds = (JArray)job["builds"];
+            string resultVal = null;
+            BuildTypeToResult.TryGetValue(options.BuildType, out resultVal);
+            foreach (JObject buildEntry in builds)
+            {
+                Log.Info($"Processing {buildEntry["url"]}");
+                JenkinsBuild build = Call<JenkinsBuild>($"{buildEntry["url"]}api/json");
+                // Make sure build status matches options.BuildType
+                if (resultVal == null || build.Result == resultVal)
+                    yield return build;
+            }
         }
 
         private T Call<T>(string url)
@@ -55,6 +77,17 @@ namespace CKAN.NetKAN.Sources.Jenkins
             { "successful",   "lastSuccessfulBuild"   },
             { "unstable",     "lastUnstableBuild"     },
             { "unsuccessful", "lastUnsuccessfulBuild" }
+        };
+
+        private static readonly Dictionary<string, string> BuildTypeToResult = new Dictionary<string, string>()
+        {
+            // "any" not listed so it will match everything
+            { "completed",    "SUCCESS" },
+            { "stable",       "SUCCESS" },
+            { "successful",   "SUCCESS" },
+            { "failed",       "FAILURE" },
+            { "unstable",     "FAILURE" },
+            { "unsuccessful", "FAILURE" }
         };
 
         private IHttpService _http;

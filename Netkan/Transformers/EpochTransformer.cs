@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CKAN.NetKAN.Model;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -14,7 +15,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name { get { return "epoch"; } }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             Log.Debug("Fixing version strings (if required)...");
 
@@ -42,7 +43,7 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
 
-            return new Metadata(json);
+            yield return new Metadata(json);
         }
     }
 }

@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Support depends on any_of lists (#2660 by: HebaruSan; reviewed: politas)
 - [Build] Use Core.Utilities.CopyDirectory in tests (#2670 by: DasSkelett; reviewed: HebaruSan)
 - [Core] Avoid redundant metadata downloads (#2682 by: HebaruSan, reviewed: DasSkelett, politas)
+- [Netkan] Releases option for Netkan (#2681 by: HebaruSan, reviewed: politas)
 
 ### Bugfixes
 

@@ -1,12 +1,13 @@
-﻿using CKAN;
+using System.Linq;
+using Moq;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.NetKAN.Transformers;
 using CKAN.Versioning;
-using Moq;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -38,7 +39,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -76,7 +77,7 @@ namespace Tests.NetKAN.Transformers
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -208,7 +209,7 @@ namespace Tests.NetKAN.Transformers
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object);
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -247,7 +248,7 @@ namespace Tests.NetKAN.Transformers
             json["version"] = "9001";
 
             // Act
-            var result = sut.Transform(new Metadata(json));
+            var result = sut.Transform(new Metadata(json)).First();
             var transformedJson = result.Json();
 
             // Assert
@@ -279,7 +280,7 @@ namespace Tests.NetKAN.Transformers
             json["x_netkan_trust_version_file"] = true;
 
             // Act
-            Metadata result          = sut.Transform(new Metadata(json));
+            Metadata result          = sut.Transform(new Metadata(json)).First();
             JObject  transformedJson = result.Json();
 
             // Assert

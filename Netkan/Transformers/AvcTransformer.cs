@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
             _moduleService = moduleService;
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Vref != null && metadata.Vref.Source == "ksp-avc")
             {
@@ -91,11 +91,11 @@ namespace CKAN.NetKAN.Transformers
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
                 }
 
-                return new Metadata(json);
+                yield return new Metadata(json);
             }
             else
             {
-                return metadata;
+                yield return metadata;
             }
         }
 

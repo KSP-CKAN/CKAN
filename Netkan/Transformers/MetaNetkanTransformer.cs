@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using log4net;
+using Newtonsoft.Json.Linq;
+using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.Versioning;
-using log4net;
-using Newtonsoft.Json.Linq;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -26,7 +27,7 @@ namespace CKAN.NetKAN.Transformers
             _http = http;
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Kref != null && metadata.Kref.Source == KrefSource)
             {
@@ -64,15 +65,17 @@ namespace CKAN.NetKAN.Transformers
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
-                    return new Metadata(json);
+                    yield return new Metadata(json);
                 }
                 else
                 {
                     throw new Kraken("The target of a metanetkan may not also be a metanetkan.");
                 }
             }
-
-            return metadata;
+            else
+            {
+                yield return metadata;
+            }
         }
     }
 }

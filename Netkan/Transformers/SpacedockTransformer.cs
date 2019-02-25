@@ -18,15 +18,17 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
 
         private readonly ISpacedockApi _api;
+        private readonly int?          _releases;
 
         public string Name { get { return "spacedock"; } }
 
-        public SpacedockTransformer(ISpacedockApi api)
+        public SpacedockTransformer(ISpacedockApi api, int? releases)
         {
-            _api = api;
+            _api      = api;
+            _releases = releases;
         }
 
-        public Metadata Transform(Metadata metadata)
+        public IEnumerable<Metadata> Transform(Metadata metadata)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "spacedock")
             {
@@ -37,76 +39,89 @@ namespace CKAN.NetKAN.Transformers
 
                 // Look up our mod on SD by its Id.
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
-                var latestVersion = sdMod.Latest();
-
-                Log.InfoFormat("Found SpaceDock mod: {0} {1}", sdMod.name, latestVersion.friendly_version);
-
-                // Only pre-fill version info if there's none already. GH #199
-                if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
+                var versions = sdMod.All();
+                if (_releases.HasValue)
                 {
-                    Log.DebugFormat("Writing ksp_version from SpaceDock: {0}", latestVersion.KSP_version);
-                    json["ksp_version"] = latestVersion.KSP_version.ToString();
+                    versions = versions.Take(_releases.Value);
                 }
-
-                json.SafeAdd("name", sdMod.name);
-                json.SafeAdd("abstract", sdMod.short_description);
-                json.SafeAdd("version", latestVersion.friendly_version.ToString());
-                json.SafeAdd("download", latestVersion.download_path.OriginalString);
-
-                var authors = GetAuthors(sdMod);
-
-                if (authors.Count == 1)
-                    json.SafeAdd("author", sdMod.author);
-                else if (authors.Count > 1)
-                    json.SafeAdd("author", new JArray(authors));
-
-                // SD provides users with the following default selection of licenses. Let's convert them to CKAN
-                // compatible license strings if possible.
-                //
-                // "MIT" - OK
-                // "BSD" - Specific version is indeterminate
-                // "GPLv2" - Becomes "GPL-2.0"
-                // "GPLv3" - Becomes "GPL-3.0"
-                // "LGPL" - Specific version is indeterminate
-
-                var sdLicense = sdMod.license.Trim();
-
-                switch (sdLicense)
+                foreach (SDVersion vers in versions)
                 {
-                    case "GPLv2":
-                        json.SafeAdd("license", "GPL-2.0");
-                        break;
-                    case "GPLv3":
-                        json.SafeAdd("license", "GPL-3.0");
-                        break;
-                    default:
-                        json.SafeAdd("license", sdLicense);
-                        break;
+                    yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
                 }
+            }
+            else
+            {
+                yield return metadata;
+            }
+        }
 
-                // Make sure resources exist.
-                if (json["resources"] == null)
-                {
-                    json["resources"] = new JObject();
-                }
+        private Metadata TransformOne(Metadata metadata, JObject json, SpacedockMod sdMod, SDVersion latestVersion)
+        {
+            Log.InfoFormat("Found SpaceDock mod: {0} {1}", sdMod.name, latestVersion.friendly_version);
 
-                var resourcesJson = (JObject)json["resources"];
-
-                TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
-                TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
-                resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
-
-                if (sdMod.background != null)
-                {
-                    TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
-                }
-
-                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                return new Metadata(json);
+            // Only pre-fill version info if there's none already. GH #199
+            if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
+            {
+                Log.DebugFormat("Writing ksp_version from SpaceDock: {0}", latestVersion.KSP_version);
+                json["ksp_version"] = latestVersion.KSP_version.ToString();
             }
 
-            return metadata;
+            json.SafeAdd("name", sdMod.name);
+            json.SafeAdd("abstract", sdMod.short_description);
+            json.SafeAdd("version", latestVersion.friendly_version.ToString());
+            json.SafeAdd("download", latestVersion.download_path.OriginalString);
+
+            var authors = GetAuthors(sdMod);
+
+            if (authors.Count == 1)
+                json.SafeAdd("author", sdMod.author);
+            else if (authors.Count > 1)
+                json.SafeAdd("author", new JArray(authors));
+
+            // SD provides users with the following default selection of licenses. Let's convert them to CKAN
+            // compatible license strings if possible.
+            //
+            // "MIT" - OK
+            // "BSD" - Specific version is indeterminate
+            // "GPLv2" - Becomes "GPL-2.0"
+            // "GPLv3" - Becomes "GPL-3.0"
+            // "LGPL" - Specific version is indeterminate
+
+            var sdLicense = sdMod.license.Trim();
+
+            switch (sdLicense)
+            {
+                case "GPLv2":
+                    json.SafeAdd("license", "GPL-2.0");
+                    break;
+                case "GPLv3":
+                    json.SafeAdd("license", "GPL-3.0");
+                    break;
+                default:
+                    json.SafeAdd("license", sdLicense);
+                    break;
+            }
+
+            // Make sure resources exist.
+            if (json["resources"] == null)
+            {
+                json["resources"] = new JObject();
+            }
+
+            var resourcesJson = (JObject)json["resources"];
+
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
+            TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
+            resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
+
+            if (sdMod.background != null)
+            {
+                TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
+            }
+
+            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+            return new Metadata(json);
         }
 
         private void TryAddResourceURL(string identifier, JObject resources, string key, string rawURL)
