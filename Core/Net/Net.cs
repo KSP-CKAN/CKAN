@@ -31,6 +31,24 @@ namespace CKAN
         };
 
         /// <summary>
+        /// Make a HEAD request to get the ETag of a URL without downloading it
+        /// </summary>
+        /// <param name="url">Remote URL to check</param>
+        /// <returns>
+        /// ETag value of the URL if any, otherwise null, see
+        /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+        /// </returns>
+        public static string CurrentETag(Uri url)
+        {
+            WebRequest req = WebRequest.Create(url);
+            req.Method = "HEAD";
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            string val = resp.Headers["ETag"]?.Replace("\"", "");
+            resp.Close();
+            return val;
+        }
+
+        /// <summary>
         /// Downloads the specified url, and stores it in the filename given.
         /// If no filename is supplied, a temporary file will be generated.
         /// Returns the filename the file was saved to on success.
@@ -38,12 +56,24 @@ namespace CKAN
         /// Throws a MissingCertificateException *and* prints a message to the
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
+        public static string Download(Uri url, out string etag, string filename = null, IUser user = null)
+        {
+            return Download(url.OriginalString, out etag, filename, user);
+        }
+
         public static string Download(Uri url, string filename = null, IUser user = null)
         {
-            return Download(url.OriginalString, filename, user);
+            string etag;
+            return Download(url, out etag, filename, user);
         }
 
         public static string Download(string url, string filename = null, IUser user = null)
+        {
+            string etag;
+            return Download(url, out etag, filename, user);
+        }
+
+        public static string Download(string url, out string etag, string filename = null, IUser user = null)
         {
             TxFileManager FileTransaction = new TxFileManager();
 
@@ -62,10 +92,12 @@ namespace CKAN
             {
                 var agent = MakeDefaultHttpClient();
                 agent.DownloadFile(url, filename);
+                etag = agent.ResponseHeaders.Get("ETag")?.Replace("\"", "");
             }
             catch (Exception ex)
             {
                 log.InfoFormat("Download failed, trying with curlsharp...");
+                etag = null;
 
                 try
                 {

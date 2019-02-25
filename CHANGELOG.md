@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Implementation of clone and fake in GUI (#2665 by: DasSkelett; reviewed: HebaruSan, politas)
 - [Multiple] Support depends on any_of lists (#2660 by: HebaruSan; reviewed: politas)
 - [Build] Use Core.Utilities.CopyDirectory in tests (#2670 by: DasSkelett; reviewed: HebaruSan)
+- [Core] Avoid redundant metadata downloads (#2682 by: HebaruSan, reviewed: DasSkelett, politas)
 
 ### Bugfixes
 

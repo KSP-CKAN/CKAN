@@ -16,6 +16,13 @@ using Newtonsoft.Json;
 
 namespace CKAN
 {
+    public enum RepoUpdateResult
+    {
+        Failed,
+        Updated,
+        NoChanges
+    }
+
     /// <summary>
     ///     Class for downloading the CKAN meta-info itself.
     /// </summary>
@@ -26,29 +33,35 @@ namespace CKAN
         /// <summary>
         /// Download and update the local CKAN meta-info.
         /// Optionally takes a URL to the zipfile repo to download.
-        /// Returns the number of unique modules updated.
         /// </summary>
-        public static bool UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
+        public static RepoUpdateResult UpdateAllRepositories(RegistryManager registry_manager, KSP ksp, NetModuleCache cache, IUser user)
         {
             SortedDictionary<string, Repository> sortedRepositories = registry_manager.registry.Repositories;
+            if (sortedRepositories.Values.All(repo => !string.IsNullOrEmpty(repo.last_server_etag) && repo.last_server_etag == Net.CurrentETag(repo.uri)))
+            {
+                user?.RaiseMessage("No changes since last update");
+                return RepoUpdateResult.NoChanges;
+            }
             List<CkanModule> allAvail = new List<CkanModule>();
             foreach (KeyValuePair<string, Repository> repository in sortedRepositories)
             {
                 log.InfoFormat("About to update {0}", repository.Value.name);
                 SortedDictionary<string, int> downloadCounts;
-                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user, out downloadCounts);
+                string newETag;
+                List<CkanModule> avail = UpdateRegistry(repository.Value.uri, ksp, user, out downloadCounts, out newETag);
                 registry_manager.registry.SetDownloadCounts(downloadCounts);
                 if (avail == null)
                 {
                     // Report failure if any repo fails, rather than losing half the list.
                     // UpdateRegistry will have alerted the user to specific errors already.
-                    return false;
+                    return RepoUpdateResult.Failed;
                 }
                 else
                 {
                     log.InfoFormat("Updated {0}", repository.Value.name);
                     // Merge all the lists
                     allAvail.AddRange(avail);
+                    repository.Value.last_server_etag = newETag;
                 }
             }
             // Save allAvail to the registry if we found anything
@@ -68,19 +81,19 @@ namespace CKAN
 
                 // Registry.Available is slow, just return success,
                 // caller can check it if it's really needed
-                return true;
+                return RepoUpdateResult.Updated;
             }
             else
             {
                 // Return failure
-                return false;
+                return RepoUpdateResult.Failed;
             }
         }
 
         /// <summary>
         /// Retrieve available modules from the URL given.
         /// </summary>
-        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user, out SortedDictionary<string, int> downloadCounts)
+        private static List<CkanModule> UpdateRegistry(Uri repo, KSP ksp, IUser user, out SortedDictionary<string, int> downloadCounts, out string currentETag)
         {
             TxFileManager file_transaction = new TxFileManager();
             downloadCounts = null;
@@ -93,11 +106,12 @@ namespace CKAN
             string repo_file = String.Empty;
             try
             {
-                repo_file = Net.Download(repo);
+                repo_file = Net.Download(repo, out currentETag);
             }
             catch (System.Net.WebException ex)
             {
                 user.RaiseMessage("Failed to download {0}: {1}", repo, ex.ToString());
+                currentETag = null;
                 return null;
             }
 
@@ -349,7 +363,8 @@ Do you wish to reinstall now?", sb)))
             }
 
             SortedDictionary<string, int> downloadCounts;
-            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user, out downloadCounts);
+            string newETag;
+            List<CkanModule> newAvail = UpdateRegistry(repo, ksp, user, out downloadCounts, out newETag);
 
             registry_manager.registry.SetDownloadCounts(downloadCounts);
 
