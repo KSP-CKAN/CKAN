@@ -1169,7 +1169,7 @@ namespace CKAN
             installWorker.RunWorkerAsync(
                 new KeyValuePair<List<ModChange>, RelationshipResolverOptions>(
                     toReinstall,
-                    RelationshipResolver.DefaultOpts()
+                    RelationshipResolver.DependsOnlyOpts()
                 )
             );
         }
