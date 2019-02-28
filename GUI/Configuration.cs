@@ -32,6 +32,8 @@ namespace CKAN
         public int SortByColumnIndex = 2;
         public bool SortDescending = false;
 
+        public bool[] VisibleColumns = { true, true, true, true, true, true, true, true, true };
+
         private string path = "";
 
         /// <summary>

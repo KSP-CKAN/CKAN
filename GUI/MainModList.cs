@@ -245,6 +245,7 @@ namespace CKAN
             AddLogMessage("Updating filters...");
 
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
+            var has_any_replacements = gui_mods.Any(mod => mod.HasReplacement);
 
             //TODO Consider using smart enumeration pattern so stuff like this is easier
             Util.Invoke(menuStrip2, () =>
@@ -272,6 +273,14 @@ namespace CKAN
             });
 
             UpdateFilters(this);
+
+            // Hide update and replacement columns if not needed.
+            // Write it to the configuration, else they are hidden agian after a filter change.
+            // After the update / replacement, they are hidden again.
+            ModList.Columns[1].Visible = has_any_updates;
+            configuration.VisibleColumns[1] = has_any_updates;
+            ModList.Columns[2].Visible = has_any_replacements;
+            configuration.VisibleColumns[2] = has_any_replacements;
 
             AddLogMessage("Updating tray...");
             UpdateTrayInfo();
@@ -334,20 +343,66 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Programmatic implementation of row sorting by columns.
+        /// Called when there's a click on the modlist header row.
+        /// Handles sorting and the header right click context menu.
         /// </summary>
         private void ModList_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var new_sort_column = ModList.Columns[e.ColumnIndex];
-            var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
+            // Left click -> sort by new column / change sorting direction.
+            if (e.Button == MouseButtons.Left)
+            {
+                var new_sort_column = ModList.Columns [e.ColumnIndex];
+                var current_sort_column = ModList.Columns [configuration.SortByColumnIndex];
 
-            // Reverse the sort order if the current sorting column is clicked again.
-            configuration.SortDescending = new_sort_column == current_sort_column && !configuration.SortDescending;
+                // Reverse the sort order if the current sorting column is clicked again.
+                configuration.SortDescending = new_sort_column == current_sort_column && !configuration.SortDescending;
 
-            // Reset the glyph.
-            current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
-            configuration.SortByColumnIndex = new_sort_column.Index;
-            UpdateFilters(this);
+                // Reset the glyph.
+                current_sort_column.HeaderCell.SortGlyphDirection = SortOrder.None;
+                configuration.SortByColumnIndex = new_sort_column.Index;
+                UpdateFilters(this);
+            }
+            // Right click -> Bring up context menu to change visibility of columns.
+            else if (e.Button == MouseButtons.Right)
+            {
+                // Start from scrap: clear the entire item list, then add all options again.
+                ModListHeaderContextMenuStrip.Items.Clear();
+
+                ModListHeaderContextMenuStrip.Items.AddRange(
+                    ModList.Columns.Cast<DataGridViewColumn>()
+                    .Where(col => col.Index > 2)
+                    .Select(col => new ToolStripMenuItem()
+                    {
+                        Name    = col.Name,
+                        Text    = col.HeaderText,
+                        Checked = col.Visible,
+                        Tag     = col
+                    })
+                    .ToArray()
+                );
+
+                // Show the context menu on cursor position.
+                ModListHeaderContextMenuStrip.Show(Cursor.Position);
+            }
+        }
+
+        /// <summary>
+        /// Called if a ToolStripButton of the header context menu is pressed.
+        /// </summary>
+        private void ModListHeaderContextMenuStrip_ItemClicked(object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
+        {
+            // ClickedItem is of type ToolStripItem, we need ToolStripButton.
+            ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;
+            DataGridViewColumn col         = clickedItem?.Tag as DataGridViewColumn;
+
+            if (col != null)
+            {
+                configuration.VisibleColumns[col.Index - 3] = col.Visible = !clickedItem.Checked;
+                if (col.Index == 0)
+                {
+                    InstallAllCheckbox.Visible = col.Visible;
+                }
+            }
         }
 
         /// <summary>

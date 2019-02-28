@@ -84,6 +84,7 @@
             this.DownloadCount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Description = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModListContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ModListHeaderContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfoTabControl = new CKAN.MainModInfo();
@@ -148,6 +149,7 @@
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).BeginInit();
             this.ModListContextMenuStrip.SuspendLayout();
+            this.ModListHeaderContextMenuStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.ManageModsTabPage.SuspendLayout();
@@ -543,7 +545,6 @@
             this.InstallDate,
             this.DownloadCount,
             this.Description});
-            this.ModList.ContextMenuStrip = this.ModListContextMenuStrip;
             this.ModList.Location = new System.Drawing.Point(0, 111);
             this.ModList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ModList.MultiSelect = false;
@@ -630,7 +631,7 @@
             this.SizeCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             // 
             // InstallDate
-            //
+            // 
             this.InstallDate.HeaderText = "Install Date";
             this.InstallDate.Name = "InstallDate";
             this.InstallDate.ReadOnly = true;
@@ -638,7 +639,7 @@
             this.InstallDate.Width = 140;
             //
             // DownloadCount
-            //
+            // 
             this.DownloadCount.HeaderText = "Downloads";
             this.DownloadCount.Name = "DownloadCount";
             this.DownloadCount.ReadOnly = true;
@@ -675,6 +676,13 @@
             this.downloadContentsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.downloadContentsToolStripMenuItem.Text = "Download Contents";
             this.downloadContentsToolStripMenuItem.Click += new System.EventHandler(this.downloadContentsToolStripMenuItem_Click);
+            // 
+            // ModListHeaderContextMenuStrip
+            // 
+            this.ModListHeaderContextMenuStrip.Name = "ModListHeaderContextMenuStrip";
+            this.ModListHeaderContextMenuStrip.AutoSize = true;
+            this.ModListHeaderContextMenuStrip.ShowCheckMargin = true;
+            this.ModListHeaderContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(ModListHeaderContextMenuStrip_ItemClicked);
             // 
             // ModInfoTabControl
             // 
@@ -1282,6 +1290,7 @@
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ModList)).EndInit();
             this.ModListContextMenuStrip.ResumeLayout(false);
+            this.ModListHeaderContextMenuStrip.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.MainTabControl.ResumeLayout(false);
@@ -1358,6 +1367,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DownloadCount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Description;
         private System.Windows.Forms.ContextMenuStrip ModListContextMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
         private CKAN.MainModInfo ModInfoTabControl;

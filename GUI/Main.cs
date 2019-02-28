@@ -174,6 +174,7 @@ namespace CKAN
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
+                ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
             }
 
             // Initialize all user interaction dialogs.
@@ -755,20 +756,38 @@ namespace CKAN
             Filter(GUIModFilter.All);
         }
 
+        /// <summary>
+        /// Called when the modlist filter (all, compatible, incompatible...) is changed.
+        /// </summary>
+        /// <param name="filter">Filter.</param>
         private void Filter(GUIModFilter filter)
         {
+            // Triggers mainModList.ModFiltersUpdated()
             mainModList.ModFilter = filter;
+
+            // Ask the configuration which columns to show.
+            // Start with the third column, because the first one is alwas shown
+            // and the 2nd/3rd are handled by UpdateModsList().
+            for (int i = 3; i < ModList.Columns.Count; i++)
+            {
+                ModList.Columns[i].Visible = configuration.VisibleColumns[i-3];
+            }
 
             switch (filter)
             {
-                case GUIModFilter.All:                      FilterToolButton.Text = "Filter (All)";          break;
+                // Some columns really do / don't make sense to be visible on certain filter settings.
+                // Hide / Show them, without writing to config, so once the user changes tab again,
+                // they are shown / hidden again, as before.
+                case GUIModFilter.All:                      FilterToolButton.Text = "Filter (All)";           break;
                 case GUIModFilter.Incompatible:             FilterToolButton.Text = "Filter (Incompatible)";  break;
                 case GUIModFilter.Installed:                FilterToolButton.Text = "Filter (Installed)";     break;
                 case GUIModFilter.InstalledUpdateAvailable: FilterToolButton.Text = "Filter (Upgradeable)";   break;
                 case GUIModFilter.Replaceable:              FilterToolButton.Text = "Filter (Replaceable)";   break;
                 case GUIModFilter.Cached:                   FilterToolButton.Text = "Filter (Cached)";        break;
                 case GUIModFilter.NewInRepository:          FilterToolButton.Text = "Filter (New)";           break;
-                case GUIModFilter.NotInstalled:             FilterToolButton.Text = "Filter (Not installed)"; break;
+                case GUIModFilter.NotInstalled:             FilterToolButton.Text = "Filter (Not installed)";
+                                                            ModList.Columns[5].Visible = false;
+                                                            ModList.Columns[9].Visible = false;               break;
                 default:                                    FilterToolButton.Text = "Filter (Compatible)";    break;
             }
         }
