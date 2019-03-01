@@ -278,9 +278,7 @@ namespace CKAN
             // Write it to the configuration, else they are hidden agian after a filter change.
             // After the update / replacement, they are hidden again.
             ModList.Columns[1].Visible = has_any_updates;
-            configuration.VisibleColumns[1] = has_any_updates;
             ModList.Columns[2].Visible = has_any_replacements;
-            configuration.VisibleColumns[2] = has_any_replacements;
 
             AddLogMessage("Updating tray...");
             UpdateTrayInfo();
@@ -397,7 +395,8 @@ namespace CKAN
 
             if (col != null)
             {
-                configuration.VisibleColumns[col.Index - 3] = col.Visible = !clickedItem.Checked;
+                col.Visible = !clickedItem.Checked;
+                configuration.SetColumnVisibility(col.Name, !clickedItem.Checked);
                 if (col.Index == 0)
                 {
                     InstallAllCheckbox.Visible = col.Visible;

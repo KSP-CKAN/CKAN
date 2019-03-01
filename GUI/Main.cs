@@ -766,11 +766,14 @@ namespace CKAN
             mainModList.ModFilter = filter;
 
             // Ask the configuration which columns to show.
-            // Start with the third column, because the first one is alwas shown
-            // and the 2nd/3rd are handled by UpdateModsList().
-            for (int i = 3; i < ModList.Columns.Count; i++)
+            foreach (DataGridViewColumn col in ModList.Columns)
             {
-                ModList.Columns[i].Visible = configuration.VisibleColumns[i-3];
+                // Start with the third column, because the first one is always shown
+                // and the 2nd/3rd are handled by UpdateModsList().
+                if (col.Index > 2)
+                {
+                    col.Visible = !configuration.HiddenColumnNames.Contains(col.Name);
+                }
             }
 
             switch (filter)
