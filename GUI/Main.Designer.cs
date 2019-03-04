@@ -565,6 +565,7 @@
             this.Installed.HeaderText = "    Inst";
             this.Installed.Name = "Installed";
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Installed.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Installed.Width = 50;
             // 
             // UpdateCol
@@ -572,6 +573,7 @@
             this.UpdateCol.HeaderText = "Update";
             this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.UpdateCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.UpdateCol.Width = 46;
             //
             // ReplaceCol
@@ -579,6 +581,7 @@
             this.ReplaceCol.HeaderText = "Replace";
             this.ReplaceCol.Name = "ReplaceCol";
             this.ReplaceCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ReplaceCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.ReplaceCol.Width = 46;
             //
             // ModName

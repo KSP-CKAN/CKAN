@@ -79,10 +79,14 @@ namespace CKAN
             var cell = row.Cells[this.configuration.SortByColumnIndex];
             if (cell.ValueType == typeof(bool))
             {
-                return (bool)cell.Value ? "a" : "b";
+                return (bool)cell.Value ? "a" : "c";
             }
-            // It's a "-" cell so let it be ordered last
-            return "c";
+            else
+            {
+                // If it's a "-" cell, let it be ordered last
+                // Otherwise put it after the checked boxes
+                return (string)cell.Value == "-" ? "d" : "b";
+            }
         }
 
         /// <summary>
