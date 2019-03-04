@@ -63,9 +63,17 @@ namespace CKAN.NetKAN.Transformers
                 {
                     versions = versions.Take(_releases.Value);
                 }
-                foreach (GithubRelease rel in versions)
+                if (versions.Any())
                 {
-                    yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel);
+                    foreach (GithubRelease rel in versions)
+                    {
+                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel);
+                    }
+                }
+                else
+                {
+                    Log.WarnFormat("No releases found for {0}", ghRef.Repository);
+                    yield return metadata;
                 }
             }
             else
