@@ -87,6 +87,11 @@ namespace CKAN
                 case RepoUpdateResult.NoChanges:
                     AddStatusMessage("Repositories already up to date.");
                     HideWaitDialog(true);
+                    // Load rows if grid empty, otherwise keep current
+                    if (ModList.Rows.Count < 1)
+                    {
+                        UpdateModsList(true, ChangeSet);
+                    }
                     break;
 
                 case RepoUpdateResult.Failed:
