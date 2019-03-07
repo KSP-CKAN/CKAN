@@ -682,8 +682,21 @@ namespace CKAN
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
             var installed_modules =
                 registry.InstalledModules.Select(imod => imod.Module).ToDictionary(mod => mod.identifier, mod => mod);
+            foreach (var dependency in registry.FindReverseDependencies(
+                modules_to_remove
+                    .Select(mod => mod.identifier)
+                    .Except(modules_to_install.Select(m => m.identifier))
+            ))
+            {
+                //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
+                CkanModule module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
+                    installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
+                changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
+                modules_to_remove.Add(module_by_version);
+            }
 
             bool handled_all_too_many_provides = false;
             while (!handled_all_too_many_provides)
@@ -694,7 +707,7 @@ namespace CKAN
                 {
                     new RelationshipResolver(
                         modules_to_install,
-                        null,
+                        modules_to_remove,
                         RelationshipResolver.DependsOnlyOpts(),
                         registry, version);
                     handled_all_too_many_provides = true;
@@ -717,21 +730,9 @@ namespace CKAN
                 }
             }
 
-            foreach (var dependency in registry.FindReverseDependencies(
-                modules_to_remove
-                    .Select(mod => mod.identifier)
-                    .Except(modules_to_install.Select(m => m.identifier))
-            ))
-            {
-                //TODO This would be a good place to have a event that alters the row's graphics to show it will be removed
-                CkanModule module_by_version = registry.GetModuleByVersion(installed_modules[dependency].identifier,
-                    installed_modules[dependency].version) ?? registry.InstalledModule(dependency).Module;
-                changeSet.Add(new ModChange(new GUIMod(module_by_version, registry, version), GUIModChangeType.Remove, null));
-            }
-
             var resolver = new RelationshipResolver(
                 modules_to_install,
-                changeSet.Where(change => change.ChangeType.Equals(GUIModChangeType.Remove)).Select(m => m.Mod.ToModule()),
+                modules_to_remove,
                 RelationshipResolver.DependsOnlyOpts(), registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
