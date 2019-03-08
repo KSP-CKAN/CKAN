@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 AvcVersion remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(
-                    httpSvc.DownloadText(new Uri(metadata.Kref.Id))
+                    httpSvc.DownloadText(CKAN.Net.GetRawUri(new Uri(metadata.Kref.Id)))
                 );
 
                 json.SafeAdd("name",     remoteAvc.Name);
