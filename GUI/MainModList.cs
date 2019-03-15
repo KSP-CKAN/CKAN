@@ -245,7 +245,7 @@ namespace CKAN
             AddLogMessage("Updating filters...");
 
             var has_any_updates = gui_mods.Any(mod => mod.HasUpdate);
-            var has_any_replacements = gui_mods.Any(mod => mod.HasReplacement);
+            var has_any_replacements = gui_mods.Any(mod => mod.IsInstalled && mod.HasReplacement);
 
             //TODO Consider using smart enumeration pattern so stuff like this is easier
             Util.Invoke(menuStrip2, () =>
