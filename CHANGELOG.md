@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Avoid redundant metadata downloads (#2682 by: HebaruSan; reviewed: DasSkelett, politas)
 - [Netkan] Releases option for Netkan (#2681 by: HebaruSan; reviewed: politas)
 - [Multiple] Support replaced_by property (#2671 by: politas, HebaruSan; reviewed: DasSkelett, politas)
+- [GUI] Customisable columns in GUI Modlist (#2690 by: DasSkelett; reviewed: HebaruSan)
 
 ### Bugfixes
 
