@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+﻿using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -114,6 +115,20 @@ namespace CKAN
                 // We tried all prefixes, and still no luck.
                 return false;
             }
+        }
+
+        public static void LinkContextMenu(LinkLabel link_label, LinkLabelLinkClickedEventArgs e)
+        {
+            ToolStripMenuItem copyLink = new ToolStripMenuItem("&Copy link address");
+            copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(link_label?.Text));
+
+            ContextMenuStrip menu = new ContextMenuStrip();
+            if (Platform.IsMono)
+            {
+                menu.Renderer = new FlatToolStripRenderer();
+            }
+            menu.Items.Add(copyLink);
+            menu.Show(Cursor.Position);
         }
 
         /// <summary>

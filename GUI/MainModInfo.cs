@@ -124,7 +124,16 @@ namespace CKAN
 
         private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Util.OpenLinkFromLinkLabel(sender as LinkLabel);
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    Util.OpenLinkFromLinkLabel(sender as LinkLabel);
+                    break;
+
+                case MouseButtons.Right:
+                    Util.LinkContextMenu(sender as LinkLabel, e);
+                    break;
+            }
         }
 
         private void UpdateModInfo(GUIMod gui_module)
