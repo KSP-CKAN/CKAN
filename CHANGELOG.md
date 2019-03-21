@@ -63,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't auto-install recommendations when reinstalling (#2689 by: HebaruSan; reviewed: politas)
 - [GUI] Allow replacement by conflicting modules (#2695 by: HebaruSan; reviewed: politas)
 - [GUI] Sort AD above empty checkboxes (#2691 by: HebaruSan; reviewed: politas)
+- [Netkan] Reinstate no releases warnings for Netkan (#2692 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
