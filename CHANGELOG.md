@@ -62,6 +62,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Force redraw of versions ListView on Mono (#2685 by: HebaruSan; reviewed: DasSkelett, politas)
 - [GUI] Don't auto-install recommendations when reinstalling (#2689 by: HebaruSan; reviewed: politas)
 - [GUI] Allow replacement by conflicting modules (#2695 by: HebaruSan; reviewed: politas)
+- [GUI] Sort AD above empty checkboxes (#2691 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
