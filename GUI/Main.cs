@@ -386,19 +386,7 @@ namespace CKAN
 
             ApplyToolButton.Enabled = false;
 
-            CurrentInstanceUpdated();
-
-            // We would like to refresh if we're configured to refresh on startup,
-            // or if we have no currently available modules.
-            bool repoUpdateNeeded = configuration.RefreshOnStartup
-                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
-            // If we're auto-updating the client then we shouldn't interfere with the progress tab
-            if (!autoUpdating && repoUpdateNeeded)
-            {
-                UpdateRepo();
-            }
-
-            Text = $"CKAN {Meta.GetVersion()} - KSP {CurrentInstance.Version()}  --  {CurrentInstance.GameDir()}";
+            CurrentInstanceUpdated(!autoUpdating);
 
             if (commandLineArgs.Length >= 2)
             {
@@ -504,7 +492,11 @@ namespace CKAN
             base.OnFormClosing(e);
         }
 
-        private void CurrentInstanceUpdated()
+        /// <summary>
+        /// React to switching to a new game instance
+        /// </summary>
+        /// <param name="onStartup">true if this is the initial load and should trigger auto repo updates, false otherwise</param>
+        private void CurrentInstanceUpdated(bool onStartup)
         {
             Util.Invoke(this, () =>
             {
@@ -521,7 +513,16 @@ namespace CKAN
                     .ShowDialog();
             }
 
-            UpdateModsList();
+            bool repoUpdateNeeded = configuration.RefreshOnStartup
+                || !RegistryManager.Instance(CurrentInstance).registry.HasAnyAvailable();
+            if (onStartup && repoUpdateNeeded)
+            {
+                UpdateRepo();
+            }
+            else
+            {
+                UpdateModsList();
+            }
             ChangeSet = null;
             Conflicts = null;
 
@@ -980,7 +981,7 @@ namespace CKAN
             var old_instance = Instance.CurrentInstance;
             var result = new ManageKspInstances(!actuallyVisible).ShowDialog();
             if (result == DialogResult.OK && !Equals(old_instance, Instance.CurrentInstance))
-                Instance.CurrentInstanceUpdated();
+                Instance.CurrentInstanceUpdated(false);
         }
 
         private void openKspDirectoryToolStripMenuItem_Click(object sender, EventArgs e)

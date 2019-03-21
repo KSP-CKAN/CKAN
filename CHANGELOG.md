@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Allow replacement by conflicting modules (#2695 by: HebaruSan; reviewed: politas)
 - [GUI] Sort AD above empty checkboxes (#2691 by: HebaruSan; reviewed: politas)
 - [Netkan] Reinstate no releases warnings for Netkan (#2692 by: HebaruSan; reviewed: politas)
+- [GUI] Only update mod list once at GUI startup (#2694 by: HebaruSan; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
