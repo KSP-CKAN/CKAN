@@ -62,13 +62,13 @@ namespace Tests.GUI
                     ""identifier"":  ""OutOfOrderMod"",
                     ""version"":     ""1.2.0"",
                     ""ksp_version"": ""0.90"",
-                    ""download"":    ""http://www.ksp-ckan.org""
+                    ""download"":    ""http://www.ksp-ckan.space""
                 }");
                 CkanModule prevVersion = CkanModule.FromJson(@"{
                     ""identifier"":  ""OutOfOrderMod"",
                     ""version"":     ""1.1.0"",
                     ""ksp_version"": ""1.4.2"",
-                    ""download"":    ""http://www.ksp-ckan.org""
+                    ""download"":    ""http://www.ksp-ckan.space""
                 }");
 
                 Registry registry = Registry.Empty();

@@ -33,7 +33,7 @@ namespace CKAN
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://ksp-ckan.org");
+            System.Diagnostics.Process.Start("http://ksp-ckan.space");
         }
     }
 }
