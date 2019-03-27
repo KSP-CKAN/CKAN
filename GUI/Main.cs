@@ -572,10 +572,8 @@ namespace CKAN
                 configuration.SortByColumnIndex = new_sort_column.Index;
                 UpdateFilters(this);
 
-                // Selects the top row and scrolls the list to it.
-                DataGridViewCell cell = ModList.Rows[0].Cells[2];
-                ModList.CurrentCell = cell;
-
+                // Select the top row and scroll the list to it.
+                ModList.CurrentCell = ModList.Rows[0].Cells[1];
             }
 
             ModList.Refresh();

@@ -67,6 +67,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Only update mod list once at GUI startup (#2694 by: HebaruSan; reviewed: politas)
 - [GUI] Only show replace col if a replaced module is installed (#2697 by: HebaruSan; reviewed: politas)
 - [GUI] Update all CKAN URL references (#2702 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Select 2nd instead of 3rd cell on MarkAllUpdatesToolButton_Click (#2704 by: DasSkelett; reviewed: politas)
 
 ## v1.25.4 Kennedy
 
