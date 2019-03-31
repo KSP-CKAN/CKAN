@@ -86,6 +86,11 @@ namespace CKAN
             {
                 return;
             }
+            if (AddVersionToListTextBox.Text.ToLower() == "any") 
+            {
+                MessageBox.Show("Version has invalid format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try
             {
                 var version = KspVersion.Parse(AddVersionToListTextBox.Text);
