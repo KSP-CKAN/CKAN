@@ -126,7 +126,7 @@ reference CKAN client that will read this file.
 For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
-This document describes the CKAN specification 'v1.25'. Changes since spec `1`
+This document describes the CKAN specification 'v1.26'. Changes since spec `1`
 are marked with **v1.2** through to **v1.25** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
@@ -345,7 +345,7 @@ A free form, long text description of the mod, suitable for displaying detailed 
 ##### release_status
 
 The release status of the mod, one of `stable`, `testing` or `development`,
-in order of increasing instability.  If not specified, a value of `stable` is
+in order of decreasing stability.  If not specified, a value of `stable` is
 assumed.
 
 ##### ksp_version
@@ -474,7 +474,7 @@ which are not in themselves mutually compatible enough to use the `"provides"` p
 ##### depends
 
 A list of mods which are *required* for the current mod to operate.
-This mods *must* be installed along with the current mod being installed.
+These mods *must* be installed along with the current mod being installed.
 
 ##### recommends
 
@@ -543,7 +543,7 @@ Example resources:
         "curse"        : "https://kerbal.curseforge.com/projects/220221"
     }
 
-While all currently defined resources are all URLs, future revisions of the spec may provide for more complex types.
+While all currently defined resources are URLs, future revisions of the spec may provide for more complex types.
 
 It is permissible to have fields prefixed with an `x_`. These are considered
 custom use fields, and will be ignored. For example:
