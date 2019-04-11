@@ -470,7 +470,7 @@ namespace CKAN
             }
 
             // Copy window location to app settings
-            configuration.WindowLoc = Location;
+            configuration.WindowLoc = WindowState == FormWindowState.Normal ? Location : RestoreBounds.Location;
 
             // Copy window size to app settings if not maximized
             configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
