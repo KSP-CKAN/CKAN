@@ -37,6 +37,9 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.DescriptionLabel);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
@@ -55,6 +58,8 @@
             // 
             // YesButton
             // 
+            this.YesButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Right));
             this.YesButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.YesButton.Location = new System.Drawing.Point(250, 92);
             this.YesButton.Name = "YesButton";
@@ -65,6 +70,8 @@
             // 
             // NoButton
             // 
+            this.NoButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Right));
             this.NoButton.DialogResult = System.Windows.Forms.DialogResult.No;
             this.NoButton.Location = new System.Drawing.Point(331, 92);
             this.NoButton.Name = "NoButton";
@@ -81,7 +88,7 @@
             this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "YesNoDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CKAN";
