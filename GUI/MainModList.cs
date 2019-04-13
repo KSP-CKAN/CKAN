@@ -418,13 +418,13 @@ namespace CKAN
             {
                 case Keys.Home:
                     // First row.
-                    ModList.CurrentCell = ModList.Rows[0].Cells[2];
+                    ModList.CurrentCell = ModList.Rows[0].Cells[SelectableColumnIndex()];
                     e.Handled = true;
                     break;
 
                 case Keys.End:
                     // Last row.
-                    ModList.CurrentCell = ModList.Rows[ModList.Rows.Count - 1].Cells[2];
+                    ModList.CurrentCell = ModList.Rows[ModList.Rows.Count - 1].Cells[SelectableColumnIndex()];
                     e.Handled = true;
                     break;
 
@@ -448,6 +448,25 @@ namespace CKAN
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// Find a column of the grid that can contain the CurrentCell.
+        /// Can't be hidden or an exception is thrown.
+        /// Shouldn't be a checkbox because we don't want the space bar to toggle.
+        /// </summary>
+        /// <returns>
+        /// Index of the column to use.
+        /// </returns>
+        private int SelectableColumnIndex()
+        {
+            // First try the currently active cell's column
+            return ModList.CurrentCell?.ColumnIndex
+                // If there's no currently active cell, use the first visible non-checkbox column
+                ?? ModList.Columns.Cast<DataGridViewColumn>()
+                    .FirstOrDefault(c => c is DataGridViewTextBoxColumn && c.Visible)?.Index
+                // Otherwise use the Installed checkbox column since it can't be hidden
+                ?? Installed.Index;
         }
 
         /// <summary>

@@ -564,7 +564,7 @@ namespace CKAN
             if (Main.Instance.configuration.AutoSortByUpdate)
             {
                 // set new sort column
-                var new_sort_column = ModList.Columns[1];
+                var new_sort_column = ModList.Columns[UpdateCol.Index];
                 var current_sort_column = ModList.Columns[configuration.SortByColumnIndex];
 
                 // Reset the glyph.
@@ -573,7 +573,7 @@ namespace CKAN
                 UpdateFilters(this);
 
                 // Select the top row and scroll the list to it.
-                ModList.CurrentCell = ModList.Rows[0].Cells[1];
+                ModList.CurrentCell = ModList.Rows[0].Cells[SelectableColumnIndex()];
             }
 
             ModList.Refresh();
@@ -1052,9 +1052,7 @@ namespace CKAN
             {
                 match.Selected = true;
 
-                // Setting this to the 'Name' cell prevents the checkbox from being toggled
-                // by pressing 'Space' while the row is not indicated as active.
-                ModList.CurrentCell = match.Cells[2];
+                ModList.CurrentCell = match.Cells[SelectableColumnIndex()];
                 if (showAsFirst)
                     ModList.FirstDisplayedScrollingRowIndex = match.Index;
             }
