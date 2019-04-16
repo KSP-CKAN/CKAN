@@ -10,3 +10,4 @@ RoverDude | BobPalmer | Self-managing metadata
 Sarbian | Sarbian | Self-managing metadata
 Angel-125 | Angel-125 | Installation problems and request by author
 DefiantZombie | DefiantZombie | request by author
+cakepie | cake-pie | Guard against hot code unsuitable for general release 
