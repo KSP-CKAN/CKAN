@@ -117,10 +117,24 @@ namespace CKAN
             }
         }
 
-        public static void LinkContextMenu(LinkLabel link_label, LinkLabelLinkClickedEventArgs e)
+        public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    Util.OpenLinkFromLinkLabel(sender as LinkLabel);
+                    break;
+
+                case MouseButtons.Right:
+                    Util.LinkContextMenu(url, e);
+                    break;
+            }
+        }
+
+        public static void LinkContextMenu(string url, LinkLabelLinkClickedEventArgs e)
         {
             ToolStripMenuItem copyLink = new ToolStripMenuItem("&Copy link address");
-            copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(link_label?.Text));
+            copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(url));
 
             ContextMenuStrip menu = new ContextMenuStrip();
             if (Platform.IsMono)
