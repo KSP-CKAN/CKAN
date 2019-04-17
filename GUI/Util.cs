@@ -73,14 +73,18 @@ namespace CKAN
             return Uri.TryCreate(source, UriKind.Absolute, out uri_result) && uri_result.Scheme == Uri.UriSchemeHttp;
         }
 
-        public static void OpenLinkFromLinkLabel(LinkLabel link_label)
+        /// <summary>
+        /// Open a URL, unless it's "N/A"
+        /// </summary>
+        /// <param name="url">The URL</param>
+        public static void OpenLinkFromLinkLabel(string url)
         {
-            if (link_label.Text == "N/A")
+            if (url == "N/A")
             {
                 return;
             }
 
-            TryOpenWebPage(link_label.Text);
+            TryOpenWebPage(url);
         }
 
         /// <summary>
@@ -117,21 +121,32 @@ namespace CKAN
             }
         }
 
+        /// <summary>
+        /// React to the user clicking a mouse button on a link.
+        /// Opens the URL in browser on left click, presents a
+        /// right click menu on right click.
+        /// </summary>
+        /// <param name="url">The link's URL</param>
+        /// <param name="e">The click event</param>
         public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs e)
         {
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    Util.OpenLinkFromLinkLabel(sender as LinkLabel);
+                    Util.OpenLinkFromLinkLabel(url);
                     break;
 
                 case MouseButtons.Right:
-                    Util.LinkContextMenu(url, e);
+                    Util.LinkContextMenu(url);
                     break;
             }
         }
 
-        public static void LinkContextMenu(string url, LinkLabelLinkClickedEventArgs e)
+        /// <summary>
+        /// Show a context menu when the user right clicks a link
+        /// </summary>
+        /// <param name="url">The URL of the link</param>
+        public static void LinkContextMenu(string url)
         {
             ToolStripMenuItem copyLink = new ToolStripMenuItem("&Copy link address");
             copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(url));
