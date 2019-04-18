@@ -364,7 +364,7 @@ namespace CKAN
             if (result.Key && !installCanceled)
             {
                 // Rebuilds the list of GUIMods
-                UpdateModsList(false, null);
+                UpdateModsList(null);
 
                 if (modChangedCallback != null)
                 {
@@ -385,7 +385,7 @@ namespace CKAN
             {
                 // User cancelled the installation
                 // Rebuilds the list of GUIMods
-                UpdateModsList(false, ChangeSet);
+                UpdateModsList(ChangeSet);
                 UpdateChangesDialog(null, installWorker);
                 if (result.Key) {
                     FailWaitDialog("Cancellation to late, process complete!", "User canceled the process manually, but all mods already (un)installed/upgraded.", "Process complete!", result.Key);

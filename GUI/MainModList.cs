@@ -156,15 +156,15 @@ namespace CKAN
             }
         }
 
-        public void UpdateModsList(Boolean repo_updated = false, IEnumerable<ModChange> mc = null)
+        public void UpdateModsList(IEnumerable<ModChange> mc = null, Dictionary<string, bool> old_modules = null)
         {
             // Run the update in the background so the UI thread can appear alive
             Task.Factory.StartNew(() =>
-                _UpdateModsList(repo_updated, mc ?? new List<ModChange>())
+                _UpdateModsList(mc ?? new List<ModChange>(), old_modules)
             );
         }
 
-        private void _UpdateModsList(bool repo_updated, IEnumerable<ModChange> mc)
+        private void _UpdateModsList(IEnumerable<ModChange> mc, Dictionary<string, bool> old_modules = null)
         {
             log.Info("Updating the mod list");
 
@@ -209,13 +209,12 @@ namespace CKAN
             }
 
             AddLogMessage("Preserving new flags...");
-            var old_modules = mainModList.Modules.ToDictionary(m => m, m => m.IsIncompatible);
-            if (repo_updated)
+            if (old_modules != null)
             {
                 foreach (GUIMod gm in gui_mods)
                 {
                     bool oldIncompat;
-                    if (old_modules.TryGetValue(gm, out oldIncompat))
+                    if (old_modules.TryGetValue(gm.Identifier, out oldIncompat))
                     {
                         // Found it; check if newly compatible
                         if (!gm.IsIncompatible && oldIncompat)
@@ -232,8 +231,9 @@ namespace CKAN
             }
             else
             {
-                //Copy the new mod flag from the old list.
-                var old_new_mods = new HashSet<GUIMod>(old_modules.Keys.Where(m => m.IsNew));
+                // Copy the new mod flag from the old list.
+                var old_new_mods = new HashSet<GUIMod>(
+                    mainModList.Modules.Where(m => m.IsNew));
                 foreach (var gui_mod in gui_mods.Where(m => old_new_mods.Contains(m)))
                 {
                     gui_mod.IsNew = true;
