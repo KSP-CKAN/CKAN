@@ -323,7 +323,7 @@ Do you wish to reinstall now?", sb)))
                 var aRel = aSorted[i];
                 var bRel = bSorted[i];
 
-                if (!aRel.Same(bRel))
+                if (!aRel.Equals(bRel))
                 {
                     return false;
                 }

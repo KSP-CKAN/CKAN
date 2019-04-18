@@ -13,7 +13,7 @@ using CKAN.Versioning;
 
 namespace CKAN
 {
-    public abstract class RelationshipDescriptor
+    public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
         public abstract bool MatchesAny(
             IEnumerable<CkanModule> modules,
@@ -25,7 +25,7 @@ namespace CKAN
 
         public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier registry, KspVersionCriteria crit, IEnumerable<CkanModule> toInstall = null);
 
-        public abstract bool Same(RelationshipDescriptor other);
+        public abstract bool Equals(RelationshipDescriptor other);
 
         public abstract bool ContainsAny(IEnumerable<string> identifiers);
 
@@ -149,7 +149,7 @@ namespace CKAN
             return registry.LatestAvailableWithProvides(name, crit, this, toInstall);
         }
 
-        public override bool Same(RelationshipDescriptor other)
+        public override bool Equals(RelationshipDescriptor other)
         {
             ModuleRelationshipDescriptor modRel = other as ModuleRelationshipDescriptor;
             return modRel != null
@@ -236,7 +236,7 @@ namespace CKAN
             return any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, crit, toInstall)).ToList();
         }
 
-        public override bool Same(RelationshipDescriptor other)
+        public override bool Equals(RelationshipDescriptor other)
         {
             AnyOfRelationshipDescriptor anyRel = other as AnyOfRelationshipDescriptor;
             return anyRel != null
