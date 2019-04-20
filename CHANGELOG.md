@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ## Bugfixes
 
 - [GUI] Save restore position when minimized (#2725 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Fix home/end, url handler, typing nav, and dependency double click (#2727 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.0
 
