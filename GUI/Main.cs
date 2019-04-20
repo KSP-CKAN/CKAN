@@ -307,9 +307,16 @@ namespace CKAN
             base.OnFormClosed(e);
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void SetStartPosition()
         {
-            if (configuration.WindowLoc.X == -1 && configuration.WindowLoc.Y == -1)
+            Screen screen = Util.FindScreen(configuration.WindowLoc, configuration.WindowSize);
+            if (screen == null)
+            {
+                // Start at center of screen if we have an invalid location saved in the config
+                // (such as -32000,-32000, which Windows uses when you're minimized)
+                StartPosition = FormStartPosition.CenterScreen;
+            }
+            else if (configuration.WindowLoc.X == -1 && configuration.WindowLoc.Y == -1)
             {
                 // Center on screen for first launch
                 StartPosition = FormStartPosition.CenterScreen;
@@ -319,14 +326,20 @@ namespace CKAN
                 // Make sure there's room at the top for the MacOSX menu bar
                 Location = Util.ClampedLocationWithMargins(
                     configuration.WindowLoc, configuration.WindowSize,
-                    new Size(0, 30), new Size(0, 0)
+                    new Size(0, 30), new Size(0, 0),
+                    screen
                 );
             }
             else
             {
                 // Just make sure it's fully on screen
-                Location = Util.ClampedLocation(configuration.WindowLoc, configuration.WindowSize);
+                Location = Util.ClampedLocation(configuration.WindowLoc, configuration.WindowSize, screen);
             }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            SetStartPosition();
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
 
@@ -470,7 +483,7 @@ namespace CKAN
             }
 
             // Copy window location to app settings
-            configuration.WindowLoc = Location;
+            configuration.WindowLoc = WindowState == FormWindowState.Normal ? Location : RestoreBounds.Location;
 
             // Copy window size to app settings if not maximized
             configuration.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;

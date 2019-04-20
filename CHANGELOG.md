@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.26.1
+
+## Bugfixes
+
+- [GUI] Save restore position when minimized (#2725 by: HebaruSan; reviewed: DasSkelett)
+
 ## v1.26.0
 
 ### Features

@@ -117,6 +117,20 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Find a screen that the given box overlaps
+        /// </summary>
+        /// <param name="location">Upper left corner of box</param>
+        /// <param name="size">Width and height of box</param>
+        /// <returns>
+        /// The first screen that overlaps the box if any, otherwise null
+        /// </returns>
+        public static Screen FindScreen(Point location, Size size)
+        {
+            var rect = new Rectangle(location, size);
+            return Screen.AllScreens.FirstOrDefault(sc => sc.WorkingArea.IntersectsWith(rect));
+        }
+
+        /// <summary>
         /// Adjust position of a box so it fits entirely on one screen
         /// </summary>
         /// <param name="location">Top left corner of box</param>
@@ -125,26 +139,23 @@ namespace CKAN
         /// Original location if already fully on-screen, otherwise
         /// a position representing sliding it onto the screen
         /// </returns>
-        public static Point ClampedLocation(Point location, Size size)
+        public static Point ClampedLocation(Point location, Size size, Screen screen = null)
         {
-            var rect = new Rectangle(location, size);
-            // Find a screen that the default position overlaps
-            foreach (Screen screen in Screen.AllScreens)
+            if (screen == null)
             {
-                if (screen.WorkingArea.IntersectsWith(rect))
-                {
-                    // Slide the whole rectangle fully onto the screen
-                    if (location.X < screen.WorkingArea.Top)
-                        location.X = screen.WorkingArea.Top;
-                    if (location.Y < screen.WorkingArea.Left)
-                        location.Y = screen.WorkingArea.Left;
-                    if (location.X + size.Width > screen.WorkingArea.Right)
-                        location.X = screen.WorkingArea.Right - size.Width;
-                    if (location.Y + size.Height > screen.WorkingArea.Bottom)
-                        location.Y = screen.WorkingArea.Bottom - size.Height;
-                    // Stop checking screens
-                    break;
-                }
+                screen = FindScreen(location, size);
+            }
+            if (screen != null)
+            {
+                // Slide the whole rectangle fully onto the screen
+                if (location.X < screen.WorkingArea.Top)
+                    location.X = screen.WorkingArea.Top;
+                if (location.Y < screen.WorkingArea.Left)
+                    location.Y = screen.WorkingArea.Left;
+                if (location.X + size.Width > screen.WorkingArea.Right)
+                    location.X = screen.WorkingArea.Right - size.Width;
+                if (location.Y + size.Height > screen.WorkingArea.Bottom)
+                    location.Y = screen.WorkingArea.Bottom - size.Height;
             }
             return location;
         }
@@ -160,12 +171,12 @@ namespace CKAN
         /// Original location if already fully on-screen plus margins, otherwise
         /// a position representing sliding it onto the screen
         /// </returns>
-        public static Point ClampedLocationWithMargins(Point location, Size size, Size topLeftMargin, Size bottomRightMargin)
+        public static Point ClampedLocationWithMargins(Point location, Size size, Size topLeftMargin, Size bottomRightMargin, Screen screen = null)
         {
             // Imagine drawing a larger box around the window, the size of the desired margin.
             // We pass that box to ClampedLocation to make sure it fits on screen,
             // then place our window at an offset within the box
-            return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin) + topLeftMargin;
+            return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin, screen) + topLeftMargin;
         }
 
     }
