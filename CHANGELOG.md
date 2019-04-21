@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.26.1
 
+## Features
+
+- [GUI] Right click copy option for mod info links (#2699 by: HebaruSan; reviewed: DasSkelett)
+
 ## Bugfixes
 
 - [GUI] Save restore position when minimized (#2725 by: HebaruSan; reviewed: DasSkelett)

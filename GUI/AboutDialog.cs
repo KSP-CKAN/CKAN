@@ -13,27 +13,27 @@ namespace CKAN
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md");
+            Util.HandleLinkClicked("https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md", e);
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/graphs/contributors");
+            Util.HandleLinkClicked("https://github.com/KSP-CKAN/CKAN/graphs/contributors", e);
         }
 
         private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/KSP-CKAN/CKAN/");
+            Util.HandleLinkClicked("https://github.com/KSP-CKAN/CKAN/", e);
         }
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan");
+            Util.HandleLinkClicked("http://forum.kerbalspaceprogram.com/index.php?/topic/154922-ckan", e);
         }
 
         private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://ksp-ckan.space");
+            Util.HandleLinkClicked("http://ksp-ckan.space", e);
         }
     }
 }

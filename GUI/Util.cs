@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+﻿using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -72,14 +73,18 @@ namespace CKAN
             return Uri.TryCreate(source, UriKind.Absolute, out uri_result) && uri_result.Scheme == Uri.UriSchemeHttp;
         }
 
-        public static void OpenLinkFromLinkLabel(LinkLabel link_label)
+        /// <summary>
+        /// Open a URL, unless it's "N/A"
+        /// </summary>
+        /// <param name="url">The URL</param>
+        public static void OpenLinkFromLinkLabel(string url)
         {
-            if (link_label.Text == "N/A")
+            if (url == "N/A")
             {
                 return;
             }
 
-            TryOpenWebPage(link_label.Text);
+            TryOpenWebPage(url);
         }
 
         /// <summary>
@@ -114,6 +119,45 @@ namespace CKAN
                 // We tried all prefixes, and still no luck.
                 return false;
             }
+        }
+
+        /// <summary>
+        /// React to the user clicking a mouse button on a link.
+        /// Opens the URL in browser on left click, presents a
+        /// right click menu on right click.
+        /// </summary>
+        /// <param name="url">The link's URL</param>
+        /// <param name="e">The click event</param>
+        public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    Util.OpenLinkFromLinkLabel(url);
+                    break;
+
+                case MouseButtons.Right:
+                    Util.LinkContextMenu(url);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Show a context menu when the user right clicks a link
+        /// </summary>
+        /// <param name="url">The URL of the link</param>
+        public static void LinkContextMenu(string url)
+        {
+            ToolStripMenuItem copyLink = new ToolStripMenuItem("&Copy link address");
+            copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(url));
+
+            ContextMenuStrip menu = new ContextMenuStrip();
+            if (Platform.IsMono)
+            {
+                menu.Renderer = new FlatToolStripRenderer();
+            }
+            menu.Items.Add(copyLink);
+            menu.Show(Cursor.Position);
         }
 
         /// <summary>
