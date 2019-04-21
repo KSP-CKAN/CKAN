@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix home/end, url handler, typing nav, and dependency double click (#2727 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix size of relationships list (#2728 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Don't apply previous change set to checkboxes after successful install (#2730 by: HebaruSan; reviewed: DasSkelett)
+- [Core] Compare RelationshipDescriptors with Equals instead of Same (#2735 by: HebaruSan; reviewed: DasSkelett)
 
 ## v1.26.0
 
