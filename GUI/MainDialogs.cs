@@ -37,9 +37,9 @@ namespace CKAN
             errorDialog.ShowErrorDialog(String.Format(text, args));
         }
 
-        public bool YesNoDialog(string text)
+        public bool YesNoDialog(string text, string yesText = null, string noText = null)
         {
-            return yesNoDialog.ShowYesNoDialog(text) == DialogResult.Yes;
+            return yesNoDialog.ShowYesNoDialog(text, yesText, noText) == DialogResult.Yes;
         }
 
         public int SelectionDialog(string message, params object[] args)

@@ -451,7 +451,7 @@ namespace CKAN
                     string confDescrip = Conflicts
                         .Select(kvp => kvp.Value)
                         .Aggregate((a, b) => $"{a}, {b}");
-                    if (!YesNoDialog($"There are conflicts. Really quit?\r\n\r\n{confDescrip}"))
+                    if (!YesNoDialog($"There are conflicts. Really quit?\r\n\r\n{confDescrip}", "Quit", "Go Back"))
                     {
                         e.Cancel = true;
                         return;
@@ -460,7 +460,7 @@ namespace CKAN
                 else
                 {
                     // The Conflicts dictionary is empty even when there are unmet dependencies.
-                    if (!YesNoDialog("There are unmet dependencies. Really quit?"))
+                    if (!YesNoDialog("There are unmet dependencies. Really quit?", "Quit", "Go Back"))
                     {
                         e.Cancel = true;
                         return;
@@ -475,7 +475,7 @@ namespace CKAN
                     .Select(grp => $"{grp.Key}: "
                         + grp.Aggregate((a, b) => $"{a}, {b}"))
                     .Aggregate((a, b) => $"{a}\r\n{b}");
-                if (!YesNoDialog($"You have unapplied changes. Really quit?\r\n\r\n{changeDescrip}"))
+                if (!YesNoDialog($"You have unapplied changes. Really quit?\r\n\r\n{changeDescrip}", "Quit", "Go Back"))
                 {
                     e.Cancel = true;
                     return;
@@ -832,7 +832,7 @@ namespace CKAN
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({registry.CompatibleGameVersions(m.Module)})")
                     .Aggregate((a, b) => $"{a}, {b}");
-                if (!YesNoDialog($"Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?\r\n\r\n{incompatDescrip}"))
+                if (!YesNoDialog($"Some installed modules are incompatible! It might not be safe to launch KSP. Really launch?\r\n\r\n{incompatDescrip}", "Launch", "Go Back"))
                 {
                     return;
                 }
