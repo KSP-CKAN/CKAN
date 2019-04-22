@@ -790,42 +790,15 @@ namespace CKAN
                 modules_to_remove.Add(im.Module);
             }
 
-            bool handled_all_too_many_provides = false;
-            while (!handled_all_too_many_provides)
-            {
-                //Can't await in catch clause - doesn't seem to work in mono. Hence this flag
-                TooManyModsProvideKraken kraken;
-                try
-                {
-                    new RelationshipResolver(
-                        modules_to_install,
-                        modules_to_remove,
-                        RelationshipResolver.DependsOnlyOpts(),
-                        registry, version);
-                    handled_all_too_many_provides = true;
-                    continue;
-                }
-                catch (TooManyModsProvideKraken k)
-                {
-                    kraken = k;
-                }
-                //Shouldn't get here unless there is a kraken.
-                var mod = await too_many_provides(kraken);
-                if (mod != null)
-                {
-                    modules_to_install.Add(mod);
-                }
-                else
-                {
-                    //TODO Is could be a new type of Kraken.
-                    throw kraken;
-                }
-            }
+            // Get as many dependencies as we can, but leave decisions and prompts for installation time
+            RelationshipResolverOptions opts = RelationshipResolver.DependsOnlyOpts();
+            opts.without_toomanyprovides_kraken = true;
+            opts.without_enforce_consistency    = true;
 
             var resolver = new RelationshipResolver(
                 modules_to_install,
                 modules_to_remove,
-                RelationshipResolver.DependsOnlyOpts(), registry, version);
+                opts, registry, version);
             changeSet.UnionWith(
                 resolver.ModList()
                     .Select(m => new ModChange(new GUIMod(m, registry, version), GUIModChangeType.Install, resolver.ReasonFor(m))));
