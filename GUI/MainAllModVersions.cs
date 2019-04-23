@@ -26,7 +26,7 @@ namespace CKAN
             CkanModule          module = item.Tag as CkanModule;
 
             if (module.IsCompatibleKSP(Main.Instance.Manager.CurrentInstance.VersionCriteria())
-                && Main.Instance.YesNoDialog($"Install {module}?"))
+                && Main.Instance.YesNoDialog($"Install {module}?", "Install", "Cancel"))
             {
                 Main.Instance.InstallModuleDriver(
                     RegistryManager.Instance(Main.Instance.Manager.CurrentInstance).registry,

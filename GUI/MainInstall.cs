@@ -306,7 +306,7 @@ namespace CKAN
                 {
                     string msg = kraken.ToString();
                     GUI.user.RaiseMessage(msg);
-                    if (YesNoDialog($"{msg}\r\n\r\nOpen settings now?"))
+                    if (YesNoDialog($"{msg}\r\n\r\nOpen settings now?", "Open Settings", "No"))
                     {
                         // Launch the URL describing this host's throttling practices, if any
                         if (kraken.infoUrl != null)

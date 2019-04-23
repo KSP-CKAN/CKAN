@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ## Features
 
 - [GUI] Right click copy option for mod info links (#2699 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Relabel Yes/No buttons for some questions (#2737 by: HebaruSan; reviewed: DasSkelett)
 
 ## Bugfixes
 

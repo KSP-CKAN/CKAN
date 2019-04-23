@@ -11,11 +11,19 @@ namespace CKAN
             InitializeComponent();
         }
 
-        public DialogResult ShowYesNoDialog(string text)
+        public DialogResult ShowYesNoDialog(string text, string yesText = null, string noText = null)
         {
             Util.Invoke(DescriptionLabel, () =>
             {
                 DescriptionLabel.Text = text;
+                if (yesText != null)
+                {
+                    YesButton.Text = yesText;
+                }
+                if (noText != null)
+                {
+                    NoButton.Text = noText;
+                }
                 ClientSize = new Size(ClientSize.Width, StringHeight(text, ClientSize.Width - 25) + 2 * 54);
             });
 
