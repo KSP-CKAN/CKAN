@@ -127,7 +127,7 @@ For compatibility with pre-release clients, and the v1.0 client, the special
 *integer* `1` should be used.
 
 This document describes the CKAN specification 'v1.26'. Changes since spec `1`
-are marked with **v1.2** through to **v1.25** respectively. For maximum
+are marked with **v1.2** through to **v1.26** respectively. For maximum
 compatibility, using older spec versions is preferred when newer features are
 not required.
 
@@ -682,7 +682,7 @@ For example: `#/ckan/github/pjf/DogeCoinFlag`.
 When used, the following fields will be auto-filled if not already present:
 
 - `name`
-- `license`
+- `license` (**v1.26**)
 - `abstract`
 - `author`
 - `version`
