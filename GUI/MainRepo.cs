@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Timers;
 using System.Linq;
 using Newtonsoft.Json;
+using CKAN.Versioning;
 
 namespace CKAN
 {
@@ -64,7 +66,22 @@ namespace CKAN
             try
             {
                 AddStatusMessage("Updating repositories...");
-                e.Result = Repo.UpdateAllRepositories(RegistryManager.Instance(CurrentInstance), CurrentInstance, Manager.Cache, GUI.user);
+
+                // Note the current mods' compatibility for the NewlyCompatible filter
+                KspVersionCriteria versionCriteria = CurrentInstance.VersionCriteria();
+                IRegistryQuerier registry = RegistryManager.Instance(CurrentInstance).registry;
+                Dictionary<string, bool> oldModules = registry.Available(versionCriteria)
+                    .ToDictionary(m => m.identifier, m => false);
+                registry.Incompatible(versionCriteria)
+                    .Where(m => !oldModules.ContainsKey(m.identifier))
+                    .ToList()
+                    .ForEach(m => oldModules.Add(m.identifier, true));
+
+                RepoUpdateResult result = Repo.UpdateAllRepositories(
+                    RegistryManager.Instance(CurrentInstance),
+                    CurrentInstance, Manager.Cache, GUI.user);
+                e.Result = new KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>(
+                    result, oldModules);
             }
             catch (UriFormatException ex)
             {
@@ -82,7 +99,11 @@ namespace CKAN
 
         private void PostUpdateRepo(object sender, RunWorkerCompletedEventArgs e)
         {
-            switch (e.Result as RepoUpdateResult?)
+            var resultPair = e.Result as KeyValuePair<RepoUpdateResult, Dictionary<string, bool>>?;
+            RepoUpdateResult? result = resultPair?.Key;
+            Dictionary<string, bool> oldModules = resultPair?.Value;
+
+            switch (result)
             {
                 case RepoUpdateResult.NoChanges:
                     AddStatusMessage("Repositories already up to date.");
@@ -90,7 +111,7 @@ namespace CKAN
                     // Load rows if grid empty, otherwise keep current
                     if (ModList.Rows.Count < 1)
                     {
-                        UpdateModsList(true, ChangeSet);
+                        UpdateModsList(ChangeSet);
                     }
                     break;
 
@@ -100,7 +121,7 @@ namespace CKAN
 
                 case RepoUpdateResult.Updated:
                 default:
-                    UpdateModsList(true, ChangeSet);
+                    UpdateModsList(ChangeSet, oldModules);
                     AddStatusMessage("Repositories successfully updated.");
                     ShowRefreshQuestion();
                     HideWaitDialog(true);
