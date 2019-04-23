@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var uri = new Uri(metadata.Kref.Id);
-                var targetFileText = _http.DownloadText(uri);
+                var targetFileText = _http.DownloadText(CKAN.Net.GetRawUri(uri));
 
                 Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
 
