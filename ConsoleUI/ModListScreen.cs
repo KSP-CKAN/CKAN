@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using CKAN.ConsoleUI.Toolkit;
+using System.Linq;
 
 namespace CKAN.ConsoleUI {
 
@@ -48,18 +49,17 @@ namespace CKAN.ConsoleUI {
                 },
                 1, 0, ListSortDirection.Descending,
                 (CkanModule m, string filter) => {
+                    // Search for author
                     if (filter.StartsWith("@")) {
                         string authorFilt = filter.Substring(1);
                         if (string.IsNullOrEmpty(authorFilt)) {
                             return true;
-                        } else if (m.author != null) {
-                            foreach (string auth in m.author) {
-                                if (auth.IndexOf(authorFilt, StringComparison.CurrentCultureIgnoreCase) == 0) {
-                                    return true;
-                                }
-                            }
+                        } else {
+                            // Remove special characters from search term
+                            authorFilt = CkanModule.nonAlphaNums.Replace(authorFilt, "");
+                            return m.SearchableAuthors.Any((author) => author.IndexOf(authorFilt, StringComparison.CurrentCultureIgnoreCase) == 0);
                         }
-                        return false;
+                    // Other special search params: installed, updatable, new, conflicting and dependends
                     } else if (filter.StartsWith("~")) {
                         if (filter.Length <= 1) {
                             // Don't blank the list for just "~" by itself
@@ -97,9 +97,12 @@ namespace CKAN.ConsoleUI {
                         }
                         return false;
                     } else {
-                        return m.identifier.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0
-                            || m.name.IndexOf(      filter, StringComparison.CurrentCultureIgnoreCase) >= 0
-                            || m.@abstract.IndexOf( filter, StringComparison.CurrentCultureIgnoreCase) >= 0;
+                        filter = CkanModule.nonAlphaNums.Replace(filter, "");
+
+                        return m.SearchableIdentifier.IndexOf( filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                            || m.SearchableName.IndexOf(       filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                            || m.SearchableAbstract.IndexOf(   filter, StringComparison.CurrentCultureIgnoreCase) >= 0
+                            || m.SearchableDescription.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0;
                     }
                 }
             );

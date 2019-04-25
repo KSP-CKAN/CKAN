@@ -480,6 +480,21 @@ namespace CKAN
             }
         }
 
+        // These are used to simplify the search by dropping special chars.
+        [JsonIgnore]
+        public string SearchableName;
+        [JsonIgnore]
+        public string SearchableIdentifier;
+        [JsonIgnore]
+        public string SearchableAbstract;
+        [JsonIgnore]
+        public string SearchableDescription;
+        [JsonIgnore]
+        public List<string> SearchableAuthors;
+        // This regex finds all those special chars.
+        [JsonIgnore]
+        public static readonly Regex nonAlphaNums = new Regex("[^a-zA-Z0-9]", RegexOptions.Compiled);
+
         #endregion
 
         #region Constructors
@@ -527,7 +542,6 @@ namespace CKAN
 
             // Check everything in the spec is defined.
             // TODO: This *can* and *should* be done with JSON attributes!
-
             foreach (string field in required_fields)
             {
                 object value = null;
@@ -550,6 +564,33 @@ namespace CKAN
 
                     log.Error(error);
                     throw new BadMetadataKraken(null, error);
+                }
+            }
+
+            // Calculate the Searchables.
+            CalculateSearchables();
+        }
+
+        /// <summary>
+        /// Calculate the mod properties used for searching via Regex.
+        /// </summary>
+        public void CalculateSearchables()
+        {
+            SearchableIdentifier  = identifier  == null ? string.Empty : CkanModule.nonAlphaNums.Replace(identifier, "");
+            SearchableName        = name        == null ? string.Empty : CkanModule.nonAlphaNums.Replace(name, "");
+            SearchableAbstract    = @abstract   == null ? string.Empty : CkanModule.nonAlphaNums.Replace(@abstract, "");
+            SearchableDescription = description == null ? string.Empty : CkanModule.nonAlphaNums.Replace(description, "");
+            SearchableAuthors = new List<string>();
+
+            if (author == null)
+            {
+                SearchableAuthors.Add(string.Empty);
+            }
+            else
+            {
+                foreach (string auth in author)
+                {
+                    SearchableAuthors.Add(CkanModule.nonAlphaNums.Replace(auth, ""));
                 }
             }
         }
@@ -575,6 +616,8 @@ namespace CKAN
             license = license ?? new List<License> { License.UnknownLicense };
             @abstract = @abstract ?? string.Empty;
             name = name ?? string.Empty;
+
+            CalculateSearchables();
         }
 
         /// <summary>

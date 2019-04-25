@@ -514,7 +514,17 @@ namespace CKAN.CmdLine
 
     internal class SearchOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string search_term { get; set; }
+        [Option("detail", HelpText = "Show full name, latest compatible version and short description of each module")]
+        public bool detail { get; set; }
+
+        [Option("all", HelpText = "Show incompatible mods too")]
+        public bool all { get; set; }
+
+        [Option("author", HelpText = "Limit search results to mods by matching authors")]
+        public string author_term { get; set; }
+
+        [ValueOption(0)]
+        public string search_term { get; set; }
     }
 
     internal class CompareOptions : CommonOptions

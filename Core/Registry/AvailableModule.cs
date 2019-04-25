@@ -28,8 +28,9 @@ namespace CKAN
         }
 
         [OnDeserialized]
-        internal void SetIdentifier(StreamingContext context)
+        internal void DeserialisationFixes(StreamingContext context)
         {
+            // Set identifier
             var mod = module_version.Values.LastOrDefault();
             identifier = mod.identifier;
             Debug.Assert(module_version.Values.All(m=>identifier.Equals(m.identifier)));

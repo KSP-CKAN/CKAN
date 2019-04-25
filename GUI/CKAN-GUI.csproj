@@ -248,7 +248,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SelectionDialog.cs">
-      <Subtype>Form</Subtype>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="SelectionDialog.Designer.cs">
       <DependentUpon>SelectionDialog.cs</DependentUpon>
