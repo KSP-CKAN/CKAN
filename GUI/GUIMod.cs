@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using CKAN.Versioning;
-using CKAN.GameVersionProviders;
 
 namespace CKAN
 {
@@ -32,6 +31,7 @@ namespace CKAN
         public string KSPCompatibilityLong { get; private set; }
 
         public string Abstract { get; private set; }
+        public string Description { get; private set; }
         public string Homepage { get; private set; }
         public string Identifier { get; private set; }
         public bool IsInstallChecked { get; set; }
@@ -40,6 +40,12 @@ namespace CKAN
         public bool IsNew { get; set; }
         public bool IsCKAN { get; private set; }
         public string Abbrevation { get; private set; }
+
+        public string SearchableName { get; private set; }
+        public string SearchableIdentifier { get; private set; }
+        public string SearchableAbstract { get; private set; }
+        public string SearchableDescription { get; private set; }
+        public List<string> SearchableAuthors { get; private set; }
 
         /// <summary>
         /// Return whether this mod is installable.
@@ -99,6 +105,7 @@ namespace CKAN
 
             Name          = mod.name.Trim();
             Abstract      = mod.@abstract.Trim();
+            Description   = mod.description?.Trim() ?? string.Empty;
             Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
             Authors       = mod.author == null ? "N/A" : String.Join(",", mod.author);
 
@@ -115,6 +122,12 @@ namespace CKAN
                         ?? mod.resources.repository?.ToString()
                         ?? "N/A";
             }
+
+            // Get the Searchables.
+            SearchableName        = mod.SearchableName;
+            SearchableAbstract    = mod.SearchableAbstract;
+            SearchableDescription = mod.SearchableDescription;
+            SearchableAuthors     = mod.SearchableAuthors;
 
             UpdateIsCached();
         }
@@ -186,8 +199,9 @@ namespace CKAN
             }
 
             // If we have a homepage provided, use that; otherwise use the spacedock page, curse page or the github repo so that users have somewhere to get more info than just the abstract.
-
             Homepage = "N/A";
+
+            SearchableIdentifier = CkanModule.nonAlphaNums.Replace(Identifier, "");
         }
 
         /// <summary>

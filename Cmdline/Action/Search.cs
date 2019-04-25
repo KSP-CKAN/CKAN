@@ -16,60 +16,147 @@ namespace CKAN.CmdLine
 
         public int RunCommand(CKAN.KSP ksp, object raw_options)
         {
-            SearchOptions options = (SearchOptions) raw_options;
+            SearchOptions options = (SearchOptions)raw_options;
 
             // Check the input.
-            if (String.IsNullOrWhiteSpace(options.search_term))
+            if (String.IsNullOrWhiteSpace(options.search_term) && String.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseError("No search term?");
 
                 return Exit.BADOPT;
             }
 
-            var matching_mods = PerformSearch(ksp, options.search_term);
+            List<CkanModule> matching_compatible = PerformSearch(ksp, options.search_term, options.author_term, false);
+            List<CkanModule> matching_incompatible = new List<CkanModule>();
+            if (options.all)
+            {
+                matching_incompatible = PerformSearch(ksp, options.search_term, options.author_term, true);
+            }
 
             // Show how many matches we have.
-            user.RaiseMessage("Found " + matching_mods.Count().ToString() + " mods matching \"" + options.search_term + "\".");
+            if (options.all && !String.IsNullOrWhiteSpace(options.author_term))
+            {
+                user.RaiseMessage("Found {0} compatible and {1} incompatible mods matching \"{2}\" by \"{3}\".",
+                    matching_compatible.Count().ToString(),
+                    matching_incompatible.Count().ToString(),
+                    options.search_term,
+                    options.author_term);
+            }
+            else if (options.all && String.IsNullOrWhiteSpace(options.author_term))
+            {
+                user.RaiseMessage("Found {0} compatible and {1} incompatible mods matching \"{2}\".",
+                    matching_compatible.Count().ToString(),
+                    matching_incompatible.Count().ToString(),
+                    options.search_term);
+            }
+            else if (!options.all && !String.IsNullOrWhiteSpace(options.author_term))
+            {
+                user.RaiseMessage("Found {0} compatible mods matching \"{1}\" by \"{2}\".",
+                    matching_compatible.Count().ToString(),
+                    options.search_term,
+                    options.author_term);
+            }
+            else if (!options.all && String.IsNullOrWhiteSpace(options.author_term))
+            {
+                user.RaiseMessage("Found {0} compatible mods matching \"{1}\".",
+                    matching_compatible.Count().ToString(),
+                    options.search_term);
+            }
 
             // Present the results.
-            if (!matching_mods.Any())
+            if (!matching_compatible.Any() && (!options.all || !matching_incompatible.Any()))
             {
                 return Exit.OK;
             }
 
-            // Print each mod on a separate line.
-            foreach (CkanModule mod in matching_mods)
+            if (options.detail)
             {
-                user.RaiseMessage(mod.identifier);
+                user.RaiseMessage("Matching compatible mods:");
+                foreach (CkanModule mod in matching_compatible)
+                {
+                    user.RaiseMessage("* {0} ({1}) - {2} by {3} - {4}",
+                        mod.identifier,
+                        mod.version,
+                        mod.name,
+                        mod.author == null ? "N/A" : String.Join(", ", mod.author),
+                        mod.@abstract);
+                }
+
+                if (matching_incompatible.Any())
+                {
+                    user.RaiseMessage("Matching incompatible mods:");
+                    foreach (CkanModule mod in matching_incompatible)
+                    {
+                        Registry.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
+                        string kspVersion = Versioning.KspVersionRange.VersionSpan(minKsp, maxKsp).ToString();
+
+                        user.RaiseMessage("* {0} ({1} - {2}) - {3} by {4} - {5}",
+                            mod.identifier,
+                            mod.version,
+                            kspVersion,
+                            mod.name,
+                            mod.author == null ? "N/A" : String.Join(", ", mod.author),
+                            mod.@abstract);
+                    }
+                }
+            }
+            else
+            {
+                List<CkanModule> matching = matching_compatible.Concat(matching_incompatible).ToList();
+                matching.Sort((x, y) => string.Compare(x.identifier, y.identifier, StringComparison.Ordinal));
+
+                foreach (CkanModule mod in matching)
+                {
+                    user.RaiseMessage(mod.identifier);
+                }
             }
 
             return Exit.OK;
         }
 
         /// <summary>
-        /// Searches for the term in the list of available modules for the ksp instance. Looks in name, identifier and description fields.
+        /// Searches for the term in the list of compatible or incompatible modules for the ksp instance.
+        /// Looks in name, identifier and description fields, and if given, restricts to authors matching the author term.
         /// </summary>
-        /// <returns>List of mathcing modules.</returns>
+        /// <returns>List of matching modules.</returns>
         /// <param name="ksp">The KSP instance to perform the search for.</param>
         /// <param name="term">The search term. Case insensitive.</param>
-        public List<CkanModule> PerformSearch(CKAN.KSP ksp, string term)
+        public List<CkanModule> PerformSearch(CKAN.KSP ksp, string term, string author = null, bool searchIncompatible = false)
         {
+            // Remove spaces and special characters from the search term.
+            term   = String.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
+            author = String.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
+
             var registry = RegistryManager.Instance(ksp).registry;
-            return registry
-                .Available(ksp.VersionCriteria())
-                .Where((module) =>
+
+            if (!searchIncompatible)
             {
-                // Extract the description. This is an optional field and may be null.
-                string modDesc = string.Empty;
-
-                if (!string.IsNullOrEmpty(module.description))
+                return registry
+                    .Available(ksp.VersionCriteria())
+                    .Where((module) =>
                 {
-                    modDesc = module.description;
-                }
-
-                // Look for a match in each string.
-                return module.name.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || module.identifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1 || modDesc.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1;
-            }).ToList();
+                    // Look for a match in each string.
+                    return (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+                        && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1);
+                }).ToList();
+            }
+            else
+            {
+                return registry
+                    .Incompatible(ksp.VersionCriteria())
+                    .Where((module) =>
+                {
+                    // Look for a match in each string.
+                    return (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                        || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+                        && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1);
+                }).ToList();
+            }
         }
 
         /// <summary>

@@ -821,7 +821,7 @@ namespace CKAN
         public bool IsVisible(GUIMod mod)
         {
             var nameMatchesFilter = IsNameInNameFilter(mod);
-            var authorMatchesFilter = IsAuthorInauthorFilter(mod);
+            var authorMatchesFilter = IsAuthorInAuthorFilter(mod);
             var abstractMatchesFilter = IsAbstractInDescriptionFilter(mod);
             var modMatchesType = IsModInFilter(ModFilter, mod);
             var isVisible = nameMatchesFilter && modMatchesType && authorMatchesFilter && abstractMatchesFilter;
@@ -953,19 +953,26 @@ namespace CKAN
 
         private bool IsNameInNameFilter(GUIMod mod)
         {
-            return mod.Name.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
-                || mod.Abbrevation.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
-                || mod.Identifier.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+            string sanitisedModNameFilter = CkanModule.nonAlphaNums.Replace(ModNameFilter, "");
+
+            return mod.Abbrevation.IndexOf(ModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
+                || mod.SearchableName.IndexOf(sanitisedModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1
+                || mod.SearchableIdentifier.IndexOf(sanitisedModNameFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
-        private bool IsAuthorInauthorFilter(GUIMod mod)
+        private bool IsAuthorInAuthorFilter(GUIMod mod)
         {
-            return mod.Authors.IndexOf(ModAuthorFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+            string sanitisedModAuthorFilter = CkanModule.nonAlphaNums.Replace(ModAuthorFilter, "");
+
+            return mod.SearchableAuthors.Any((author) => author.IndexOf(sanitisedModAuthorFilter, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
 
         private bool IsAbstractInDescriptionFilter(GUIMod mod)
         {
-            return mod.Abstract.IndexOf(ModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
+            string sanitisedModDescriptionFilter = CkanModule.nonAlphaNums.Replace(ModDescriptionFilter, "");
+
+            return mod.SearchableAbstract.IndexOf(sanitisedModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1
+                || mod.SearchableDescription.IndexOf(sanitisedModDescriptionFilter, StringComparison.InvariantCultureIgnoreCase) != -1;
         }
 
         private static bool IsModInFilter(GUIModFilter filter, GUIMod m)

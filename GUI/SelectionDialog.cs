@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace CKAN
 {
-    public partial class SelectionDialog : FormCompatibility
+    public partial class SelectionDialog : Form
     {
         int currentSelected;
 
