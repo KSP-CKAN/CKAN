@@ -1035,7 +1035,7 @@
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
             this.RecommendedModsToggleCheckbox.TabIndex = 9;
-            this.RecommendedModsToggleCheckbox.Text = "Toggle * Mods";
+            this.RecommendedModsToggleCheckbox.Text = "(De-)select all recommended or suggested mods.";
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             // 
@@ -1047,9 +1047,8 @@
             this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
             this.RecommendedDialogLabel.Size = new System.Drawing.Size(627, 20);
             this.RecommendedDialogLabel.TabIndex = 6;
-            this.RecommendedDialogLabel.Text = "The following modules have been recommended by one or more of the chosen modules:" +
-    "";
             // 
+            this.RecommendedDialogLabel.Text = "The following modules have been recommended or suggested by one or more of the chosen modules:";
             // RecommendedModsListView
             // 
             this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1078,7 +1077,7 @@
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Recommended by";
+            this.columnHeader4.Text = "Recommended or suggested by:";
             this.columnHeader4.Width = 180;
             // 
             // columnHeader5

@@ -9,116 +9,159 @@ using CKAN.Versioning;
 namespace CKAN
 {
     using ModChanges = List<ModChange>;
+
     public partial class Main
     {
-
-        private void ShowSelection(Dictionary<CkanModule, List<string>> selectable, HashSet<CkanModule> toInstall, bool suggest = false)
+        // Build up the list of who recommends what
+        private Dictionary<CkanModule, List<string>> getDependersIndex(
+            IEnumerable<CkanModule> sourceModules,
+            IRegistryQuerier        registry,
+            HashSet<CkanModule>     toExclude
+        )
         {
-            if (installCanceled)
-                return;
-
-            // If we're going to install something anyway, then don't list it in the
-            // recommended list, since they can't de-select it anyway.
-            // The ToList dance is because we need to modify the dictionary while iterating over it,
-            // and C# doesn't like that.
-            foreach (CkanModule module in selectable.Keys.ToList())
+            Dictionary<CkanModule, List<string>> dependersIndex = new Dictionary<CkanModule, List<string>>();
+            foreach (CkanModule mod in sourceModules)
             {
-                if (toInstall.Any(m => m.identifier == module.identifier))
+                foreach (List<RelationshipDescriptor> relations in new List<List<RelationshipDescriptor>>() { mod.recommends, mod.suggests })
                 {
-                    selectable.Remove(module);
+                    if (relations != null)
+                    {
+                        foreach (RelationshipDescriptor rel in relations)
+                        {
+                            List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                                registry,
+                                CurrentInstance.VersionCriteria()
+                            );
+                            foreach (CkanModule provider in providers)
+                            {
+                                if (!registry.IsInstalled(provider.identifier)
+                                    && !toExclude.Any(m => m.identifier == provider.identifier))
+                                {
+                                    List<string> dependers;
+                                    if (dependersIndex.TryGetValue(provider, out dependers))
+                                    {
+                                        // Add the dependent mod to the list of reasons this dependency is shown.
+                                        dependers.Add(mod.identifier);
+                                    }
+                                    else
+                                    {
+                                        // Add a new entry if this provider isn't listed yet.
+                                        dependersIndex.Add(provider, new List<string>() { mod.identifier });
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-            Dictionary<CkanModule, string> mods = GetShowableMods(
-                selectable,
-                RegistryManager.Instance(CurrentInstance).registry,
-                CurrentInstance.VersionCriteria(),
-                toInstall
-            );
-
-            // If there are any mods that would be recommended, prompt the user to make
-            // selections.
-            if (mods.Any())
-            {
-                Util.Invoke(this, () => UpdateRecommendedDialog(mods, suggest));
-
-                tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                tabController.SetTabLock(true);
-
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
-
-                if (!installCanceled)
-                {
-                    toInstall.UnionWith(GetSelected());
-                }
-                tabController.SetTabLock(false);
-            }
+            return dependersIndex;
         }
 
-        private void AddMod(
-            IEnumerable<RelationshipDescriptor>  relations,
-            Dictionary<CkanModule, List<string>> chooseAble,
-            string                               identifier,
-            IRegistryQuerier                     registry,
-            HashSet<CkanModule>                  toInstall)
+        private IEnumerable<ListViewItem> getRecSugRows(
+            IEnumerable<CkanModule> sourceModules,
+            IRegistryQuerier        registry,
+            HashSet<CkanModule>     toInstall
+        )
         {
-            if (relations == null)
-                return;
-            foreach (RelationshipDescriptor rel in relations)
+            Dictionary<CkanModule, List<string>> dependersIndex = getDependersIndex(sourceModules, registry, toInstall);
+            foreach (CkanModule mod in sourceModules.Where(m => m.recommends != null))
             {
-                List<CkanModule> providers = rel.LatestAvailableWithProvides(
-                    registry,
-                    CurrentInstance.VersionCriteria()
-                );
-                foreach (CkanModule provider in providers)
+                foreach (RelationshipDescriptor rel in mod.recommends)
                 {
-                    if (!registry.IsInstalled(provider.identifier)
-                        && !toInstall.Any(m => m.identifier == provider.identifier))
+                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                        registry,
+                        CurrentInstance.VersionCriteria()
+                    );
+                    foreach (CkanModule provider in providers)
                     {
-                        // We want to show this mod to the user. Add it.
                         List<string> dependers;
-                        if (chooseAble.TryGetValue(provider, out dependers))
+                        if (!registry.IsInstalled(provider.identifier)
+                            && !toInstall.Any(m => m.identifier == provider.identifier)
+                            && dependersIndex.TryGetValue(provider, out dependers)
+                            && CanInstall(registry, CurrentInstance.VersionCriteria(),
+                                RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
                         {
-                            // Add the dependent mod to the list of reasons this dependency is shown.
-                            dependers.Add(identifier);
+                            dependersIndex.Remove(provider);
+                            yield return getRecSugItem(
+                                provider,
+                                string.Join(", ", dependers),
+                                providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name
+                            );
                         }
-                        else
+                    }
+                }
+            }
+            foreach (CkanModule mod in sourceModules.Where(m => m.suggests != null))
+            {
+                foreach (RelationshipDescriptor rel in mod.suggests)
+                {
+                    List<CkanModule> providers = rel.LatestAvailableWithProvides(
+                        registry,
+                        CurrentInstance.VersionCriteria()
+                    );
+                    foreach (CkanModule provider in providers)
+                    {
+                        List<string> dependers;
+                        if (!registry.IsInstalled(provider.identifier)
+                            && !toInstall.Any(m => m.identifier == provider.identifier)
+                            && dependersIndex.TryGetValue(provider, out dependers)
+                            && CanInstall(registry, CurrentInstance.VersionCriteria(),
+                                RelationshipResolver.DependsOnlyOpts(),
+                                toInstall.ToList().Concat(new List<CkanModule>() { provider }).ToList()))
                         {
-                            // Add a new entry if this provider isn't listed yet.
-                            chooseAble.Add(provider, new List<string>() { identifier });
+                            dependersIndex.Remove(provider);
+                            yield return getRecSugItem(
+                                provider,
+                                string.Join(", ", dependers),
+                                false
+                            );
                         }
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Tries to get every mod in the Dictionary, which can be installed
-        /// It also transforms the Recommender list to a string
-        /// </summary>
-        /// <param name="mods">Map from recommendations to lists of recommenders</param>
-        /// <param name="registry">Registry of current game instance</param>
-        /// <param name="versionCriteria">Versions compatible with current instance</param>
-        /// <param name="toInstall">Modules planned to be installed</param>
-        /// <returns>Map from installable recommendations to string describing recommenders</returns>
-        private Dictionary<CkanModule, string> GetShowableMods(
-            Dictionary<CkanModule, List<string>> mods,
-            IRegistryQuerier                     registry,
-            KspVersionCriteria                   versionCriteria,
-            HashSet<CkanModule>                  toInstall
-        )
+        private void ShowRecSugDialog(IEnumerable<ListViewItem> rows, HashSet<CkanModule> toInstall)
         {
-            return mods.Where(kvp => CanInstall(
-                registry, versionCriteria,
-                RelationshipResolver.DependsOnlyOpts(),
-                toInstall.ToList().Concat(new List<CkanModule>() { kvp.Key }).ToList()
-            )).ToDictionary(
-                kvp => kvp.Key,
-                kvp => string.Join(", ", kvp.Value.ToArray())
-            );
+            Util.Invoke(this, () =>
+            {
+                RecommendedModsToggleCheckbox.Checked = true;
+                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended or suggested mods");
+
+                RecommendedModsListView.Items.Clear();
+                RecommendedModsListView.Items.AddRange(rows.ToArray());
+            });
+
+            tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+            tabController.SetTabLock(true);
+
+            lock (this)
+            {
+                Monitor.Wait(this);
+            }
+
+            if (!installCanceled)
+            {
+                toInstall.UnionWith(GetSelected());
+            }
+            tabController.SetTabLock(false);
+        }
+
+        private ListViewItem getRecSugItem(CkanModule module, string descrip, bool check)
+        {
+            ListViewItem item = new ListViewItem()
+            {
+                Tag     = module,
+                Checked = check,
+                Text    = Manager.Cache.IsMaybeCachedZip(module)
+                    ? $"{module.name} {module.version} (cached)"
+                    : $"{module.name} {module.version} ({module.download.Host ?? ""}, {CkanModule.FmtSize(module.download_size)})"
+            };
+
+            item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = descrip          });
+            item.SubItems.Add(new ListViewItem.ListViewSubItem() { Text = module.@abstract });
+            return item;
         }
 
         /// <summary>
@@ -190,52 +233,6 @@ namespace CKAN
             return false;
         }
 
-        private void UpdateRecommendedDialog(Dictionary<CkanModule, string> mods, bool suggested = false)
-        {
-            if (!suggested)
-            {
-                RecommendedDialogLabel.Text =
-                    "The following modules have been recommended by one or more of the chosen modules:";
-                RecommendedModsListView.Columns[1].Text = "Recommended by:";
-                RecommendedModsToggleCheckbox.Text = "(De-)select all recommended mods.";
-                RecommendedModsToggleCheckbox.Checked=true;
-                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose recommended mods");
-            }
-            else
-            {
-                RecommendedDialogLabel.Text =
-                    "The following modules have been suggested by one or more of the chosen modules:";
-                RecommendedModsListView.Columns[1].Text = "Suggested by:";
-                RecommendedModsToggleCheckbox.Text = "(De-)select all suggested mods.";
-                RecommendedModsToggleCheckbox.Checked=false;
-                tabController.RenameTab("ChooseRecommendedModsTabPage", "Choose suggested mods");
-            }
-
-            RecommendedModsListView.Items.Clear();
-            foreach (var pair in mods)
-            {
-                CkanModule module = pair.Key;
-                ListViewItem item = new ListViewItem()
-                {
-                    Tag = module,
-                    Checked = !suggested,
-                    Text = Manager.Cache.IsMaybeCachedZip(pair.Key)
-                        ? $"{pair.Key.name} {pair.Key.version} (cached)"
-                        : $"{pair.Key.name} {pair.Key.version} ({pair.Key.download.Host ?? ""}, {CkanModule.FmtSize(pair.Key.download_size)})"
-                };
-
-                ListViewItem.ListViewSubItem recommendedBy = new ListViewItem.ListViewSubItem() { Text = pair.Value };
-
-                item.SubItems.Add(recommendedBy);
-
-                ListViewItem.ListViewSubItem description = new ListViewItem.ListViewSubItem {Text = module.@abstract};
-
-                item.SubItems.Add(description);
-
-                RecommendedModsListView.Items.Add(item);
-            }
-        }
-
         private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             ShowSelectionModInfo(RecommendedModsListView.SelectedItems);
@@ -295,18 +292,9 @@ namespace CKAN
 
         private void AuditRecommendations(IRegistryQuerier registry, KspVersionCriteria versionCriteria)
         {
-            var recommended = new Dictionary<CkanModule, List<string>>();
-            var suggested   = new Dictionary<CkanModule, List<string>>();
             var toInstall   = new HashSet<CkanModule>();
-
-            // Find recommendations and suggestions
-            foreach (var mod in registry.InstalledModules.Select(im => im.Module))
-            {
-                AddMod(mod.recommends, recommended, mod.identifier, registry, toInstall);
-                AddMod(mod.suggests,   suggested,   mod.identifier, registry, toInstall);
-            }
-
-            if (!recommended.Any() && !suggested.Any())
+            var rows = getRecSugRows(registry.InstalledModules.Select(im => im.Module), registry, toInstall);
+            if (!rows.Any())
             {
                 GUI.user.RaiseError("No recommendations or suggestions found.");
                 return;
@@ -314,8 +302,7 @@ namespace CKAN
 
             // Prompt user to choose
             installCanceled = false;
-            ShowSelection(recommended, toInstall);
-            ShowSelection(suggested,   toInstall, true);
+            ShowRecSugDialog(rows, toInstall);
             tabController.HideTab("ChooseRecommendedModsTabPage");
 
             // Install
