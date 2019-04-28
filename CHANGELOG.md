@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Compare RelationshipDescriptors with Equals instead of Same (#2735 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Auto size yes no dialog (#2729 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix Newly Compatible filter with repo autoupdate (#2734 by: HebaruSan; reviewed: DasSkelett)
+- [GUI] Throw errors happening in UpdateModsList() (#2745 by: DasSkelett; reviewed: HebaruSan)
 
 ## v1.26.0
 
