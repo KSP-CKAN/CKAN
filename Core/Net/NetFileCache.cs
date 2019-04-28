@@ -30,6 +30,7 @@ namespace CKAN
         private Dictionary<string, string> cachedFiles;
         private string cachePath;
         private KSPManager manager;
+        private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
         /// <summary>
@@ -377,7 +378,10 @@ namespace CKAN
                 DirectoryInfo legDir = new DirectoryInfo(legacyDir);
                 files = files.Union(legDir.EnumerateFiles());
             }
-            return files.ToList();
+            return files
+                // Require 8 digit hex prefix followed by dash; any else was not put there by CKAN
+                .Where(fi => cacheFileRegex.IsMatch(fi.Name))
+                .ToList();
         }
 
         /// <summary>
