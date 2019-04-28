@@ -156,10 +156,11 @@ namespace CKAN
             }
         }
 
-        public void UpdateModsList(IEnumerable<ModChange> mc = null, Dictionary<string, bool> old_modules = null)
+        public async void UpdateModsList(IEnumerable<ModChange> mc = null, Dictionary<string, bool> old_modules = null)
         {
             // Run the update in the background so the UI thread can appear alive
-            Task.Factory.StartNew(() =>
+            // Await it so potential (fatal) errors are thrown, not swallowed.
+            await Task.Factory.StartNew(() =>
                 _UpdateModsList(mc ?? new List<ModChange>(), old_modules)
             );
         }
