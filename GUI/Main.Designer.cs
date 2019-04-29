@@ -117,6 +117,8 @@
             this.RecommendedModsToggleCheckbox = new System.Windows.Forms.CheckBox();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new System.Windows.Forms.ListView();
+            this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
+            this.SuggestionsGroup = new System.Windows.Forms.ListViewGroup();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1035,7 +1037,7 @@
             this.RecommendedModsToggleCheckbox.Name = "RecommendedModsToggleCheckbox";
             this.RecommendedModsToggleCheckbox.Size = new System.Drawing.Size(131, 24);
             this.RecommendedModsToggleCheckbox.TabIndex = 9;
-            this.RecommendedModsToggleCheckbox.Text = "Toggle * Mods";
+            this.RecommendedModsToggleCheckbox.Text = "(De-)select all recommended or suggested mods.";
             this.RecommendedModsToggleCheckbox.UseVisualStyleBackColor = true;
             this.RecommendedModsToggleCheckbox.CheckedChanged += new System.EventHandler(this.RecommendedModsToggleCheckbox_CheckedChanged);
             // 
@@ -1047,9 +1049,8 @@
             this.RecommendedDialogLabel.Name = "RecommendedDialogLabel";
             this.RecommendedDialogLabel.Size = new System.Drawing.Size(627, 20);
             this.RecommendedDialogLabel.TabIndex = 6;
-            this.RecommendedDialogLabel.Text = "The following modules have been recommended by one or more of the chosen modules:" +
-    "";
             // 
+            this.RecommendedDialogLabel.Text = "The following modules have been recommended or suggested by one or more of the chosen modules:";
             // RecommendedModsListView
             // 
             this.RecommendedModsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1070,6 +1071,20 @@
             this.RecommendedModsListView.UseCompatibleStateImageBehavior = false;
             this.RecommendedModsListView.View = System.Windows.Forms.View.Details;
             this.RecommendedModsListView.SelectedIndexChanged += new System.EventHandler(RecommendedModsListView_SelectedIndexChanged);
+            this.RecommendedModsListView.Groups.Add(this.RecommendationsGroup);
+            this.RecommendedModsListView.Groups.Add(this.SuggestionsGroup);
+            //
+            // RecommendationsGroup
+            //
+            this.RecommendationsGroup.Header = "Recommendations";
+            this.RecommendationsGroup.Name = "Recommendations";
+            this.RecommendationsGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            //
+            // SuggestionsGroup
+            //
+            this.SuggestionsGroup.Header = "Suggestions";
+            this.SuggestionsGroup.Name = "Suggestions";
+            this.SuggestionsGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             //
             // columnHeader3
             // 
@@ -1078,7 +1093,7 @@
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Recommended by";
+            this.columnHeader4.Text = "Recommended or suggested by:";
             this.columnHeader4.Width = 180;
             // 
             // columnHeader5
@@ -1403,6 +1418,8 @@
         private System.Windows.Forms.CheckBox RecommendedModsToggleCheckbox;
         private System.Windows.Forms.Label RecommendedDialogLabel;
         private System.Windows.Forms.ListView RecommendedModsListView;
+        private System.Windows.Forms.ListViewGroup RecommendationsGroup;
+        private System.Windows.Forms.ListViewGroup SuggestionsGroup;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;

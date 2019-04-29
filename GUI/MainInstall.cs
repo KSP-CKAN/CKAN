@@ -124,22 +124,16 @@ namespace CKAN
                 }
             }
 
-            // Now work on satisifying dependencies.
-
-            var recommended = new Dictionary<CkanModule, List<string>>();
-            var suggested   = new Dictionary<CkanModule, List<string>>();
-
-            foreach (var change in opts.Key)
+            // Prompt for recommendations and suggestions, if any
+            var recRows = getRecSugRows(
+                opts.Key.Where(ch => ch.ChangeType == GUIModChangeType.Install)
+                    .Select(ch => ch.Mod.ToModule()),
+                registry, toInstall
+            );
+            if (recRows.Any())
             {
-                if (change.ChangeType == GUIModChangeType.Install)
-                {
-                    AddMod(change.Mod.ToModule().recommends, recommended, change.Mod.Identifier, registry, toInstall);
-                    AddMod(change.Mod.ToModule().suggests,   suggested,   change.Mod.Identifier, registry, toInstall);
-                }
+                ShowRecSugDialog(recRows, toInstall);
             }
-
-            ShowSelection(recommended, toInstall);
-            ShowSelection(suggested,   toInstall, true);
 
             tabController.HideTab("ChooseRecommendedModsTabPage");
 

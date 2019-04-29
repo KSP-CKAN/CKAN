@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Relabel Yes/No buttons for some questions (#2737 by: HebaruSan; reviewed: DasSkelett)
 - [Netkan] Handle non-raw GitHub URLs for metanetkans and avc krefs (#2696 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Ignore spaces and special chars in mod search (#2709 by: DasSkelett; reviewed: HebaruSan)
+- [GUI] Combine recommendation and suggestion screens (#2744 by: HebaruSan; reviewed: DasSkelett)
 
 ## Bugfixes
 
