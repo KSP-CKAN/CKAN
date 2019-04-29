@@ -86,6 +86,7 @@ namespace CKAN
                             yield return getRecSugItem(
                                 provider,
                                 string.Join(", ", dependers),
+                                RecommendationsGroup,
                                 providers.Count <= 1 || provider.identifier == (rel as ModuleRelationshipDescriptor)?.name
                             );
                         }
@@ -114,6 +115,7 @@ namespace CKAN
                             yield return getRecSugItem(
                                 provider,
                                 string.Join(", ", dependers),
+                                SuggestionsGroup,
                                 false
                             );
                         }
@@ -148,12 +150,13 @@ namespace CKAN
             tabController.SetTabLock(false);
         }
 
-        private ListViewItem getRecSugItem(CkanModule module, string descrip, bool check)
+        private ListViewItem getRecSugItem(CkanModule module, string descrip, ListViewGroup group, bool check)
         {
             ListViewItem item = new ListViewItem()
             {
                 Tag     = module,
                 Checked = check,
+                Group   = group,
                 Text    = Manager.Cache.IsMaybeCachedZip(module)
                     ? $"{module.name} {module.version} (cached)"
                     : $"{module.name} {module.version} ({module.download.Host ?? ""}, {CkanModule.FmtSize(module.download_size)})"
