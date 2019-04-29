@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.26.1
 
-## Features
+### Features
 
 - [GUI] Right click copy option for mod info links (#2699 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Relabel Yes/No buttons for some questions (#2737 by: HebaruSan; reviewed: DasSkelett)
@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Ignore spaces and special chars in mod search (#2709 by: DasSkelett; reviewed: HebaruSan)
 - [GUI] Combine recommendation and suggestion screens (#2744 by: HebaruSan; reviewed: DasSkelett)
 
-## Bugfixes
+### Bugfixes
 
 - [GUI] Save restore position when minimized (#2725 by: HebaruSan; reviewed: DasSkelett)
 - [GUI] Fix home/end, url handler, typing nav, and dependency double click (#2727 by: HebaruSan; reviewed: DasSkelett)
