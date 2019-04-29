@@ -122,10 +122,12 @@ namespace CKAN
             }
             if (module.conflicts != null)
             {
+                // Skip self-conflicts (but catch other modules providing self)
+                var othersMinusSelf = others.Where(m => m.identifier != module.identifier);
                 foreach (RelationshipDescriptor rel in module.conflicts)
                 {
                     // If any of the conflicts are present, fail
-                    if (rel.MatchesAny(others, null, null))
+                    if (rel.MatchesAny(othersMinusSelf, null, null))
                     {
                         return false;
                     }
